@@ -2,7 +2,7 @@
 
 This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
-# ****name****
+# ****STAPLE****
 
 ## Getting Started
 
@@ -15,6 +15,10 @@ blitz dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Environment Variables
+
+Ensure that you have a local postgres service running on your computer. To install see: [https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database)
+
+Create a user with appropriate privilages after postgres installation.
 
 Ensure the `.env.local` file has required environment variables:
 
