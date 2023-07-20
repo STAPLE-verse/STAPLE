@@ -86,9 +86,11 @@ model Task {
 }
 
 model Element {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  projectId Int
-  project   Project  @relation(fields: [projectId], references: [id])
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  projectId   Int
+  project     Project  @relation(fields: [projectId], references: [id])
+  name        String
+  description String?
 }

@@ -49,13 +49,13 @@ const ProjectsPage = () => {
       </Head>
 
       <div>
-        <p>
-          <Link href={Routes.NewProjectPage()}>Create Project</Link>
-        </p>
-
         <Suspense fallback={<div>Loading...</div>}>
           <ProjectsList />
         </Suspense>
+
+        <p>
+          <Link href={Routes.NewProjectPage()}>Create Project</Link>
+        </p>
       </div>
     </Layout>
   )

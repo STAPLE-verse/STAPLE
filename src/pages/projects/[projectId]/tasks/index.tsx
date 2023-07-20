@@ -6,6 +6,7 @@ import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 
+import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Layout from "src/core/layouts/Layout"
 import getTasks from "src/tasks/queries/getTasks"
 
@@ -51,22 +52,28 @@ const TasksPage = () => {
   const projectId = useParam("projectId", "number")
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>Tasks</title>
       </Head>
 
       <div>
-        <p>
-          <Link href={Routes.NewTaskPage({ projectId: projectId! })}>Create Task</Link>
-        </p>
-
         <Suspense fallback={<div>Loading...</div>}>
           <TasksList />
         </Suspense>
+
+        <p>
+          <Link href={Routes.NewTaskPage({ projectId: projectId! })}>Create Task</Link>
+        </p>
       </div>
-    </Layout>
+    </>
   )
 }
+
+TasksPage.getLayout = (page) => (
+  <Layout>
+    <ProjectLayout>{page}</ProjectLayout>
+  </Layout>
+)
 
 export default TasksPage

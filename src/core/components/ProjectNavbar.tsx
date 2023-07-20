@@ -14,7 +14,7 @@ const ProjectNavbar = () => {
     },
     {
       name: "Elements",
-      href: Routes.ElementsPage(),
+      href: Routes.ElementsPage({ projectId: projectId! }),
     },
   ]
 
