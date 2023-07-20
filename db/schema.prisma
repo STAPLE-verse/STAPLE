@@ -63,3 +63,32 @@ model Token {
 // enum TokenType {
 //   RESET_PASSWORD
 // }
+
+model Project {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String?
+
+  tasks    Task[]
+  elements Element[]
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String?
+  projectId   Int
+  project     Project  @relation(fields: [projectId], references: [id])
+}
+
+model Element {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  projectId Int
+  project   Project  @relation(fields: [projectId], references: [id])
+}
