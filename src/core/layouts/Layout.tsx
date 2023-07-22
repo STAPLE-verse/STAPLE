@@ -1,5 +1,5 @@
 import Head from "next/head"
-import React, { FC } from "react"
+import React from "react"
 import { BlitzLayout } from "@blitzjs/next"
 import MainNavbar from "../components/MainNavbar"
 
