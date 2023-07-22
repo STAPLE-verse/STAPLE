@@ -9,12 +9,12 @@ import { Suspense } from "react"
 import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Layout from "src/core/layouts/Layout"
 import Head from "next/head"
+import { z } from "zod"
 
 const NewTaskPage = () => {
   const router = useRouter()
   const projectId = useParam("projectId", "number")
   const [createTaskMutation] = useMutation(createTask)
-  console.log(projectId)
   return (
     <>
       <Head>
@@ -27,10 +27,10 @@ const NewTaskPage = () => {
           schema={CreateTaskSchema}
           // initialValues={{ name: "", description: "" }}
           onSubmit={async (values) => {
-            console.log("btn pushed")
             try {
               const task = await createTaskMutation({
-                ...values,
+                name: values.name,
+                description: values.description,
                 projectId: projectId!,
               })
               await router.push(Routes.ShowTaskPage({ projectId: projectId!, taskId: task.id }))

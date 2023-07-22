@@ -52,10 +52,6 @@ const ShowTaskPage = () => {
 
   return (
     <div>
-      <p>
-        <Link href={Routes.TasksPage({ projectId: projectId! })}>Tasks</Link>
-      </p>
-
       <Suspense fallback={<div>Loading...</div>}>
         <Task />
       </Suspense>
