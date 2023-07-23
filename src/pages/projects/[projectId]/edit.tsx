@@ -1,19 +1,21 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
-import Link from "next/link"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
+import deleteProject from "src/projects/mutations/deleteProject"
 import { UpdateProjectSchema } from "src/projects/schemas"
 import getProject from "src/projects/queries/getProject"
 import updateProject from "src/projects/mutations/updateProject"
 import { ProjectForm, FORM_ERROR } from "src/projects/components/ProjectForm"
+import ProjectLayout from "src/core/layouts/ProjectLayout"
 
 export const EditProject = () => {
   const router = useRouter()
+
   const projectId = useParam("projectId", "number")
   const [project, { setQueryData }] = useQuery(
     getProject,
@@ -23,17 +25,18 @@ export const EditProject = () => {
       staleTime: Infinity,
     }
   )
+
   const [updateProjectMutation] = useMutation(updateProject)
+  const [deleteProjectMutation] = useMutation(deleteProject)
 
   return (
     <>
       <Head>
-        <title>Edit Project {project.id}</title>
+        <title>Edit {project.name}</title>
       </Head>
 
-      <div>
-        <h1>Edit Project {project.id}</h1>
-        <pre>{JSON.stringify(project, null, 2)}</pre>
+      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+        <h1 className="flex justify-center mb-2">Project Settings</h1>
         <Suspense fallback={<div>Loading...</div>}>
           <ProjectForm
             submitText="Update Project"
@@ -55,8 +58,27 @@ export const EditProject = () => {
               }
             }}
           />
+
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className="btn"
+              onClick={async () => {
+                if (
+                  window.confirm(
+                    "The project will be permanently deleted. Are you sure to continue?"
+                  )
+                ) {
+                  await deleteProjectMutation({ id: project.id })
+                  await router.push(Routes.ProjectsPage())
+                }
+              }}
+            >
+              Delete project
+            </button>
+          </div>
         </Suspense>
-      </div>
+      </main>
     </>
   )
 }
@@ -72,6 +94,10 @@ const EditProjectPage = () => {
 }
 
 EditProjectPage.authenticate = true
-EditProjectPage.getLayout = (page) => <Layout>{page}</Layout>
+EditProjectPage.getLayout = (page) => (
+  <Layout>
+    <ProjectLayout>{page}</ProjectLayout>
+  </Layout>
+)
 
 export default EditProjectPage

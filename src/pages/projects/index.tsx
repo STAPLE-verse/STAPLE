@@ -7,7 +7,7 @@ import { useRouter } from "next/router"
 import Layout from "src/core/layouts/Layout"
 import getProjects from "src/projects/queries/getProjects"
 
-const ITEMS_PER_PAGE = 100
+const ITEMS_PER_PAGE = 7
 
 export const ProjectsList = () => {
   const router = useRouter()
@@ -23,20 +23,35 @@ export const ProjectsList = () => {
 
   return (
     <div>
-      <ul>
-        {projects.map((project) => (
-          <li key={project.id}>
-            <Link href={Routes.ShowProjectPage({ projectId: project.id })}>{project.name}</Link>
-          </li>
-        ))}
-      </ul>
-
-      <button disabled={page === 0} onClick={goToPreviousPage}>
-        Previous
-      </button>
-      <button disabled={!hasMore} onClick={goToNextPage}>
-        Next
-      </button>
+      {projects.map((project) => (
+        <div className="collapse collapse-arrow bg-base-200 mb-2" key={project.id}>
+          <input type="checkbox" />
+          <div className="collapse-title text-xl font-medium">{project.name}</div>
+          <div className="collapse-content mb-4">
+            <p className="mb-2">{project.description}</p>
+            <p className="italic mb-2">Last update: {project.updatedAt.toString()}</p>
+            {/* TODO: Change button position by other method then using absolute */}
+            <div className="justify-end absolute bottom-2 right-6">
+              <Link className="btn" href={Routes.ShowProjectPage({ projectId: project.id })}>
+                Open
+              </Link>
+            </div>
+          </div>
+        </div>
+      ))}
+      {/* Previous and next page btns */}
+      <div className="join grid grid-cols-2 mt-4">
+        <button
+          className="join-item btn btn-outline"
+          disabled={page === 0}
+          onClick={goToPreviousPage}
+        >
+          Previous
+        </button>
+        <button className="join-item btn btn-outline" disabled={!hasMore} onClick={goToNextPage}>
+          Next
+        </button>
+      </div>
     </div>
   )
 }
@@ -47,16 +62,28 @@ const ProjectsPage = () => {
       <Head>
         <title>Projects</title>
       </Head>
+      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+        <h1 className="flex justify-center mb-2">Your Projects</h1>
+        <Link className="btn mb-4" href={Routes.NewProjectPage()}>
+          Create Project
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            className="h-6 w-6"
+            viewBox="0 0 16 16"
+          >
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+          </svg>
+        </Link>
 
-      <div>
-        <Suspense fallback={<div>Loading...</div>}>
-          <ProjectsList />
-        </Suspense>
-
-        <p>
-          <Link href={Routes.NewProjectPage()}>Create Project</Link>
-        </p>
-      </div>
+        <div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProjectsList />
+          </Suspense>
+        </div>
+      </main>
     </Layout>
   )
 }

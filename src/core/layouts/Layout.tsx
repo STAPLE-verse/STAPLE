@@ -13,8 +13,13 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
         <title>{title || "STAPLE"}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <MainNavbar />
-      {children}
+
+      <div className="flex min-h-screen flex-col">
+        <div className="flex flex-grow flex-col">
+          <MainNavbar />
+          {children}
+        </div>
+      </div>
     </>
   )
 }

@@ -13,25 +13,28 @@ const NewProjectPage = () => {
 
   return (
     <Layout title={"Create New Project"}>
-      <h1>Create New Project</h1>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ProjectForm
-          submitText="Create Project"
-          schema={CreateProjectSchema}
-          // initialValues={{}}
-          onSubmit={async (values) => {
-            try {
-              const project = await createProjectMutation(values)
-              await router.push(Routes.ShowProjectPage({ projectId: project.id }))
-            } catch (error: any) {
-              console.error(error)
-              return {
-                [FORM_ERROR]: error.toString(),
+      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+        <h1 className="flex justify-center mb-2">Create New Project</h1>
+        <Suspense fallback={<div>Loading...</div>}>
+          <ProjectForm
+            submitText="Create Project"
+            schema={CreateProjectSchema}
+            cancelRoute={Routes.ProjectsPage()}
+            // initialValues={{}}
+            onSubmit={async (values) => {
+              try {
+                const project = await createProjectMutation(values)
+                await router.push(Routes.ShowProjectPage({ projectId: project.id }))
+              } catch (error: any) {
+                console.error(error)
+                return {
+                  [FORM_ERROR]: error.toString(),
+                }
               }
-            }
-          }}
-        />
-      </Suspense>
+            }}
+          />
+        </Suspense>
+      </main>
     </Layout>
   )
 }
