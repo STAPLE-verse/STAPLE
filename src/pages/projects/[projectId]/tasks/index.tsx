@@ -5,12 +5,18 @@ import Link from "next/link"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
+import { Tab } from "@headlessui/react"
 
 import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Layout from "src/core/layouts/Layout"
 import getTasks from "src/tasks/queries/getTasks"
+import TaskTable from "src/tasks/components/TaskTable"
 
-const ITEMS_PER_PAGE = 100
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ")
+}
+
+const ITEMS_PER_PAGE = 8
 
 export const TasksList = () => {
   const router = useRouter()
@@ -27,23 +33,60 @@ export const TasksList = () => {
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   return (
-    <div>
-      <ul>
-        {tasks.map((task) => (
-          <li key={task.id}>
-            <Link href={Routes.ShowTaskPage({ projectId: projectId!, taskId: task.id })}>
-              {task.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <div className="flex flex-col">
+      <Tab.Group defaultIndex={0}>
+        <Tab.List className="tabs flex justify-center space-x-2">
+          <Tab
+            className={({ selected }) =>
+              classNames("tab tab-lifted tab-lg", selected ? "text-black" : "hover:text-gray-500")
+            }
+          >
+            Table
+          </Tab>
+          <Tab
+            className={({ selected }) =>
+              classNames("tab tab-lifted tab-lg", selected ? "text-black" : "hover:text-gray-500")
+            }
+          >
+            Board
+          </Tab>
+        </Tab.List>
+        <Tab.Panels>
+          <Tab.Panel>
+            <TaskTable tasks={tasks} />
+            {/* {tasks.map((task) => (
+                <li key={task.id}>
+                  <Link href={Routes.ShowTaskPage({ projectId: projectId!, taskId: task.id })}>
+                    {task.name}
+                  </Link>
+                </li>
+              ))}
+            </ul> */}
+          </Tab.Panel>
+          <Tab.Panel>Content 2</Tab.Panel>
+        </Tab.Panels>
+      </Tab.Group>
 
-      <button disabled={page === 0} onClick={goToPreviousPage}>
-        Previous
-      </button>
-      <button disabled={!hasMore} onClick={goToNextPage}>
-        Next
-      </button>
+      {/* Create new task btn */}
+      <p>
+        <Link className="btn" href={Routes.NewTaskPage({ projectId: projectId! })}>
+          Create Task
+        </Link>
+      </p>
+
+      {/* Previous and next page btns */}
+      <div className="join grid grid-cols-2 mt-4">
+        <button
+          className="join-item btn btn-outline"
+          disabled={page === 0}
+          onClick={goToPreviousPage}
+        >
+          Previous
+        </button>
+        <button className="join-item btn btn-outline" disabled={!hasMore} onClick={goToNextPage}>
+          Next
+        </button>
+      </div>
     </div>
   )
 }
@@ -57,15 +100,11 @@ const TasksPage = () => {
         <title>Tasks</title>
       </Head>
 
-      <div>
+      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <Suspense fallback={<div>Loading...</div>}>
           <TasksList />
         </Suspense>
-
-        <p>
-          <Link href={Routes.NewTaskPage({ projectId: projectId! })}>Create Task</Link>
-        </p>
-      </div>
+      </main>
     </>
   )
 }

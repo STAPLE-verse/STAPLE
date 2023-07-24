@@ -24,7 +24,7 @@ export const Task = () => {
         <title>Task {task.id}</title>
       </Head>
 
-      <div>
+      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1>Task {task.id}</h1>
         <pre>{JSON.stringify(task, null, 2)}</pre>
 
@@ -42,7 +42,7 @@ export const Task = () => {
         >
           Delete
         </button>
-      </div>
+      </main>
     </>
   )
 }

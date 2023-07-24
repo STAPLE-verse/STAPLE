@@ -62,8 +62,9 @@ const ProjectsPage = () => {
       <Head>
         <title>Projects</title>
       </Head>
+
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2">Your Projects</h1>
+        <h1 className="flex justify-center mb-2">Projects</h1>
         <Link className="btn mb-4" href={Routes.NewProjectPage()}>
           Create Project
           <svg

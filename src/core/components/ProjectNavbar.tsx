@@ -4,6 +4,25 @@ import { useParam } from "@blitzjs/next"
 import getProject from "src/projects/queries/getProject"
 import { useQuery } from "@blitzjs/rpc"
 
+export const TabTemplate = (tab) => {
+  if (tab.hasOwnProperty("children") && tab.children !== null) {
+    return (
+      <li tabIndex={0} key={tab.name}>
+        <details>
+          <summary>{tab.name}</summary>
+          <ul className="p-2">{tab.children.map((child) => TabTemplate(child))}</ul>
+        </details>
+      </li>
+    )
+  } else {
+    return (
+      <li key={tab.name}>
+        <Link href={tab.href}>{tab.name}</Link>
+      </li>
+    )
+  }
+}
+
 const ProjectNavbar = () => {
   // Get project data
   const projectId = useParam("projectId", "number")
@@ -45,14 +64,9 @@ const ProjectNavbar = () => {
         <div className="navbar-center">
           {/* Title of the project */}
           <h3 className="mr-8">{project.name}</h3>
+          <div className="divider divider-horizontal my-4"></div>
           {/* Project specific tabs */}
-          <ul className="menu menu-lg menu-vertical lg:menu-horizontal">
-            {tabs.map((tab) => (
-              <li key={tab.name}>
-                <Link href={tab.href}>{tab.name}</Link>
-              </li>
-            ))}
-          </ul>
+          <ul className="menu menu-lg lg:menu-horizontal">{tabs.map((tab) => TabTemplate(tab))}</ul>
         </div>
         <div className="navbar-end"></div>
       </div>

@@ -67,12 +67,12 @@
   transform: translate(-50%, calc(-50% + 40px));
   z-index: -1;
   border-radius: 100%;
-  background-image: radial-gradient(
+  /* background-image: radial-gradient(
     95.63% 95.63% at 95.92% 0%,
     rgba(255, 255, 255, 0.62) 0%,
     #8155ff38 60.42%,
     #002fff5c 169%
-  );
+  ); */
   filter: blur(8vmin);
 }
 
