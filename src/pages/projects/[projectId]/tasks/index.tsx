@@ -29,8 +29,8 @@ export const TasksList = () => {
     take: ITEMS_PER_PAGE,
   })
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  // const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
+  // const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   return (
     <div className="flex flex-col">
@@ -54,14 +54,6 @@ export const TasksList = () => {
         <Tab.Panels>
           <Tab.Panel>
             <TaskTable tasks={tasks} />
-            {/* {tasks.map((task) => (
-                <li key={task.id}>
-                  <Link href={Routes.ShowTaskPage({ projectId: projectId!, taskId: task.id })}>
-                    {task.name}
-                  </Link>
-                </li>
-              ))}
-            </ul> */}
           </Tab.Panel>
           <Tab.Panel>Content 2</Tab.Panel>
         </Tab.Panels>
@@ -75,7 +67,7 @@ export const TasksList = () => {
       </p>
 
       {/* Previous and next page btns */}
-      <div className="join grid grid-cols-2 mt-4">
+      {/* <div className="join grid grid-cols-2 mt-4">
         <button
           className="join-item btn btn-outline"
           disabled={page === 0}
@@ -86,7 +78,7 @@ export const TasksList = () => {
         <button className="join-item btn btn-outline" disabled={!hasMore} onClick={goToNextPage}>
           Next
         </button>
-      </div>
+      </div> */}
     </div>
   )
 }

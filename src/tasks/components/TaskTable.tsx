@@ -1,8 +1,6 @@
-import { ReactNode, PropsWithoutRef } from "react"
-import { TypeOf, z } from "zod"
-import { validateZodSchema } from "blitz"
 import React from "react"
-import ReactDOM from "react-dom/client"
+import { HTMLAttributes, ClassAttributes } from "react"
+import { Task } from "@prisma/client"
 
 import {
   createColumnHelper,
@@ -12,16 +10,19 @@ import {
 } from "@tanstack/react-table"
 
 // TODO: Pass className attributes props for styling in parent
+interface TaskTableProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
+  tasks: Task[]
+}
 
-const TaskTable = ({ tasks }) => {
-  const columnHelper = createColumnHelper<typeof tasks>()
+const TaskTable = ({ tasks }: TaskTableProps) => {
+  const columnHelper = createColumnHelper<Task>()
 
   const columns = [
     columnHelper.accessor("name", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: (info) => info.column.id,
     }),
-    columnHelper.accessor((row) => row.lastName, {
+    columnHelper.accessor("description", {
       id: "description",
       cell: (info) => <span>{info.getValue()}</span>,
       header: (info) => info.column.id,
@@ -38,7 +39,7 @@ const TaskTable = ({ tasks }) => {
   })
 
   return (
-    <div className="p-2">
+    <div className="flex flex-col justify-center p-2">
       <table>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -77,7 +78,7 @@ const TaskTable = ({ tasks }) => {
         </tfoot>
       </table>
       <div className="h-4" />
-      <button onClick={() => rerender()} className="border p-2">
+      <button onClick={() => rerender()} className="btn">
         Rerender
       </button>
     </div>
