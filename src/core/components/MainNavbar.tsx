@@ -33,14 +33,14 @@ const MainNavbar = () => {
 
   return (
     // Navbar component
-    <div className="navbar bg-base-100 sticky top-0 border-b border-gray-300">
+    <div className="navbar bg-base-100 sticky top-0 border-b border-gray-300 sm:px-4 md:px-6 lg:px-8 xl:px-10">
       {/* Tabs */}
       {/* On the left */}
-      <div className="flex-1 ml-4">
+      <div className="flex-1">
         <h2>STAPLE</h2>
       </div>
       {/* On the rigth */}
-      <div className="flex-none">
+      <div className="flex space-x-5">
         {/* Templated tabs tab */}
         <ul className="menu menu-horizontal menu-lg">
           {tabs.map((tab) => (
@@ -121,7 +121,7 @@ const MainNavbar = () => {
           </ul>
         </div>
         {/* Light switch tab*/}
-        <label className="swap swap-rotate mr-4">
+        <label className="swap swap-rotate">
           {/* this hidden checkbox controls the state */}
           <input type="checkbox" onClick={toggleTheme} title="Lightswitch" />
           {/* sun icon */}

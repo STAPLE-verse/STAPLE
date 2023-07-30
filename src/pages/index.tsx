@@ -12,10 +12,10 @@ import Head from "next/head"
 const UserInfo = () => {
   return (
     <>
-      <Link href={Routes.SignupPage()} className={styles.button}>
+      <Link href={Routes.SignupPage()} className="btn">
         <strong>Sign Up</strong>
       </Link>
-      <Link href={Routes.LoginPage()} className={styles.loginButton}>
+      <Link href={Routes.LoginPage()} className="btn">
         <strong>Login</strong>
       </Link>
     </>
