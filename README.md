@@ -8,13 +8,7 @@ This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
 1) Install `node.js` and `npm`: https://nodejs.org/en/download 
 
-2) Install `blitzjs`: `npm install -g blitz` in a terminal/command window
-
-3) Install these packages in a terminal window: 
-
-  - `npm install @headlessui/react`  
-  - `npm install @tanstack/react-table`
-  - `npm update`
+2) Install `blitzjs`: `npm install -g blitz` in a terminal/command window.
 
 3) Ensure that you have a local postgres service running on your computer. To install see: [https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database). Be sure to write down the superuser information as you are installing the setup. 
 
@@ -54,7 +48,8 @@ DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/staple_test
 9) In a terminal window, go to the folder you cloned this repository and type the following to create the databases needed for the application.
 
 ```
-blitz prisma migrate dev
+npm install # to install all packages for staple
+blitz prisma migrate dev # to create database 
 ```
 
 ## Starting the App
