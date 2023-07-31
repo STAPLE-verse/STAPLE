@@ -29,6 +29,8 @@ CREATE USER username WITH PASSWORD 'password';
 GRANT ALL ON SCHEMA public TO username;
 ```
 
+4) Clone or copy this github repository on to your local computer. 
+
 5) Copy the `.env` file and rename it `.env.local`. You may need to turn on settings to see these hidden files on your machine. 
 
 6) Ensure the `.env.local` file has required environment variables by adding the following line and changing the <YOUR_DB_USERNAME> to `username:password`. 
@@ -45,7 +47,7 @@ DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/staple
 DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/staple_test
 ```
 
-9) In a terminal window, go to the folder you cloned this repository and type the following to create the databases needed for the application.
+9) In a terminal window, go to the folder you cloned this repository and type the following to install the packages and create the databases needed for the application.
 
 ```
 npm install # to install all packages for staple
@@ -54,16 +56,15 @@ blitz prisma migrate dev # to create database
 
 ## Starting the App
  
-1) Clone or copy this github repository. 
-
-2) In a terminal window, go to the folder you cloned this repository and type:
+1) In a terminal window, go to the folder you cloned this repository and type:
 
 ```
 blitz dev
 ```
 
-3) Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2) Open [http://localhost:3000](http://localhost:3000) (or whatever it says for localhost in the terminal) with your browser to see the result.
 
+===no edits below here have happened===
 
 ## Tests
 
