@@ -11,6 +11,7 @@ import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Layout from "src/core/layouts/Layout"
 import getTasks from "src/tasks/queries/getTasks"
 import TaskTable from "src/tasks/components/TaskTable"
+import TaskBoard from "src/tasks/components/TaskBoard"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -33,9 +34,9 @@ export const TasksList = () => {
   // const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mx-auto w-full max-w-7xl">
       <Tab.Group defaultIndex={0}>
-        <Tab.List className="tabs flex justify-center space-x-2">
+        <Tab.List className="tabs flex flex-row justify-center space-x-2 mb-4">
           <Tab
             className={({ selected }) =>
               classNames("tab tab-lifted tab-lg", selected ? "text-black" : "hover:text-gray-500")
@@ -50,18 +51,21 @@ export const TasksList = () => {
           >
             Board
           </Tab>
+          {/* TODO: First click on board does not change it after init */}
         </Tab.List>
         <Tab.Panels>
           <Tab.Panel>
             <TaskTable tasks={tasks} />
           </Tab.Panel>
-          <Tab.Panel>Content 2</Tab.Panel>
+          <Tab.Panel>
+            <TaskBoard projectId={projectId} />
+          </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
 
       {/* Create new task btn */}
       <p>
-        <Link className="btn" href={Routes.NewTaskPage({ projectId: projectId! })}>
+        <Link className="btn mt-4" href={Routes.NewTaskPage({ projectId: projectId! })}>
           Create Task
         </Link>
       </p>

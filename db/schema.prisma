@@ -73,6 +73,7 @@ model Project {
 
   tasks    Task[]
   elements Element[]
+  columns  Column[]
 }
 
 model Task {
@@ -81,8 +82,20 @@ model Task {
   updatedAt   DateTime @updatedAt
   name        String
   description String?
+  columnId    Int
+  column      Column   @relation(fields: [columnId], references: [id])
   projectId   Int
   project     Project  @relation(fields: [projectId], references: [id])
+}
+
+model Column {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String   @default("To Do") // Might not need this
+  tasks     Task[]
+  projectId Int
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 model Element {

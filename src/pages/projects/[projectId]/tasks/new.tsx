@@ -15,6 +15,7 @@ const NewTaskPage = () => {
   const router = useRouter()
   const projectId = useParam("projectId", "number")
   const [createTaskMutation] = useMutation(createTask)
+
   return (
     <>
       <Head>
@@ -23,6 +24,8 @@ const NewTaskPage = () => {
       <h1>Create New Task</h1>
       <Suspense fallback={<div>Loading...</div>}>
         <TaskForm
+          className="flex flex-col"
+          projectId={projectId}
           submitText="Create Task"
           schema={CreateTaskSchema}
           // initialValues={{ name: "", description: "" }}
@@ -31,6 +34,8 @@ const NewTaskPage = () => {
               const task = await createTaskMutation({
                 name: values.name,
                 description: values.description,
+                // TODO: Why is type values defined by the createTask schema? and not the values inside taskForm
+                columnId: parseInt(values.columnId),
                 projectId: projectId!,
               })
               await router.push(Routes.ShowTaskPage({ projectId: projectId!, taskId: task.id }))

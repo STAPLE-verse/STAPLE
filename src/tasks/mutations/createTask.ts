@@ -5,7 +5,7 @@ import { CreateTaskSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(CreateTaskSchema),
   resolver.authorize(),
-  async ({ projectId, name, description }) => {
+  async ({ projectId, columnId, name, description }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const task = await db.task.create({
       data: {
@@ -13,6 +13,10 @@ export default resolver.pipe(
         description,
         project: {
           connect: { id: projectId },
+        },
+        column: {
+          // TODO: replace this later with actual logic
+          connect: { id: columnId },
         },
       },
     })

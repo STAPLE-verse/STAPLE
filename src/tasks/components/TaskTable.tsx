@@ -10,6 +10,8 @@ import {
 } from "@tanstack/react-table"
 
 // TODO: Pass className attributes props for styling in parent
+// TODO: New task mutation should trigger a rerender
+// TODO: Task table and board tabs do now always work properly I do not know why
 interface TaskTableProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
   tasks: Task[]
 }

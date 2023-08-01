@@ -1,6 +1,10 @@
 // import React, { Suspense } from "react"
 import { Form, FormProps } from "src/core/components/Form"
 import { LabeledTextField } from "src/core/components/LabeledTextField"
+import { LabeledSelectField } from "src/core/components/LabeledSelectField"
+import getColumns from "../queries/getColumns"
+import { useQuery } from "@blitzjs/rpc"
+import { Field, useField } from "react-final-form"
 
 import { z } from "zod"
 //import { LabeledTextField } from "src/core/components/LabelSelectField"
@@ -8,15 +12,28 @@ import { z } from "zod"
 // import { usePaginatedQuery } from "@blitzjs/rpc"
 export { FORM_ERROR } from "src/core/components/Form"
 
-export function TaskForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
-  // const [{ projects: projects }] = usePaginatedQuery(getProjects, {
-  //   orderBy: {
-  //     id: "asc",
-  //   },
-  // })
+// TODO: Check whether this is a good method to go
+// Other methods could be: passing the columns directly
+// Adding projectId directly to Form props as an optional value
+interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
+  projectId?: number // Change the type of projectId accordingly
+}
 
+export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
+  const { projectId, ...formProps } = props
+
+  const [columns, extras] = useQuery(getColumns, {
+    orderBy: { id: "asc" },
+    where: { project: { id: projectId! } },
+  })
+  const statusColumns = columns.map((column, index) => (
+    <option value={column.id} key={column.id}>
+      {column.name}
+    </option>
+  ))
+  console.log(statusColumns)
   return (
-    <Form<S> {...props}>
+    <Form<S> {...formProps}>
       <LabeledTextField name="name" label="Name" placeholder="Name" type="text" />
       <LabeledTextField
         name="description"
@@ -24,13 +41,15 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
         placeholder="Description"
         type="text"
       />
-      {/* <LabeledSelectField
-        name="id"
-        label="Project Id"
-        placeholder="Project Id"
-        options={projects}
-      /> */}
-
+      <LabeledSelectField
+        className="select select-bordered w-full max-w-xs mt-2"
+        name="columnId"
+        label="Status"
+        // Setting the initial value to the selectinput
+        initValue={columns[0].id}
+      >
+        {statusColumns}
+      </LabeledSelectField>
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )
