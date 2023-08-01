@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import Link from "next/link"
 import { Routes, BlitzPage } from "@blitzjs/next"
-import styles from "src/styles/Home.module.css"
+// import styles from "src/styles/Home.module.css"
 import Head from "next/head"
 
 /*
@@ -29,29 +29,20 @@ const Home: BlitzPage = () => {
         <title>{"Home"}</title>
       </Head>
 
-      <div className={styles.globe} />
+      <main className="flex flex-col h-screen">
+        <div className="flex flex-col justify-center gap-8 text-center flex-grow">
+          <h1>STAPLE: Science Tracking Across the Project Lifespan</h1>
 
-      <div className={styles.container}>
-        <main className={styles.main}>
-          <div className={styles.wrapper}>
-            <div className={styles.header}>
-              <h1>STAPLE: Science Tracking Across the Project Lifespan</h1>
-
-              {/* Auth */}
-
-              <div className={styles.buttonContainer}>
-                <Suspense fallback="Loading...">
-                  <UserInfo />
-                </Suspense>
-              </div>
-            </div>
-
-            {/* <div className={styles.body}></div> */}
+          {/* Auth */}
+          <div className="flex flex-row gap-8 justify-center">
+            <Suspense fallback="Loading...">
+              <UserInfo />
+            </Suspense>
           </div>
-        </main>
-
+        </div>
+        {/* <div className={styles.body}></div> */}
         {/* <footer className={styles.footer}></footer> */}
-      </div>
+      </main>
     </>
   )
 }
