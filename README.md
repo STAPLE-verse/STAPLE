@@ -4,33 +4,67 @@ This is a [Blitz.js](https://github.com/blitz-js/blitz) app.
 
 # ****STAPLE****
 
-## Getting Started
+## Installation 
 
-Run your app in the development mode.
+1) Install `node.js` and `npm`: https://nodejs.org/en/download 
+
+2) Install `blitzjs`: `npm install -g blitz` in a terminal/command window.
+
+3) Ensure that you have a local postgres service running on your computer. To install see: [https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database). Be sure to write down the superuser information as you are installing the setup. 
+
+4) Create the databases for STAPLE. Go to terminal and use: https://www.tutorialspoint.com/postgresql/postgresql_environment.htm
+
+```
+psql -U postgres #get into postgres
+# enter your password for superuser
+CREATE DATABASE staple;
+CREATE DATABASE staple_test;
+```
+
+4) Create a user with appropriate privileges after postgres installation. While in the terminal and postgres, create a new user: https://www.tutorialspoint.com/postgresql/postgresql_privileges.htm. Change out `username` and `password` (be sure to leave the quotes!) for your desired user. 
+
+```
+CREATE USER username WITH PASSWORD 'password';
+
+GRANT ALL ON SCHEMA public TO username;
+```
+
+4) Clone or copy this github repository on to your local computer. 
+
+5) Copy the `.env` file and rename it `.env.local`. You may need to turn on settings to see these hidden files on your machine. 
+
+6) Ensure the `.env.local` file has required environment variables by adding the following line and changing the <YOUR_DB_USERNAME> to `username:password`. 
+
+```
+DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/staple
+```
+
+7) Copy the `.env.test` file and rename `.env.test.local`. 
+
+8) Ensure the `.env.test.local` file has required environment variables in the same way you did above. 
+
+```
+DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/staple_test
+```
+
+9) In a terminal window, go to the folder you cloned this repository and type the following to install the packages and create the databases needed for the application.
+
+```
+npm install # to install all packages for staple
+blitz prisma migrate dev # to create database 
+```
+
+## Starting the App
+ 
+1) In a terminal window, go to the folder you cloned this repository and type:
 
 ```
 blitz dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2) Open [http://localhost:3000](http://localhost:3000) (or whatever it says for localhost in the terminal) with your browser to see the result.
 
-## Environment Variables
-
-Ensure that you have a local postgres service running on your computer. To install see: [https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database](https://www.prisma.io/dataguide/postgresql/setting-up-a-local-postgresql-database)
-
-Create a user with appropriate privilages after postgres installation.
-
-Ensure the `.env.local` file has required environment variables:
-
-```
-DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/STAPLE
-```
-
-Ensure the `.env.test.local` file has required environment variables:
-
-```
-DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/STAPLE_test
-```
+===no edits below here have happened===
 
 ## Tests
 
