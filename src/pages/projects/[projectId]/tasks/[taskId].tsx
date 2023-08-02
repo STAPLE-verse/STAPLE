@@ -10,6 +10,7 @@ import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Layout from "src/core/layouts/Layout"
 import getTask from "src/tasks/queries/getTask"
 import deleteTask from "src/tasks/mutations/deleteTask"
+import getColumn from "src/tasks/queries/getColumn"
 
 export const Task = () => {
   const router = useRouter()
@@ -17,39 +18,55 @@ export const Task = () => {
   const projectId = useParam("projectId", "number")
   const [deleteTaskMutation] = useMutation(deleteTask)
   const [task] = useQuery(getTask, { id: taskId })
+  const [column] = useQuery(getColumn, { id: task.columnId })
 
   return (
     <>
       <Head>
-        <title>Task {task.id}</title>
+        <title>Task {task.name}</title>
       </Head>
 
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1>Task {task.id}</h1>
-        <pre>{JSON.stringify(task, null, 2)}</pre>
+      <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
+        <h1>{task.name}</h1>
+        <div className="flex flex-col gap-2">
+          <p>{task.description}</p>
+          <p>
+            <span className="font-semibold">Status:</span> {column.name}
+          </p>
+          <p className="italic">Last update: {task.updatedAt.toString()}</p>
+        </div>
 
-        <Link href={Routes.EditTaskPage({ projectId: projectId!, taskId: task.id })}>Edit</Link>
+        <div className="flex justify-start mt-4">
+          <Link
+            className="btn"
+            href={Routes.EditTaskPage({ projectId: projectId!, taskId: task.id })}
+          >
+            Update task
+          </Link>
+        </div>
 
-        <button
-          type="button"
-          onClick={async () => {
-            if (window.confirm("This will be deleted")) {
-              await deleteTaskMutation({ id: task.id })
-              await router.push(Routes.TasksPage({ projectId: projectId! }))
-            }
-          }}
-          style={{ marginLeft: "0.5rem" }}
-        >
-          Delete
-        </button>
+        <div className="flex justify-end mt-4">
+          <button
+            type="button"
+            className="btn"
+            onClick={async () => {
+              if (
+                window.confirm("The task will be permanently deleted. Are you sure to continue?")
+              ) {
+                await deleteTaskMutation({ id: task.id })
+                await router.push(Routes.TasksPage({ projectId: projectId! }))
+              }
+            }}
+          >
+            Delete task
+          </button>
+        </div>
       </main>
     </>
   )
 }
 
 const ShowTaskPage = () => {
-  const projectId = useParam("projectId", "number")
-
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>

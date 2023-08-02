@@ -32,7 +32,7 @@ const TaskColumn = ({ column }: TaskColumnProps) => {
   return (
     <div className="flex flex-col flex-1 bg-gray-300 p-4 rounded-lg shadow-md">
       <h1 className="pb-2">{column.name}</h1>
-      <div className="flex-col space-y-6">{columnTasks}</div>
+      <div className="flex flex-col space-y-6">{columnTasks}</div>
     </div>
   )
 }

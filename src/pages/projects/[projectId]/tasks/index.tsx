@@ -42,13 +42,7 @@ export const TasksList = () => {
     <div>
       <Tab.Group defaultIndex={0}>
         <Tab.List className="tabs flex flex-row justify-center space-x-2 mb-4">
-          <Tab
-            className={({ selected }) =>
-              classNames("tab tab-lifted tab-lg", selected ? "text-black" : "hover:text-gray-500")
-            }
-          >
-            Table
-          </Tab>
+          {/* Tablink for board view */}
           <Tab
             className={({ selected }) =>
               classNames("tab tab-lifted tab-lg", selected ? "text-black" : "hover:text-gray-500")
@@ -56,18 +50,25 @@ export const TasksList = () => {
           >
             Board
           </Tab>
+          {/* TabLink for table view */}
+          <Tab
+            className={({ selected }) =>
+              classNames("tab tab-lifted tab-lg", selected ? "text-black" : "hover:text-gray-500")
+            }
+          >
+            Table
+          </Tab>
           {/* TODO: First click on board does not change it after init */}
         </Tab.List>
 
         <Tab.Panels>
-          {/* Tabpanel for table view */}
-          <Tab.Panel>
-            <TaskTable tasks={tasks} />
-          </Tab.Panel>
-
           {/* Tabpanel for kanban board */}
           <Tab.Panel>
             <TaskBoard projectId={projectId} />
+          </Tab.Panel>
+          {/* Tabpanel for table view */}
+          <Tab.Panel>
+            <TaskTable tasks={tasks} />
           </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
