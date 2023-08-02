@@ -23,11 +23,11 @@ export const Project = () => {
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <div className="flex flex-col justify-center">
-          <p className="mb-2">{project.description}</p>
-          <p className="italic mb-6">Last update: {project.updatedAt.toString()}</p>
+        <div className="flex flex-col gap-4">
+          <p className="">{project.description}</p>
+          <p className="italic">Last update: {project.updatedAt.toString()}</p>
         </div>
-
+        <div className="divider mt-4 mb-4"></div>
         <ProjectDashboard />
       </main>
     </>

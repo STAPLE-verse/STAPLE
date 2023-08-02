@@ -21,6 +21,7 @@ const NewTaskPage = () => {
       <Head>
         <title>Create New Task</title>
       </Head>
+      <dialog />
       <h1>Create New Task</h1>
       <Suspense fallback={<div>Loading...</div>}>
         <TaskForm

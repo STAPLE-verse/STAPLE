@@ -66,7 +66,9 @@ const ProjectNavbar = () => {
           <h3 className="mr-8">{project.name}</h3>
           <div className="divider divider-horizontal my-4"></div>
           {/* Project specific tabs */}
-          <ul className="menu menu-lg lg:menu-horizontal">{tabs.map((tab) => TabTemplate(tab))}</ul>
+          <ul className="menu menu-lg lg:menu-horizontal gap-2">
+            {tabs.map((tab) => TabTemplate(tab))}
+          </ul>
         </div>
         <div className="navbar-end"></div>
       </div>

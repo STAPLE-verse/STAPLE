@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
@@ -12,6 +12,7 @@ import Layout from "src/core/layouts/Layout"
 import getTasks from "src/tasks/queries/getTasks"
 import TaskTable from "src/tasks/components/TaskTable"
 import TaskBoard from "src/tasks/components/TaskBoard"
+import Modal from "src/core/components/Modal"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -30,11 +31,15 @@ export const TasksList = () => {
     take: ITEMS_PER_PAGE,
   })
 
+  // New task modal toggle
+  // const [open, setOpen] = useState(false)
+  // const handleToggle = () => setOpen((prev) => !prev)
+
   // const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   // const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
   return (
-    <div className="flex flex-col mx-auto w-full max-w-7xl">
+    <div>
       <Tab.Group defaultIndex={0}>
         <Tab.List className="tabs flex flex-row justify-center space-x-2 mb-4">
           <Tab
@@ -53,10 +58,14 @@ export const TasksList = () => {
           </Tab>
           {/* TODO: First click on board does not change it after init */}
         </Tab.List>
+
         <Tab.Panels>
+          {/* Tabpanel for table view */}
           <Tab.Panel>
             <TaskTable tasks={tasks} />
           </Tab.Panel>
+
+          {/* Tabpanel for kanban board */}
           <Tab.Panel>
             <TaskBoard projectId={projectId} />
           </Tab.Panel>
@@ -64,6 +73,7 @@ export const TasksList = () => {
       </Tab.Group>
 
       {/* Create new task btn */}
+
       <p>
         <Link className="btn mt-4" href={Routes.NewTaskPage({ projectId: projectId! })}>
           Create Task
@@ -88,8 +98,6 @@ export const TasksList = () => {
 }
 
 const TasksPage = () => {
-  const projectId = useParam("projectId", "number")
-
   return (
     <>
       <Head>
