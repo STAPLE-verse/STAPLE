@@ -17,6 +17,7 @@ interface TaskTableProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HT
 }
 
 const TaskTable = ({ tasks }: TaskTableProps) => {
+  // TODO: Is it better to call the database for column name every time or just one time and pass the value to child components?
   const columnHelper = createColumnHelper<Task>()
 
   const columns = [
@@ -26,6 +27,12 @@ const TaskTable = ({ tasks }: TaskTableProps) => {
     }),
     columnHelper.accessor("description", {
       id: "description",
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: (info) => info.column.id,
+    }),
+    // TODO: Check how to use anonym function in accessor to get column name
+    columnHelper.accessor("columnId", {
+      id: "status",
       cell: (info) => <span>{info.getValue()}</span>,
       header: (info) => info.column.id,
     }),

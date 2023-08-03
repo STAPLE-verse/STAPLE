@@ -53,7 +53,7 @@ export const Task = () => {
               if (
                 window.confirm("The task will be permanently deleted. Are you sure to continue?")
               ) {
-                await deleteTaskMutation({ id: task.id })
+                await deleteTaskMutation({ id: task.id, columnId: task.columnId })
                 await router.push(Routes.TasksPage({ projectId: projectId! }))
               }
             }}

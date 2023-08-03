@@ -21,6 +21,16 @@ export default resolver.pipe(
       },
     })
 
+    // Update the taskOrder field by pushing the newly created task ID into the array
+    await db.column.update({
+      where: { id: columnId },
+      data: {
+        taskOrder: {
+          push: task.id,
+        },
+      },
+    })
+
     return task
   }
 )

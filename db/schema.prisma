@@ -94,6 +94,7 @@ model Column {
   updatedAt DateTime @updatedAt
   name      String   @default("To Do") // Might not need this
   tasks     Task[]
+  taskOrder Int[]
   projectId Int
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }

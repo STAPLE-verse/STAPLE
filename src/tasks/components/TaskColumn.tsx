@@ -1,10 +1,27 @@
-import React from "react"
+import React, { useState } from "react"
 import { HTMLAttributes, ClassAttributes } from "react"
 import { Column } from "@prisma/client"
 import TaskCard from "./TaskCard"
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery, useMutation } from "@blitzjs/rpc"
 import getTasks from "src/tasks/queries/getTasks"
 import { useRouter } from "next/router"
+import updateTaskOrder from "../mutations/updateTaskOrder"
+import SortableTaskCard from "./SortableTaskCard"
+
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
 
 interface TaskColumnProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
   column: Column
@@ -15,6 +32,18 @@ interface TaskColumnProps extends HTMLAttributes<HTMLElement>, ClassAttributes<H
 const ITEMS_PER_PAGE = 10
 
 const TaskColumn = ({ column }: TaskColumnProps) => {
+  // Handle drag and drop
+  const [updateTaskOrderMutation] = useMutation(updateTaskOrder)
+
+  const [activeId, setActiveId] = useState(null)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
   // Get tasks for the column
   const router = useRouter()
   const page = Number(router.query.page) || 0
@@ -26,15 +55,59 @@ const TaskColumn = ({ column }: TaskColumnProps) => {
   })
 
   // Render each task of the column
-  const columnTasks = tasks.map((task) => <TaskCard task={task} key={task.name} />)
+  // const columnTasks = )
+
+  const items = tasks.map((task) => task.id)
 
   // Return individual task cards for the column
   return (
-    <div className="flex flex-col flex-1 bg-gray-300 p-4 rounded-lg shadow-md">
-      <h1 className="pb-2">{column.name}</h1>
-      <div className="flex flex-col space-y-6">{columnTasks}</div>
-    </div>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+      onDragStart={handleDragStart}
+    >
+      <SortableContext items={items} strategy={verticalListSortingStrategy}>
+        <div className="flex flex-col flex-1 bg-gray-300 p-4 rounded-lg shadow-md">
+          <h1 className="pb-2">{column.name}</h1>
+          <div className="flex flex-col space-y-6">
+            {items.map((id) => (
+              <SortableTaskCard taskId={id} key={id} />
+            ))}
+          </div>
+        </div>
+      </SortableContext>
+      {/* <DragOverlay>{activeId ? <TaskCard taskId={activeId} /> : null}</DragOverlay> */}
+    </DndContext>
   )
+
+  function handleDragStart(event) {
+    const { active } = event
+
+    setActiveId(active.id)
+  }
+
+  async function handleDragEnd(event) {
+    const { active, over } = event
+
+    if (active.id !== over.id) {
+      const oldIndex = items.indexOf(active.id)
+      const newIndex = items.indexOf(over.id)
+
+      try {
+        // Call the updateTaskOrder mutation to reorder the tasks
+        await updateTaskOrderMutation({
+          columnId: column.id,
+          oldIndex: oldIndex,
+          newIndex: newIndex,
+        })
+      } catch (error) {
+        // Handle any error that might occur during the mutation
+        console.error("Error updating task order:", error)
+      }
+    }
+    setActiveId(null)
+  }
 }
 
 export default TaskColumn
