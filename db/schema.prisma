@@ -77,15 +77,16 @@ model Project {
 }
 
 model Task {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String
-  description String?
-  columnId    Int
-  column      Column   @relation(fields: [columnId], references: [id])
-  projectId   Int
-  project     Project  @relation(fields: [projectId], references: [id])
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  name            String
+  description     String?
+  columnId        Int
+  columnTaskIndex Int
+  column          Column   @relation(fields: [columnId], references: [id])
+  projectId       Int
+  project         Project  @relation(fields: [projectId], references: [id])
 }
 
 model Column {
@@ -94,7 +95,6 @@ model Column {
   updatedAt DateTime @updatedAt
   name      String   @default("To Do") // Might not need this
   tasks     Task[]
-  taskOrder Int[]
   projectId Int
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }

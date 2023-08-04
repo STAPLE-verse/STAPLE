@@ -31,7 +31,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       {column.name}
     </option>
   ))
-  console.log(statusColumns)
+
   return (
     <Form<S> {...formProps}>
       <LabeledTextField name="name" label="Name" placeholder="Name" type="text" />

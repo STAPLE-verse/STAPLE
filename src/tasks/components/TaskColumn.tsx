@@ -49,14 +49,12 @@ const TaskColumn = ({ column }: TaskColumnProps) => {
   const page = Number(router.query.page) || 0
   const [{ tasks, hasMore }] = usePaginatedQuery(getTasks, {
     where: { column: { id: column.id } },
-    orderBy: { id: "asc" },
+    orderBy: { columnTaskIndex: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
 
   // Render each task of the column
-  // const columnTasks = )
-
   const items = tasks.map((task) => task.id)
 
   // Return individual task cards for the column
@@ -77,7 +75,7 @@ const TaskColumn = ({ column }: TaskColumnProps) => {
           </div>
         </div>
       </SortableContext>
-      {/* <DragOverlay>{activeId ? <TaskCard taskId={activeId} /> : null}</DragOverlay> */}
+      <DragOverlay>{activeId ? <TaskCard taskId={activeId} /> : null}</DragOverlay>
     </DndContext>
   )
 
@@ -91,15 +89,19 @@ const TaskColumn = ({ column }: TaskColumnProps) => {
     const { active, over } = event
 
     if (active.id !== over.id) {
-      const oldIndex = items.indexOf(active.id)
-      const newIndex = items.indexOf(over.id)
-
       try {
         // Call the updateTaskOrder mutation to reorder the tasks
         await updateTaskOrderMutation({
-          columnId: column.id,
-          oldIndex: oldIndex,
-          newIndex: newIndex,
+          activeIndex: items.indexOf(active.id),
+          overIndex: items.indexOf(over.id),
+          activeId: active.id,
+          overId: over.id,
+        })
+        console.log({
+          activeIndex: items.indexOf(active.id),
+          overIndex: items.indexOf(over.id),
+          activeId: active.id,
+          overId: over.id,
         })
       } catch (error) {
         // Handle any error that might occur during the mutation

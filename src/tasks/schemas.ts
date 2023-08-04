@@ -14,11 +14,11 @@ export const UpdateTaskSchema = z.object({
 
 export const DeleteTaskSchema = z.object({
   id: z.number(),
-  columnId: z.any(),
 })
 
 export const UpdateTaskOrderSchema = z.object({
-  columnId: z.any(),
-  oldIndex: z.any(),
-  newIndex: z.any(),
+  activeId: z.any(),
+  overId: z.any(),
+  activeIndex: z.any(),
+  overIndex: z.any(),
 })

@@ -19,12 +19,13 @@ const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(({ taskId }, ref) => 
       <h2>{task.name}</h2>
       <p>{task.description}</p>
       <div className="flex justify-end">
-        {/* <Link
-          href={Routes.ShowTaskPage({ projectId: task.projectId!, taskId: task.id })}
+        <Link
+          href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
           className="btn mt-2 text-sm"
+          data-no-dnd="true"
         >
           Open
-        </Link> */}
+        </Link>
       </div>
     </div>
   )
