@@ -86,4 +86,35 @@ blitz build
 
 - This step may produce errors in the build. You will need to fix these error before running the application. We provide a list of common issues here XXX.
 
-- Create a service.
+- Create a service. Generally, you might consider putting it here: `/etc/systemd/system/` on a linux machine. We've named the file `blizt.service` as an example creating it using `nano`. Tutorial for those who do not know how to do this: https://www.digitalocean.com/community/tutorials/how-to-configure-a-linux-service-to-start-automatically-after-a-crash-or-reboot-part-1-practical-examples
+
+Example file structure:
+
+```
+[Unit]
+Description=Starts the CogLab Blitz service.
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/html/STAPLE
+ExecStart=/usr/local/bin/blitz start
+Restart=always
+
+[Install]
+WantedBy=default.target
+```
+
+- Commands:
+  - stop: `sudo systemctl stop blitz`
+  - start: `sudo systemctl start blitz`
+  - restart: `sudo systemctl restart blitz`
+  - reload: `sudo systemctl reload blitz`
+  - disable: `sudo systemctl disable blitz`
+  - re-enable: `sudo systemctl enable blitz`
+  - status: `sudo systemctl status blitz`
+  - reset: `sudo systemctl reset-failed blitz`
+
+And this last one is important to know. Sometimes if a service fails to start, and tries to restart again several times in a row, systemd will kill it and prevent it from starting again to protect the OS from thrashing. If you ever see a status that says it failed too many times, run this command to clear the block. And then use the start command to run it again.
+
+_Many thanks to Scott B. for setting this up and giving instructions_.
