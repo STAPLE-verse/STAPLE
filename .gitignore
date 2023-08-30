@@ -55,3 +55,5 @@ lib-cov
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 .Rhistory
+.Rproj.user
+STAPLE.Rproj
