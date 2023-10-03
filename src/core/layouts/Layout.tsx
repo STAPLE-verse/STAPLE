@@ -11,7 +11,6 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
     <>
       <Head>
         <title>{title || "STAPLE"}</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <div className="flex min-h-screen flex-col">
