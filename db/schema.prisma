@@ -87,6 +87,8 @@ model Task {
   column          Column   @relation(fields: [columnId], references: [id])
   projectId       Int
   project         Project  @relation(fields: [projectId], references: [id])
+  elementId       Int?
+  element         Element? @relation(fields: [elementId], references: [id])
 }
 
 model Column {
@@ -107,4 +109,5 @@ model Element {
   project     Project  @relation(fields: [projectId], references: [id])
   name        String
   description String?
+  Task        Task[]
 }

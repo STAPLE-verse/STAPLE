@@ -3,6 +3,7 @@ import { Form, FormProps } from "src/core/components/Form"
 import { LabeledTextField } from "src/core/components/LabeledTextField"
 import { LabeledSelectField } from "src/core/components/LabeledSelectField"
 import getColumns from "../queries/getColumns"
+import getElements from "src/elements/queries/getElements"
 import { useQuery } from "@blitzjs/rpc"
 import { Field, useField } from "react-final-form"
 
@@ -26,12 +27,21 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
   })
-  const statusColumns = columns.map((column, index) => (
+  const statusColumns = columns.map((column) => (
     <option value={column.id} key={column.id}>
       {column.name}
     </option>
   ))
 
+  const [elements] = useQuery(getElements, {
+    orderBy: { id: "asc" },
+    where: { project: { id: projectId! } },
+  })
+  const parentElements = elements.map((element) => (
+    <option value={element.id} key={element.id}>
+      {element.name}
+    </option>
+  ))
   return (
     <Form<S> {...formProps}>
       <LabeledTextField name="name" label="Name" placeholder="Name" type="text" />
@@ -49,6 +59,15 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         initValue={columns[0].id}
       >
         {statusColumns}
+      </LabeledSelectField>
+      <LabeledSelectField
+        className="select select-bordered w-full max-w-xs mt-2"
+        name="elementId"
+        label="Element"
+        // Setting the initial value to the selectinput
+        // initValue={}
+      >
+        {parentElements}
       </LabeledSelectField>
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
