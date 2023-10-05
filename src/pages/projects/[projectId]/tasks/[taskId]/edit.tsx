@@ -43,7 +43,7 @@ export const EditTask = () => {
             onSubmit={async (values) => {
               try {
                 const updated = await updateTaskMutation({
-                  id: task.id,
+                  // id: task.id,
                   ...values,
                 })
                 await setQueryData(updated)

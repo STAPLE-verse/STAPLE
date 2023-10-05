@@ -64,7 +64,7 @@ export const TasksList = () => {
         <Tab.Panels>
           {/* Tabpanel for kanban board */}
           <Tab.Panel>
-            <TaskBoard projectId={projectId} />
+            <TaskBoard projectId={projectId!} />
           </Tab.Panel>
           {/* Tabpanel for table view */}
           <Tab.Panel>

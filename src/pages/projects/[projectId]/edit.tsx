@@ -29,6 +29,12 @@ export const EditProject = () => {
   const [updateProjectMutation] = useMutation(updateProject)
   const [deleteProjectMutation] = useMutation(deleteProject)
 
+  const initialValues = {
+    id: project.id,
+    name: project.name,
+    description: project.description!,
+  }
+
   return (
     <>
       <Head>
@@ -42,11 +48,11 @@ export const EditProject = () => {
           <ProjectForm
             submitText="Update Project"
             schema={UpdateProjectSchema}
-            initialValues={project}
+            initialValues={initialValues}
             onSubmit={async (values) => {
               try {
                 const updated = await updateProjectMutation({
-                  id: project.id,
+                  // id: project.id,
                   ...values,
                 })
                 await setQueryData(updated)

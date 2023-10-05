@@ -1,6 +1,6 @@
 import React from "react"
 import { HTMLAttributes, ClassAttributes } from "react"
-import { Column } from "@prisma/client"
+import { Column } from "db"
 
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import getTasks from "src/tasks/queries/getTasks"

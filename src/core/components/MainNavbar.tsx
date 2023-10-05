@@ -28,7 +28,10 @@ const MainNavbar = () => {
     setTheme(theme === "dark" ? "light" : "dark")
   }
   React.useEffect(() => {
-    document.querySelector("html").setAttribute("data-theme", theme)
+    const htmlElement = document.querySelector("html")
+    if (htmlElement) {
+      htmlElement.setAttribute("data-theme", theme)
+    }
   }, [theme])
 
   return (

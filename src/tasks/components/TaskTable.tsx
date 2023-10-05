@@ -1,6 +1,6 @@
 import React from "react"
 import { HTMLAttributes, ClassAttributes } from "react"
-import { Task } from "@prisma/client"
+import { Task } from "db"
 
 import {
   createColumnHelper,

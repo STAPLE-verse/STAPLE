@@ -17,11 +17,12 @@ export default class TabPanel extends PureComponent<TabPanelProperties> {
     return `${this.state.selectedTab}-content`
   }
 
-  setSelectedTab = (selectedTab: string) => {
+  // TODO: I made selectedTab possibly undifined just to make the checks silent, might lead to problem later
+  setSelectedTab = (selectedTab: string | undefined) => {
     this.setState({ selectedTab }, () => {
       const selector = `#${this.props.id} #${selectedTab}`
       ;(document.querySelector(selector) as HTMLButtonElement)?.focus()
-      if (this.props.onChange) this.props.onChange(selectedTab)
+      if (this.props.onChange) this.props.onChange(selectedTab!)
     })
   }
 
@@ -41,7 +42,7 @@ export default class TabPanel extends PureComponent<TabPanelProperties> {
 
     if (!keys.includes(event.key)) return
 
-    const tabIndex = tabs.indexOf(selectedTab)
+    const tabIndex = tabs.indexOf(selectedTab!)
 
     const firstTab = tabs[0]
     const lastTab = tabs[tabs.length - 1]
@@ -92,7 +93,7 @@ export default class TabPanel extends PureComponent<TabPanelProperties> {
       className="tabs-content"
       aria-labelledby={this.state.selectedTab}
     >
-      {this.props.children(this.state.selectedTab)}
+      {this.props.children(this.state.selectedTab!)}
     </div>
   )
 

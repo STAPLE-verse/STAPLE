@@ -1,6 +1,5 @@
 import React, { forwardRef } from "react"
 import { HTMLAttributes, ClassAttributes } from "react"
-import { Task } from "@prisma/client"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { useQuery } from "@blitzjs/rpc"

@@ -33,8 +33,15 @@ const ProjectDashboard = () => {
       </div>
       <div className="flex flex-col items-center ml-2">
         <label className="badge mb-2 px-5 py-5 text-2xl">Metadata coverage</label>
-        <div className="radial-progress border-4 text-2xl" style={{ "--value": 70 }}>
-          70%
+        <div className="radial-progress border-4 text-2xl">
+          <style>
+            {`
+            .radial-progress {
+              --value: 70;
+            }
+            `}
+          </style>
+          {`${70}%`}
         </div>
       </div>
     </div>

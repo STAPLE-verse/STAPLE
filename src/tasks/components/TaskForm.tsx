@@ -23,7 +23,7 @@ interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
   const { projectId, ...formProps } = props
 
-  const [columns, extras] = useQuery(getColumns, {
+  const [columns] = useQuery(getColumns, {
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
   })
@@ -42,6 +42,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       {element.name}
     </option>
   ))
+
+  const initialValues = columns && columns[0] ? columns[0].id : undefined
+
   return (
     <Form<S> {...formProps}>
       <LabeledTextField name="name" label="Name" placeholder="Name" type="text" />
@@ -56,7 +59,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         name="columnId"
         label="Status"
         // Setting the initial value to the selectinput
-        initValue={columns[0].id}
+        initValue={initialValues}
       >
         {statusColumns}
       </LabeledSelectField>
