@@ -6,27 +6,31 @@ import { usePaginatedQuery } from "@blitzjs/rpc"
 import getTasks from "src/tasks/queries/getTasks"
 import { useRouter } from "next/router"
 import SortableTaskCard from "./SortableTaskCard"
-
-import { useDroppable } from "@dnd-kit/core"
+import TaskCard from "./TaskCard"
+import { useDroppable, DragOverlay, useDndMonitor } from "@dnd-kit/core"
 
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 
 interface TaskColumnProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
   column: Column
-  columnId: number
 }
 
 // Set the maximum number of tasks to return for the column
 // TODO: Extend logic should be added or pagination to the UI
 const ITEMS_PER_PAGE = 10
 
-const TaskColumn = ({ column, columnId }: TaskColumnProps) => {
+const TaskColumn = ({ column }: TaskColumnProps) => {
   // Setup
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const { setNodeRef } = useDroppable({
-    id: columnId,
+
+  const { isOver, setNodeRef } = useDroppable({
+    id: `column-${column.id}`,
   })
+
+  const style = {
+    color: isOver ? "green" : undefined,
+  }
 
   // Get all the tasks for the column with pagination
   const [{ tasks: tasks, hasMore }] = usePaginatedQuery(getTasks, {
@@ -37,19 +41,21 @@ const TaskColumn = ({ column, columnId }: TaskColumnProps) => {
   })
 
   // Render each task of the column
-  const items = tasks.map((task) => task.id)
+  // const items = tasks.map((task) => task.id)
 
   // Return individual task cards for the column
   return (
     <div className="flex flex-col flex-1 bg-gray-300 p-4 rounded-lg shadow-md">
-      <SortableContext items={items} strategy={verticalListSortingStrategy}>
-        <h1 className="pb-2">{column.name}</h1>
-        <div ref={setNodeRef} className="flex flex-col space-y-6">
-          {items.map((id) => (
-            <SortableTaskCard taskId={id} key={id} />
-          ))}
-        </div>
-      </SortableContext>
+      <h1>{column.name}</h1>
+      <div
+        ref={setNodeRef}
+        style={style}
+        className="flex flex-col flex-grow h-full space-y-6 p-3 bg-red-600"
+      >
+        {tasks.map((task) => (
+          <TaskCard taskId={task.id} key={task.id} name={task.name} projectId={task.projectId} />
+        ))}
+      </div>
     </div>
   )
 }

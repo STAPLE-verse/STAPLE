@@ -26,6 +26,13 @@ export const EditTask = () => {
   )
   const [updateTaskMutation] = useMutation(updateTask)
 
+  const initialValues = {
+    id: task.id,
+    name: task.name,
+    description: task.description!,
+    columnId: task.columnId,
+  }
+
   return (
     <>
       <Head>
@@ -39,13 +46,15 @@ export const EditTask = () => {
           <TaskForm
             submitText="Update Task"
             schema={UpdateTaskSchema}
-            initialValues={task}
+            initialValues={initialValues}
             onSubmit={async (values) => {
               try {
+                console.log(values)
                 const updated = await updateTaskMutation({
                   // id: task.id,
                   ...values,
                 })
+                console.log(updated)
                 await setQueryData(updated)
                 await router.push(
                   Routes.ShowTaskPage({

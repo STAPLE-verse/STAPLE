@@ -33,17 +33,18 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     </option>
   ))
 
-  const [elements] = useQuery(getElements, {
-    orderBy: { id: "asc" },
-    where: { project: { id: projectId! } },
-  })
-  const parentElements = elements.map((element) => (
-    <option value={element.id} key={element.id}>
-      {element.name}
-    </option>
-  ))
+  // const [elements] = useQuery(getElements, {
+  //   orderBy: { id: "asc" },
+  //   where: { project: { id: projectId! } },
+  // })
+  // const parentElements = elements.map((element) => (
+  //   <option value={element.id} key={element.id}>
+  //     {element.name}
+  //   </option>
+  // ))
 
-  const initialValues = columns && columns[0] ? columns[0].id : undefined
+  const projectInitialValues = columns && columns[0] ? columns[0].id : undefined
+  // const elementIntitialValues = elements && elements[0] ? elements[0].id : undefined
 
   return (
     <Form<S> {...formProps}>
@@ -59,19 +60,19 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         name="columnId"
         label="Status"
         // Setting the initial value to the selectinput
-        initValue={initialValues}
+        initValue={projectInitialValues}
       >
         {statusColumns}
       </LabeledSelectField>
-      <LabeledSelectField
+      {/* <LabeledSelectField
         className="select select-bordered w-full max-w-xs mt-2"
         name="elementId"
         label="Element"
         // Setting the initial value to the selectinput
-        // initValue={}
+        initValue={elementIntitialValues}
       >
         {parentElements}
-      </LabeledSelectField>
+      </LabeledSelectField> */}
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )

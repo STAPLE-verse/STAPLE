@@ -5,10 +5,12 @@ import { CSS } from "@dnd-kit/utilities"
 import TaskCard from "./TaskCard"
 
 interface SortableTaskCardProps {
+  name: string
   taskId: number
+  projectId: number
 }
 
-export default function SortableTaskCard({ taskId }: SortableTaskCardProps) {
+export default function SortableTaskCard({ name, projectId, taskId }: SortableTaskCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: taskId })
 
   const style = {
@@ -34,7 +36,7 @@ export default function SortableTaskCard({ taskId }: SortableTaskCardProps) {
           />
         </svg>
       </div>
-      <TaskCard taskId={taskId} />
+      <TaskCard taskId={taskId} name={name} projectId={projectId} />
     </div>
   )
 }

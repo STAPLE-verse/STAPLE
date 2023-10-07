@@ -4,7 +4,6 @@ import TaskColumn from "./TaskColumn"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import getColumns from "../queries/getColumns"
 import TaskCard from "./TaskCard"
-
 import {
   DndContext,
   closestCenter,
@@ -12,11 +11,11 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragOverlay,
 } from "@dnd-kit/core"
+import { setQueryData } from "@blitzjs/rpc"
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 
-import updateTaskOrder from "../mutations/updateTaskOrder"
+import updateTask from "../mutations/updateTask"
 
 interface TaskBoardProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
   projectId: number
@@ -24,65 +23,46 @@ interface TaskBoardProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HT
 
 const TaskBoard = ({ projectId }: TaskBoardProps) => {
   // Get all the columns for the project
-  // TODO: question, do we want nem jól sajnopagination for columns? how would that look like?
+  // TODO: question, do we want pagination for columns? how would that look like?
   const [columns] = useQuery(getColumns, {
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
   })
 
   // Handle drag and drop
-  const [updateTaskOrderMutation] = useMutation(updateTaskOrder)
+  const [updateTaskMutation] = useMutation(updateTask)
 
-  const [activeId, setActiveId] = useState(null)
-
-  // Setup sensors for drag-and-drop
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  )
+  const [isDropped, setIsDropped] = useState(false)
 
   // Return each column iteratively
   return (
     <div className="flex flex-row justify-center space-x-10">
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-        onDragStart={handleDragStart}
-      >
+      <DndContext onDragEnd={handleDragEnd}>
         {columns.map((column) => (
-          <TaskColumn column={column} key={column.id} columnId={column.id} />
+          <TaskColumn column={column} key={column.id} />
         ))}
-        <DragOverlay>{activeId ? <TaskCard taskId={activeId} /> : null}</DragOverlay>
       </DndContext>
     </div>
   )
 
-  function handleDragStart(event) {
-    const { active } = event
-    setActiveId(active.id)
-  }
-
   async function handleDragEnd(event) {
     const { active, over } = event
-    console.log({ active, over })
-
-    // if (active.id !== over.id) {
-    //   try {
-    //     // Call the updateTaskOrder mutation to reorder the tasks
-    //     await updateTaskOrderMutation({
-    //       activeId: active.id,
-    //       overId: over.id,
-    //     })
-    //     console.log("Yay!")
-    //   } catch (error) {
-    //     // Handle any error that might occur during the mutation
-    //     console.error("Error updating task order:", error)
-    //   }
+    // This is a bit wasteful because if the task is dropped back in the
+    // original column the mutation still runs
+    // Also I have to get all the task data for the update because of the
+    // taskUpdate mutation schema
+    // const values = {
+    //   id: parseInt(active.id.match(/\d+/)),
+    //   columnId: parseInt(over.id.match(/\d+/)),
     // }
-    setActiveId(null)
+    // try {
+    //   const updated = await updateTaskMutation({
+    //     ...values,
+    //   })
+    //   // await setQueryData(updated)
+    // } catch (error: any) {
+    //   console.error(error)
+    // }
   }
 }
 

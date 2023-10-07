@@ -9,7 +9,7 @@ export const CreateProjectSchema = z.object({
 export const UpdateProjectSchema = z.object({
   id: z.number(),
   name: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   // template: __fieldName__: z.__zodType__(),
 })
 
