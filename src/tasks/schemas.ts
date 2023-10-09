@@ -10,7 +10,7 @@ export const CreateTaskSchema = z.object({
 export const UpdateTaskSchema = z.object({
   id: z.number(),
   name: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   columnId: z.number(),
 })
 

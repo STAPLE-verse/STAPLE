@@ -26,6 +26,7 @@ export const EditTask = () => {
   )
   const [updateTaskMutation] = useMutation(updateTask)
 
+  // I have to make initial values explicit for the update to work why?
   const initialValues = {
     id: task.id,
     name: task.name,
@@ -49,12 +50,10 @@ export const EditTask = () => {
             initialValues={initialValues}
             onSubmit={async (values) => {
               try {
-                console.log(values)
                 const updated = await updateTaskMutation({
                   // id: task.id,
                   ...values,
                 })
-                console.log(updated)
                 await setQueryData(updated)
                 await router.push(
                   Routes.ShowTaskPage({

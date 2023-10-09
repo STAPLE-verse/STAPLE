@@ -2,14 +2,21 @@ import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
 interface GetColumnsInput
-  extends Pick<Prisma.ColumnFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
+  extends Pick<Prisma.ColumnFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
 
-export default resolver.pipe(resolver.authorize(), async ({ where, orderBy }: GetColumnsInput) => {
-  // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-  const columns = await db.column.findMany({
-    where,
-    orderBy,
-  })
+export default resolver.pipe(
+  resolver.authorize(),
+  async ({ where, orderBy, skip, take, include }: GetColumnsInput) => {
+    const query: Prisma.ColumnFindManyArgs = {
+      where,
+      orderBy,
+      skip,
+      take,
+      include,
+    }
 
-  return columns
-})
+    const columns = await db.column.findMany(query)
+
+    return columns
+  }
+)
