@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
@@ -7,7 +8,7 @@ const ProfilePage = () => {
     return <div>Loading...</div>
   } else {
     return (
-      <Layout title="Profile">
+      <>
         <h1>Your profile</h1>
         <div>
           Id: <code>{currentUser.id}</code>
@@ -20,11 +21,19 @@ const ProfilePage = () => {
           <br />
           Date of signup: <code>{currentUser.createdAt.toString()}</code>
         </div>
-      </Layout>
+      </>
     )
   }
 }
 
 ProfilePage.authenticate = true
+
+ProfilePage.getLayout = () => (
+  <Suspense>
+    <Layout title="Profile">
+      <ProfilePage />
+    </Layout>
+  </Suspense>
+)
 
 export default ProfilePage
