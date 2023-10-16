@@ -7,6 +7,7 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
+import ProjectLayout from "src/core/layouts/ProjectLayout"
 import { UpdateTaskSchema } from "src/tasks/schemas"
 import getTask from "src/tasks/queries/getTask"
 import updateTask from "src/tasks/mutations/updateTask"
@@ -40,9 +41,10 @@ export const EditTask = () => {
         <title>Edit {task.name}</title>
       </Head>
 
-      <main>
+      <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <h1>Edit {task.name}</h1>
-        <pre>{JSON.stringify(task, null, 2)}</pre>
+        {/* For debugging Task schema */}
+        {/* <pre>{JSON.stringify(task, null, 2)}</pre> */}
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
             submitText="Update Task"
@@ -69,6 +71,12 @@ export const EditTask = () => {
               }
             }}
           />
+          <Link
+            className="btn self-end mt-4"
+            href={Routes.ShowTaskPage({ projectId: projectId!, taskId: taskId! })}
+          >
+            Cancel
+          </Link>
         </Suspense>
       </main>
     </>
@@ -76,22 +84,20 @@ export const EditTask = () => {
 }
 
 const EditTaskPage = () => {
-  const projectId = useParam("projectId", "number")
-
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
         <EditTask />
       </Suspense>
-
-      <p>
-        <Link href={Routes.TasksPage({ projectId: projectId! })}>Tasks</Link>
-      </p>
     </div>
   )
 }
 
 EditTaskPage.authenticate = true
-EditTaskPage.getLayout = (page) => <Layout>{page}</Layout>
+EditTaskPage.getLayout = (page) => (
+  <Layout>
+    <ProjectLayout>{page}</ProjectLayout>
+  </Layout>
+)
 
 export default EditTaskPage

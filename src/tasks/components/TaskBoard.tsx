@@ -5,7 +5,6 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import getColumns from "../queries/getColumns"
 import { Column, Task } from "db"
 import { DndContext } from "@dnd-kit/core"
-import { setQueryData } from "@blitzjs/rpc"
 
 import updateTask from "../mutations/updateTask"
 
@@ -18,10 +17,11 @@ interface ColumnWithTasks extends Column {
 }
 
 const TaskBoard = ({ projectId }: TaskBoardProps) => {
+  // TODO: columnTaskIndex task parameter is currently not used due to the lack of sortable
   // Get all the columns for the project
   // TODO: question, do we want pagination for columns? how would that look like?
-  // I am not sure this is a good way to do this...
-  const [columns]: [ColumnWithTasks[], any] = useQuery(getColumns, {
+  // I am not sure what is a good way to define column with task interface without making extra fetch info type any
+  const [columns, { refetch }]: [ColumnWithTasks[], any] = useQuery(getColumns, {
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
     include: { tasks: true },
@@ -46,7 +46,6 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
   async function handleDragEnd(event) {
     // Sorry for this spagetthi of a code...
     const { active, over } = event
-    console.log({ active, over })
     // This is a bit wasteful because if the task is dropped back in the
     // original column the mutation still runs
     // Also I have to get all the task data for the update because of the
@@ -75,7 +74,8 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
         await updateTaskMutation({
           ...activeTask,
         })
-        // await setQueryData(updated)
+        // Refecth tasks for board
+        refetch()
       }
     } catch (error: any) {
       console.error(error)

@@ -2,14 +2,10 @@ import React from "react"
 import { HTMLAttributes, ClassAttributes } from "react"
 import { Column, Task } from "db"
 
-import { usePaginatedQuery } from "@blitzjs/rpc"
-import getTasks from "src/tasks/queries/getTasks"
 import { useRouter } from "next/router"
-import SortableTaskCard from "./SortableTaskCard"
+// import SortableTaskCard from "./SortableTaskCard"
 import TaskCard from "./TaskCard"
-import { useDroppable, DragOverlay, useDndMonitor } from "@dnd-kit/core"
-
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { useDroppable, DragOverlay } from "@dnd-kit/core"
 
 interface TaskColumnProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
   column: Column
@@ -30,7 +26,7 @@ const TaskColumn = ({ column, tasks }: TaskColumnProps) => {
   })
 
   const style = {
-    color: isOver ? "green" : undefined,
+    boxShadow: isOver ? "0 0 8px gray" : undefined,
   }
 
   // Return individual task cards for the column
@@ -40,7 +36,7 @@ const TaskColumn = ({ column, tasks }: TaskColumnProps) => {
       <div
         ref={setNodeRef}
         style={style}
-        className="flex flex-col flex-grow h-full space-y-6 p-3 bg-red-600"
+        className="flex flex-col flex-grow h-full space-y-6 p-3 rounded-lg"
       >
         {tasks.map((task) => (
           <TaskCard taskId={task.id} key={task.id} name={task.name} projectId={task.projectId} />

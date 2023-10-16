@@ -1,21 +1,21 @@
-import React, { useCallback, ReactNode } from "react"
-import { Handle, Position } from "reactflow"
+import React, { memo } from "react"
+import { Handle, Position, NodeProps } from "reactflow"
 
 const handleStyle = { left: 10 }
 
-interface ElementNodeProps {
-  children: ReactNode
-  isConnectable: boolean
-}
-
-const ElementNode: React.FC<ElementNodeProps> = ({ children, isConnectable }) => {
-  return (
-    <div className="text-updater-node">
-      <Handle type="target" position={Position.Left} isConnectable={isConnectable} />
-      <div>{children}</div>
-      <Handle type="source" position={Position.Right} isConnectable={isConnectable} />
+const ElementNode = ({
+  data,
+  isConnectable,
+  targetPosition = Position.Top,
+  sourcePosition = Position.Bottom,
+}: NodeProps) => (
+  <div className="text-updater-node">
+    <Handle type="target" position={targetPosition} isConnectable={isConnectable} />
+    <div>
+      <h1>{data.title}</h1>
     </div>
-  )
-}
+    <Handle type="source" position={sourcePosition} isConnectable={isConnectable} />
+  </div>
+)
 
-export default ElementNode
+export default memo(ElementNode)

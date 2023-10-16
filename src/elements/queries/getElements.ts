@@ -2,13 +2,21 @@ import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
 interface GetElementsInput
-  extends Pick<Prisma.ElementFindManyArgs, "where" | "orderBy" | "skip" | "take"> {}
+  extends Pick<Prisma.ElementFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
 
-export default resolver.pipe(resolver.authorize(), async ({ where, orderBy }: GetElementsInput) => {
-  const elements = await db.element.findMany({
-    where,
-    orderBy,
-  })
+export default resolver.pipe(
+  resolver.authorize(),
+  async ({ where, orderBy, skip, take, include }: GetElementsInput) => {
+    const query: Prisma.ElementFindManyArgs = {
+      where,
+      orderBy,
+      skip,
+      take,
+      include,
+    }
 
-  return elements
-})
+    const elements = await db.element.findMany(query)
+
+    return elements
+  }
+)
