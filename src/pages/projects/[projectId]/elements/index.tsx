@@ -13,9 +13,6 @@ import ElementNode from "src/elements/components/ElementNode"
 
 const nodeTypes = { elementNode: ElementNode }
 
-const nodeWidth = 150
-const nodeHeight = 60
-
 const initialNodes = [
   {
     id: "1",
@@ -42,18 +39,6 @@ import ReactFlow, {
 } from "reactflow"
 import "reactflow/dist/style.css"
 
-const getLayoutedElements = (nodes, edges) => {
-  const layoutedNodes = nodes.map((node, index) => ({
-    ...node,
-    position: {
-      x: 0,
-      y: index * 100,
-    },
-  }))
-
-  return { nodes: layoutedNodes, edges }
-}
-
 export const ElementsList = () => {
   const projectId = useParam("projectId", "number")
   const [{ nodesData: nodesQuery, edgesData: edgesQuery }] = useQuery(getFlow, projectId!)
@@ -62,21 +47,26 @@ export const ElementsList = () => {
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges])
 
   useEffect(() => {
-    const x = nodesQuery.filter((node) => {
-      return edgesQuery.some((edge) => {
-        return edge.source === node.id || edge.target === node.id
-      })
-    })
-    console.log(nodesQuery)
-    const ele = getLayoutedElements(x, edgesQuery)
-    setNodes(ele.nodes)
-    setEdges(ele.edges)
+    // Currently we only add position to nodes after query
+    // Position is hardcoded should change dynamically
+    // But other layout stuff can be added later
+    // Layout can be saved in bulk on page leave hook
+    const x = nodesQuery.map((node, index) => ({
+      ...node,
+      position: {
+        x: 0,
+        y: index * 200,
+      },
+    }))
+    setNodes(x)
+    setEdges(edgesQuery)
   }, [nodesQuery, edgesQuery, setEdges, setNodes])
 
+  console.log(nodes)
   return (
     <div>
       {/* TODO: Find out how to properly size this window */}
-      <div style={{ width: nodeWidth, height: nodeHeight }}>
+      <div style={{ width: "70vw", height: "70vh" }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}

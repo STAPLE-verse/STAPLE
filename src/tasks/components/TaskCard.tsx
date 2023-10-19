@@ -2,8 +2,6 @@ import React, { forwardRef } from "react"
 import { HTMLAttributes, ClassAttributes } from "react"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
-import { useQuery } from "@blitzjs/rpc"
-import getTask from "src/tasks/queries/getTask"
 import { useDraggable } from "@dnd-kit/core"
 import { CSS } from "@dnd-kit/utilities"
 

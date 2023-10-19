@@ -24,27 +24,37 @@ export const Element = () => {
         <title>Element {element.id}</title>
       </Head>
 
-      <div>
-        <h1>Element {element.id}</h1>
-        <pre>{JSON.stringify(element, null, 2)}</pre>
-
-        <Link href={Routes.EditElementPage({ projectId: projectId!, elementId: element.id })}>
-          Edit
-        </Link>
-
-        <button
-          type="button"
-          onClick={async () => {
-            if (window.confirm("This will be deleted")) {
-              await deleteElementMutation({ id: element.id })
-              await router.push(Routes.ElementsPage({ projectId: projectId! }))
-            }
-          }}
-          style={{ marginLeft: "0.5rem" }}
-        >
-          Delete
-        </button>
-      </div>
+      <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
+        <h1>{element.name}</h1>
+        {/* <pre>{JSON.stringify(element, null, 2)}</pre> */}
+        <div className="flex flex-col gap-2">
+          <p>{element.description}</p>
+          <p className="italic">Last update: {element.updatedAt.toString()}</p>
+        </div>
+        <div className="flex justify-start mt-4">
+          <Link
+            className="btn"
+            href={Routes.EditElementPage({ projectId: projectId!, elementId: element.id })}
+          >
+            Update element
+          </Link>
+        </div>
+        <div className="flex justify-end mt-4">
+          <button
+            type="button"
+            className="btn"
+            onClick={async () => {
+              if (window.confirm("This will be deleted")) {
+                await deleteElementMutation({ id: element.id })
+                await router.push(Routes.ElementsPage({ projectId: projectId! }))
+              }
+            }}
+            style={{ marginLeft: "0.5rem" }}
+          >
+            Delete
+          </button>
+        </div>
+      </main>
     </>
   )
 }
@@ -54,10 +64,6 @@ const ShowElementPage = () => {
 
   return (
     <div>
-      <p>
-        <Link href={Routes.ElementsPage({ projectId: projectId! })}>Elements</Link>
-      </p>
-
       <Suspense fallback={<div>Loading...</div>}>
         <Element />
       </Suspense>

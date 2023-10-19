@@ -15,6 +15,8 @@ export default async function getFlow(projectId) {
       id: `${element.id}`,
       data: {
         title: `${element.name.substr(0, 30)} ${element.name.length > 30 ? "[...]" : ""}`,
+        description: `${element.description}`,
+        projectId: projectId,
       },
       type: "elementNode",
     }

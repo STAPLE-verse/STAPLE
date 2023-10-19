@@ -11,6 +11,7 @@ import { UpdateElementSchema } from "src/elements/schemas"
 import getElement from "src/elements/queries/getElement"
 import updateElement from "src/elements/mutations/updateElement"
 import { ElementForm, FORM_ERROR } from "src/elements/components/ElementForm"
+import ProjectLayout from "src/core/layouts/ProjectLayout"
 
 export const EditElement = () => {
   const router = useRouter()
@@ -32,9 +33,9 @@ export const EditElement = () => {
         <title>Edit Element {element.id}</title>
       </Head>
 
-      <div>
-        <h1>Edit Element {element.id}</h1>
-        <pre>{JSON.stringify(element, null, 2)}</pre>
+      <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
+        <h1>Edit {element.name}</h1>
+        {/* <pre>{JSON.stringify(element, null, 2)}</pre> */}
         <Suspense fallback={<div>Loading...</div>}>
           <ElementForm
             submitText="Update Element"
@@ -58,8 +59,14 @@ export const EditElement = () => {
               }
             }}
           />
+          <Link
+            className="btn self-end mt-4"
+            href={Routes.ShowElementPage({ projectId: projectId!, elementId: elementId! })}
+          >
+            Cancel
+          </Link>
         </Suspense>
-      </div>
+      </main>
     </>
   )
 }
@@ -72,15 +79,15 @@ const EditElementPage = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <EditElement />
       </Suspense>
-
-      <p>
-        <Link href={Routes.ElementsPage({ projectId: projectId! })}>Elements</Link>
-      </p>
     </div>
   )
 }
 
 EditElementPage.authenticate = true
-EditElementPage.getLayout = (page) => <Layout>{page}</Layout>
+EditElementPage.getLayout = (page) => (
+  <Layout>
+    <ProjectLayout>{page}</ProjectLayout>
+  </Layout>
+)
 
 export default EditElementPage
