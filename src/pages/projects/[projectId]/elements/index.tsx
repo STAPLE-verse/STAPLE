@@ -62,7 +62,6 @@ export const ElementsList = () => {
     setEdges(edgesQuery)
   }, [nodesQuery, edgesQuery, setEdges, setNodes])
 
-  console.log(nodes)
   return (
     <div>
       {/* TODO: Find out how to properly size this window */}

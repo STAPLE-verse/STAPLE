@@ -14,6 +14,7 @@ interface TaskCardProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTM
 const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(({ name, projectId, taskId }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: `task-${taskId}`,
+    // disable should be true when user interacts with Open button
     // disabled: true,
   })
 
@@ -36,7 +37,7 @@ const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(({ name, projectId, t
         <Link
           href={Routes.ShowTaskPage({ projectId: projectId, taskId: taskId })}
           className="btn mt-2 text-sm"
-          data-no-dnd="true"
+          // data-dnd-drag-handle="true"
         >
           Open
         </Link>

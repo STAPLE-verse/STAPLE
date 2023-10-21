@@ -23,6 +23,8 @@ model User {
 
   tokens   Token[]
   sessions Session[]
+
+  contributions Contributor[]
 }
 
 model Session {
@@ -64,6 +66,14 @@ model Token {
 //   RESET_PASSWORD
 // }
 
+model Contributor {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  projectId Int
+  user      User    @relation(fields: [userId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id])
+}
+
 model Project {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
@@ -74,6 +84,8 @@ model Project {
   tasks    Task[]
   elements Element[]
   columns  Column[]
+
+  contributors Contributor[]
 }
 
 model Task {

@@ -5,11 +5,14 @@ import { CreateProjectSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(CreateProjectSchema),
   resolver.authorize(),
-  async (input) => {
+  async (input, ctx) => {
+    const userId = ctx.session.userId
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const project = await db.project.create({
       data: {
+        // Inputs from project creation form
         ...input,
+        // Initialize project with "To Do", "In Progress", "Done" kanban board columns
         columns: {
           create: [
             {
@@ -28,7 +31,14 @@ export default resolver.pipe(
         columns: true,
       },
     })
-    // Initialize project with "To Do", "In Progress", "Done" kanban board columns
+
+    // Create a contributor row to associate the current user with the project
+    await db.contributor.create({
+      data: {
+        userId,
+        projectId: project.id,
+      },
+    })
 
     return project
   }
