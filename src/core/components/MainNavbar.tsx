@@ -1,22 +1,19 @@
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import React from "react"
+import React, { Suspense, startTransition } from "react"
 import logout from "src/auth/mutations/logout"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { getInitials } from "src/services/getInitials"
 
 // MainNavbar
 // Always present on the top of the page
 // Includes non-project specific functionalities
-const MainNavbar = () => {
+const Navbar = () => {
   // Get current user data
   const currentUser = useCurrentUser()
   // Get initials for avatar
-  function getInitials(...names) {
-    const initials = names.filter((name) => name && name.trim() !== "").map((name) => name[0])
-    return initials.length > 0 ? initials.join("") : null
-  }
   const initial = getInitials(currentUser!.firstName, currentUser!.lastName)
   // Defining tabs
   // with names and routes
@@ -44,7 +41,6 @@ const MainNavbar = () => {
   }, [theme])
 
   return (
-    // Navbar component
     <div className="navbar bg-base-100 sticky top-0 border-b border-gray-300 sm:px-4 md:px-6 lg:px-8 xl:px-10">
       {/* Tabs */}
       {/* On the left */}
@@ -74,9 +70,9 @@ const MainNavbar = () => {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                 />
               </svg>
@@ -152,6 +148,16 @@ const MainNavbar = () => {
         </label>
       </div>
     </div>
+  )
+}
+
+// TODO: had to add suspense for now because getcurrentuser is async but this is causeing flickering
+// TODO: might have to add a general loading screens so that we wait for the body and the navbar to load together
+const MainNavbar = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Navbar />
+    </Suspense>
   )
 }
 

@@ -9,6 +9,7 @@ import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import getContributor from "src/contributors/queries/getContributor"
 import deleteContributor from "src/contributors/mutations/deleteContributor"
+import ProjectLayout from "src/core/layouts/ProjectLayout"
 
 export const Contributor = () => {
   const router = useRouter()
@@ -16,39 +17,64 @@ export const Contributor = () => {
   const projectId = useParam("projectId", "number")
   const [deleteContributorMutation] = useMutation(deleteContributor)
   const [contributor] = useQuery(getContributor, { id: contributorId })
+  const user = contributor.user
 
   return (
     <>
       <Head>
-        <title>Contributor {contributor.id}</title>
+        <title>
+          {user.firstName && user.lastName
+            ? `${user.firstName} ${user.lastName}`
+            : user.email || "Unknown"}
+        </title>
       </Head>
 
-      <div>
-        <h1>Contributor {contributor.id}</h1>
-        <pre>{JSON.stringify(contributor, null, 2)}</pre>
+      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+        <h1>
+          {user.firstName && user.lastName
+            ? `${user.firstName} ${user.lastName}`
+            : user.email || "Unknown"}
+        </h1>
+        <p className="mb-2">
+          <span className="font-semibold">Email:</span> {user.email}
+        </p>
+        <div className="flex flex-col gap-2">
+          <h2>List of contributions</h2>
+          {/* Add list of tasks for the contributor in this specific project */}
+        </div>
 
-        <Link
-          href={Routes.EditContributorPage({
-            projectId: projectId!,
-            contributorId: contributor.id,
-          })}
-        >
-          Edit
-        </Link>
+        {/* <div className="flex justify-start mt-4">
+          <Link
+            className="btn"
+            href={Routes.EditContributorPage({
+              projectId: projectId!,
+              contributorId: contributor.id,
+            })}
+          >
+            Edit
+          </Link>
+        </div> */}
 
-        <button
-          type="button"
-          onClick={async () => {
-            if (window.confirm("This will be deleted")) {
-              await deleteContributorMutation({ id: contributor.id })
-              await router.push(Routes.ContributorsPage({ projectId: projectId! }))
-            }
-          }}
-          style={{ marginLeft: "0.5rem" }}
-        >
-          Delete
-        </button>
-      </div>
+        <div className="flex justify-end mt-4">
+          <button
+            className="btn"
+            type="button"
+            onClick={async () => {
+              if (
+                window.confirm(
+                  "This contributor will be removed from the project. Are you sure to continue?"
+                )
+              ) {
+                await deleteContributorMutation({ id: contributor.id })
+                await router.push(Routes.ContributorsPage({ projectId: projectId! }))
+              }
+            }}
+            style={{ marginLeft: "0.5rem" }}
+          >
+            Remove
+          </button>
+        </div>
+      </main>
     </>
   )
 }
@@ -57,19 +83,17 @@ const ShowContributorPage = () => {
   const projectId = useParam("projectId", "number")
 
   return (
-    <div>
-      <p>
-        <Link href={Routes.ContributorsPage({ projectId: projectId! })}>Contributors</Link>
-      </p>
-
-      <Suspense fallback={<div>Loading...</div>}>
-        <Contributor />
-      </Suspense>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Contributor />
+    </Suspense>
   )
 }
 
 ShowContributorPage.authenticate = true
-ShowContributorPage.getLayout = (page) => <Layout>{page}</Layout>
+ShowContributorPage.getLayout = (page) => (
+  <Layout>
+    <ProjectLayout>{page}</ProjectLayout>
+  </Layout>
+)
 
 export default ShowContributorPage

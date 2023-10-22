@@ -10,7 +10,7 @@ const GetContributor = z.object({
 
 export default resolver.pipe(resolver.zod(GetContributor), resolver.authorize(), async ({ id }) => {
   // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-  const contributor = await db.contributor.findFirst({ where: { id } })
+  const contributor = await db.contributor.findFirst({ where: { id }, include: { user: true } })
 
   if (!contributor) throw new NotFoundError()
 

@@ -50,6 +50,10 @@ const ProjectNavbar = () => {
       href: Routes.ElementsPage({ projectId: projectId! }),
     },
     {
+      name: "Contributors",
+      href: Routes.ContributorsPage({ projectId: projectId! }),
+    },
+    {
       name: "Settings",
       href: Routes.EditProjectPage({ projectId: projectId! }),
     },

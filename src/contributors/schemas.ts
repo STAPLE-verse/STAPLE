@@ -1,13 +1,14 @@
 import { z } from "zod"
 
 export const CreateContributorSchema = z.object({
-  projectId: z.undefined(),
-  id: z.string(),
+  projectId: z.number(),
+  // id: z.number(),
+  userId: z.number(),
   // template: __fieldName__: z.__zodType__(),
 })
 export const UpdateContributorSchema = z.object({
   id: z.number(),
-  projectId: z.undefined(),
+  projectId: z.number(),
   // template: __fieldName__: z.__zodType__(),
 })
 
