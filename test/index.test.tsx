@@ -20,7 +20,8 @@ test.skip("renders blitz documentation link", () => {
   vi.mock("src/users/hooks/useCurrentUser", () => ({
     useCurrentUser: () => ({
       id: 1,
-      name: "User",
+      firstName: "User",
+      lastName: "Family",
       email: "user@email.com",
       role: "user",
     }),

@@ -20,27 +20,29 @@ const NewElementPage = () => {
       <Head>
         <title>Create New Element</title>
       </Head>
-      <h1>Create New Element</h1>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ElementForm
-          submitText="Create Element"
-          schema={CreateElementSchema}
-          // initialValues={{}}
-          onSubmit={async (values) => {
-            try {
-              const element = await createElementMutation({ ...values, projectId: projectId! })
-              await router.push(
-                Routes.ShowElementPage({ projectId: projectId!, elementId: element.id })
-              )
-            } catch (error: any) {
-              console.error(error)
-              return {
-                [FORM_ERROR]: error.toString(),
+      <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
+        <h1>Create New Element</h1>
+        <Suspense fallback={<div>Loading...</div>}>
+          <ElementForm
+            submitText="Create Element"
+            schema={CreateElementSchema}
+            // initialValues={{}}
+            onSubmit={async (values) => {
+              try {
+                const element = await createElementMutation({ ...values, projectId: projectId! })
+                await router.push(
+                  Routes.ShowElementPage({ projectId: projectId!, elementId: element.id })
+                )
+              } catch (error: any) {
+                console.error(error)
+                return {
+                  [FORM_ERROR]: error.toString(),
+                }
               }
-            }
-          }}
-        />
-      </Suspense>
+            }}
+          />
+        </Suspense>
+      </main>
     </>
   )
 }

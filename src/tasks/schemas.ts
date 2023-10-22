@@ -7,6 +7,7 @@ export const CreateTaskSchema = z.object({
   description: z.string().optional(),
   // template: __fieldName__: z.__zodType__(),
 })
+
 export const UpdateTaskSchema = z.object({
   id: z.number(),
   name: z.string(),

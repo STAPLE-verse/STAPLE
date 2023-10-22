@@ -4,11 +4,20 @@ import React from "react"
 import logout from "src/auth/mutations/logout"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 // MainNavbar
 // Always present on the top of the page
 // Includes non-project specific functionalities
 const MainNavbar = () => {
+  // Get current user data
+  const currentUser = useCurrentUser()
+  // Get initials for avatar
+  function getInitials(...names) {
+    const initials = names.filter((name) => name && name.trim() !== "").map((name) => name[0])
+    return initials.length > 0 ? initials.join("") : null
+  }
+  const initial = getInitials(currentUser!.firstName, currentUser!.lastName)
   // Defining tabs
   // with names and routes
   let tabs = [
@@ -95,7 +104,7 @@ const MainNavbar = () => {
           {/* TODO: Change to avatar if image is uploaded */}
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar placeholder">
             <div className="w-10 rounded-full">
-              <span className="text-1xl">KM</span>
+              <span className="text-1xl">{initial ? initial : "?"}</span>
             </div>
           </label>
           <ul
@@ -107,9 +116,6 @@ const MainNavbar = () => {
                 Profile
                 {/* <span className="badge">New</span> */}
               </Link>
-            </li>
-            <li>
-              <a>Settings</a>
             </li>
             <li>
               <button
