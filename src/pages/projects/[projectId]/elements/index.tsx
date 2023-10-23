@@ -5,96 +5,19 @@ import Link from "next/link"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useParam } from "@blitzjs/next"
-import getFlow from "src/elements/queries/getFlow"
 import React, { useCallback } from "react"
 import ProjectLayout from "src/core/layouts/ProjectLayout"
-
-import ElementNode from "src/elements/components/ElementNode"
-
-const nodeTypes = { elementNode: ElementNode }
-
-const initialNodes = [
-  {
-    id: "1",
-    position: { x: 0, y: 0 },
-    type: "elementNode",
-    data: { title: "something", label: "my label" },
-  },
-  {
-    id: "2",
-    position: { x: 0, y: 100 },
-    type: "elementNode",
-    data: { title: "something 2", label: "other label" },
-  },
-]
-const initialEdges = [{ id: "e1-2", source: "1", target: "2" }]
-
-import ReactFlow, {
-  useNodesState,
-  useEdgesState,
-  addEdge,
-  MiniMap,
-  Controls,
-  Background,
-} from "reactflow"
-import "reactflow/dist/style.css"
-
-export const ElementsList = () => {
-  const projectId = useParam("projectId", "number")
-  const [{ nodesData: nodesQuery, edgesData: edgesQuery }] = useQuery(getFlow, projectId!)
-  const [nodes, setNodes, onNodesChange] = useNodesState([])
-  const [edges, setEdges, onEdgesChange] = useEdgesState([])
-  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges])
-
-  useEffect(() => {
-    // Currently we only add position to nodes after query
-    // Position is hardcoded should change dynamically
-    // But other layout stuff can be added later
-    // Layout can be saved in bulk on page leave hook
-    const x = nodesQuery.map((node, index) => ({
-      ...node,
-      position: {
-        x: 0,
-        y: index * 200,
-      },
-    }))
-    setNodes(x)
-    setEdges(edgesQuery)
-  }, [nodesQuery, edgesQuery, setEdges, setNodes])
-
-  return (
-    <div>
-      {/* TODO: Find out how to properly size this window */}
-      <div style={{ width: "70vw", height: "70vh" }}>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          nodeTypes={nodeTypes}
-        >
-          <Controls />
-          <MiniMap />
-          <Background gap={12} size={1} />
-        </ReactFlow>
-      </div>
-      {/* <ul>
-        {elements.map((element) => (
-          <li key={element.id}>
-            <Link href={Routes.ShowElementPage({ projectId: projectId!, elementId: element.id })}>
-              {element.name}
-            </Link>
-          </li>
-        ))}
-      </ul> */}
-    </div>
-  )
-}
+import { ElementsList } from "src/elements/components/ElementList"
+import getElements from "src/elements/queries/getElements"
 
 const ElementsPage = () => {
   const projectId = useParam("projectId", "number")
-
+  const [elements] = useQuery(getElements, {
+    where: { project: { id: projectId! } },
+    orderBy: { id: "asc" },
+    include: { Task: true },
+  })
+  console.log(elements)
   return (
     <>
       <Head>
@@ -102,15 +25,23 @@ const ElementsPage = () => {
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+        <h1 className="flex justify-center mb-2">Elements</h1>
+        <Link className="btn mb-4" href={Routes.NewElementPage({ projectId: projectId! })}>
+          Create Element
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            className="h-6 w-6"
+            viewBox="0 0 16 16"
+          >
+            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+          </svg>
+        </Link>
         <Suspense fallback={<div>Loading...</div>}>
-          <ElementsList />
+          <ElementsList projectId={projectId!} elements={elements} />
         </Suspense>
-
-        <p>
-          <Link className="btn mt-4" href={Routes.NewElementPage({ projectId: projectId! })}>
-            Create Element
-          </Link>
-        </p>
       </main>
     </>
   )
