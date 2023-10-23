@@ -1,5 +1,12 @@
 import { z } from "zod"
 
+export const FormTaskSchema = z.object({
+  name: z.string(),
+  columnId: z.number(),
+  description: z.string().optional(),
+  // template: __fieldName__: z.__zodType__(),
+})
+
 export const CreateTaskSchema = z.object({
   name: z.string(),
   projectId: z.any(),

@@ -2,7 +2,7 @@ import { Routes } from "@blitzjs/next"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
-import { CreateTaskSchema } from "src/tasks/schemas"
+import { FormTaskSchema } from "src/tasks/schemas"
 import createTask from "src/tasks/mutations/createTask"
 import { TaskForm, FORM_ERROR } from "src/tasks/components/TaskForm"
 import { Suspense } from "react"
@@ -27,16 +27,14 @@ const NewTaskPage = () => {
             className="flex flex-col"
             projectId={projectId}
             submitText="Create Task"
-            schema={CreateTaskSchema}
+            schema={FormTaskSchema}
             // initialValues={{ name: "", description: "" }}
             onSubmit={async (values) => {
-              console.log(values)
               try {
                 const task = await createTaskMutation({
                   name: values.name,
                   description: values.description,
-                  // TODO: Why is type values defined by the createTask schema? and not the values inside taskForm
-                  columnId: parseInt(values.columnId),
+                  columnId: values.columnId,
                   projectId: projectId!,
                 })
                 await router.push(Routes.ShowTaskPage({ projectId: projectId!, taskId: task.id }))

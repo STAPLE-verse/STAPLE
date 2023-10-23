@@ -1,7 +1,7 @@
 // import React, { Suspense } from "react"
 import { Form, FormProps } from "src/core/components/Form"
 import { LabeledTextField } from "src/core/components/LabeledTextField"
-import { LabeledSelectField } from "src/core/components/LabeledSelectField"
+import { LabelSelectField } from "src/core/components/LabelSelectField"
 import getColumns from "../queries/getColumns"
 import getElements from "src/elements/queries/getElements"
 import { useQuery } from "@blitzjs/rpc"
@@ -27,11 +27,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
   })
-  const statusColumns = columns.map((column) => (
-    <option value={column.id} key={column.id}>
-      {column.name}
-    </option>
-  ))
 
   // const [elements] = useQuery(getElements, {
   //   orderBy: { id: "asc" },
@@ -55,16 +50,16 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         placeholder="Description"
         type="text"
       />
-      <LabeledSelectField
+      <LabelSelectField
         className="select select-bordered w-full max-w-xs mt-2"
         name="columnId"
         label="Status"
+        options={columns}
+        optionText="name"
         // Setting the initial value to the selectinput
-        initValue={projectInitialValues}
-      >
-        {statusColumns}
-      </LabeledSelectField>
-      {/* <LabeledSelectField
+        // initValue={projectInitialValues}
+      />
+      {/* <LabelSelectField
         className="select select-bordered w-full max-w-xs mt-2"
         name="elementId"
         label="Element"
@@ -72,7 +67,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         initValue={elementIntitialValues}
       >
         {parentElements}
-      </LabeledSelectField> */}
+      </LabelSelectField> */}
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )

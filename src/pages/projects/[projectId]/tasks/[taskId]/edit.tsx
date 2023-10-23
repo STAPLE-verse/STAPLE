@@ -8,7 +8,7 @@ import { useParam } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
 import ProjectLayout from "src/core/layouts/ProjectLayout"
-import { UpdateTaskSchema } from "src/tasks/schemas"
+import { FormTaskSchema } from "src/tasks/schemas"
 import getTask from "src/tasks/queries/getTask"
 import updateTask from "src/tasks/mutations/updateTask"
 import { TaskForm, FORM_ERROR } from "src/tasks/components/TaskForm"
@@ -29,7 +29,6 @@ export const EditTask = () => {
 
   // I have to make initial values explicit for the update to work why?
   const initialValues = {
-    id: task.id,
     name: task.name,
     description: task.description!,
     columnId: task.columnId,
@@ -48,19 +47,19 @@ export const EditTask = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
             submitText="Update Task"
-            schema={UpdateTaskSchema}
+            schema={FormTaskSchema}
             initialValues={initialValues}
             onSubmit={async (values) => {
               try {
                 const updated = await updateTaskMutation({
-                  // id: task.id,
                   ...values,
+                  id: task.id,
                 })
                 await setQueryData(updated)
                 await router.push(
                   Routes.ShowTaskPage({
                     projectId: projectId!,
-                    taskId: updated.id,
+                    taskId: task.id,
                   })
                 )
               } catch (error: any) {

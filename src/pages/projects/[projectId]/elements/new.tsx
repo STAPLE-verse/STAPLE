@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Layout from "src/core/layouts/Layout"
-import { CreateElementSchema } from "src/elements/schemas"
+import { FormElementSchema } from "src/elements/schemas"
 import createElement from "src/elements/mutations/createElement"
 import { ElementForm, FORM_ERROR } from "src/elements/components/ElementForm"
 import { Suspense } from "react"
@@ -25,7 +25,7 @@ const NewElementPage = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <ElementForm
             submitText="Create Element"
-            schema={CreateElementSchema}
+            schema={FormElementSchema}
             // initialValues={{}}
             onSubmit={async (values) => {
               try {

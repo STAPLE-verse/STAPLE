@@ -10,7 +10,7 @@ import { LabeledTextField } from "src/core/components/LabeledTextField"
 import updateUser from "src/users/mutations/updateUser"
 import { z } from "zod"
 export { FORM_ERROR } from "src/core/components/Form"
-import { UpdateUserSchema } from "src/users/schemas"
+import { FormProfileSchema } from "src/users/schemas"
 import { Routes } from "@blitzjs/next"
 import logout from "src/auth/mutations/logout"
 
@@ -56,7 +56,7 @@ export const EditProfile = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <ProfileForm
             submitText="Update Profile"
-            schema={UpdateUserSchema}
+            schema={FormProfileSchema}
             initialValues={initialValues}
             cancelRoute={Routes.ProfilePage({})}
             onSubmit={async (values) => {
