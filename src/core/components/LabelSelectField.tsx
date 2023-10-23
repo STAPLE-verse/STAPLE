@@ -28,7 +28,7 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
         <label>
           {label}
           <select {...input} disabled={submitting} {...props} ref={ref}>
-            <option disabled selected value="">
+            <option disabled value="">
               Please select an option
             </option>
             {options &&
