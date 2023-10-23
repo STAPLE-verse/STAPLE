@@ -17,7 +17,7 @@ export { FORM_ERROR } from "src/core/components/Form"
 // Other methods could be: passing the columns directly
 // Adding projectId directly to Form props as an optional value
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
-  projectId?: number // Change the type of projectId accordingly
+  projectId?: number
 }
 
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {

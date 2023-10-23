@@ -9,15 +9,15 @@ export default resolver.pipe(
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const contributor = await db.contributor.create({
       data: {
-        // userId: input.userId,
-        // projectId: input.projectId,
-        project: {
-          connect: { id: input.projectId },
-        },
-        user: {
-          // TODO: replace this later with actual logic
-          connect: { id: input.userId },
-        },
+        userId: input.userId,
+        projectId: input.projectId,
+        // project: {
+        //   connect: { id: input.projectId },
+        // },
+        // user: {
+        //   // TODO: replace this later with actual logic
+        //   connect: { id: input.userId },
+        // },
       },
     })
 

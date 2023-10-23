@@ -30,6 +30,7 @@ const NewTaskPage = () => {
             schema={CreateTaskSchema}
             // initialValues={{ name: "", description: "" }}
             onSubmit={async (values) => {
+              console.log(values)
               try {
                 const task = await createTaskMutation({
                   name: values.name,

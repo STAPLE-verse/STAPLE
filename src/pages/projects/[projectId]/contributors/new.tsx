@@ -4,12 +4,19 @@ import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
-import { CreateContributorSchema } from "src/contributors/schemas"
 import createContributor from "src/contributors/mutations/createContributor"
 import { ContributorForm, FORM_ERROR } from "src/contributors/components/ContributorForm"
 import { Suspense } from "react"
 import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Head from "next/head"
+import { z } from "zod"
+
+// TODO: if not all parameters that are present in the schema are in the returned values of the form the onsubmit fails without error
+// TODO: Thus we create a separate schema for the form and the create mutation
+export const ContributorFormSchema = z.object({
+  userId: z.number(),
+  // template: __fieldName__: z.__zodType__(),
+})
 
 const NewContributorPage = () => {
   const router = useRouter()
@@ -27,8 +34,8 @@ const NewContributorPage = () => {
           <ContributorForm
             className="flex flex-col"
             submitText="Add Contributor"
-            schema={CreateContributorSchema}
-            // initialValues={{}}
+            schema={ContributorFormSchema}
+            // initialValues={}
             onSubmit={async (values) => {
               try {
                 const contributor = await createContributorMutation({
