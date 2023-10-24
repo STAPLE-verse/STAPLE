@@ -1,7 +1,7 @@
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { Element, Task } from "db"
-import { DndContext } from "@dnd-kit/core"
+import { DndContext, useDroppable } from "@dnd-kit/core"
 import TaskCard from "src/tasks/components/TaskCard"
 
 interface ElementsListProps {
@@ -11,6 +11,14 @@ interface ElementsListProps {
 }
 
 export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId }) => {
+  // const { isOver, setNodeRef } = useDroppable({
+  //   id: `element-${element.id}`,
+  // })
+
+  // const style = {
+  //   boxShadow: isOver ? "0 0 8px gray" : undefined,
+  // }
+
   return (
     <div>
       {elements.map((element) => {
@@ -25,7 +33,11 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
               <p className="mb-2">{element.description}</p>
               <p className="italic mb-2">Last update: {element.updatedAt.toString()}</p>
               <div className="divider">Tasks</div>
-              <div className="flex flex-col">
+              <div
+                className="flex flex-col flex-1 bg-gray-300 p-4 rounded-lg"
+                // ref={setNodeRef}
+                // style={style}
+              >
                 {tasks && tasks.length > 0 ? (
                   <DndContext>
                     {tasks.map((task) => (
@@ -34,6 +46,7 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
                         key={task.id}
                         name={task.name}
                         projectId={task.projectId}
+                        disable={true}
                       />
                     ))}
                   </DndContext>
@@ -41,12 +54,12 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
                   <p>There are no tasks in the element.</p>
                 )}
               </div>
-              <div className="justify-end mt-2">
+              <div className="justify-end mt-4">
                 <Link
                   className="btn"
                   href={Routes.ShowElementPage({ projectId: projectId!, elementId: element.id })}
                 >
-                  Open
+                  Open element
                 </Link>
               </div>
             </div>
