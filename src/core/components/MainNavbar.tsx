@@ -99,7 +99,12 @@ const Navbar = () => {
         <div className="dropdown dropdown-end">
           {/* TODO: Change to avatar if image is uploaded */}
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar placeholder">
-            <div className="w-10 rounded-full">
+            <div
+              // TODO: DaisyUI tooltip is not working because css cannot deal with element edge
+              // https://github.com/saadeghi/daisyui/discussions/1695
+              className="w-10 rounded-full tooltip"
+              data-tip={initial ? "" : "Go to Profile to add your name."}
+            >
               <span className="text-1xl">{initial ? initial : "?"}</span>
             </div>
           </label>

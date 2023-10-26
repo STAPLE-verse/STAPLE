@@ -14,6 +14,7 @@ export const password = z
 export const Signup = z.object({
   email,
   password,
+  username: z.string().min(3),
 })
 
 export const Login = z.object({

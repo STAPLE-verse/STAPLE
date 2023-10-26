@@ -16,6 +16,7 @@ model User {
   id             Int      @id @default(autoincrement())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+  username       String   @unique
   firstName      String?
   lastName       String?
   email          String   @unique
@@ -71,7 +72,7 @@ model Contributor {
   id        Int     @id @default(autoincrement())
   userId    Int
   projectId Int
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   project   Project @relation(fields: [projectId], references: [id])
 }
 
