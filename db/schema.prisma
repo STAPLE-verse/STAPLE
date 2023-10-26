@@ -69,11 +69,12 @@ model Token {
 // }
 
 model Contributor {
-  id        Int     @id @default(autoincrement())
-  userId    Int
-  projectId Int
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project   Project @relation(fields: [projectId], references: [id])
+  id          Int          @id @default(autoincrement())
+  userId      Int
+  projectId   Int
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project     Project      @relation(fields: [projectId], references: [id])
+  assignments Assignment[]
 }
 
 model Project {
@@ -91,18 +92,35 @@ model Project {
 }
 
 model Task {
-  id              Int      @id @default(autoincrement())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id              Int          @id @default(autoincrement())
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
   name            String
   description     String?
   columnId        Int
   columnTaskIndex Int
-  column          Column   @relation(fields: [columnId], references: [id])
+  column          Column       @relation(fields: [columnId], references: [id])
   projectId       Int
-  project         Project  @relation(fields: [projectId], references: [id])
+  project         Project      @relation(fields: [projectId], references: [id])
   elementId       Int?
-  element         Element? @relation(fields: [elementId], references: [id])
+  element         Element?     @relation(fields: [elementId], references: [id])
+  assignees       Assignment[]
+}
+
+enum AssignmentStatus {
+  COMPLETED
+  NOT_COMPLETED
+}
+
+model Assignment {
+  id            Int              @id @default(autoincrement())
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  taskId        Int
+  contributorId Int
+  task          Task             @relation(fields: [taskId], references: [id])
+  contributor   Contributor      @relation(fields: [contributorId], references: [id])
+  status        AssignmentStatus @default(NOT_COMPLETED)
 }
 
 model Column {
