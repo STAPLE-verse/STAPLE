@@ -12,8 +12,8 @@ export const CreateTaskSchema = z.object({
   name: z.string(),
   projectId: z.number(),
   columnId: z.number(),
-  description: z.string().optional(),
-  elementId: z.number().optional(),
+  description: z.string().optional().nullable(),
+  elementId: z.number().optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
 })
 

@@ -24,19 +24,18 @@ export const Contributor = () => {
   return (
     <>
       <Head>
-        <title>
-          {user.firstName && user.lastName
-            ? `${user.firstName} ${user.lastName}`
-            : user.email || "Unknown"}
-        </title>
+        <title>{user.username}</title>
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1>
-          {user.firstName && user.lastName
-            ? `${user.firstName} ${user.lastName}`
-            : user.email || "Unknown"}
+          {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.username}
         </h1>
+        {user.firstName && user.lastName ? (
+          <p className="mb-2">
+            <span className="font-semibold">Username:</span> {user.username}
+          </p>
+        ) : null}
         <p className="mb-2">
           <span className="font-semibold">Email:</span> {user.email}
         </p>
@@ -45,6 +44,7 @@ export const Contributor = () => {
           {/* Add list of tasks for the contributor in this specific project */}
         </div>
 
+        {/* TODO: Do we need an edit contributor information section? Or the affiliations etc will be collected as metadata anyways? */}
         {/* <div className="flex justify-start mt-4">
           <Link
             className="btn"
