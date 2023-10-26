@@ -11,14 +11,14 @@ import Layout from "src/core/layouts/Layout"
 import getTask from "src/tasks/queries/getTask"
 import deleteTask from "src/tasks/mutations/deleteTask"
 import getColumn from "src/tasks/queries/getColumn"
+import getElement from "src/elements/queries/getElement"
 
 export const Task = () => {
   const router = useRouter()
   const taskId = useParam("taskId", "number")
   const projectId = useParam("projectId", "number")
   const [deleteTaskMutation] = useMutation(deleteTask)
-  const [task] = useQuery(getTask, { id: taskId })
-  const [column] = useQuery(getColumn, { id: task.columnId })
+  const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
 
   return (
     <>
@@ -31,7 +31,11 @@ export const Task = () => {
         <div className="flex flex-col gap-2">
           <p>{task.description}</p>
           <p>
-            <span className="font-semibold">Status:</span> {column.name}
+            <span className="font-semibold">Status:</span> {task["column"].name}
+          </p>
+          <p>
+            <span className="font-semibold">Element:</span>{" "}
+            {task["element"] ? task["element"].name : "no elements"}
           </p>
           <p className="italic">Last update: {task.updatedAt.toString()}</p>
         </div>

@@ -5,8 +5,8 @@ import { CreateTaskSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(CreateTaskSchema),
   resolver.authorize(),
-  async ({ projectId, columnId, name, description }) => {
-    // Get tasks for the column inside the project
+  async ({ projectId, columnId, name, description, elementId }) => {
+    // Get number of tasks for the column inside the project
     const columnTaskIndex = await db.task.count({
       where: {
         projectId: projectId, // Filter tasks by projectId
@@ -14,7 +14,6 @@ export default resolver.pipe(
       },
     })
 
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const task = await db.task.create({
       data: {
         name,
@@ -24,9 +23,14 @@ export default resolver.pipe(
           connect: { id: projectId },
         },
         column: {
-          // TODO: replace this later with actual logic
           connect: { id: columnId },
         },
+        // TODO: check if this is a good way to conditionally add relation
+        element: elementId
+          ? {
+              connect: { id: elementId },
+            }
+          : undefined,
       },
     })
 

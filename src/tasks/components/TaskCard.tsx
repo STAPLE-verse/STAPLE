@@ -9,41 +9,44 @@ interface TaskCardProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTM
   name: string
   taskId: number
   projectId: number
+  disable?: boolean
 }
 
-const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(({ name, projectId, taskId }) => {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: `task-${taskId}`,
-    // disable should be true when user interacts with Open button
-    // disabled: true,
-  })
+const TaskCard = forwardRef<HTMLDivElement, TaskCardProps>(
+  ({ name, projectId, taskId, disable }) => {
+    const { attributes, listeners, setNodeRef, transform } = useDraggable({
+      id: `task-${taskId}`,
+      // disable should be true when user interacts with Open button
+      disabled: disable,
+    })
 
-  const style = {
-    transform: CSS.Translate.toString(transform),
-  }
+    const style = {
+      transform: CSS.Translate.toString(transform),
+    }
 
-  return (
-    // TODO: Find a good solution to open task when clicked that works with dnd Link not working
-    <div
-      className="rounded bg-base-200 p-4"
-      ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
-    >
-      <h2>{name}</h2>
-      {/* <p>{task.description}</p> */}
-      <div className="flex justify-end">
-        <Link
-          href={Routes.ShowTaskPage({ projectId: projectId, taskId: taskId })}
-          className="btn mt-2 text-sm"
-          // data-dnd-drag-handle="true"
-        >
-          Open
-        </Link>
+    return (
+      // TODO: Find a good solution to open task when clicked that works with dnd Link not working
+      <div
+        className="rounded bg-base-200 p-4"
+        ref={setNodeRef}
+        style={style}
+        {...listeners}
+        {...attributes}
+      >
+        <h2>{name}</h2>
+        {/* <p>{task.description}</p> */}
+        <div className="flex justify-end">
+          <Link
+            href={Routes.ShowTaskPage({ projectId: projectId, taskId: taskId })}
+            className="btn mt-2 text-sm"
+            // data-dnd-drag-handle="true"
+          >
+            Open
+          </Link>
+        </div>
       </div>
-    </div>
-  )
-})
+    )
+  }
+)
 
 export default TaskCard
