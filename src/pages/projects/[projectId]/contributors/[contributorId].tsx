@@ -10,8 +10,10 @@ import Layout from "src/core/layouts/Layout"
 import getContributor from "src/contributors/queries/getContributor"
 import deleteContributor from "src/contributors/mutations/deleteContributor"
 import ProjectLayout from "src/core/layouts/ProjectLayout"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 export const Contributor = () => {
+  const currentUser = useCurrentUser()
   const router = useRouter()
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
@@ -66,7 +68,13 @@ export const Contributor = () => {
                 )
               ) {
                 await deleteContributorMutation({ id: contributor.id })
-                await router.push(Routes.ContributorsPage({ projectId: projectId! }))
+                // Check if User removed themselves and return to main page
+                // TODO: This my lead to an error if contributorspage is loaded too soon
+                if (user.id === currentUser?.id) {
+                  await router.push(Routes.ProjectsPage())
+                } else {
+                  await router.push(Routes.ContributorsPage({ projectId: projectId! }))
+                }
               }
             }}
             style={{ marginLeft: "0.5rem" }}

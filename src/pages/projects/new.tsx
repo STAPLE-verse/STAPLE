@@ -2,7 +2,7 @@ import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
-import { CreateProjectSchema } from "src/projects/schemas"
+import { FormProjectSchema } from "src/projects/schemas"
 import createProject from "src/projects/mutations/createProject"
 import { ProjectForm, FORM_ERROR } from "src/projects/components/ProjectForm"
 import { Suspense } from "react"
@@ -18,9 +18,8 @@ const NewProjectPage = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <ProjectForm
             submitText="Create Project"
-            schema={CreateProjectSchema}
+            schema={FormProjectSchema}
             cancelRoute={Routes.ProjectsPage()}
-            // initialValues={{}}
             onSubmit={async (values) => {
               try {
                 const project = await createProjectMutation(values)

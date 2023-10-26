@@ -7,7 +7,7 @@ import { useParam } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
 import deleteProject from "src/projects/mutations/deleteProject"
-import { UpdateProjectSchema } from "src/projects/schemas"
+import { FormProjectSchema } from "src/projects/schemas"
 import getProject from "src/projects/queries/getProject"
 import updateProject from "src/projects/mutations/updateProject"
 import { ProjectForm, FORM_ERROR } from "src/projects/components/ProjectForm"
@@ -30,7 +30,6 @@ export const EditProject = () => {
   const [deleteProjectMutation] = useMutation(deleteProject)
 
   const initialValues = {
-    id: project.id,
     name: project.name,
     description: project.description!,
   }
@@ -47,12 +46,12 @@ export const EditProject = () => {
           {/* TODO: Add notification popup if project is updated */}
           <ProjectForm
             submitText="Update Project"
-            schema={UpdateProjectSchema}
+            schema={FormProjectSchema}
             initialValues={initialValues}
             onSubmit={async (values) => {
               try {
                 const updated = await updateProjectMutation({
-                  // id: project.id,
+                  id: project.id,
                   ...values,
                 })
                 await setQueryData(updated)
