@@ -66,11 +66,7 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
       const activeTask = findTaskById(columns, taskId)
       if (activeTask.columnId !== newColumnId) {
         activeTask.columnId = newColumnId
-        // For some reason  updateTask schema does not recognize description optional
-        // TODO: fix this
-        if (activeTask.description === null) {
-          activeTask.description = ""
-        }
+
         await updateTaskMutation({
           ...activeTask,
         })

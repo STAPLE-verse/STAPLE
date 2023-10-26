@@ -3,8 +3,8 @@ import { z } from "zod"
 export const FormTaskSchema = z.object({
   name: z.string(),
   columnId: z.number(),
-  description: z.string().optional(),
-  elementId: z.number().optional(),
+  description: z.string().optional().nullable(),
+  elementId: z.number().optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
 })
 
@@ -20,9 +20,9 @@ export const CreateTaskSchema = z.object({
 export const UpdateTaskSchema = z.object({
   id: z.number(),
   name: z.string(),
-  description: z.string().optional(),
+  description: z.string().optional().nullable(),
   columnId: z.number(),
-  elementId: z.number().optional(),
+  elementId: z.number().optional().nullable(),
 })
 
 export const DeleteTaskSchema = z.object({

@@ -17,7 +17,7 @@ const ElementsPage = () => {
     orderBy: { id: "asc" },
     include: { Task: true },
   })
-  console.log(elements)
+
   return (
     <>
       <Head>
