@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
@@ -10,8 +10,7 @@ import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Layout from "src/core/layouts/Layout"
 import getTask from "src/tasks/queries/getTask"
 import deleteTask from "src/tasks/mutations/deleteTask"
-import getColumn from "src/tasks/queries/getColumn"
-import getElement from "src/elements/queries/getElement"
+import AssignmentModal from "src/assignments/components/AssignmentModal"
 
 export const Task = () => {
   const router = useRouter()
@@ -19,6 +18,9 @@ export const Task = () => {
   const projectId = useParam("projectId", "number")
   const [deleteTaskMutation] = useMutation(deleteTask)
   const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
+
+  const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
+  const handleToggle = () => setOpenAssignmentModal((prev) => !prev)
 
   return (
     <>
@@ -38,6 +40,20 @@ export const Task = () => {
             {task["element"] ? task["element"].name : "no elements"}
           </p>
           <p className="italic">Last update: {task.updatedAt.toString()}</p>
+        </div>
+        <div className="mt-4">
+          <button className="btn" onClick={() => handleToggle()}>
+            Do task assignment
+          </button>
+          <AssignmentModal open={openAssignmentModal}>
+            <div>Hello!</div>
+            <div className="modal-action">
+              {/* closes the modal */}
+              <button className="btn btn-primary" onClick={handleToggle}>
+                Close
+              </button>
+            </div>
+          </AssignmentModal>
         </div>
 
         <div className="flex justify-start mt-4">
