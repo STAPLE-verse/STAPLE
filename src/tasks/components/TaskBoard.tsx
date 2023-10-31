@@ -4,7 +4,15 @@ import TaskColumn from "./TaskColumn"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import getColumns from "../queries/getColumns"
 import { Column, Task } from "db"
-import { DndContext } from "@dnd-kit/core"
+import type { PointerEvent } from "react"
+import {
+  DndContext,
+  MouseSensor,
+  PointerSensor,
+  PointerSensorOptions,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core"
 
 import updateTask from "../mutations/updateTask"
 
@@ -32,10 +40,45 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
 
   const [isDropped, setIsDropped] = useState(false)
 
+  // Custom sensor to prevent drag and drop on click
+  class NoActivePointerSensor extends PointerSensor {
+    static activators = [
+      {
+        eventName: "onPointerDown" as const,
+        handler: ({
+          nativeEvent: event,
+        }: PointerEvent): // { onActivation }: PointerSensorOptions
+        boolean => {
+          if (!event.isPrimary || event.button !== 0 || isInteractiveElement(event.target)) {
+            return false
+          }
+
+          return true
+        },
+      },
+    ]
+  }
+
+  function isInteractiveElement(element) {
+    // Elements that are NOT draggable
+    const interactiveElements = ["button", "input", "textarea", "select", "option", "a"]
+
+    if (interactiveElements.includes(element.tagName.toLowerCase())) {
+      return true
+    }
+
+    return false
+  }
+
+  const sensors = useSensors(
+    // useSensor(MouseSensor),
+    useSensor(NoActivePointerSensor)
+  )
+
   // Return each column iteratively
   return (
     <div className="flex flex-row justify-center space-x-10">
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
         {columns.map((column) => (
           <TaskColumn column={column} key={column.id} tasks={column.tasks} />
         ))}
