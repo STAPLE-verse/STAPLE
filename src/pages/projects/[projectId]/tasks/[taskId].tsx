@@ -46,7 +46,7 @@ export const Task = () => {
             Do task assignment
           </button>
           <AssignmentModal open={openAssignmentModal}>
-            <div>Hello!</div>
+            <div>Hello test modal!</div>
             <div className="modal-action">
               {/* closes the modal */}
               <button className="btn btn-primary" onClick={handleToggle}>
