@@ -30,6 +30,7 @@
     "@dnd-kit/core": "6.0.8",
     "@dnd-kit/sortable": "7.0.2",
     "@headlessui/react": "1.7.15",
+    "@heroicons/react": "2.0.18",
     "@prisma/client": "4.16.2",
     "@tanstack/react-table": "8.9.3",
     "autoprefixer": "10.4.15",
