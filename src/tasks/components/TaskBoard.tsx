@@ -7,6 +7,7 @@ import { Column, Task } from "db"
 import type { PointerEvent } from "react"
 import {
   DndContext,
+  DragOverlay,
   MouseSensor,
   PointerSensor,
   PointerSensorOptions,
@@ -15,6 +16,7 @@ import {
 } from "@dnd-kit/core"
 
 import updateTask from "../mutations/updateTask"
+import TaskCard from "./TaskCard"
 
 interface TaskBoardProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
   projectId: number
@@ -39,6 +41,8 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
   const [updateTaskMutation] = useMutation(updateTask)
 
   const [isDropped, setIsDropped] = useState(false)
+
+  const [activeTask, setActiveTask] = useState(null)
 
   // Custom sensor to prevent drag and drop on click
   class NoActivePointerSensor extends PointerSensor {
@@ -77,34 +81,59 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
 
   // Return each column iteratively
   return (
-    <div className="flex flex-row justify-center space-x-10">
-      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
-        {columns.map((column) => (
-          <TaskColumn column={column} key={column.id} tasks={column.tasks} />
-        ))}
+    <div className="flex flex-row justify-center space-x-10 h-full">
+      <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
+        {columns.map((column) => {
+          return <TaskColumn column={column} key={column.id} tasks={column.tasks} />
+        })}
+        <DragOverlay
+          // TODO: Dropanimation returns the dragged component to the original position
+          // TODO: to solve this I believe we have to have a state management on the client side instead of
+          // TODO: relying solely on the server with useQuery
+          dropAnimation={null}
+        >
+          {activeTask ? (
+            <TaskCard
+              taskId={activeTask["id"]}
+              key={activeTask["id"]}
+              name={activeTask["name"]}
+              projectId={activeTask["projectId"]}
+            />
+          ) : null}
+        </DragOverlay>
       </DndContext>
     </div>
   )
 
+  function findTaskById(columns, taskId) {
+    for (const column of columns) {
+      const foundTask = column.tasks.find((task) => task.id === taskId)
+      if (foundTask) {
+        return foundTask
+      }
+    }
+    return null
+  }
+
+  function handleDragStart(event) {
+    const activeId = parseInt(event.active.id.match(/\d+/))
+    const activeTask = findTaskById(columns, activeId)
+    setActiveTask(activeTask)
+  }
+
   async function handleDragEnd(event) {
     // Sorry for this spagetthi of a code...
     const { active, over } = event
+
+    if (!over) {
+      return
+    }
     // This is a bit wasteful because if the task is dropped back in the
     // original column the mutation still runs
     // Also I have to get all the task data for the update because of the
     // taskUpdate mutation schema
     const taskId = parseInt(active.id.match(/\d+/))
     const newColumnId = parseInt(over.id.match(/\d+/))
-
-    function findTaskById(columns, taskId) {
-      for (const column of columns) {
-        const foundTask = column.tasks.find((task) => task.id === taskId)
-        if (foundTask) {
-          return foundTask
-        }
-      }
-      return null
-    }
     try {
       const activeTask = findTaskById(columns, taskId)
       if (activeTask.columnId !== newColumnId) {
@@ -113,6 +142,7 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
         await updateTaskMutation({
           ...activeTask,
         })
+        setActiveTask(null)
         // Refecth tasks for board
         refetch()
       }
