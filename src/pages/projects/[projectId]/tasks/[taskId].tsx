@@ -11,7 +11,7 @@ import Layout from "src/core/layouts/Layout"
 import getTask from "src/tasks/queries/getTask"
 import deleteTask from "src/tasks/mutations/deleteTask"
 import AssignmentModal from "src/assignments/components/AssignmentModal"
-import Json2HtmlConverter from "src/services/jsonconverter/Json2HtmlConverter"
+import JsonForm from "src/services/jsonconverter/JsonForm"
 export const Task = () => {
   const router = useRouter()
   const taskId = useParam("taskId", "number")
@@ -21,10 +21,6 @@ export const Task = () => {
 
   const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
   const handleToggle = () => {
-    if (openAssignmentModal) {
-      const jsonForm = Json2HtmlConverter.testConversion()
-    }
-
     setOpenAssignmentModal((prev) => !prev)
   }
 
@@ -52,7 +48,7 @@ export const Task = () => {
             Do task assignment
           </button>
           <AssignmentModal open={openAssignmentModal}>
-            <div>Hello test modal!!!</div>
+            <div>{JsonForm()}</div>
             <div className="modal-action">
               {/* closes the modal */}
               <button className="btn btn-primary" onClick={handleToggle}>
