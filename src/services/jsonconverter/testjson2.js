@@ -9,29 +9,29 @@ const testJson2 = `{
   "properties": {
     "firstName": {
       "type": "string",
-      "title": "First name",
+      "title": "First name: ",
       "default": "Chuck"
     },
     "lastName": {
       "type": "string",
-      "title": "Last name"
+      "title": "Last name: "
     },
     "age": {
       "type": "integer",
-      "title": "Age"
+      "title": "Age: "
     },
     "bio": {
       "type": "string",
-      "title": "Bio"
+      "title": "Bio: "
     },
     "password": {
       "type": "string",
-      "title": "Password",
+      "title": "Password: ",
       "minLength": 3
     },
     "telephone": {
       "type": "string",
-      "title": "Telephone",
+      "title": "Telephone: ",
       "minLength": 10
     }
   }
