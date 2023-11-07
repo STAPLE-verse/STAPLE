@@ -8,11 +8,11 @@ import testJson2 from "./testjson2.js"
 
 const schema: RJSFSchema = JSON.parse(testJson2)
 
+const log = (type) => console.log.bind(console, type)
+
 const ThemedForm = withTheme(DaisyTheme)
-const JsonForm = () => {
-  // const schema = JSON.parse(testJson2)
-  console.log(schema)
-  return <div>{<ThemedForm schema={schema} validator={validator} />}</div>
+const JsonForm = (props) => {
+  return <div>{<ThemedForm schema={schema} validator={validator} {...props} />}</div>
 }
 
 export default JsonForm

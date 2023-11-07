@@ -24,6 +24,10 @@ export const Task = () => {
     setOpenAssignmentModal((prev) => !prev)
   }
 
+  const handleJsonFormSubmit = (data) => {
+    console.log(data.formData)
+  }
+
   return (
     <>
       <Head>
@@ -48,7 +52,7 @@ export const Task = () => {
             Do task assignment
           </button>
           <AssignmentModal open={openAssignmentModal}>
-            <div>{JsonForm()}</div>
+            <div>{<JsonForm onSubmit={handleJsonFormSubmit} />}</div>
             <div className="modal-action">
               {/* closes the modal */}
               <button className="btn btn-primary" onClick={handleToggle}>

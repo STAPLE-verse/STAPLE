@@ -14,25 +14,30 @@ const testJson2 = `{
     },
     "lastName": {
       "type": "string",
-      "title": "Last name: "
+      "title": "Last name: ",
+      "default": "Chuck"
     },
     "age": {
       "type": "integer",
-      "title": "Age: "
+      "title": "Age: ",
+      "default": 10
     },
     "bio": {
       "type": "string",
-      "title": "Bio: "
+      "title": "Bio: ",
+      "default": ""
     },
     "password": {
       "type": "string",
       "title": "Password: ",
+      "default": "",
       "minLength": 3
     },
     "telephone": {
       "type": "string",
       "title": "Telephone: ",
-      "minLength": 10
+      "minLength": 10,
+      "default": ""
     }
   }
 }
