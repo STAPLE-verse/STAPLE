@@ -6,12 +6,14 @@ import { withTheme, ThemeProps } from "@rjsf/core"
 import DaisyTheme from "./DaisyTheme"
 import testJson2 from "./testjson2.js"
 
-const schema: RJSFSchema = JSON.parse(testJson2)
+// const schema: RJSFSchema = JSON.parse(testJson2)
 
 const log = (type) => console.log.bind(console, type)
 
 const ThemedForm = withTheme(DaisyTheme)
 const JsonForm = (props) => {
+  const [schema, rest] = [...props]
+  log(rest)
   return <div>{<ThemedForm schema={schema} validator={validator} {...props} />}</div>
 }
 

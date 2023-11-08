@@ -5,7 +5,7 @@ const MyCustomWidget = (props: WidgetProps) => {
   return (
     <input
       type="text"
-      className="input input-bordered w-full max-w-xs"
+      className="input input-bordered m-2 w-full max-w-xs"
       value={props.value || ""}
       required={props.required}
       onChange={(event) => props.onChange(event.target.value)}

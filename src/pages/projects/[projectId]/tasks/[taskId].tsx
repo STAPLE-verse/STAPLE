@@ -12,6 +12,10 @@ import getTask from "src/tasks/queries/getTask"
 import deleteTask from "src/tasks/mutations/deleteTask"
 import AssignmentModal from "src/assignments/components/AssignmentModal"
 import JsonForm from "src/services/jsonconverter/JsonForm"
+// test json
+import testJson2 from "src/services/jsonconverter/testjson.js"
+import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
+
 export const Task = () => {
   const router = useRouter()
   const taskId = useParam("taskId", "number")
@@ -52,7 +56,9 @@ export const Task = () => {
             Do task assignment
           </button>
           <AssignmentModal open={openAssignmentModal}>
-            <div>{<JsonForm onSubmit={handleJsonFormSubmit} />}</div>
+            <div>
+              {<JsonForm onSubmit={handleJsonFormSubmit} schema={getJsonSchema(testJson2)} />}
+            </div>
             <div className="modal-action">
               {/* closes the modal */}
               <button className="btn btn-primary" onClick={handleToggle}>

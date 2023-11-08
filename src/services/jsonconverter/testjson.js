@@ -1,15 +1,56 @@
-const testJson = `{ "@context" : "https://staple.science",
-  "@type" : "Organization",
-  "address": {
-    "@type": "PostalAddress",
-    "addressCountry": "Country or geopolitical region using 2-letter iso codes.",
-    "addressLocality": "City name",
-    "addressRegion": "State name",
-    "postalCode": "Zip code"
+const testJson = `{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "@context": {
+      "type": "string"
+    },
+    "@type": {
+      "type": "string"
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        },
+        "addressCountry": {
+          "type": "string",
+          "pattern": "[A-Z][A-Z]"
+        },
+        "addressLocality": {
+          "type": "string"
+        },
+        "addressRegion": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "@type",
+        "addressCountry",
+        "addressLocality",
+        "addressRegion",
+        "postalCode"
+      ]
+    },
+    "department": {
+      "type": "string"
+    },
+    "legalName": {
+      "type": "string"
+    }
   },
-  "department": "Department or unit associated with",
-  "legalName": "The name of the organization, university, or other affiliation",
-  "numberEmployes": 10
-}`
+  "required": [
+    "@context",
+    "@type",
+    "address",
+    "department",
+    "legalName"
+  ]
+}
+`
 
 export default testJson
