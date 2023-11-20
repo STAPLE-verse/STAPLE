@@ -32,6 +32,10 @@ export const Task = () => {
     console.log(data.formData)
   }
 
+  const handleJsonFormError = (errors) => {
+    console.log(errors)
+  }
+
   return (
     <>
       <Head>
@@ -57,7 +61,13 @@ export const Task = () => {
           </button>
           <AssignmentModal open={openAssignmentModal}>
             <div>
-              {<JsonForm onSubmit={handleJsonFormSubmit} schema={getJsonSchema(testJson2)} />}
+              {
+                <JsonForm
+                  onSubmit={handleJsonFormSubmit}
+                  schema={getJsonSchema(testJson2)}
+                  onError={handleJsonFormError}
+                />
+              }
             </div>
             <div className="modal-action">
               {/* closes the modal */}
