@@ -15,6 +15,7 @@ import JsonForm from "src/services/jsonconverter/JsonForm"
 // test json
 import testJson2 from "src/services/jsonconverter/testjson.js"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
+import { UploadForm } from "src/services/jsonconverter/components/UploadForm"
 
 export const Task = () => {
   const router = useRouter()
@@ -26,6 +27,13 @@ export const Task = () => {
   const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
   const handleToggle = () => {
     setOpenAssignmentModal((prev) => !prev)
+  }
+
+  //FOR openning the upload form during testing
+  //this will be removed
+  const [openJsonModal, setOpenJsonModal] = useState(false)
+  const handleToggleJsonUpload = () => {
+    setOpenJsonModal((prev) => !prev)
   }
 
   const handleJsonFormSubmit = (data) => {
@@ -72,6 +80,28 @@ export const Task = () => {
             <div className="modal-action">
               {/* closes the modal */}
               <button className="btn btn-primary" onClick={handleToggle}>
+                Close
+              </button>
+            </div>
+          </AssignmentModal>
+        </div>
+
+        <div className="mt-4">
+          <button className="btn" onClick={() => handleToggleJsonUpload()}>
+            UpLoad Json Test
+          </button>
+          <AssignmentModal open={openJsonModal}>
+            <div>
+              <UploadForm
+                submitText="Upload"
+                onSubmit={async (values) => {
+                  console.log("Uploading json", values)
+                }}
+              ></UploadForm>
+            </div>
+            <div className="modal-action">
+              {/* closes the modal */}
+              <button className="btn btn-primary" onClick={handleToggleJsonUpload}>
                 Close
               </button>
             </div>
