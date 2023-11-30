@@ -95,7 +95,14 @@ export const Task = () => {
               <UploadForm
                 submitText="Upload"
                 onSubmit={async (values) => {
-                  console.log("Uploading json", values)
+                  //Here call submit function
+                  const payload = new FormData()
+                  payload.append("file", values.files[0])
+                  // await fetch(YOUR_URI, {
+                  //   method: "POST",
+                  //   body: payload, // sets the `Content-Type` header to `multipart/form-data`
+                  // })
+                  console.log("Uploading json", values, payload)
                 }}
               ></UploadForm>
             </div>

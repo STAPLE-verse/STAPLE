@@ -11,19 +11,37 @@ import getContributors from "src/contributors/queries/getContributors"
 // import { usePaginatedQuery } from "@blitzjs/rpc"
 export { FORM_ERROR } from "src/core/components/Form"
 
-// TODO: Check whether this is a good method to go
-// Other methods could be: passing the columns directly
-// Adding projectId directly to Form props as an optional value
-interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
-  projectId?: number
+// Maybe need task id to save json??
+interface UploadFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
+  taskId?: number
 }
 
-export function UploadForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
-  const { projectId, ...formProps } = props
+export function UploadForm<S extends z.ZodType<any, any>>(props: UploadFormProps<S>) {
+  const { taskId, ...formProps } = props
 
   return (
-    <Form<S> {...formProps}>
-      <input type="file" className="file-input w-full max-w-xs" />
+    <Form<S> {...formProps} encType="multipart/form-data">
+      {/* <input type="file" className="file-input w-full max-w-xs" /> */}
+      <Field name="files">
+        {({ input: { value, onChange, ...input } }) => {
+          // const { onChange, ...rest } = props.input
+          // console.log(rest)
+          return (
+            <div>
+              <input
+                onChange={({ target }) => {
+                  console.log(target)
+                  onChange(target.files)
+                }}
+                {...input}
+                type="file"
+                className="file-input w-full max-w-xs"
+                accept=".json"
+              />
+            </div>
+          )
+        }}
+      </Field>
 
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
