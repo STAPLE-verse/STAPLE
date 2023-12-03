@@ -1,55 +1,41 @@
-const testJson = `{
+const testJson = `
+{
   "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Contributor Information",
+  "description": "Please enter your information to document your contributions. This information will be used to share who contributed to a project.",
   "type": "object",
-  "properties": {
-    "@context": {
-      "type": "string"
-    },
-    "@type": {
-      "type": "string"
-    },
-    "address": {
-      "type": "object",
-      "properties": {
-        "@type": {
-          "type": "string"
-        },
-        "addressCountry": {
-          "type": "string",
-          "pattern": "[A-Z][A-Z]"
-        },
-        "addressLocality": {
-          "type": "string"
-        },
-        "addressRegion": {
-          "type": "string"
-        },
-        "postalCode": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "@type",
-        "addressCountry",
-        "addressLocality",
-        "addressRegion",
-        "postalCode"
-      ]
-    },
-    "department": {
-      "type": "string"
-    },
-    "legalName": {
-      "type": "string"
-    }
-  },
   "required": [
-    "@context",
-    "@type",
-    "address",
-    "department",
-    "legalName"
-  ]
+    "givenName",
+    "familyName",
+    "email",
+    "identifier"
+  ],
+  "properties": {
+    "givenName": {
+      "type": "string",
+      "title": "First Name:"
+    },
+    "additionalName": {
+      "type": "string",
+      "title": "Middle Name or Initial:"
+    },
+    "familyName": {
+      "type": "string",
+      "title": "Family or Last Name:"
+    },
+    "email": {
+      "type": "string",
+      "title": "Email:",
+      "pattern": ".*@.*",
+      "description": "Email to be used for official publications, this email can be different than your profile contact email."
+    },
+    "identifier": {
+      "type": "string",
+      "pattern": "https://orcid.org/[0-9].*",
+      "title": "ORCID:",
+      "description": "Enter the complete ORCID url. You can get an ORCID for free from https://orcid.org/."
+    }
+  }
 }
 `
 
