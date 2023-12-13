@@ -48,7 +48,7 @@ const DaisyTheme: ThemeProps = {
   widgets: myWidgets,
   templates: {
     TitleFieldTemplate: MyTitleFieldTemplate,
-    // FieldTemplate: MyFieldTemplate,
+    FieldTemplate: MyFieldTemplate,
   },
 }
 export default DaisyTheme

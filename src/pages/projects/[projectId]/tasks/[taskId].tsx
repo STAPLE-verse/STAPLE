@@ -68,7 +68,7 @@ export const Task = () => {
             Do task assignment
           </button>
           <AssignmentModal open={openAssignmentModal}>
-            <div>
+            <div className="modal-box w-11/12 max-w-7xl">
               {
                 <JsonForm
                   onSubmit={handleJsonFormSubmit}
