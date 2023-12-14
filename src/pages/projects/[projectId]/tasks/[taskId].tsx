@@ -17,6 +17,18 @@ import testJson2 from "src/services/jsonconverter/testjson.js"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import { UploadForm } from "src/services/jsonconverter/components/UploadForm"
 
+//get from db
+const defaultSchemas = [
+  {
+    id: 1,
+    name: "schema 1",
+  },
+  {
+    id: 2,
+    name: "schema 2",
+  },
+]
+
 export const Task = () => {
   const router = useRouter()
   const taskId = useParam("taskId", "number")
@@ -63,12 +75,45 @@ export const Task = () => {
           </p>
           <p className="italic">Last update: {task.updatedAt.toString()}</p>
         </div>
+
+        <div className="flex flex-col gap-2 mt-4">
+          <p>Current Schema: Default</p>
+          <div className="mt-4">
+            <button className="btn" onClick={() => handleToggleJsonUpload()}>
+              Change Current Schema
+            </button>
+            <AssignmentModal open={openJsonModal}>
+              <div>
+                <UploadForm
+                  submitText="Upload"
+                  schemas={defaultSchemas}
+                  onSubmit={async (values) => {
+                    //Here call submit function
+                    const payload = new FormData()
+                    if (values.files != undefined) {
+                      payload.append("file", values.files[0])
+                    }
+
+                    console.log("Uploading json", values, payload)
+                  }}
+                ></UploadForm>
+              </div>
+              <div className="modal-action">
+                {/* closes the modal */}
+                <button className="btn btn-primary" onClick={handleToggleJsonUpload}>
+                  Close
+                </button>
+              </div>
+            </AssignmentModal>
+          </div>
+        </div>
+
         <div className="mt-4">
           <button className="btn" onClick={() => handleToggle()}>
-            Do task assignment
+            Assign Schema
           </button>
           <AssignmentModal open={openAssignmentModal}>
-            <div className="modal-box w-11/12 max-w-7xl">
+            <div className="w-11/12 max-w-7xl">
               {
                 <JsonForm
                   onSubmit={handleJsonFormSubmit}
@@ -80,35 +125,6 @@ export const Task = () => {
             <div className="modal-action">
               {/* closes the modal */}
               <button className="btn btn-primary" onClick={handleToggle}>
-                Close
-              </button>
-            </div>
-          </AssignmentModal>
-        </div>
-
-        <div className="mt-4">
-          <button className="btn" onClick={() => handleToggleJsonUpload()}>
-            UpLoad Json Test
-          </button>
-          <AssignmentModal open={openJsonModal}>
-            <div>
-              <UploadForm
-                submitText="Upload"
-                onSubmit={async (values) => {
-                  //Here call submit function
-                  const payload = new FormData()
-                  payload.append("file", values.files[0])
-                  // await fetch(YOUR_URI, {
-                  //   method: "POST",
-                  //   body: payload, // sets the `Content-Type` header to `multipart/form-data`
-                  // })
-                  console.log("Uploading json", values, payload)
-                }}
-              ></UploadForm>
-            </div>
-            <div className="modal-action">
-              {/* closes the modal */}
-              <button className="btn btn-primary" onClick={handleToggleJsonUpload}>
                 Close
               </button>
             </div>

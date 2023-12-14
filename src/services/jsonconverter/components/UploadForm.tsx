@@ -14,34 +14,47 @@ export { FORM_ERROR } from "src/core/components/Form"
 // Maybe need task id to save json??
 interface UploadFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   taskId?: number
+  schemas?: Array<any>
 }
 
 export function UploadForm<S extends z.ZodType<any, any>>(props: UploadFormProps<S>) {
-  const { taskId, ...formProps } = props
+  const { taskId, schemas, ...formProps } = props
 
   return (
     <Form<S> {...formProps} encType="multipart/form-data">
       {/* <input type="file" className="file-input w-full max-w-xs" /> */}
-      <Field name="files">
-        {({ input: { value, onChange, ...input } }) => {
-          // const { onChange, ...rest } = props.input
-          // console.log(rest)
-          return (
-            <div>
-              <input
-                onChange={({ target }) => {
-                  console.log(target)
-                  onChange(target.files)
-                }}
-                {...input}
-                type="file"
-                className="file-input w-full max-w-xs"
-                accept=".json"
-              />
-            </div>
-          )
-        }}
-      </Field>
+
+      <div>
+        <label>Choose an schema: </label>
+        <Field name="schema" component="select">
+          {schemas &&
+            schemas.map((val) => (
+              <option key={val.id} value={val.id}>
+                {val.name}
+              </option>
+            ))}
+        </Field>
+      </div>
+      <div className="mt-4">
+        <label>Or upload a new one: </label>
+        <Field name="files">
+          {({ input: { value, onChange, ...input } }) => {
+            return (
+              <div>
+                <input
+                  onChange={({ target }) => {
+                    onChange(target.files)
+                  }}
+                  {...input}
+                  type="file"
+                  className="file-input w-full max-w-xs"
+                  accept=".json"
+                />
+              </div>
+            )
+          }}
+        </Field>
+      </div>
 
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>

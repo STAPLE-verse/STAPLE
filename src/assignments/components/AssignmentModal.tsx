@@ -14,7 +14,7 @@ const AssignmentModal = ({ children, open }: Props) => {
 
   return (
     <dialog className={modalClass}>
-      <div className="modal-box w-11/12 max-w-7xl">{children}</div>
+      <div className="modal-box ">{children}</div>
     </dialog>
   )
 }
