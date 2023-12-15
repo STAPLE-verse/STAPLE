@@ -82,7 +82,7 @@ export const Task = () => {
             <button className="btn" onClick={() => handleToggleJsonUpload()}>
               Change Current Schema
             </button>
-            <AssignmentModal open={openJsonModal}>
+            <AssignmentModal open={openJsonModal} size="w-11/12 max-w-5xl">
               <div>
                 <UploadForm
                   submitText="Upload"
@@ -112,7 +112,7 @@ export const Task = () => {
           <button className="btn" onClick={() => handleToggle()}>
             Assign Schema
           </button>
-          <AssignmentModal open={openAssignmentModal}>
+          <AssignmentModal open={openAssignmentModal} size="w-11/12 max-w-5xl">
             <div className="w-11/12 max-w-7xl">
               {
                 <JsonForm
