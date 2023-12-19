@@ -12,22 +12,33 @@ import getTask from "src/tasks/queries/getTask"
 import deleteTask from "src/tasks/mutations/deleteTask"
 import AssignmentModal from "src/assignments/components/AssignmentModal"
 import JsonForm from "src/services/jsonconverter/JsonForm"
-// test json
+
+// Load these from database
 import testJson2 from "src/services/jsonconverter/testjson.js"
+import JsonSchema1 from "src/services/jsonconverter/schema1"
+import JsonSchema2 from "src/services/jsonconverter/schema2"
+
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import { UploadForm } from "src/services/jsonconverter/components/UploadForm"
 
 //get from db
 const defaultSchemas = [
   {
-    id: 1,
-    name: "schema 1",
+    id: 0,
+    name: "Schema 1",
   },
   {
-    id: 2,
-    name: "schema 2",
+    id: 1,
+    name: "Schema 2",
   },
 ]
+function getCurrentJson(schema) {
+  const currentJsons = [JsonSchema1, JsonSchema2]
+  if (schema.id < currentJsons.length) {
+    return currentJsons[schema.id]
+  }
+  return JsonSchema1
+}
 
 export const Task = () => {
   const router = useRouter()
@@ -40,6 +51,9 @@ export const Task = () => {
   const handleToggle = () => {
     setOpenAssignmentModal((prev) => !prev)
   }
+
+  //For setting the currentSchema
+  const [currentSchema, setCurrentSchema] = useState(defaultSchemas[0])
 
   //FOR openning the upload form during testing
   //this will be removed
@@ -77,21 +91,23 @@ export const Task = () => {
         </div>
 
         <div className="flex flex-col gap-2 mt-4">
-          <p>Current Schema: Default</p>
+          <p>Current Schema: {currentSchema ? currentSchema.name : ""}</p>
           <div className="mt-4">
             <button className="btn" onClick={() => handleToggleJsonUpload()}>
               Change Current Schema
             </button>
-            <AssignmentModal open={openJsonModal} size="w-11/12 max-w-5xl">
+            <AssignmentModal open={openJsonModal} size="w-11/12 max-w-3xl">
               <div>
                 <UploadForm
-                  submitText="Upload"
+                  submitText="Change"
                   schemas={defaultSchemas}
                   onSubmit={async (values) => {
                     //Here call submit function
                     const payload = new FormData()
                     if (values.files != undefined) {
                       payload.append("file", values.files[0])
+                    } else {
+                      setCurrentSchema(defaultSchemas[values.schema])
                     }
 
                     console.log("Uploading json", values, payload)
@@ -113,11 +129,11 @@ export const Task = () => {
             Assign Schema
           </button>
           <AssignmentModal open={openAssignmentModal} size="w-11/12 max-w-5xl">
-            <div className="w-11/12 max-w-7xl">
+            <div className="font-sans">
               {
                 <JsonForm
                   onSubmit={handleJsonFormSubmit}
-                  schema={getJsonSchema(testJson2)}
+                  schema={getJsonSchema(getCurrentJson(currentSchema))}
                   onError={handleJsonFormError}
                 />
               }

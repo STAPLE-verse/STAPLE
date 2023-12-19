@@ -46,9 +46,5 @@ const myWidgets: RegistryWidgetsType = {
 
 const DaisyTheme: ThemeProps = {
   widgets: myWidgets,
-  templates: {
-    TitleFieldTemplate: MyTitleFieldTemplate,
-    FieldTemplate: MyFieldTemplate,
-  },
 }
 export default DaisyTheme
