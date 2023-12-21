@@ -3,21 +3,23 @@ import { ThemeProps } from "@rjsf/core"
 
 const MyCustomWidget = (props: WidgetProps) => {
   return (
-    <input
-      type="text"
-      style={{ fontSize: "1rem" }}
-      className="input input-bordered m-2 w-full max-w-xs font-serif"
-      value={props.value || ""}
-      required={props.required}
-      onChange={(event) => props.onChange(event.target.value)}
-    />
+    <div className="flex">
+      <input
+        type="text"
+        style={{ fontSize: "1rem" }}
+        className="input input-bordered m-2 w-full max-w-xs font-serif"
+        value={props.value || ""}
+        required={props.required}
+        onChange={(event) => props.onChange(event.target.value)}
+      />
+    </div>
   )
 }
 
 const MyTitleFieldTemplate = (props: TitleFieldProps) => {
   const { id, required, title } = props
   return (
-    <header id={id} className="font-serif">
+    <header id={id}>
       {title}
       {required && <mark>*</mark>}
     </header>
@@ -46,5 +48,8 @@ const myWidgets: RegistryWidgetsType = {
 
 const DaisyTheme: ThemeProps = {
   widgets: myWidgets,
+  // templates: {
+  //   FieldTemplate: MyFieldTemplate,
+  // },
 }
 export default DaisyTheme
