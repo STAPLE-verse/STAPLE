@@ -5,15 +5,7 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import getColumns from "../queries/getColumns"
 import { Column, Task } from "db"
 import type { PointerEvent } from "react"
-import {
-  DndContext,
-  DragOverlay,
-  MouseSensor,
-  PointerSensor,
-  PointerSensorOptions,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core"
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
 
 import updateTask from "../mutations/updateTask"
 import TaskCard from "./TaskCard"
@@ -42,7 +34,8 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
 
   const [isDropped, setIsDropped] = useState(false)
 
-  const [activeTask, setActiveTask] = useState(null)
+  type TaskOrNull = Task | null
+  const [activeTask, setActiveTask] = useState<TaskOrNull>(null)
 
   // Custom sensor to prevent drag and drop on click
   class NoActivePointerSensor extends PointerSensor {
@@ -82,7 +75,12 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
   // Return each column iteratively
   return (
     <div className="flex flex-row justify-center space-x-10 h-full">
-      <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
+      <DndContext
+        onDragEnd={handleDragEnd}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        sensors={sensors}
+      >
         {columns.map((column) => {
           return <TaskColumn column={column} key={column.id} tasks={column.tasks} />
         })}
@@ -94,10 +92,10 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
         >
           {activeTask ? (
             <TaskCard
-              taskId={activeTask["id"]}
-              key={activeTask["id"]}
-              name={activeTask["name"]}
-              projectId={activeTask["projectId"]}
+              taskId={activeTask.id}
+              key={activeTask.id}
+              name={activeTask.name}
+              projectId={activeTask.projectId}
             />
           ) : null}
         </DragOverlay>
@@ -121,22 +119,23 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
     setActiveTask(activeTask)
   }
 
+  function handleDragOver(event) {}
+
   async function handleDragEnd(event) {
     // Sorry for this spagetthi of a code...
     const { active, over } = event
 
     if (!over) {
+      setActiveTask(null)
       return
     }
     // This is a bit wasteful because if the task is dropped back in the
     // original column the mutation still runs
     // Also I have to get all the task data for the update because of the
     // taskUpdate mutation schema
-    const taskId = parseInt(active.id.match(/\d+/))
     const newColumnId = parseInt(over.id.match(/\d+/))
     try {
-      const activeTask = findTaskById(columns, taskId)
-      if (activeTask.columnId !== newColumnId) {
+      if (activeTask !== null && activeTask.columnId !== newColumnId) {
         activeTask.columnId = newColumnId
 
         await updateTaskMutation({

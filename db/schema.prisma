@@ -68,13 +68,19 @@ model Token {
 //   RESET_PASSWORD
 // }
 
+enum ContributorRole {
+  PROJECT_MANAGER
+  CONTRIBUTOR
+}
+
 model Contributor {
-  id          Int          @id @default(autoincrement())
+  id          Int             @id @default(autoincrement())
   userId      Int
   projectId   Int
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project     Project      @relation(fields: [projectId], references: [id])
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project     Project         @relation(fields: [projectId], references: [id])
   assignments Assignment[]
+  role        ContributorRole @default(CONTRIBUTOR)
 }
 
 model Project {
