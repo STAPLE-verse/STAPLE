@@ -6,6 +6,7 @@ import { useRouter } from "next/router"
 // import SortableTaskCard from "./SortableTaskCard"
 import TaskCard from "./TaskCard"
 import { useDroppable, DragOverlay } from "@dnd-kit/core"
+import DraggableTaskCard from "./DraggableTaskCard"
 
 interface TaskColumnProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
   column: Column
@@ -38,8 +39,13 @@ const TaskColumn = ({ column, tasks }: TaskColumnProps) => {
         style={style}
         className="flex flex-col flex-grow h-full space-y-6 p-3 rounded-lg"
       >
-        {tasks.map((task) => (
-          <TaskCard taskId={task.id} key={task.id} name={task.name} projectId={task.projectId} />
+        {tasks.map((task, index) => (
+          <DraggableTaskCard
+            taskId={task.id}
+            key={task.id}
+            name={task.name}
+            projectId={task.projectId}
+          />
         ))}
       </div>
     </div>

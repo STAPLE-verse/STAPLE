@@ -35,6 +35,7 @@ export const ContributorsList = () => {
       {contributors.map((contributor) => {
         const firstName = contributor["user"].firstName
         const lastName = contributor["user"].lastName
+        const username = contributor["user"].username
         const initial = getInitials(firstName, lastName)
 
         return (
@@ -47,9 +48,7 @@ export const ContributorsList = () => {
                   </div>
                 </div>
                 <div className="text-2xl ml-4">
-                  <p>
-                    {firstName} {lastName}
-                  </p>
+                  <p>{firstName || lastName ? `${firstName} ${lastName}` : username}</p>
                 </div>
               </div>
               <div className="justify-end">

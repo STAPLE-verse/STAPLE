@@ -12,7 +12,6 @@ import Layout from "src/core/layouts/Layout"
 import getTasks from "src/tasks/queries/getTasks"
 import TaskTable from "src/tasks/components/TaskTable"
 import TaskBoard from "src/tasks/components/TaskBoard"
-import Modal from "src/core/components/Modal"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -30,10 +29,6 @@ export const TasksList = () => {
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
-
-  // New task modal toggle
-  // const [open, setOpen] = useState(false)
-  // const handleToggle = () => setOpen((prev) => !prev)
 
   // const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   // const goToNextPage = () => router.push({ query: { page: page + 1 } })

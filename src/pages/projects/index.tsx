@@ -6,13 +6,23 @@ import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import Layout from "src/core/layouts/Layout"
 import getProjects from "src/projects/queries/getProjects"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 const ITEMS_PER_PAGE = 7
 
 export const ProjectsList = () => {
   const router = useRouter()
+  const currentUser = useCurrentUser()
   const page = Number(router.query.page) || 0
+  // Only list projects that the User is a Contributor on
   const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
+    where: {
+      contributors: {
+        some: {
+          userId: currentUser?.id,
+        },
+      },
+    },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,

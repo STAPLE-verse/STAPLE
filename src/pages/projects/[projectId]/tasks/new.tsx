@@ -37,6 +37,7 @@ const NewTaskPage = () => {
                   columnId: values.columnId,
                   projectId: projectId!,
                   elementId: values.elementId,
+                  contributorId: values.contributorId,
                 })
                 await router.push(Routes.ShowTaskPage({ projectId: projectId!, taskId: task.id }))
               } catch (error: any) {

@@ -14,7 +14,18 @@ interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<
 export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
   const { projectId, ...formProps } = props
 
-  const [users] = useQuery(getUsers, undefined)
+  const [users] = useQuery(getUsers, {
+    where: {
+      // Filter out users who are NOT contributors to the project
+      NOT: {
+        contributions: {
+          some: {
+            projectId,
+          },
+        },
+      },
+    },
+  })
 
   return (
     <Form<S> {...formProps}>
@@ -23,7 +34,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         name="userId"
         label="Select User"
         options={users}
-        optionText="email"
+        optionText="username"
       />
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
