@@ -41,7 +41,7 @@ const Navbar = () => {
   }, [theme])
 
   return (
-    <div className="navbar bg-base-100 sticky top-0 border-b border-gray-300 sm:px-4 md:px-6 lg:px-8 xl:px-10">
+    <div className="flex-0 navbar bg-base-100 sticky top-0 border-b border-gray-300 sm:px-4 md:px-6 lg:px-8 xl:px-10">
       {/* Tabs */}
       {/* On the left */}
       <div className="flex-1">
