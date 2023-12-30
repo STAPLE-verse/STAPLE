@@ -3,8 +3,6 @@ import { Form as FinalForm, FormProps as FinalFormProps } from "react-final-form
 import { z } from "zod"
 import { validateZodSchema } from "blitz"
 export { FORM_ERROR } from "final-form"
-import Link from "next/link"
-import { Url } from "next/dist/shared/lib/router/router"
 
 export interface FormProps<S extends z.ZodType<any, any>>
   extends Omit<PropsWithoutRef<JSX.IntrinsicElements["form"]>, "onSubmit"> {
@@ -17,7 +15,8 @@ export interface FormProps<S extends z.ZodType<any, any>>
   initialValues?: FinalFormProps<z.infer<S>>["initialValues"]
   /** Route to go if canceled */
   /** TODO: I have no clue how to check for this properly */
-  cancelRoute?: Url
+  cancelText?: string
+  onCancel?: () => void
 }
 
 export function Form<S extends z.ZodType<any, any>>({
@@ -26,7 +25,8 @@ export function Form<S extends z.ZodType<any, any>>({
   schema,
   initialValues,
   onSubmit,
-  cancelRoute,
+  onCancel,
+  cancelText,
   ...props
 }: FormProps<S>) {
   return (
@@ -46,17 +46,16 @@ export function Form<S extends z.ZodType<any, any>>({
           )}
 
           {submitText && (
-            // TODO: Look for a better way to do this
-            <div className={cancelRoute ? "" : "join join-vertical lg:join-horizontal"}>
-              <button className="btn mt-4" type="submit" disabled={submitting}>
-                {submitText}
+            <button className="btn mt-4" type="submit" disabled={submitting}>
+              {submitText}
+            </button>
+          )}
+
+          {cancelText && (
+            <div className="flex flex-row justify-end mt-auto">
+              <button className="btn mt-4" onClick={onCancel}>
+                {cancelText}
               </button>
-              {cancelRoute && (
-                // TODO: Although href is expecting a type of URL it never gets rendered without it
-                <Link className="btn ml-4" href={cancelRoute}>
-                  Cancel
-                </Link>
-              )}
             </div>
           )}
 

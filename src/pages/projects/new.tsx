@@ -19,7 +19,8 @@ const NewProjectPage = () => {
           <ProjectForm
             submitText="Create Project"
             schema={FormProjectSchema}
-            cancelRoute={Routes.ProjectsPage()}
+            cancelText="Cancel"
+            onCancel={() => router.push(Routes.ProjectsPage())}
             onSubmit={async (values) => {
               try {
                 const project = await createProjectMutation(values)

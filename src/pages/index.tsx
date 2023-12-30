@@ -3,6 +3,7 @@ import Link from "next/link"
 import { Routes, BlitzPage } from "@blitzjs/next"
 // import styles from "src/styles/Home.module.css"
 import Head from "next/head"
+import Image from "next/image"
 
 /*
  * This file is just for a pleasant getting started page for your new app.
@@ -29,12 +30,13 @@ const Home: BlitzPage = () => {
         <title>{"Home"}</title>
       </Head>
 
-      <main className="flex flex-col h-screen">
-        <div className="flex flex-col justify-center gap-8 text-center flex-grow">
-          <h1>STAPLE: Science Tracking Across the Project Lifespan</h1>
+      <main className="flex h-screen">
+        <div className="flex flex-col items-center flex-grow">
+          <Image src="/logo_white_big.png" alt="" width={300} height={300} />
+          <h1 className="pb-8">STAPLE: Science Tracking Across the Project Lifespan</h1>
 
           {/* Auth */}
-          <div className="flex flex-row gap-8 justify-center">
+          <div className="flex flex-row gap-8">
             <Suspense fallback="Loading...">
               <UserInfo />
             </Suspense>

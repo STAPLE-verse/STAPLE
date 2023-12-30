@@ -17,6 +17,12 @@ export const Signup = z.object({
   username: z.string().min(3),
 })
 
+export const Tos = z.object({
+  tos: z.boolean().refine((value) => value === true, {
+    message: "The terms of service must be accepted to continue.",
+  }),
+})
+
 export const Login = z.object({
   email,
   password: z.string(),

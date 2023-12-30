@@ -22,6 +22,8 @@ model User {
   email          String   @unique
   hashedPassword String?
   role           String   @default("USER")
+  institution    String?
+  tos            Boolean?
 
   tokens   Token[]
   sessions Session[]

@@ -14,8 +14,8 @@ type LoginFormProps = {
 export const LoginForm = (props: LoginFormProps) => {
   const [loginMutation] = useMutation(login)
   return (
-    <div className="flex flex-col justify-center items-center text-center flex-grow">
-      <h1>Login</h1>
+    <div className="flex flex-col max-w-3xl mx-auto w-full">
+      <h1 className="text-center">Login</h1>
 
       <Form
         submitText="Login"
@@ -37,19 +37,30 @@ export const LoginForm = (props: LoginFormProps) => {
           }
         }}
       >
-        <LabeledTextField name="email" label="Email" placeholder="Email" className="mb-4" />
-        <LabeledTextField name="password" label="Password" placeholder="Password" type="password" />
-        <div className="pt-4">
-          <Link className="italic" href={Routes.ForgotPasswordPage()}>
-            Forgot your password?
-          </Link>
-        </div>
+        <LabeledTextField name="email" label="Email" placeholder="Email" className="mb-4 w-full" />
+        <LabeledTextField
+          name="password"
+          label="Password"
+          placeholder="Password"
+          type="password"
+          className="w-full"
+        />
       </Form>
 
-      <div className="mt-2">
-        {/* <div className="divider">OR</div> */}
-        <Link className="btn" href={Routes.SignupPage()}>
-          Sign Up
+      <div className="mt-4">
+        <Link className="italic" href={Routes.ForgotPasswordPage()}>
+          Forgot your password?
+        </Link>
+      </div>
+
+      <div className="flex flex-row gap-4 mt-2">
+        <p>Don’t have a STAPLE Account yet?</p>
+        <Link href={Routes.SignupPage()}>Register now</Link>
+      </div>
+
+      <div className="flex flex-row justify-end mt-auto">
+        <Link className="btn" href={Routes.Home()}>
+          Go back
         </Link>
       </div>
     </div>

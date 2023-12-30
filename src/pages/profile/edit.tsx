@@ -58,7 +58,8 @@ export const EditProfile = () => {
             submitText="Update Profile"
             schema={FormProfileSchema}
             initialValues={initialValues}
-            cancelRoute={Routes.ProfilePage({})}
+            cancelText="Cancel"
+            onCancel={() => router.push(Routes.ProfilePage())}
             onSubmit={async (values) => {
               try {
                 const updated = await updateUserMutation({
