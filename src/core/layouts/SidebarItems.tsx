@@ -75,12 +75,10 @@ export const HomeSidebarItems = (whichActive: string | null = null): SidebarItem
     {
       icon: <ClipboardDocumentListIcon className="w-6 h-6" />,
       text: "Tasks",
+      onClick: async () => {
+        await router.push(Routes.AllTasksPage())
+      },
       active: whichActive === "Tasks",
-    },
-    {
-      icon: <UsersIcon className="w-6 h-6" />,
-      text: "Contributors",
-      active: whichActive === "Contributors",
     },
   ]
 }
