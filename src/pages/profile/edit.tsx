@@ -3,7 +3,7 @@ import React, { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
 import Head from "next/head"
 import getCurrentUser from "src/users/queries/getCurrentUser"
-import { useQuery, useMutation, setQueryData } from "@blitzjs/rpc"
+import { useQuery, useMutation } from "@blitzjs/rpc"
 import deleteUser from "src/users/mutations/deleteUser"
 import { FORM_ERROR, Form, FormProps } from "src/core/components/Form"
 import { LabeledTextField } from "src/core/components/LabeledTextField"
@@ -13,6 +13,7 @@ export { FORM_ERROR } from "src/core/components/Form"
 import { FormProfileSchema } from "src/users/schemas"
 import { Routes } from "@blitzjs/next"
 import logout from "src/auth/mutations/logout"
+import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 
 export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
@@ -76,7 +77,7 @@ export const EditProfile = () => {
             }}
           />
 
-          <div className="flex justify-end">
+          <div className="flex justify-end mt-4">
             <button
               type="button"
               className="btn"
@@ -110,6 +111,14 @@ const EditProfilePage = () => {
 }
 
 EditProfilePage.authenticate = true
-EditProfilePage.getLayout = (page) => <Layout>{page}</Layout>
+EditProfilePage.getLayout = (page) => {
+  const sidebarItems = HomeSidebarItems(null)
+
+  return (
+    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
+      {page}
+    </Layout>
+  )
+}
 
 export default EditProfilePage

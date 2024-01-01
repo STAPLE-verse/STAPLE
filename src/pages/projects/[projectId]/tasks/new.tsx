@@ -1,22 +1,26 @@
 import { Routes } from "@blitzjs/next"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { FormTaskSchema } from "src/tasks/schemas"
 import createTask from "src/tasks/mutations/createTask"
 import { TaskForm, FORM_ERROR } from "src/tasks/components/TaskForm"
 import { Suspense } from "react"
-import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Layout from "src/core/layouts/Layout"
 import Head from "next/head"
+import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import getProject from "src/projects/queries/getProject"
 
 const NewTaskPage = () => {
   const router = useRouter()
   const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
   const [createTaskMutation] = useMutation(createTask)
 
+  const sidebarItems = ProjectSidebarItems(projectId!, null)
+
   return (
-    <>
+    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
         <title>Create New Task</title>
       </Head>
@@ -50,15 +54,10 @@ const NewTaskPage = () => {
           />
         </Suspense>
       </main>
-    </>
+    </Layout>
   )
 }
 
 NewTaskPage.authenticate = true
-NewTaskPage.getLayout = (page) => (
-  <Layout>
-    <ProjectLayout>{page}</ProjectLayout>
-  </Layout>
-)
 
 export default NewTaskPage

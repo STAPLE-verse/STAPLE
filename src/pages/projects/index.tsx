@@ -3,10 +3,11 @@ import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
 import { usePaginatedQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
+import router, { useRouter } from "next/router"
 import Layout from "src/core/layouts/Layout"
 import getProjects from "src/projects/queries/getProjects"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 
 const ITEMS_PER_PAGE = 7
 
@@ -67,8 +68,10 @@ export const ProjectsList = () => {
 }
 
 const ProjectsPage = () => {
+  const sidebarItems = HomeSidebarItems("Projects")
+
   return (
-    <Layout>
+    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
       <Head>
         <title>Projects</title>
       </Head>

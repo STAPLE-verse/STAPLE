@@ -1,7 +1,6 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
-import Link from "next/link"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
@@ -9,20 +8,23 @@ import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import getContributor from "src/contributors/queries/getContributor"
 import deleteContributor from "src/contributors/mutations/deleteContributor"
-import ProjectLayout from "src/core/layouts/ProjectLayout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import getProject from "src/projects/queries/getProject"
+import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 
 export const Contributor = () => {
   const currentUser = useCurrentUser()
   const router = useRouter()
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
+  const sidebarItems = ProjectSidebarItems(projectId!, null)
   const [deleteContributorMutation] = useMutation(deleteContributor)
   const [contributor] = useQuery(getContributor, { id: contributorId })
   const user = contributor.user
 
   return (
-    <>
+    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
         <title>{user.username}</title>
       </Head>
@@ -83,13 +85,11 @@ export const Contributor = () => {
           </button>
         </div>
       </main>
-    </>
+    </Layout>
   )
 }
 
 const ShowContributorPage = () => {
-  const projectId = useParam("projectId", "number")
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Contributor />
@@ -98,10 +98,5 @@ const ShowContributorPage = () => {
 }
 
 ShowContributorPage.authenticate = true
-ShowContributorPage.getLayout = (page) => (
-  <Layout>
-    <ProjectLayout>{page}</ProjectLayout>
-  </Layout>
-)
 
 export default ShowContributorPage

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react"
+import React, { createContext, useContext, useState, ReactNode, MouseEventHandler } from "react"
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -13,9 +13,10 @@ const SidebarContext = createContext<SidebarContextProps | undefined>(undefined)
 
 interface SidebarProps {
   children: ReactNode
+  title?: string
 }
 
-export default function Sidebar({ children }: SidebarProps) {
+export default function Sidebar({ children, title }: SidebarProps) {
   const [expanded, setExpanded] = useState(true)
 
   return (
@@ -24,7 +25,9 @@ export default function Sidebar({ children }: SidebarProps) {
         <nav className="h-full flex flex-col bg-white border-r shadow-sm">
           <div className="p-4 pb-2 flex justify-between items-center">
             {/* Add your logo component here */}
-            <h2 className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`}>Menu</h2>
+            <h2 className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`}>
+              {title ? title : "Menu"}
+            </h2>
             <button
               onClick={() => setExpanded((curr) => !curr)}
               className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
@@ -60,14 +63,15 @@ export default function Sidebar({ children }: SidebarProps) {
   )
 }
 
-interface SidebarItemProps {
+export interface SidebarItemProps {
   icon: ReactNode
   text: string
   active?: boolean
   alert?: boolean
+  onClick?: MouseEventHandler<HTMLLIElement>
 }
 
-export function SidebarItem({ icon, text, active, alert }: SidebarItemProps) {
+export function SidebarItem({ icon, text, active, alert, onClick }: SidebarItemProps) {
   const contextValue = useContext(SidebarContext)
 
   if (!contextValue) {
@@ -77,6 +81,12 @@ export function SidebarItem({ icon, text, active, alert }: SidebarItemProps) {
 
   const { expanded } = contextValue
 
+  const handleClick: MouseEventHandler<HTMLLIElement> = (event) => {
+    if (onClick) {
+      onClick(event)
+    }
+  }
+
   return (
     <li
       className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
@@ -84,6 +94,7 @@ export function SidebarItem({ icon, text, active, alert }: SidebarItemProps) {
           ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
           : "hover:bg-indigo-50 text-gray-600"
       }`}
+      onClick={handleClick}
     >
       {icon}
       <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>

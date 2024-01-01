@@ -1,17 +1,18 @@
-import { Suspense, useState } from "react"
+import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { Tab } from "@headlessui/react"
 
-import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Layout from "src/core/layouts/Layout"
 import getTasks from "src/tasks/queries/getTasks"
 import TaskTable from "src/tasks/components/TaskTable"
 import TaskBoard from "src/tasks/components/TaskBoard"
+import getProject from "src/projects/queries/getProject"
+import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -94,8 +95,13 @@ export const TasksList = () => {
 }
 
 const TasksPage = () => {
+  const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
+
+  const sidebarItems = ProjectSidebarItems(projectId!, "Tasks")
+
   return (
-    <>
+    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
         <title>Tasks</title>
       </Head>
@@ -105,14 +111,8 @@ const TasksPage = () => {
           <TasksList />
         </Suspense>
       </main>
-    </>
+    </Layout>
   )
 }
-
-TasksPage.getLayout = (page) => (
-  <Layout>
-    <ProjectLayout>{page}</ProjectLayout>
-  </Layout>
-)
 
 export default TasksPage

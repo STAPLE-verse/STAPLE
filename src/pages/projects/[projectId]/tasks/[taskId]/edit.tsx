@@ -7,16 +7,18 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
-import ProjectLayout from "src/core/layouts/ProjectLayout"
 import { FormTaskSchema } from "src/tasks/schemas"
 import getTask from "src/tasks/queries/getTask"
 import updateTask from "src/tasks/mutations/updateTask"
 import { TaskForm, FORM_ERROR } from "src/tasks/components/TaskForm"
+import getProject from "src/projects/queries/getProject"
+import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 
 export const EditTask = () => {
   const router = useRouter()
   const taskId = useParam("taskId", "number")
   const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
   const [task, { setQueryData }] = useQuery(
     getTask,
     { id: taskId },
@@ -27,6 +29,8 @@ export const EditTask = () => {
   )
   const [updateTaskMutation] = useMutation(updateTask)
 
+  const sidebarItems = ProjectSidebarItems(projectId!, null)
+
   // I have to make initial values explicit for the update to work why?
   const initialValues = {
     name: task.name,
@@ -35,7 +39,7 @@ export const EditTask = () => {
   }
 
   return (
-    <>
+    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
         <title>Edit {task.name}</title>
       </Head>
@@ -78,7 +82,7 @@ export const EditTask = () => {
           </Link>
         </Suspense>
       </main>
-    </>
+    </Layout>
   )
 }
 
@@ -93,10 +97,5 @@ const EditTaskPage = () => {
 }
 
 EditTaskPage.authenticate = true
-EditTaskPage.getLayout = (page) => (
-  <Layout>
-    <ProjectLayout>{page}</ProjectLayout>
-  </Layout>
-)
 
 export default EditTaskPage

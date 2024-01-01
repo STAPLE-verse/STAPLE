@@ -1,14 +1,15 @@
 import Head from "next/head"
-import React from "react"
+import React, { MouseEventHandler, ReactNode } from "react"
 import { BlitzLayout } from "@blitzjs/next"
 import MainNavbar from "../components/MainNavbar"
-import Sidebar, { SidebarItem } from "../components/Sidebar"
-import { HomeIcon } from "@heroicons/react/24/outline"
+import Sidebar, { SidebarItem, SidebarItemProps } from "../components/Sidebar"
 
-const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
-  title,
-  children,
-}) => {
+const Layout: BlitzLayout<{
+  title?: string
+  children?: React.ReactNode
+  sidebarItems?: SidebarItemProps[]
+  sidebarTitle?: string
+}> = ({ title, children, sidebarItems, sidebarTitle }) => {
   return (
     <>
       <Head>
@@ -18,8 +19,17 @@ const Layout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
       <div className="flex flex-col h-screen">
         <MainNavbar />
         <div className="flex flex-grow">
-          <Sidebar>
-            <SidebarItem icon={<HomeIcon className="w-6 h-6" />} text="Home" alert />
+          <Sidebar title={sidebarTitle}>
+            {sidebarItems?.map((item, index) => (
+              <SidebarItem
+                key={index}
+                icon={item.icon}
+                text={item.text}
+                onClick={item.onClick}
+                alert={item.alert}
+                active={item.active}
+              />
+            ))}
           </Sidebar>
           <div className="flex-1 overflow-auto p-4">{children}</div>
         </div>

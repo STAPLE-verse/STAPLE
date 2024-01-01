@@ -11,7 +11,7 @@ import { FormProjectSchema } from "src/projects/schemas"
 import getProject from "src/projects/queries/getProject"
 import updateProject from "src/projects/mutations/updateProject"
 import { ProjectForm, FORM_ERROR } from "src/projects/components/ProjectForm"
-import ProjectLayout from "src/core/layouts/ProjectLayout"
+import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 
 export const EditProject = () => {
   const router = useRouter()
@@ -34,8 +34,10 @@ export const EditProject = () => {
     description: project.description!,
   }
 
+  const sidebarItems = ProjectSidebarItems(projectId!, null)
+
   return (
-    <>
+    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
         <title>Edit {project.name}</title>
       </Head>
@@ -48,6 +50,8 @@ export const EditProject = () => {
             submitText="Update Project"
             schema={FormProjectSchema}
             initialValues={initialValues}
+            cancelText="Cancel"
+            onCancel={() => router.push(Routes.ShowProjectPage({ projectId: projectId! }))}
             onSubmit={async (values) => {
               try {
                 const updated = await updateProjectMutation({
@@ -65,7 +69,7 @@ export const EditProject = () => {
             }}
           />
 
-          <div className="flex justify-end">
+          <div className="flex justify-end mt-4">
             <button
               type="button"
               className="btn"
@@ -85,7 +89,7 @@ export const EditProject = () => {
           </div>
         </Suspense>
       </main>
-    </>
+    </Layout>
   )
 }
 
@@ -100,10 +104,5 @@ const EditProjectPage = () => {
 }
 
 EditProjectPage.authenticate = true
-EditProjectPage.getLayout = (page) => (
-  <Layout>
-    <ProjectLayout>{page}</ProjectLayout>
-  </Layout>
-)
 
 export default EditProjectPage
