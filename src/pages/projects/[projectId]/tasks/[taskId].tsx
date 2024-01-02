@@ -9,8 +9,7 @@ import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import getTask from "src/tasks/queries/getTask"
 import deleteTask from "src/tasks/mutations/deleteTask"
-import AssignmentModal from "src/assignments/components/AssignmentModal"
-import JsonForm from "src/services/jsonconverter/JsonForm"
+import JsonForm from "src/assignments/components/JsonForm"
 
 // Load these from database
 import testJson2 from "src/services/jsonconverter/testjson.js"
@@ -18,9 +17,10 @@ import JsonSchema1 from "src/services/jsonconverter/schema1"
 import JsonSchema2 from "src/services/jsonconverter/schema2"
 
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
-import { UploadForm } from "src/services/jsonconverter/components/UploadForm"
+import { UploadForm } from "src/assignments/components/UploadForm"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import getProject from "src/projects/queries/getProject"
+import Modal from "src/core/components/Modal"
 
 //get from db
 const defaultSchemas = [
@@ -93,15 +93,18 @@ export const ShowTaskPage = () => {
               {task["element"] ? task["element"].name : "no elements"}
             </p>
             <p className="italic">Last update: {task.updatedAt.toString()}</p>
+            <p>
+              <span className="font-semibold">Current Schema:</span>{" "}
+              {currentSchema ? currentSchema.name : ""}
+            </p>
           </div>
 
           <div className="flex flex-col gap-2 mt-4">
-            <p>Current Schema: {currentSchema ? currentSchema.name : ""}</p>
             <div className="mt-4">
               <button className="btn" onClick={() => handleToggleJsonUpload()}>
                 Change Current Schema
               </button>
-              <AssignmentModal open={openJsonModal} size="w-11/12 max-w-3xl">
+              <Modal open={openJsonModal} size="w-11/12 max-w-3xl">
                 <div>
                   <UploadForm
                     submitText="Change"
@@ -125,15 +128,15 @@ export const ShowTaskPage = () => {
                     Close
                   </button>
                 </div>
-              </AssignmentModal>
+              </Modal>
             </div>
           </div>
 
           <div className="mt-4">
             <button className="btn" onClick={() => handleToggle()}>
-              Assign Schema
+              Provide metadata
             </button>
-            <AssignmentModal open={openAssignmentModal} size="w-11/12 max-w-5xl">
+            <Modal open={openAssignmentModal} size="w-11/12 max-w-5xl">
               <div className="font-sans">
                 {
                   <JsonForm
@@ -149,7 +152,7 @@ export const ShowTaskPage = () => {
                   Close
                 </button>
               </div>
-            </AssignmentModal>
+            </Modal>
           </div>
 
           <div className="flex justify-start mt-4">
