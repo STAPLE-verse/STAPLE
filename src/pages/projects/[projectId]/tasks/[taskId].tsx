@@ -11,11 +11,7 @@ import getTask from "src/tasks/queries/getTask"
 import deleteTask from "src/tasks/mutations/deleteTask"
 import JsonForm from "src/assignments/components/JsonForm"
 
-// Load these from database
-import testJson2 from "src/services/jsonconverter/testjson.js"
-
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
-import { UploadForm } from "src/assignments/components/UploadForm"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import getProject from "src/projects/queries/getProject"
 import Modal from "src/core/components/Modal"
@@ -35,9 +31,6 @@ export const ShowTaskPage = () => {
 
   // Get sidebar options
   const sidebarItems = ProjectSidebarItems(projectId!, null)
-
-  //For setting the currentSchema
-  // const [currentSchema, setCurrentSchema] = useState(defaultSchemas[0])
 
   const handleJsonFormSubmit = (data) => {
     console.log(data.formData)
@@ -72,27 +65,29 @@ export const ShowTaskPage = () => {
             </p>
           </div>
 
-          {/* <div className="mt-4">
-            <button className="btn" onClick={() => handleToggle()}>
-              Provide metadata
-            </button>
-            <Modal open={openAssignmentModal} size="w-11/12 max-w-5xl">
-              <div className="font-sans">
-                {
-                  <JsonForm
-                    onSubmit={handleJsonFormSubmit}
-                    schema={getJsonSchema(getCurrentJson(currentSchema))}
-                    onError={handleJsonFormError}
-                  />
-                }
-              </div>
-              <div className="modal-action">
-                <button className="btn btn-primary" onClick={handleToggle}>
-                  Close
-                </button>
-              </div>
-            </Modal>
-          </div> */}
+          {task["schema"] && (
+            <div className="mt-4">
+              <button className="btn" onClick={() => handleToggle()}>
+                Provide metadata
+              </button>
+              <Modal open={openAssignmentModal} size="w-11/12 max-w-5xl">
+                <div className="font-sans">
+                  {
+                    <JsonForm
+                      onSubmit={handleJsonFormSubmit}
+                      schema={getJsonSchema(task["schema"])}
+                      onError={handleJsonFormError}
+                    />
+                  }
+                </div>
+                <div className="modal-action">
+                  <button className="btn btn-primary" onClick={handleToggle}>
+                    Close
+                  </button>
+                </div>
+              </Modal>
+            </div>
+          )}
 
           <div className="flex justify-start mt-4">
             <Link

@@ -24,7 +24,7 @@ function removeField(obj, keyToDelete, compareFunc) {
 }
 
 export default function getJsonSchema(json) {
-  const schema: RJSFSchema = JSON.parse(json)
+  const schema: RJSFSchema = json
   removeField(schema, "@", (key, keyToDelete) => "@" == key[0])
   removeField(schema, "$", (key, keyToDelete) => "$" == key[0])
   return schema
