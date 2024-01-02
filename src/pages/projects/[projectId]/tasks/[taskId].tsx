@@ -13,33 +13,12 @@ import JsonForm from "src/assignments/components/JsonForm"
 
 // Load these from database
 import testJson2 from "src/services/jsonconverter/testjson.js"
-import JsonSchema1 from "src/services/jsonconverter/schema1"
-import JsonSchema2 from "src/services/jsonconverter/schema2"
 
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import { UploadForm } from "src/assignments/components/UploadForm"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import getProject from "src/projects/queries/getProject"
 import Modal from "src/core/components/Modal"
-
-//get from db
-const defaultSchemas = [
-  {
-    id: 0,
-    name: "Schema 1",
-  },
-  {
-    id: 1,
-    name: "Schema 2",
-  },
-]
-function getCurrentJson(schema) {
-  const currentJsons = [JsonSchema1, JsonSchema2]
-  if (schema.id < currentJsons.length) {
-    return currentJsons[schema.id]
-  }
-  return JsonSchema1
-}
 
 export const ShowTaskPage = () => {
   const router = useRouter()
@@ -54,17 +33,11 @@ export const ShowTaskPage = () => {
     setOpenAssignmentModal((prev) => !prev)
   }
 
+  // Get sidebar options
   const sidebarItems = ProjectSidebarItems(projectId!, null)
 
   //For setting the currentSchema
-  const [currentSchema, setCurrentSchema] = useState(defaultSchemas[0])
-
-  //For openning the upload form during testing
-  //this will be removed
-  const [openJsonModal, setOpenJsonModal] = useState(false)
-  const handleToggleJsonUpload = () => {
-    setOpenJsonModal((prev) => !prev)
-  }
+  // const [currentSchema, setCurrentSchema] = useState(defaultSchemas[0])
 
   const handleJsonFormSubmit = (data) => {
     console.log(data.formData)
@@ -94,45 +67,12 @@ export const ShowTaskPage = () => {
             </p>
             <p className="italic">Last update: {task.updatedAt.toString()}</p>
             <p>
-              <span className="font-semibold">Current Schema:</span>{" "}
-              {currentSchema ? currentSchema.name : ""}
+              <span className="font-semibold">Current metadata schema:</span>{" "}
+              {task["schema"] ? JSON.stringify(task["schema"]) : "no metadata schema assigned"}
             </p>
           </div>
 
-          <div className="flex flex-col gap-2 mt-4">
-            <div className="mt-4">
-              <button className="btn" onClick={() => handleToggleJsonUpload()}>
-                Change Current Schema
-              </button>
-              <Modal open={openJsonModal} size="w-11/12 max-w-3xl">
-                <div>
-                  <UploadForm
-                    submitText="Change"
-                    schemas={defaultSchemas}
-                    onSubmit={async (values) => {
-                      //Here call submit function
-                      const payload = new FormData()
-                      if (values.files != undefined) {
-                        payload.append("file", values.files[0])
-                      } else {
-                        setCurrentSchema(defaultSchemas[values.schema])
-                      }
-
-                      console.log("Uploading json", values, payload)
-                    }}
-                  ></UploadForm>
-                </div>
-                <div className="modal-action">
-                  {/* closes the modal */}
-                  <button className="btn btn-primary" onClick={handleToggleJsonUpload}>
-                    Close
-                  </button>
-                </div>
-              </Modal>
-            </div>
-          </div>
-
-          <div className="mt-4">
+          {/* <div className="mt-4">
             <button className="btn" onClick={() => handleToggle()}>
               Provide metadata
             </button>
@@ -147,13 +87,12 @@ export const ShowTaskPage = () => {
                 }
               </div>
               <div className="modal-action">
-                {/* closes the modal */}
                 <button className="btn btn-primary" onClick={handleToggle}>
                   Close
                 </button>
               </div>
             </Modal>
-          </div>
+          </div> */}
 
           <div className="flex justify-start mt-4">
             <Link

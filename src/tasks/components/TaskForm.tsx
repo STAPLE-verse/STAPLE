@@ -9,6 +9,11 @@ import { Field, useField } from "react-final-form"
 
 import { z } from "zod"
 import getContributors from "src/contributors/queries/getContributors"
+import Modal from "src/core/components/Modal"
+import { useState } from "react"
+
+import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
+
 //import { LabeledTextField } from "src/core/components/LabelSelectField"
 // import getProjects from "src/projects/queries/getProjects"
 // import { usePaginatedQuery } from "@blitzjs/rpc"
@@ -19,10 +24,11 @@ export { FORM_ERROR } from "src/core/components/Form"
 // Adding projectId directly to Form props as an optional value
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
+  type?: string
 }
 
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
-  const { projectId, ...formProps } = props
+  const { projectId, type, ...formProps } = props
 
   const [columns] = useQuery(getColumns, {
     orderBy: { id: "asc" },
@@ -53,15 +59,17 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   // const projectInitialValues = columns && columns[0] ? columns[0].id : undefined
   // const elementIntitialValues = elements && elements[0] ? elements[0].id : undefined
 
+  const [openSchemaModal, setopenSchemaModal] = useState(false)
+  const handleToggleSchemaUpload = () => {
+    setopenSchemaModal((prev) => !prev)
+  }
+
+  const schemas = getDefaultSchemaLists()
+
   return (
-    <Form<S> {...formProps}>
+    <Form<S> {...formProps} encType="multipart/form-data">
       <LabeledTextField name="name" label="Name" placeholder="Name" type="text" />
-      <LabeledTextField
-        name="description"
-        label="Description"
-        placeholder="Description"
-        type="text"
-      />
+
       <LabelSelectField
         className="select select-bordered w-full max-w-xs mt-2"
         name="columnId"
@@ -70,6 +78,12 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         optionText="name"
         // Setting the initial value to the selectinput
         // initValue={projectInitialValues}
+      />
+      <LabeledTextField
+        name="description"
+        label="Description"
+        placeholder="Description"
+        type="text"
       />
       <LabelSelectField
         className="select select-bordered w-full max-w-xs mt-2"
@@ -91,6 +105,54 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         // Setting the initial value to the selectinput
         // initValue={projectInitialValues}
       />
+
+      <div className="mt-4">
+        <button type="button" className="btn" onClick={() => handleToggleSchemaUpload()}>
+          Change Current Schema
+        </button>
+
+        <Modal open={openSchemaModal} size="w-11/12 max-w-3xl">
+          <div className="modal-action">
+            <div>
+              <label>Choose a schema: </label>
+              <Field name="schema" component="select">
+                {schemas &&
+                  schemas.map((schema) => (
+                    <option key={schema.name} value={schema.name}>
+                      {schema.name}
+                    </option>
+                  ))}
+              </Field>
+            </div>
+
+            <div className="mt-4">
+              <label>Or upload a new one: </label>
+              <Field name="files">
+                {({ input: { value, onChange, ...input } }) => {
+                  return (
+                    <div>
+                      <input
+                        onChange={({ target }) => {
+                          onChange(target.files)
+                        }}
+                        {...input}
+                        type="file"
+                        className="file-input w-full max-w-xs"
+                        accept=".json"
+                      />
+                    </div>
+                  )
+                }}
+              </Field>
+            </div>
+
+            {/* closes the modal */}
+            <button type="button" className="btn btn-primary" onClick={handleToggleSchemaUpload}>
+              Close
+            </button>
+          </div>
+        </Modal>
+      </div>
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )

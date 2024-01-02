@@ -10,6 +10,8 @@ import Layout from "src/core/layouts/Layout"
 import Head from "next/head"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import getProject from "src/projects/queries/getProject"
+import { fileReader } from "src/services/fileReader"
+import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 
 const NewTaskPage = () => {
   const router = useRouter()
@@ -18,6 +20,7 @@ const NewTaskPage = () => {
   const [createTaskMutation] = useMutation(createTask)
 
   const sidebarItems = ProjectSidebarItems(projectId!, null)
+  const defaultSchemas = getDefaultSchemaLists()
 
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
@@ -34,6 +37,21 @@ const NewTaskPage = () => {
             schema={FormTaskSchema}
             // initialValues={{ name: "", description: "" }}
             onSubmit={async (values) => {
+              // Get selected schema
+              let schema
+              if (values.files != undefined) {
+                const file = values.files[0]
+                try {
+                  const fileContent = await fileReader(file)
+                  schema = JSON.parse(fileContent)
+                } catch (error) {
+                  // Handle any errors during file reading
+                  console.error("Error reading file:", error)
+                }
+              } else {
+                schema = defaultSchemas.find((schema) => schema.name === values.schema)?.schema
+              }
+              // Create new task
               try {
                 const task = await createTaskMutation({
                   name: values.name,
@@ -42,6 +60,7 @@ const NewTaskPage = () => {
                   projectId: projectId!,
                   elementId: values.elementId,
                   contributorId: values.contributorId,
+                  schema: schema,
                 })
                 await router.push(Routes.ShowTaskPage({ projectId: projectId!, taskId: task.id }))
               } catch (error: any) {

@@ -113,7 +113,7 @@ model Task {
   elementId       Int?
   element         Element?     @relation(fields: [elementId], references: [id])
   assignees       Assignment[]
-  // TODO: add key to store schema URL
+  schema          Json?
 }
 
 enum AssignmentStatus {
