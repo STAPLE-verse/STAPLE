@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
@@ -15,22 +15,32 @@ import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import getProject from "src/projects/queries/getProject"
 import Modal from "src/core/components/Modal"
+import getAssignments from "src/assignments/queries/getAssignments"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import getAssignedUsers from "src/assignments/queries/getAssignedUsers"
 
 export const ShowTaskPage = () => {
+  // Setup
+  const currentUser = useCurrentUser()
   const router = useRouter()
+  const [deleteTaskMutation] = useMutation(deleteTask)
   const taskId = useParam("taskId", "number")
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
-  const [deleteTaskMutation] = useMutation(deleteTask)
   const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
+  const [assignments] = useQuery(getAssignments, {
+    where: { taskId: taskId },
+  })
+  const [userIds] = useQuery(getAssignedUsers, { taskId: taskId! })
 
+  // Get sidebar options
+  const sidebarItems = ProjectSidebarItems(projectId!, null)
+
+  // Handle metadata input
   const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
   const handleToggle = () => {
     setOpenAssignmentModal((prev) => !prev)
   }
-
-  // Get sidebar options
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
 
   const handleJsonFormSubmit = (data) => {
     console.log(data.formData)
@@ -65,7 +75,7 @@ export const ShowTaskPage = () => {
             </p>
           </div>
 
-          {task["schema"] && (
+          {task["schema"] && userIds.includes(currentUser!.id) && (
             <div className="mt-4">
               <button className="btn" onClick={() => handleToggle()}>
                 Provide metadata
