@@ -11,8 +11,9 @@ import deleteContributor from "src/contributors/mutations/deleteContributor"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import { Contributor, User } from "@prisma/client"
 
-export const Contributor = () => {
+export const ContributorPage = () => {
   const currentUser = useCurrentUser()
   const router = useRouter()
   const contributorId = useParam("contributorId", "number")
@@ -20,8 +21,14 @@ export const Contributor = () => {
   const [project] = useQuery(getProject, { id: projectId })
   const sidebarItems = ProjectSidebarItems(projectId!, null)
   const [deleteContributorMutation] = useMutation(deleteContributor)
-  const [contributor] = useQuery(getContributor, { id: contributorId })
-  const user = contributor.user
+  const contributor = useQuery(getContributor, {
+    where: { id: contributorId },
+    include: { user: true },
+  }) as unknown as Contributor & {
+    user: User
+  }
+
+  const user = contributor[0].user
 
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
@@ -92,7 +99,7 @@ export const Contributor = () => {
 const ShowContributorPage = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Contributor />
+      <ContributorPage />
     </Suspense>
   )
 }

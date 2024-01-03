@@ -18,19 +18,29 @@ import Modal from "src/core/components/Modal"
 import getAssignments from "src/assignments/queries/getAssignments"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getAssignedUsers from "src/assignments/queries/getAssignedUsers"
+import updateAssignment from "src/assignments/mutations/updateAssignment"
+import getContributor from "src/contributors/queries/getContributor"
+import { AssignmentStatus } from "@prisma/client"
 
 export const ShowTaskPage = () => {
   // Setup
   const currentUser = useCurrentUser()
   const router = useRouter()
   const [deleteTaskMutation] = useMutation(deleteTask)
+  const [updateAssignmentMutation] = useMutation(updateAssignment)
   const taskId = useParam("taskId", "number")
   const projectId = useParam("projectId", "number")
+  const currentContributor = useQuery(getContributor, {
+    where: { projectId: projectId, userId: currentUser!.id },
+  })
   const [project] = useQuery(getProject, { id: projectId })
   const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
   const [assignments] = useQuery(getAssignments, {
     where: { taskId: taskId },
   })
+  const currentAssigment = assignments.find(
+    (assignment) => assignment.contributorId === currentContributor[0].id
+  )
   const [userIds] = useQuery(getAssignedUsers, { taskId: taskId! })
 
   // Get sidebar options
@@ -42,8 +52,14 @@ export const ShowTaskPage = () => {
     setOpenAssignmentModal((prev) => !prev)
   }
 
-  const handleJsonFormSubmit = (data) => {
-    console.log(data.formData)
+  const handleJsonFormSubmit = async (data) => {
+    // Users can overwrite their responses
+    await updateAssignmentMutation({
+      id: currentAssigment!.id,
+      metadata: data.formData,
+      status: AssignmentStatus.COMPLETED,
+    })
+    await handleToggle()
   }
 
   const handleJsonFormError = (errors) => {
