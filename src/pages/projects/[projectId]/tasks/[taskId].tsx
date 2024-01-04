@@ -21,6 +21,12 @@ import getAssignedUsers from "src/assignments/queries/getAssignedUsers"
 import updateAssignment from "src/assignments/mutations/updateAssignment"
 import getContributor from "src/contributors/queries/getContributor"
 import { AssignmentStatus } from "@prisma/client"
+import {
+  AssignmentWithRelations,
+  assignmentTableColumns,
+} from "src/assignments/components/AssignmentTable"
+import Table from "src/core/components/Table"
+// import { AssignmentTable } from "src/assignments/components/AssignmentTable"
 
 export const ShowTaskPage = () => {
   // Setup
@@ -37,7 +43,17 @@ export const ShowTaskPage = () => {
   const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
   const [assignments] = useQuery(getAssignments, {
     where: { taskId: taskId },
-  })
+    include: {
+      task: true,
+      contributor: {
+        include: {
+          user: true,
+        },
+      },
+    },
+    // TODO: replace this with actual type def
+  }) as unknown as [AssignmentWithRelations[]]
+
   const currentAssigment = assignments.find(
     (assignment) => assignment.contributorId === currentContributor[0].id
   )
@@ -65,7 +81,7 @@ export const ShowTaskPage = () => {
   const handleJsonFormError = (errors) => {
     console.log(errors)
   }
-
+  // console.log(assignments)
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Suspense fallback={<div>Loading...</div>}>
@@ -140,6 +156,12 @@ export const ShowTaskPage = () => {
               Delete task
             </button>
           </div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <div className="divider">
+              <h2>Assignments</h2>
+            </div>
+            <Table columns={assignmentTableColumns} data={assignments} />
+          </Suspense>
         </main>
       </Suspense>
     </Layout>

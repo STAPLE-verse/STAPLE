@@ -9,16 +9,18 @@ import { Tab } from "@headlessui/react"
 
 import Layout from "src/core/layouts/Layout"
 import getTasks from "src/tasks/queries/getTasks"
-import TaskTable from "src/tasks/components/TaskTable"
+import { taskTableColumns } from "src/tasks/components/TaskTable"
 import TaskBoard from "src/tasks/components/TaskBoard"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import Table from "src/core/components/Table"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
 }
 
-const ITEMS_PER_PAGE = 8
+// TODO: The number of items per page will affect the number of tasks shown in the table
+const ITEMS_PER_PAGE = 100
 
 export const TasksList = () => {
   const router = useRouter()
@@ -64,7 +66,7 @@ export const TasksList = () => {
           </Tab.Panel>
           {/* Tabpanel for table view */}
           <Tab.Panel>
-            <TaskTable tasks={tasks} />
+            <Table columns={taskTableColumns} data={tasks} />
           </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>

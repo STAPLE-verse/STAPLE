@@ -1,6 +1,6 @@
 import { NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
-import db, { Prisma } from "db"
+import db, { Contributor, Prisma } from "db"
 import { z } from "zod"
 
 interface GetContributorInput extends Pick<Prisma.ContributorFindFirstArgs, "where" | "include"> {}
@@ -13,6 +13,6 @@ export default resolver.pipe(
 
     if (!contributor) throw new NotFoundError()
 
-    return contributor
+    return contributor as Contributor
   }
 )

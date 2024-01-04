@@ -5,12 +5,14 @@ import { useRouter } from "next/router"
 
 import Layout from "src/core/layouts/Layout"
 import getTasks from "src/tasks/queries/getTasks"
-import TaskTable from "src/tasks/components/TaskTable"
-import TaskBoard from "src/tasks/components/TaskBoard"
 import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import Table from "src/core/components/Table"
+import { createColumnHelper } from "@tanstack/react-table"
+import { Task } from "db"
+import { taskTableColumns } from "src/tasks/components/TaskTable"
 
-const ITEMS_PER_PAGE = 8
+const ITEMS_PER_PAGE = 100
 
 export const AllTasksList = () => {
   const router = useRouter()
@@ -29,7 +31,7 @@ export const AllTasksList = () => {
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center mb-2">All tasks</h1>
-      <TaskTable tasks={tasks} />
+      <Table columns={taskTableColumns} data={tasks} />
     </main>
   )
 }

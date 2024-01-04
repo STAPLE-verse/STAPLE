@@ -46,7 +46,7 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
                         key={task.id}
                         name={task.name}
                         projectId={task.projectId}
-                        disable={true}
+                        // disable={true}
                       />
                     ))}
                   </DndContext>
