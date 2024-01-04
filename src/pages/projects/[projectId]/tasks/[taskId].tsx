@@ -26,6 +26,7 @@ import {
   assignmentTableColumns,
 } from "src/assignments/components/AssignmentTable"
 import Table from "src/core/components/Table"
+import getAssignment from "src/assignments/queries/getAssignment"
 // import { AssignmentTable } from "src/assignments/components/AssignmentTable"
 
 export const ShowTaskPage = () => {
@@ -54,9 +55,10 @@ export const ShowTaskPage = () => {
     // TODO: replace this with actual type def
   }) as unknown as [AssignmentWithRelations[]]
 
-  const currentAssigment = assignments.find(
-    (assignment) => assignment.contributorId === currentContributor[0].id
-  )
+  const [currentAssigment, { refetch }] = useQuery(getAssignment, {
+    where: { taskId: taskId, contributorId: currentContributor[0].id },
+  })
+
   const [userIds] = useQuery(getAssignedUsers, { taskId: taskId! })
 
   // Get sidebar options
@@ -71,7 +73,7 @@ export const ShowTaskPage = () => {
   const handleJsonFormSubmit = async (data) => {
     // Users can overwrite their responses
     await updateAssignmentMutation({
-      id: currentAssigment!.id,
+      id: currentAssigment[0].id,
       metadata: data.formData,
       status: AssignmentStatus.COMPLETED,
     })
@@ -81,7 +83,28 @@ export const ShowTaskPage = () => {
   const handleJsonFormError = (errors) => {
     console.log(errors)
   }
-  // console.log(assignments)
+  // Handle assignment status
+  const handleAssignmentStatusToggle = async () => {
+    const newStatus =
+      currentAssigment.status === AssignmentStatus.COMPLETED
+        ? AssignmentStatus.NOT_COMPLETED
+        : AssignmentStatus.COMPLETED
+
+    await updateAssignmentMutation({
+      id: currentAssigment.id,
+      status: newStatus,
+    })
+
+    await refetch()
+  }
+
+  const [isChecked, setIsChecked] = useState(currentAssigment.status === AssignmentStatus.COMPLETED)
+
+  useEffect(() => {
+    // Update the local state when the assignment status changes in the database
+    setIsChecked(currentAssigment.status === AssignmentStatus.COMPLETED || false)
+  }, [currentAssigment])
+
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Suspense fallback={<div>Loading...</div>}>
@@ -128,6 +151,21 @@ export const ShowTaskPage = () => {
                   </button>
                 </div>
               </Modal>
+            </div>
+          )}
+
+          {!task["schema"] && userIds.includes(currentUser!.id) && (
+            <div className="flex items-center space-x-2">
+              <span>Not Completed</span>
+              <label className="flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="toggle"
+                  checked={isChecked}
+                  onChange={handleAssignmentStatusToggle}
+                />
+                <span className="ml-2">Completed</span>
+              </label>
             </div>
           )}
 
