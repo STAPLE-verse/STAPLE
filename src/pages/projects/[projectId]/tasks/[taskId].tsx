@@ -21,6 +21,8 @@ import JsonSchema2 from "src/services/jsonconverter/schema2"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import { UploadForm } from "src/services/jsonconverter/components/UploadForm"
 
+import AssignContributors from "./AssignContributors"
+
 //get from db
 const defaultSchemas = [
   {
@@ -51,6 +53,8 @@ export const Task = () => {
   const handleToggle = () => {
     setOpenAssignmentModal((prev) => !prev)
   }
+
+  const [openContributorsModal, setContributorsModal] = useState(false)
 
   //For setting the currentSchema
   const [currentSchema, setCurrentSchema] = useState(defaultSchemas[0])
@@ -147,30 +151,54 @@ export const Task = () => {
           </AssignmentModal>
         </div>
 
-        <div className="flex justify-start mt-4">
-          <Link
-            className="btn"
-            href={Routes.EditTaskPage({ projectId: projectId!, taskId: task.id })}
-          >
-            Update task
-          </Link>
-        </div>
+        <div className="flex flex-row justify-between">
+          <div className="flex justify-start mt-4">
+            <Link
+              className="btn"
+              href={Routes.EditTaskPage({ projectId: projectId!, taskId: task.id })}
+            >
+              Update task
+            </Link>
+          </div>
 
-        <div className="flex justify-end mt-4">
-          <button
-            type="button"
-            className="btn"
-            onClick={async () => {
-              if (
-                window.confirm("The task will be permanently deleted. Are you sure to continue?")
-              ) {
-                await deleteTaskMutation({ id: task.id })
-                await router.push(Routes.TasksPage({ projectId: projectId! }))
-              }
-            }}
-          >
-            Delete task
-          </button>
+          <div className="flex justify-start mt-4">
+            <button
+              className="btn"
+              type="button"
+              onClick={() => setContributorsModal((prev) => !prev)}
+            >
+              Assign contributors
+            </button>
+            <AssignmentModal open={openContributorsModal} size="">
+              <AssignContributors taskId={taskId} projectId={projectId}></AssignContributors>
+              <div className="modal-action">
+                {/* closes the modal */}
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setContributorsModal((prev) => !prev)}
+                >
+                  Close
+                </button>
+              </div>
+            </AssignmentModal>
+          </div>
+
+          <div className="flex justify-end mt-4">
+            <button
+              type="button"
+              className="btn"
+              onClick={async () => {
+                if (
+                  window.confirm("The task will be permanently deleted. Are you sure to continue?")
+                ) {
+                  await deleteTaskMutation({ id: task.id })
+                  await router.push(Routes.TasksPage({ projectId: projectId! }))
+                }
+              }}
+            >
+              Delete task
+            </button>
+          </div>
         </div>
       </main>
     </>
