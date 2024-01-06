@@ -9,12 +9,26 @@ export interface LabeledSelectFieldProps extends PropsWithoutRef<JSX.IntrinsicEl
   type?: "number" | "string"
   options: any
   optionText: string
+  optionValue: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   multiple?: boolean
 }
 
 export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectFieldProps>(
-  ({ name, label, outerProps, options, optionText, multiple, type = "number", ...props }, ref) => {
+  (
+    {
+      name,
+      label,
+      outerProps,
+      options,
+      optionText,
+      optionValue,
+      multiple,
+      type = "number",
+      ...props
+    },
+    ref
+  ) => {
     const {
       input,
       meta: { touched, error, submitError, submitting },
@@ -33,10 +47,10 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
               Please select an option
             </option>
             {options &&
-              options.map((value) => {
+              options.map((v) => {
                 return (
-                  <option key={value.id} value={value.id}>
-                    {value[optionText]}
+                  <option key={v.id} value={v[optionValue]}>
+                    {v[optionText]}
                   </option>
                 )
               })}

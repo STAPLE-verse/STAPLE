@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Contributor" ALTER COLUMN "role" SET DEFAULT 'PROJECT_MANAGER';

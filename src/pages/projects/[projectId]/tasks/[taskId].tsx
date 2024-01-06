@@ -42,6 +42,7 @@ export const ShowTaskPage = () => {
   })
   const [project] = useQuery(getProject, { id: projectId })
   const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
+
   const [assignments] = useQuery(getAssignments, {
     where: { taskId: taskId },
     include: {

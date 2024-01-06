@@ -12,6 +12,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { Contributor, User } from "@prisma/client"
+import { getRoleText } from "src/services/getRoleText"
 
 export const ContributorPage = () => {
   const currentUser = useCurrentUser()
@@ -29,7 +30,7 @@ export const ContributorPage = () => {
   }
 
   const user = contributor[0].user
-
+  console.log(user)
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
@@ -47,6 +48,9 @@ export const ContributorPage = () => {
         ) : null}
         <p className="mb-2">
           <span className="font-semibold">Email:</span> {user.email}
+        </p>
+        <p className="mb-2">
+          <span className="font-semibold">Role:</span> {getRoleText(contributor[0].role)}
         </p>
         <div className="flex flex-col gap-2">
           <h2>List of contributions</h2>

@@ -65,7 +65,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   }
 
   const schemas = getDefaultSchemaLists()
-
+  console.log(columns)
   return (
     <Form<S> {...formProps} encType="multipart/form-data">
       <LabeledTextField name="name" label="Name" placeholder="Name" type="text" />
@@ -76,6 +76,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         label="Status"
         options={columns}
         optionText="name"
+        optionValue="id"
         // Setting the initial value to the selectinput
         // initValue={projectInitialValues}
       />
@@ -91,6 +92,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         label="Parent element"
         options={elements}
         optionText="name"
+        optionValue="id"
         // Setting the initial value to the selectinput
         // initValue={projectInitialValues}
       />
@@ -102,6 +104,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         optionText="username"
         // TODO: Fix multiple select in LabelSelectField.tsx
         multiple={false}
+        optionValue="id"
         // Setting the initial value to the selectinput
         // initValue={projectInitialValues}
       />

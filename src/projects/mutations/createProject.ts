@@ -37,6 +37,7 @@ export default resolver.pipe(
       data: {
         userId,
         projectId: project.id,
+        // Since ContributorRole defaults to project manager the new contirbutor will be the project manager
       },
     })
 
