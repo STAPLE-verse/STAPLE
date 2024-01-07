@@ -14,6 +14,8 @@ import { useState } from "react"
 
 import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 
+import AssignContributors from "./AssignContributors"
+
 //import { LabeledTextField } from "src/core/components/LabelSelectField"
 // import getProjects from "src/projects/queries/getProjects"
 // import { usePaginatedQuery } from "@blitzjs/rpc"
@@ -64,6 +66,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     setopenSchemaModal((prev) => !prev)
   }
 
+  const [openContributorsModal, setContributorsModal] = useState(false)
+
   const schemas = getDefaultSchemaLists()
   console.log(columns)
   return (
@@ -108,6 +112,25 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         // Setting the initial value to the selectinput
         // initValue={projectInitialValues}
       />
+      {/* Either this button or create a select component with the checkboxes */}
+      <div className="flex justify-start mt-4">
+        <button className="btn" type="button" onClick={() => setContributorsModal((prev) => !prev)}>
+          Assign contributors
+        </button>
+        <Modal open={openContributorsModal} size="">
+          {/* TaskId may be needed when updating how to get it? */}
+          <AssignContributors taskId={0} projectId={projectId}></AssignContributors>
+          <div className="modal-action">
+            {/* closes the modal */}
+            <button
+              className="btn btn-primary"
+              onClick={() => setContributorsModal((prev) => !prev)}
+            >
+              Close
+            </button>
+          </div>
+        </Modal>
+      </div>
 
       <div className="mt-4">
         <button type="button" className="btn" onClick={() => handleToggleSchemaUpload()}>
