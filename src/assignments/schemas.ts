@@ -1,6 +1,11 @@
 import { AssignmentStatus, Prisma } from "@prisma/client"
 import { z } from "zod"
 
+export const CreateAssignmentSchema = z.object({
+  taskId: z.number(),
+  contributorId: z.number(),
+})
+
 export const UpdateAssignmentSchema = z.object({
   id: z.number(),
   metadata: z
