@@ -1,9 +1,10 @@
 import React, { useState } from "react"
 
 import getContributors from "src/contributors/queries/getContributors"
+import createAssignment from "src/assignments/mutations/createAssignment"
 // import getColumns from "../queries/getColumns"
 import getElements from "src/elements/queries/getElements"
-import { useQuery } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 
 type Props = {
   taskId?: number
@@ -13,6 +14,8 @@ type Props = {
 const AssignContributors = ({ taskId, projectId }: Props) => {
   //needs tp get task name
   const taskName = "DefaultName"
+
+  const [createAssigmentMutation] = useMutation(createAssignment)
 
   const [{ contributors }] = useQuery(getContributors, {
     where: { project: { id: projectId! } },
@@ -29,6 +32,8 @@ const AssignContributors = ({ taskId, projectId }: Props) => {
   }))
 
   //TODO needs to set the initial status based on if have been assigned previosly
+  //Also needs to get assigments in case some one is unchecked from current assigment ,
+  //then needs to delete assigment from database
   const [contributorChecked, setcontributorChecked] = useState(
     new Array(contributorOptions.length).fill(false)
   )
@@ -39,6 +44,30 @@ const AssignContributors = ({ taskId, projectId }: Props) => {
     )
 
     setcontributorChecked(updatedCheckedState)
+  }
+  const saveContributorsList = () => {
+    contributorChecked.forEach(async (checked, index) => {
+      let contributorId
+      //TODO check if a previous assigment exist
+      if (contributorOptions != undefined) {
+        contributorId = contributorOptions[index]!["id"]
+      }
+
+      console.log(contributorId)
+      if (checked) {
+        //if does not exist create assigment
+        try {
+          const task = await createAssigmentMutation({
+            taskId: taskId!,
+            contributorId: contributorId,
+          })
+        } catch (error: any) {
+          console.error(error)
+        }
+      } else {
+        //delete if previous assigment exist
+      }
+    })
   }
 
   return (
@@ -51,7 +80,7 @@ const AssignContributors = ({ taskId, projectId }: Props) => {
           {contributorOptions &&
             contributorOptions.map((val, index) => {
               return (
-                <li key={val.id} className="flex  mt-1">
+                <li key={index} className="flex  mt-1">
                   <div>
                     <label className="label cursor-pointer">
                       <input
@@ -70,6 +99,10 @@ const AssignContributors = ({ taskId, projectId }: Props) => {
             })}
         </ul>
       </div>
+
+      <button className="btn btn-primary" onClick={() => saveContributorsList()}>
+        Save
+      </button>
     </div>
   )
 }
