@@ -15,6 +15,7 @@ import { useState } from "react"
 import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 
 import AssignContributors from "./AssignContributors"
+import { ContributorOption } from "./AssignContributors"
 
 //import { LabeledTextField } from "src/core/components/LabelSelectField"
 // import getProjects from "src/projects/queries/getProjects"
@@ -52,10 +53,17 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     },
   })
   // TODO: User should be added to typescrit schema and the user object dropped on spread
-  const contributorOptions = contributors.map((contributor) => ({
-    ...contributor,
-    username: contributor["user"].username,
-  }))
+  //TODO needs to set the user to check if already assigned to task or uncheked
+  const contributorOptions = contributors.map(
+    (contributor) =>
+      ({
+        userName: contributor["user"].username,
+        firstName: contributor["user"].firstName,
+        id: contributor.id,
+      } as ContributorOption)
+  )
+
+  const [contributorChecked, setcontributorChecked] = useState([])
 
   // const users = contributors.map((contributor) => contributor["user"])
   // const projectInitialValues = columns && columns[0] ? columns[0].id : undefined
@@ -119,7 +127,13 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         </button>
         <Modal open={openContributorsModal} size="">
           {/* TaskId may be needed when updating how to get it? */}
-          <AssignContributors taskId={0} projectId={projectId}></AssignContributors>
+          <AssignContributors
+            contributorOptions={contributorOptions}
+            onChange={(newSelections) => {
+              setcontributorChecked(newSelections)
+              console.log(newSelections)
+            }}
+          ></AssignContributors>
           <div className="modal-action">
             {/* closes the modal */}
             <button
