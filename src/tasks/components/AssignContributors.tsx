@@ -7,84 +7,89 @@ import getElements from "src/elements/queries/getElements"
 // import { useMutation, useQuery } from "@blitzjs/rpc"
 // import { T } from "@blitzjs/auth/dist/index-19e2d23c"
 
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import Table from "src/core/components/Table"
+
 export type ContributorOption = {
   userName: string
   firstName: string
+  lastName: string
   id: number
+  checked: boolean
 }
+
+const columnHelper = createColumnHelper<ContributorOption>()
 
 type Props = {
   onChange?: (selected: any) => void
   contributorOptions: ContributorOption[]
 }
 
+// With Table, needs
+//onClose event for this , with call be a modal
+//then when input changes, get all selected rows from table which returns model
+//all get selected rows on each change
+
 const AssignContributors = ({ onChange, contributorOptions }: Props) => {
-  //needs tp get task name
-  // const taskName = "DefaultName"
-
-  // const [createAssigmentMutation] = useMutation(createAssignment)
-
-  // const [{ contributors }] = useQuery(getContributors, {
-  //   where: { project: { id: projectId! } },
-  //   orderBy: { id: "asc" },
-  //   include: {
-  //     user: true,
-  //   },
-  // })
-
-  // const contributorOptions = contributors.map((contributor) => ({
-  //   firstName: contributor["user"].firstName,
-  //   lastName: contributor["user"].lastName,
-  //   id: contributor["user"].id,
-  // }))
-
   //TODO needs to set the initial status based on if have been assigned previosly
   //Also needs to get assigments in case some one is unchecked from current assigment ,
   //then needs to delete assigment from database
-  const [contributorChecked, setcontributorChecked] = useState(
-    new Array(contributorOptions.length).fill(false)
-  )
+  const [contributorChecked, setcontributorChecked] = useState(contributorOptions)
 
-  const handleOnChange = (position) => {
-    const updatedCheckedState = contributorChecked.map((item, index) =>
-      index === position ? !item : item
-    )
+  const handleOnChange = (element) => {
+    const updatedCheckedState = contributorChecked.map((item, index) => {
+      let t = item
+      if (item.id === element.id) {
+        t.checked = !t.checked
+      }
+      return t
+    })
+    // let temp = contributorOptions.findIndex((x) => x.id == element.id)
+    // console.log(temp)
 
     setcontributorChecked(updatedCheckedState)
     if (onChange != undefined) {
       onChange(updatedCheckedState)
     }
   }
-  // const saveContributorsList = () => {
-  //   contributorChecked.forEach(async (checked, index) => {
-  //     let contributorId
-  //     //TODO check if a previous assigment exist
-  //     if (contributorOptions != undefined) {
-  //       contributorId = contributorOptions[index]!["id"]
-  //     }
 
-  //     console.log(contributorId)
-  //     if (checked) {
-  //       //if does not exist create assigment
-  //       try {
-  //         const task = await createAssigmentMutation({
-  //           taskId: taskId!,
-  //           contributorId: contributorId,
-  //         })
-  //       } catch (error: any) {
-  //         console.error(error)
-  //       }
-  //     } else {
-  //       //delete if previous assigment exist
-  //     }
-  //   })
-  // }
+  // ColumnDefs
+  const contributorTableColumns: ColumnDef<ContributorOption>[] = [
+    columnHelper.accessor("id", {
+      cell: (info) => (
+        <span>
+          {
+            <div>
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-primary"
+                  checked={info.row.original.checked}
+                  onChange={() => {
+                    handleOnChange(info.row.original)
+                  }}
+                />
+              </label>
+            </div>
+          }
+        </span>
+      ),
+      header: "",
+    }),
+
+    columnHelper.accessor("firstName", {
+      cell: (info) => (
+        <span>{`${info.row.original.firstName}  ${info.row.original.lastName}`}</span>
+      ),
+      header: "Contributor Name",
+    }),
+  ]
 
   return (
     <div>
       <div className="flex  mt-2 font-bold">Assign contributors to task</div>
       <div>
-        <ul>
+        {/* <ul>
           {contributorOptions &&
             contributorOptions.map((val, index) => {
               return (
@@ -105,8 +110,9 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
                 </li>
               )
             })}
-        </ul>
+        </ul> */}
       </div>
+      <Table columns={contributorTableColumns} data={contributorChecked}></Table>
 
       {/* <button className="btn btn-primary" onClick={() => saveContributorsList()}>
         Save

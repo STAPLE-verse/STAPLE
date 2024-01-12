@@ -59,7 +59,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       ({
         userName: contributor["user"].username,
         firstName: contributor["user"].firstName,
+        lastName: contributor["user"].lastName,
         id: contributor.id,
+        checked: false,
       } as ContributorOption)
   )
 

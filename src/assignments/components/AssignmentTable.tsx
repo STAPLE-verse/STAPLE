@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Assignment, Prisma } from "db"
 
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import Table from "src/core/components/Table"
 import Modal from "src/core/components/Modal"
 
 export type AssignmentWithRelations = Prisma.AssignmentGetPayload<{
