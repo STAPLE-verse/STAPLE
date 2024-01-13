@@ -50,6 +50,7 @@ export const EditTask = () => {
         {/* <pre>{JSON.stringify(task, null, 2)}</pre> */}
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
+            taskId={taskId}
             submitText="Update Task"
             schema={FormTaskSchema}
             initialValues={initialValues}

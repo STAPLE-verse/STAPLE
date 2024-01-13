@@ -9,6 +9,8 @@ import { Field, useField } from "react-final-form"
 
 import { z } from "zod"
 import getContributors from "src/contributors/queries/getContributors"
+import getAssigments from "src/assignments/queries/getAssignments"
+
 import Modal from "src/core/components/Modal"
 import { useState } from "react"
 
@@ -28,10 +30,11 @@ export { FORM_ERROR } from "src/core/components/Form"
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
   type?: string
+  taskId?: number
 }
 
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
-  const { projectId, type, ...formProps } = props
+  const { projectId, type, taskId, ...formProps } = props
 
   const [columns] = useQuery(getColumns, {
     orderBy: { id: "asc" },
@@ -52,8 +55,19 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       user: true,
     },
   })
+
+  const [currentAssigments] = useQuery(getAssigments, {
+    where: { taskId: taskId! },
+    orderBy: { id: "asc" },
+  })
+
   // TODO: User should be added to typescrit schema and the user object dropped on spread
   //TODO needs to set the user to check if already assigned to task or uncheked
+
+  const findIfAssignedToTask = (contributorId) => {
+    return currentAssigments.findIndex((element) => contributorId == element.contributorId) !== -1
+  }
+
   const contributorOptions = contributors.map(
     (contributor) =>
       ({
@@ -61,7 +75,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         firstName: contributor["user"].firstName,
         lastName: contributor["user"].lastName,
         id: contributor.id,
-        checked: false,
+        checked: taskId == undefined ? false : findIfAssignedToTask(contributor.id),
       } as ContributorOption)
   )
 
@@ -133,7 +147,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
             contributorOptions={contributorOptions}
             onChange={(newSelections) => {
               setcontributorChecked(newSelections)
-              console.log(newSelections)
+              // console.log(newSelections)
             }}
           ></AssignContributors>
           <div className="modal-action">
