@@ -91,6 +91,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   }
 
   const [openContributorsModal, setContributorsModal] = useState(false)
+  const handleToggleContributorsModal = () => {
+    setContributorsModal((prev) => !prev)
+  }
 
   const schemas = getDefaultSchemaLists()
 
@@ -124,7 +127,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         // Setting the initial value to the selectinput
         // initValue={projectInitialValues}
       />
-      <LabelSelectField
+      {/* <LabelSelectField
         className="select select-bordered w-full max-w-xs mt-2"
         name="contributorId"
         label="Assign a contributor"
@@ -135,29 +138,46 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         optionValue="id"
         // Setting the initial value to the selectinput
         // initValue={projectInitialValues}
-      />
+      /> */}
       {/* Either this button or create a select component with the checkboxes */}
-      <div className="flex justify-start mt-4">
-        <button className="btn" type="button" onClick={() => setContributorsModal((prev) => !prev)}>
+
+      <div className="mt-4">
+        <button type="button" className="btn" onClick={() => handleToggleContributorsModal()}>
           Assign contributors
         </button>
-        <Modal open={openContributorsModal} size="">
-          {/* TaskId may be needed when updating how to get it? */}
-          <AssignContributors
-            contributorOptions={contributorOptions}
-            onChange={(newSelections) => {
-              setcontributorChecked(newSelections)
-              // console.log(newSelections)
-            }}
-          ></AssignContributors>
-          <div className="modal-action">
+
+        <Modal open={openContributorsModal} size="w-7/8 max-w-xl">
+          <div className="">
+            <div className="flex justify-start mt-4">
+              <Field name="contributorsId" initialValue={contributorChecked}>
+                {({ input: { value, onChange, ...input } }) => {
+                  return (
+                    <div>
+                      <AssignContributors
+                        contributorOptions={contributorOptions}
+                        onChange={(newSelections) => {
+                          setcontributorChecked(newSelections)
+                          console.log(newSelections)
+                          onChange(contributorChecked)
+                          // console.log(newSelections)
+                        }}
+                      ></AssignContributors>
+                    </div>
+                  )
+                }}
+              </Field>
+            </div>
+
             {/* closes the modal */}
-            <button
-              className="btn btn-primary"
-              onClick={() => setContributorsModal((prev) => !prev)}
-            >
-              Close
-            </button>
+            <div className="modal-action flex justify-end mt-4">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleToggleContributorsModal}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </Modal>
       </div>

@@ -7,7 +7,7 @@ export const FormTaskSchema = z.object({
   description: z.string().optional().nullable(),
   elementId: z.number().optional().nullable(),
   // TODO: Has to be modified to array if multiple select is enabled
-  contributorsId: z.array(z.number()).optional().nullable(),
+  contributorsId: z.array(z.any()).optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
   schema: z
     .unknown()
@@ -76,7 +76,7 @@ export const UpdateTaskSchema = z.object({
   description: z.string().optional().nullable(),
   columnId: z.number(),
   elementId: z.number().optional().nullable(),
-  contributorId: z.number().optional().nullable(),
+  contributorsId: z.array(z.any()).optional().nullable(),
   schema: z
     .unknown()
     .nullable()

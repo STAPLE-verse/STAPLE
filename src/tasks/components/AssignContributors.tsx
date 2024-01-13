@@ -37,6 +37,7 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
   const [contributorChecked, setcontributorChecked] = useState(contributorOptions)
 
   const handleOnChange = (element) => {
+    let needsUpdate: any[] = []
     const updatedCheckedState = contributorChecked.map((item, index) => {
       let t = item
       if (item.id === element.id) {
@@ -44,12 +45,23 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
       }
       return t
     })
-    // let temp = contributorOptions.findIndex((x) => x.id == element.id)
-    // console.log(temp)
+
+    //only update the items that changed
+    updatedCheckedState.forEach((element) => {
+      let orgItem = contributorOptions.find((orgItem) => orgItem.id == element.id)
+
+      if (orgItem != undefined && orgItem.checked != element.checked) {
+        needsUpdate.push({
+          id: element.id,
+          checked: element.checked,
+        })
+      }
+    })
 
     setcontributorChecked(updatedCheckedState)
     if (onChange != undefined) {
-      onChange(updatedCheckedState)
+      console.log("update from contributors")
+      onChange(needsUpdate)
     }
   }
 

@@ -60,6 +60,8 @@ export const EditTask = () => {
                   ...values,
                   id: task.id,
                 })
+                console.log("values", values)
+                console.log("ipdated", updated)
                 await setQueryData(updated)
                 await router.push(
                   Routes.ShowTaskPage({
