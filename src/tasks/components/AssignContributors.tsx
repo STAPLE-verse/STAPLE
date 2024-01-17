@@ -16,6 +16,7 @@ export type ContributorOption = {
   lastName: string
   id: number
   checked: boolean
+  assigmentId?: number
 }
 
 const columnHelper = createColumnHelper<ContributorOption>()
@@ -54,6 +55,7 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
         needsUpdate.push({
           id: element.id,
           checked: element.checked,
+          assigmentId: element.assigmentId,
         })
       }
     })

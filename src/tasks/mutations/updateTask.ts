@@ -16,6 +16,7 @@ export default resolver.pipe(
         //needs to c
         let contributorId = contributor["id"]
         if (contributor["checked"]) {
+          //TODO could change this to create many??
           const assignment = await db.assignment.create({
             data: {
               task: { connect: { id: task.id } },
@@ -24,6 +25,10 @@ export default resolver.pipe(
           })
         } else {
           //needs to delete
+          console.log("deleting assigment ")
+          // if (contributor["assigmentId"] != undefined) {
+          await db.assignment.delete({ where: { id: contributor["assigmentId"] } })
+          // }
         }
       })
     }

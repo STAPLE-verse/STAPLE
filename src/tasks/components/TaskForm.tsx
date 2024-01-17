@@ -64,20 +64,42 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   // TODO: User should be added to typescrit schema and the user object dropped on spread
   //TODO needs to set the user to check if already assigned to task or uncheked
 
-  const findIfAssignedToTask = (contributorId) => {
-    return currentAssigments.findIndex((element) => contributorId == element.contributorId) !== -1
+  // const findIfAssignedToTask = (contributorId) => {
+  //   return currentAssigments.findIndex((element) => contributorId == element.contributorId) !== -1
+  // }
+
+  // const contributorOptions = contributors.map(
+  //   (contributor) =>
+  //     ({
+  //       userName: contributor["user"].username,
+  //       firstName: contributor["user"].firstName,
+  //       lastName: contributor["user"].lastName,
+  //       id: contributor.id,
+  //       checked: taskId == undefined ? false : findIfAssignedToTask(contributor.id),
+  //     } as ContributorOption)
+  // )
+
+  const findIdIfAssignedToTask = (contributorId) => {
+    let index = currentAssigments.findIndex((element) => contributorId == element.contributorId)
+    return index
   }
 
-  const contributorOptions = contributors.map(
-    (contributor) =>
-      ({
-        userName: contributor["user"].username,
-        firstName: contributor["user"].firstName,
-        lastName: contributor["user"].lastName,
-        id: contributor.id,
-        checked: taskId == undefined ? false : findIfAssignedToTask(contributor.id),
-      } as ContributorOption)
-  )
+  const contributorOptions = contributors.map((contributor) => {
+    let assigmentId: number | undefined = undefined
+    let index = findIdIfAssignedToTask(contributor.id)
+    if (index != -1 && taskId != undefined) {
+      assigmentId = currentAssigments[index]?.id
+    }
+
+    return {
+      userName: contributor["user"].username,
+      firstName: contributor["user"].firstName,
+      lastName: contributor["user"].lastName,
+      id: contributor.id,
+      checked: taskId == undefined ? false : index != -1,
+      assigmentId: assigmentId,
+    } as ContributorOption
+  })
 
   const [contributorChecked, setcontributorChecked] = useState([])
 

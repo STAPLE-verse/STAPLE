@@ -56,9 +56,10 @@ export const ShowTaskPage = () => {
     // TODO: replace this with actual type def
   }) as unknown as [AssignmentWithRelations[]]
 
-  const [currentAssigment, { refetch }] = useQuery(getAssignment, {
-    where: { taskId: taskId, contributorId: currentContributor[0].id },
-  })
+  //current contributor may not be assigned to a current task
+  // const [currentAssigment, { refetch }] = useQuery(getAssignment, {
+  //   where: { taskId: taskId, contributorId: currentContributor[0].id },
+  // })
 
   const [userIds] = useQuery(getAssignedUsers, { taskId: taskId! })
 
@@ -73,11 +74,11 @@ export const ShowTaskPage = () => {
 
   const handleJsonFormSubmit = async (data) => {
     // Users can overwrite their responses
-    await updateAssignmentMutation({
-      id: currentAssigment[0].id,
-      metadata: data.formData,
-      status: AssignmentStatus.COMPLETED,
-    })
+    // await updateAssignmentMutation({
+    //   id: currentAssigment[0].id,
+    //   metadata: data.formData,
+    //   status: AssignmentStatus.COMPLETED,
+    // })
     await handleToggle()
   }
 
@@ -86,25 +87,26 @@ export const ShowTaskPage = () => {
   }
   // Handle assignment status
   const handleAssignmentStatusToggle = async () => {
-    const newStatus =
-      currentAssigment.status === AssignmentStatus.COMPLETED
-        ? AssignmentStatus.NOT_COMPLETED
-        : AssignmentStatus.COMPLETED
-
-    await updateAssignmentMutation({
-      id: currentAssigment.id,
-      status: newStatus,
-    })
-
-    await refetch()
+    // const newStatus =
+    //   currentAssigment.status === AssignmentStatus.COMPLETED
+    //     ? AssignmentStatus.NOT_COMPLETED
+    //     : AssignmentStatus.COMPLETED
+    // await updateAssignmentMutation({
+    //   id: currentAssigment.id,
+    //   status: newStatus,
+    // })
+    // await refetch()
   }
 
-  const [isChecked, setIsChecked] = useState(currentAssigment.status === AssignmentStatus.COMPLETED)
+  // const [isChecked, setIsChecked] = useState(currentAssigment.status === AssignmentStatus.COMPLETED)
 
-  useEffect(() => {
-    // Update the local state when the assignment status changes in the database
-    setIsChecked(currentAssigment.status === AssignmentStatus.COMPLETED || false)
-  }, [currentAssigment])
+  //TODO this is only until solve assigning contributors issues
+  const [isChecked, setIsChecked] = useState(false)
+
+  // useEffect(() => {
+  //   // Update the local state when the assignment status changes in the database
+  //   setIsChecked(currentAssigment.status === AssignmentStatus.COMPLETED || false)
+  // }, [currentAssigment])
 
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
