@@ -13,6 +13,7 @@ import updateElement from "src/elements/mutations/updateElement"
 import { ElementForm, FORM_ERROR } from "src/elements/components/ElementForm"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import toast from "react-hot-toast"
 
 export const EditElement = () => {
   const router = useRouter()
@@ -49,6 +50,11 @@ export const EditElement = () => {
                 const updated = await updateElementMutation({
                   // id: element.id,
                   ...values,
+                })
+                await toast.promise(Promise.resolve(updated), {
+                  loading: "Updating element...",
+                  success: "Element updated!",
+                  error: "Failed to update the element...",
                 })
                 await setQueryData(updated)
                 await router.push(

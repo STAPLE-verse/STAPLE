@@ -3,6 +3,7 @@ import React, { MouseEventHandler, ReactNode } from "react"
 import { BlitzLayout } from "@blitzjs/next"
 import MainNavbar from "../components/MainNavbar"
 import Sidebar, { SidebarItem, SidebarItemProps } from "../components/Sidebar"
+import { Toaster } from "react-hot-toast"
 
 const Layout: BlitzLayout<{
   title?: string
@@ -12,6 +13,7 @@ const Layout: BlitzLayout<{
 }> = ({ title, children, sidebarItems, sidebarTitle }) => {
   return (
     <>
+      <Toaster position="bottom-center" reverseOrder={false} />
       <Head>
         <title>{title || "STAPLE"}</title>
       </Head>

@@ -49,6 +49,11 @@ export const EditContributor = () => {
                   id: contributor.id,
                   ...values,
                 })
+                await toast.promise(Promise.resolve(updated), {
+                  loading: "Updating contributor information...",
+                  success: "Contributor information updated!",
+                  error: "Failed to update the contributor information...",
+                })
                 await setQueryData(updated)
                 await router.push(
                   Routes.ShowContributorPage({

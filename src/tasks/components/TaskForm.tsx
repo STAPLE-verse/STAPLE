@@ -65,7 +65,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   }
 
   const schemas = getDefaultSchemaLists()
-  console.log(columns)
+
   return (
     <Form<S> {...formProps} encType="multipart/form-data">
       <LabeledTextField name="name" label="Name" placeholder="Name" type="text" />

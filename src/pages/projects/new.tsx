@@ -7,6 +7,7 @@ import createProject from "src/projects/mutations/createProject"
 import { ProjectForm, FORM_ERROR } from "src/projects/components/ProjectForm"
 import { Suspense } from "react"
 import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
+import toast from "react-hot-toast"
 
 const NewProjectPage = () => {
   const router = useRouter()
@@ -26,6 +27,11 @@ const NewProjectPage = () => {
             onSubmit={async (values) => {
               try {
                 const project = await createProjectMutation(values)
+                await toast.promise(Promise.resolve(project), {
+                  loading: "Creating project...",
+                  success: "Project created!",
+                  error: "Failed to create the project...",
+                })
                 await router.push(Routes.ShowProjectPage({ projectId: project.id }))
               } catch (error: any) {
                 console.error(error)

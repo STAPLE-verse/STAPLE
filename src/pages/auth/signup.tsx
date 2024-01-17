@@ -6,6 +6,7 @@ import TosForm from "src/auth/components/TosForm"
 import { useEffect, useState } from "react"
 import { useMutation } from "@blitzjs/rpc"
 import signup from "src/auth/mutations/signup"
+import toast from "react-hot-toast"
 
 type TosResponses = {
   tos: boolean
@@ -33,11 +34,11 @@ const SignupPage: BlitzPage = () => {
       signupMutation(signupResponses)
         .then((success) => {
           if (success) {
-            router.push(Routes.Home()).catch((error) => console.log(error))
+            router.push(Routes.Home()).catch((e) => toast.error(e.message))
           }
         })
         .catch((error) => {
-          console.log(error)
+          toast.error(`Signup failed: ${error.message}`)
         })
     }
   }, [signupResponses, signupSuccess, tosResponses])

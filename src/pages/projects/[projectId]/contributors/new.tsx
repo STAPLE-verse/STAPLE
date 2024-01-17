@@ -13,6 +13,7 @@ import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { ContributorRole } from "@prisma/client"
 import { contributorRoleOptions } from "src/contributors/components/ContributorForm"
+import toast from "react-hot-toast"
 // TODO: if not all parameters that are present in the schema are in the returned values of the form the onsubmit fails without error
 // TODO: Thus we create a separate schema for the form and the create mutation
 export const ContributorFormSchema = z.object({
@@ -48,6 +49,11 @@ const NewContributorPage = () => {
                   userId: values.userId,
                   projectId: projectId!,
                   role: contributorRoleOptions.find((option) => option.id === values.role)!.value,
+                })
+                await toast.promise(Promise.resolve(contributor), {
+                  loading: "Adding contributor...",
+                  success: "Contributor added to the project!",
+                  error: "Failed to add the contributor...",
                 })
                 await router.push(
                   Routes.ShowContributorPage({

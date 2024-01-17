@@ -26,24 +26,30 @@ import {
   assignmentTableColumns,
 } from "src/assignments/components/AssignmentTable"
 import Table from "src/core/components/Table"
-import getAssignment from "src/assignments/queries/getAssignment"
+import CompleteToggle from "src/assignments/components/CompleteToggle"
+
 // import { AssignmentTable } from "src/assignments/components/AssignmentTable"
 
 export const ShowTaskPage = () => {
   // Setup
-  const currentUser = useCurrentUser()
   const router = useRouter()
   const [deleteTaskMutation] = useMutation(deleteTask)
   const [updateAssignmentMutation] = useMutation(updateAssignment)
+  // Get values
+  const currentUser = useCurrentUser()
   const taskId = useParam("taskId", "number")
+  const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
   const projectId = useParam("projectId", "number")
+  // TODO: we only need this to send the project name to sidebar see if there is an option to get around this by making the sidebar component more abstract
+  const [project] = useQuery(getProject, { id: projectId })
+  // Get sidebar options
+  const sidebarItems = ProjectSidebarItems(projectId!, null)
+  // Note: we have to get this separately because the currentContributor does not neccesarily have an assignment
   const currentContributor = useQuery(getContributor, {
     where: { projectId: projectId, userId: currentUser!.id },
   })
-  const [project] = useQuery(getProject, { id: projectId })
-  const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
-
-  const [assignments] = useQuery(getAssignments, {
+  // Get assignments
+  const [assignments, { refetch }] = useQuery(getAssignments, {
     where: { taskId: taskId },
     include: {
       task: true,
@@ -54,16 +60,22 @@ export const ShowTaskPage = () => {
       },
     },
     // TODO: replace this with actual type def
-  }) as unknown as [AssignmentWithRelations[]]
+  }) as unknown as [AssignmentWithRelations[], { refetch: () => void }]
+  // TODO: Chris, do I need this?
+  // Get values dependent on assignments
+  // const [currentAssignment, setCurrentAssignment] = useState<AssignmentWithRelations>()
+  // useEffect(() => {
+  //   // Get currentAssignment
+  //   const currentAssignment = assignments.find(
+  //     (assignment) => assignment.contributorId === currentContributor[0].id
+  //   )
+  //   // TODO: If currentContributor is not assigned currentAssignment is undefined
+  //   setCurrentAssignment(currentAssignment)
+  // }, [assignments])
 
-  const [currentAssigment, { refetch }] = useQuery(getAssignment, {
-    where: { taskId: taskId, contributorId: currentContributor[0].id },
-  })
-
-  const [userIds] = useQuery(getAssignedUsers, { taskId: taskId! })
-
-  // Get sidebar options
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
+  const currentAssignment = assignments.find(
+    (assignment) => assignment.contributorId === currentContributor[0].id
+  )
 
   // Handle metadata input
   const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
@@ -72,39 +84,23 @@ export const ShowTaskPage = () => {
   }
 
   const handleJsonFormSubmit = async (data) => {
-    // Users can overwrite their responses
-    await updateAssignmentMutation({
-      id: currentAssigment[0].id,
-      metadata: data.formData,
-      status: AssignmentStatus.COMPLETED,
-    })
-    await handleToggle()
+    if (currentAssignment) {
+      // Users can overwrite their responses
+      await updateAssignmentMutation({
+        id: currentAssignment.id,
+        metadata: data.formData,
+        status: AssignmentStatus.COMPLETED,
+      })
+      await handleToggle()
+      await refetch()
+    } else {
+      console.error("currentAssignment is undefined")
+    }
   }
 
   const handleJsonFormError = (errors) => {
     console.log(errors)
   }
-  // Handle assignment status
-  const handleAssignmentStatusToggle = async () => {
-    const newStatus =
-      currentAssigment.status === AssignmentStatus.COMPLETED
-        ? AssignmentStatus.NOT_COMPLETED
-        : AssignmentStatus.COMPLETED
-
-    await updateAssignmentMutation({
-      id: currentAssigment.id,
-      status: newStatus,
-    })
-
-    await refetch()
-  }
-
-  const [isChecked, setIsChecked] = useState(currentAssigment.status === AssignmentStatus.COMPLETED)
-
-  useEffect(() => {
-    // Update the local state when the assignment status changes in the database
-    setIsChecked(currentAssigment.status === AssignmentStatus.COMPLETED || false)
-  }, [currentAssigment])
 
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
@@ -131,7 +127,7 @@ export const ShowTaskPage = () => {
             </p>
           </div>
 
-          {task["schema"] && userIds.includes(currentUser!.id) && (
+          {task["schema"] && currentAssignment && (
             <div className="mt-4">
               <button className="btn" onClick={() => handleToggle()}>
                 Provide metadata
@@ -155,19 +151,8 @@ export const ShowTaskPage = () => {
             </div>
           )}
 
-          {!task["schema"] && userIds.includes(currentUser!.id) && (
-            <div className="flex items-center space-x-2">
-              <span>Not Completed</span>
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="toggle"
-                  checked={isChecked}
-                  onChange={handleAssignmentStatusToggle}
-                />
-                <span className="ml-2">Completed</span>
-              </label>
-            </div>
+          {!task["schema"] && currentAssignment && (
+            <CompleteToggle currentAssignment={currentAssignment} refetch={refetch} />
           )}
 
           <div className="flex justify-start mt-4">
