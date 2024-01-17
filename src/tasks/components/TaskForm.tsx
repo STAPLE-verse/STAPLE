@@ -209,8 +209,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           Change Current Schema
         </button>
 
-        <Modal open={openSchemaModal} size="w-11/12 max-w-3xl">
-          <div className="modal-action">
+        <Modal open={openSchemaModal} size="w-11/12 max-w-1xl">
+          <div className="">
             <div>
               <label>Choose a schema: </label>
               <Field name="schema" component="select">
@@ -243,11 +243,12 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
                 }}
               </Field>
             </div>
-
+            <div className="modal-action">
+              <button type="button" className="btn btn-primary" onClick={handleToggleSchemaUpload}>
+                Close
+              </button>
+            </div>
             {/* closes the modal */}
-            <button type="button" className="btn btn-primary" onClick={handleToggleSchemaUpload}>
-              Close
-            </button>
           </div>
         </Modal>
       </div>
