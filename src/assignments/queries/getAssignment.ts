@@ -8,7 +8,7 @@ interface GetAssingmentInput extends Pick<Prisma.AssignmentFindFirstArgs, "where
 export default resolver.pipe(resolver.authorize(), async ({ where }: GetAssingmentInput) => {
   const assignment = await db.assignment.findFirst({ where })
 
-  if (!assignment) throw new NotFoundError()
+  // if (!assignment) throw new NotFoundError()
 
   return assignment
 })

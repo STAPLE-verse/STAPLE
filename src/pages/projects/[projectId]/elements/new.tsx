@@ -11,6 +11,7 @@ import { Suspense } from "react"
 import { useParam } from "@blitzjs/next"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import toast from "react-hot-toast"
 
 const NewElementPage = () => {
   const router = useRouter()
@@ -34,6 +35,11 @@ const NewElementPage = () => {
             onSubmit={async (values) => {
               try {
                 const element = await createElementMutation({ ...values, projectId: projectId! })
+                await toast.promise(Promise.resolve(element), {
+                  loading: "Creating element...",
+                  success: "Element created!",
+                  error: "Failed to create the element...",
+                })
                 await router.push(
                   Routes.ShowElementPage({ projectId: projectId!, elementId: element.id })
                 )

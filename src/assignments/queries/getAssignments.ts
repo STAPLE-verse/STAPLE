@@ -13,6 +13,6 @@ export default resolver.pipe(
       include,
     })
 
-    return assignments
+    return assignments || []
   }
 )

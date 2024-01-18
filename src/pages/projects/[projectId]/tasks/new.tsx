@@ -12,6 +12,7 @@ import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import getProject from "src/projects/queries/getProject"
 import { fileReader } from "src/services/fileReader"
 import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
+import toast from "react-hot-toast"
 
 const NewTaskPage = () => {
   const router = useRouter()
@@ -62,6 +63,12 @@ const NewTaskPage = () => {
                   contributorId: values.contributorId,
                   schema: schema,
                 })
+                await toast.promise(Promise.resolve(task), {
+                  loading: "Creating task...",
+                  success: "Task created!",
+                  error: "Failed to create the task...",
+                })
+
                 await router.push(Routes.ShowTaskPage({ projectId: projectId!, taskId: task.id }))
               } catch (error: any) {
                 console.error(error)

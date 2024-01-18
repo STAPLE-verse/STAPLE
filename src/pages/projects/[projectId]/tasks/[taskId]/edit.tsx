@@ -13,6 +13,7 @@ import updateTask from "src/tasks/mutations/updateTask"
 import { TaskForm, FORM_ERROR } from "src/tasks/components/TaskForm"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import toast from "react-hot-toast"
 
 export const EditTask = () => {
   const router = useRouter()
@@ -60,8 +61,16 @@ export const EditTask = () => {
                   ...values,
                   id: task.id,
                 })
+
                 console.log("values", values)
                 console.log("ipdated", updated)
+
+                await toast.promise(Promise.resolve(updated), {
+                  loading: "Updating task...",
+                  success: "Task updated!",
+                  error: "Failed to update the task...",
+                })
+
                 await setQueryData(updated)
                 await router.push(
                   Routes.ShowTaskPage({
