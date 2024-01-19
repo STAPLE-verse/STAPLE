@@ -12,7 +12,7 @@ import getContributors from "src/contributors/queries/getContributors"
 import getAssigments from "src/assignments/queries/getAssignments"
 
 import Modal from "src/core/components/Modal"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 
@@ -52,10 +52,21 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     },
   })
 
-  const [currentAssigments] = useQuery(getAssigments, {
+  const [currentAssigments, { refetch }] = useQuery(getAssigments, {
     where: { taskId: taskId! },
     orderBy: { id: "asc" },
   })
+
+  // async function reloadAssigments() {
+  //   console.log("component rendered reload")
+  //   await refetch()
+  // }
+  // useEffect(() => {
+  //   // Get currentAssignment
+  //   console.log("componet rendered")
+
+  //   reloadAssigments()
+  // }, [])
 
   // TODO: User should be added to typescrit schema and the user object dropped on spread
 
@@ -219,4 +230,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )
+}
+function reloadAssigments() {
+  throw new Error("Function not implemented.")
 }

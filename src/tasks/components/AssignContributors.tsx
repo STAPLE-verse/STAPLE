@@ -75,11 +75,9 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
       header: "",
     }),
 
-    columnHelper.accessor("firstName", {
-      cell: (info) => (
-        <span>{`${info.row.original.firstName}  ${info.row.original.lastName}`}</span>
-      ),
-      header: "Contributor Name",
+    columnHelper.accessor("userName", {
+      cell: (info) => <span>{`${info.row.original.userName}`}</span>,
+      header: "Contributor UserName",
     }),
   ]
 

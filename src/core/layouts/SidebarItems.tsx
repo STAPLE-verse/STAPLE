@@ -5,6 +5,7 @@ import {
   RectangleGroupIcon,
   RectangleStackIcon,
   UsersIcon,
+  UserGroupIcon,
 } from "@heroicons/react/24/outline"
 import { useRouter } from "next/router"
 import { SidebarItemProps } from "../components/Sidebar"
@@ -49,6 +50,15 @@ export const ProjectSidebarItems = (
       },
       active: whichActive === "Contributors",
     },
+    {
+      icon: <UserGroupIcon className="w-6 h-6" />,
+      text: "Teams",
+      onClick: async () => {
+        await router.push(Routes.TeamsPage({ projectId: projectId }))
+      },
+      active: whichActive === "Contributors",
+    },
+
     {
       icon: <Cog6ToothIcon className="w-6 h-6" />,
       text: "Settings",

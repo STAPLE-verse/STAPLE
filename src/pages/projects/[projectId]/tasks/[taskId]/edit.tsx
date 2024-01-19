@@ -62,9 +62,6 @@ export const EditTask = () => {
                   id: task.id,
                 })
 
-                console.log("values", values)
-                console.log("ipdated", updated)
-
                 await toast.promise(Promise.resolve(updated), {
                   loading: "Updating task...",
                   success: "Task updated!",
