@@ -18,10 +18,6 @@ import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSche
 
 import AssignContributors from "./AssignContributors"
 import { ContributorOption } from "./AssignContributors"
-
-//import { LabeledTextField } from "src/core/components/LabelSelectField"
-// import getProjects from "src/projects/queries/getProjects"
-// import { usePaginatedQuery } from "@blitzjs/rpc"
 export { FORM_ERROR } from "src/core/components/Form"
 
 // TODO: Check whether this is a good method to go
@@ -62,22 +58,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // TODO: User should be added to typescrit schema and the user object dropped on spread
-  //TODO needs to set the user to check if already assigned to task or uncheked
-
-  // const findIfAssignedToTask = (contributorId) => {
-  //   return currentAssigments.findIndex((element) => contributorId == element.contributorId) !== -1
-  // }
-
-  // const contributorOptions = contributors.map(
-  //   (contributor) =>
-  //     ({
-  //       userName: contributor["user"].username,
-  //       firstName: contributor["user"].firstName,
-  //       lastName: contributor["user"].lastName,
-  //       id: contributor.id,
-  //       checked: taskId == undefined ? false : findIfAssignedToTask(contributor.id),
-  //     } as ContributorOption)
-  // )
 
   const findIdIfAssignedToTask = (contributorId) => {
     let index = currentAssigments.findIndex((element) => contributorId == element.contributorId)
@@ -149,20 +129,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         // Setting the initial value to the selectinput
         // initValue={projectInitialValues}
       />
-      {/* <LabelSelectField
-        className="select select-bordered w-full max-w-xs mt-2"
-        name="contributorId"
-        label="Assign a contributor"
-        options={contributorOptions}
-        optionText="username"
-        // TODO: Fix multiple select in LabelSelectField.tsx
-        multiple={false}
-        optionValue="id"
-        // Setting the initial value to the selectinput
-        // initValue={projectInitialValues}
-      /> */}
-      {/* Either this button or create a select component with the checkboxes */}
-
       <div className="mt-4">
         <button type="button" className="btn" onClick={() => handleToggleContributorsModal()}>
           Assign contributors
@@ -179,9 +145,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
                         contributorOptions={contributorOptions}
                         onChange={(newSelections) => {
                           setcontributorChecked(newSelections)
-                          console.log(newSelections)
                           onChange(contributorChecked)
-                          // console.log(newSelections)
                         }}
                       ></AssignContributors>
                     </div>

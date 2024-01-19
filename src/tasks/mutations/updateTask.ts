@@ -13,7 +13,6 @@ export default resolver.pipe(
 
     if (contributorsId != undefined) {
       contributorsId.forEach(async (contributor) => {
-        //needs to c
         let contributorId = contributor["id"]
         if (contributor["checked"]) {
           //TODO could change this to create many??
@@ -24,11 +23,7 @@ export default resolver.pipe(
             },
           })
         } else {
-          //needs to delete
-          console.log("deleting assigment ")
-          // if (contributor["assigmentId"] != undefined) {
           await db.assignment.delete({ where: { id: contributor["assigmentId"] } })
-          // }
         }
       })
     }

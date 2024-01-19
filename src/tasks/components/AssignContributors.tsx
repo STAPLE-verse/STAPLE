@@ -1,12 +1,4 @@
 import React, { useState } from "react"
-
-// import getContributors from "src/contributors/queries/getContributors"
-// import createAssignment from "src/assignments/mutations/createAssignment"
-// import getColumns from "../queries/getColumns"
-import getElements from "src/elements/queries/getElements"
-// import { useMutation, useQuery } from "@blitzjs/rpc"
-// import { T } from "@blitzjs/auth/dist/index-19e2d23c"
-
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import Table from "src/core/components/Table"
 
@@ -26,15 +18,7 @@ type Props = {
   contributorOptions: ContributorOption[]
 }
 
-// With Table, needs
-//onClose event for this , with call be a modal
-//then when input changes, get all selected rows from table which returns model
-//all get selected rows on each change
-
 const AssignContributors = ({ onChange, contributorOptions }: Props) => {
-  //TODO needs to set the initial status based on if have been assigned previosly
-  //Also needs to get assigments in case some one is unchecked from current assigment ,
-  //then needs to delete assigment from database
   const [contributorChecked, setcontributorChecked] = useState(contributorOptions)
 
   const handleOnChange = (element) => {
@@ -102,35 +86,7 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
   return (
     <div>
       <div className="flex  mt-2 font-bold">Assign contributors to task</div>
-      <div>
-        {/* <ul>
-          {contributorOptions &&
-            contributorOptions.map((val, index) => {
-              return (
-                <li key={index} className="flex  mt-1">
-                  <div>
-                    <label className="label cursor-pointer">
-                      <input
-                        type="checkbox"
-                        className="checkbox checkbox-primary"
-                        checked={contributorChecked[index]}
-                        onChange={() => handleOnChange(index)}
-                      />
-                      <span className="label-text px-2">
-                        {val?.firstName} {val?.userName}
-                      </span>
-                    </label>
-                  </div>
-                </li>
-              )
-            })}
-        </ul> */}
-      </div>
       <Table columns={contributorTableColumns} data={contributorChecked}></Table>
-
-      {/* <button className="btn btn-primary" onClick={() => saveContributorsList()}>
-        Save
-      </button> */}
     </div>
   )
 }
