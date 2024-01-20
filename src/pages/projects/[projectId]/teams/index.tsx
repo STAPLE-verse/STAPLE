@@ -86,6 +86,10 @@ const ITEMS_PER_PAGE = 7
 //   )
 // }
 
+export const TeamList = () => {
+  return <div>Team List here</div>
+}
+
 const TeamsPage = () => {
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
@@ -99,15 +103,17 @@ const TeamsPage = () => {
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2">Teams</h1>
-        <div>Show Team list here</div>
-        {/* <Link className="btn mb-4" href={Routes.NewContributorPage({ projectId: projectId! })}>
-          Add contributor
-          <PlusIcon className="w-5 h-5" />
-        </Link> */}
 
-        {/* <Suspense fallback={<div>Loading...</div>}>
-          <ContributorsList />
-        </Suspense> */}
+        <Link className="btn mb-4" href={Routes.NewTeamPage({ projectId: projectId! })}>
+          Add Team
+          <PlusIcon className="w-5 h-5" />
+        </Link>
+
+        {
+          <Suspense fallback={<div>Loading...</div>}>
+            <TeamList />
+          </Suspense>
+        }
       </main>
     </Layout>
   )

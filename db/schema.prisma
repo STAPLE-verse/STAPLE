@@ -83,6 +83,7 @@ model Contributor {
   project     Project         @relation(fields: [projectId], references: [id])
   assignments Assignment[]
   role        ContributorRole @default(PROJECT_MANAGER)
+  teams       Team[]
 }
 
 model Project {
@@ -97,6 +98,7 @@ model Project {
   columns  Column[]
 
   contributors Contributor[]
+  teams        Team[]
 }
 
 model Task {
@@ -131,6 +133,16 @@ model Assignment {
   contributor   Contributor      @relation(fields: [contributorId], references: [id])
   status        AssignmentStatus @default(NOT_COMPLETED)
   metadata      Json?
+}
+
+model Team {
+  id           Int           @id @default(autoincrement())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  name         String
+  contributors Contributor[]
+  projectId    Int
+  project      Project       @relation(fields: [projectId], references: [id])
 }
 
 model Column {
