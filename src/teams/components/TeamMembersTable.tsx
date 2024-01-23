@@ -16,38 +16,39 @@ type Props = {
   teamOptions: TeamOption[]
 }
 
+//TODO refactor this table to core components since is very similar to assigment and others
 const AssignTeamMembers = ({ onChange, teamOptions }: Props) => {
   const [contributorChecked, setcontributorChecked] = useState(teamOptions)
 
-  // const handleOnChange = (element) => {
-  //   let needsUpdate: any[] = []
-  //   const updatedCheckedState = contributorChecked.map((item, index) => {
-  //     let t = item
-  //     if (item.id === element.id) {
-  //       t.checked = !t.checked
-  //     }
-  //     return t
-  //   })
+  const handleOnChange = (element) => {
+    let needsUpdate: any[] = []
+    const updatedCheckedState = contributorChecked.map((item, index) => {
+      let t = item
+      console.log(item)
+      if (item.id === element.id) {
+        t.checked = !t.checked
+      }
+      return t
+    })
 
-  //   //only update the items that changed
-  //   updatedCheckedState.forEach((element) => {
-  //     let orgItem = contributorOptions.find((orgItem) => orgItem.id == element.id)
+    updatedCheckedState.forEach((element) => {
+      let orgItem = teamOptions.find((orgItem) => orgItem.id == element.id)
 
-  //     if (orgItem != undefined && orgItem.checked != element.checked) {
-  //       needsUpdate.push({
-  //         id: element.id,
-  //         checked: element.checked,
-  //         assigmentId: element.assigmentId,
-  //       })
-  //     }
-  //   })
+      if (orgItem != undefined && orgItem.checked != element.checked) {
+        needsUpdate.push({
+          id: element.id,
+          checked: element.checked,
+          teamId: element.teamId,
+        })
+      }
+    })
+    setcontributorChecked(updatedCheckedState)
 
-  //   setcontributorChecked(updatedCheckedState)
-  //   if (onChange != undefined) {
-  //     console.log("update from contributors")
-  //     onChange(needsUpdate)
-  //   }
-  // }
+    if (onChange != undefined) {
+      console.log("creating form")
+      onChange(needsUpdate)
+    }
+  }
 
   // ColumnDefs
   const contributorTableColumns: ColumnDef<TeamOption>[] = [
@@ -62,7 +63,7 @@ const AssignTeamMembers = ({ onChange, teamOptions }: Props) => {
                   className="checkbox checkbox-primary"
                   checked={info.row.original.checked}
                   onChange={() => {
-                    // handleOnChange(info.row.original)
+                    handleOnChange(info.row.original)
                   }}
                 />
               </label>

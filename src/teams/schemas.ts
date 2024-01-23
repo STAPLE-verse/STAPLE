@@ -9,7 +9,7 @@ export const TeamFormSchema = z.object({
 export const CreateTeamSchema = z.object({
   name: z.string(),
   projectId: z.number(),
-  // contributorsId: z.array(z.number()).nonempty(),
+  contributorsId: z.array(z.number()).nonempty(),
 })
 
 export const UpdateTeamSchema = CreateTeamSchema.merge(

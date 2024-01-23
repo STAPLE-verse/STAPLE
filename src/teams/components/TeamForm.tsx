@@ -38,9 +38,9 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
     // if (index != -1 && taskId != undefined) {
     //   assigmentId = currentAssigments[index]?.id
     // }
-
+    console.log(contributor)
     return {
-      userName: "test",
+      userName: contributor["user"].username,
       id: contributor.id,
       checked: false,
       // assigmentId: assigmentId,
@@ -67,7 +67,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
                   onChange={(newSelections) => {
                     console.log(newSelections)
                     // setcontributorChecked(newSelections)
-                    // onChange(contributorChecked)
+                    onChange(newSelections)
                   }}
                 ></AssignTeamMembers>
               </div>
