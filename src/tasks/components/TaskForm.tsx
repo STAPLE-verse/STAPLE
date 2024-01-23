@@ -17,7 +17,7 @@ import { useEffect, useState } from "react"
 import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 
 import AssignContributors from "./AssignContributors"
-import { ContributorOption } from "./AssignContributors"
+import { ContributorOption, ContributorAssigned } from "./AssignContributors"
 export { FORM_ERROR } from "src/core/components/Form"
 
 // TODO: Check whether this is a good method to go
@@ -92,7 +92,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     } as ContributorOption
   })
 
-  const [contributorChecked, setcontributorChecked] = useState([])
+  const [contributorChecked, setcontributorChecked] = useState(
+    [] as unknown as ContributorAssigned[]
+  )
 
   // const users = contributors.map((contributor) => contributor["user"])
   // const projectInitialValues = columns && columns[0] ? columns[0].id : undefined

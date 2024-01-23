@@ -11,6 +11,12 @@ export type ContributorOption = {
   assigmentId?: number
 }
 
+export type ContributorAssigned = {
+  id: number
+  checked: boolean
+  assigmentId?: number
+}
+
 const columnHelper = createColumnHelper<ContributorOption>()
 
 type Props = {
@@ -22,7 +28,7 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
   const [contributorChecked, setcontributorChecked] = useState(contributorOptions)
 
   const handleOnChange = (element) => {
-    let needsUpdate: any[] = []
+    let needsUpdate: ContributorAssigned[] = []
     const updatedCheckedState = contributorChecked.map((item, index) => {
       let t = item
       if (item.id === element.id) {

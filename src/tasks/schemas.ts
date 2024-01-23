@@ -46,7 +46,7 @@ export const CreateTaskSchema = z.object({
   columnId: z.number(),
   description: z.string().optional().nullable(),
   elementId: z.number().optional().nullable(),
-  // TODO: Has to be modified to array if multiple select is enabled
+
   contributorsId: z.array(z.number()).optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
   schema: z

@@ -52,6 +52,8 @@ const NewTaskPage = () => {
               } else {
                 schema = defaultSchemas.find((schema) => schema.name === values.schema)?.schema
               }
+
+              let contributorsId = values.contributorsId?.map((val) => val["id"])
               // Create new task
               try {
                 const task = await createTaskMutation({
@@ -60,7 +62,7 @@ const NewTaskPage = () => {
                   columnId: values.columnId,
                   projectId: projectId!,
                   elementId: values.elementId,
-                  contributorId: values.contributorId,
+                  contributorsId: contributorsId,
                   schema: schema,
                 })
                 await toast.promise(Promise.resolve(task), {
