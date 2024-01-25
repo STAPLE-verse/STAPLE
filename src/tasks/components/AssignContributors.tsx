@@ -11,12 +11,6 @@ export type ContributorOption = {
   assigmentId?: number
 }
 
-export type ContributorAssigned = {
-  id: number
-  checked: boolean
-  assigmentId?: number
-}
-
 const columnHelper = createColumnHelper<ContributorOption>()
 
 type Props = {
@@ -28,7 +22,6 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
   const [contributorChecked, setcontributorChecked] = useState(contributorOptions)
 
   const handleOnChange = (element) => {
-    let needsUpdate: ContributorAssigned[] = []
     const updatedCheckedState = contributorChecked.map((item, index) => {
       let t = item
       if (item.id === element.id) {
@@ -36,24 +29,8 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
       }
       return t
     })
-
-    //only update the items that changed
-    updatedCheckedState.forEach((element) => {
-      let orgItem = contributorOptions.find((orgItem) => orgItem.id == element.id)
-
-      if (orgItem != undefined && orgItem.checked != element.checked) {
-        needsUpdate.push({
-          id: element.id,
-          checked: element.checked,
-          assigmentId: element.assigmentId,
-        })
-      }
-    })
-
-    setcontributorChecked(updatedCheckedState)
     if (onChange != undefined) {
-      console.log("update from contributors")
-      onChange(needsUpdate)
+      onChange(updatedCheckedState)
     }
   }
 

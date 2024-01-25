@@ -17,7 +17,9 @@ import { useEffect, useState } from "react"
 import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 
 import AssignContributors from "./AssignContributors"
-import { ContributorOption, ContributorAssigned } from "./AssignContributors"
+import { ContributorOption } from "./AssignContributors"
+import { e } from "vitest/dist/index-9f5bc072"
+import { getAuthValues } from "@blitzjs/auth"
 export { FORM_ERROR } from "src/core/components/Form"
 
 // TODO: Check whether this is a good method to go
@@ -52,29 +54,18 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     },
   })
 
+  //TODO: should we pass this from task (new or edit) instead of getting it here?
   const [currentAssigments, { refetch }] = useQuery(getAssigments, {
     where: { taskId: taskId! },
     orderBy: { id: "asc" },
   })
-
-  // async function reloadAssigments() {
-  //   console.log("component rendered reload")
-  //   await refetch()
-  // }
-  // useEffect(() => {
-  //   // Get currentAssignment
-  //   console.log("componet rendered")
-
-  //   reloadAssigments()
-  // }, [])
-
-  // TODO: User should be added to typescrit schema and the user object dropped on spread
 
   const findIdIfAssignedToTask = (contributorId) => {
     let index = currentAssigments.findIndex((element) => contributorId == element.contributorId)
     return index
   }
 
+  //Made sure that contributors assigned are checked when shown in table
   const contributorOptions = contributors.map((contributor) => {
     let assigmentId: number | undefined = undefined
     let index = findIdIfAssignedToTask(contributor.id)
@@ -92,15 +83,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     } as ContributorOption
   })
 
-  const [contributorChecked, setcontributorChecked] = useState(
-    [] as unknown as ContributorAssigned[]
-  )
-
-  // const users = contributors.map((contributor) => contributor["user"])
-  // const projectInitialValues = columns && columns[0] ? columns[0].id : undefined
-  // const elementIntitialValues = elements && elements[0] ? elements[0].id : undefined
-
   const [openSchemaModal, setopenSchemaModal] = useState(false)
+
   const handleToggleSchemaUpload = () => {
     setopenSchemaModal((prev) => !prev)
   }
@@ -108,6 +92,14 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   const [openContributorsModal, setContributorsModal] = useState(false)
   const handleToggleContributorsModal = () => {
     setContributorsModal((prev) => !prev)
+  }
+
+  const [validAssigments, setValidAssigments] = useState(true)
+  const areAssigmentValid = (values) => {
+    if (values != undefined && values.findIndex((el) => el.checked) >= 0) {
+      return true
+    }
+    return false
   }
 
   const schemas = getDefaultSchemaLists()
@@ -123,8 +115,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         options={columns}
         optionText="name"
         optionValue="id"
-        // Setting the initial value to the selectinput
-        // initValue={projectInitialValues}
       />
       <LabeledTextField
         name="description"
@@ -139,26 +129,34 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         options={elements}
         optionText="name"
         optionValue="id"
-        // Setting the initial value to the selectinput
-        // initValue={projectInitialValues}
       />
       <div className="mt-4">
         <button type="button" className="btn" onClick={() => handleToggleContributorsModal()}>
           Assign contributors
         </button>
+        <div className="flex justify-start mt-1">
+          {validAssigments ? "" : <span className="text-error">Needs a least one contributor</span>}
+        </div>
 
         <Modal open={openContributorsModal} size="w-7/8 max-w-xl">
           <div className="">
             <div className="flex justify-start mt-4">
-              <Field name="contributorsId" initialValue={contributorChecked}>
-                {({ input: { value, onChange, ...input } }) => {
+              <Field
+                name="contributorsId"
+                initialValue={contributorOptions}
+                validate={(values) => {
+                  let t = areAssigmentValid(values)
+                  setValidAssigments(t)
+                  return !t
+                }}
+              >
+                {({ input: { value, onChange, ...input }, meta }) => {
                   return (
                     <div>
                       <AssignContributors
                         contributorOptions={contributorOptions}
                         onChange={(newSelections) => {
-                          setcontributorChecked(newSelections)
-                          onChange(contributorChecked)
+                          onChange(newSelections)
                         }}
                       ></AssignContributors>
                     </div>
@@ -232,7 +230,4 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )
-}
-function reloadAssigments() {
-  throw new Error("Function not implemented.")
 }

@@ -52,10 +52,12 @@ const NewTaskPage = () => {
               } else {
                 schema = defaultSchemas.find((schema) => schema.name === values.schema)?.schema
               }
-
-              let contributorsId = values.contributorsId?.map((val) => val["id"])
+              let contributorsId = values.contributorsId
+                ?.filter((el) => el.checked)
+                .map((val) => val["id"])
               // Create new task
               try {
+                // if (true) return
                 const task = await createTaskMutation({
                   name: values.name,
                   description: values.description,

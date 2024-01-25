@@ -14,15 +14,17 @@ export default resolver.pipe(
     if (contributorsId != undefined) {
       contributorsId.forEach(async (contributor) => {
         let contributorId = contributor["id"]
-        if (contributor["checked"]) {
-          //TODO could change this to create many??
+        //is a new addition?
+        if (contributor["assigmentId"] == undefined && contributor["checked"]) {
           const assignment = await db.assignment.create({
             data: {
               task: { connect: { id: task.id } },
               contributor: { connect: { id: contributorId } },
             },
           })
-        } else {
+        }
+        //old contributor that will be removed
+        if (contributor["assigmentId"] != undefined && !contributor["checked"]) {
           await db.assignment.delete({ where: { id: contributor["assigmentId"] } })
         }
       })
