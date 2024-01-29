@@ -38,7 +38,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
     // if (index != -1 && taskId != undefined) {
     //   assigmentId = currentAssigments[index]?.id
     // }
-    console.log(contributor)
+    // console.log(contributor)
     return {
       userName: contributor["user"].username,
       id: contributor.id,
@@ -52,7 +52,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
   // checked: boolean
   // teamId?: number
 
-  console.log(contributors)
+  // console.log(contributors)
 
   return (
     <Form<S> {...formProps}>
@@ -63,6 +63,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
             return (
               <div>
                 <AssignTeamMembers
+                  showCheckbox={true}
                   teamOptions={currentTeamOptions}
                   onChange={(newSelections) => {
                     console.log(newSelections)

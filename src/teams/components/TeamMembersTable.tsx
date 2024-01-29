@@ -14,10 +14,11 @@ const columnHelper = createColumnHelper<TeamOption>()
 type Props = {
   onChange?: (selected: any) => void
   teamOptions: TeamOption[]
+  showCheckbox: true
 }
 
 //TODO refactor this table to core components since is very similar to assigment and others
-const AssignTeamMembers = ({ onChange, teamOptions }: Props) => {
+const AssignTeamMembers = ({ onChange, teamOptions, showCheckbox }: Props) => {
   const [contributorChecked, setcontributorChecked] = useState(teamOptions)
 
   const handleOnChange = (element) => {
@@ -52,33 +53,64 @@ const AssignTeamMembers = ({ onChange, teamOptions }: Props) => {
 
   // ColumnDefs
   const contributorTableColumns: ColumnDef<TeamOption>[] = [
-    columnHelper.accessor("id", {
-      cell: (info) => (
-        <span>
-          {
-            <div>
-              <label className="label cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="checkbox checkbox-primary"
-                  checked={info.row.original.checked}
-                  onChange={() => {
-                    handleOnChange(info.row.original)
-                  }}
-                />
-              </label>
-            </div>
-          }
-        </span>
-      ),
-      header: "",
-    }),
+    // columnHelper.accessor("id", {
+    //   cell: (info) => (
+    //     <span>
+    //       {
+    //         <div>
+    //           <label className="label cursor-pointer">
+    //             <input
+    //               type="checkbox"
+    //               className="checkbox checkbox-primary"
+    //               checked={info.row.original.checked}
+    //               onChange={() => {
+    //                 handleOnChange(info.row.original)
+    //               }}
+    //             />
+    //           </label>
+    //         </div>
+    //       }
+    //     </span>
+    //   ),
+    //   header: "",
+    // }),
+    // columnHelper.accessor("userName", {
+    //   cell: (info) => <span>{`${info.row.original.userName}`}</span>,
+    //   header: "UserName",
+    // }),
+  ]
 
+  if (showCheckbox) {
+    contributorTableColumns.push(
+      columnHelper.accessor("id", {
+        cell: (info) => (
+          <span>
+            {
+              <div>
+                <label className="label cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-primary"
+                    checked={info.row.original.checked}
+                    onChange={() => {
+                      handleOnChange(info.row.original)
+                    }}
+                  />
+                </label>
+              </div>
+            }
+          </span>
+        ),
+        header: "",
+      })
+    )
+  }
+  contributorTableColumns.push(
     columnHelper.accessor("userName", {
       cell: (info) => <span>{`${info.row.original.userName}`}</span>,
       header: "UserName",
-    }),
-  ]
+    })
+  )
 
   return (
     <div>

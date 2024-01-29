@@ -143,7 +143,7 @@ export const ShowTaskPage = () => {
                 </div>
                 <div className="modal-action">
                   <button className="btn btn-primary" onClick={handleToggle}>
-                    Close
+                    Save
                   </button>
                 </div>
               </Modal>
