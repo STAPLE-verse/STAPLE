@@ -117,7 +117,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       <LabeledTextField
         className="textarea textarea-primary textarea-bordered w-full resize max-w-sm m-2"
         name="description"
-        label="Task Description:"
+        label="Task Description (Optional):"
         placeholder="Add Description"
         type="text"
       />
@@ -204,7 +204,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           className="btn btn-outline btn-primary w-full max-w-sm"
           onClick={() => handleToggleSchemaUpload()}
         >
-          Change Required Form
+          Assign Required Information
         </button>
 
         <Modal open={openSchemaModal} size="w-11/12 max-w-1xl">
