@@ -121,15 +121,15 @@ export const ShowTaskPage = () => {
             </p>
             <p className="italic">Last update: {task.updatedAt.toString()}</p>
             <p>
-              <span className="font-semibold">Current metadata schema:</span>{" "}
-              {task["schema"] ? JSON.stringify(task["schema"]) : "no metadata schema assigned"}
+              <span className="font-semibold">Current Form:</span>{" "}
+              {task["schema"] ? JSON.stringify(task["schema"]) : "No form required"}
             </p>
           </div>
 
           {task["schema"] && currentAssignment && (
             <div className="mt-4">
-              <button className="btn" onClick={() => handleToggle()}>
-                Provide metadata
+              <button className="btn btn-outline btn-primary" onClick={() => handleToggle()}>
+                Provide Form Information
               </button>
               <Modal open={openAssignmentModal} size="w-11/12 max-w-5xl">
                 <div className="font-sans">
@@ -142,7 +142,7 @@ export const ShowTaskPage = () => {
                   }
                 </div>
                 <div className="modal-action">
-                  <button className="btn btn-primary" onClick={handleToggle}>
+                  <button className="btn btn-success btn-outline" onClick={handleToggle}>
                     Save
                   </button>
                 </div>
@@ -154,19 +154,17 @@ export const ShowTaskPage = () => {
             <CompleteToggle currentAssignment={currentAssignment} refetch={refetch} />
           )}
 
-          <div className="flex justify-start mt-4">
+          <div className="flex justify-end mt-4">
             <Link
-              className="btn"
+              className="btn btn-outline btn-success m-2"
               href={Routes.EditTaskPage({ projectId: projectId!, taskId: task.id })}
             >
-              Update task
+              Update Task
             </Link>
-          </div>
 
-          <div className="flex justify-end mt-4">
             <button
               type="button"
-              className="btn"
+              className="btn btn-outline btn-error m-2"
               onClick={async () => {
                 if (
                   window.confirm("The task will be permanently deleted. Are you sure to continue?")

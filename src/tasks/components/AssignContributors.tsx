@@ -66,7 +66,7 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
 
   return (
     <div>
-      <div className="flex  mt-2 font-bold">Assign contributors to task</div>
+      <div className="flex mt-2 font-bold">Assign Contributors to Task</div>
       <Table columns={contributorTableColumns} data={contributorChecked}></Table>
     </div>
   )
