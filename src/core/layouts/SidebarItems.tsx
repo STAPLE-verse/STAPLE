@@ -56,7 +56,7 @@ export const ProjectSidebarItems = (
       onClick: async () => {
         await router.push(Routes.TeamsPage({ projectId: projectId }))
       },
-      active: whichActive === "Contributors",
+      active: whichActive === "Teams",
     },
 
     {

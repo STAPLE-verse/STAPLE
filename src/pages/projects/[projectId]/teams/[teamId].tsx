@@ -9,37 +9,17 @@ import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import getTeam from "src/teams/queries/getTeam"
 import deleteTeam from "src/teams/mutations/deleteTeam"
-import JsonForm from "src/assignments/components/JsonForm"
-
-import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import getProject from "src/projects/queries/getProject"
-import Modal from "src/core/components/Modal"
-import getAssignments from "src/assignments/queries/getAssignments"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import updateAssignment from "src/assignments/mutations/updateAssignment"
-import getContributor from "src/contributors/queries/getContributor"
-import { AssignmentStatus } from "@prisma/client"
-import {
-  AssignmentWithRelations,
-  assignmentTableColumns,
-} from "src/assignments/components/AssignmentTable"
-import Table from "src/core/components/Table"
-import CompleteToggle from "src/assignments/components/CompleteToggle"
 import getContributors from "src/contributors/queries/getContributors"
 import { getInitials } from "src/services/getInitials"
 
-// import { AssignmentTable } from "src/assignments/components/AssignmentTable"
-
 export const ShowTeamPage = () => {
-  // Setup
   const router = useRouter()
   const [deleteTeamMutation] = useMutation(deleteTeam)
-  // const [updateAssignmentMutation] = useMutation(updateAssignment)
-  // // Get values
-  const currentUser = useCurrentUser()
+
   const teamId = useParam("teamId", "number")
-  const [team] = useQuery(getTeam, { id: teamId }) //include: { contributors: true }
+  const [team] = useQuery(getTeam, { id: teamId })
 
   const [{ contributors }] = useQuery(getContributors, {
     where: { teams: { some: { id: teamId } } },
@@ -48,17 +28,11 @@ export const ShowTeamPage = () => {
       user: true,
     },
   })
-  console.log(contributors)
 
   const projectId = useParam("projectId", "number")
-  // TODO: we only need this to send the project name to sidebar see if there is an option to get around this by making the sidebar component more abstract
   const [project] = useQuery(getProject, { id: projectId })
   // Get sidebar options
   const sidebarItems = ProjectSidebarItems(projectId!, null)
-  // Note: we have to get this separately because the currentContributor does not neccesarily have an assignment
-  // const currentContributor = useQuery(getContributor, {
-  //   where: { projectId: projectId, userId: currentUser!.id },
-  // })
 
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
@@ -74,7 +48,7 @@ export const ShowTeamPage = () => {
           <div className="flex mt-4 text-2xl">Members</div>
 
           {/* TODO refactor this to a global compoenent to show contributors , also used in contributor page */}
-          <div className="flex mt-4">
+          <div className="">
             {contributors.map((contributor) => {
               const firstName = contributor["user"].firstName
               const lastName = contributor["user"].lastName
@@ -111,6 +85,15 @@ export const ShowTeamPage = () => {
             })}
           </div>
 
+          <div className="flex justify-start mt-4">
+            <Link
+              className="btn"
+              href={Routes.EditTeamPage({ projectId: projectId!, teamId: team.id })}
+            >
+              Update Team
+            </Link>
+          </div>
+
           <div className="flex justify-end mt-4">
             <button
               type="button"
@@ -120,19 +103,13 @@ export const ShowTeamPage = () => {
                   window.confirm("The team will be permanently deleted. Are you sure to continue?")
                 ) {
                   await deleteTeamMutation({ id: team.id })
-                  await router.push(Routes.TasksPage({ projectId: projectId! }))
+                  await router.push(Routes.TeamsPage({ projectId: projectId! }))
                 }
               }}
             >
               Delete team
             </button>
           </div>
-          {/* <Suspense fallback={<div>Loading...</div>}>
-            <div className="divider">
-              <h2>Assignments</h2>
-            </div>
-            <Table columns={assignmentTableColumns} data={assignments} />
-          </Suspense> */}
         </main>
       </Suspense>
     </Layout>

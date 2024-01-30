@@ -12,8 +12,6 @@ import Head from "next/head"
 import { z } from "zod"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
-
-import { contributorRoleOptions } from "src/contributors/components/ContributorForm"
 import toast from "react-hot-toast"
 import createTeam from "src/teams/mutations/createTeam"
 
@@ -24,7 +22,6 @@ const NewTeamPage = () => {
 
   const [project] = useQuery(getProject, { id: projectId })
   const sidebarItems = ProjectSidebarItems(projectId!, null)
-  console.log("new team ")
 
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
@@ -82,6 +79,3 @@ const NewTeamPage = () => {
 NewTeamPage.authenticate = true
 
 export default NewTeamPage
-
-// https://blitzjs.com/docs/cli-generate
-// https://daily.dev/blog/getting-started-with-blitzjs

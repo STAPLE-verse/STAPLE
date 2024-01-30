@@ -20,65 +20,21 @@ type Props = {
 //TODO refactor this table to core components since is very similar to assigment and others
 const AssignTeamMembers = ({ onChange, teamOptions, showCheckbox }: Props) => {
   const [contributorChecked, setcontributorChecked] = useState(teamOptions)
-
   const handleOnChange = (element) => {
-    let needsUpdate: any[] = []
     const updatedCheckedState = contributorChecked.map((item, index) => {
       let t = item
-      console.log(item)
       if (item.id === element.id) {
         t.checked = !t.checked
       }
       return t
     })
-
-    updatedCheckedState.forEach((element) => {
-      let orgItem = teamOptions.find((orgItem) => orgItem.id == element.id)
-
-      if (orgItem != undefined && orgItem.checked != element.checked) {
-        needsUpdate.push({
-          id: element.id,
-          checked: element.checked,
-          teamId: element.teamId,
-        })
-      }
-    })
-    setcontributorChecked(updatedCheckedState)
-
     if (onChange != undefined) {
-      console.log("creating form")
-      onChange(needsUpdate)
+      onChange(updatedCheckedState)
     }
   }
 
   // ColumnDefs
-  const contributorTableColumns: ColumnDef<TeamOption>[] = [
-    // columnHelper.accessor("id", {
-    //   cell: (info) => (
-    //     <span>
-    //       {
-    //         <div>
-    //           <label className="label cursor-pointer">
-    //             <input
-    //               type="checkbox"
-    //               className="checkbox checkbox-primary"
-    //               checked={info.row.original.checked}
-    //               onChange={() => {
-    //                 handleOnChange(info.row.original)
-    //               }}
-    //             />
-    //           </label>
-    //         </div>
-    //       }
-    //     </span>
-    //   ),
-    //   header: "",
-    // }),
-    // columnHelper.accessor("userName", {
-    //   cell: (info) => <span>{`${info.row.original.userName}`}</span>,
-    //   header: "UserName",
-    // }),
-  ]
+  const contributorTableColumns: ColumnDef<TeamOption>[] = []
 
   if (showCheckbox) {
     contributorTableColumns.push(
