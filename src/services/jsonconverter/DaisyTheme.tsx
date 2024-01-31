@@ -1,55 +1,37 @@
-import { WidgetProps, RegistryWidgetsType, TitleFieldProps, FieldTemplateProps } from "@rjsf/utils"
+import {
+  WidgetProps,
+  RegistryWidgetsType,
+  RegistryFieldsType,
+  RegistryTemplatesType,
+  TitleFieldProps,
+  FieldTemplateProps,
+} from "@rjsf/utils"
 import { ThemeProps } from "@rjsf/core"
 
-const MyCustomWidget = (props: WidgetProps) => {
+// this is the title field template
+import { FormContextType, TitleFieldProps, RJSFSchema, StrictRJSFSchema } from "@rjsf/utils"
+const REQUIRED_FIELD_SYMBOL = "REQUIRED"
+function MyTitleField<
+  T = any,
+  S extends StrictRJSFSchema = RJSFSchema,
+  F extends FormContextType = any
+>(props: TitleFieldProps<T, S, F>) {
+  const { id, title, required } = props
   return (
-    <div className="flex">
-      <input
-        type="text"
-        style={{ fontSize: "1rem" }}
-        className="input input-bordered m-2 w-full max-w-xs font-serif"
-        value={props.value || ""}
-        required={props.required}
-        onChange={(event) => props.onChange(event.target.value)}
-      />
-    </div>
+    <legend id={id} className="text-2xl">
+      <div className="text-2xl">{title}</div>
+      {required && <span className="required">{REQUIRED_FIELD_SYMBOL}</span>}
+    </legend>
   )
 }
 
-const MyTitleFieldTemplate = (props: TitleFieldProps) => {
-  const { id, required, title } = props
-  return (
-    <header id={id}>
-      {title}
-      {required && <mark>*</mark>}
-    </header>
-  )
-}
-
-function MyFieldTemplate(props: FieldTemplateProps) {
-  const { id, classNames, style, label, help, required, description, errors, children } = props
-  return (
-    <div className={classNames} style={style}>
-      <label htmlFor={id}>
-        {label}
-        {required ? "*" : null}
-      </label>
-      {description}
-      {children}
-      {errors}
-      {help}
-    </div>
-  )
-}
-
-const myWidgets: RegistryWidgetsType = {
-  TextWidget: MyCustomWidget,
+//update the template
+const myTemplates: RegistryTemplatesType = {
+  TitleFieldTemplate: MyTitleField,
 }
 
 const DaisyTheme: ThemeProps = {
-  widgets: myWidgets,
-  // templates: {
-  //   FieldTemplate: MyFieldTemplate,
-  // },
+  // widgets: myWidgets,
+  templates: myTemplates,
 }
 export default DaisyTheme
