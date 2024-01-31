@@ -143,7 +143,7 @@ export const ShowTaskPage = () => {
                 </div>
                 <div className="modal-action">
                   <button className="btn btn-success btn-outline" onClick={handleToggle}>
-                    Save
+                    Close Form
                   </button>
                 </div>
               </Modal>
