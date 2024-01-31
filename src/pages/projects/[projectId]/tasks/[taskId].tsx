@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from "react"
+import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
@@ -15,17 +15,12 @@ import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import getProject from "src/projects/queries/getProject"
 import Modal from "src/core/components/Modal"
-import getAssignments from "src/assignments/queries/getAssignments"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import updateAssignment from "src/assignments/mutations/updateAssignment"
 import getContributor from "src/contributors/queries/getContributor"
-import { AssignmentStatus } from "@prisma/client"
-import {
-  AssignmentWithRelations,
-  assignmentTableColumns,
-} from "src/assignments/components/AssignmentTable"
-import Table from "src/core/components/Table"
+import { AssignmentStatus, ContributorRole } from "@prisma/client"
 import CompleteToggle from "src/assignments/components/CompleteToggle"
+import getAssignment from "src/assignments/queries/getAssignment"
 
 // import { AssignmentTable } from "src/assignments/components/AssignmentTable"
 
@@ -43,39 +38,13 @@ export const ShowTaskPage = () => {
   const [project] = useQuery(getProject, { id: projectId })
   // Get sidebar options
   const sidebarItems = ProjectSidebarItems(projectId!, null)
-  // Note: we have to get this separately because the currentContributor does not neccesarily have an assignment
-  const currentContributor = useQuery(getContributor, {
+  const [currentContributor] = useQuery(getContributor, {
     where: { projectId: projectId, userId: currentUser!.id },
   })
-  // Get assignments
-  const [assignments, { refetch }] = useQuery(getAssignments, {
-    where: { taskId: taskId },
-    include: {
-      task: true,
-      contributor: {
-        include: {
-          user: true,
-        },
-      },
-    },
-    // TODO: replace this with actual type def
-  }) as unknown as [AssignmentWithRelations[], { refetch: () => void }]
-  // TODO: Chris, do I need this?
-  // Get values dependent on assignments
-  // const [currentAssignment, setCurrentAssignment] = useState<AssignmentWithRelations>()
-  // useEffect(() => {
-  //   // Get currentAssignment
-  //   const currentAssignment = assignments.find(
-  //     (assignment) => assignment.contributorId === currentContributor[0].id
-  //   )
-  //   // TODO: If currentContributor is not assigned currentAssignment is undefined
-  //   setCurrentAssignment(currentAssignment)
-  // }, [assignments])
-
-  const currentAssignment = assignments.find(
-    (assignment) => assignment.contributorId === currentContributor[0].id
-  )
-
+  const [currentAssignment, { refetch }] = useQuery(getAssignment, {
+    where: { taskId: taskId, contributorId: currentContributor.id },
+  })
+  console.log(currentContributor)
   // Handle metadata input
   const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
   const handleToggle = () => {
@@ -108,7 +77,7 @@ export const ShowTaskPage = () => {
           <title>Task {task.name}</title>
         </Head>
 
-        <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
+        <main className="flex flex-col mb-2 currentContributormt-2 mx-auto w-full max-w-7xl">
           <h1>{task.name}</h1>
           <div className="flex flex-col gap-2">
             <p>{task.description}</p>
@@ -154,16 +123,24 @@ export const ShowTaskPage = () => {
             <CompleteToggle currentAssignment={currentAssignment} refetch={refetch} />
           )}
 
-          <div className="flex justify-start mt-4">
+          {currentContributor.role == ContributorRole.PROJECT_MANAGER && (
+            <div className="flex justify-start mt-4">
+              <Link
+                className="btn"
+                href={Routes.AssignmentsPage({ projectId: projectId!, taskId: task.id })}
+              >
+                Assignments
+              </Link>
+            </div>
+          )}
+
+          <div className="flex flex-row justify-end mt-4 space-x-4">
             <Link
               className="btn"
               href={Routes.EditTaskPage({ projectId: projectId!, taskId: task.id })}
             >
               Update task
             </Link>
-          </div>
-
-          <div className="flex justify-end mt-4">
             <button
               type="button"
               className="btn"
@@ -179,12 +156,6 @@ export const ShowTaskPage = () => {
               Delete task
             </button>
           </div>
-          <Suspense fallback={<div>Loading...</div>}>
-            <div className="divider">
-              <h2>Assignments</h2>
-            </div>
-            <Table columns={assignmentTableColumns} data={assignments} />
-          </Suspense>
         </main>
       </Suspense>
     </Layout>
