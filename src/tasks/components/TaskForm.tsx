@@ -210,8 +210,13 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         <Modal open={openSchemaModal} size="w-11/12 max-w-1xl">
           <div className="">
             <div>
-              <label>Choose a Form: </label>
-              <Field name="schema" component="select">
+              <label className="text-lg font-bold">Choose a Form Template: </label>
+              <br />
+              <Field
+                name="schema"
+                component="select"
+                className="select select-primary w-full max-w-xs"
+              >
                 {schemas &&
                   schemas.map((schema) => (
                     <option key={schema.name} value={schema.name}>
@@ -222,8 +227,12 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
             </div>
 
             <div className="mt-4">
-              <label>Or upload a new one: </label>
-              <Field name="files">
+              <label className="text-lg font-bold">Upload A Form Template: </label>
+              <br />
+              <Field
+                name="files"
+                className="file-input file-input-bordered file-input-primary w-full max-w-xs"
+              >
                 {({ input: { value, onChange, ...input } }) => {
                   return (
                     <div>
