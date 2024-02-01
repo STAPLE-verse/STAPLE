@@ -1,23 +1,26 @@
-import { Suspense, useState } from "react"
+import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { Tab } from "@headlessui/react"
 
-import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Layout from "src/core/layouts/Layout"
 import getTasks from "src/tasks/queries/getTasks"
-import TaskTable from "src/tasks/components/TaskTable"
+import { taskTableColumns } from "src/tasks/components/TaskTable"
 import TaskBoard from "src/tasks/components/TaskBoard"
+import getProject from "src/projects/queries/getProject"
+import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import Table from "src/core/components/Table"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
 }
 
-const ITEMS_PER_PAGE = 8
+// TODO: The number of items per page will affect the number of tasks shown in the table
+const ITEMS_PER_PAGE = 100
 
 export const TasksList = () => {
   const router = useRouter()
@@ -63,7 +66,7 @@ export const TasksList = () => {
           </Tab.Panel>
           {/* Tabpanel for table view */}
           <Tab.Panel>
-            <TaskTable tasks={tasks} />
+            <Table columns={taskTableColumns} data={tasks} />
           </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
@@ -94,8 +97,13 @@ export const TasksList = () => {
 }
 
 const TasksPage = () => {
+  const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
+
+  const sidebarItems = ProjectSidebarItems(projectId!, "Tasks")
+
   return (
-    <>
+    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
         <title>Tasks</title>
       </Head>
@@ -105,14 +113,8 @@ const TasksPage = () => {
           <TasksList />
         </Suspense>
       </main>
-    </>
+    </Layout>
   )
 }
-
-TasksPage.getLayout = (page) => (
-  <Layout>
-    <ProjectLayout>{page}</ProjectLayout>
-  </Layout>
-)
 
 export default TasksPage

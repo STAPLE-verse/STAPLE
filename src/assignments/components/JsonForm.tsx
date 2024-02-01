@@ -1,7 +1,7 @@
 import React from "react"
 import validator from "@rjsf/validator-ajv8"
 import { withTheme, ThemeProps } from "@rjsf/core"
-import DaisyTheme from "./DaisyTheme"
+import DaisyTheme from "src/services/jsonconverter/DaisyTheme"
 
 const ThemedForm = withTheme(DaisyTheme)
 const JsonForm = (props) => {

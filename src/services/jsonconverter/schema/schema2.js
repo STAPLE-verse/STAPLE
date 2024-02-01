@@ -1,7 +1,7 @@
 const JsonSchema2 = `
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Contributor Information",
+  "title": "Contributor Information Short",
   "description": "Please enter your information.",
   "type": "object",
   "required": [

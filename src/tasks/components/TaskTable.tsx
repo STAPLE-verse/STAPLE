@@ -1,97 +1,42 @@
 import React from "react"
-import { HTMLAttributes, ClassAttributes } from "react"
 import { Task } from "db"
 
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { createColumnHelper } from "@tanstack/react-table"
+import Link from "next/link"
+import { Routes } from "@blitzjs/next"
 
-// TODO: Pass className attributes props for styling in parent
-// TODO: New task mutation should trigger a rerender
-// TODO: Task table and board tabs do now always work properly I do not know why
-interface TaskTableProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
-  tasks: Task[]
-}
+// TODO: Is it better to call the database for column name every time or just one time and pass the value to child components?
+// Column helper
+const columnHelper = createColumnHelper<Task>()
 
-const TaskTable = ({ tasks }: TaskTableProps) => {
-  // TODO: Is it better to call the database for column name every time or just one time and pass the value to child components?
-  const columnHelper = createColumnHelper<Task>()
-
-  const columns = [
-    columnHelper.accessor("name", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: (info) => info.column.id,
-    }),
-    columnHelper.accessor("description", {
-      id: "description",
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: (info) => info.column.id,
-    }),
-    // TODO: Check how to use anonym function in accessor to get column name
-    columnHelper.accessor("columnId", {
-      id: "status",
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: (info) => info.column.id,
-    }),
-  ]
-
-  const [data, setData] = React.useState(() => [...tasks])
-  const rerender = React.useReducer(() => ({}), {})[1]
-
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
-
-  return (
-    <div className="flex flex-col justify-center p-2">
-      <table>
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          {table.getFooterGroups().map((footerGroup) => (
-            <tr key={footerGroup.id}>
-              {footerGroup.headers.map((header) => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(header.column.columnDef.footer, header.getContext())}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </tfoot>
-      </table>
-      <div className="h-4" />
-      <button onClick={() => rerender()} className="btn">
-        Rerender
-      </button>
-    </div>
-  )
-}
-
-export default TaskTable
+// ColumnDefs
+export const taskTableColumns = [
+  columnHelper.accessor("name", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Name",
+  }),
+  columnHelper.accessor("description", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Description",
+  }),
+  // TODO: Check how to use anonym function in accessor to get column name
+  columnHelper.accessor("updatedAt", {
+    cell: (info) => <span>{info.getValue().toString()}</span>,
+    header: "Last update",
+  }),
+  columnHelper.accessor("id", {
+    id: "view",
+    header: "",
+    cell: (info) => (
+      <Link
+        className="btn"
+        href={Routes.ShowTaskPage({
+          projectId: info.row.original.projectId,
+          taskId: info.getValue(),
+        })}
+      >
+        Open
+      </Link>
+    ),
+  }),
+]

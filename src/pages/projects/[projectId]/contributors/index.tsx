@@ -2,14 +2,16 @@ import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 
 import Layout from "src/core/layouts/Layout"
 import getContributors from "src/contributors/queries/getContributors"
-import ProjectLayout from "src/core/layouts/ProjectLayout"
 import { getInitials } from "src/services/getInitials"
+import getProject from "src/projects/queries/getProject"
+import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import { PlusIcon } from "@heroicons/react/24/outline"
 
 const ITEMS_PER_PAGE = 7
 
@@ -86,9 +88,11 @@ export const ContributorsList = () => {
 
 const ContributorsPage = () => {
   const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
+  const sidebarItems = ProjectSidebarItems(projectId!, "Contributors")
 
   return (
-    <>
+    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
         <title>Contributors</title>
       </Head>
@@ -97,30 +101,15 @@ const ContributorsPage = () => {
         <h1 className="flex justify-center mb-2">Contributors</h1>
         <Link className="btn mb-4" href={Routes.NewContributorPage({ projectId: projectId! })}>
           Add contributor
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            className="h-6 w-6"
-            viewBox="0 0 16 16"
-          >
-            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-          </svg>
+          <PlusIcon className="w-5 h-5" />
         </Link>
 
         <Suspense fallback={<div>Loading...</div>}>
           <ContributorsList />
         </Suspense>
       </main>
-    </>
+    </Layout>
   )
 }
-
-ContributorsPage.getLayout = (page) => (
-  <Layout>
-    <ProjectLayout>{page}</ProjectLayout>
-  </Layout>
-)
 
 export default ContributorsPage

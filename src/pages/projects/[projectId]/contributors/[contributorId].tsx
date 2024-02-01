@@ -1,7 +1,6 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
-import Link from "next/link"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
@@ -9,20 +8,31 @@ import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import getContributor from "src/contributors/queries/getContributor"
 import deleteContributor from "src/contributors/mutations/deleteContributor"
-import ProjectLayout from "src/core/layouts/ProjectLayout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import getProject from "src/projects/queries/getProject"
+import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import { Contributor, User } from "@prisma/client"
+import { getRoleText } from "src/services/getRoleText"
 
-export const Contributor = () => {
+export const ContributorPage = () => {
   const currentUser = useCurrentUser()
   const router = useRouter()
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
+  const sidebarItems = ProjectSidebarItems(projectId!, null)
   const [deleteContributorMutation] = useMutation(deleteContributor)
-  const [contributor] = useQuery(getContributor, { id: contributorId })
-  const user = contributor.user
+  const contributor = useQuery(getContributor, {
+    where: { id: contributorId },
+    include: { user: true },
+  }) as unknown as Contributor & {
+    user: User
+  }
 
+  const user = contributor[0].user
+  console.log(user)
   return (
-    <>
+    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
         <title>{user.username}</title>
       </Head>
@@ -38,6 +48,9 @@ export const Contributor = () => {
         ) : null}
         <p className="mb-2">
           <span className="font-semibold">Email:</span> {user.email}
+        </p>
+        <p className="mb-2">
+          <span className="font-semibold">Role:</span> {getRoleText(contributor[0].role)}
         </p>
         <div className="flex flex-col gap-2">
           <h2>List of contributions</h2>
@@ -83,25 +96,18 @@ export const Contributor = () => {
           </button>
         </div>
       </main>
-    </>
+    </Layout>
   )
 }
 
 const ShowContributorPage = () => {
-  const projectId = useParam("projectId", "number")
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Contributor />
+      <ContributorPage />
     </Suspense>
   )
 }
 
 ShowContributorPage.authenticate = true
-ShowContributorPage.getLayout = (page) => (
-  <Layout>
-    <ProjectLayout>{page}</ProjectLayout>
-  </Layout>
-)
 
 export default ShowContributorPage

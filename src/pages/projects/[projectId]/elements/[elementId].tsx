@@ -6,20 +6,23 @@ import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 
-import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Layout from "src/core/layouts/Layout"
 import getElement from "src/elements/queries/getElement"
 import deleteElement from "src/elements/mutations/deleteElement"
+import getProject from "src/projects/queries/getProject"
+import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 
 export const Element = () => {
   const router = useRouter()
   const elementId = useParam("elementId", "number")
   const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
+  const sidebarItems = ProjectSidebarItems(projectId!, null)
   const [deleteElementMutation] = useMutation(deleteElement)
   const [element] = useQuery(getElement, { id: elementId })
 
   return (
-    <>
+    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
         <title>Element {element.id}</title>
       </Head>
@@ -55,13 +58,11 @@ export const Element = () => {
           </button>
         </div>
       </main>
-    </>
+    </Layout>
   )
 }
 
 const ShowElementPage = () => {
-  const projectId = useParam("projectId", "number")
-
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
@@ -72,10 +73,5 @@ const ShowElementPage = () => {
 }
 
 ShowElementPage.authenticate = true
-ShowElementPage.getLayout = (page) => (
-  <Layout>
-    <ProjectLayout>{page}</ProjectLayout>
-  </Layout>
-)
 
 export default ShowElementPage

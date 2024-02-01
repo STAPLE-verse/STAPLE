@@ -4,17 +4,19 @@ import cn from "classnames"
 type Props = {
   children: React.ReactNode
   open: boolean
+  size: string
 }
 
-const Modal = ({ children, open }: Props) => {
+const Modal = ({ children, open, size }: Props) => {
   const modalClass = cn({
-    "modal modal-bottom sm:modal-middle": true,
+    modal: true,
     "modal-open": open,
   })
+
   return (
-    <div className={modalClass}>
-      <div className="modal-box">{children}</div>
-    </div>
+    <dialog className={modalClass}>
+      <div className={`modal-box ${size}`}>{children}</div>
+    </dialog>
   )
 }
 

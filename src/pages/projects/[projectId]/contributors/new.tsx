@@ -2,29 +2,35 @@ import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import createContributor from "src/contributors/mutations/createContributor"
 import { ContributorForm, FORM_ERROR } from "src/contributors/components/ContributorForm"
 import { Suspense } from "react"
-import ProjectLayout from "src/core/layouts/ProjectLayout"
 import Head from "next/head"
 import { z } from "zod"
-
+import getProject from "src/projects/queries/getProject"
+import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import { ContributorRole } from "@prisma/client"
+import { contributorRoleOptions } from "src/contributors/components/ContributorForm"
+import toast from "react-hot-toast"
 // TODO: if not all parameters that are present in the schema are in the returned values of the form the onsubmit fails without error
 // TODO: Thus we create a separate schema for the form and the create mutation
 export const ContributorFormSchema = z.object({
   userId: z.number(),
+  role: z.number(),
   // template: __fieldName__: z.__zodType__(),
 })
 
 const NewContributorPage = () => {
   const router = useRouter()
   const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
+  const sidebarItems = ProjectSidebarItems(projectId!, null)
   const [createContributorMutation] = useMutation(createContributor)
 
   return (
-    <>
+    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
         <title>Add New Contributor</title>
       </Head>
@@ -32,6 +38,7 @@ const NewContributorPage = () => {
         <h1>Add New Contributor</h1>
         <Suspense fallback={<div>Loading...</div>}>
           <ContributorForm
+            projectId={projectId!}
             className="flex flex-col"
             submitText="Add Contributor"
             schema={ContributorFormSchema}
@@ -41,6 +48,12 @@ const NewContributorPage = () => {
                 const contributor = await createContributorMutation({
                   userId: values.userId,
                   projectId: projectId!,
+                  role: contributorRoleOptions.find((option) => option.id === values.role)!.value,
+                })
+                await toast.promise(Promise.resolve(contributor), {
+                  loading: "Adding contributor...",
+                  success: "Contributor added to the project!",
+                  error: "Failed to add the contributor...",
                 })
                 await router.push(
                   Routes.ShowContributorPage({
@@ -58,15 +71,10 @@ const NewContributorPage = () => {
           />
         </Suspense>
       </main>
-    </>
+    </Layout>
   )
 }
 
 NewContributorPage.authenticate = true
-NewContributorPage.getLayout = (page) => (
-  <Layout>
-    <ProjectLayout>{page}</ProjectLayout>
-  </Layout>
-)
 
 export default NewContributorPage

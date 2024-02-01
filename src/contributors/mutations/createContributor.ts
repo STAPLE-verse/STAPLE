@@ -11,6 +11,7 @@ export default resolver.pipe(
       data: {
         userId: input.userId,
         projectId: input.projectId,
+        role: input.role,
         // project: {
         //   connect: { id: input.projectId },
         // },

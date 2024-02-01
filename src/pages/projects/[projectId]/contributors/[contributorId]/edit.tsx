@@ -17,6 +17,8 @@ export const EditContributor = () => {
   const router = useRouter()
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
+  const sidebarItems = ProjectSidebarItems(projectId!, null)
   const [contributor, { setQueryData }] = useQuery(
     getContributor,
     { id: contributorId },
@@ -28,7 +30,7 @@ export const EditContributor = () => {
   const [updateContributorMutation] = useMutation(updateContributor)
 
   return (
-    <>
+    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
         <title>Edit Contributor {contributor.id}</title>
       </Head>
@@ -47,6 +49,11 @@ export const EditContributor = () => {
                   id: contributor.id,
                   ...values,
                 })
+                await toast.promise(Promise.resolve(updated), {
+                  loading: "Updating contributor information...",
+                  success: "Contributor information updated!",
+                  error: "Failed to update the contributor information...",
+                })
                 await setQueryData(updated)
                 await router.push(
                   Routes.ShowContributorPage({
@@ -64,7 +71,7 @@ export const EditContributor = () => {
           />
         </Suspense>
       </div>
-    </>
+    </Layout>
   )
 }
 
@@ -85,6 +92,5 @@ const EditContributorPage = () => {
 }
 
 EditContributorPage.authenticate = true
-EditContributorPage.getLayout = (page) => <Layout>{page}</Layout>
 
 export default EditContributorPage

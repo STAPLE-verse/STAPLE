@@ -11,12 +11,16 @@ import { UpdateElementSchema } from "src/elements/schemas"
 import getElement from "src/elements/queries/getElement"
 import updateElement from "src/elements/mutations/updateElement"
 import { ElementForm, FORM_ERROR } from "src/elements/components/ElementForm"
-import ProjectLayout from "src/core/layouts/ProjectLayout"
+import getProject from "src/projects/queries/getProject"
+import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import toast from "react-hot-toast"
 
 export const EditElement = () => {
   const router = useRouter()
   const elementId = useParam("elementId", "number")
   const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
+  const sidebarItems = ProjectSidebarItems(projectId!, null)
   const [element, { setQueryData }] = useQuery(
     getElement,
     { id: elementId },
@@ -28,7 +32,7 @@ export const EditElement = () => {
   const [updateElementMutation] = useMutation(updateElement)
 
   return (
-    <>
+    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
         <title>Edit Element {element.id}</title>
       </Head>
@@ -46,6 +50,11 @@ export const EditElement = () => {
                 const updated = await updateElementMutation({
                   // id: element.id,
                   ...values,
+                })
+                await toast.promise(Promise.resolve(updated), {
+                  loading: "Updating element...",
+                  success: "Element updated!",
+                  error: "Failed to update the element...",
                 })
                 await setQueryData(updated)
                 await router.push(
@@ -67,7 +76,7 @@ export const EditElement = () => {
           </Link>
         </Suspense>
       </main>
-    </>
+    </Layout>
   )
 }
 
@@ -84,10 +93,5 @@ const EditElementPage = () => {
 }
 
 EditElementPage.authenticate = true
-EditElementPage.getLayout = (page) => (
-  <Layout>
-    <ProjectLayout>{page}</ProjectLayout>
-  </Layout>
-)
 
 export default EditElementPage
