@@ -25,9 +25,10 @@ const Navbar = () => {
   const router = useRouter()
 
   // Adding theme switch logic
-  const [theme, setTheme] = React.useState("light")
+  const [theme, setTheme] = React.useState("light") // default
   const changeTheme = (e) => {
-    setTheme(theme === e.target.theme)
+    console.log(e.target.value)
+    setTheme(e.target.value)
   }
 
   React.useEffect(() => {
@@ -127,7 +128,7 @@ const Navbar = () => {
         </div>
         {/* Light switch tab*/}
 
-        <select id="dropdown" onChange={changeTheme} title="ChangeTheme" value={theme}>
+        <select id="dropdown" onChange={changeTheme} title="ChangeTheme">
           <option value="">Theme</option>
           <option value="light">Light</option>
           <option value="dark">Dark</option>
