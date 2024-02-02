@@ -5,7 +5,16 @@ import { CreateTaskSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(CreateTaskSchema),
   resolver.authorize(),
-  async ({ projectId, columnId, name, description, elementId, contributorsId, schema }) => {
+  async ({
+    projectId,
+    columnId,
+    name,
+    description,
+    elementId,
+    contributorsId,
+    createdById,
+    schema,
+  }) => {
     // Get number of tasks for the column inside the project
     const columnTaskIndex = await db.task.count({
       where: {
@@ -25,6 +34,9 @@ export default resolver.pipe(
         },
         column: {
           connect: { id: columnId },
+        },
+        createdBy: {
+          connect: { id: createdById },
         },
         // TODO: check if this is a good way to conditionally add relation
         element: elementId

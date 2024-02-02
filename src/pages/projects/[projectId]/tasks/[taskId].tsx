@@ -44,7 +44,7 @@ export const ShowTaskPage = () => {
   const [currentAssignment, { refetch }] = useQuery(getAssignment, {
     where: { taskId: taskId, contributorId: currentContributor.id },
   })
-  console.log(currentContributor)
+
   // Handle metadata input
   const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
   const handleToggle = () => {
@@ -89,6 +89,9 @@ export const ShowTaskPage = () => {
               {task["element"] ? task["element"].name : "no elements"}
             </p>
             <p className="italic">Last update: {task.updatedAt.toString()}</p>
+            <p>
+              <span className="font-semibold">Created by (contributor id):</span> {task.createdById}
+            </p>
             <p>
               <span className="font-semibold">Current metadata schema:</span>{" "}
               {task["schema"] ? JSON.stringify(task["schema"]) : "no metadata schema assigned"}

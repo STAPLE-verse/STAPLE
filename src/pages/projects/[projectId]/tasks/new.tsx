@@ -13,13 +13,18 @@ import getProject from "src/projects/queries/getProject"
 import { fileReader } from "src/services/fileReader"
 import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 import toast from "react-hot-toast"
+import getContributor from "src/contributors/queries/getContributor"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 const NewTaskPage = () => {
   const router = useRouter()
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
   const [createTaskMutation] = useMutation(createTask)
-
+  const currentUser = useCurrentUser()
+  const [currentContributor] = useQuery(getContributor, {
+    where: { projectId: projectId, userId: currentUser!.id },
+  })
   const sidebarItems = ProjectSidebarItems(projectId!, null)
   const defaultSchemas = getDefaultSchemaLists()
 
@@ -64,6 +69,7 @@ const NewTaskPage = () => {
                   columnId: values.columnId,
                   projectId: projectId!,
                   elementId: values.elementId,
+                  createdById: currentContributor.id,
                   contributorsId: contributorsId,
                   schema: schema,
                 })
