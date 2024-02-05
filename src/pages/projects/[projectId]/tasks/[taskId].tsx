@@ -93,6 +93,10 @@ export const ShowTaskPage = () => {
               <span className="font-semibold">Created by (contributor id):</span> {task.createdById}
             </p>
             <p>
+              <span className="font-semibold">Deadline:</span>{" "}
+              {task.deadline ? task.deadline.toString() : "no deadline"}
+            </p>
+            <p>
               <span className="font-semibold">Current metadata schema:</span>{" "}
               {task["schema"] ? JSON.stringify(task["schema"]) : "no metadata schema assigned"}
             </p>

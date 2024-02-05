@@ -122,6 +122,31 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         placeholder="Description"
         type="text"
       />
+
+      <Field name="deadline">
+        {({ input: { value, onChange, ...input } }) => {
+          const today = new Date().toISOString().slice(0, 16)
+
+          return (
+            <div>
+              <label className="flex flex-col items-start text-lg">
+                Deadline
+                <input
+                  {...input}
+                  className="mt-2 text-lg border rounded p-2"
+                  type="datetime-local"
+                  min={today}
+                  max="2050-01-01T00:00"
+                  onChange={({ target }) => {
+                    onChange(new Date(target.value))
+                  }}
+                />
+              </label>
+            </div>
+          )
+        }}
+      </Field>
+
       <LabelSelectField
         className="select select-bordered w-full max-w-xs mt-2"
         name="elementId"

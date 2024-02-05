@@ -68,6 +68,7 @@ const NewTaskPage = () => {
                   description: values.description,
                   columnId: values.columnId,
                   projectId: projectId!,
+                  deadline: values.deadline,
                   elementId: values.elementId,
                   createdById: currentContributor.id,
                   contributorsId: contributorsId,

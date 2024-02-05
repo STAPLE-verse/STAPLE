@@ -11,6 +11,7 @@ export default resolver.pipe(
     name,
     description,
     elementId,
+    deadline,
     contributorsId,
     createdById,
     schema,
@@ -29,6 +30,7 @@ export default resolver.pipe(
         description,
         columnTaskIndex,
         schema,
+        deadline,
         project: {
           connect: { id: projectId },
         },
