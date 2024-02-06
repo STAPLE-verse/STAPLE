@@ -21,6 +21,7 @@ import getContributor from "src/contributors/queries/getContributor"
 import { AssignmentStatus, ContributorRole } from "@prisma/client"
 import CompleteToggle from "src/assignments/components/CompleteToggle"
 import getAssignment from "src/assignments/queries/getAssignment"
+import AssignmentProgress from "src/tasks/components/AssignmentProgress"
 
 // import { AssignmentTable } from "src/assignments/components/AssignmentTable"
 
@@ -131,13 +132,17 @@ export const ShowTaskPage = () => {
           )}
 
           {currentContributor.role == ContributorRole.PROJECT_MANAGER && (
-            <div className="flex justify-start mt-4">
-              <Link
-                className="btn"
-                href={Routes.AssignmentsPage({ projectId: projectId!, taskId: task.id })}
-              >
-                Assignments
-              </Link>
+            <div>
+              <h3 className="mb-2">Assignment progress</h3>
+              <AssignmentProgress taskId={task.id} />
+              <div className="flex justify-start mt-4">
+                <Link
+                  className="btn"
+                  href={Routes.AssignmentsPage({ projectId: projectId!, taskId: task.id })}
+                >
+                  Assignments
+                </Link>
+              </div>
             </div>
           )}
 
