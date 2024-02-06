@@ -8,8 +8,6 @@ import getTasks from "src/tasks/queries/getTasks"
 import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import Table from "src/core/components/Table"
-import { createColumnHelper } from "@tanstack/react-table"
-import { Task } from "db"
 import { taskTableColumns } from "src/tasks/components/TaskTable"
 
 const ITEMS_PER_PAGE = 100

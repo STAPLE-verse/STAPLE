@@ -57,7 +57,7 @@ const Navbar = () => {
         <label
           tabIndex={0}
           className="btn btn-ghost btn-circle"
-          onClick={() => router.push(Routes.ProjectsPage())}
+          onClick={() => router.push(Routes.MainPage())}
         >
           <div className="indicator">
             {/* Icon */}

@@ -75,6 +75,14 @@ export const HomeSidebarItems = (whichActive: string | null = null): SidebarItem
 
   return [
     {
+      icon: <RectangleGroupIcon className="w-6 h-6" />,
+      text: "Dashboard",
+      onClick: async () => {
+        await router.push(Routes.MainPage())
+      },
+      active: whichActive === "Dashboard",
+    },
+    {
       icon: <ArchiveBoxIcon className="w-6 h-6" />,
       text: "Projects",
       onClick: async () => {
