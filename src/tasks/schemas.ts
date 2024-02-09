@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client"
+import { Prisma, TaskStatus } from "@prisma/client"
 import { z } from "zod"
 
 export const FormTaskSchema = z.object({
@@ -98,6 +98,11 @@ export const UpdateTaskSchema = z.object({
       { message: "Invalid JSON format" }
     )
     .transform((data) => data as Prisma.NullableJsonNullValueInput),
+})
+
+export const UpdateTaskStatusSchema = z.object({
+  id: z.number(),
+  status: z.nativeEnum(TaskStatus),
 })
 
 export const DeleteTaskSchema = z.object({

@@ -79,6 +79,7 @@ const MainPage = () => {
     where: {
       assignees: { some: { contributor: { user: { id: currentUser?.id } } } },
       deadline: {
+        // TODO: return all not completed tasks even with due date
         gte: today.toDate(),
         lt: moment(tomorrow).add(1, "days").toDate(),
       },
@@ -123,7 +124,7 @@ const MainPage = () => {
             <p>Here is your agenda for today</p>
           </div>
           <div className="flex flex-row space-x-4">
-            <div className="rounded bg-base-200 p-4 w-1/2">
+            <div className="flex flex-col rounded bg-base-200 p-4 w-1/2">
               <h4>Upcoming tasks</h4>
               <div>
                 <p>Today</p>
@@ -147,10 +148,25 @@ const MainPage = () => {
                   }}
                 />
               </div>
+              {/* TODO: add past due tasks */}
+              <div>
+                <p>Tasks past due</p>
+                <Table
+                  columns={tasksColumns}
+                  data={tomorrowTasks}
+                  classNames={{
+                    thead: "text-sm",
+                    tbody: "text-sm",
+                  }}
+                />
+              </div>
+              <Link className="btn self-end m-4" href={Routes.AllTasksPage()}>
+                Show all tasks
+              </Link>
             </div>
           </div>
           <div className="flex flex-row">
-            <div className="rounded bg-base-200 p-4 w-1/2">
+            <div className="flex flex-col rounded bg-base-200 p-4 w-1/2">
               <h4>Latest projects</h4>
               <ul className="ml-4">
                 {projects.map((project) => (
@@ -179,6 +195,9 @@ const MainPage = () => {
                   </li>
                 ))}
               </ul>
+              <Link className="btn self-end m-4" href={Routes.ProjectsPage()}>
+                Show all projects
+              </Link>
             </div>
           </div>
         </main>

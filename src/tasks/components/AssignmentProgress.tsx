@@ -9,7 +9,7 @@ type AssignmentProgressProps = {
 const AssignmentProgress = ({ taskId }: AssignmentProgressProps) => {
   // Get assignments
   const [assignmentProgress] = useQuery(getAssignmentProgress, { taskId: taskId })
-  console.log(assignmentProgress)
+
   return (
     <div>
       <progress

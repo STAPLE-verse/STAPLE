@@ -102,6 +102,11 @@ model Project {
   teams        Team[]
 }
 
+enum TaskStatus {
+  COMPLETED
+  NOT_COMPLETED
+}
+
 model Task {
   id              Int          @id @default(autoincrement())
   createdAt       DateTime     @default(now())
@@ -120,6 +125,7 @@ model Task {
   element         Element?     @relation(fields: [elementId], references: [id])
   assignees       Assignment[]
   schema          Json?
+  status          TaskStatus   @default(NOT_COMPLETED)
 }
 
 enum AssignmentStatus {
