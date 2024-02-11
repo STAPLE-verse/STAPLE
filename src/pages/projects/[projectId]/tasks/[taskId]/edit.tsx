@@ -52,6 +52,7 @@ export const EditTask = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
             taskId={taskId}
+            projectId={projectId}
             submitText="Update Task"
             schema={FormTaskSchema}
             initialValues={initialValues}

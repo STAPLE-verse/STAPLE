@@ -48,7 +48,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   // TODO: Later on non project contributor users could be added and they will be automatically added to the project as a contributor
   const [{ contributors }] = useQuery(getContributors, {
     where: { project: { id: projectId! } },
-    orderBy: { id: "asc" },
+    // orderBy: { id: "asc" },
     include: {
       user: true,
     },
