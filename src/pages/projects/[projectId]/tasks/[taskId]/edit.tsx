@@ -57,7 +57,9 @@ export const EditTask = () => {
             schema={FormTaskSchema}
             initialValues={initialValues}
             onSubmit={async (values) => {
+              // console.log(values)
               try {
+                // if (true) return
                 const updated = await updateTaskMutation({
                   ...values,
                   id: task.id,

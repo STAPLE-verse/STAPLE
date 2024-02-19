@@ -52,9 +52,13 @@ const NewTaskPage = () => {
               } else {
                 schema = defaultSchemas.find((schema) => schema.name === values.schema)?.schema
               }
+
               let contributorsId = values.contributorsId
                 ?.filter((el) => el.checked)
                 .map((val) => val["id"])
+
+              let teamsId = values.teamsId?.filter((el) => el.checked).map((val) => val["id"])
+
               // Create new task
               try {
                 // if (true) return
@@ -65,6 +69,7 @@ const NewTaskPage = () => {
                   projectId: projectId!,
                   elementId: values.elementId,
                   contributorsId: contributorsId,
+                  teamsId: teamsId,
                   schema: schema,
                 })
                 await toast.promise(Promise.resolve(task), {

@@ -5,7 +5,16 @@ import { CreateTaskSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(CreateTaskSchema),
   resolver.authorize(),
-  async ({ projectId, columnId, name, description, elementId, contributorsId, schema }) => {
+  async ({
+    projectId,
+    columnId,
+    name,
+    description,
+    elementId,
+    contributorsId,
+    teamsId,
+    schema,
+  }) => {
     // Get number of tasks for the column inside the project
     const columnTaskIndex = await db.task.count({
       where: {
@@ -42,6 +51,17 @@ export default resolver.pipe(
           data: {
             task: { connect: { id: task.id } },
             contributor: { connect: { id: contributorId } },
+          },
+        })
+      })
+    }
+
+    if (teamsId != null) {
+      teamsId.forEach(async (teamId) => {
+        const assignment = await db.assignment.create({
+          data: {
+            task: { connect: { id: task.id } },
+            team: { connect: { id: teamId } },
           },
         })
       })

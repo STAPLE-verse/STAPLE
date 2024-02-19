@@ -13,6 +13,11 @@ export type AssignmentWithRelations = Prisma.AssignmentGetPayload<{
         user: true
       }
     }
+    team: {
+      include: {
+        contributors: true
+      }
+    }
   }
 }>
 
@@ -52,13 +57,30 @@ const AssignmentMetadataModal = ({ metadata }) => {
   )
 }
 
+function getName(info) {
+  console.log(info)
+  if (info.contributorId != null && info.hasOwnProperty("contributor")) {
+    console.log("what")
+    let c = `${info.contributor.user.firstName} ${info.contributor.user.lastName}`
+    return c
+  }
+
+  if (info.teamId != null) {
+    if (info.hasOwnProperty("team")) return `${info.contributor.team.name}`
+    return "team name bug"
+  }
+
+  // return "UKN"
+}
+
 // ColumnDefs
 export const assignmentTableColumns: ColumnDef<AssignmentWithRelations>[] = [
   columnHelper.accessor("contributor.user", {
     cell: (info) => (
-      <span>{`${info.row.original.contributor.user.firstName} ${info.row.original.contributor.user.lastName}`}</span>
+      // <span>{`${info.row.original.contributor.user.firstName} ${info.row.original.contributor.user.lastName}`}</span>
+      <span>{`${getName(info.row.original)}`}</span>
     ),
-    header: "Contributor Name",
+    header: "Team/Contributor Name",
   }),
   columnHelper.accessor("updatedAt", {
     cell: (info) => <span>{info.getValue().toString()}</span>,

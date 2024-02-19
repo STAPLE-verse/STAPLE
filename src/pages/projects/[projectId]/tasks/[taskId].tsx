@@ -44,7 +44,7 @@ export const ShowTaskPage = () => {
   const [currentAssignment, { refetch }] = useQuery(getAssignment, {
     where: { taskId: taskId, contributorId: currentContributor.id },
   })
-  console.log(currentContributor)
+
   // Handle metadata input
   const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
   const handleToggle = () => {
