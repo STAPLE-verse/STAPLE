@@ -1,7 +1,7 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { ContributorRole, Task } from "db"
+import { Contributor, ContributorRole, Prisma, Task, TaskStatus, User } from "db"
 import moment from "moment"
 import Link from "next/link"
 import getContributor from "src/contributors/queries/getContributor"
@@ -11,6 +11,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProjectStats from "../queries/getProjectStats"
 import getContributors from "src/contributors/queries/getContributors"
 import { HeartIcon } from "@heroicons/react/24/outline"
+import getProlificContributors from "src/contributors/queries/getProlificContributors"
 
 const ProjectDashboard = () => {
   const projectId = useParam("projectId", "number")
@@ -105,6 +106,77 @@ const ProjectDashboard = () => {
     }),
   ]
 
+  interface ProlificContributor extends Contributor {
+    user: User
+    completedTasksCount: number
+  }
+
+  const prolificContributorsColumns: ColumnDef<ProlificContributor>[] = [
+    {
+      accessorKey: "user.username",
+      cell: (info) => <span>{info.getValue() as string}</span>,
+      header: "Username",
+    },
+    {
+      accessorFn: (row) => row.completedTasksCount,
+      id: "completedTasksCount",
+      cell: (info) => <span>{info.getValue() as number}</span>,
+      header: "Number of Completed Tasks",
+    },
+    {
+      id: "actions",
+      header: "",
+      cell: (info) => {
+        const contributor = info.row.original
+        // Assuming `projectId` is available in the component's scope. You may need to adjust this.
+        return (
+          <div>
+            <Link
+              className="btn"
+              href={Routes.ShowContributorPage({
+                projectId: contributor.projectId, // Adjust according to how you have projectId available
+                contributorId: contributor.id,
+              })}
+            >
+              See contributions
+            </Link>
+            <Link
+              className="btn"
+              href={Routes.ShowContributorPage({
+                projectId: contributor.projectId, // Adjust according to how you have projectId available
+                contributorId: contributor.id,
+              })}
+            >
+              Send some <HeartIcon className="w-5 h-5 inline-block" />
+            </Link>
+          </div>
+        )
+      },
+    },
+  ]
+
+  type ContributorWithUser = Prisma.ContributorGetPayload<{
+    include: { user: { select: { username: true; firstName: true; lastName: true } } }
+  }>
+
+  // ColumnDefs
+  const projectManagersColumns: ColumnDef<ContributorWithUser>[] = [
+    {
+      accessorKey: "user.username",
+      cell: (info) => <span>{info.getValue() as string}</span>,
+      header: "Username",
+    },
+    {
+      accessorKey: "action",
+      header: "",
+      cell: (info) => (
+        <Link className="btn" href="">
+          Ask for help
+        </Link>
+      ),
+    },
+  ]
+
   const today = moment().startOf("day")
   const tomorrow = moment(today).add(1, "days")
 
@@ -115,6 +187,7 @@ const ProjectDashboard = () => {
         gte: today.toDate(),
         lt: moment(tomorrow).add(1, "days").toDate(),
       },
+      status: TaskStatus.NOT_COMPLETED,
     },
     orderBy: { id: "asc" },
   })
@@ -134,27 +207,25 @@ const ProjectDashboard = () => {
 
   const [projectStats] = useQuery(getProjectStats, { id: projectId! })
 
-  // TODO: Update with most COMPLETED tasks
-  const [{ contributors }] = useQuery(getContributors, {
-    where: { projectId: projectId },
-    take: 3,
-    orderBy: {
-      tasks: {
-        _count: "desc",
-      },
+  const [contributors] = useQuery(getProlificContributors, { projectId: projectId! })
+
+  const [{ contributors: projectManagers }] = useQuery(getContributors, {
+    where: {
+      projectId: projectId,
+      role: "PROJECT_MANAGER",
     },
     include: {
       user: true,
     },
   })
 
-  // TODO: Update this with additional filter for COMPLETED
   const [{ tasks: pastDueTasks }] = useQuery(getTasks, {
     where: {
       project: { id: projectId },
       deadline: {
         lt: today.toDate(),
       },
+      status: TaskStatus.NOT_COMPLETED,
     },
     orderBy: { id: "asc" },
   })
@@ -166,31 +237,60 @@ const ProjectDashboard = () => {
         <div className="flex flex-col rounded bg-base-200 p-4">
           <h4>Your upcoming tasks</h4>
           <div>
-            <p>Today</p>
-            <Table
-              columns={tasksColumns}
-              data={todayTasks}
-              classNames={{
-                thead: "text-sm",
-                tbody: "text-sm",
-              }}
-            />
+            <p className="font-semibold">Today</p>
+            {todayTasks.length === 0 ? (
+              <p className="italic p-2">You have no tasks for today. Hurray!</p>
+            ) : (
+              <Table
+                columns={tasksColumns}
+                data={todayTasks}
+                classNames={{
+                  thead: "text-sm",
+                  tbody: "text-sm",
+                }}
+              />
+            )}
           </div>
           <div>
-            <p>Tomorrow</p>
-            <Table
-              columns={tasksColumns}
-              data={tomorrowTasks}
-              classNames={{
-                thead: "text-sm",
-                tbody: "text-sm",
-              }}
-            />
+            <p className="font-semibold">Tomorrow</p>
+            {tomorrowTasks.length === 0 ? (
+              <p className="italic p-2">You have no tasks for tomorrow. Hurray!</p>
+            ) : (
+              <Table
+                columns={tasksColumns}
+                data={tomorrowTasks}
+                classNames={{
+                  thead: "text-sm",
+                  tbody: "text-sm",
+                }}
+              />
+            )}
           </div>
           <Link className="btn self-end m-4" href={Routes.TasksPage({ projectId: projectId! })}>
             Show all tasks
           </Link>
         </div>
+
+        {/* Most prolific contributors */}
+        {currentContributor.role == ContributorRole.PROJECT_MANAGER && (
+          <div className="flex flex-col rounded bg-base-200 p-4">
+            <h4>Most prolific contributors</h4>
+            <Table
+              columns={prolificContributorsColumns}
+              data={contributors}
+              classNames={{
+                thead: "text-sm",
+                tbody: "text-sm",
+              }}
+            />
+            <Link
+              className="btn self-end m-4"
+              href={Routes.ContributorsPage({ projectId: projectId! })}
+            >
+              Show all contributors
+            </Link>
+          </div>
+        )}
 
         {/* General stats */}
         {currentContributor.role == ContributorRole.PROJECT_MANAGER && (
@@ -212,46 +312,6 @@ const ProjectDashboard = () => {
             </div>
           </div>
         )}
-
-        {/* Most prolific contributors */}
-        {currentContributor.role == ContributorRole.PROJECT_MANAGER && (
-          <div className="flex flex-col rounded bg-base-200 p-4">
-            <h4>Most prolific contributors</h4>
-            <ul className="ml-4">
-              {contributors.map((contributor) => (
-                <li key={contributor.id} className="flex flex-row space-x-4 items-center">
-                  <div className="bullet mr-2 w-2 h-2 bg-black rounded-full"></div>
-                  <p className="font-semibold">{contributor["user"].username}</p>
-                  <Link
-                    className="btn"
-                    href={Routes.ShowContributorPage({
-                      projectId: projectId!,
-                      contributorId: contributor.id,
-                    })}
-                  >
-                    See contributions
-                  </Link>
-                  <Link
-                    className="btn"
-                    // TODO: Add <3 notif
-                    href={Routes.ShowContributorPage({
-                      projectId: projectId!,
-                      contributorId: contributor.id,
-                    })}
-                  >
-                    Send some {<HeartIcon className="w-5 h-5" />}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <Link
-              className="btn self-end m-4"
-              href={Routes.ContributorsPage({ projectId: projectId! })}
-            >
-              Show all contributors
-            </Link>
-          </div>
-        )}
       </div>
       <div className="flex flex-row justify-between">
         {/* Tasks over deadline */}
@@ -259,17 +319,36 @@ const ProjectDashboard = () => {
           <div className="flex flex-col rounded bg-base-200 p-4">
             <h4>Tasks way past due</h4>
             <p>Take care of these tasks before it is too late!</p>
+            {pastDueTasks.length === 0 ? (
+              <p className="italic p-2">All contributors are on the right track!</p>
+            ) : (
+              <Table
+                columns={pastDueTasksColumns}
+                data={pastDueTasks}
+                classNames={{
+                  thead: "text-sm",
+                  tbody: "text-sm",
+                }}
+              />
+            )}
+            <Link className="btn self-end m-4" href={Routes.TasksPage({ projectId: projectId! })}>
+              Show all tasks
+            </Link>
+          </div>
+        )}
+        {/* List of project managers */}
+        {currentContributor.role == ContributorRole.CONTRIBUTOR && (
+          <div className="flex flex-col rounded bg-base-200 p-4">
+            <h4>Project managers</h4>
+            <p>Ping them if you need help</p>
             <Table
-              columns={pastDueTasksColumns}
-              data={pastDueTasks}
+              columns={projectManagersColumns}
+              data={projectManagers}
               classNames={{
                 thead: "text-sm",
                 tbody: "text-sm",
               }}
             />
-            <Link className="btn self-end m-4" href={Routes.TasksPage({ projectId: projectId! })}>
-              Show all tasks
-            </Link>
           </div>
         )}
       </div>

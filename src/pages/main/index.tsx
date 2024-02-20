@@ -11,7 +11,7 @@ import getTasks from "src/tasks/queries/getTasks"
 import moment from "moment"
 import Table from "src/core/components/Table"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { Prisma } from "db"
+import { Prisma, Project, TaskStatus } from "db"
 
 type TaskWithProjectName = Prisma.TaskGetPayload<{
   include: { project: { select: { name: true } } }
@@ -65,6 +65,46 @@ const tasksColumns: ColumnDef<TaskWithProjectName>[] = [
   }),
 ]
 
+const projectColumnHelper = createColumnHelper<Project>()
+
+// ColumnDefs
+const projectColumns: ColumnDef<Project>[] = [
+  projectColumnHelper.accessor("name", {
+    cell: (info) => <span className="font-semibold">{info.getValue()}</span>,
+    header: "Name",
+  }),
+  projectColumnHelper.accessor("updatedAt", {
+    cell: (info) => (
+      <span>
+        {info.getValue()?.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false, // Use 24-hour format
+        })}
+      </span>
+    ),
+    header: "Updated at",
+  }),
+  projectColumnHelper.accessor("id", {
+    id: "view",
+    header: "",
+    cell: (info) => (
+      <Link
+        className="btn"
+        href={Routes.ShowProjectPage({
+          projectId: info.getValue(),
+        })}
+      >
+        Open
+      </Link>
+    ),
+  }),
+]
+
 const MainPage = () => {
   const sidebarItems = HomeSidebarItems("Dashboard")
   const currentUser = useCurrentUser()
@@ -80,9 +120,10 @@ const MainPage = () => {
       assignees: { some: { contributor: { user: { id: currentUser?.id } } } },
       deadline: {
         // TODO: return all not completed tasks even with due date
-        gte: today.toDate(),
+        // gte: today.toDate(),
         lt: moment(tomorrow).add(1, "days").toDate(),
       },
+      status: TaskStatus.NOT_COMPLETED,
     },
     orderBy: { id: "asc" },
   })
@@ -96,6 +137,12 @@ const MainPage = () => {
   const tomorrowTasks = tasks.filter((task) => {
     if (task && task.deadline) {
       return moment(task.deadline).isSame(tomorrow, "day")
+    }
+    return false
+  })
+  const overdueTasks = tasks.filter((task) => {
+    if (task && task.deadline) {
+      return moment(task.deadline).isBefore(moment(), "minute")
     }
     return false
   })
@@ -127,38 +174,52 @@ const MainPage = () => {
             <div className="flex flex-col rounded bg-base-200 p-4 w-1/2">
               <h4>Upcoming tasks</h4>
               <div>
-                <p>Today</p>
-                <Table
-                  columns={tasksColumns}
-                  data={todayTasks}
-                  classNames={{
-                    thead: "text-sm",
-                    tbody: "text-sm",
-                  }}
-                />
+                <p className="font-semibold">Today</p>
+                {todayTasks.length === 0 ? (
+                  <p className="italic p-2">You have no tasks for today. Hurray!</p>
+                ) : (
+                  <Table
+                    columns={tasksColumns}
+                    data={todayTasks}
+                    classNames={{
+                      thead: "text-sm",
+                      tbody: "text-sm",
+                    }}
+                  />
+                )}
               </div>
               <div>
-                <p>Tomorrow</p>
-                <Table
-                  columns={tasksColumns}
-                  data={tomorrowTasks}
-                  classNames={{
-                    thead: "text-sm",
-                    tbody: "text-sm",
-                  }}
-                />
+                <p className="font-semibold">Tomorrow</p>
+                {tomorrowTasks.length === 0 ? (
+                  <p className="italic p-2">You have no tasks for tomorrow. Hurray!</p>
+                ) : (
+                  <Table
+                    columns={tasksColumns}
+                    data={tomorrowTasks}
+                    classNames={{
+                      thead: "text-sm",
+                      tbody: "text-sm",
+                    }}
+                  />
+                )}
               </div>
               {/* TODO: add past due tasks */}
               <div>
-                <p>Tasks past due</p>
-                <Table
-                  columns={tasksColumns}
-                  data={tomorrowTasks}
-                  classNames={{
-                    thead: "text-sm",
-                    tbody: "text-sm",
-                  }}
-                />
+                <p className="font-semibold">Tasks past due</p>
+                {tomorrowTasks.length === 0 ? (
+                  <p className="italic p-2">
+                    You have completed all your tasks on time! Way to go!
+                  </p>
+                ) : (
+                  <Table
+                    columns={tasksColumns}
+                    data={overdueTasks}
+                    classNames={{
+                      thead: "text-sm",
+                      tbody: "text-sm",
+                    }}
+                  />
+                )}
               </div>
               <Link className="btn self-end m-4" href={Routes.AllTasksPage()}>
                 Show all tasks
@@ -168,33 +229,14 @@ const MainPage = () => {
           <div className="flex flex-row">
             <div className="flex flex-col rounded bg-base-200 p-4 w-1/2">
               <h4>Latest projects</h4>
-              <ul className="ml-4">
-                {projects.map((project) => (
-                  <li key={project.id} className="flex flex-row space-x-4 items-center">
-                    <div className="bullet mr-2 w-2 h-2 bg-black rounded-full"></div>
-                    <p className="font-semibold">{project.name}</p>
-                    <p>
-                      {project.updatedAt.toLocaleDateString(undefined, {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                        hour12: false, // Use 24-hour format
-                      })}
-                    </p>
-                    <Link
-                      className="btn"
-                      href={Routes.ShowProjectPage({
-                        projectId: project.id,
-                      })}
-                    >
-                      Open
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+              <Table
+                columns={projectColumns}
+                data={projects}
+                classNames={{
+                  thead: "text-sm",
+                  tbody: "text-sm",
+                }}
+              />
               <Link className="btn self-end m-4" href={Routes.ProjectsPage()}>
                 Show all projects
               </Link>
