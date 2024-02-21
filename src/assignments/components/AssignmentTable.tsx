@@ -13,11 +13,7 @@ export type AssignmentWithRelations = Prisma.AssignmentGetPayload<{
         user: true
       }
     }
-    team: {
-      include: {
-        contributors: true
-      }
-    }
+    team: true
   }
 }>
 
@@ -58,16 +54,17 @@ const AssignmentMetadataModal = ({ metadata }) => {
 }
 
 function getName(info) {
-  console.log(info)
   if (info.contributorId != null && info.hasOwnProperty("contributor")) {
-    console.log("what")
     let c = `${info.contributor.user.firstName} ${info.contributor.user.lastName}`
     return c
   }
 
   if (info.teamId != null) {
-    if (info.hasOwnProperty("team")) return `${info.contributor.team.name}`
-    return "team name bug"
+    if (info.hasOwnProperty("team")) {
+      return info.team.name
+    }
+
+    return "null"
   }
 
   // return "UKN"

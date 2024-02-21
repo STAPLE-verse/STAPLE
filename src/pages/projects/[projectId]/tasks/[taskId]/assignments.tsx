@@ -26,6 +26,7 @@ export const AssignmentsPage = () => {
     where: { taskId: taskId },
     include: {
       task: true,
+      team: true,
       contributor: {
         include: {
           user: true,
