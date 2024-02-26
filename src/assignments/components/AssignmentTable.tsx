@@ -13,7 +13,7 @@ export type AssignmentWithRelations = Prisma.AssignmentGetPayload<{
         user: true
       }
     }
-    team: true
+    // team: true
   }
 }>
 
@@ -58,16 +58,7 @@ function getName(info) {
     let c = `${info.contributor.user.firstName} ${info.contributor.user.lastName}`
     return c
   }
-
-  if (info.teamId != null) {
-    if (info.hasOwnProperty("team")) {
-      return info.team.name
-    }
-
-    return "null"
-  }
-
-  // return "UKN"
+  return "null"
 }
 
 // ColumnDefs
@@ -77,7 +68,7 @@ export const assignmentTableColumns: ColumnDef<AssignmentWithRelations>[] = [
       // <span>{`${info.row.original.contributor.user.firstName} ${info.row.original.contributor.user.lastName}`}</span>
       <span>{`${getName(info.row.original)}`}</span>
     ),
-    header: "Team/Contributor Name",
+    header: "Contributor Name",
   }),
   columnHelper.accessor("updatedAt", {
     cell: (info) => <span>{info.getValue().toString()}</span>,
