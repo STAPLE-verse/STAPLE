@@ -21,6 +21,8 @@ import getContributor from "src/contributors/queries/getContributor"
 import { AssignmentStatus, ContributorRole } from "@prisma/client"
 import CompleteToggle from "src/assignments/components/CompleteToggle"
 import getAssignment from "src/assignments/queries/getAssignment"
+import getTeams from "src/teams/queries/getTeams"
+import getAssignments from "src/assignments/queries/getAssignments"
 
 // import { AssignmentTable } from "src/assignments/components/AssignmentTable"
 
@@ -41,10 +43,76 @@ export const ShowTaskPage = () => {
   const [currentContributor] = useQuery(getContributor, {
     where: { projectId: projectId, userId: currentUser!.id },
   })
-  const [currentAssignment, { refetch }] = useQuery(getAssignment, {
-    where: { taskId: taskId, contributorId: currentContributor.id },
+
+  // const [currentAssignment, { refetch }] = useQuery(getAssignment, {
+  //   where: { taskId: taskId, contributorId: currentContributor.id },
+  // })
+
+  //TODO needs to refactor the next queries into a big one
+  const [currentAssignment1, { refetch }] = useQuery(getAssignment, {
+    where: { taskId: taskId, OR: [{ contributorId: currentContributor.id }] },
   })
 
+  // const [currentTeamAssignment] = useQuery(getTeams, {
+  //   where: { contributors:{ contains: currentContributor.id }}
+  //    },
+  // )
+
+  const [currentTeamAssignments] = useQuery(getAssignments, {
+    where: {
+      teamId: {
+        not: null,
+      },
+    },
+    include: {
+      team: {
+        include: {
+          contributors: true,
+        },
+      },
+    },
+  })
+
+  function updateCurrent(currentTeamAssignments) {
+    console.log(currentTeamAssignments.length)
+    let found = false
+    let currentAssigment = null
+    if (currentTeamAssignments.length > 0) {
+      currentTeamAssignments.forEach((assignment) => {
+        // console.log("looking team", assignment)
+        // // if (assignment.team.concontributors) {
+        // console.log("loking con", assignment.team.contributors)
+        if (found == false) {
+          let index = assignment.team.contributors.findIndex(
+            (x) => x.userId == currentContributor.id
+          )
+          if (index >= 0) {
+            found = true
+            currentAssigment = assignment
+          }
+        }
+
+        //}
+      })
+    }
+    return currentAssigment
+  }
+
+  //TODO refactor this into a single query
+  let temp
+  //check if needs to find out contributor on team
+  if (currentAssignment1 == null) {
+    temp = updateCurrent(currentTeamAssignments)
+  }
+  let currentAssignment
+  if (currentAssignment1 == null) {
+    currentAssignment = temp
+  } else {
+    currentAssignment = currentAssignment1
+  }
+  // console.log(currentAssignment)
+
+  // console.log(currentAssignment)
   // Handle metadata input
   const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
   const handleToggle = () => {
