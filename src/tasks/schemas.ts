@@ -9,6 +9,7 @@ export const FormTaskSchema = z.object({
   // TODO: Has to be modified to array if multiple select is enabled
   contributorsId: z.array(z.any()).optional().nullable(),
   deadline: z.date().optional().nullable(),
+  teamsId: z.array(z.any()).optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
   schema: z
     .unknown()
@@ -50,6 +51,7 @@ export const CreateTaskSchema = z.object({
   deadline: z.date().optional().nullable(),
   createdById: z.number(),
   contributorsId: z.array(z.number()).optional().nullable(),
+  teamsId: z.array(z.number()).optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
   schema: z
     .unknown()
@@ -79,6 +81,7 @@ export const UpdateTaskSchema = z.object({
   columnId: z.number(),
   elementId: z.number().optional().nullable(),
   contributorsId: z.array(z.any()).optional().nullable(),
+  teamsId: z.array(z.any()).optional().nullable(),
   schema: z
     .unknown()
     .nullable()
