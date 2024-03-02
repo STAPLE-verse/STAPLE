@@ -60,9 +60,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   const [{ teams }] = useQuery(getTeams, {
     where: { project: { id: projectId! } },
     // orderBy: { id: "asc" },
-    // include: {
-    //   user: true,
-    // },
+    include: {
+      assigments: true,
+    },
   })
   // console.log("teams")
   // console.log(teams)
@@ -80,7 +80,11 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
   const teamOptions: TeamOption[] = teams.map((team) => {
     let assigmentId: number | undefined = undefined
-    let index = -1 //currentAssigments.findIndex((element) => team.id == element.teamId)
+    let index = currentAssigments.findIndex((element) => team.id == element.teamId)
+    if (index != -1 && taskId != undefined) {
+      assigmentId = currentAssigments[index]?.id
+    }
+
     return {
       name: team["name"],
       id: team["id"],
@@ -88,6 +92,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       checked: taskId == undefined ? false : index != -1,
     } as TeamOption
   })
+
   //Made sure that contributors assigned are checked when shown in table
   const contributorOptions = contributors.map((contributor) => {
     let assigmentId: number | undefined = undefined

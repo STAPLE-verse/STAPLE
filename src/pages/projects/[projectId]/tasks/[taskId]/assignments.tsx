@@ -19,6 +19,32 @@ import Table from "src/core/components/Table"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import Link from "next/link"
 
+function getContributorTable(assignments) {
+  if (assignments.length > 0) {
+    return (
+      <div>
+        <h2>Individual Contributors </h2>
+        <Table columns={assignmentTableColumns} data={assignments} />
+      </div>
+    )
+  } else {
+    return <h4>This task does not have individual contributors </h4>
+  }
+}
+
+function getTeamsContributorTable(assignments) {
+  if (assignments.length > 0) {
+    return (
+      <div>
+        <h2>Contributors Teams</h2>
+        <Table columns={teamAssignmentTableColumns} data={assignments} />
+      </div>
+    )
+  } else {
+    return <h4>This task does not have team of contributors </h4>
+  }
+}
+
 export const AssignmentsPage = () => {
   // Get values
   const taskId = useParam("taskId", "number")
@@ -62,6 +88,7 @@ export const AssignmentsPage = () => {
     },
     // TODO: replace this with actual type def
   }) as unknown as [TeamAssignmentWithRelations[], { refetch: () => void }]
+  console.log(assignments)
 
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
@@ -69,11 +96,14 @@ export const AssignmentsPage = () => {
         <main className="flex flex-col mb-2 currentContributormt-2 mx-auto w-full max-w-7xl">
           <h1>Assignments</h1>
           <br></br>
-          <h2>Individual Contributors</h2>
-          <Table columns={assignmentTableColumns} data={assignments} />
+          <h2>Individual Contributors </h2>
+          {getContributorTable(assignments)}
+          {/* <Table columns={assignmentTableColumns} data={assignments} />
+          <br></br> */}
           <br></br>
-          <h2>Teams</h2>
-          <Table columns={teamAssignmentTableColumns} data={teamAssignments} />
+          {getTeamsContributorTable(teamAssignments)}
+          {/* <h2>Teams</h2>
+          <Table columns={teamAssignmentTableColumns} data={teamAssignments} /> */}
           <Link
             className="btn self-end mt-4"
             href={Routes.ShowTaskPage({ projectId: projectId!, taskId: taskId! })}

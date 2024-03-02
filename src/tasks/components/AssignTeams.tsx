@@ -18,7 +18,6 @@ type Props = {
 
 const AssignTeams = ({ onChange, teamOptions }: Props) => {
   const [teamChecked, setTeamChecked] = useState(teamOptions)
-
   const handleOnChange = (element) => {
     const updatedCheckedState =
       teamChecked == undefined
