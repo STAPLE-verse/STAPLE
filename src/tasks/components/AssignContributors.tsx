@@ -19,7 +19,9 @@ type Props = {
 }
 
 const AssignContributors = ({ onChange, contributorOptions }: Props) => {
-  const [contributorChecked, setcontributorChecked] = useState(contributorOptions)
+  // const [contributorChecked, setcontributorChecked] = useState(contributorOptions)
+
+  let contributorChecked = [...contributorOptions]
 
   const handleOnChange = (element) => {
     const updatedCheckedState = contributorChecked.map((item, index) => {

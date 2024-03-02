@@ -32,10 +32,11 @@ interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
   type?: string
   taskId?: number
+  currentAssigments?: any[]
 }
 
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
-  const { projectId, type, taskId, ...formProps } = props
+  const { projectId, type, taskId, currentAssigments = [], ...formProps } = props
 
   const [columns] = useQuery(getColumns, {
     orderBy: { id: "asc" },
@@ -56,29 +57,34 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       user: true,
     },
   })
-
-  const [{ teams }] = useQuery(getTeams, {
-    where: { project: { id: projectId! } },
-    // orderBy: { id: "asc" },
-    include: {
-      assigments: true,
-    },
-  })
-  // console.log("teams")
   // console.log(teams)
 
+  const [{ teams }] = useQuery(
+    getTeams,
+    {
+      where: { project: { id: projectId! } },
+      // orderBy: { id: "asc" },
+      include: {
+        assigments: true,
+      },
+    },
+    {
+      refetchOnMount: "always",
+    }
+  )
+
   //TODO: should we pass this from task (new or edit) instead of getting it here?
-  const [currentAssigments, { refetch }] = useQuery(getAssigments, {
-    where: { taskId: taskId! },
-    orderBy: { id: "asc" },
-  })
+  // const [currentAssigments, { refetch }] = useQuery(getAssigments, {
+  //   where: { taskId: taskId! },
+  //   orderBy: { id: "asc" },
+  // })
 
   const findIdIfAssignedToTask = (contributorId) => {
     let index = currentAssigments.findIndex((element) => contributorId == element.contributorId)
     return index
   }
 
-  const teamOptions: TeamOption[] = teams.map((team) => {
+  let teamOptions: TeamOption[] = teams.map((team) => {
     let assigmentId: number | undefined = undefined
     let index = currentAssigments.findIndex((element) => team.id == element.teamId)
     if (index != -1 && taskId != undefined) {
@@ -92,6 +98,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       checked: taskId == undefined ? false : index != -1,
     } as TeamOption
   })
+  console.log(teamOptions)
 
   //Made sure that contributors assigned are checked when shown in table
   const contributorOptions = contributors.map((contributor) => {

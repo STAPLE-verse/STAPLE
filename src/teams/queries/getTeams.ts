@@ -2,6 +2,13 @@ import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
+// import { prisma } from "@/utils/prisma";
+
+export const revalidate = 0 //Very important
+
+export const dynamic = "force-dynamic"
+export const fetchCache = "force-no-store"
+
 interface GetTeamsInput
   extends Pick<Prisma.TeamFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
 

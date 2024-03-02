@@ -41,7 +41,7 @@ const NewTeamPage = () => {
               let membersId: number[] = values.contributorsId
                 .filter((el) => el.checked)
                 .map((val) => val.id)
-              console.log(membersId)
+
               try {
                 //get this after team is created
 

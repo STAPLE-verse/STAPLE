@@ -14,6 +14,12 @@ import { TaskForm, FORM_ERROR } from "src/tasks/components/TaskForm"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import toast from "react-hot-toast"
+import getAssigments from "src/assignments/queries/getAssignments"
+
+export const revalidate = 0 //Very important
+
+export const dynamic = "force-dynamic"
+export const fetchCache = "force-no-store"
 
 export const EditTask = () => {
   const router = useRouter()
@@ -22,12 +28,36 @@ export const EditTask = () => {
   const [project] = useQuery(getProject, { id: projectId })
   const [task, { setQueryData }] = useQuery(
     getTask,
-    { id: taskId },
-    {
-      // This ensures the query never refreshes and overwrites the form data while the user is editing.
-      staleTime: Infinity,
-    }
+    { id: taskId }
+    // {
+    //   // This ensures the query never refreshes and overwrites the form data while the user is editing.
+    //   staleTime: Infinity,
+    // }
   )
+
+  //TODO: should we pass this from task (new or edit) instead of getting it here?
+  const [currentAssigments, { refetch }] = useQuery(
+    getAssigments,
+    {
+      where: { taskId: taskId! },
+      orderBy: { id: "asc" },
+    }
+    // {
+    //   staleTime: Infinity,
+    // }
+  )
+
+  const currentAssigmentsIds =
+    currentAssigments != undefined
+      ? currentAssigments.map((el) => {
+          return {
+            contributorId: el["contributorId"],
+            teamId: el["teamId"],
+            id: el["id"],
+          }
+        })
+      : []
+
   const [updateTaskMutation] = useMutation(updateTask)
 
   const sidebarItems = ProjectSidebarItems(projectId!, null)
@@ -56,8 +86,11 @@ export const EditTask = () => {
             submitText="Update Task"
             schema={FormTaskSchema}
             initialValues={initialValues}
+            currentAssigments={currentAssigmentsIds}
+            // teams={teams}
             onSubmit={async (values) => {
               // console.log(values)
+              // if (true) return
               try {
                 // if (true) return
                 const updated = await updateTaskMutation({
@@ -72,6 +105,7 @@ export const EditTask = () => {
                 })
 
                 await setQueryData(updated)
+                await refetch()
                 await router.push(
                   Routes.ShowTaskPage({
                     projectId: projectId!,
