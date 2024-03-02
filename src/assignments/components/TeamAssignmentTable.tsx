@@ -66,7 +66,7 @@ const TeamModal = ({ rowInfo }) => {
   }
 
   // console.log(rowInfo)
-  let contributors = rowInfo.team.contributors
+  let contributors = rowInfo.team != undefined ? rowInfo.team.contributors : []
 
   const teamMembers = contributors.map((contributor) => {
     return {
@@ -121,7 +121,11 @@ export const teamAssignmentTableColumns: ColumnDef<TeamAssignmentWithRelations>[
     cell: (info) => (
       // <span>{`${info.row.original.contributor.user.firstName} ${info.row.original.contributor.user.lastName}`}</span>
       <div>
-        {<TeamModal rowInfo={info.row.original}></TeamModal>}
+        {info.row.original.team != undefined ? (
+          <TeamModal rowInfo={info.row.original}></TeamModal>
+        ) : (
+          ""
+        )}
         {/* <button>
           <span onClick={() => expandRow(info.row.original)}>{`${getName(
             info.row.original
@@ -140,17 +144,20 @@ export const teamAssignmentTableColumns: ColumnDef<TeamAssignmentWithRelations>[
     header: "Team Name",
   }),
   columnHelper.accessor("updatedAt", {
-    cell: (info) => <span>{info.getValue().toString()}</span>,
+    cell: (info) =>
+      info.row.original.team != undefined ? <span>{info.getValue().toString()}</span> : "",
     header: "Last update",
   }),
   columnHelper.accessor("status", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => (info.row.original.team != undefined ? <span>{info.getValue()}</span> : ""),
     header: "Status",
   }),
   columnHelper.accessor("task.schema", {
     cell: (info) => (
       <>
-        {info.row.original.task.schema ? (
+        {info.row.original.team == undefined ? (
+          ""
+        ) : info.row.original.task.schema ? (
           <AssignmentMetadataModal metadata={info.row.original.metadata} />
         ) : (
           <span>No schema provided</span>

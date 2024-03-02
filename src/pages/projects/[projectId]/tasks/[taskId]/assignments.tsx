@@ -55,7 +55,7 @@ export const AssignmentsPage = () => {
   const sidebarItems = ProjectSidebarItems(projectId!, null)
   // Get assignments
   const [assignments] = useQuery(getAssignments, {
-    where: { taskId: taskId, teamId: null },
+    where: { taskId: taskId, teamId: null, contributorId: { not: null } },
     include: {
       task: true,
       contributor: {
@@ -67,7 +67,7 @@ export const AssignmentsPage = () => {
   }) as unknown as [AssignmentWithRelations[], { refetch: () => void }]
 
   const [teamAssignments] = useQuery(getAssignments, {
-    where: { taskId: taskId, contributorId: null },
+    where: { taskId: taskId, contributorId: null, teamId: { not: null } },
     include: {
       task: true,
       team: {
