@@ -64,7 +64,6 @@ export const AssignmentsPage = () => {
         },
       },
     },
-    // TODO: replace this with actual type def
   }) as unknown as [AssignmentWithRelations[], { refetch: () => void }]
 
   const [teamAssignments] = useQuery(getAssignments, {
@@ -80,15 +79,9 @@ export const AssignmentsPage = () => {
           },
         },
       },
-      // contributor: {
-      //   include: {
-      //     user: true,
-      //   },
-      // },
     },
     // TODO: replace this with actual type def
   }) as unknown as [TeamAssignmentWithRelations[], { refetch: () => void }]
-  console.log(assignments)
 
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
@@ -96,14 +89,9 @@ export const AssignmentsPage = () => {
         <main className="flex flex-col mb-2 currentContributormt-2 mx-auto w-full max-w-7xl">
           <h1>Assignments</h1>
           <br></br>
-          <h2>Individual Contributors </h2>
           {getContributorTable(assignments)}
-          {/* <Table columns={assignmentTableColumns} data={assignments} />
-          <br></br> */}
           <br></br>
           {getTeamsContributorTable(teamAssignments)}
-          {/* <h2>Teams</h2>
-          <Table columns={teamAssignmentTableColumns} data={teamAssignments} /> */}
           <Link
             className="btn self-end mt-4"
             href={Routes.ShowTaskPage({ projectId: projectId!, taskId: taskId! })}
