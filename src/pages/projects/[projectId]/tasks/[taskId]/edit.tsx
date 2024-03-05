@@ -50,6 +50,7 @@ export const EditTask = () => {
     name: task.name,
     description: task.description!,
     columnId: task.columnId,
+    deadline: task.deadline,
     contributorsId: contributorsId,
     teamsId: teamsId,
   }

@@ -25,6 +25,7 @@ import getTeams from "src/teams/queries/getTeams"
 import { collectGenerateParams } from "next/dist/build/utils"
 export { FORM_ERROR } from "src/core/components/Form"
 import CheckboxFieldTable from "src/core/components/CheckboxFieldTable"
+import moment from "moment"
 
 // TODO: Check whether this is a good method to go
 // Other methods could be: passing the columns directly
@@ -121,24 +122,30 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Deadline */}
       <Field name="deadline">
-        {({ input: { value, onChange, ...input } }) => {
-          const today = new Date().toISOString().slice(0, 16)
+        {({ input, meta }) => {
+          const formattedValue =
+            input.value instanceof Date
+              ? moment(input.value).format("YYYY-MM-DDTHH:mm")
+              : input.value
+          const today = moment().format("YYYY-MM-DDTHH:mm")
 
           return (
-            <div>
-              <label className="flex flex-col items-start text-lg">
-                Deadline
-                <input
-                  {...input}
-                  className="mt-2 text-lg border rounded p-2"
-                  type="datetime-local"
-                  min={today}
-                  max="2050-01-01T00:00"
-                  onChange={({ target }) => {
-                    onChange(new Date(target.value))
-                  }}
-                />
+            <div className="form-control w-full max-w-xs">
+              <label className="label">
+                <span className="label-text">Deadline</span>
               </label>
+              <input
+                {...input}
+                value={formattedValue}
+                className="mt-2 text-lg border rounded p-2"
+                type="datetime-local"
+                min={today}
+                max="2050-01-01T00:00"
+                onChange={(event) => {
+                  input.onChange(event.target.value)
+                }}
+              />
+              {meta.touched && meta.error && <span className="text-error">{meta.error}</span>}
             </div>
           )
         }}
