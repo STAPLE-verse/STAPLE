@@ -51,7 +51,7 @@ export default resolver.pipe(
     })
 
     // Create the assignment
-    if (contributorsId != null) {
+    if (contributorsId != null && contributorsId.length != 0) {
       contributorsId.forEach(async (contributorId) => {
         const assignment = await db.assignment.create({
           data: {
@@ -62,7 +62,7 @@ export default resolver.pipe(
       })
     }
 
-    if (teamsId != null) {
+    if (teamsId != null && teamsId.length != 0) {
       teamsId.forEach(async (teamId) => {
         const assignment = await db.assignment.create({
           data: {

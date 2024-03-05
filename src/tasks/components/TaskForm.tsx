@@ -5,7 +5,7 @@ import { LabelSelectField } from "src/core/components/LabelSelectField"
 import getColumns from "../queries/getColumns"
 import getElements from "src/elements/queries/getElements"
 import { useQuery } from "@blitzjs/rpc"
-import { Field, useField } from "react-final-form"
+import { Field, useField, FormSpy } from "react-final-form"
 
 import { boolean, z } from "zod"
 import getContributors from "src/contributors/queries/getContributors"
@@ -24,6 +24,7 @@ import { getAuthValues } from "@blitzjs/auth"
 import getTeams from "src/teams/queries/getTeams"
 import { collectGenerateParams } from "next/dist/build/utils"
 export { FORM_ERROR } from "src/core/components/Form"
+import CheckboxFieldTable from "src/core/components/CheckboxFieldTable"
 
 // TODO: Check whether this is a good method to go
 // Other methods could be: passing the columns directly
@@ -37,75 +38,49 @@ interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
   const { projectId, type, taskId, ...formProps } = props
 
+  // Columns
   const [columns] = useQuery(getColumns, {
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
   })
 
+  // Elements
   const [elements] = useQuery(getElements, {
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
   })
 
-  // TODO: Currently we only allow users to select from contributors already assigned to the project
-  // TODO: Later on non project contributor users could be added and they will be automatically added to the project as a contributor
+  // Contributors
   const [{ contributors }] = useQuery(getContributors, {
     where: { project: { id: projectId! } },
-    // orderBy: { id: "asc" },
     include: {
       user: true,
     },
   })
 
+  const contributorOptions = contributors.map((contributor) => {
+    return {
+      label: contributor["user"].username,
+      id: contributor["id"],
+    }
+  })
+
+  // Teams
   const [{ teams }] = useQuery(getTeams, {
     where: { project: { id: projectId! } },
-    // orderBy: { id: "asc" },
-    // include: {
-    //   user: true,
-    // },
-  })
-  // console.log("teams")
-  // console.log(teams)
-
-  //TODO: should we pass this from task (new or edit) instead of getting it here?
-  const [currentAssigments, { refetch }] = useQuery(getAssigments, {
-    where: { taskId: taskId! },
-    orderBy: { id: "asc" },
   })
 
-  const findIdIfAssignedToTask = (contributorId) => {
-    let index = currentAssigments.findIndex((element) => contributorId == element.contributorId)
-    return index
-  }
-
-  const teamOptions: TeamOption[] = teams.map((team) => {
-    let assigmentId: number | undefined = undefined
-    let index = -1 //currentAssigments.findIndex((element) => team.id == element.teamId)
+  const teamOptions = teams.map((team) => {
     return {
-      name: team["name"],
+      label: team["name"],
       id: team["id"],
-      assigmentId: assigmentId,
-      checked: taskId == undefined ? false : index != -1,
-    } as TeamOption
-  })
-  //Made sure that contributors assigned are checked when shown in table
-  const contributorOptions = contributors.map((contributor) => {
-    let assigmentId: number | undefined = undefined
-    let index = findIdIfAssignedToTask(contributor.id)
-    if (index != -1 && taskId != undefined) {
-      assigmentId = currentAssigments[index]?.id
     }
-
-    return {
-      userName: contributor["user"].username,
-      firstName: contributor["user"].firstName,
-      lastName: contributor["user"].lastName,
-      id: contributor.id,
-      checked: taskId == undefined ? false : index != -1,
-      assigmentId: assigmentId,
-    } as ContributorOption
   })
 
+  // Schema
+  const schemas = getDefaultSchemaLists()
+
+  // Modal open logics
   const [openSchemaModal, setopenSchemaModal] = useState(false)
   const handleToggleSchemaUpload = () => {
     setopenSchemaModal((prev) => !prev)
@@ -121,32 +96,12 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     setTeamsModal((prev) => !prev)
   }
 
-  const [validAssigments, setValidAssigments] = useState(true)
-  const areAssigmentValid = (values) => {
-    if (values != undefined && values.findIndex((el) => el.checked) >= 0) {
-      return true
-    }
-    return false
-  }
-
-  const [validTeamAssigments, setTeamValidAssigments] = useState(true)
-  const areTeamAssigmentValid = (values) => {
-    if (values != undefined && values.findIndex((el) => el.checked) >= 0) {
-      return true
-    }
-    return false
-  }
-
-  function isAssigmentValid() {
-    return validTeamAssigments || validAssigments
-  }
-
-  const schemas = getDefaultSchemaLists()
-
   return (
     <Form<S> {...formProps} encType="multipart/form-data">
+      {/* Name */}
       <LabeledTextField name="name" label="Name" placeholder="Name" type="text" />
 
+      {/* Column */}
       <LabelSelectField
         className="select select-bordered w-full max-w-xs mt-2"
         name="columnId"
@@ -155,6 +110,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         optionText="name"
         optionValue="id"
       />
+
+      {/* Description */}
       <LabeledTextField
         name="description"
         label="Description"
@@ -162,6 +119,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         type="text"
       />
 
+      {/* Deadline */}
       <Field name="deadline">
         {({ input: { value, onChange, ...input } }) => {
           const today = new Date().toISOString().slice(0, 16)
@@ -186,6 +144,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         }}
       </Field>
 
+      {/* Elements */}
       <LabelSelectField
         className="select select-bordered w-full max-w-xs mt-2"
         name="elementId"
@@ -194,45 +153,27 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         optionText="name"
         optionValue="id"
       />
+
+      {/* Contributors */}
+      {/* Button */}
       <div className="mt-4">
         <button type="button" className="btn" onClick={() => handleToggleContributorsModal()}>
           Assign contributors
         </button>
-        <div className="flex justify-start mt-1">
-          {validTeamAssigments || validAssigments ? (
-            ""
-          ) : (
-            <span className="text-error">Needs a least one contributor or team</span>
-          )}
-        </div>
-
+        <FormSpy subscription={{ errors: true }}>
+          {({ form }) => {
+            const errors = form.getState().errors
+            return errors?.contributorsId ? (
+              <div style={{ color: "red" }}>{errors.contributorsId}</div>
+            ) : null
+          }}
+        </FormSpy>
+        {/* Modal */}
         <Modal open={openContributorsModal} size="w-7/8 max-w-xl">
           <div className="">
             <div className="flex justify-start mt-4">
-              <Field
-                name="contributorsId"
-                initialValue={contributorOptions}
-                validate={(values) => {
-                  let t = areAssigmentValid(values)
-                  setValidAssigments(t)
-                  return !isAssigmentValid()
-                }}
-              >
-                {({ input: { value, onChange, ...input }, meta }) => {
-                  return (
-                    <div>
-                      <AssignContributors
-                        contributorOptions={contributorOptions}
-                        onChange={(newSelections) => {
-                          onChange(newSelections)
-                        }}
-                      ></AssignContributors>
-                    </div>
-                  )
-                }}
-              </Field>
+              <CheckboxFieldTable name="contributorsId" options={contributorOptions} />
             </div>
-
             {/* closes the modal */}
             <div className="modal-action flex justify-end mt-4">
               <button
@@ -247,45 +188,25 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         </Modal>
       </div>
 
+      {/* Teams */}
+      {/* Button */}
       <div className="mt-4">
         <button type="button" className="btn" onClick={() => handleToggleTeamsModal()}>
           Assign Team
         </button>
-        <div className="flex justify-start mt-1">
-          {validTeamAssigments || validAssigments ? (
-            ""
-          ) : (
-            <span className="text-error">Needs a least one team or contributor</span>
-          )}
-        </div>
-
+        <FormSpy subscription={{ errors: true }}>
+          {({ form }) => {
+            const errors = form.getState().errors
+            return errors?.contributorsId ? (
+              <div style={{ color: "red" }}>{errors.contributorsId}</div>
+            ) : null
+          }}
+        </FormSpy>
         <Modal open={openTeamsModal} size="w-7/8 max-w-xl">
           <div className="">
             <div className="flex justify-start mt-4">
-              <Field
-                name="teamsId"
-                initialValue={teamOptions}
-                validate={(values) => {
-                  let t = areTeamAssigmentValid(values)
-                  setTeamValidAssigments(t)
-                  return !isAssigmentValid()
-                }}
-              >
-                {({ input: { value, onChange, ...input }, meta }) => {
-                  return (
-                    <div>
-                      <AssignTeams
-                        teamOptions={teamOptions}
-                        onChange={(newSelections) => {
-                          onChange(newSelections)
-                        }}
-                      ></AssignTeams>
-                    </div>
-                  )
-                }}
-              </Field>
+              <CheckboxFieldTable name="teamsId" options={teamOptions} />
             </div>
-
             {/* closes the modal */}
             <div className="modal-action flex justify-end mt-4">
               <button type="button" className="btn btn-primary" onClick={handleToggleTeamsModal}>
@@ -301,6 +222,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           Change Current Schema
         </button>
 
+        {/* Schema */}
         <Modal open={openSchemaModal} size="w-11/12 max-w-1xl">
           <div className="">
             <div>

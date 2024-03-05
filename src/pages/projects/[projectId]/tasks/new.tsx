@@ -28,6 +28,11 @@ const NewTaskPage = () => {
   const sidebarItems = ProjectSidebarItems(projectId!, null)
   const defaultSchemas = getDefaultSchemaLists()
 
+  const initialValues = {
+    // Making sure that conributorsId always returns an empty array even if it is not touched
+    contributorsId: [],
+  }
+
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
@@ -41,7 +46,8 @@ const NewTaskPage = () => {
             projectId={projectId}
             submitText="Create Task"
             schema={FormTaskSchema}
-            // initialValues={{ name: "", description: "" }}
+            // TODO: if I add initial values there is a lag in task creation
+            // initialValues={initialValues}
             onSubmit={async (values) => {
               // Get selected schema
               let schema
@@ -58,11 +64,7 @@ const NewTaskPage = () => {
                 schema = defaultSchemas.find((schema) => schema.name === values.schema)?.schema
               }
 
-              let contributorsId = values.contributorsId
-                ?.filter((el) => el.checked)
-                .map((val) => val["id"])
-
-              let teamsId = values.teamsId?.filter((el) => el.checked).map((val) => val["id"])
+              // let teamsId = values.teamsId?.filter((el) => el.checked).map((val) => val["id"])
 
               // Create new task
               try {
@@ -75,8 +77,8 @@ const NewTaskPage = () => {
                   deadline: values.deadline,
                   elementId: values.elementId,
                   createdById: currentContributor.id,
-                  contributorsId: contributorsId,
-                  teamsId: teamsId,
+                  contributorsId: values.contributorsId,
+                  teamsId: values.teamsId,
                   schema: schema,
                 })
                 await toast.promise(Promise.resolve(task), {

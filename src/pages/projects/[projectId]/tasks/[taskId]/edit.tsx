@@ -14,6 +14,7 @@ import { TaskForm, FORM_ERROR } from "src/tasks/components/TaskForm"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import toast from "react-hot-toast"
+import getAssignments from "src/assignments/queries/getAssignments"
 
 export const EditTask = () => {
   const router = useRouter()
@@ -29,14 +30,28 @@ export const EditTask = () => {
     }
   )
   const [updateTaskMutation] = useMutation(updateTask)
+  const [assignments] = useQuery(getAssignments, {
+    where: { taskId: taskId },
+  })
+
+  const contributorsId = assignments
+    .map((assignment) => assignment.contributorId)
+    // assignment.contributorId is nullable thus we filter for initialValues
+    .filter((id): id is number => id !== null)
+
+  const teamsId = assignments
+    .map((assignment) => assignment.teamId)
+    // assignment.contributorId is nullable thus we filter for initialValues
+    .filter((id): id is number => id !== null)
 
   const sidebarItems = ProjectSidebarItems(projectId!, null)
 
-  // I have to make initial values explicit for the update to work why?
   const initialValues = {
     name: task.name,
     description: task.description!,
     columnId: task.columnId,
+    contributorsId: contributorsId,
+    teamsId: teamsId,
   }
 
   return (
