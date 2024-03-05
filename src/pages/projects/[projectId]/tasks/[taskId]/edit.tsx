@@ -73,7 +73,11 @@ export const EditTask = () => {
             schema={FormTaskSchema}
             initialValues={initialValues}
             onSubmit={async (values) => {
-              // console.log(values)
+              const toastId = "update-task-id"
+              toast.dismiss(toastId)
+
+              toast.loading("Updating task...", { id: toastId })
+
               try {
                 // if (true) return
                 const updated = await updateTaskMutation({
@@ -81,11 +85,7 @@ export const EditTask = () => {
                   id: task.id,
                 })
 
-                await toast.promise(Promise.resolve(updated), {
-                  loading: "Updating task...",
-                  success: "Task updated!",
-                  error: "Failed to update the task...",
-                })
+                toast.success("Task updated!", { id: toastId })
 
                 await setQueryData(updated)
                 await router.push(
@@ -96,6 +96,7 @@ export const EditTask = () => {
                 )
               } catch (error: any) {
                 console.error(error)
+                toast.error("Failed to update the task...", { id: toastId })
                 return {
                   [FORM_ERROR]: error.toString(),
                 }
