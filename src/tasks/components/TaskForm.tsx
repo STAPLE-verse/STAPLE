@@ -142,7 +142,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
                 min={today}
                 max="2050-01-01T00:00"
                 onChange={(event) => {
-                  input.onChange(event.target.value)
+                  const dateValue = event.target.value ? new Date(event.target.value) : null
+                  input.onChange(dateValue)
                 }}
               />
               {meta.touched && meta.error && <span className="text-error">{meta.error}</span>}
