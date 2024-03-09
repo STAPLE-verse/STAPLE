@@ -23,4 +23,5 @@ export const UpdateAssignmentSchema = z.object({
     )
     .transform((data) => data as Prisma.NullableJsonNullValueInput),
   status: z.nativeEnum(AssignmentStatus),
+  completedBy: z.number().nullable(),
 })

@@ -258,7 +258,21 @@ export const ShowTaskPage = () => {
           )}
 
           {!task["schema"] && currentAssignment && (
-            <CompleteToggle currentAssignment={currentAssignment} refetch={refetchAssignments} />
+            <div className="flex flex-col gap-2">
+              <CompleteToggle
+                currentAssignment={currentAssignment}
+                refetch={refetchAssignments}
+                completedLabel="Completed as an individual"
+                completedBy={currentContributor.id}
+              />
+              {/* TODO Needs to send notificaton */}
+              <CompleteToggle
+                currentAssignment={currentAssignment}
+                refetch={refetchAssignments}
+                completedLabel="Completed as a Team"
+                completedBy={currentContributor.id}
+              />
+            </div>
           )}
         </main>
       </Suspense>

@@ -145,6 +145,7 @@ model Assignment {
   team          Team?            @relation(fields: [teamId], references: [id], onDelete: Cascade)
   status        AssignmentStatus @default(NOT_COMPLETED)
   metadata      Json?
+  completedBy   Int?
 }
 
 model Team {

@@ -3,7 +3,7 @@ import { AssignmentStatus } from "db"
 import { useEffect, useState } from "react"
 import updateAssignment from "src/assignments/mutations/updateAssignment"
 
-const CompleteToggle = ({ currentAssignment, refetch }) => {
+const CompleteToggle = ({ currentAssignment, refetch, completedLabel, completedBy }) => {
   const [updateAssignmentMutation] = useMutation(updateAssignment)
 
   // Handle assignment status
@@ -16,6 +16,7 @@ const CompleteToggle = ({ currentAssignment, refetch }) => {
     await updateAssignmentMutation({
       id: currentAssignment!.id,
       status: newStatus,
+      completedBy: newStatus ? completedBy : null,
     })
 
     await refetch()
@@ -42,7 +43,7 @@ const CompleteToggle = ({ currentAssignment, refetch }) => {
               checked={isChecked}
               onChange={handleAssignmentStatusToggle}
             />
-            <span className="ml-2">Completed</span>
+            <span className="ml-2">{completedLabel}</span>
           </label>
         </div>
       ) : (
