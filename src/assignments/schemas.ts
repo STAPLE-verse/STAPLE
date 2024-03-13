@@ -1,4 +1,4 @@
-import { AssignmentStatus, Prisma } from "@prisma/client"
+import { AssignmentStatus, CompletedAs, Prisma } from "@prisma/client"
 import { z } from "zod"
 
 export const UpdateAssignmentSchema = z.object({
@@ -24,4 +24,5 @@ export const UpdateAssignmentSchema = z.object({
     .transform((data) => data as Prisma.NullableJsonNullValueInput),
   status: z.nativeEnum(AssignmentStatus),
   completedBy: z.number().nullable(),
+  completedAs: z.nativeEnum(CompletedAs).optional(),
 })

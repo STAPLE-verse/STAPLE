@@ -18,7 +18,7 @@ import Modal from "src/core/components/Modal"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import updateAssignment from "src/assignments/mutations/updateAssignment"
 import getContributor from "src/contributors/queries/getContributor"
-import { AssignmentStatus, ContributorRole, TaskStatus } from "@prisma/client"
+import { AssignmentStatus, ContributorRole, TaskStatus, CompletedAs } from "@prisma/client"
 import CompleteToggle from "src/assignments/components/CompleteToggle"
 import getAssignment from "src/assignments/queries/getAssignment"
 import AssignmentProgress from "src/tasks/components/AssignmentProgress"
@@ -81,6 +81,8 @@ export const ShowTaskPage = () => {
         id: currentAssignment.id,
         metadata: data.formData,
         status: AssignmentStatus.COMPLETED,
+        completedBy: currentContributor.id,
+        //completedAs: currentAssignment.completedAs,
       })
       await handleToggle()
       await refetchAssignments()
@@ -264,6 +266,7 @@ export const ShowTaskPage = () => {
                 refetch={refetchAssignments}
                 completedLabel="Completed as an individual"
                 completedBy={currentContributor.id}
+                completedAs={CompletedAs.INDIVIDUAL}
               />
               {/* TODO Needs to send notificaton */}
               <CompleteToggle
@@ -271,6 +274,7 @@ export const ShowTaskPage = () => {
                 refetch={refetchAssignments}
                 completedLabel="Completed as a Team"
                 completedBy={currentContributor.id}
+                completedAs={CompletedAs.TEAM}
               />
             </div>
           )}

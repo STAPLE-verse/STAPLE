@@ -133,6 +133,11 @@ enum AssignmentStatus {
   NOT_COMPLETED
 }
 
+enum CompletedAs {
+  INDIVIDUAL
+  TEAM
+}
+
 model Assignment {
   id            Int              @id @default(autoincrement())
   createdAt     DateTime         @default(now())
@@ -146,6 +151,7 @@ model Assignment {
   status        AssignmentStatus @default(NOT_COMPLETED)
   metadata      Json?
   completedBy   Int?
+  completedAs   CompletedAs      @default(INDIVIDUAL)
 }
 
 model Team {

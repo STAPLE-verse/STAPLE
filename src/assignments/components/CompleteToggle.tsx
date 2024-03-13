@@ -1,9 +1,15 @@
 import { useMutation } from "@blitzjs/rpc"
-import { AssignmentStatus } from "db"
+import { AssignmentStatus, CompletedAs, Assignment } from "db"
 import { useEffect, useState } from "react"
 import updateAssignment from "src/assignments/mutations/updateAssignment"
 
-const CompleteToggle = ({ currentAssignment, refetch, completedLabel, completedBy }) => {
+const CompleteToggle = ({
+  currentAssignment,
+  refetch,
+  completedLabel,
+  completedBy,
+  completedAs,
+}) => {
   const [updateAssignmentMutation] = useMutation(updateAssignment)
 
   // Handle assignment status
@@ -17,6 +23,7 @@ const CompleteToggle = ({ currentAssignment, refetch, completedLabel, completedB
       id: currentAssignment!.id,
       status: newStatus,
       completedBy: newStatus ? completedBy : null,
+      completedAs: completedAs as CompletedAs,
     })
 
     await refetch()
@@ -28,8 +35,11 @@ const CompleteToggle = ({ currentAssignment, refetch, completedLabel, completedB
 
   useEffect(() => {
     // Update the local state when the assignment status changes in the database
-    setIsChecked(currentAssignment!.status === AssignmentStatus.COMPLETED || false)
-  }, [currentAssignment])
+    let whoCompleted = currentAssignment.completedAs === completedAs
+    setIsChecked(
+      (currentAssignment!.status === AssignmentStatus.COMPLETED && whoCompleted) || false
+    )
+  }, [completedAs, currentAssignment])
 
   return (
     <div>
