@@ -14,31 +14,43 @@ const CompleteToggle = ({
 
   // Handle assignment status
   const handleAssignmentStatusToggle = async () => {
-    const newStatus =
-      currentAssignment?.status === AssignmentStatus.COMPLETED
-        ? AssignmentStatus.NOT_COMPLETED
-        : AssignmentStatus.COMPLETED
+    // if (completedAs == CompletedAs.INDIVIDUAL) {
+    //   const newStatus =
+    //     currentAssignment?.status === AssignmentStatus.COMPLETED
+    //       ? AssignmentStatus.NOT_COMPLETED
+    //       : AssignmentStatus.COMPLETED
+    //   await updateAssignmentMutation({
+    //     id: currentAssignment!.id,
+    //     status: newStatus,
+    //     completedBy: newStatus ? completedBy : null,
+    //     completedAs: completedAs as CompletedAs,
+    //   })
+    // }
 
-    await updateAssignmentMutation({
-      id: currentAssignment!.id,
-      status: newStatus,
-      completedBy: newStatus ? completedBy : null,
-      completedAs: completedAs as CompletedAs,
+    currentAssignment.forEach(async (assigment) => {
+      const newStatus =
+        assigment?.status === AssignmentStatus.COMPLETED
+          ? AssignmentStatus.NOT_COMPLETED
+          : AssignmentStatus.COMPLETED
+
+      await updateAssignmentMutation({
+        id: assigment!.id,
+        status: newStatus,
+        completedBy: newStatus ? completedBy : null,
+        completedAs: completedAs as CompletedAs,
+      })
     })
-
+    // }
     await refetch()
   }
 
   const [isChecked, setIsChecked] = useState(
-    currentAssignment!.status === AssignmentStatus.COMPLETED
+    currentAssignment[0]!.status === AssignmentStatus.COMPLETED
   )
 
   useEffect(() => {
-    // Update the local state when the assignment status changes in the database
-    let whoCompleted = currentAssignment.completedAs === completedAs
-    setIsChecked(
-      (currentAssignment!.status === AssignmentStatus.COMPLETED && whoCompleted) || false
-    )
+    let assigment = currentAssignment[0]
+    setIsChecked(assigment!.status === AssignmentStatus.COMPLETED || false)
   }, [completedAs, currentAssignment])
 
   return (

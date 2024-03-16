@@ -27,6 +27,13 @@ import toast from "react-hot-toast"
 import getAssignmentProgress from "src/assignments/queries/getAssignmentProgress"
 import getAssignments from "src/assignments/queries/getAssignments"
 
+type CompletedByTeamContributor = {
+  completedAsIndividual: boolean
+  completedAsTeam: boolean
+  currentIndividualAssigments?: any[] | null
+  currentTeamsAssigments?: any[] | null
+}
+
 export const ShowTaskPage = () => {
   // Setup
   const router = useRouter()
@@ -53,18 +60,48 @@ export const ShowTaskPage = () => {
   )
 
   // TODO: this needs to be deleted after currentAssignments (plural) are implemented; refetch needs to be added to currentAssignments
-  const [currentAssignment, { refetch: refetchCurrentAssignment }] = useQuery(getAssignment, {
-    where: { taskId: taskId },
-  })
+  // const [currentAssignment, { refetch: refetchCurrentAssignment }] = useQuery(getAssignment, {
+  //   where: { taskId: taskId },
+  // })
 
   // Get assignments for the task
   // If someone is assigned as an individual AND as a Team member it is possible to have two assignments for the same person for the task
-  const [currentAssignments] = useQuery(getAssignments, {
+  const [currentAssignments, { refetch: refetchCurrentAssignments }] = useQuery(getAssignments, {
     where: { taskId: taskId },
+    include: {
+      task: true,
+      team: {
+        select: {
+          contributors: { where: { id: currentContributor.id }, select: { id: true } },
+        },
+      },
+    },
   })
 
+  let completedByTeamContributor: CompletedByTeamContributor = (() => {
+    let temp: CompletedByTeamContributor = { completedAsIndividual: false, completedAsTeam: false }
+
+    //only can mark as complete individual assigments
+    let assigment = currentAssignments.find(
+      (element) => element.contributorId != null && element.contributorId == currentContributor.id
+    )
+    //pass this to the toggle button as an array to be consistent with teams
+    temp.currentIndividualAssigments = [assigment]
+    temp.completedAsIndividual = assigment != undefined
+
+    //TODO: review team assiggments. Assumes that tasks can be assigned to several teams and that an individual
+    // can belong to multiple teams which share a task. i.e., user 0 is in team A and B. and task 0 is assigned to A and B.
+    // is this as it should work?
+    let teamAssigments = currentAssignments.filter((element) => element.teamId != null)
+    temp.completedAsTeam = teamAssigments.length > 0
+    temp.currentTeamsAssigments = teamAssigments
+
+    return temp
+  })()
+
   const refetchAssignments = async () => {
-    await refetchCurrentAssignment()
+    // await refetchCurrentAssignment()
+    await refetchCurrentAssignments()
     await refetchAssignmentProgress()
   }
 
@@ -75,15 +112,19 @@ export const ShowTaskPage = () => {
   }
 
   const handleJsonFormSubmit = async (data) => {
-    if (currentAssignment) {
+    if (currentAssignments) {
       // Users can overwrite their responses
-      await updateAssignmentMutation({
-        id: currentAssignment.id,
-        metadata: data.formData,
-        status: AssignmentStatus.COMPLETED,
-        completedBy: currentContributor.id,
-        //completedAs: currentAssignment.completedAs,
+      //user can have multiple assigments
+      currentAssignments.forEach(async (currentAssignment) => {
+        await updateAssignmentMutation({
+          id: currentAssignment.id,
+          metadata: data.formData,
+          status: AssignmentStatus.COMPLETED,
+          completedBy: currentContributor.id,
+          //completedAs: currentAssignment.completedAs,
+        })
       })
+
       await handleToggle()
       await refetchAssignments()
     } else {
@@ -235,7 +276,7 @@ export const ShowTaskPage = () => {
 
           <div className="divider">Complete your assignment</div>
 
-          {task["schema"] && currentAssignment && (
+          {task["schema"] && currentAssignments && (
             <div className="mt-4">
               <button className="btn" onClick={() => handleToggle()}>
                 Provide metadata
@@ -259,18 +300,25 @@ export const ShowTaskPage = () => {
             </div>
           )}
 
-          {!task["schema"] && currentAssignment && (
+          {!task["schema"] &&
+            currentAssignments &&
+            completedByTeamContributor.completedAsIndividual && (
+              <div className="flex flex-col gap-2">
+                <CompleteToggle
+                  currentAssignment={completedByTeamContributor.currentIndividualAssigments}
+                  refetch={refetchAssignments}
+                  completedLabel="Completed as an individual"
+                  completedBy={currentContributor.id}
+                  completedAs={CompletedAs.INDIVIDUAL}
+                />
+              </div>
+            )}
+
+          {!task["schema"] && currentAssignments && completedByTeamContributor.completedAsTeam && (
             <div className="flex flex-col gap-2">
-              <CompleteToggle
-                currentAssignment={currentAssignment}
-                refetch={refetchAssignments}
-                completedLabel="Completed as an individual"
-                completedBy={currentContributor.id}
-                completedAs={CompletedAs.INDIVIDUAL}
-              />
               {/* TODO Needs to send notificaton */}
               <CompleteToggle
-                currentAssignment={currentAssignment}
+                currentAssignment={completedByTeamContributor.currentTeamsAssigments}
                 refetch={refetchAssignments}
                 completedLabel="Completed as a Team"
                 completedBy={currentContributor.id}
