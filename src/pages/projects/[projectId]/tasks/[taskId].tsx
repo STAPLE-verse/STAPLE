@@ -99,6 +99,8 @@ export const ShowTaskPage = () => {
     return temp
   })()
 
+  // console.log(completedByTeamContributor)
+
   const refetchAssignments = async () => {
     // await refetchCurrentAssignment()
     await refetchCurrentAssignments()

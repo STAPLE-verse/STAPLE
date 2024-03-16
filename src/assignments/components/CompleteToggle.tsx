@@ -27,20 +27,18 @@ const CompleteToggle = ({
     //   })
     // }
 
+    const newChecked = isChecked ? false : true
+    const newStatus = newChecked ? AssignmentStatus.COMPLETED : AssignmentStatus.NOT_COMPLETED
     currentAssignment.forEach(async (assigment) => {
-      const newStatus =
-        assigment?.status === AssignmentStatus.COMPLETED
-          ? AssignmentStatus.NOT_COMPLETED
-          : AssignmentStatus.COMPLETED
-
       await updateAssignmentMutation({
         id: assigment!.id,
         status: newStatus,
-        completedBy: newStatus ? completedBy : null,
+        completedBy: newChecked ? completedBy : null,
         completedAs: completedAs as CompletedAs,
       })
     })
-    // }
+
+    setIsChecked(newChecked)
     await refetch()
   }
 
@@ -48,10 +46,10 @@ const CompleteToggle = ({
     currentAssignment[0]!.status === AssignmentStatus.COMPLETED
   )
 
-  useEffect(() => {
-    let assigment = currentAssignment[0]
-    setIsChecked(assigment!.status === AssignmentStatus.COMPLETED || false)
-  }, [completedAs, currentAssignment])
+  // useEffect(() => {
+  //   let assigment = currentAssignment[0]
+  //   setIsChecked(assigment!.status === AssignmentStatus.COMPLETED || false)
+  // }, [currentAssignment])
 
   return (
     <div>
@@ -63,6 +61,7 @@ const CompleteToggle = ({
               type="checkbox"
               className="toggle"
               checked={isChecked}
+              // onClick={handleAssignmentStatusToggle}
               onChange={handleAssignmentStatusToggle}
             />
             <span className="ml-2">{completedLabel}</span>
