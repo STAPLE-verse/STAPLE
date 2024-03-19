@@ -1,6 +1,10 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
+export const revalidate = 0
+export const dynamic = "force-dynamic"
+export const fetchCache = "force-no-store"
+
 interface GetAssignmentsInput
   extends Pick<Prisma.AssignmentFindManyArgs, "where" | "orderBy" | "include"> {}
 

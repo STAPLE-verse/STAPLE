@@ -12,6 +12,10 @@ const CompleteToggle = ({
 }) => {
   const [updateAssignmentMutation] = useMutation(updateAssignment)
 
+  const [isChecked, setIsChecked] = useState(
+    currentAssignment[0]!.status === AssignmentStatus.COMPLETED
+  )
+
   // Handle assignment status
   const handleAssignmentStatusToggle = async () => {
     // if (completedAs == CompletedAs.INDIVIDUAL) {
@@ -29,27 +33,32 @@ const CompleteToggle = ({
 
     const newChecked = isChecked ? false : true
     const newStatus = newChecked ? AssignmentStatus.COMPLETED : AssignmentStatus.NOT_COMPLETED
-    currentAssignment.forEach(async (assigment) => {
-      await updateAssignmentMutation({
+    // currentAssignment.forEach(async (assigment) => {
+    //   await updateAssignmentMutation({
+    //     id: assigment!.id,
+    //     status: newStatus,
+    //     completedBy: newChecked ? completedBy : null,
+    //     completedAs: completedAs as CompletedAs,
+    //   })
+    // })
+
+    let temp = currentAssignment.map((assigment) => {
+      return {
         id: assigment!.id,
         status: newStatus,
         completedBy: newChecked ? completedBy : null,
         completedAs: completedAs as CompletedAs,
-      })
+      }
     })
 
+    await refetch(temp)
     setIsChecked(newChecked)
-    await refetch()
   }
 
-  const [isChecked, setIsChecked] = useState(
-    currentAssignment[0]!.status === AssignmentStatus.COMPLETED
-  )
-
-  // useEffect(() => {
-  //   let assigment = currentAssignment[0]
-  //   setIsChecked(assigment!.status === AssignmentStatus.COMPLETED || false)
-  // }, [currentAssignment])
+  useEffect(() => {
+    let assigment = currentAssignment[0]
+    // setIsChecked(assigment!.status === AssignmentStatus.COMPLETED || false)
+  }, [currentAssignment, refetch])
 
   return (
     <div>
@@ -75,3 +84,6 @@ const CompleteToggle = ({
 }
 
 export default CompleteToggle
+function aysnc() {
+  throw new Error("Function not implemented.")
+}

@@ -27,11 +27,16 @@ import toast from "react-hot-toast"
 import getAssignmentProgress from "src/assignments/queries/getAssignmentProgress"
 import getAssignments from "src/assignments/queries/getAssignments"
 
+export const revalidate = 0 //Very important
+
+export const dynamic = "force-dynamic"
+export const fetchCache = "force-no-store"
+
 type CompletedByTeamContributor = {
   completedAsIndividual: boolean
   completedAsTeam: boolean
-  currentIndividualAssigments?: any[] | null
-  currentTeamsAssigments?: any[] | null
+  currentIndividualAssigments: any[]
+  currentTeamsAssigments: any[]
 }
 
 export const ShowTaskPage = () => {
@@ -64,22 +69,42 @@ export const ShowTaskPage = () => {
   //   where: { taskId: taskId },
   // })
 
+  const [queryKey, setQueryKey] = useState("key")
+  const [pQueryKey, setPQueryKey] = useState("key")
+
   // Get assignments for the task
   // If someone is assigned as an individual AND as a Team member it is possible to have two assignments for the same person for the task
-  const [currentAssignments, { refetch: refetchCurrentAssignments }] = useQuery(getAssignments, {
-    where: { taskId: taskId },
-    include: {
-      task: true,
-      team: {
-        select: {
-          contributors: { where: { id: currentContributor.id }, select: { id: true } },
+  // let key = "key"
+  const [currentAssignments, { refetch }] = useQuery(
+    getAssignments,
+    {
+      where: { taskId: taskId },
+      include: {
+        task: true,
+        team: {
+          select: {
+            contributors: { where: { id: currentContributor.id }, select: { id: true } },
+          },
         },
       },
     },
-  })
+    {
+      queryKey: [queryKey],
+      refetchOnMount: "always",
+      staleTime: 0,
+      cacheTime: 0,
+      refetchInterval: 0,
+    }
+  )
 
-  let completedByTeamContributor: CompletedByTeamContributor = (() => {
-    let temp: CompletedByTeamContributor = { completedAsIndividual: false, completedAsTeam: false }
+  console.log("current assigments: ", currentAssignments)
+  const completedByTeamContributorFunc = () => {
+    let temp: CompletedByTeamContributor = {
+      completedAsIndividual: false,
+      completedAsTeam: false,
+      currentTeamsAssigments: [],
+      currentIndividualAssigments: [],
+    }
 
     //only can mark as complete individual assigments
     let assigment = currentAssignments.find(
@@ -97,15 +122,43 @@ export const ShowTaskPage = () => {
     temp.currentTeamsAssigments = teamAssigments
 
     return temp
-  })()
+  }
+
+  const [completedByTeamContributor, setcompletedByTeamContributor] = useState(
+    completedByTeamContributorFunc()
+  )
 
   // console.log(completedByTeamContributor)
 
-  const refetchAssignments = async () => {
+  const refetchAssignments = async (newAssigments) => {
+    console.log("Retfeching assigments")
+    console.log("new assigments", newAssigments)
     // await refetchCurrentAssignment()
-    await refetchCurrentAssignments()
-    await refetchAssignmentProgress()
+    //await refetchCurrentAssignments()
+    try {
+      newAssigments.forEach(async (assigment) => {
+        await updateAssignmentMutation(assigment)
+      })
+
+      let t = await refetch()
+
+      console.log(t)
+      await refetchAssignmentProgress()
+      console.log("current assigments after update: ", currentAssignments)
+      let key = "key" + Date.now()
+      setPQueryKey(key)
+      setcompletedByTeamContributor(completedByTeamContributorFunc())
+    } catch (err) {
+      console.log(err)
+    }
   }
+
+  useEffect(() => {
+    if (pQueryKey != queryKey) {
+      console.log("Setting query key")
+      setQueryKey(queryKey)
+    }
+  }, [queryKey, pQueryKey])
 
   // Handle metadata input
   const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
@@ -128,7 +181,7 @@ export const ShowTaskPage = () => {
       })
 
       await handleToggle()
-      await refetchAssignments()
+      await refetchAssignments([])
     } else {
       console.error("currentAssignment is undefined")
     }
@@ -318,9 +371,10 @@ export const ShowTaskPage = () => {
 
           {!task["schema"] && currentAssignments && completedByTeamContributor.completedAsTeam && (
             <div className="flex flex-col gap-2">
+              <div> {completedByTeamContributor.currentTeamsAssigments[0].status}</div>
               {/* TODO Needs to send notificaton */}
               <CompleteToggle
-                currentAssignment={completedByTeamContributor.currentTeamsAssigments}
+                currentAssignment={[...completedByTeamContributor.currentTeamsAssigments]}
                 refetch={refetchAssignments}
                 completedLabel="Completed as a Team"
                 completedBy={currentContributor.id}
