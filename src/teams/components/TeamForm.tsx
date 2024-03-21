@@ -1,4 +1,4 @@
-import React, { Suspense } from "react"
+import React, { Suspense, useState } from "react"
 import { Form, FormProps } from "src/core/components/Form"
 import { z } from "zod"
 import { useQuery } from "@blitzjs/rpc"
@@ -44,21 +44,46 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
     } as TeamOption
   })
 
+  const [validAssigments, setValidAssigments] = useState(true)
+  const areAssigmentValid = (values) => {
+    if (values != undefined && values.findIndex((el) => el.checked) >= 0) {
+      return true
+    }
+    return false
+  }
+
   return (
     <Form<S> {...formProps}>
       <LabeledTextField name="name" label="Name" placeholder="Name" type="text" />
       <div className="flex justify-start mt-4">
-        <Field name="contributorsId" initialValue={currentTeamOptions}>
+        <Field
+          name="contributorsId"
+          initialValue={currentTeamOptions}
+          validate={(values) => {
+            let t = areAssigmentValid(values)
+            setValidAssigments(t)
+            return !t
+          }}
+        >
           {({ input: { value, onChange, ...input } }) => {
             return (
               <div>
-                <AssignTeamMembers
-                  showCheckbox={true}
-                  teamOptions={currentTeamOptions}
-                  onChange={(newSelections) => {
-                    onChange(newSelections)
-                  }}
-                ></AssignTeamMembers>
+                <div className="flex justify-start mt-1">
+                  {validAssigments ? (
+                    ""
+                  ) : (
+                    <span className="text-error">Needs a least one member</span>
+                  )}
+                </div>
+                <div>
+                  <AssignTeamMembers
+                    showCheckbox={true}
+                    teamOptions={currentTeamOptions}
+                    onChange={(newSelections) => {
+                      onChange(newSelections)
+                    }}
+                  ></AssignTeamMembers>
+                </div>
               </div>
             )
           }}

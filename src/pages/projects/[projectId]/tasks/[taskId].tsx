@@ -15,25 +15,31 @@ import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import getProject from "src/projects/queries/getProject"
 import Modal from "src/core/components/Modal"
-import getAssignments from "src/assignments/queries/getAssignments"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import updateAssignment from "src/assignments/mutations/updateAssignment"
 import getContributor from "src/contributors/queries/getContributor"
-import { AssignmentStatus } from "@prisma/client"
-import {
-  AssignmentWithRelations,
-  assignmentTableColumns,
-} from "src/assignments/components/AssignmentTable"
-import Table from "src/core/components/Table"
+import { AssignmentStatus, ContributorRole, TaskStatus, CompletedAs } from "@prisma/client"
 import CompleteToggle from "src/assignments/components/CompleteToggle"
+import getAssignment from "src/assignments/queries/getAssignment"
+import AssignmentProgress from "src/tasks/components/AssignmentProgress"
+import updateTaskStatus from "src/tasks/mutations/updateTaskStatus"
+import toast from "react-hot-toast"
+import getAssignmentProgress from "src/assignments/queries/getAssignmentProgress"
+import getAssignments from "src/assignments/queries/getAssignments"
 
-// import { AssignmentTable } from "src/assignments/components/AssignmentTable"
+type CompletedByTeamContributor = {
+  completedAsIndividual: boolean
+  completedAsTeam: boolean
+  currentIndividualAssigments?: any[] | null
+  currentTeamsAssigments?: any[] | null
+}
 
 export const ShowTaskPage = () => {
   // Setup
   const router = useRouter()
   const [deleteTaskMutation] = useMutation(deleteTask)
   const [updateAssignmentMutation] = useMutation(updateAssignment)
+  const [updateTaskStatusMutation] = useMutation(updateTaskStatus)
   // Get values
   const currentUser = useCurrentUser()
   const taskId = useParam("taskId", "number")
@@ -43,38 +49,63 @@ export const ShowTaskPage = () => {
   const [project] = useQuery(getProject, { id: projectId })
   // Get sidebar options
   const sidebarItems = ProjectSidebarItems(projectId!, null)
-  // Note: we have to get this separately because the currentContributor does not neccesarily have an assignment
-  const currentContributor = useQuery(getContributor, {
+  const [currentContributor] = useQuery(getContributor, {
     where: { projectId: projectId, userId: currentUser!.id },
   })
+
   // Get assignments
-  const [assignments, { refetch }] = useQuery(getAssignments, {
+  const [assignmentProgress, { refetch: refetchAssignmentProgress }] = useQuery(
+    getAssignmentProgress,
+    { taskId: taskId! }
+  )
+
+  // TODO: this needs to be deleted after currentAssignments (plural) are implemented; refetch needs to be added to currentAssignments
+  // const [currentAssignment, { refetch: refetchCurrentAssignment }] = useQuery(getAssignment, {
+  //   where: { taskId: taskId },
+  // })
+
+  // Get assignments for the task
+  // If someone is assigned as an individual AND as a Team member it is possible to have two assignments for the same person for the task
+  const [currentAssignments, { refetch: refetchCurrentAssignments }] = useQuery(getAssignments, {
     where: { taskId: taskId },
     include: {
       task: true,
-      contributor: {
-        include: {
-          user: true,
+      team: {
+        select: {
+          contributors: { where: { id: currentContributor.id }, select: { id: true } },
         },
       },
     },
-    // TODO: replace this with actual type def
-  }) as unknown as [AssignmentWithRelations[], { refetch: () => void }]
-  // TODO: Chris, do I need this?
-  // Get values dependent on assignments
-  // const [currentAssignment, setCurrentAssignment] = useState<AssignmentWithRelations>()
-  // useEffect(() => {
-  //   // Get currentAssignment
-  //   const currentAssignment = assignments.find(
-  //     (assignment) => assignment.contributorId === currentContributor[0].id
-  //   )
-  //   // TODO: If currentContributor is not assigned currentAssignment is undefined
-  //   setCurrentAssignment(currentAssignment)
-  // }, [assignments])
+  })
 
-  const currentAssignment = assignments.find(
-    (assignment) => assignment.contributorId === currentContributor[0].id
-  )
+  let completedByTeamContributor: CompletedByTeamContributor = (() => {
+    let temp: CompletedByTeamContributor = { completedAsIndividual: false, completedAsTeam: false }
+
+    //only can mark as complete individual assigments
+    let assigment = currentAssignments.find(
+      (element) => element.contributorId != null && element.contributorId == currentContributor.id
+    )
+    //pass this to the toggle button as an array to be consistent with teams
+    temp.currentIndividualAssigments = [assigment]
+    temp.completedAsIndividual = assigment != undefined
+
+    //TODO: review team assiggments. Assumes that tasks can be assigned to several teams and that an individual
+    // can belong to multiple teams which share a task. i.e., user 0 is in team A and B. and task 0 is assigned to A and B.
+    // is this as it should work?
+    let teamAssigments = currentAssignments.filter((element) => element.teamId != null)
+    temp.completedAsTeam = teamAssigments.length > 0
+    temp.currentTeamsAssigments = teamAssigments
+
+    return temp
+  })()
+
+  // console.log(completedByTeamContributor)
+
+  const refetchAssignments = async () => {
+    // await refetchCurrentAssignment()
+    await refetchCurrentAssignments()
+    await refetchAssignmentProgress()
+  }
 
   // Handle metadata input
   const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
@@ -83,15 +114,21 @@ export const ShowTaskPage = () => {
   }
 
   const handleJsonFormSubmit = async (data) => {
-    if (currentAssignment) {
+    if (currentAssignments) {
       // Users can overwrite their responses
-      await updateAssignmentMutation({
-        id: currentAssignment.id,
-        metadata: data.formData,
-        status: AssignmentStatus.COMPLETED,
+      //user can have multiple assigments
+      currentAssignments.forEach(async (currentAssignment) => {
+        await updateAssignmentMutation({
+          id: currentAssignment.id,
+          metadata: data.formData,
+          status: AssignmentStatus.COMPLETED,
+          completedBy: currentContributor.id,
+          //completedAs: currentAssignment.completedAs,
+        })
       })
+
       await handleToggle()
-      await refetch()
+      await refetchAssignments()
     } else {
       console.error("currentAssignment is undefined")
     }
@@ -101,6 +138,34 @@ export const ShowTaskPage = () => {
     console.log(errors)
   }
 
+  const [taskStatus, setTaskStatus] = useState(task.status)
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+
+  const handleTaskStatus = async () => {
+    if (
+      assignmentProgress.completed !== assignmentProgress.all &&
+      taskStatus === TaskStatus.NOT_COMPLETED
+    ) {
+      setIsConfirmModalOpen(true)
+    } else {
+      await taskStatusUpdate()
+    }
+  }
+
+  const taskStatusUpdate = async () => {
+    const newStatus =
+      taskStatus === TaskStatus.COMPLETED ? TaskStatus.NOT_COMPLETED : TaskStatus.COMPLETED
+
+    try {
+      const updatedTaskStatus = await updateTaskStatusMutation({ id: taskId!, status: newStatus })
+      toast.success(`Task status updated to ${updatedTaskStatus.status}`)
+      setTaskStatus(updatedTaskStatus.status)
+    } catch (error) {
+      console.error("Error updating task status:", error)
+      toast.error("Failed to update task status")
+    }
+  }
+
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Suspense fallback={<div>Loading...</div>}>
@@ -108,12 +173,54 @@ export const ShowTaskPage = () => {
           <title>Task {task.name}</title>
         </Head>
 
-        <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
+        <main className="flex flex-col mb-2 currentContributormt-2 mx-auto w-full max-w-7xl">
           <h1>{task.name}</h1>
           <div className="flex flex-col gap-2">
             <p>{task.description}</p>
+            {currentContributor.role == ContributorRole.PROJECT_MANAGER && (
+              <div>
+                <div className="form-control">
+                  <label className="label cursor-pointer">
+                    <span className="label-text text-lg">Task status</span>
+                    <input
+                      type="checkbox"
+                      checked={taskStatus === TaskStatus.COMPLETED}
+                      onChange={handleTaskStatus}
+                      className="checkbox checkbox-primary"
+                    />
+                  </label>
+                </div>
+                <Modal open={isConfirmModalOpen} size="w-11/12 max-w-3xl">
+                  <div className="flex flex-col justify-center items-center space-y-4">
+                    <p>
+                      Are you sure you want to update the task status since not all assignments are
+                      completed?
+                    </p>
+                    <div className="flex flex-row space-x-4">
+                      <button
+                        className="btn"
+                        onClick={async () => {
+                          await taskStatusUpdate()
+                          await setIsConfirmModalOpen(false)
+                        }}
+                      >
+                        Confirm
+                      </button>
+                      <button className="btn" onClick={() => setIsConfirmModalOpen(false)}>
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </Modal>
+              </div>
+            )}
+            {currentContributor.role == ContributorRole.CONTRIBUTOR && (
+              <p>
+                <span className="font-semibold">Task status:</span> {taskStatus}
+              </p>
+            )}
             <p>
-              <span className="font-semibold">Status:</span> {task["column"].name}
+              <span className="font-semibold">Column:</span> {task["column"].name}
             </p>
             <p>
               <span className="font-semibold">Element:</span>{" "}
@@ -121,50 +228,41 @@ export const ShowTaskPage = () => {
             </p>
             <p className="italic">Last update: {task.updatedAt.toString()}</p>
             <p>
-              <span className="font-semibold">Current Form:</span>{" "}
-              {task["schema"] ? JSON.stringify(task["schema"]) : "No form required"}
+              <span className="font-semibold">Created by (contributor id):</span> {task.createdById}
+            </p>
+            <p>
+              <span className="font-semibold">Deadline:</span>{" "}
+              {task.deadline ? task.deadline.toString() : "no deadline"}
+            </p>
+            <p>
+              <span className="font-semibold">Current metadata schema:</span>{" "}
+              {task["schema"] ? JSON.stringify(task["schema"]) : "no metadata schema assigned"}
             </p>
           </div>
-
-          {task["schema"] && currentAssignment && (
-            <div className="mt-4">
-              <button className="btn btn-outline btn-primary" onClick={() => handleToggle()}>
-                Provide Form Information
-              </button>
-              <Modal open={openAssignmentModal} size="w-11/12 max-w-5xl">
-                <div className="font-sans">
-                  {
-                    <JsonForm
-                      onSubmit={handleJsonFormSubmit}
-                      schema={getJsonSchema(task["schema"])}
-                      onError={handleJsonFormError}
-                    />
-                  }
-                </div>
-                <div className="modal-action">
-                  <button className="btn btn-success btn-outline" onClick={handleToggle}>
-                    Close Form
-                  </button>
-                </div>
-              </Modal>
+          {currentContributor.role == ContributorRole.PROJECT_MANAGER && (
+            <div>
+              <h3 className="mb-2">Assignment progress</h3>
+              <AssignmentProgress taskId={task.id} />
+              <div className="flex justify-start mt-4">
+                <Link
+                  className="btn"
+                  href={Routes.AssignmentsPage({ projectId: projectId!, taskId: task.id })}
+                >
+                  Assignments
+                </Link>
+              </div>
             </div>
           )}
-
-          {!task["schema"] && currentAssignment && (
-            <CompleteToggle currentAssignment={currentAssignment} refetch={refetch} />
-          )}
-
-          <div className="flex justify-end mt-4">
+          <div className="flex flex-row justify-end mt-4 space-x-4">
             <Link
-              className="btn btn-outline btn-success m-2"
+              className="btn"
               href={Routes.EditTaskPage({ projectId: projectId!, taskId: task.id })}
             >
-              Update Task
+              Update task
             </Link>
-
             <button
               type="button"
-              className="btn btn-outline btn-error m-2"
+              className="btn"
               onClick={async () => {
                 if (
                   window.confirm("The task will be permanently deleted. Are you sure to continue?")
@@ -177,12 +275,59 @@ export const ShowTaskPage = () => {
               Delete task
             </button>
           </div>
-          <Suspense fallback={<div>Loading...</div>}>
-            <div className="divider">
-              <h2>Assignments</h2>
+
+          <div className="divider">Complete your assignment</div>
+
+          {task["schema"] && currentAssignments && (
+            <div className="mt-4">
+              <button className="btn" onClick={() => handleToggle()}>
+                Provide metadata
+              </button>
+              <Modal open={openAssignmentModal} size="w-11/12 max-w-5xl">
+                <div className="font-sans">
+                  {
+                    <JsonForm
+                      onSubmit={handleJsonFormSubmit}
+                      schema={getJsonSchema(task["schema"])}
+                      onError={handleJsonFormError}
+                    />
+                  }
+                </div>
+                <div className="modal-action">
+                  <button className="btn btn-primary" onClick={handleToggle}>
+                    Save
+                  </button>
+                </div>
+              </Modal>
             </div>
-            <Table columns={assignmentTableColumns} data={assignments} />
-          </Suspense>
+          )}
+
+          {!task["schema"] &&
+            currentAssignments &&
+            completedByTeamContributor.completedAsIndividual && (
+              <div className="flex flex-col gap-2">
+                <CompleteToggle
+                  currentAssignment={completedByTeamContributor.currentIndividualAssigments}
+                  refetch={refetchAssignments}
+                  completedLabel="Completed as an individual"
+                  completedBy={currentContributor.id}
+                  completedAs={CompletedAs.INDIVIDUAL}
+                />
+              </div>
+            )}
+
+          {!task["schema"] && currentAssignments && completedByTeamContributor.completedAsTeam && (
+            <div className="flex flex-col gap-2">
+              {/* TODO Needs to send notificaton */}
+              <CompleteToggle
+                currentAssignment={completedByTeamContributor.currentTeamsAssigments}
+                refetch={refetchAssignments}
+                completedLabel="Completed as a Team"
+                completedBy={currentContributor.id}
+                completedAs={CompletedAs.TEAM}
+              />
+            </div>
+          )}
         </main>
       </Suspense>
     </Layout>

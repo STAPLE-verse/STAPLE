@@ -84,6 +84,7 @@ model Contributor {
   assignments Assignment[]
   role        ContributorRole @default(PROJECT_MANAGER)
   teams       Team[]
+  tasks       Task[]
 }
 
 model Project {
@@ -101,10 +102,18 @@ model Project {
   teams        Team[]
 }
 
+enum TaskStatus {
+  COMPLETED
+  NOT_COMPLETED
+}
+
 model Task {
   id              Int          @id @default(autoincrement())
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
+  createdBy       Contributor  @relation(fields: [createdById], references: [id])
+  createdById     Int
+  deadline        DateTime?
   name            String
   description     String?
   columnId        Int
@@ -116,6 +125,7 @@ model Task {
   element         Element?     @relation(fields: [elementId], references: [id])
   assignees       Assignment[]
   schema          Json?
+  status          TaskStatus   @default(NOT_COMPLETED)
 }
 
 enum AssignmentStatus {
@@ -123,16 +133,25 @@ enum AssignmentStatus {
   NOT_COMPLETED
 }
 
+enum CompletedAs {
+  INDIVIDUAL
+  TEAM
+}
+
 model Assignment {
   id            Int              @id @default(autoincrement())
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
   taskId        Int
-  contributorId Int
-  task          Task             @relation(fields: [taskId], references: [id])
-  contributor   Contributor      @relation(fields: [contributorId], references: [id])
+  contributorId Int?
+  teamId        Int?
+  task          Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  contributor   Contributor?     @relation(fields: [contributorId], references: [id], onDelete: Cascade)
+  team          Team?            @relation(fields: [teamId], references: [id], onDelete: Cascade)
   status        AssignmentStatus @default(NOT_COMPLETED)
   metadata      Json?
+  completedBy   Int?
+  completedAs   CompletedAs      @default(INDIVIDUAL)
 }
 
 model Team {
@@ -142,7 +161,8 @@ model Team {
   name         String
   contributors Contributor[]
   projectId    Int
-  project      Project       @relation(fields: [projectId], references: [id])
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assigments   Assignment[]
 }
 
 model Column {
