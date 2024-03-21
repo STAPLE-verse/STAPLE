@@ -1,55 +1,34 @@
 import { useMutation } from "@blitzjs/rpc"
-import { AssignmentStatus, CompletedAs, Assignment } from "db"
+import { AssignmentStatus } from "db"
 import { useEffect, useState } from "react"
 import updateAssignment from "src/assignments/mutations/updateAssignment"
 
-const CompleteToggle = ({
-  currentAssignment,
-  refetch,
-  completedLabel,
-  completedBy,
-  completedAs,
-}) => {
+const CompleteToggle = ({ currentAssignment, refetch }) => {
   const [updateAssignmentMutation] = useMutation(updateAssignment)
 
   // Handle assignment status
   const handleAssignmentStatusToggle = async () => {
-    // if (completedAs == CompletedAs.INDIVIDUAL) {
-    //   const newStatus =
-    //     currentAssignment?.status === AssignmentStatus.COMPLETED
-    //       ? AssignmentStatus.NOT_COMPLETED
-    //       : AssignmentStatus.COMPLETED
-    //   await updateAssignmentMutation({
-    //     id: currentAssignment!.id,
-    //     status: newStatus,
-    //     completedBy: newStatus ? completedBy : null,
-    //     completedAs: completedAs as CompletedAs,
-    //   })
-    // }
+    const newStatus =
+      currentAssignment?.status === AssignmentStatus.COMPLETED
+        ? AssignmentStatus.NOT_COMPLETED
+        : AssignmentStatus.COMPLETED
 
-    const newChecked = isChecked ? false : true
-    const newStatus = newChecked ? AssignmentStatus.COMPLETED : AssignmentStatus.NOT_COMPLETED
-    currentAssignment.forEach(async (assigment) => {
-      await updateAssignmentMutation({
-        id: assigment!.id,
-        status: newStatus,
-        completedBy: newChecked ? completedBy : null,
-        completedAs: completedAs as CompletedAs,
-      })
+    await updateAssignmentMutation({
+      id: currentAssignment!.id,
+      status: newStatus,
     })
 
-    setIsChecked(newChecked)
     await refetch()
   }
 
   const [isChecked, setIsChecked] = useState(
-    currentAssignment[0]!.status === AssignmentStatus.COMPLETED
+    currentAssignment!.status === AssignmentStatus.COMPLETED
   )
 
-  // useEffect(() => {
-  //   let assigment = currentAssignment[0]
-  //   setIsChecked(assigment!.status === AssignmentStatus.COMPLETED || false)
-  // }, [currentAssignment])
+  useEffect(() => {
+    // Update the local state when the assignment status changes in the database
+    setIsChecked(currentAssignment!.status === AssignmentStatus.COMPLETED || false)
+  }, [currentAssignment])
 
   return (
     <div>
@@ -61,10 +40,9 @@ const CompleteToggle = ({
               type="checkbox"
               className="toggle"
               checked={isChecked}
-              // onClick={handleAssignmentStatusToggle}
               onChange={handleAssignmentStatusToggle}
             />
-            <span className="ml-2">{completedLabel}</span>
+            <span className="ml-2">Completed</span>
           </label>
         </div>
       ) : (

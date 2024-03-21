@@ -14,7 +14,6 @@ import { TaskForm, FORM_ERROR } from "src/tasks/components/TaskForm"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import toast from "react-hot-toast"
-import getAssignments from "src/assignments/queries/getAssignments"
 
 export const EditTask = () => {
   const router = useRouter()
@@ -30,29 +29,14 @@ export const EditTask = () => {
     }
   )
   const [updateTaskMutation] = useMutation(updateTask)
-  const [assignments] = useQuery(getAssignments, {
-    where: { taskId: taskId },
-  })
-
-  const contributorsId = assignments
-    .map((assignment) => assignment.contributorId)
-    // assignment.contributorId is nullable thus we filter for initialValues
-    .filter((id): id is number => id !== null)
-
-  const teamsId = assignments
-    .map((assignment) => assignment.teamId)
-    // assignment.contributorId is nullable thus we filter for initialValues
-    .filter((id): id is number => id !== null)
 
   const sidebarItems = ProjectSidebarItems(projectId!, null)
 
+  // I have to make initial values explicit for the update to work why?
   const initialValues = {
     name: task.name,
     description: task.description!,
     columnId: task.columnId,
-    deadline: task.deadline,
-    contributorsId: contributorsId,
-    teamsId: teamsId,
   }
 
   return (
@@ -68,24 +52,21 @@ export const EditTask = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
             taskId={taskId}
-            projectId={projectId}
             submitText="Update Task"
             schema={FormTaskSchema}
             initialValues={initialValues}
             onSubmit={async (values) => {
-              const toastId = "update-task-id"
-              toast.dismiss(toastId)
-
-              toast.loading("Updating task...", { id: toastId })
-
               try {
-                // if (true) return
                 const updated = await updateTaskMutation({
                   ...values,
                   id: task.id,
                 })
 
-                toast.success("Task updated!", { id: toastId })
+                await toast.promise(Promise.resolve(updated), {
+                  loading: "Updating task...",
+                  success: "Task updated!",
+                  error: "Failed to update the task...",
+                })
 
                 await setQueryData(updated)
                 await router.push(
@@ -96,7 +77,6 @@ export const EditTask = () => {
                 )
               } catch (error: any) {
                 console.error(error)
-                toast.error("Failed to update the task...", { id: toastId })
                 return {
                   [FORM_ERROR]: error.toString(),
                 }
@@ -105,7 +85,7 @@ export const EditTask = () => {
           />
 
           <Link
-            className="btn self-end mt-4 btn-outline btn-error"
+            className="btn self-end mt-4"
             href={Routes.ShowTaskPage({ projectId: projectId!, taskId: taskId! })}
           >
             Cancel

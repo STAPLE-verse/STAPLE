@@ -9,7 +9,6 @@ const GetTeam = z.object({
   include: z
     .object({
       contributors: z.boolean().optional(),
-      assigments: z.boolean().optional(),
     })
     .optional(),
 })

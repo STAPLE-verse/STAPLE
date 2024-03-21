@@ -6,7 +6,9 @@ const JsonSchema2 = `
   "type": "object",
   "required": [
     "givenName",
-    "familyName"
+    "familyName",
+    "email",
+    "identifier"
   ],
   "properties": {
     "givenName": {
