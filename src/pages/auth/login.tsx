@@ -16,7 +16,7 @@ const LoginPage: BlitzPage = () => {
           onSuccess={(_user) => {
             const next = router.query.next
               ? decodeURIComponent(router.query.next as string)
-              : "/projects"
+              : "/main"
             return router.push(next)
           }}
         />

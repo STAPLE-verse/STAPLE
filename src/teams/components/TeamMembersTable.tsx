@@ -14,7 +14,7 @@ const columnHelper = createColumnHelper<TeamOption>()
 type Props = {
   onChange?: (selected: any) => void
   teamOptions: TeamOption[]
-  showCheckbox: true
+  showCheckbox: boolean
 }
 
 //TODO refactor this table to core components since is very similar to assigment and others
