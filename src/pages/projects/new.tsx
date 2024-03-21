@@ -15,7 +15,7 @@ const NewProjectPage = () => {
   const sidebarItems = HomeSidebarItems("Projects")
 
   return (
-    <Layout title={"Create New Project"} sidebarItems={sidebarItems} sidebarTitle="Home">
+    <Layout title={"Create New Project"} sidebarItems={sidebarItems}>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2">Create New Project</h1>
         <Suspense fallback={<div>Loading...</div>}>

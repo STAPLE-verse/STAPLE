@@ -13,7 +13,6 @@ export type AssignmentWithRelations = Prisma.AssignmentGetPayload<{
         user: true
       }
     }
-    // team: true
   }
 }>
 
@@ -53,20 +52,11 @@ const AssignmentMetadataModal = ({ metadata }) => {
   )
 }
 
-function getName(info) {
-  if (info.contributorId != null && info.hasOwnProperty("contributor")) {
-    let c = `${info.contributor.user.firstName} ${info.contributor.user.lastName}`
-    return c
-  }
-  return "null"
-}
-
 // ColumnDefs
 export const assignmentTableColumns: ColumnDef<AssignmentWithRelations>[] = [
   columnHelper.accessor("contributor.user", {
     cell: (info) => (
-      // <span>{`${info.row.original.contributor.user.firstName} ${info.row.original.contributor.user.lastName}`}</span>
-      <span>{`${getName(info.row.original)}`}</span>
+      <span>{`${info.row.original.contributor.user.firstName} ${info.row.original.contributor.user.lastName}`}</span>
     ),
     header: "Contributor Name",
   }),
