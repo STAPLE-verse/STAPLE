@@ -27,13 +27,6 @@ import toast from "react-hot-toast"
 import getAssignmentProgress from "src/assignments/queries/getAssignmentProgress"
 import getAssignments from "src/assignments/queries/getAssignments"
 
-type CompletedByTeamContributor = {
-  completedAsIndividual: boolean
-  completedAsTeam: boolean
-  currentIndividualAssigments?: any[] | null
-  currentTeamsAssigments?: any[] | null
-}
-
 export const ShowTaskPage = () => {
   // Setup
   const router = useRouter()
@@ -59,47 +52,34 @@ export const ShowTaskPage = () => {
     { taskId: taskId! }
   )
 
-  // TODO: this needs to be deleted after currentAssignments (plural) are implemented; refetch needs to be added to currentAssignments
-  // const [currentAssignment, { refetch: refetchCurrentAssignment }] = useQuery(getAssignment, {
-  //   where: { taskId: taskId },
-  // })
-
   // Get assignments for the task
-  // If someone is assigned as an individual AND as a Team member it is possible to have two assignments for the same person for the task
+  // If someone is assigned as an individual AND as a Team member it is possible to have multiple assignments for the same person for the task
   const [currentAssignments, { refetch: refetchCurrentAssignments }] = useQuery(getAssignments, {
-    where: { taskId: taskId },
+    where: {
+      taskId: taskId,
+      // Get only assignments for the current contributor
+      OR: [
+        { contributorId: currentContributor.id }, // Direct assignments to the contributor
+        { team: { contributors: { some: { id: currentContributor.id } } } }, // Assignments to teams that include the contributor
+      ],
+    },
     include: {
-      task: true,
-      team: {
-        select: {
-          contributors: { where: { id: currentContributor.id }, select: { id: true } },
-        },
-      },
+      contributor: true,
+      team: true,
+    },
+    // Keeping the ordering so that completeToggle button order does not change on refetch
+    orderBy: {
+      id: "asc",
     },
   })
 
-  let completedByTeamContributor: CompletedByTeamContributor = (() => {
-    let temp: CompletedByTeamContributor = { completedAsIndividual: false, completedAsTeam: false }
+  // Filter out individual assignments
+  const individualAssignments = currentAssignments.filter(
+    (assignment) => assignment.contributorId !== null
+  )
 
-    //only can mark as complete individual assigments
-    let assigment = currentAssignments.find(
-      (element) => element.contributorId != null && element.contributorId == currentContributor.id
-    )
-    //pass this to the toggle button as an array to be consistent with teams
-    temp.currentIndividualAssigments = [assigment]
-    temp.completedAsIndividual = assigment != undefined
-
-    //TODO: review team assiggments. Assumes that tasks can be assigned to several teams and that an individual
-    // can belong to multiple teams which share a task. i.e., user 0 is in team A and B. and task 0 is assigned to A and B.
-    // is this as it should work?
-    let teamAssigments = currentAssignments.filter((element) => element.teamId != null)
-    temp.completedAsTeam = teamAssigments.length > 0
-    temp.currentTeamsAssigments = teamAssigments
-
-    return temp
-  })()
-
-  // console.log(completedByTeamContributor)
+  // Filter out team assignments
+  const teamAssignments = currentAssignments.filter((assignment) => assignment.teamId !== null)
 
   const refetchAssignments = async () => {
     // await refetchCurrentAssignment()
@@ -116,7 +96,7 @@ export const ShowTaskPage = () => {
   const handleJsonFormSubmit = async (data) => {
     if (currentAssignments) {
       // Users can overwrite their responses
-      //user can have multiple assigments
+      // user can have multiple assigments
       currentAssignments.forEach(async (currentAssignment) => {
         await updateAssignmentMutation({
           id: currentAssignment.id,
@@ -302,30 +282,30 @@ export const ShowTaskPage = () => {
             </div>
           )}
 
-          {!task["schema"] &&
-            currentAssignments &&
-            completedByTeamContributor.completedAsIndividual && (
-              <div className="flex flex-col gap-2">
-                <CompleteToggle
-                  currentAssignment={completedByTeamContributor.currentIndividualAssigments}
-                  refetch={refetchAssignments}
-                  completedLabel="Completed as an individual"
-                  completedBy={currentContributor.id}
-                  completedAs={CompletedAs.INDIVIDUAL}
-                />
-              </div>
-            )}
-
-          {!task["schema"] && currentAssignments && completedByTeamContributor.completedAsTeam && (
+          {!task["schema"] && currentAssignments && individualAssignments.length > 0 && (
             <div className="flex flex-col gap-2">
-              {/* TODO Needs to send notificaton */}
               <CompleteToggle
-                currentAssignment={completedByTeamContributor.currentTeamsAssigments}
+                currentAssignment={individualAssignments[0]}
                 refetch={refetchAssignments}
-                completedLabel="Completed as a Team"
+                completedLabel="Completed as an individual"
                 completedBy={currentContributor.id}
-                completedAs={CompletedAs.TEAM}
+                completedAs={CompletedAs.INDIVIDUAL}
               />
+            </div>
+          )}
+
+          {!task["schema"] && currentAssignments && teamAssignments.length > 0 && (
+            <div className="flex flex-col gap-2">
+              {teamAssignments.map((teamAssignment) => (
+                <CompleteToggle
+                  key={teamAssignment.id}
+                  currentAssignment={teamAssignment}
+                  refetch={refetchAssignments}
+                  completedLabel={`Completed as ${teamAssignment.team.name} Team`}
+                  completedBy={currentContributor.id}
+                  completedAs={CompletedAs.TEAM}
+                />
+              ))}
             </div>
           )}
         </main>
