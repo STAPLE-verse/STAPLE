@@ -1,168 +1,13 @@
-// imports
-import {
-  WidgetProps,
-  RegistryWidgetsType,
-  RegistryFieldsType,
-  RegistryTemplatesType,
-  TitleFieldProps,
-  FieldTemplateProps,
-  FormContextType,
-  TitleFieldProps,
-  RJSFSchema,
-  StrictRJSFSchema,
-  DescriptionFieldProps,
-  getTemplate,
-  getUiOptions,
-  getSubmitButtonOptions,
-  SubmitButtonProps,
-} from "@rjsf/utils"
-
+import { WidgetProps, RegistryWidgetsType, TitleFieldProps, FieldTemplateProps } from "@rjsf/utils"
 import { ThemeProps } from "@rjsf/core"
 
-// required information symbol
-const REQUIRED_FIELD_SYMBOL = " *"
-
-// required label information
-type LabelProps = {
-  /** The label for the field */
-  label?: string
-  /** A boolean value stating if the field is required */
-  required?: boolean
-  /** The id of the input field being labeled */
-  id?: string
-}
-
-function Label(props: LabelProps) {
-  const { label, required, id } = props
-  if (!label) {
-    return null
-  }
-  return (
-    <label className="text-lg font-bold" htmlFor={id}>
-      {label}
-      {required && <span className="font-red italic">{REQUIRED_FIELD_SYMBOL}</span>}
-    </label>
-  )
-}
-
-// template updates
-
-// title field template the top template
-function MyTitleField<
-  T = any,
-  S extends StrictRJSFSchema = RJSFSchema,
-  F extends FormContextType = any
->(props: TitleFieldProps<T, S, F>) {
-  const { id, title, required } = props
-  return (
-    <legend id={id} className="text-xl font-bold">
-      {title}
-      {required && <span className="required">{REQUIRED_FIELD_SYMBOL}</span>}
-    </legend>
-  )
-}
-
-// description field template
-function MyDescriptionField<
-  T = any,
-  S extends StrictRJSFSchema = RJSFSchema,
-  F extends FormContextType = any
->(props: DescriptionFieldProps<T, S, F>) {
-  const { id, description } = props
-  if (!description) {
-    return null
-  }
-  if (typeof description === "string") {
-    return (
-      <p id={id} className="text-md italic">
-        {description}
-      </p>
-    )
-  } else {
-    return (
-      <div id={id} className="text-md italic">
-        {description}
-      </div>
-    )
-  }
-}
-
-// field template
-function MyFieldTemplate<
-  T = any,
-  S extends StrictRJSFSchema = RJSFSchema,
-  F extends FormContextType = any
->(props: FieldTemplateProps<T, S, F>) {
-  const {
-    id,
-    label,
-    children,
-    errors,
-    help,
-    description,
-    hidden,
-    required,
-    displayLabel,
-    registry,
-    uiSchema,
-  } = props
-  const uiOptions = getUiOptions(uiSchema)
-  const WrapIfAdditionalTemplate = getTemplate<"WrapIfAdditionalTemplate", T, S, F>(
-    "WrapIfAdditionalTemplate",
-    registry,
-    uiOptions
-  )
-  if (hidden) {
-    return <div className="hidden">{children}</div>
-  }
-  return (
-    <WrapIfAdditionalTemplate {...props}>
-      {displayLabel && <Label label={label} required={required} id={id} />}
-      {displayLabel && description ? description : null}
-      {children}
-      {errors}
-      {help}
-    </WrapIfAdditionalTemplate>
-  )
-}
-
-// button templates
-function MySubmitButton<
-  T = any,
-  S extends StrictRJSFSchema = RJSFSchema,
-  F extends FormContextType = any
->({ uiSchema }: SubmitButtonProps<T, S, F>) {
-  const {
-    submitText,
-    norender,
-    props: submitButtonProps = {},
-  } = getSubmitButtonOptions<T, S, F>(uiSchema)
-  if (norender) {
-    return null
-  }
-  return (
-    <div>
-      <button
-        type="submit"
-        {...submitButtonProps}
-        className={`btn btn-primary ${submitButtonProps.className || ""}`}
-      >
-        {submitText}
-      </button>
-    </div>
-  )
-}
-
-// here's the custom widgets
-
-// text input field
-const MyTextWidget = (props: WidgetProps) => {
+const MyCustomWidget = (props: WidgetProps) => {
   return (
     <div className="flex">
       <input
         type="text"
         style={{ fontSize: "1rem" }}
-        className="input input-primary input-bordered w-full max-w-sm m-2"
+        className="input input-bordered m-2 w-full max-w-xs font-serif"
         value={props.value || ""}
         required={props.required}
         onChange={(event) => props.onChange(event.target.value)}
@@ -171,24 +16,40 @@ const MyTextWidget = (props: WidgetProps) => {
   )
 }
 
-// create Registry information
-
-// templates
-const myTemplates: RegistryTemplatesType = {
-  TitleFieldTemplate: MyTitleField,
-  DescriptionFieldTemplate: MyDescriptionField,
-  FieldTemplate: MyFieldTemplate,
-  ButtonTemplates: MySubmitButton,
+const MyTitleFieldTemplate = (props: TitleFieldProps) => {
+  const { id, required, title } = props
+  return (
+    <header id={id}>
+      {title}
+      {required && <mark>*</mark>}
+    </header>
+  )
 }
 
-// templates
+function MyFieldTemplate(props: FieldTemplateProps) {
+  const { id, classNames, style, label, help, required, description, errors, children } = props
+  return (
+    <div className={classNames} style={style}>
+      <label htmlFor={id}>
+        {label}
+        {required ? "*" : null}
+      </label>
+      {description}
+      {children}
+      {errors}
+      {help}
+    </div>
+  )
+}
+
 const myWidgets: RegistryWidgetsType = {
-  TextWidget: MyTextWidget,
+  TextWidget: MyCustomWidget,
 }
 
-// create the overall theme to use on the other page
 const DaisyTheme: ThemeProps = {
   widgets: myWidgets,
-  templates: myTemplates,
+  // templates: {
+  //   FieldTemplate: MyFieldTemplate,
+  // },
 }
 export default DaisyTheme

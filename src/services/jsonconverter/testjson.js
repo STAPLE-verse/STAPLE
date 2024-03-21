@@ -1,7 +1,7 @@
-const JsonSchema1 = `
+const testJson = `
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Contributor Information Long",
+  "title": "Contributor Information",
   "description": "Please enter your information to document your contributions. This information will be used to share who contributed to a project.",
   "type": "object",
   "required": [
@@ -39,4 +39,4 @@ const JsonSchema1 = `
 }
 `
 
-export default JsonSchema1
+export default testJson

@@ -45,23 +45,19 @@ export function Form<S extends z.ZodType<any, any>>({
             </div>
           )}
 
-          <div className="flex flex-row justify-end mt-auto space-x-4">
-            {submitText && (
-              <button
-                className="btn btn-outline btn-success mt-4"
-                type="submit"
-                disabled={submitting}
-              >
-                {submitText}
-              </button>
-            )}
+          {submitText && (
+            <button className="btn mt-4" type="submit" disabled={submitting}>
+              {submitText}
+            </button>
+          )}
 
-            {cancelText && (
-              <button className="btn btn-outline btn-error mt-4" onClick={onCancel}>
+          {cancelText && (
+            <div className="flex flex-row justify-end mt-auto">
+              <button className="btn mt-4" onClick={onCancel}>
                 {cancelText}
               </button>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* <style global jsx>{`
             .form > * + * {
