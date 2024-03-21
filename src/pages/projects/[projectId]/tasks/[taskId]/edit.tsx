@@ -105,7 +105,7 @@ export const EditTask = () => {
           />
 
           <Link
-            className="btn self-end mt-4"
+            className="btn self-end mt-4 btn-outline btn-error"
             href={Routes.ShowTaskPage({ projectId: projectId!, taskId: taskId! })}
           >
             Cancel
