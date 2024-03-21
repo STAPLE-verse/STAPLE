@@ -2,40 +2,42 @@ import React, { useState } from "react"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import Table from "src/core/components/Table"
 
-export type ContributorOption = {
-  userName: string
-  firstName: string
-  lastName: string
+export type TeamOption = {
+  name: string
   id: number
   checked: boolean
   assigmentId?: number
 }
 
-const columnHelper = createColumnHelper<ContributorOption>()
+const columnHelper = createColumnHelper<TeamOption>()
 
 type Props = {
   onChange?: (selected: any) => void
-  contributorOptions: ContributorOption[]
+  teamOptions: TeamOption[]
 }
 
-const AssignContributors = ({ onChange, contributorOptions }: Props) => {
-  const [contributorChecked, setcontributorChecked] = useState(contributorOptions)
+const AssignTeams = ({ onChange, teamOptions }: Props) => {
+  const [teamChecked, setTeamChecked] = useState(teamOptions)
 
   const handleOnChange = (element) => {
-    const updatedCheckedState = contributorChecked.map((item, index) => {
-      let t = item
-      if (item.id === element.id) {
-        t.checked = !t.checked
-      }
-      return t
-    })
+    const updatedCheckedState =
+      teamChecked == undefined
+        ? []
+        : teamChecked.map((item, index) => {
+            let t = item
+            if (item.id === element.id) {
+              t.checked = !t.checked
+            }
+            return t
+          })
+
     if (onChange != undefined) {
       onChange(updatedCheckedState)
     }
   }
 
   // ColumnDefs
-  const contributorTableColumns: ColumnDef<ContributorOption>[] = [
+  const contributorTableColumns: ColumnDef<TeamOption>[] = [
     columnHelper.accessor("id", {
       cell: (info) => (
         <span>
@@ -58,18 +60,18 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
       header: "",
     }),
 
-    columnHelper.accessor("userName", {
-      cell: (info) => <span>{`${info.row.original.userName}`}</span>,
-      header: "Contributor UserName",
+    columnHelper.accessor("name", {
+      cell: (info) => <span>{`${info.row.original.name}`}</span>,
+      header: "Team name",
     }),
   ]
 
   return (
     <div>
-      <div className="flex mt-2 font-bold">Assign Contributors to Task</div>
-      <Table columns={contributorTableColumns} data={contributorChecked}></Table>
+      <div className="flex mt-2 font-bold">Assign Team to task</div>
+      <Table columns={contributorTableColumns} data={teamChecked}></Table>
     </div>
   )
 }
 
-export default AssignContributors
+export default AssignTeams

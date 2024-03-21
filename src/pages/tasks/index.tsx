@@ -8,8 +8,6 @@ import getTasks from "src/tasks/queries/getTasks"
 import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import Table from "src/core/components/Table"
-import { createColumnHelper } from "@tanstack/react-table"
-import { Task } from "db"
 import { taskTableColumns } from "src/tasks/components/TaskTable"
 
 const ITEMS_PER_PAGE = 100
@@ -18,8 +16,27 @@ export const AllTasksList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const currentUser = useCurrentUser()
+  // const [{ tasks, hasMore }] = usePaginatedQuery(getTasks, {
+  //   where: { assignees: { some: { contributor: { user: { id: currentUser?.id } } } } },
+  //   orderBy: { id: "asc" },
+  //   skip: ITEMS_PER_PAGE * page,
+  //   take: ITEMS_PER_PAGE,
+  // })
+
   const [{ tasks, hasMore }] = usePaginatedQuery(getTasks, {
-    where: { assignees: { some: { contributor: { user: { id: currentUser?.id } } } } },
+    where: {
+      OR: [
+        { assignees: { some: { contributor: { user: { id: currentUser?.id } }, teamId: null } } },
+        {
+          assignees: {
+            some: {
+              team: { contributors: { some: { id: currentUser?.id } } },
+              contributorId: null,
+            },
+          },
+        },
+      ],
+    },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
