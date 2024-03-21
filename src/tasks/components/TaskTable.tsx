@@ -29,7 +29,7 @@ export const taskTableColumns = [
     header: "",
     cell: (info) => (
       <Link
-        className="btn"
+        className="btn btn-primary"
         href={Routes.ShowTaskPage({
           projectId: info.row.original.projectId,
           taskId: info.getValue(),

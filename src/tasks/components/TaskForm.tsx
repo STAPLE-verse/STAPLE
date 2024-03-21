@@ -100,23 +100,29 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   return (
     <Form<S> {...formProps} encType="multipart/form-data">
       {/* Name */}
-      <LabeledTextField name="name" label="Name" placeholder="Name" type="text" />
+      <LabeledTextField
+        className="input input-primary input-bordered w-full max-w-sm m-2"
+        name="name"
+        label="Task Name:"
+        placeholder="Add Task Name"
+        type="text"
+      />
 
       {/* Column */}
       <LabelSelectField
-        className="select select-bordered w-full max-w-xs mt-2"
+        className="select select-bordered select-primary w-full max-w-sm m-2"
         name="columnId"
-        label="Status"
+        label="Current Status:"
         options={columns}
         optionText="name"
         optionValue="id"
       />
-
       {/* Description */}
-      <LabeledTextField
+     <LabeledTextField
+        className="textarea textarea-primary textarea-bordered w-full resize max-w-sm m-2"
         name="description"
-        label="Description"
-        placeholder="Description"
+        label="Task Description (Optional):"
+        placeholder="Add Description"
         type="text"
       />
 
@@ -154,9 +160,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Elements */}
       <LabelSelectField
-        className="select select-bordered w-full max-w-xs mt-2"
+        className="select select-bordered select-primary w-full max-w-sm m-2"
         name="elementId"
-        label="Parent element"
+        label="Assign to Element (Optional):"
         options={elements}
         optionText="name"
         optionValue="id"
@@ -165,7 +171,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       {/* Contributors */}
       {/* Button */}
       <div className="mt-4">
-        <button type="button" className="btn" onClick={() => handleToggleContributorsModal()}>
+        <button type="button" className="btn btn-outline btn-primary w-full max-w-sm" 
+          onClick={() => handleToggleContributorsModal()}>
           Assign contributors
         </button>
         <FormSpy subscription={{ errors: true }}>
@@ -186,7 +193,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
             <div className="modal-action flex justify-end mt-4">
               <button
                 type="button"
-                className="btn btn-primary"
+                /* button for popups */
+                className="btn btn-outline btn-primary"
                 onClick={handleToggleContributorsModal}
               >
                 Close
@@ -225,17 +233,26 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         </Modal>
       </div>
 
-      <div className="mt-4">
-        <button type="button" className="btn" onClick={() => handleToggleSchemaUpload()}>
-          Change Current Schema
+      <div className="m-2">
+        <button
+          type="button"
+          className="btn btn-outline btn-primary w-full max-w-sm"
+          onClick={() => handleToggleSchemaUpload()}
+        >
+          Assign Required Information
         </button>
 
         {/* Schema */}
         <Modal open={openSchemaModal} size="w-11/12 max-w-1xl">
           <div className="">
             <div>
-              <label>Choose a schema: </label>
-              <Field name="schema" component="select">
+              <label className="text-lg font-bold">Choose a Form Template: </label>
+              <br />
+              <Field
+                name="schema"
+                component="select"
+                className="select select-primary w-full max-w-xs"
+              >
                 {schemas &&
                   schemas.map((schema) => (
                     <option key={schema.name} value={schema.name}>
@@ -246,8 +263,12 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
             </div>
 
             <div className="mt-4">
-              <label>Or upload a new one: </label>
-              <Field name="files">
+              <label className="text-lg font-bold">Upload A Form Template: </label>
+              <br />
+              <Field
+                name="files"
+                className="file-input file-input-bordered file-input-primary w-full max-w-xs"
+              >
                 {({ input: { value, onChange, ...input } }) => {
                   return (
                     <div>
@@ -266,7 +287,11 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
               </Field>
             </div>
             <div className="modal-action">
-              <button type="button" className="btn btn-primary" onClick={handleToggleSchemaUpload}>
+              <button
+                type="button"
+                className="btn btn-outline btn-primary"
+                onClick={handleToggleSchemaUpload}
+              >
                 Close
               </button>
             </div>
