@@ -4,6 +4,7 @@ import { withTheme, ThemeProps } from "@rjsf/core"
 import DaisyTheme from "src/services/jsonconverter/DaisyTheme"
 
 const ThemedForm = withTheme(DaisyTheme)
+
 const JsonForm = (props) => {
   const { schema, ...rest } = props
 

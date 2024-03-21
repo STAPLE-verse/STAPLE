@@ -74,8 +74,11 @@ export const TasksList = () => {
       {/* Create new task btn */}
 
       <p>
-        <Link className="btn mt-4" href={Routes.NewTaskPage({ projectId: projectId! })}>
-          Create Task
+        <Link
+          className="btn mt-4 btn-outline btn-primary"
+          href={Routes.NewTaskPage({ projectId: projectId! })}
+        >
+          Create New Task
         </Link>
       </p>
 

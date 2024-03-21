@@ -3,9 +3,6 @@ import { AuthenticationError, AuthorizationError } from "blitz"
 import React, { Suspense } from "react"
 import { withBlitz } from "src/blitz-client"
 import "src/styles/globals.css"
-
-import "src/core/styles/index.css"
-
 import "src/core/styles/index.css"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {

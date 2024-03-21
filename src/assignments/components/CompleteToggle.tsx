@@ -29,7 +29,7 @@ const CompleteToggle = ({
   }
 
   const [isChecked, setIsChecked] = useState(
-    currentAssignment!.status === AssignmentStatus.COMPLETED
+    currentAssignment[0]!.status === AssignmentStatus.COMPLETED
   )
 
   return (
@@ -42,6 +42,7 @@ const CompleteToggle = ({
               type="checkbox"
               className="toggle"
               checked={isChecked}
+              // onClick={handleAssignmentStatusToggle}
               onChange={handleAssignmentStatusToggle}
             />
             <span className="ml-2">{completedLabel}</span>

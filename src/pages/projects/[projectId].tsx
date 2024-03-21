@@ -24,7 +24,18 @@ export const ShowProjectPage = () => {
           <h1>{project.name}</h1>
           <div className="flex flex-col gap-4">
             <p className="">{project.description}</p>
-            <p className="italic">Last update: {project.updatedAt.toString()}</p>
+            <p className="italic">
+              Last update:{" "}
+              {project.updatedAt.toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false, // Use 24-hour format
+              })}
+            </p>
           </div>
           <div className="divider mt-4 mb-4"></div>
           <ProjectDashboard />

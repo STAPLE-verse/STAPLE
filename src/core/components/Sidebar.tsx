@@ -22,12 +22,17 @@ export default function Sidebar({ children, title }: SidebarProps) {
   return (
     <>
       <aside className="h-screen">
-        <nav className="h-full flex flex-col bg-white border-r shadow-sm">
+        <nav className="h-full flex flex-col border-r shadow-sm">
           <div className="p-4 pb-2 flex justify-between items-center">
             {/* Add your logo component here */}
-            <h2 className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`}>
-              {title ? title : "Menu"}
-            </h2>
+            <h3
+              className={`overflow-hidden transition-all ${
+                expanded ? "w-46" : "w-0"
+              } max-w-[15ch] whitespace-nowrap overflow-ellipsis`}
+              title={title}
+            >
+              {title ? title : "Home"}
+            </h3>
             <button
               onClick={() => setExpanded((curr) => !curr)}
               className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
