@@ -1,5 +1,10 @@
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table"
 
+type ColumnSort = {
+  id: string
+  desc: boolean
+}
+
 type TableProps<TData> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<TData, any>[]
