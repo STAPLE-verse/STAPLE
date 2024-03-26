@@ -3,14 +3,19 @@ import {
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table"
 import React from "react"
+
+import TextFilter from "src/core/components/TextFilter"
 
 type TableProps<TData> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<TData, any>[]
   data: TData[]
+  filters?: {} //pass object with the type of  filter for a given colunm based on colunm id
   enableSorting?: boolean
   classNames?: {
     table?: string
@@ -31,6 +36,9 @@ const Table = <TData,>({ columns, data, classNames, enableSorting = true }: Tabl
     enableSorting: enableSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+
     state: {
       sorting: sorting,
     },
@@ -46,17 +54,25 @@ const Table = <TData,>({ columns, data, classNames, enableSorting = true }: Tabl
               {headerGroup.headers.map((header) => (
                 <th key={header.id} className={classNames?.th}>
                   {header.isPlaceholder ? null : (
-                    <div
-                      className={header.column.getCanSort() ? "cursor-pointer select-none" : ""}
-                      onClick={header.column.getToggleSortingHandler()}
-                    >
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                      {/* TODO change this icon */}
-                      {{
-                        asc: " 🔼",
-                        desc: " 🔽",
-                      }[header.column.getIsSorted() as string] ?? null}
-                    </div>
+                    <>
+                      <div
+                        className={header.column.getCanSort() ? "cursor-pointer select-none" : ""}
+                        onClick={header.column.getToggleSortingHandler()}
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {/* TODO change this icon */}
+                        {{
+                          asc: " 🔼",
+                          desc: " 🔽",
+                        }[header.column.getIsSorted() as string] ?? null}
+                      </div>
+                      {header.column.getCanFilter() ? (
+                        <div>
+                          {/* get filter based on colunm id or type */}
+                          <TextFilter column={header.column} table={table} />
+                        </div>
+                      ) : null}
+                    </>
                   )}
                 </th>
               ))}
