@@ -9,6 +9,8 @@ import {
 } from "@tanstack/react-table"
 import React from "react"
 
+import { ChevronUpIcon, ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline"
+
 import TextFilter from "src/core/components/TextFilter"
 
 type TableProps<TData> = {
@@ -17,6 +19,7 @@ type TableProps<TData> = {
   data: TData[]
   filters?: {} //pass object with the type of  filter for a given colunm based on colunm id
   enableSorting?: boolean
+  enableFilters?: boolean
   classNames?: {
     table?: string
     thead?: string
@@ -27,13 +30,23 @@ type TableProps<TData> = {
   }
 }
 
-const Table = <TData,>({ columns, data, classNames, enableSorting = true }: TableProps<TData>) => {
+// asc: " 🔼",
+// desc: " 🔽",
+
+const Table = <TData,>({
+  columns,
+  data,
+  classNames,
+  enableSorting = true,
+  enableFilters = true,
+}: TableProps<TData>) => {
   const [sorting, setSorting] = React.useState([])
 
   const table = useReactTable({
     data,
     columns,
     enableSorting: enableSorting,
+    enableFilters: enableFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -56,15 +69,22 @@ const Table = <TData,>({ columns, data, classNames, enableSorting = true }: Tabl
                   {header.isPlaceholder ? null : (
                     <>
                       <div
-                        className={header.column.getCanSort() ? "cursor-pointer select-none" : ""}
+                        className={
+                          header.column.getCanSort()
+                            ? "cursor-pointer select-none flex flex-row gap-2"
+                            : "flex flex-row gap-2"
+                        }
                         onClick={header.column.getToggleSortingHandler()}
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
                         {/* TODO change this icon */}
                         {{
-                          asc: " 🔼",
-                          desc: " 🔽",
+                          asc: <ChevronUpIcon className="w-5 h-5" />,
+                          desc: <ChevronDownIcon className="w-5 h-5" />,
                         }[header.column.getIsSorted() as string] ?? null}
+                        {header.column.getCanSort() && !header.column.getIsSorted() ? (
+                          <ChevronUpDownIcon className="w-5 h-5" />
+                        ) : null}
                       </div>
                       {header.column.getCanFilter() ? (
                         <div>

@@ -242,6 +242,7 @@ const ProjectDashboard = () => {
               <p className="italic p-2">You have no tasks for today. Hurray!</p>
             ) : (
               <Table
+                enableFilters={false}
                 columns={tasksColumns}
                 data={todayTasks}
                 classNames={{
@@ -257,6 +258,7 @@ const ProjectDashboard = () => {
               <p className="italic p-2">You have no tasks for tomorrow. Hurray!</p>
             ) : (
               <Table
+                enableFilters={false}
                 columns={tasksColumns}
                 data={tomorrowTasks}
                 classNames={{
@@ -276,6 +278,7 @@ const ProjectDashboard = () => {
           <div className="flex flex-col rounded bg-base-200 p-4">
             <h4>Most prolific contributors</h4>
             <Table
+              enableFilters={false}
               columns={prolificContributorsColumns}
               data={contributors}
               classNames={{
@@ -323,6 +326,7 @@ const ProjectDashboard = () => {
               <p className="italic p-2">All contributors are on the right track!</p>
             ) : (
               <Table
+                enableFilters={false}
                 columns={pastDueTasksColumns}
                 data={pastDueTasks}
                 classNames={{

@@ -24,6 +24,8 @@ export const contributorTableColumns = [
   columnHelper.accessor("id", {
     id: "view",
     header: "",
+    enableColumnFilter: false,
+    enableSorting: false,
     cell: (info) => (
       <div className="justify-end">
         <Link
