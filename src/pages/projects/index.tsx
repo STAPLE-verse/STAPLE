@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
@@ -8,22 +8,109 @@ import Layout from "src/core/layouts/Layout"
 import getProjects from "src/projects/queries/getProjects"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
+import { e } from "vitest/dist/index-9f5bc072"
 
 const ITEMS_PER_PAGE = 7
 
-export const ProjectsList = () => {
+export const ProjectsList = ({ searchTerm }) => {
   const router = useRouter()
   const currentUser = useCurrentUser()
   const page = Number(router.query.page) || 0
   // Only list projects that the User is a Contributor on
-  const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
-    where: {
-      contributors: {
-        some: {
-          userId: currentUser?.id,
+  // const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
+  //   where: {
+  //     contributors: {
+  //       some: {
+  //         userId: currentUser?.id,
+  //       },
+  //     },
+  //   },
+  //   orderBy: { id: "asc" },
+  //   skip: ITEMS_PER_PAGE * page,
+  //   take: ITEMS_PER_PAGE,
+  // })
+
+  // let temp = searchTerm == "" ? undefined : `${searchTerm}`
+  // console.log(temp)
+  let where
+  // if (searchTerm == undefined) {
+  //   where = {
+  //     AND: [
+  //       {
+  //         contributors: {
+  //           some: {
+  //             userId: currentUser?.id,
+  //           },
+  //         },
+  //       },
+  //     ],
+  //   }
+  // } else {
+  //   where = {
+  //     AND: [
+  //       {
+  //         contributors: {
+  //           some: {
+  //             userId: currentUser?.id,
+  //           },
+  //         },
+  //       },
+  //       {
+  //         name: {
+  //           contains: `${searchTerm}`,
+  //           mode: "insensitive",
+  //         },
+  //       },
+  //     ],
+  //   }
+  // }
+
+  where = {
+    AND: [
+      {
+        contributors: {
+          some: {
+            userId: currentUser?.id,
+          },
         },
       },
-    },
+      {
+        OR: [
+          {
+            name: {
+              contains: `${searchTerm}`,
+              mode: "insensitive",
+            },
+          },
+          {
+            description: {
+              contains: `${searchTerm}`,
+              mode: "insensitive",
+            },
+          },
+        ],
+      },
+    ],
+  }
+
+  // OR:[
+  //   {
+  //     name: {
+  //       contains: `${searchTerm}`,
+  //       mode: "insensitive",
+  //     },
+  //   },
+  //   {
+  //     description: {
+  //       contains: `${searchTerm}`,
+  //       mode: "insensitive",
+  //     },
+  //   },
+
+  // ]
+
+  const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
+    where: where,
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -70,6 +157,17 @@ export const ProjectsList = () => {
 const ProjectsPage = () => {
   const sidebarItems = HomeSidebarItems("Projects")
 
+  const [searchTerm, setSearchTerm] = useState("")
+  const [inputTextTerm, setInputTextTerm] = useState("")
+
+  const handleSearch = () => {
+    setSearchTerm(inputTextTerm)
+  }
+
+  const handleInputSearch = (event) => {
+    setInputTextTerm(event.target.value)
+  }
+
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
       <Head>
@@ -91,10 +189,44 @@ const ProjectsPage = () => {
             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
           </svg>
         </Link>
+        {/* refactor after testing */}
+        <div className="flex flex-row my-4 mx-auto w-full max-w-5xl   justify-between rounded-md shadow-sm">
+          <input
+            className="w-full h-10"
+            type="search"
+            placeholder=" Search project"
+            value={inputTextTerm}
+            onChange={handleInputSearch}
+          ></input>
+          <button
+            className=""
+            type="button"
+            id="button-addon1"
+            data-twe-ripple-init
+            data-twe-ripple-color="light"
+            onClick={handleSearch}
+          >
+            <span className="[&>svg]:h-5 [&>svg]:w-5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
 
         <div>
           <Suspense fallback={<div>Loading...</div>}>
-            <ProjectsList />
+            <ProjectsList searchTerm={searchTerm} />
           </Suspense>
         </div>
       </main>

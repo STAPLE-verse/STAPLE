@@ -27,6 +27,8 @@ export const taskTableColumns = [
   columnHelper.accessor("id", {
     id: "view",
     header: "",
+    enableColumnFilter: false,
+    enableSorting: false,
     cell: (info) => (
       <Link
         className="btn btn-primary"
