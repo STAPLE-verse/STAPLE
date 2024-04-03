@@ -12,6 +12,11 @@ import { getInitials } from "src/services/getInitials"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { PlusIcon } from "@heroicons/react/24/outline"
+import {
+  ContributorInformation,
+  contributorTableColumns,
+} from "src/contributors/components/ContributorTable"
+import Table from "src/core/components/Table"
 
 const ITEMS_PER_PAGE = 7
 
@@ -86,6 +91,50 @@ export const ContributorsList = () => {
   )
 }
 
+export const AllContributorsList = () => {
+  const router = useRouter()
+  const page = Number(router.query.page) || 0
+  const projectId = useParam("projectId", "number")
+  const [{ contributors, hasMore }] = usePaginatedQuery(getContributors, {
+    where: { project: { id: projectId! } },
+    orderBy: { id: "asc" },
+    skip: ITEMS_PER_PAGE * page,
+    take: ITEMS_PER_PAGE,
+    include: {
+      user: true,
+    },
+  })
+
+  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+
+  let contributorInformation: ContributorInformation[] = contributors.map(
+    (contributor) => {
+      const firstName = contributor["user"].firstName
+      const lastName = contributor["user"].lastName
+      const username = contributor["user"].username
+      let t: ContributorInformation = {
+        name: firstName || lastName ? `${firstName} ${lastName}` : username,
+        id: contributor.id,
+        projectId: projectId,
+      }
+      return t
+    }
+
+    // name: contributor["user"].firstName
+    // const lastName = contributor["user"].lastName
+    // const username = contributor["user"].username
+    // const initial = getInitials(firstName, lastName)
+  )
+
+  return (
+    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
+      <Table columns={contributorTableColumns} data={contributorInformation} />
+    </main>
+  )
+}
+// issue 37
 const ContributorsPage = () => {
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
@@ -94,7 +143,7 @@ const ContributorsPage = () => {
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
-        <title>Contributors</title>
+        <title>All Contributors</title>
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
@@ -104,8 +153,11 @@ const ContributorsPage = () => {
           <PlusIcon className="w-5 h-5" />
         </Link>
 
-        <Suspense fallback={<div>Loading...</div>}>
+        {/* <Suspense fallback={<div>Loading...</div>}>
           <ContributorsList />
+        </Suspense> */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <AllContributorsList />
         </Suspense>
       </main>
     </Layout>

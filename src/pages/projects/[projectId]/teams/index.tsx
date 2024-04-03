@@ -11,6 +11,8 @@ import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { PlusIcon } from "@heroicons/react/24/outline"
 import getTeams from "src/teams/queries/getTeams"
+import { TeamInformation, teamTableColumns } from "src/teams/components/TeamTable"
+import Table from "src/core/components/Table"
 
 const ITEMS_PER_PAGE = 7
 
@@ -71,6 +73,39 @@ export const TeamList = () => {
   )
 }
 
+export const AllTeamList = () => {
+  const router = useRouter()
+  const page = Number(router.query.page) || 0
+  const projectId = useParam("projectId", "number")
+  const [{ teams, hasMore }] = usePaginatedQuery(getTeams, {
+    where: { project: { id: projectId! } },
+    orderBy: { id: "asc" },
+    skip: ITEMS_PER_PAGE * page,
+    take: ITEMS_PER_PAGE,
+  })
+
+  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+
+  let teamInformation: TeamInformation[] = teams.map((team) => {
+    let t: TeamInformation = {
+      name: team.name,
+      id: team.id,
+      projectId: projectId,
+    }
+    return t
+  })
+
+  return (
+    <div className="">
+      {/* <h1 className="flex justify-center mb-2">All Teams</h1> */}
+
+      <Table columns={teamTableColumns} data={teamInformation} />
+    </div>
+  )
+}
+
+// Issue 37
 const TeamsPage = () => {
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
@@ -79,7 +114,7 @@ const TeamsPage = () => {
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
-        <title>Teams</title>
+        <title>All Teams</title>
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
@@ -90,9 +125,15 @@ const TeamsPage = () => {
           <PlusIcon className="w-5 h-5" />
         </Link>
 
-        {
+        {/* {
           <Suspense fallback={<div>Loading...</div>}>
             <TeamList />
+          </Suspense>
+        } */}
+
+        {
+          <Suspense fallback={<div>Loading...</div>}>
+            <AllTeamList />
           </Suspense>
         }
       </main>
