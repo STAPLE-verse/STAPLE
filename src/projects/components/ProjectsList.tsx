@@ -1,14 +1,8 @@
-import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
-import Head from "next/head"
 import Link from "next/link"
 import { usePaginatedQuery } from "@blitzjs/rpc"
-import router, { useRouter } from "next/router"
-import Layout from "src/core/layouts/Layout"
+import router from "next/router"
 import getProjects from "src/projects/queries/getProjects"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
-import { e } from "vitest/dist/index-9f5bc072"
 
 const ITEMS_PER_PAGE = 7
 

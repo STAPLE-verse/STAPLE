@@ -1,80 +1,69 @@
-import { Suspense, useState } from "react"
-import { Routes } from "@blitzjs/next"
-import Head from "next/head"
-import Link from "next/link"
-import { usePaginatedQuery } from "@blitzjs/rpc"
-import router, { useRouter } from "next/router"
-import Layout from "src/core/layouts/Layout"
-import getProjects from "src/projects/queries/getProjects"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
-import { e } from "vitest/dist/index-9f5bc072"
-import ProjectsList from "src/projects/components/ProjectsList"
+import React from "react"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 
 type Props = {
   onChange?: (searchTerm: string) => void
+  debounceTime?: number
 }
 
-const SearchButton = ({ onChange }: Props) => {
+const SearchButton = ({ onChange, debounceTime = 500 }: Props) => {
   const sidebarItems = HomeSidebarItems("Projects")
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [inputTextTerm, setInputTextTerm] = useState("")
-
-  const router = useRouter()
-  const currentUser = useCurrentUser()
-  const page = Number(router.query.page) || 0
-
-  const handleSearch = () => {
-    setSearchTerm(inputTextTerm)
-    console.log("log before", searchTerm)
+  const currentSearchTerm = ""
+  const handleSearch = (value) => {
     if (onChange != undefined) {
-      console.log("log after", searchTerm)
-      onChange(searchTerm)
+      onChange(value)
     }
   }
-
-  const handleInputSearch = (event) => {
-    setInputTextTerm(event.target.value)
-  }
-
   return (
     <div>
-      <div className="flex flex-row my-4 mx-auto w-full max-w-5xl   justify-between rounded-md shadow-sm">
-        <input
-          className="w-full h-10"
+      <div
+        className="flex flex-row  py-3 px-6 mx-auto w-full max-w-md items-center  justify-between relative text-gray-400 focus-within:text-gray-600
+      bg-gray-50 border-b
+      "
+      >
+        <MagnifyingGlassIcon className="w-5 h-5 absolute ml-3 pointer-events-none"></MagnifyingGlassIcon>
+
+        <DebouncedInput
           type="search"
+          debounce={debounceTime}
+          value={currentSearchTerm}
+          onChange={handleSearch}
           placeholder=" Search project"
-          value={inputTextTerm}
-          onChange={handleInputSearch}
-        ></input>
-        <button
-          className=""
-          type="button"
-          id="button-addon1"
-          data-twe-ripple-init
-          data-twe-ripple-color="light"
-          onClick={handleSearch}
-        >
-          <span className="[&>svg]:h-5 [&>svg]:w-5">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-              />
-            </svg>
-          </span>
-        </button>
+          className="pr-3 pl-10 py-2 w-full h-10 w-full pr-3 pl-10  font-semibold placeholder-gray-500 text-black rounded-2xl border-none
+          ring-2 ring-gray-300 focus:ring-gray-500 focus:ring-2"
+        />
       </div>
     </div>
   )
+}
+
+function DebouncedInput({
+  value: initialValue,
+  onChange,
+  debounce = 500,
+  ...props
+}: {
+  value: string | number
+  onChange: (value: string | number) => void
+  debounce?: number
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange">) {
+  const [value, setValue] = React.useState(initialValue)
+
+  React.useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value)
+    }, debounce)
+
+    return () => clearTimeout(timeout)
+  }, [value])
+
+  return <input {...props} value={value} onChange={(e) => setValue(e.target.value)} />
 }
 
 export default SearchButton
