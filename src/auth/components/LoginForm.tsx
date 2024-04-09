@@ -14,8 +14,20 @@ type LoginFormProps = {
 export const LoginForm = (props: LoginFormProps) => {
   const [loginMutation] = useMutation(login)
   return (
-    <div className="flex flex-col max-w-3xl mx-auto w-full">
-      <h1 className="text-center">Login</h1>
+    <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
+      <center>
+        <picture>
+          <source
+            srcset="/logo_white_big.png"
+            media="(prefers-color-scheme: dark)"
+            alt="STAPLE Logo"
+            width={200}
+          />
+          <img src="/logo_black_big.png" alt="STAPLE Logo" width={200} />
+        </picture>
+      </center>
+
+      <h1 className="text-center text-4xl">Login</h1>
 
       <Form
         submitText="Login"
@@ -38,6 +50,7 @@ export const LoginForm = (props: LoginFormProps) => {
         }}
       >
         <LabeledTextField name="email" label="Email" placeholder="Email" className="mb-4 w-full" />
+
         <LabeledTextField
           name="password"
           label="Password"

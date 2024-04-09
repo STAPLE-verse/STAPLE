@@ -31,19 +31,20 @@ const Home: BlitzPage = () => {
       </Head>
 
       <main className="flex h-screen">
-        <div className="flex flex-col items-center flex-grow">
+        <div className="flex flex-col items-center flex-grow justify-center">
           <picture>
             <source
               srcset="/logo_white_big.png"
               media="(prefers-color-scheme: dark)"
               alt="STAPLE Logo"
-              width={300}
-              height={300}
+              width={200}
             />
-            <img src="/logo_black_big.png" alt="STAPLE Logo" width={300} height={300} />
+            <img src="/logo_black_big.png" alt="STAPLE Logo" width={200} />
           </picture>
 
-          <h1 className="text-4xl pb-8">STAPLE: Science Tracking Across the Project Lifespan</h1>
+          <h1 className="text-4xl pb-8 mt-4">
+            STAPLE: Science Tracking Across the Project Lifespan
+          </h1>
 
           {/* Auth */}
           <div className="flex flex-row gap-8">
