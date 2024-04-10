@@ -1,7 +1,7 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { Contributor, ContributorRole, Prisma, Task, TaskStatus, User } from "db"
+import { Contributor, ContributorPrivileges, Prisma, Task, TaskStatus, User } from "db"
 import moment from "moment"
 import Link from "next/link"
 import getContributor from "src/contributors/queries/getContributor"
@@ -212,7 +212,7 @@ const ProjectDashboard = () => {
   const [{ contributors: projectManagers }] = useQuery(getContributors, {
     where: {
       projectId: projectId,
-      role: "PROJECT_MANAGER",
+      privilege: "PROJECT_MANAGER",
     },
     include: {
       user: true,
@@ -274,7 +274,7 @@ const ProjectDashboard = () => {
         </div>
 
         {/* Most prolific contributors */}
-        {currentContributor.role == ContributorRole.PROJECT_MANAGER && (
+        {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
           <div className="flex flex-col rounded bg-base-200 p-4">
             <h4>Most prolific contributors</h4>
             <Table
@@ -296,7 +296,7 @@ const ProjectDashboard = () => {
         )}
 
         {/* General stats */}
-        {currentContributor.role == ContributorRole.PROJECT_MANAGER && (
+        {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
           <div className="stats stats-vertical shadow">
             <div className="stat">
               <div className="stat-title">Contributors</div>
@@ -318,7 +318,7 @@ const ProjectDashboard = () => {
       </div>
       <div className="flex flex-row justify-between">
         {/* Tasks over deadline */}
-        {currentContributor.role == ContributorRole.PROJECT_MANAGER && (
+        {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
           <div className="flex flex-col rounded bg-base-200 p-4">
             <h4>Tasks way past due</h4>
             <p>Take care of these tasks before it is too late!</p>
@@ -341,7 +341,7 @@ const ProjectDashboard = () => {
           </div>
         )}
         {/* List of project managers */}
-        {currentContributor.role == ContributorRole.CONTRIBUTOR && (
+        {currentContributor.privilege == ContributorPrivileges.CONTRIBUTOR && (
           <div className="flex flex-col rounded bg-base-200 p-4">
             <h4>Project managers</h4>
             <p>Ping them if you need help</p>

@@ -18,7 +18,7 @@ const CompleteToggle = ({
     const newStatus = newChecked ? AssignmentStatus.COMPLETED : AssignmentStatus.NOT_COMPLETED
 
     await updateAssignmentMutation({
-      id: currentAssignment!.id,
+      id: currentAssignment!.assignmentId,
       status: newStatus,
       completedBy: newChecked ? completedBy : null,
       completedAs: completedAs as CompletedAs,

@@ -12,7 +12,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { Contributor, User } from "@prisma/client"
-import { getRoleText } from "src/services/getRoleText"
+import { getPrivilegeText } from "src/services/getPrivilegeText"
 
 export const ContributorPage = () => {
   const currentUser = useCurrentUser()
@@ -50,7 +50,8 @@ export const ContributorPage = () => {
           <span className="font-semibold">Email:</span> {user.email}
         </p>
         <p className="mb-2">
-          <span className="font-semibold">Role:</span> {getRoleText(contributor[0].role)}
+          <span className="font-semibold">Privilege:</span>{" "}
+          {getPrivilegeText(contributor[0].privilege)}
         </p>
         <div className="flex flex-col gap-2">
           <h2>List of contributions</h2>

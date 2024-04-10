@@ -2,7 +2,9 @@ import { AssignmentStatus, CompletedAs, Prisma } from "@prisma/client"
 import { z } from "zod"
 
 export const UpdateAssignmentSchema = z.object({
+  // For the assignment
   id: z.number(),
+  // For the new assignmentStatusLog
   metadata: z
     .unknown()
     .nullable()

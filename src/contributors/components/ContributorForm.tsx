@@ -5,16 +5,16 @@ import { z } from "zod"
 import { LabelSelectField } from "src/core/components/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
 import getUsers from "src/users/queries/getUsers"
-import { ContributorRole } from "@prisma/client"
+import { ContributorPrivileges } from "@prisma/client"
 export { FORM_ERROR } from "src/core/components/Form"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
 }
 
-export const contributorRoleOptions = [
-  { id: 0, value: ContributorRole.PROJECT_MANAGER, label: "Project Manager" },
-  { id: 1, value: ContributorRole.CONTRIBUTOR, label: "Contributor" },
+export const ContributorPrivilegesOptions = [
+  { id: 0, value: ContributorPrivileges.PROJECT_MANAGER, label: "Project Manager" },
+  { id: 1, value: ContributorPrivileges.CONTRIBUTOR, label: "Contributor" },
 ]
 
 export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
@@ -46,9 +46,9 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
       />
       <LabelSelectField
         className="select select-bordered w-full max-w-xs mt-2"
-        name="role"
-        label="Select Role"
-        options={contributorRoleOptions}
+        name="privilege"
+        label="Select privilege"
+        options={ContributorPrivilegesOptions}
         optionText="label"
         optionValue="id"
       />

@@ -19,6 +19,7 @@ export type TeamAssignmentWithRelations = Prisma.AssignmentGetPayload<{
         }
       }
     }
+    statusLogs: true
   }
 }>
 
@@ -139,19 +140,21 @@ export const teamAssignmentTableColumns: ColumnDef<TeamAssignmentWithRelations>[
     ),
     header: "Team Name",
   }),
-  columnHelper.accessor("updatedAt", {
-    cell: (info) => <span>{info.getValue().toString()}</span>,
+  columnHelper.accessor((row) => row.statusLogs[0]?.createdAt.toISOString(), {
+    cell: (info) => <span>{info.getValue()}</span>,
     header: "Last update",
+    id: "updatedAt",
   }),
-  columnHelper.accessor("status", {
+  columnHelper.accessor((row) => row.statusLogs[0]?.status, {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Status",
+    id: "status",
   }),
   columnHelper.accessor("task.schema", {
     cell: (info) => (
       <>
         {info.row.original.task.schema ? (
-          <AssignmentMetadataModal metadata={info.row.original.metadata} />
+          <AssignmentMetadataModal metadata={info.row.original.statusLogs[0]?.metadata} />
         ) : (
           <span>No schema provided</span>
         )}

@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import { Assignment, Prisma } from "db"
 
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import Table from "src/core/components/Table"
 import Modal from "src/core/components/Modal"
 
 export type AssignmentWithRelations = Prisma.AssignmentGetPayload<{
@@ -13,6 +12,7 @@ export type AssignmentWithRelations = Prisma.AssignmentGetPayload<{
         user: true
       }
     }
+    statusLogs: true
     // team: true
   }
 }>
@@ -54,9 +54,12 @@ const AssignmentMetadataModal = ({ metadata }) => {
 }
 
 function getName(info) {
-  if (info.contributorId != null && info.hasOwnProperty("contributor")) {
-    let c = `${info.contributor.user.firstName} ${info.contributor.user.lastName}`
-    return c
+  if (info.contributorId != null && info.hasOwnProperty("contributor") && info.contributor.user) {
+    const { firstName, lastName, username } = info.contributor.user
+    if (firstName && lastName) {
+      return `${firstName} ${lastName}`
+    }
+    return username
   }
   return "null"
 }
@@ -70,19 +73,21 @@ export const assignmentTableColumns: ColumnDef<AssignmentWithRelations>[] = [
     ),
     header: "Contributor Name",
   }),
-  columnHelper.accessor("updatedAt", {
-    cell: (info) => <span>{info.getValue().toString()}</span>,
+  columnHelper.accessor((row) => row.statusLogs[0]?.createdAt.toISOString(), {
+    cell: (info) => <span>{info.getValue()}</span>,
     header: "Last update",
+    id: "updatedAt",
   }),
-  columnHelper.accessor("status", {
+  columnHelper.accessor((row) => row.statusLogs[0]?.status, {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Status",
+    id: "status",
   }),
   columnHelper.accessor("task.schema", {
     cell: (info) => (
       <>
         {info.row.original.task.schema ? (
-          <AssignmentMetadataModal metadata={info.row.original.metadata} />
+          <AssignmentMetadataModal metadata={info.row.original.statusLogs[0]?.metadata} />
         ) : (
           <span>No schema provided</span>
         )}
