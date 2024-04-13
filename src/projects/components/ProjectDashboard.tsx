@@ -49,7 +49,7 @@ const ProjectDashboard = () => {
     }),
     taskColumnHelper.accessor("id", {
       id: "view",
-      header: "Open",
+      header: "View",
       cell: (info) => (
         <Link
           className="btn btn-sm btn-secondary"
@@ -58,7 +58,7 @@ const ProjectDashboard = () => {
             taskId: info.getValue(),
           })}
         >
-          Open
+          View
         </Link>
       ),
     }),
@@ -91,7 +91,7 @@ const ProjectDashboard = () => {
     // TODO: Change this if completed tasks are added
     taskColumnHelper.accessor("id", {
       id: "view",
-      header: "Open",
+      header: "View",
       cell: (info) => (
         <Link
           className="btn btn-sm btn-secondary"
@@ -100,7 +100,7 @@ const ProjectDashboard = () => {
             taskId: info.getValue(),
           })}
         >
-          Open
+          View
         </Link>
       ),
     }),
@@ -150,7 +150,7 @@ const ProjectDashboard = () => {
       },
       status: TaskStatus.NOT_COMPLETED,
     },
-    orderBy: { id: "asc" },
+    orderBy: { deadline: "asc" },
   })
 
   const upcomingTasks = tasks.filter((task) => {
@@ -173,18 +173,46 @@ const ProjectDashboard = () => {
   })
 
   // coming up for Contributor
-  console.log(currentContributor.userId)
   const [{ tasks: upcomingTasksContributor }] = useQuery(getTasks, {
     where: {
       project: { id: projectId },
-      deadline: { lt: today.toDate() },
+      deadline: { gte: today.toDate() },
       status: TaskStatus.NOT_COMPLETED,
-      //assignment: { assignees: currentContributor.userId },
+      OR: [
+        { assignees: { some: { contributor: { user: { id: currentUser?.id } }, teamId: null } } },
+        {
+          assignees: {
+            some: {
+              team: { contributors: { some: { id: currentUser?.id } } },
+              contributorId: null,
+            },
+          },
+        },
+      ],
     },
     orderBy: { id: "asc" },
   })
 
   // past due for contributor
+  const [{ tasks: pastDueTasksContributor }] = useQuery(getTasks, {
+    where: {
+      project: { id: projectId },
+      deadline: { lt: today.toDate() },
+      status: TaskStatus.NOT_COMPLETED,
+      OR: [
+        { assignees: { some: { contributor: { user: { id: currentUser?.id } }, teamId: null } } },
+        {
+          assignees: {
+            some: {
+              team: { contributors: { some: { id: currentUser?.id } } },
+              contributorId: null,
+            },
+          },
+        },
+      ],
+    },
+    orderBy: { id: "asc" },
+  })
 
   const [projectStats] = useQuery(getProjectStats, { id: projectId! })
 
@@ -197,6 +225,68 @@ const ProjectDashboard = () => {
       user: true,
     },
   })
+
+  var upcomingDisplay = ""
+  var pastDueDisplay = ""
+
+  // create if else for showing tasks
+  if (currentContributor.role == ContributorRole.PROJECT_MANAGER) {
+    upcomingTasks.length === 0
+      ? (upcomingDisplay = <p className="italic p-2">No upcoming tasks</p>)
+      : (upcomingDisplay = (
+          <Table
+            columns={tasksColumns}
+            data={upcomingTasks}
+            classNames={{
+              thead: "text-sm text-primary-content",
+              tbody: "text-sm text-primary-content",
+              td: "text-sm text-primary-content",
+            }}
+          />
+        ))
+
+    pastDueTasks.length === 0
+      ? (pastDueDisplay = <p className="italic p-2">No overdue tasks</p>)
+      : (pastDueDisplay = (
+          <Table
+            columns={pastDueTasksColumns}
+            data={pastDueTasks}
+            classNames={{
+              thead: "text-sm text-primary-content",
+              tbody: "text-sm text-primary-content",
+              td: "text-sm text-primary-content",
+            }}
+          />
+        ))
+  } else if (currentContributor.role == ContributorRole.CONTRIBUTOR) {
+    upcomingTasksContributor.length === 0
+      ? (upcomingDisplay = <p className="italic p-2">No upcoming tasks</p>)
+      : (upcomingDisplay = (
+          <Table
+            columns={tasksColumns}
+            data={upcomingTasksContributor}
+            classNames={{
+              thead: "text-sm text-primary-content",
+              tbody: "text-sm text-primary-content",
+              td: "text-sm text-primary-content",
+            }}
+          />
+        ))
+
+    pastDueTasksContributor.length === 0
+      ? (pastDueDisplay = <p className="italic p-2">No overdue tasks</p>)
+      : (pastDueDisplay = (
+          <Table
+            columns={pastDueTasksColumns}
+            data={pastDueTasksContributor}
+            classNames={{
+              thead: "text-sm text-primary-content",
+              tbody: "text-sm text-primary-content",
+              td: "text-sm text-primary-content",
+            }}
+          />
+        ))
+  }
 
   return (
     <div className="flex flex-col space-y-4">
@@ -282,33 +372,9 @@ const ProjectDashboard = () => {
           <div className="card-body">
             <div className="card-title text-primary-content">Task Summary</div>
             <b>Upcoming:</b> <br />
-            {upcomingTasks.length === 0 ? (
-              <p className="italic p-2">No upcoming tasks</p>
-            ) : (
-              <Table
-                columns={tasksColumns}
-                data={upcomingTasks}
-                classNames={{
-                  thead: "text-sm text-primary-content",
-                  tbody: "text-sm text-primary-content",
-                  td: "text-sm text-primary-content",
-                }}
-              />
-            )}
+            {upcomingDisplay}
             <b>Overdue:</b> <br />
-            {pastDueTasks.length === 0 ? (
-              <p className="italic p-2">No overdue tasks</p>
-            ) : (
-              <Table
-                columns={pastDueTasksColumns}
-                data={pastDueTasks}
-                classNames={{
-                  thead: "text-sm text-primary-content",
-                  tbody: "text-sm text-primary-content",
-                  td: "text-sm text-primary-content",
-                }}
-              />
-            )}
+            {pastDueDisplay}
           </div>
         </div>
       </div>
@@ -329,24 +395,26 @@ const ProjectDashboard = () => {
       </div>
 
       {/* row 4 for contributors*/}
-      <div className="flex flex-row justify-center">
-        <div className="card bg-primary text-primary-content mx-2 w-full">
-          <div className="card-body">
-            <div className="card-title text-primary-content">Project Managers</div>
-            <b>Contacts for the Project: </b>
-            <br />
-            <Table
-              columns={projectManagersColumns}
-              data={projectManagers}
-              classNames={{
-                thead: "text-sm text-primary-content",
-                tbody: "text-sm text-primary-content",
-                td: "text-sm text-primary-content",
-              }}
-            />
+      {currentContributor.role == ContributorRole.CONTRIBUTOR && (
+        <div className="flex flex-row justify-center">
+          <div className="card bg-primary text-primary-content mx-2 w-full">
+            <div className="card-body">
+              <div className="card-title text-primary-content">Project Managers</div>
+              <b>Contacts for the Project: </b>
+              <br />
+              <Table
+                columns={projectManagersColumns}
+                data={projectManagers}
+                classNames={{
+                  thead: "text-sm text-primary-content",
+                  tbody: "text-sm text-primary-content",
+                  td: "text-sm text-primary-content",
+                }}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
