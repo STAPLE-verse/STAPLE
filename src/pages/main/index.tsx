@@ -72,6 +72,7 @@ const projectColumns: ColumnDef<Project>[] = [
   projectColumnHelper.accessor("name", {
     cell: (info) => <span className="font-semibold">{info.getValue()}</span>,
     header: "Name",
+    enableColumnFilter: false,
   }),
   projectColumnHelper.accessor("updatedAt", {
     cell: (info) => (
@@ -88,10 +89,13 @@ const projectColumns: ColumnDef<Project>[] = [
       </span>
     ),
     header: "Updated at",
+    enableColumnFilter: false,
   }),
   projectColumnHelper.accessor("id", {
     id: "view",
     header: "",
+    enableColumnFilter: false,
+    enableSorting: false,
     cell: (info) => (
       <Link
         className="btn"

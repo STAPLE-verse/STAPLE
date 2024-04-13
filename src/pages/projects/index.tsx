@@ -1,74 +1,26 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { usePaginatedQuery } from "@blitzjs/rpc"
-import router, { useRouter } from "next/router"
+import { useRouter } from "next/router"
 import Layout from "src/core/layouts/Layout"
-import getProjects from "src/projects/queries/getProjects"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
-
-const ITEMS_PER_PAGE = 7
-
-export const ProjectsList = () => {
-  const router = useRouter()
-  const currentUser = useCurrentUser()
-  const page = Number(router.query.page) || 0
-  // Only list projects that the User is a Contributor on
-  const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
-    where: {
-      contributors: {
-        some: {
-          userId: currentUser?.id,
-        },
-      },
-    },
-    orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
-
-  return (
-    <div>
-      {projects.map((project) => (
-        <div className="collapse collapse-arrow bg-base-200 mb-2" key={project.id}>
-          <input type="checkbox" />
-          <div className="collapse-title text-xl font-medium">{project.name}</div>
-          <div className="collapse-content mb-4">
-            <p className="mb-2">{project.description}</p>
-            <p className="italic mb-2">Last update: {project.updatedAt.toString()}</p>
-            {/* TODO: Change button position by other method then using absolute */}
-            <div className="justify-end absolute bottom-2 right-6">
-              <Link className="btn" href={Routes.ShowProjectPage({ projectId: project.id })}>
-                Open
-              </Link>
-            </div>
-          </div>
-        </div>
-      ))}
-      {/* Previous and next page btns */}
-      <div className="join grid grid-cols-2 mt-4">
-        <button
-          className="join-item btn btn-outline"
-          disabled={page === 0}
-          onClick={goToPreviousPage}
-        >
-          Previous
-        </button>
-        <button className="join-item btn btn-outline" disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
-      </div>
-    </div>
-  )
-}
+import ProjectsList from "src/projects/components/ProjectsList"
+import SearchButton from "src/core/components/SearchButton"
 
 const ProjectsPage = () => {
   const sidebarItems = HomeSidebarItems("Projects")
+
+  const [searchTerm, setSearchTerm] = useState("")
+
+  const router = useRouter()
+  const currentUser = useCurrentUser()
+  const page = Number(router.query.page) || 0
+
+  const handleSearch = (currentSearch) => {
+    setSearchTerm(currentSearch)
+  }
 
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
@@ -92,9 +44,10 @@ const ProjectsPage = () => {
           </svg>
         </Link>
 
+        <SearchButton onChange={handleSearch}></SearchButton>
         <div>
           <Suspense fallback={<div>Loading...</div>}>
-            <ProjectsList />
+            <ProjectsList searchTerm={searchTerm} currentUser={currentUser} page={page} />
           </Suspense>
         </div>
       </main>
