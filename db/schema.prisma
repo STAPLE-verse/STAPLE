@@ -28,9 +28,10 @@ model User {
   tokens   Token[]
   sessions Session[]
 
-  contributions Contributor[]
-  forms         Forms[]
-  notifications Notification[] @relation("UserNotifications")
+  contributions    Contributor[]
+  forms            Forms[]
+  notifications    Notification[]     @relation("UserNotifications")
+  ContributorLabel ContributorLabel[]
 }
 
 model Session {
@@ -97,15 +98,18 @@ model Contributor {
   invitationStatus    InvitationStatus      @default(INVITED)
   deleted             Boolean               @default(false)
   AssignmentStatusLog AssignmentStatusLog[]
+  // allow them to have multiple contributor labels, I think like the task array?
+  // add contributor label link here
 }
 
 // Contribution type
 model ContributorLabel {
   id          Int     @id @default(autoincrement())
-  projectId   Int
+  userId      Int
   name        String
   description String?
   taxonomy    String?
+  user        User    @relation(fields: [userId], references: [id])
 }
 
 model Project {
@@ -152,7 +156,9 @@ model Task {
   assignees       Assignment[]
   schema          Json?
   status          TaskStatus   @default(NOT_COMPLETED)
-  labels          String?
+  tags            String?
+  // allow them to have multiple contributor labels, I think like the task array?
+  // add contributor label link here
 }
 
 enum AssignmentStatus {
