@@ -8,11 +8,28 @@ interface GetAssignedUsersInput {
 export default resolver.pipe(resolver.authorize(), async ({ taskId }: GetAssignedUsersInput) => {
   const assignments = await db.assignment.findMany({
     where: { taskId: taskId },
-    // Also get userId for assignments
-    include: { contributor: { select: { userId: true } } },
+    include: {
+      contributor: true,
+      team: {
+        include: {
+          contributors: true,
+        },
+      },
+    },
   })
 
-  const userIds = assignments.map((assignment) => assignment.contributor.userId)
+  // Collect userIds from direct contributors
+  const directContributorUserIds = assignments.flatMap((assignment) =>
+    assignment.contributor ? [assignment.contributor.userId] : []
+  )
+
+  // Collect userIds from team-assigned contributors
+  const teamContributorUserIds = assignments.flatMap((assignment) =>
+    assignment.team ? assignment.team.contributors.map((contributor) => contributor.userId) : []
+  )
+
+  // Combine and deduplicate userIds
+  const userIds = Array.from(new Set([...directContributorUserIds, ...teamContributorUserIds]))
 
   return userIds
 })

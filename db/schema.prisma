@@ -29,6 +29,8 @@ model User {
   sessions Session[]
 
   contributions Contributor[]
+  forms         Forms[]
+  notifications Notification[] @relation("UserNotifications")
 }
 
 model Session {
@@ -70,21 +72,40 @@ model Token {
 //   RESET_PASSWORD
 // }
 
-enum ContributorRole {
+enum ContributorPrivileges {
   PROJECT_MANAGER
   CONTRIBUTOR
 }
 
+enum InvitationStatus {
+  INVITED
+  ACCEPTED
+  DECLINED
+}
+
 model Contributor {
-  id          Int             @id @default(autoincrement())
-  userId      Int
+  createdAt           DateTime              @default(now())
+  id                  Int                   @id @default(autoincrement())
+  userId              Int
+  projectId           Int
+  user                User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project             Project               @relation(fields: [projectId], references: [id])
+  assignments         Assignment[]
+  privilege           ContributorPrivileges @default(PROJECT_MANAGER)
+  teams               Team[]
+  tasks               Task[]
+  invitationStatus    InvitationStatus      @default(INVITED)
+  deleted             Boolean               @default(false)
+  AssignmentStatusLog AssignmentStatusLog[]
+}
+
+// Contribution type
+model ContributorLabel {
+  id          Int     @id @default(autoincrement())
   projectId   Int
-  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project     Project         @relation(fields: [projectId], references: [id])
-  assignments Assignment[]
-  role        ContributorRole @default(PROJECT_MANAGER)
-  teams       Team[]
-  tasks       Task[]
+  name        String
+  description String?
+  taxonomy    String?
 }
 
 model Project {
@@ -93,6 +114,11 @@ model Project {
   updatedAt   DateTime @updatedAt
   name        String
   description String?
+  abstract    String?
+  keywords    String?
+  citation    String?
+  publisher   String?
+  identifier  String?
 
   tasks    Task[]
   elements Element[]
@@ -126,6 +152,7 @@ model Task {
   assignees       Assignment[]
   schema          Json?
   status          TaskStatus   @default(NOT_COMPLETED)
+  labels          String?
 }
 
 enum AssignmentStatus {
@@ -138,20 +165,32 @@ enum CompletedAs {
   TEAM
 }
 
+model AssignmentStatusLog {
+  id           Int              @id @default(autoincrement())
+  createdAt    DateTime         @default(now())
+  assignmentId Int
+  changedAt    DateTime         @default(now()) // When the status was changed
+  assignment   Assignment       @relation(fields: [assignmentId], references: [id])
+  status       AssignmentStatus @default(NOT_COMPLETED)
+  metadata     Json?
+  completedBy  Int?
+  completedAs  CompletedAs      @default(INDIVIDUAL)
+  contributor  Contributor?     @relation(fields: [completedBy], references: [id])
+
+  @@unique([assignmentId, changedAt])
+}
+
 model Assignment {
-  id            Int              @id @default(autoincrement())
-  createdAt     DateTime         @default(now())
-  updatedAt     DateTime         @updatedAt
+  id            Int                   @id @default(autoincrement())
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
   taskId        Int
+  task          Task                  @relation(fields: [taskId], references: [id], onDelete: Cascade)
   contributorId Int?
+  contributor   Contributor?          @relation(fields: [contributorId], references: [id], onDelete: Cascade)
   teamId        Int?
-  task          Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  contributor   Contributor?     @relation(fields: [contributorId], references: [id], onDelete: Cascade)
-  team          Team?            @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  status        AssignmentStatus @default(NOT_COMPLETED)
-  metadata      Json?
-  completedBy   Int?
-  completedAs   CompletedAs      @default(INDIVIDUAL)
+  team          Team?                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  statusLogs    AssignmentStatusLog[]
 }
 
 model Team {
@@ -162,7 +201,7 @@ model Team {
   contributors Contributor[]
   projectId    Int
   project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  assigments   Assignment[]
+  assignments  Assignment[]
 }
 
 model Column {
@@ -186,4 +225,21 @@ model Element {
   Task        Task[]
   parents     Element[] @relation("ElementToElement")
   children    Element[] @relation("ElementToElement")
+}
+
+model Forms {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  json      String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  recipients User[]   @relation("UserNotifications")
+  template   String
+  data       Json
 }

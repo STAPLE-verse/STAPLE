@@ -2,7 +2,7 @@ import React, { Suspense, useState } from "react"
 import { Form, FormProps } from "src/core/components/Form"
 import { z } from "zod"
 import { useQuery } from "@blitzjs/rpc"
-import { ContributorRole } from "@prisma/client"
+import { ContributorPrivileges } from "@prisma/client"
 import LabeledTextField from "src/core/components/LabeledTextField"
 import getContributors from "src/contributors/queries/getContributors"
 import AssignTeamMembers, { TeamOption } from "./TeamMembersTable"
@@ -15,9 +15,9 @@ interface TeamFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   currentContributorsId?: number[]
 }
 
-export const contributorRoleOptions = [
-  { id: 0, value: ContributorRole.PROJECT_MANAGER, label: "Project Manager" },
-  { id: 1, value: ContributorRole.CONTRIBUTOR, label: "Contributor" },
+export const ContributorPrivilegesOptions = [
+  { id: 0, value: ContributorPrivileges.PROJECT_MANAGER, label: "Project Manager" },
+  { id: 1, value: ContributorPrivileges.CONTRIBUTOR, label: "Contributor" },
 ]
 
 export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>) {
@@ -44,8 +44,8 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
     } as TeamOption
   })
 
-  const [validAssigments, setValidAssigments] = useState(true)
-  const areAssigmentValid = (values) => {
+  const [validAssignments, setValidAssignments] = useState(true)
+  const areAssignmentValid = (values) => {
     if (values != undefined && values.findIndex((el) => el.checked) >= 0) {
       return true
     }
@@ -60,8 +60,8 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
           name="contributorsId"
           initialValue={currentTeamOptions}
           validate={(values) => {
-            let t = areAssigmentValid(values)
-            setValidAssigments(t)
+            let t = areAssignmentValid(values)
+            setValidAssignments(t)
             return !t
           }}
         >
@@ -69,7 +69,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
             return (
               <div>
                 <div className="flex justify-start mt-1">
-                  {validAssigments ? (
+                  {validAssignments ? (
                     ""
                   ) : (
                     <span className="text-error">Needs a least one member</span>

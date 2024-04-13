@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from "react"
+import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
@@ -18,9 +18,8 @@ import Modal from "src/core/components/Modal"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import updateAssignment from "src/assignments/mutations/updateAssignment"
 import getContributor from "src/contributors/queries/getContributor"
-import { AssignmentStatus, ContributorRole, TaskStatus, CompletedAs } from "@prisma/client"
+import { AssignmentStatus, ContributorPrivileges, TaskStatus, CompletedAs } from "@prisma/client"
 import CompleteToggle from "src/assignments/components/CompleteToggle"
-import getAssignment from "src/assignments/queries/getAssignment"
 import AssignmentProgress from "src/tasks/components/AssignmentProgress"
 import updateTaskStatus from "src/tasks/mutations/updateTaskStatus"
 import toast from "react-hot-toast"
@@ -66,6 +65,11 @@ export const ShowTaskPage = () => {
     include: {
       contributor: true,
       team: true,
+      statusLogs: {
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
     },
     // Keeping the ordering so that completeToggle button order does not change on refetch
     orderBy: {
@@ -96,14 +100,14 @@ export const ShowTaskPage = () => {
   const handleJsonFormSubmit = async (data) => {
     if (currentAssignments) {
       // Users can overwrite their responses
-      // user can have multiple assigments
+      // user can have multiple assignments
       currentAssignments.forEach(async (currentAssignment) => {
         await updateAssignmentMutation({
           id: currentAssignment.id,
           metadata: data.formData,
           status: AssignmentStatus.COMPLETED,
           completedBy: currentContributor.id,
-          //completedAs: currentAssignment.completedAs,
+          completedAs: currentAssignment.statusLogs[0].completedAs,
         })
       })
 
@@ -157,7 +161,7 @@ export const ShowTaskPage = () => {
           <h1>{task.name}</h1>
           <div className="flex flex-col gap-2">
             <p>{task.description}</p>
-            {currentContributor.role == ContributorRole.PROJECT_MANAGER && (
+            {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
               <div>
                 <div className="form-control">
                   <label className="label cursor-pointer">
@@ -194,7 +198,7 @@ export const ShowTaskPage = () => {
                 </Modal>
               </div>
             )}
-            {currentContributor.role == ContributorRole.CONTRIBUTOR && (
+            {currentContributor.privilege == ContributorPrivileges.CONTRIBUTOR && (
               <p>
                 <span className="font-semibold">Task status:</span> {taskStatus}
               </p>
@@ -219,7 +223,7 @@ export const ShowTaskPage = () => {
               {task["schema"] ? JSON.stringify(task["schema"]) : "no metadata schema assigned"}
             </p>
           </div>
-          {currentContributor.role == ContributorRole.PROJECT_MANAGER && (
+          {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
             <div>
               <h3 className="mb-2">Assignment progress</h3>
               <AssignmentProgress taskId={task.id} />
@@ -285,7 +289,7 @@ export const ShowTaskPage = () => {
           {!task["schema"] && currentAssignments && individualAssignments.length > 0 && (
             <div className="flex flex-col gap-2">
               <CompleteToggle
-                currentAssignment={individualAssignments[0]}
+                currentAssignment={individualAssignments[0]!.statusLogs[0]}
                 refetch={refetchAssignments}
                 completedLabel="Completed as an individual"
                 completedBy={currentContributor.id}
@@ -299,7 +303,7 @@ export const ShowTaskPage = () => {
               {teamAssignments.map((teamAssignment) => (
                 <CompleteToggle
                   key={teamAssignment.id}
-                  currentAssignment={teamAssignment}
+                  currentAssignment={teamAssignment.statusLogs[0]}
                   refetch={refetchAssignments}
                   completedLabel={`Completed as ${teamAssignment.team.name} Team`}
                   completedBy={currentContributor.id}

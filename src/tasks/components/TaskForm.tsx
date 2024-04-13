@@ -9,7 +9,7 @@ import { Field, useField, FormSpy } from "react-final-form"
 
 import { boolean, z } from "zod"
 import getContributors from "src/contributors/queries/getContributors"
-import getAssigments from "src/assignments/queries/getAssignments"
+import getAssignments from "src/assignments/queries/getAssignments"
 
 import Modal from "src/core/components/Modal"
 import { useEffect, useState } from "react"

@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
+import db, { CompletedAs } from "db"
 import { CreateTaskSchema } from "../schemas"
 
 export default resolver.pipe(
@@ -53,10 +53,17 @@ export default resolver.pipe(
     // Create the assignment
     if (contributorsId != null && contributorsId.length != 0) {
       contributorsId.forEach(async (contributorId) => {
+        // Create the assignment
         const assignment = await db.assignment.create({
           data: {
             task: { connect: { id: task.id } },
             contributor: { connect: { id: contributorId } },
+          },
+        })
+        // Create assignment status log
+        await db.assignmentStatusLog.create({
+          data: {
+            assignmentId: assignment.id,
           },
         })
       })
@@ -64,10 +71,18 @@ export default resolver.pipe(
 
     if (teamsId != null && teamsId.length != 0) {
       teamsId.forEach(async (teamId) => {
+        // Create the assignment
         const assignment = await db.assignment.create({
           data: {
             task: { connect: { id: task.id } },
             team: { connect: { id: teamId } },
+          },
+        })
+        // Create assignment status log
+        await db.assignmentStatusLog.create({
+          data: {
+            assignmentId: assignment.id,
+            completedAs: CompletedAs.TEAM,
           },
         })
       })

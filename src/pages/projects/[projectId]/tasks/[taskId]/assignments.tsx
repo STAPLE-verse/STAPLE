@@ -37,6 +37,12 @@ export const AssignmentsPage = () => {
           user: true,
         },
       },
+      statusLogs: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 1, // TODO: Make new queries that are specified to these tasks once MVP is nearly ready
+      },
     },
     // TODO: replace this with actual type def
   }) as unknown as [AssignmentWithRelations[], { refetch: () => void }]
@@ -54,11 +60,12 @@ export const AssignmentsPage = () => {
           },
         },
       },
-      // contributor: {
-      //   include: {
-      //     user: true,
-      //   },
-      // },
+      statusLogs: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 1, // TODO: Make new queries that are specified to these tasks once MVP is nearly ready
+      },
     },
     // TODO: replace this with actual type def
   }) as unknown as [TeamAssignmentWithRelations[], { refetch: () => void }]

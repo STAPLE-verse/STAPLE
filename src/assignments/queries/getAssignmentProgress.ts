@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { Prisma } from "db"
+import db from "db"
 import { z } from "zod"
 
 const GetAssignmentProgress = z.object({
@@ -10,27 +10,32 @@ export default resolver.pipe(
   resolver.zod(GetAssignmentProgress),
   resolver.authorize(),
   async ({ taskId }) => {
-    const assignmentCounts = await db.assignment.groupBy({
-      by: ["taskId", "status"],
-      where: {
-        taskId: taskId,
-      },
-      _count: {
-        status: true,
+    // Get all the assignments for the given task
+    const assignments = await db.assignment.findMany({
+      where: { taskId },
+      include: {
+        statusLogs: {
+          orderBy: {
+            changedAt: "desc",
+          },
+          take: 1, // Take the latest status log only
+        },
       },
     })
 
-    // Extract counts from the result
-    const notcompletedAssignmentsCount = assignmentCounts
-      .filter((count) => count.status === "NOT_COMPLETED")
-      .reduce((sum, count) => sum + count._count.status, 0)
+    // Filter and count statuses
+    let notcompletedAssignmentsCount = 0
+    let completedAssignmentsCount = 0
 
-    const completedAssignmentsCount = assignmentCounts
-      .filter((count) => count.status === "COMPLETED")
-      .reduce((sum, count) => sum + count._count.status, 0)
+    assignments.forEach((assignment) => {
+      const latestStatus = assignment.statusLogs[0]?.status
+      if (latestStatus === "NOT_COMPLETED") {
+        notcompletedAssignmentsCount += 1
+      } else if (latestStatus === "COMPLETED") {
+        completedAssignmentsCount += 1
+      }
+    })
 
-    const allAssignmentsCount = notcompletedAssignmentsCount + completedAssignmentsCount
-
-    return { all: allAssignmentsCount, completed: completedAssignmentsCount }
+    return { all: assignments.length, completed: completedAssignmentsCount }
   }
 )
