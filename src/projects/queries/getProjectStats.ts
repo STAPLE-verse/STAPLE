@@ -1,6 +1,7 @@
 import { NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
+import { TaskStatus } from "db"
 import { z } from "zod"
 
 const GetProjectStatsSchema = z.object({
@@ -25,10 +26,17 @@ export default resolver.pipe(
       where: { projectId: id },
     })
 
+    const completedTask = await db.task.count({
+      where: {
+        projectId: id,
+        status: TaskStatus.NOT_COMPLETED,
+      },
+    })
+
     return {
       allContributor: allContributor,
       allTask: allTask,
-      // completedTask: ,
+      completedTask: completedTask,
       allTeams: allTeams,
     }
   }

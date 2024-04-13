@@ -21,7 +21,7 @@ export const ShowProjectPage = () => {
         </Head>
 
         <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-          <h1>{project.name}</h1>
+          <h3>{project.name}</h3>
           <div className="flex flex-col gap-4">
             <p className="">{project.description}</p>
             <p className="italic">
@@ -37,7 +37,7 @@ export const ShowProjectPage = () => {
               })}
             </p>
           </div>
-          <div className="divider mt-4 mb-4"></div>
+          <div className="divider mt-4 mb-4">Project Dashboard</div>
           <ProjectDashboard />
         </main>
       </Suspense>
