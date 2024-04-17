@@ -7,6 +7,7 @@ import {
   UsersIcon,
   UserGroupIcon,
   BeakerIcon,
+  BellIcon,
 } from "@heroicons/react/24/outline"
 import { useRouter } from "next/router"
 import { SidebarItemProps } from "../components/Sidebar"
@@ -99,8 +100,6 @@ export const HomeSidebarItems = (whichActive: string | null = null): SidebarItem
       },
       active: whichActive === "Tasks",
     },
-
-    ,
     {
       icon: <BeakerIcon className="w-6 h-6" />,
       text: "Forms",
@@ -108,6 +107,14 @@ export const HomeSidebarItems = (whichActive: string | null = null): SidebarItem
         await router.push(Routes.FormBuilderPage())
       },
       active: whichActive === "Forms",
+    },
+    {
+      icon: <BellIcon className="w-6 h-6" />,
+      text: "Notifications",
+      onClick: async () => {
+        await router.push(Routes.NotificationsPage())
+      },
+      active: whichActive === "Notifications",
     },
   ]
 }

@@ -81,6 +81,7 @@ const NewTaskPage = () => {
                   teamsId: values.teamsId,
                   schema: schema,
                 })
+
                 await toast.promise(Promise.resolve(task), {
                   loading: "Creating task...",
                   success: "Task created!",

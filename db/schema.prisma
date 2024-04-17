@@ -236,10 +236,17 @@ model Forms {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum templateType {
+  email
+  notification
+}
+
 model Notification {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  recipients User[]   @relation("UserNotifications")
+  id         Int          @id @default(autoincrement())
+  createdAt  DateTime     @default(now())
+  recipients User[]       @relation("UserNotifications")
   template   String
   data       Json
+  type       templateType
+  read       Boolean      @default(false)
 }

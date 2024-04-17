@@ -1,22 +1,26 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { CompletedAs } from "db"
 import { CreateTaskSchema } from "../schemas"
+import sendNotification from "src/messages/mutations/sendNotification"
 
 export default resolver.pipe(
   resolver.zod(CreateTaskSchema),
   resolver.authorize(),
-  async ({
-    projectId,
-    columnId,
-    name,
-    description,
-    elementId,
-    deadline,
-    createdById,
-    contributorsId,
-    teamsId,
-    schema,
-  }) => {
+  async (
+    {
+      projectId,
+      columnId,
+      name,
+      description,
+      elementId,
+      deadline,
+      createdById,
+      contributorsId,
+      teamsId,
+      schema,
+    },
+    ctx
+  ) => {
     // Get number of tasks for the column inside the project
     const columnTaskIndex = await db.task.count({
       where: {
@@ -52,6 +56,18 @@ export default resolver.pipe(
 
     // Create the assignment
     if (contributorsId != null && contributorsId.length != 0) {
+      // Fetch User IDs corresponding to the Contributor IDs
+      const users = await db.contributor.findMany({
+        where: {
+          id: { in: contributorsId },
+        },
+        select: {
+          userId: true, // Only select the userId field
+        },
+      })
+      // Map to extract just the userIds
+      const userIds = users.map((u) => u.userId)
+
       contributorsId.forEach(async (contributorId) => {
         // Create the assignment
         const assignment = await db.assignment.create({
@@ -67,6 +83,16 @@ export default resolver.pipe(
           },
         })
       })
+      // Send notification to the contributor
+      await sendNotification(
+        {
+          templateId: "taskAssigned",
+          type: "notification",
+          recipients: userIds,
+          data: { taskName: name, createdBy: createdById.toString(), deadline: deadline },
+        },
+        ctx
+      )
     }
 
     if (teamsId != null && teamsId.length != 0) {
