@@ -130,6 +130,10 @@ model Project {
 
   contributors Contributor[]
   teams        Team[]
+
+  // contributor label options here in an array - relation
+  // basically just a filter of what should be allowed in the
+  // assignment to the tasks and contributors
 }
 
 enum TaskStatus {
@@ -240,6 +244,7 @@ model Forms {
   json      String
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // shareable option so you can see if it you are PM-ing with someone else
 }
 
 model Notification {
