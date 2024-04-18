@@ -52,7 +52,17 @@ export default resolver.pipe(
             }
           : undefined,
       },
+      include: {
+        createdBy: {
+          include: {
+            user: true,
+          },
+        },
+      },
     })
+
+    // Get username corresponding to the PM who created the task
+    const createdByUsername = task.createdBy.user ? task.createdBy.user.username : null
 
     // Create the assignment
     if (contributorsId != null && contributorsId.length != 0) {
@@ -88,7 +98,7 @@ export default resolver.pipe(
         {
           templateId: "taskAssigned",
           recipients: userIds,
-          data: { taskName: name, createdBy: createdById.toString(), deadline: deadline },
+          data: { taskName: name, createdBy: createdByUsername, deadline: deadline },
         },
         ctx
       )
