@@ -87,7 +87,6 @@ export default resolver.pipe(
       await sendNotification(
         {
           templateId: "taskAssigned",
-          type: "notification",
           recipients: userIds,
           data: { taskName: name, createdBy: createdById.toString(), deadline: deadline },
         },

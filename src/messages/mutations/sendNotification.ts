@@ -2,10 +2,10 @@ import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { getDynamicSchema } from "../schemas"
 import db from "db"
+import { compileTemplate } from "../compileTemplate"
 
 const sendNotificationSchema = z.object({
   templateId: z.string(),
-  type: z.enum(["email", "notification"]),
   recipients: z.array(z.number()),
   data: z.any(), // This will be validated dynamically based on the notification template that is being used
 })
@@ -13,7 +13,7 @@ const sendNotificationSchema = z.object({
 export default resolver.pipe(
   resolver.zod(sendNotificationSchema),
   resolver.authorize(),
-  async ({ templateId, data, type, recipients }) => {
+  async ({ templateId, data, recipients }) => {
     try {
       // Validate the data against the dynamic schema
       const dynamicSchema = getDynamicSchema(templateId)
@@ -28,11 +28,12 @@ export default resolver.pipe(
         )
       }
 
+      // Compiling the message
+      const message = await compileTemplate(templateId, validationResult.data)
+
       const notification = await db.notification.create({
         data: {
-          template: templateId,
-          type: type,
-          data: validationResult.data,
+          message: message,
           recipients: {
             connect: recipients.map((id) => ({ id })),
           },

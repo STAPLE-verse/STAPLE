@@ -242,11 +242,9 @@ enum templateType {
 }
 
 model Notification {
-  id         Int          @id @default(autoincrement())
-  createdAt  DateTime     @default(now())
-  recipients User[]       @relation("UserNotifications")
-  template   String
-  data       Json
-  type       templateType
-  read       Boolean      @default(false)
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  recipients User[]   @relation("UserNotifications")
+  message    String
+  read       Boolean  @default(false)
 }
