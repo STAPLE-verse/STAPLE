@@ -144,6 +144,7 @@ export const HomeSidebarItems = (whichActive: string | null = null): SidebarItem
         await router.push(Routes.NotificationsPage())
       },
       active: whichActive === "Notifications",
+    },
     {
       icon: <TagIcon className="w-6 h-6" />,
       text: "Labels",
