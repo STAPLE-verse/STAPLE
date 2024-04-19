@@ -16,10 +16,22 @@ type SignupFormProps = {
 export const SignupForm = (props: SignupFormProps) => {
   // const [signupMutation] = useMutation(signup)
   return (
-    <div className="flex flex-col max-w-3xl mx-auto w-full">
-      <h1 className="text-center">Create Account</h1>
+    <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
+      <center>
+        <picture>
+          <source
+            srcset="/logo_white_big.png"
+            media="(prefers-color-scheme: dark)"
+            alt="STAPLE Logo"
+            width={200}
+          />
+          <img src="/logo_black_big.png" alt="STAPLE Logo" width={200} />
+        </picture>
+      </center>
+
+      <h1 className="text-center text-4xl mt-2">Sign Up</h1>
       <Form
-        className="mb-2"
+        className=""
         submitText="Create Account"
         schema={Signup}
         initialValues={{
@@ -44,22 +56,36 @@ export const SignupForm = (props: SignupFormProps) => {
           }
         }}
       >
-        <LabeledTextField name="email" label="Email" placeholder="" className="mb-4 w-full" />
+        <LabeledTextField
+          name="email"
+          label="Email:"
+          placeholder=""
+          className="mb-4 w-full text-primary border-primary border-2"
+        />
         <LabeledTextField
           name="password"
-          label="Password"
+          label="Password:"
           placeholder=""
           type="password"
-          className="mb-4 w-full"
+          className="mb-4 w-full text-primary border-primary border-2"
         />
-        <LabeledTextField name="username" label="Username" placeholder="" className="w-full" />
+        <LabeledTextField
+          name="username"
+          label="Username:"
+          placeholder=""
+          className="w-full text-primary border-primary border-2 mb-4"
+        />
       </Form>
-      <div className="flex flex-row gap-2">
-        <p>Already have an account?</p> <Link href={Routes.LoginPage()}>Log in</Link>
+
+      <div className="flex flex-row justify-end mb-4 mt-4">
+        <Link className="btn btn-outline btn-primary" href={Routes.Home()}>
+          Log In
+        </Link>
       </div>
-      <div className="flex flex-row justify-end mt-auto">
-        <Link className="btn" href={Routes.Home()}>
-          Go back
+
+      <div className="flex flex-row justify-end mb-4">
+        <Link className="btn btn-outline btn-secondary" href={Routes.Home()}>
+          Go Back
         </Link>
       </div>
     </div>
