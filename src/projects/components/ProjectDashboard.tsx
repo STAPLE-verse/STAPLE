@@ -1,7 +1,7 @@
 import { Routes, useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { Contributor, ContributorPrivileges, Prisma, Task, TaskStatus, User } from "db"
+import { Contributor, ContributorPrivileges, Prisma, Task, TaskStatus, User, Assignment } from "db"
 import moment from "moment"
 import Link from "next/link"
 import getContributor from "src/contributors/queries/getContributor"
@@ -49,16 +49,16 @@ const ProjectDashboard = () => {
     }),
     taskColumnHelper.accessor("id", {
       id: "view",
-      header: "",
+      header: "View",
       cell: (info) => (
         <Link
-          className="btn"
+          className="btn btn-sm btn-secondary"
           href={Routes.ShowTaskPage({
             projectId: info.row.original.projectId,
             taskId: info.getValue(),
           })}
         >
-          Open
+          View
         </Link>
       ),
     }),
@@ -91,75 +91,25 @@ const ProjectDashboard = () => {
     // TODO: Change this if completed tasks are added
     taskColumnHelper.accessor("id", {
       id: "view",
-      header: "",
+      header: "View",
       cell: (info) => (
         <Link
-          className="btn"
+          className="btn btn-sm btn-secondary"
           href={Routes.ShowTaskPage({
             projectId: info.row.original.projectId,
             taskId: info.getValue(),
           })}
         >
-          Ping contributors
+          View
         </Link>
       ),
     }),
-  ]
-
-  interface ProlificContributor extends Contributor {
-    user: User
-    completedTasksCount: number
-  }
-
-  const prolificContributorsColumns: ColumnDef<ProlificContributor>[] = [
-    {
-      accessorKey: "user.username",
-      cell: (info) => <span>{info.getValue() as string}</span>,
-      header: "Username",
-    },
-    {
-      accessorFn: (row) => row.completedTasksCount,
-      id: "completedTasksCount",
-      cell: (info) => <span>{info.getValue() as number}</span>,
-      header: "Number of Completed Tasks",
-    },
-    {
-      id: "actions",
-      header: "",
-      cell: (info) => {
-        const contributor = info.row.original
-        // Assuming `projectId` is available in the component's scope. You may need to adjust this.
-        return (
-          <div>
-            <Link
-              className="btn"
-              href={Routes.ShowContributorPage({
-                projectId: contributor.projectId, // Adjust according to how you have projectId available
-                contributorId: contributor.id,
-              })}
-            >
-              See contributions
-            </Link>
-            <Link
-              className="btn"
-              href={Routes.ShowContributorPage({
-                projectId: contributor.projectId, // Adjust according to how you have projectId available
-                contributorId: contributor.id,
-              })}
-            >
-              Send some <HeartIcon className="w-5 h-5 inline-block" />
-            </Link>
-          </div>
-        )
-      },
-    },
   ]
 
   type ContributorWithUser = Prisma.ContributorGetPayload<{
     include: { user: { select: { username: true; firstName: true; lastName: true } } }
   }>
 
-  // ColumnDefs
   const projectManagersColumns: ColumnDef<ContributorWithUser>[] = [
     {
       accessorKey: "user.username",
@@ -167,58 +117,50 @@ const ProjectDashboard = () => {
       header: "Username",
     },
     {
+      accessorKey: "user.firstName",
+      cell: (info) => <span>{info.getValue() as string}</span>,
+      header: "First Name",
+    },
+    {
+      accessorKey: "user.lastName",
+      cell: (info) => <span>{info.getValue() as string}</span>,
+      header: "Last Name",
+    },
+    {
       accessorKey: "action",
-      header: "",
+      header: "Contact",
       cell: (info) => (
-        <Link className="btn" href="">
+        <Link className="btn btn-sm btn-secondary" href="">
           Ask for help
         </Link>
       ),
     },
   ]
 
-  const today = moment().startOf("day")
-  const tomorrow = moment(today).add(1, "days")
+  const today = moment().startOf("minute")
+  //const tomorrow = moment(today).add(1, "days")
 
+  // coming up tasks for everyone
   const [{ tasks }] = useQuery(getTasks, {
     where: {
       project: { id: projectId },
       deadline: {
         gte: today.toDate(),
-        lt: moment(tomorrow).add(1, "days").toDate(),
+        //lt: moment(tomorrow).add(1, "days").toDate(),
       },
       status: TaskStatus.NOT_COMPLETED,
     },
-    orderBy: { id: "asc" },
+    orderBy: { deadline: "asc" },
   })
 
-  const todayTasks = tasks.filter((task) => {
+  const upcomingTasks = tasks.filter((task) => {
     if (task && task.deadline) {
-      return moment(task.deadline).isSame(today, "day")
-    }
-    return false
-  })
-  const tomorrowTasks = tasks.filter((task) => {
-    if (task && task.deadline) {
-      return moment(task.deadline).isSame(tomorrow, "day")
+      return moment(task.deadline).isSameOrAfter(today, "day")
     }
     return false
   })
 
-  const [projectStats] = useQuery(getProjectStats, { id: projectId! })
-
-  const [contributors] = useQuery(getProlificContributors, { projectId: projectId! })
-
-  const [{ contributors: projectManagers }] = useQuery(getContributors, {
-    where: {
-      projectId: projectId,
-      privilege: "PROJECT_MANAGER",
-    },
-    include: {
-      user: true,
-    },
-  })
-
+  //past due for everyone
   const [{ tasks: pastDueTasks }] = useQuery(getTasks, {
     where: {
       project: { id: projectId },
@@ -230,132 +172,249 @@ const ProjectDashboard = () => {
     orderBy: { id: "asc" },
   })
 
+  // coming up for Contributor
+  const [{ tasks: upcomingTasksContributor }] = useQuery(getTasks, {
+    where: {
+      project: { id: projectId },
+      deadline: { gte: today.toDate() },
+      status: TaskStatus.NOT_COMPLETED,
+      OR: [
+        { assignees: { some: { contributor: { user: { id: currentUser?.id } }, teamId: null } } },
+        {
+          assignees: {
+            some: {
+              team: { contributors: { some: { id: currentUser?.id } } },
+              contributorId: null,
+            },
+          },
+        },
+      ],
+    },
+    orderBy: { id: "asc" },
+  })
+
+  // past due for contributor
+  const [{ tasks: pastDueTasksContributor }] = useQuery(getTasks, {
+    where: {
+      project: { id: projectId },
+      deadline: { lt: today.toDate() },
+      status: TaskStatus.NOT_COMPLETED,
+      OR: [
+        { assignees: { some: { contributor: { user: { id: currentUser?.id } }, teamId: null } } },
+        {
+          assignees: {
+            some: {
+              team: { contributors: { some: { id: currentUser?.id } } },
+              contributorId: null,
+            },
+          },
+        },
+      ],
+    },
+    orderBy: { id: "asc" },
+  })
+
+  const [projectStats] = useQuery(getProjectStats, { id: projectId! })
+
+  const [{ contributors: projectManagers }] = useQuery(getContributors, {
+    where: {
+      projectId: projectId,
+      privilege: "PROJECT_MANAGER",
+    },
+    include: {
+      user: true,
+    },
+  })
+
+  var upcomingDisplay = ""
+  var pastDueDisplay = ""
+
+  // create if else for showing tasks
+  if (currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER) {
+    upcomingTasks.length === 0
+      ? (upcomingDisplay = <p className="italic p-2">No upcoming tasks</p>)
+      : (upcomingDisplay = (
+          <Table
+            columns={tasksColumns}
+            data={upcomingTasks}
+            classNames={{
+              thead: "text-sm text-primary-content",
+              tbody: "text-sm text-primary-content",
+              td: "text-sm text-primary-content",
+            }}
+          />
+        ))
+
+    pastDueTasks.length === 0
+      ? (pastDueDisplay = <p className="italic p-2">No overdue tasks</p>)
+      : (pastDueDisplay = (
+          <Table
+            columns={pastDueTasksColumns}
+            data={pastDueTasks}
+            classNames={{
+              thead: "text-sm text-primary-content",
+              tbody: "text-sm text-primary-content",
+              td: "text-sm text-primary-content",
+            }}
+          />
+        ))
+  } else if (currentContributor.privilege == ContributorPrivileges.CONTRIBUTOR) {
+    upcomingTasksContributor.length === 0
+      ? (upcomingDisplay = <p className="italic p-2">No upcoming tasks</p>)
+      : (upcomingDisplay = (
+          <Table
+            columns={tasksColumns}
+            data={upcomingTasksContributor}
+            classNames={{
+              thead: "text-sm text-primary-content",
+              tbody: "text-sm text-primary-content",
+              td: "text-sm text-primary-content",
+            }}
+          />
+        ))
+
+    pastDueTasksContributor.length === 0
+      ? (pastDueDisplay = <p className="italic p-2">No overdue tasks</p>)
+      : (pastDueDisplay = (
+          <Table
+            columns={pastDueTasksColumns}
+            data={pastDueTasksContributor}
+            classNames={{
+              thead: "text-sm text-primary-content",
+              tbody: "text-sm text-primary-content",
+              td: "text-sm text-primary-content",
+            }}
+          />
+        ))
+  }
+
   return (
     <div className="flex flex-col space-y-4">
-      <div className="flex flex-row justify-between">
-        {/* Personal tasks */}
-        <div className="flex flex-col rounded bg-base-200 p-4">
-          <h4>Your upcoming tasks</h4>
-          <div>
-            <p className="font-semibold">Today</p>
-            {todayTasks.length === 0 ? (
-              <p className="italic p-2">You have no tasks for today. Hurray!</p>
-            ) : (
-              <Table
-                enableFilters={false}
-                columns={tasksColumns}
-                data={todayTasks}
-                classNames={{
-                  thead: "text-sm",
-                  tbody: "text-sm",
-                }}
-              />
-            )}
+      {/* General stats row 1 across the top
+        only project managers see this*/}
+
+      {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
+        <div className="flex flex-row justify-center">
+          <div className="stats bg-primary text-primary-content mx-2 w-1/4">
+            <div className="stat">
+              <div className="stat-title text-center text-primary-content">Contributors</div>
+              <div className="stat-value text-center text-primary-content">
+                {projectStats.allContributor}
+              </div>
+              <div className="stat-actions text-center text-primary-content">
+                <Link
+                  className="btn btn-sm btn-secondary"
+                  href={Routes.ContributorsPage({ projectId: projectId! })}
+                >
+                  View
+                </Link>
+              </div>
+            </div>
           </div>
-          <div>
-            <p className="font-semibold">Tomorrow</p>
-            {tomorrowTasks.length === 0 ? (
-              <p className="italic p-2">You have no tasks for tomorrow. Hurray!</p>
-            ) : (
-              <Table
-                enableFilters={false}
-                columns={tasksColumns}
-                data={tomorrowTasks}
-                classNames={{
-                  thead: "text-sm",
-                  tbody: "text-sm",
-                }}
-              />
-            )}
+
+          <div className="stats bg-primary text-primary-content mx-2 w-1/4">
+            <div className="stat">
+              <div className="stat-title text-center text-primary-content">Teams</div>
+              <div className="stat-value text-center text-primary-content">
+                {projectStats.allTeams}
+              </div>
+              <div className="stat-actions text-center text-primary-content">
+                <Link
+                  className="btn btn-sm btn-secondary"
+                  href={Routes.TeamsPage({ projectId: projectId! })}
+                >
+                  View
+                </Link>
+              </div>
+            </div>
           </div>
-          <Link className="btn self-end m-4" href={Routes.TasksPage({ projectId: projectId! })}>
-            Show all tasks
-          </Link>
+
+          <div className="stats bg-primary text-primary-content mx-2 w-1/4">
+            <div className="stat">
+              <div className="stat-title text-center text-primary-content">Incomplete Tasks</div>
+              <div className="stat-value text-center text-primary-content">
+                {projectStats.completedTask} / {projectStats.allTask}
+              </div>
+              <div className="stat-actions text-center text-primary-content">
+                <Link
+                  className="btn btn-sm btn-secondary"
+                  href={Routes.TasksPage({ projectId: projectId! })}
+                >
+                  View
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="stats bg-primary text-primary-content mx-2 w-1/4">
+            <div className="stat">
+              <div className="stat-title text-center text-primary-content">Form Data</div>
+              <div className="stat-value text-center text-primary-content">XX</div>
+              <div className="stat-actions text-center text-primary-content">
+                <button className="btn btn-sm btn-secondary">Coming Soon</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* row 2 for recent events*/}
+      <div className="flex flex-row justify-center">
+        <div className="card bg-primary text-primary-content mx-2 w-1/2">
+          <div className="card-body">
+            <div className="card-title text-primary-content">Recent Events</div>
+            - if project manager: show everyone's recent Events <br />
+            - if contributor: show your recent events <br />
+          </div>
         </div>
 
-        {/* Most prolific contributors */}
-        {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
-          <div className="flex flex-col rounded bg-base-200 p-4">
-            <h4>Most prolific contributors</h4>
-            <Table
-              enableFilters={false}
-              columns={prolificContributorsColumns}
-              data={contributors}
-              classNames={{
-                thead: "text-sm",
-                tbody: "text-sm",
-              }}
-            />
-            <Link
-              className="btn self-end m-4"
-              href={Routes.ContributorsPage({ projectId: projectId! })}
-            >
-              Show all contributors
-            </Link>
+        <div className="card bg-primary text-primary-content mx-2 w-1/2">
+          <div className="card-body">
+            <div className="card-title text-primary-content">Task Summary</div>
+            <b>Upcoming:</b> <br />
+            {upcomingDisplay}
+            <b>Overdue:</b> <br />
+            {pastDueDisplay}
           </div>
-        )}
-
-        {/* General stats */}
-        {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
-          <div className="stats stats-vertical shadow">
-            <div className="stat">
-              <div className="stat-title">Contributors</div>
-              <div className="stat-value">{projectStats.allContributor}</div>
-              {/* <div className="stat-desc">↗︎ 14 (22%)</div> */}
-            </div>
-
-            <div className="stat">
-              <div className="stat-title">Teams</div>
-              <div className="stat-value">{projectStats.allTeams}</div>
-            </div>
-
-            <div className="stat">
-              <div className="stat-title">Tasks</div>
-              <div className="stat-value">{projectStats.allTask}</div>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
-      <div className="flex flex-row justify-between">
-        {/* Tasks over deadline */}
-        {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
-          <div className="flex flex-col rounded bg-base-200 p-4">
-            <h4>Tasks way past due</h4>
-            <p>Take care of these tasks before it is too late!</p>
-            {pastDueTasks.length === 0 ? (
-              <p className="italic p-2">All contributors are on the right track!</p>
-            ) : (
+
+      {/* row 3 for announcements events*/}
+      <div className="flex flex-row justify-center">
+        <div className="card bg-primary text-primary-content mx-2 w-1/2">
+          <div className="card-body">
+            <div className="card-title text-primary-content">Announcements</div>
+          </div>
+        </div>
+
+        <div className="stats bg-primary text-primary-content mx-2 w-1/2">
+          <div className="card-body">
+            <div className="card-title text-primary-content">Notifications</div>
+          </div>
+        </div>
+      </div>
+
+      {/* row 4 for contributors*/}
+      {currentContributor.privilege == ContributorPrivileges.CONTRIBUTOR && (
+        <div className="flex flex-row justify-center">
+          <div className="card bg-primary text-primary-content mx-2 w-full">
+            <div className="card-body">
+              <div className="card-title text-primary-content">Project Managers</div>
+              <b>Contacts for the Project: </b>
+              <br />
               <Table
-                enableFilters={false}
-                columns={pastDueTasksColumns}
-                data={pastDueTasks}
+                columns={projectManagersColumns}
+                data={projectManagers}
                 classNames={{
-                  thead: "text-sm",
-                  tbody: "text-sm",
+                  thead: "text-sm text-primary-content",
+                  tbody: "text-sm text-primary-content",
+                  td: "text-sm text-primary-content",
                 }}
               />
-            )}
-            <Link className="btn self-end m-4" href={Routes.TasksPage({ projectId: projectId! })}>
-              Show all tasks
-            </Link>
+            </div>
           </div>
-        )}
-        {/* List of project managers */}
-        {currentContributor.privilege == ContributorPrivileges.CONTRIBUTOR && (
-          <div className="flex flex-col rounded bg-base-200 p-4">
-            <h4>Project managers</h4>
-            <p>Ping them if you need help</p>
-            <Table
-              columns={projectManagersColumns}
-              data={projectManagers}
-              classNames={{
-                thead: "text-sm",
-                tbody: "text-sm",
-              }}
-            />
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

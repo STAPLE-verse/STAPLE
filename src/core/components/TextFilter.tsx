@@ -35,7 +35,6 @@ function TextFilter({ column, table }: { column: Column<any, unknown>; table: Ta
   )
 }
 
-// A debounced input react component
 function DebouncedInput({
   value: initialValue,
   onChange,

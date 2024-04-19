@@ -8,6 +8,10 @@ import {
   UserGroupIcon,
   BeakerIcon,
   BellIcon,
+  DocumentChartBarIcon,
+  NewspaperIcon,
+  TagIcon,
+  CheckCircleIcon,
 } from "@heroicons/react/24/outline"
 import { useRouter } from "next/router"
 import { SidebarItemProps } from "../components/Sidebar"
@@ -59,6 +63,31 @@ export const ProjectSidebarItems = (
         await router.push(Routes.TeamsPage({ projectId: projectId }))
       },
       active: whichActive === "Teams",
+    },
+    {
+      icon: <CheckCircleIcon className="w-6 h-6" />,
+      text: "Credit",
+      onClick: async () => {
+        await router.push(Routes.CreditPage({ projectId: projectId }))
+      },
+      active: whichActive === "Credit",
+    },
+    {
+      icon: <DocumentChartBarIcon className="w-6 h-6" />,
+      text: "Form Data",
+      onClick: async () => {
+        await router.push(Routes.MetadataPage({ projectId: projectId }))
+      },
+      active: whichActive === "Form Data",
+    },
+
+    {
+      icon: <NewspaperIcon className="w-6 h-6" />,
+      text: "Summary",
+      onClick: async () => {
+        await router.push(Routes.SummaryPage({ projectId: projectId }))
+      },
+      active: whichActive === "Summary",
     },
 
     {
@@ -115,6 +144,13 @@ export const HomeSidebarItems = (whichActive: string | null = null): SidebarItem
         await router.push(Routes.NotificationsPage())
       },
       active: whichActive === "Notifications",
+    {
+      icon: <TagIcon className="w-6 h-6" />,
+      text: "Labels",
+      onClick: async () => {
+        await router.push(Routes.LabelBuilderPage())
+      },
+      active: whichActive === "Labels",
     },
   ]
 }
