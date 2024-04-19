@@ -13,11 +13,11 @@ import Image from "next/image"
 const UserInfo = () => {
   return (
     <>
-      <Link href={Routes.SignupPage()} className="btn">
+      <Link href={Routes.SignupPage()} className="btn btn-outline btn-primary">
         <strong>Sign Up</strong>
       </Link>
-      <Link href={Routes.LoginPage()} className="btn">
-        <strong>Login</strong>
+      <Link href={Routes.LoginPage()} className="btn btn-outline btn-secondary">
+        <strong>Log In</strong>
       </Link>
     </>
   )
