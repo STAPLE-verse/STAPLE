@@ -247,10 +247,15 @@ model Forms {
   // shareable option so you can see if it you are PM-ing with someone else
 }
 
+enum templateType {
+  email
+  notification
+}
+
 model Notification {
   id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now())
   recipients User[]   @relation("UserNotifications")
-  template   String
-  data       Json
+  message    String
+  read       Boolean  @default(false)
 }

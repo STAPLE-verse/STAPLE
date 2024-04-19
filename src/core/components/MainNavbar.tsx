@@ -101,7 +101,9 @@ const Navbar = () => {
               <span className="font-bold text-lg">8 Notifications</span>
               <span className="text-info">One new contributor</span>
               <div className="card-actions">
-                <button className="btn btn-primary btn-block">View notifications</button>
+                <Link className="btn btn-primary btn-block" href={Routes.NotificationsPage()}>
+                  View notifications
+                </Link>
               </div>
             </div>
           </div>

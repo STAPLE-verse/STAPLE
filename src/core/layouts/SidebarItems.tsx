@@ -7,6 +7,7 @@ import {
   UsersIcon,
   UserGroupIcon,
   BeakerIcon,
+  BellIcon,
   DocumentChartBarIcon,
   NewspaperIcon,
   TagIcon,
@@ -128,8 +129,6 @@ export const HomeSidebarItems = (whichActive: string | null = null): SidebarItem
       },
       active: whichActive === "Tasks",
     },
-
-    ,
     {
       icon: <BeakerIcon className="w-6 h-6" />,
       text: "Forms",
@@ -138,6 +137,13 @@ export const HomeSidebarItems = (whichActive: string | null = null): SidebarItem
       },
       active: whichActive === "Forms",
     },
+    {
+      icon: <BellIcon className="w-6 h-6" />,
+      text: "Notifications",
+      onClick: async () => {
+        await router.push(Routes.NotificationsPage())
+      },
+      active: whichActive === "Notifications",
     {
       icon: <TagIcon className="w-6 h-6" />,
       text: "Labels",
