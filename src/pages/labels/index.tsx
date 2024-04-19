@@ -18,6 +18,11 @@ import { number, z } from "zod"
 import toast from "react-hot-toast"
 import createLabel from "src/labels/mutations/createLabel"
 import getLabels from "src/labels/queries/getLabels"
+import Table from "src/core/components/Table"
+import {
+  ContributorLabelInformation,
+  contributorLableTableColumns,
+} from "src/labels/components/LabelTable"
 
 export const LabelFormSchema = z.object({
   name: z.string(),
@@ -25,6 +30,52 @@ export const LabelFormSchema = z.object({
   taxonomy: z.string().optional(),
   // template: __fieldName__: z.__zodType__(),
 })
+
+export const AllLabelsList = (userId) => {
+  const router = useRouter()
+  const page = Number(router.query.page) || 0
+
+  const ITEMS_PER_PAGE = 7
+  console.log(userId)
+  //move to label list
+  const [{ labels, hasMore }] = usePaginatedQuery(
+    getLabels,
+    {
+      // where: { userId: userId },
+    }
+    // orderBy: { id: "asc" },
+    // skip: ITEMS_PER_PAGE * page,
+    // take: ITEMS_PER_PAGE,
+  )
+
+  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+
+  const contributorLabelnformation = labels.map(
+    (label) => {
+      const name = label.name
+
+      let t: ContributorLabelInformation = {
+        name: name,
+        id: label.id,
+        // projectId: projectId,
+      }
+      return t
+    }
+
+    // name: contributor["user"].firstName
+    // const lastName = contributor["user"].lastName
+    // const username = contributor["user"].username
+    // const initial = getInitials(firstName, lastName)
+  )
+
+  return (
+    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
+      <Table columns={contributorLableTableColumns} data={contributorLabelnformation} />
+    </main>
+  )
+}
 
 const LabelBuilderPage = () => {
   const sidebarItems = HomeSidebarItems("Labels")
@@ -84,6 +135,11 @@ const LabelBuilderPage = () => {
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2">Labels</h1>
+        <div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <AllLabelsList userId={currentUser!.id} />
+          </Suspense>
+        </div>
 
         <button
           type="button"
@@ -121,7 +177,8 @@ const LabelBuilderPage = () => {
             </div>
           </div>
         </Modal>
-        <Suspense fallback={<div>Loading...</div>}>
+
+        {/* <Suspense fallback={<div>Loading...</div>}>
           Label creation and updating will go here
           <br />
           - make this like the task table - where you can view all Labels with a view button that
@@ -130,7 +187,7 @@ const LabelBuilderPage = () => {
           - at the bottom of the paged table have a create button that opens a modal that allows you
           to add a new Label
           <br />- new label page should have string fields for name, description, and taxonomy
-        </Suspense>
+        </Suspense> */}
       </main>
     </Layout>
   )
