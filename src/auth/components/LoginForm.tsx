@@ -27,10 +27,10 @@ export const LoginForm = (props: LoginFormProps) => {
         </picture>
       </center>
 
-      <h1 className="text-center text-4xl">Login</h1>
+      <h1 className="text-center text-4xl">Log In</h1>
 
       <Form
-        submitText="Login"
+        submitText="Log In"
         schema={Login}
         initialValues={{ email: "", password: "" }}
         onSubmit={async (values) => {
@@ -49,31 +49,37 @@ export const LoginForm = (props: LoginFormProps) => {
           }
         }}
       >
-        <LabeledTextField name="email" label="Email" placeholder="Email" className="mb-4 w-full" />
+        <LabeledTextField
+          name="email"
+          label="Email:"
+          placeholder="Email"
+          className="mb-4 w-full text-primary border-primary border-2"
+        />
 
         <LabeledTextField
           name="password"
-          label="Password"
+          label="Password:"
           placeholder="Password"
           type="password"
-          className="w-full"
+          className="w-full text-primary border-primary border-2"
         />
       </Form>
 
-      <div className="mt-4">
-        <Link className="italic" href={Routes.ForgotPasswordPage()}>
-          Forgot your password?
+      <div className="flex flex-row justify-end mt-4">
+        <Link className="btn btn-outline btn-warning" href={Routes.ForgotPasswordPage()}>
+          Forgot Password
         </Link>
       </div>
 
-      <div className="flex flex-row gap-4 mt-2">
-        <p>Don’t have a STAPLE Account yet?</p>
-        <Link href={Routes.SignupPage()}>Register now</Link>
+      <div className="flex flex-row justify-end mt-4">
+        <Link className="btn btn-outline btn-info" href={Routes.SignupPage()}>
+          Register
+        </Link>
       </div>
 
-      <div className="flex flex-row justify-end mt-auto">
-        <Link className="btn" href={Routes.Home()}>
-          Go back
+      <div className="flex flex-row justify-end mt-4">
+        <Link className="btn btn-outline btn-secondary" href={Routes.Home()}>
+          Go Back Home
         </Link>
       </div>
     </div>
