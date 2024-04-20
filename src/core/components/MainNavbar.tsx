@@ -58,7 +58,15 @@ const Navbar = () => {
       {/* Tabs */}
       {/* On the left */}
       <div className="flex-1">
-        <h2>STAPLE</h2>
+        <picture>
+          <source
+            srcset="/stapler_white.png"
+            media="(prefers-color-scheme: dark)"
+            alt="STAPLE Logo"
+            width={25}
+          />
+          <img src="/stapler_black.png" alt="STAPLE Logo" width={25} />
+        </picture>
       </div>
       {/* On the right */}
       <div className="flex space-x-5">
@@ -98,10 +106,11 @@ const Navbar = () => {
           >
             {/* TODO: Change to notifs */}
             <div className="card-body">
-              <span className="font-bold text-lg">8 Notifications</span>
-              <span className="text-info">One new contributor</span>
               <div className="card-actions">
-                <Link className="btn btn-primary btn-block" href={Routes.NotificationsPage()}>
+                <Link
+                  className="btn btn-primary btn-outline btn-block"
+                  href={Routes.NotificationsPage()}
+                >
                   View notifications
                 </Link>
               </div>
