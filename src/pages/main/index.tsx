@@ -12,22 +12,25 @@ import moment from "moment"
 import Table from "src/core/components/Table"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { Prisma, Project, TaskStatus } from "db"
+import getNotifications from "src/messages/queries/getNotifications"
+import { notificationTableColumns } from "src/messages/components/notificationTable"
 
 type TaskWithProjectName = Prisma.TaskGetPayload<{
   include: { project: { select: { name: true } } }
 }>
 
+//column information
 const taskColumnHelper = createColumnHelper<TaskWithProjectName>()
-
-// ColumnDefs
 const tasksColumns: ColumnDef<TaskWithProjectName>[] = [
   taskColumnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
+    enableColumnFilter: false,
   }),
   taskColumnHelper.accessor((row) => row.project.name, {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Project",
+    enableColumnFilter: false,
   }),
   taskColumnHelper.accessor("deadline", {
     cell: (info) => (
@@ -47,27 +50,27 @@ const tasksColumns: ColumnDef<TaskWithProjectName>[] = [
       </span>
     ),
     header: "Deadline",
+    enableColumnFilter: false,
   }),
   taskColumnHelper.accessor("id", {
     id: "view",
-    header: "",
+    header: "View",
     cell: (info) => (
       <Link
-        className="btn"
+        className="btn btn-sm btn-secondary"
         href={Routes.ShowTaskPage({
           projectId: info.row.original.projectId,
           taskId: info.getValue(),
         })}
       >
-        Open
+        View
       </Link>
     ),
+    enableColumnFilter: false,
   }),
 ]
 
 const projectColumnHelper = createColumnHelper<Project>()
-
-// ColumnDefs
 const projectColumns: ColumnDef<Project>[] = [
   projectColumnHelper.accessor("name", {
     cell: (info) => <span className="font-semibold">{info.getValue()}</span>,
@@ -88,69 +91,108 @@ const projectColumns: ColumnDef<Project>[] = [
         })}
       </span>
     ),
-    header: "Updated at",
+    header: "Updated",
     enableColumnFilter: false,
   }),
   projectColumnHelper.accessor("id", {
     id: "view",
-    header: "",
+    header: "View",
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
       <Link
-        className="btn"
+        className="btn btn-sm btn-secondary"
         href={Routes.ShowProjectPage({
           projectId: info.getValue(),
         })}
       >
-        Open
+        View
       </Link>
     ),
   }),
 ]
 
+const notificationColumnHelper = createColumnHelper<Notifications>()
+const notificationColumns: ColumnDef<Notifications>[] = [
+  notificationColumnHelper.accessor("message", {
+    cell: (info) => <span className="font-semibold">{info.getValue()}</span>,
+    header: "Message",
+    enableColumnFilter: false,
+  }),
+  projectColumnHelper.accessor("createdAt", {
+    cell: (info) => (
+      <span>
+        {info.getValue()?.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false, // Use 24-hour format
+        })}
+      </span>
+    ),
+    header: "Posted",
+    enableColumnFilter: false,
+  }),
+]
+
+//start page
 const MainPage = () => {
   const sidebarItems = HomeSidebarItems("Dashboard")
   const currentUser = useCurrentUser()
-
   const today = moment().startOf("day")
-  const tomorrow = moment(today).add(1, "days")
 
+  //variable definitions
+  var upcomingDisplay = ""
+  var pastDueDisplay = ""
+  var noDeadlineDisplay = ""
+  var projectsDisplay = ""
+  var notificationsDisplay = ""
+
+  // get all tasks
   const [{ tasks }] = useQuery(getTasks, {
     include: {
       project: { select: { name: true } },
     },
     where: {
       assignees: { some: { contributor: { user: { id: currentUser?.id } } } },
-      deadline: {
-        // TODO: return all not completed tasks even with due date
-        // gte: today.toDate(),
-        lt: moment(tomorrow).add(1, "days").toDate(),
-      },
+      //deadline: {
+      // TODO: return all not completed tasks even with due date
+      //gte: today.toDate(),
+      //lt: moment(tomorrow).add(1, "days").toDate(),
+      //},
       status: TaskStatus.NOT_COMPLETED,
     },
-    orderBy: { id: "asc" },
+    orderBy: { id: "desc" },
   })
 
-  const todayTasks = tasks.filter((task) => {
+  // get only upcoming
+  const upcomingTasks = tasks.filter((task) => {
     if (task && task.deadline) {
-      return moment(task.deadline).isSame(today, "day")
+      return moment(task.deadline).isSameOrAfter(today, "day")
     }
     return false
   })
-  const tomorrowTasks = tasks.filter((task) => {
-    if (task && task.deadline) {
-      return moment(task.deadline).isSame(tomorrow, "day")
+
+  // get no deadline
+  const noDeadlineTasks = tasks.filter((task) => {
+    if (task && task.deadline === null) {
+      return moment(task.deadline)
     }
     return false
   })
-  const overdueTasks = tasks.filter((task) => {
+
+  // get pastDue
+  const pastDueTasks = tasks.filter((task) => {
     if (task && task.deadline) {
       return moment(task.deadline).isBefore(moment(), "minute")
     }
     return false
   })
 
+  // get all projects
   const [{ projects }] = useQuery(getProjects, {
     where: {
       contributors: {
@@ -163,87 +205,166 @@ const MainPage = () => {
     take: 3,
   })
 
+  // get all notifications
+  const [{ notifications }] = useQuery(getNotifications, {
+    where: {
+      recipients: {
+        some: {
+          id: currentUser!.id,
+        },
+      },
+      read: false,
+    },
+    orderBy: { id: "desc" },
+    take: 3,
+  })
+
+  // displays
+  if (upcomingTasks.length === 0) {
+    upcomingDisplay = <p className="italic p-2">No upcoming tasks</p>
+  } else {
+    upcomingDisplay = (
+      <Table
+        columns={tasksColumns}
+        data={upcomingTasks}
+        classNames={{
+          thead: "text-sm text-base-content",
+          tbody: "text-sm text-base-content",
+          td: "text-sm text-base-content",
+        }}
+      />
+    )
+  }
+
+  if (pastDueTasks.length === 0) {
+    pastDueDisplay = <p className="italic p-2">No overdue tasks</p>
+  } else {
+    pastDueDisplay = (
+      <Table
+        columns={tasksColumns}
+        data={pastDueTasks}
+        classNames={{
+          thead: "text-sm text-base-content",
+          tbody: "text-sm text-base-content",
+          td: "text-sm text-base-content",
+        }}
+      />
+    )
+  }
+
+  if (projects.length === 0) {
+    projectsDisplay = <p className="italic p-2">No projects</p>
+  } else {
+    projectsDisplay = (
+      <Table
+        columns={projectColumns}
+        data={projects}
+        classNames={{
+          thead: "text-sm text-base-content",
+          tbody: "text-sm text-base-content",
+          td: "text-sm text-base-content",
+        }}
+      />
+    )
+  }
+
+  if (pastDueTasks.length === 0) {
+    pastDueDisplay = <p className="italic p-2">No overdue tasks</p>
+  } else {
+    pastDueDisplay = (
+      <Table
+        columns={tasksColumns}
+        data={pastDueTasks}
+        classNames={{
+          thead: "text-sm text-base-content",
+          tbody: "text-sm text-base-content",
+          td: "text-sm text-base-content",
+        }}
+      />
+    )
+  }
+
+  if (notifications.length === 0) {
+    notificationsDisplay = <p className="italic p-2">No unread notifications</p>
+  } else {
+    notificationsDisplay = (
+      <Table
+        columns={notificationColumns}
+        data={notifications}
+        classNames={{
+          thead: "text-sm text-base-content",
+          tbody: "text-sm text-base-content",
+          td: "text-sm text-base-content",
+        }}
+      />
+    )
+  }
+
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
       <Head>
         <title>Home</title>
       </Head>
+
       <Suspense fallback={<div>Loading...</div>}>
         <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl h-full space-y-4">
           <div className="mb-4">
-            <h3>Welcome, {currentUser!.username}!</h3>
-            <p>Here is your agenda for today</p>
+            <h3 className="text-3xl">Welcome, {currentUser!.username}!</h3>
           </div>
-          <div className="flex flex-row space-x-4">
-            <div className="flex flex-col rounded bg-base-200 p-4 w-1/2">
-              <h4>Upcoming tasks</h4>
-              <div>
-                <p className="font-semibold">Today</p>
-                {todayTasks.length === 0 ? (
-                  <p className="italic p-2">You have no tasks for today. Hurray!</p>
-                ) : (
-                  <Table
-                    columns={tasksColumns}
-                    data={todayTasks}
-                    classNames={{
-                      thead: "text-sm",
-                      tbody: "text-sm",
-                    }}
-                  />
-                )}
+
+          {/* tasks row*/}
+          <div className="flex flex-row justify-center">
+            <div className="card bg-base-300 text-base-content mx-2 w-1/2">
+              <div className="card-body">
+                <div className="card-title text-base-content">Upcoming Tasks</div>
+                {upcomingDisplay}
+              </div>{" "}
+              {/* close card body */}
+              <div class="card-actions justify-end">
+                <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
+                  Show all tasks
+                </Link>
+              </div>{" "}
+              {/* close card end */}
+            </div>{" "}
+            {/* close card */}
+            <div className="card bg-base-300 text-base-content mx-2 w-1/2">
+              <div className="card-body">
+                <div className="card-title text-base-content">Overdue Tasks</div>
+                {pastDueDisplay}
               </div>
-              <div>
-                <p className="font-semibold">Tomorrow</p>
-                {tomorrowTasks.length === 0 ? (
-                  <p className="italic p-2">You have no tasks for tomorrow. Hurray!</p>
-                ) : (
-                  <Table
-                    columns={tasksColumns}
-                    data={tomorrowTasks}
-                    classNames={{
-                      thead: "text-sm",
-                      tbody: "text-sm",
-                    }}
-                  />
-                )}
+              <div class="card-actions justify-end">
+                <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
+                  Show all tasks
+                </Link>
               </div>
-              {/* TODO: add past due tasks */}
-              <div>
-                <p className="font-semibold">Tasks past due</p>
-                {tomorrowTasks.length === 0 ? (
-                  <p className="italic p-2">
-                    You have completed all your tasks on time! Way to go!
-                  </p>
-                ) : (
-                  <Table
-                    columns={tasksColumns}
-                    data={overdueTasks}
-                    classNames={{
-                      thead: "text-sm",
-                      tbody: "text-sm",
-                    }}
-                  />
-                )}
-              </div>
-              <Link className="btn self-end m-4" href={Routes.AllTasksPage()}>
-                Show all tasks
-              </Link>
             </div>
           </div>
-          <div className="flex flex-row">
-            <div className="flex flex-col rounded bg-base-200 p-4 w-1/2">
-              <h4>Latest projects</h4>
-              <Table
-                columns={projectColumns}
-                data={projects}
-                classNames={{
-                  thead: "text-sm",
-                  tbody: "text-sm",
-                }}
-              />
-              <Link className="btn self-end m-4" href={Routes.ProjectsPage()}>
-                Show all projects
-              </Link>
+
+          {/* projects row*/}
+          <div className="flex flex-row justify-center">
+            <div className="card bg-base-300 text-base-content mx-2 w-1/2">
+              <div className="card-body">
+                <div className="card-title text-base-content">Last Updated Projects</div>
+                {projectsDisplay}
+              </div>
+              <div class="card-actions justify-end">
+                <Link className="btn btn-primary self-end m-4" href={Routes.ProjectsPage()}>
+                  Show all projects
+                </Link>
+              </div>
+            </div>
+
+            <div className="card bg-base-300 text-base-content mx-2 w-1/2">
+              <div className="card-body">
+                <div className="card-title text-base-content">Notifications</div>
+                {notificationsDisplay}
+              </div>
+              <div class="card-actions justify-end">
+                <Link className="btn btn-primary self-end m-4" href={Routes.NotificationsPage()}>
+                  Show all notifications
+                </Link>
+              </div>
             </div>
           </div>
         </main>
