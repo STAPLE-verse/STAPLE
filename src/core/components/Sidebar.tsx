@@ -26,7 +26,7 @@ export default function Sidebar({ children, title }: SidebarProps) {
           <div className="p-4 pb-2 flex justify-between items-center">
             {/* Add your logo component here */}
             <h2
-              className={`text-1xl overflow-hidden transition-all ${
+              className={`text-2xl overflow-hidden transition-all ${
                 expanded ? "w-46" : "w-0"
               } max-w-[15ch] whitespace-nowrap overflow-ellipsis`}
               title={title}
