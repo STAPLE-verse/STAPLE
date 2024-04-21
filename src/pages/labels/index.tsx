@@ -36,13 +36,14 @@ export const AllLabelsList = (userId) => {
   const page = Number(router.query.page) || 0
 
   const ITEMS_PER_PAGE = 7
-  console.log(userId)
+
   //move to label list
   const [{ labels, hasMore }] = usePaginatedQuery(
     getLabels,
     {
-      // where: { userId: userId },
+      // where: { userId: userId! },
     }
+
     // orderBy: { id: "asc" },
     // skip: ITEMS_PER_PAGE * page,
     // take: ITEMS_PER_PAGE,
@@ -54,11 +55,14 @@ export const AllLabelsList = (userId) => {
   const contributorLabelnformation = labels.map(
     (label) => {
       const name = label.name
-
+      const desciprition = label.description || ""
+      const taxonomy = label.taxonomy || ""
       let t: ContributorLabelInformation = {
         name: name,
+        description: desciprition,
         id: label.id,
-        // projectId: projectId,
+        taxonomy: taxonomy,
+        userId: label.userId,
       }
       return t
     }
@@ -73,6 +77,18 @@ export const AllLabelsList = (userId) => {
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
       <Table columns={contributorLableTableColumns} data={contributorLabelnformation} />
+      <div className="join grid grid-cols-2 my-6">
+        <button
+          className="join-item btn btn-outline"
+          disabled={page === 0}
+          onClick={goToPreviousPage}
+        >
+          Previous
+        </button>
+        <button className="join-item btn btn-outline " disabled={!hasMore} onClick={goToNextPage}>
+          Next
+        </button>
+      </div>
     </main>
   )
 }
