@@ -47,7 +47,7 @@ export const AllTasksList = () => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="flex justify-center mb-2">All tasks</h1>
+      <h1 className="flex justify-center mb-2 text-3xl">All Tasks</h1>
       <Table columns={taskTableColumns} data={tasks} />
     </main>
   )

@@ -18,11 +18,7 @@ const SearchButton = ({ onChange, debounceTime = 500 }: Props) => {
   }
   return (
     <div>
-      <div
-        className="flex flex-row  py-3 px-6 mx-auto w-full max-w-md items-center justify-between relative text-base-400 focus-within:text-base-600
-      bg-base-50 border-b
-      "
-      >
+      <div className="flex flex-row py-3 px-6 mx-auto w-full max-w-md items-center justify-between relative text-base-400 focus-within:text-base-600 bg-base-50">
         <MagnifyingGlassIcon className="w-5 h-5 absolute ml-3 pointer-events-none"></MagnifyingGlassIcon>
 
         <DebouncedInput
@@ -31,8 +27,7 @@ const SearchButton = ({ onChange, debounceTime = 500 }: Props) => {
           value={currentSearchTerm}
           onChange={handleSearch}
           placeholder="Search Projects"
-          className="pr-3 pl-10 py-2 w-full h-10 w-full pr-3 pl-10  font-semibold placeholder-base-500 text-black rounded-2xl border-none
-          ring-2 ring-base-300 focus:ring-base-500 focus:ring-2"
+          className="pr-3 pl-10 py-2 w-full h-10 w-full pr-3 pl-10 font-semibold placeholder-base-500 text-black rounded-2xl border-none ring-2 ring-base-300 focus:ring-base-500 focus:ring-2"
         />
       </div>
     </div>
