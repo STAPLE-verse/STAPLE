@@ -13,19 +13,19 @@ export const notificationTableColumns = [
   }),
   columnHelper.accessor("message", {
     id: "message",
-    header: "",
-    enableColumnFilter: false,
-    enableSorting: false,
+    header: "Notification Message",
+    //enableColumnFilter: false,
+    //enableSorting: false,
     cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
   }),
   columnHelper.accessor("read", {
     enableColumnFilter: false,
-    enableSorting: false,
+    //enableSorting: false,
     cell: (info) => (
       <span>
         {info.getValue() ? <EyeIcon className="h-8 w-8" /> : <EyeSlashIcon className="h-8 w-8" />}
       </span>
     ),
-    header: "",
+    header: "Read",
   }),
 ]

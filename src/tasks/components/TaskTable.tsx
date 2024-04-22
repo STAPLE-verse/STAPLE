@@ -21,12 +21,24 @@ export const taskTableColumns = [
   }),
   // TODO: Check how to use anonym function in accessor to get column name
   columnHelper.accessor("updatedAt", {
-    cell: (info) => <span>{info.getValue().toString()}</span>,
-    header: "Last update",
+    cell: (info) => (
+      <span>
+        {info.getValue()?.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false, // Use 24-hour format
+        })}
+      </span>
+    ),
+    header: "Last Update",
   }),
   columnHelper.accessor("id", {
     id: "view",
-    header: "",
+    header: "View",
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
@@ -37,7 +49,7 @@ export const taskTableColumns = [
           taskId: info.getValue(),
         })}
       >
-        Open
+        View
       </Link>
     ),
   }),
