@@ -238,9 +238,9 @@ const ProjectDashboard = () => {
             columns={tasksColumns}
             data={upcomingTasks}
             classNames={{
-              thead: "text-sm text-primary-content",
-              tbody: "text-sm text-primary-content",
-              td: "text-sm text-primary-content",
+              thead: "text-sm",
+              tbody: "text-sm",
+              td: "text-sm",
             }}
           />
         ))
@@ -252,9 +252,9 @@ const ProjectDashboard = () => {
             columns={pastDueTasksColumns}
             data={pastDueTasks}
             classNames={{
-              thead: "text-sm text-primary-content",
-              tbody: "text-sm text-primary-content",
-              td: "text-sm text-primary-content",
+              thead: "text-sm",
+              tbody: "text-sm",
+              td: "text-sm",
             }}
           />
         ))
@@ -266,9 +266,9 @@ const ProjectDashboard = () => {
             columns={tasksColumns}
             data={upcomingTasksContributor}
             classNames={{
-              thead: "text-sm text-primary-content",
-              tbody: "text-sm text-primary-content",
-              td: "text-sm text-primary-content",
+              thead: "text-sm",
+              tbody: "text-sm",
+              td: "text-sm",
             }}
           />
         ))
@@ -280,9 +280,9 @@ const ProjectDashboard = () => {
             columns={pastDueTasksColumns}
             data={pastDueTasksContributor}
             classNames={{
-              thead: "text-sm text-primary-content",
-              tbody: "text-sm text-primary-content",
-              td: "text-sm text-primary-content",
+              thead: "text-sm",
+              tbody: "text-sm",
+              td: "text-sm",
             }}
           />
         ))
@@ -295,13 +295,11 @@ const ProjectDashboard = () => {
 
       {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
         <div className="flex flex-row justify-center">
-          <div className="stats bg-primary text-primary-content mx-2 w-1/4">
+          <div className="stats bg-base-300 mx-2 w-1/4">
             <div className="stat">
-              <div className="stat-title text-center text-primary-content">Contributors</div>
-              <div className="stat-value text-center text-primary-content">
-                {projectStats.allContributor}
-              </div>
-              <div className="stat-actions text-center text-primary-content">
+              <div className="stat-title text-center">Contributors</div>
+              <div className="stat-value text-center">{projectStats.allContributor}</div>
+              <div className="stat-actions text-center">
                 <Link
                   className="btn btn-sm btn-secondary"
                   href={Routes.ContributorsPage({ projectId: projectId! })}
@@ -312,13 +310,11 @@ const ProjectDashboard = () => {
             </div>
           </div>
 
-          <div className="stats bg-primary text-primary-content mx-2 w-1/4">
+          <div className="stats bg-base-300 mx-2 w-1/4">
             <div className="stat">
-              <div className="stat-title text-center text-primary-content">Teams</div>
-              <div className="stat-value text-center text-primary-content">
-                {projectStats.allTeams}
-              </div>
-              <div className="stat-actions text-center text-primary-content">
+              <div className="stat-title text-center">Teams</div>
+              <div className="stat-value text-center">{projectStats.allTeams}</div>
+              <div className="stat-actions text-center">
                 <Link
                   className="btn btn-sm btn-secondary"
                   href={Routes.TeamsPage({ projectId: projectId! })}
@@ -329,13 +325,13 @@ const ProjectDashboard = () => {
             </div>
           </div>
 
-          <div className="stats bg-primary text-primary-content mx-2 w-1/4">
+          <div className="stats bg-base-300 mx-2 w-1/4">
             <div className="stat">
-              <div className="stat-title text-center text-primary-content">Incomplete Tasks</div>
-              <div className="stat-value text-center text-primary-content">
+              <div className="stat-title text-center">Incomplete Tasks</div>
+              <div className="stat-value text-center">
                 {projectStats.completedTask} / {projectStats.allTask}
               </div>
-              <div className="stat-actions text-center text-primary-content">
+              <div className="stat-actions text-center">
                 <Link
                   className="btn btn-sm btn-secondary"
                   href={Routes.TasksPage({ projectId: projectId! })}
@@ -346,11 +342,11 @@ const ProjectDashboard = () => {
             </div>
           </div>
 
-          <div className="stats bg-primary text-primary-content mx-2 w-1/4">
+          <div className="stats bg-base-300 mx-2 w-1/4">
             <div className="stat">
-              <div className="stat-title text-center text-primary-content">Form Data</div>
-              <div className="stat-value text-center text-primary-content">XX</div>
-              <div className="stat-actions text-center text-primary-content">
+              <div className="stat-title text-center">Form Data</div>
+              <div className="stat-value text-center">XX</div>
+              <div className="stat-actions text-center">
                 <button className="btn btn-sm btn-secondary">Coming Soon</button>
               </div>
             </div>
@@ -360,17 +356,17 @@ const ProjectDashboard = () => {
 
       {/* row 2 for recent events*/}
       <div className="flex flex-row justify-center">
-        <div className="card bg-primary text-primary-content mx-2 w-1/2">
+        <div className="card bg-base-300 mx-2 w-1/2">
           <div className="card-body">
-            <div className="card-title text-primary-content">Recent Events</div>
+            <div className="card-title">Recent Events</div>
             - if project manager: show everyone's recent Events <br />
             - if contributor: show your recent events <br />
           </div>
         </div>
 
-        <div className="card bg-primary text-primary-content mx-2 w-1/2">
+        <div className="card bg-base-300 mx-2 w-1/2">
           <div className="card-body">
-            <div className="card-title text-primary-content">Task Summary</div>
+            <div className="card-title">Task Summary</div>
             <b>Upcoming:</b> <br />
             {upcomingDisplay}
             <b>Overdue:</b> <br />
@@ -381,15 +377,15 @@ const ProjectDashboard = () => {
 
       {/* row 3 for announcements events*/}
       <div className="flex flex-row justify-center">
-        <div className="card bg-primary text-primary-content mx-2 w-1/2">
+        <div className="card bg-base-300 mx-2 w-1/2">
           <div className="card-body">
-            <div className="card-title text-primary-content">Announcements</div>
+            <div className="card-title">Announcements</div>
           </div>
         </div>
 
-        <div className="stats bg-primary text-primary-content mx-2 w-1/2">
+        <div className="stats bg-base-300 mx-2 w-1/2">
           <div className="card-body">
-            <div className="card-title text-primary-content">Notifications</div>
+            <div className="card-title">Notifications</div>
           </div>
         </div>
       </div>
@@ -397,18 +393,18 @@ const ProjectDashboard = () => {
       {/* row 4 for contributors*/}
       {currentContributor.privilege == ContributorPrivileges.CONTRIBUTOR && (
         <div className="flex flex-row justify-center">
-          <div className="card bg-primary text-primary-content mx-2 w-full">
+          <div className="card bg-base-300 mx-2 w-full">
             <div className="card-body">
-              <div className="card-title text-primary-content">Project Managers</div>
+              <div className="card-title">Project Managers</div>
               <b>Contacts for the Project: </b>
               <br />
               <Table
                 columns={projectManagersColumns}
                 data={projectManagers}
                 classNames={{
-                  thead: "text-sm text-primary-content",
-                  tbody: "text-sm text-primary-content",
-                  td: "text-sm text-primary-content",
+                  thead: "text-sm",
+                  tbody: "text-sm",
+                  td: "text-sm",
                 }}
               />
             </div>
