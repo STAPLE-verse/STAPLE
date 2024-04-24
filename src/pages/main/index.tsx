@@ -15,6 +15,20 @@ import { Prisma, Project, TaskStatus } from "db"
 import getNotifications from "src/messages/queries/getNotifications"
 import { notificationTableColumns } from "src/messages/components/notificationTable"
 
+// make things draggable
+import React, { useState } from "react"
+import {
+  DndContext,
+  KeyboardSensor,
+  TouchSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCorners,
+} from "@dnd-kit/core"
+import { SortableBox } from "src/core/components/SortableBox.tsx"
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+
 type TaskWithProjectName = Prisma.TaskGetPayload<{
   include: { project: { select: { name: true } } }
 }>
@@ -150,6 +164,24 @@ const MainPage = () => {
   var noDeadlineDisplay = ""
   var projectsDisplay = ""
   var notificationsDisplay = ""
+  var taskLink = (
+    <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
+      {" "}
+      Show all tasks{" "}
+    </Link>
+  )
+  var projectLink = (
+    <Link className="btn btn-primary self-end m-4" href={Routes.ProjectsPage()}>
+      {" "}
+      Show all projects{" "}
+    </Link>
+  )
+  var notificationLink = (
+    <Link className="btn btn-primary self-end m-4" href={Routes.NotificationsPage()}>
+      {" "}
+      Show all notifications{" "}
+    </Link>
+  )
 
   // get all tasks
   const [{ tasks }] = useQuery(getTasks, {
@@ -300,6 +332,37 @@ const MainPage = () => {
     )
   }
 
+  // make things drag and droppable
+  const [boxes, setBoxes] = useState([
+    { id: 1, title: "Upcoming Tasks", display: upcomingDisplay, link: taskLink },
+    { id: 2, title: "Overdue Tasks", display: pastDueDisplay, link: taskLink },
+    { id: 3, title: "Last Updated Projects", display: projectsDisplay, link: taskLink },
+    { id: 4, title: "Notifications", display: notificationsDisplay, link: notificationLink },
+  ])
+
+  const getBoxesPos = (id) => boxes.findIndex((boxes) => boxes.id === id)
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event
+
+    if (active.id === over.id) return
+
+    setBoxes((boxes) => {
+      const originalPos = getBoxesPos(active.id)
+      const newPos = getBoxesPos(over.id)
+
+      return arrayMove(boxes, originalPos, newPos)
+    })
+  }
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
       <Head>
@@ -312,59 +375,17 @@ const MainPage = () => {
             <h3 className="text-3xl">Welcome, {currentUser!.username}!</h3>
           </div>
 
-          {/* tasks row*/}
-          <div className="flex flex-row justify-center">
-            <div className="card bg-base-300 text-base-content mx-2 w-1/2">
-              <div className="card-body">
-                <div className="card-title text-base-content">Upcoming Tasks</div>
-                {upcomingDisplay}
-              </div>{" "}
-              {/* close card body */}
-              <div class="card-actions justify-end">
-                <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
-                  Show all tasks
-                </Link>
-              </div>{" "}
-              {/* close card end */}
-            </div>{" "}
-            {/* close card */}
-            <div className="card bg-base-300 text-base-content mx-2 w-1/2">
-              <div className="card-body">
-                <div className="card-title text-base-content">Overdue Tasks</div>
-                {pastDueDisplay}
-              </div>
-              <div class="card-actions justify-end">
-                <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
-                  Show all tasks
-                </Link>
-              </div>
-            </div>
-          </div>
+          <DndContext
+            collisionDectection={closestCorners}
+            onDragEnd={handleDragEnd}
+            sensors={sensors}
+          >
+            <SortableBox boxes={boxes} />
+          </DndContext>
 
-          {/* projects row*/}
-          <div className="flex flex-row justify-center">
-            <div className="card bg-base-300 text-base-content mx-2 w-1/2">
-              <div className="card-body">
-                <div className="card-title text-base-content">Last Updated Projects</div>
-                {projectsDisplay}
-              </div>
-              <div class="card-actions justify-end">
-                <Link className="btn btn-primary self-end m-4" href={Routes.ProjectsPage()}>
-                  Show all projects
-                </Link>
-              </div>
-            </div>
-
-            <div className="card bg-base-300 text-base-content mx-2 w-1/2">
-              <div className="card-body">
-                <div className="card-title text-base-content">Notifications</div>
-                {notificationsDisplay}
-              </div>
-              <div class="card-actions justify-end">
-                <Link className="btn btn-primary self-end m-4" href={Routes.NotificationsPage()}>
-                  Show all notifications
-                </Link>
-              </div>
+          <div className="flex flex-row mt-4 w-full">
+            <div className="card bg-base-300 text-base-content w-full justify-center items-center border-dashed border-primary border-2">
+              Drop Here
             </div>
           </div>
         </main>
