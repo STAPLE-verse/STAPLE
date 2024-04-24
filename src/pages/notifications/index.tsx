@@ -1,6 +1,6 @@
-import { Suspense, useEffect } from "react"
+import { Suspense } from "react"
 import Head from "next/head"
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 
 import Layout from "src/core/layouts/Layout"
@@ -25,7 +25,10 @@ export const NotificationList = () => {
         },
       },
     },
-    orderBy: { id: "asc" },
+    orderBy: [
+      { read: "asc" }, // Show unread notifications first
+      { id: "asc" }, // Then sort by id
+    ],
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })

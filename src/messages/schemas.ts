@@ -4,7 +4,7 @@ import { z } from "zod"
 export const taskAssignedSchema = z.object({
   taskName: z.string(),
   createdBy: z.string(),
-  deadline: z.date(),
+  deadline: z.date().optional(),
 })
 
 // Map template names to their corresponding Zod schemas

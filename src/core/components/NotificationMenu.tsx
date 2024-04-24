@@ -29,7 +29,7 @@ const NotificationsMenu = ({ userId }) => {
     return (
       <div
         key={notification.id}
-        className="text-info"
+        className="p-4 rounded-lg shadow-md"
         dangerouslySetInnerHTML={{ __html: cleanMessage }}
       ></div>
     )
