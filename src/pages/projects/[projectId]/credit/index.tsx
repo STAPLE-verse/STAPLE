@@ -49,7 +49,9 @@ export const LabelsTabs = () => {
       <Tab.Panels>
         {/* Tab for Add Labels */}
         <Tab.Panel>
-          - For every PM on the project, add the labels here with check boxes, then a button to save
+          - a table of all the labels for all the PMs on a project - columns: - name - description -
+          which PM the label comes from - check box column - For every PM on the project, add the
+          labels here with check boxes, then a button to save
           <br />- These will get added to the project table in the database
         </Tab.Panel>
 
