@@ -39,11 +39,11 @@ export const TasksList = () => {
   return (
     <div>
       <Tab.Group defaultIndex={0}>
-        <Tab.List className="tabs flex flex-row justify-center space-x-2 mb-4">
+        <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
           {/* Tablink for board view */}
           <Tab
             className={({ selected }) =>
-              classNames("tab tab-lifted tab-lg", selected ? "text-black" : "hover:text-gray-500")
+              classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
             }
           >
             Board
@@ -51,7 +51,7 @@ export const TasksList = () => {
           {/* TabLink for table view */}
           <Tab
             className={({ selected }) =>
-              classNames("tab tab-lifted tab-lg", selected ? "text-black" : "hover:text-gray-500")
+              classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
             }
           >
             Table
