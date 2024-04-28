@@ -110,7 +110,7 @@ const LabelBuilderPage = () => {
     // skip: ITEMS_PER_PAGE * page,
     // take: ITEMS_PER_PAGE,
   )
-  console.log(labels)
+  // console.log(labels)
 
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
@@ -122,13 +122,12 @@ const LabelBuilderPage = () => {
   }
 
   const handleCreateLabel = async (values) => {
-    console.log(values)
     try {
       const label = await createLabelMutation({
         name: values.name,
         description: values.description,
         userId: currentUser!.id,
-        taxonomy: values.taxanomy,
+        taxonomy: values.taxonomy,
       })
       await toast.promise(Promise.resolve(label), {
         loading: "Creating label...",

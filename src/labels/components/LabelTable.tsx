@@ -22,7 +22,6 @@ export type ContributorLabelInformation = {
 const EditColunm = ({ row }) => {
   const [updateLabelMutation] = useMutation(updateLabel)
   const { name, description, taxonomy, userId, id, ...rest } = { ...row }
-  console.log(name)
 
   const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
   const handleToggleEditLabelModal = () => {
@@ -36,7 +35,7 @@ const EditColunm = ({ row }) => {
   }
 
   const handleEditLabel = async (values) => {
-    console.log(values)
+    // console.log(values)
     try {
       const updated = await updateLabelMutation({
         ...values,
