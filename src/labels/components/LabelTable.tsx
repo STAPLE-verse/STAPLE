@@ -9,6 +9,7 @@ import { FORM_ERROR, LabelForm } from "./LabelForm"
 import { LabelFormSchema } from "src/pages/labels"
 import toast from "react-hot-toast"
 import updateLabel from "../mutations/updateLabel"
+import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
 
 export type ContributorLabelInformation = {
@@ -98,6 +99,43 @@ const EditColunm = ({ row }) => {
   )
 }
 
+const DeleteColunm = ({ row }) => {
+  const [deleteLabelMutation] = useMutation(deleteLabel)
+  const { id, ...rest } = { ...row }
+
+  const handleDeleteLabel = async (values) => {
+    // console.log(values)
+    try {
+      const updated = await deleteLabelMutation({
+        id: id,
+      })
+      await toast.promise(Promise.resolve(updated), {
+        loading: "Deleting label...",
+        success: "Label deleted!",
+        error: "Failed to edit the label...",
+      })
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
+  return (
+    <div className="modal-action flex justify-end mt-4">
+      <button
+        type="button"
+        /* button for popups */
+        className="btn btn-outline btn-primary"
+        onClick={handleDeleteLabel}
+      >
+        Delete
+      </button>
+    </div>
+  )
+}
+
 const columnHelper = createColumnHelper<ContributorLabelInformation>()
 
 // ColumnDefs
@@ -117,10 +155,18 @@ export const contributorLableTableColumns = [
   }),
 
   columnHelper.accessor("id", {
-    id: "view",
+    id: "edit",
     header: "",
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <EditColunm row={info.row.original}></EditColunm>,
+  }),
+
+  columnHelper.accessor("id", {
+    id: "delete",
+    header: "",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => <DeleteColunm row={info.row.original}></DeleteColunm>,
   }),
 ]
