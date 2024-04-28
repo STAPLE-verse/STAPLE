@@ -30,8 +30,8 @@ model User {
 
   contributions    Contributor[]
   forms            Forms[]
-  notifications    Notification[]     @relation("UserNotifications")
-  ContributorLabel ContributorLabel[]
+  notifications    Notification[] @relation("UserNotifications")
+  ContributorLabel Label[]
 }
 
 model Session {
@@ -103,13 +103,14 @@ model Contributor {
 }
 
 // Contribution type
-model ContributorLabel {
+
+model Label {
   id          Int     @id @default(autoincrement())
   userId      Int
+  user        User    @relation(fields: [userId], references: [id])
   name        String
   description String?
   taxonomy    String?
-  user        User    @relation(fields: [userId], references: [id])
 }
 
 model Project {

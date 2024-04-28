@@ -7,7 +7,7 @@ export default resolver.pipe(
   resolver.authorize(),
   async ({ id, ...data }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const label = await db.contributorLabel.update({ where: { id }, data })
+    const label = await db.label.update({ where: { id }, data })
 
     return label
   }

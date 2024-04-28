@@ -2,15 +2,12 @@ import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
-interface GetContributorLabelsInput
-  extends Pick<
-    Prisma.ContributorLabelFindManyArgs,
-    "where" | "orderBy" | "skip" | "take" | "include"
-  > {}
+interface GetLabelsInput
+  extends Pick<Prisma.LabelFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, skip = 0, take = 100, include }: GetContributorLabelsInput) => {
+  async ({ where, orderBy, skip = 0, take = 100, include }: GetLabelsInput) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
       items: labels,
@@ -20,9 +17,14 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.contributorLabel.count({ where }),
+      count: () => db.label.count({ where }),
       query: (paginateArgs) =>
-        db.contributorLabel.findMany({ ...paginateArgs, where, orderBy, include }),
+        db.label.findMany({
+          ...paginateArgs,
+          where,
+          orderBy,
+          include,
+        }),
     })
 
     return {

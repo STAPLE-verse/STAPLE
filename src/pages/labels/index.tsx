@@ -31,47 +31,32 @@ export const LabelFormSchema = z.object({
   // template: __fieldName__: z.__zodType__(),
 })
 
-export const AllLabelsList = (userId) => {
+export const AllLabelsList = ({ hasMore, page, labels, onChange }) => {
   const router = useRouter()
-  const page = Number(router.query.page) || 0
 
-  const ITEMS_PER_PAGE = 7
-
-  //move to label list
-  const [{ labels, hasMore }] = usePaginatedQuery(
-    getLabels,
-    {
-      // where: { userId: userId! },
+  const labelChanged = async () => {
+    if (onChange != undefined) {
+      onChange()
     }
-
-    // orderBy: { id: "asc" },
-    // skip: ITEMS_PER_PAGE * page,
-    // take: ITEMS_PER_PAGE,
-  )
+  }
 
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
-  const contributorLabelnformation = labels.map(
-    (label) => {
-      const name = label.name
-      const desciprition = label.description || ""
-      const taxonomy = label.taxonomy || ""
-      let t: ContributorLabelInformation = {
-        name: name,
-        description: desciprition,
-        id: label.id,
-        taxonomy: taxonomy,
-        userId: label.userId,
-      }
-      return t
+  const contributorLabelnformation = labels.map((label) => {
+    const name = label.name
+    const desciprition = label.description || ""
+    const taxonomy = label.taxonomy || ""
+    let t: ContributorLabelInformation = {
+      name: name,
+      description: desciprition,
+      id: label.id,
+      taxonomy: taxonomy,
+      userId: label.userId,
+      onChangeCallback: labelChanged,
     }
-
-    // name: contributor["user"].firstName
-    // const lastName = contributor["user"].lastName
-    // const username = contributor["user"].username
-    // const initial = getInitials(firstName, lastName)
-  )
+    return t
+  })
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
@@ -100,20 +85,18 @@ const LabelBuilderPage = () => {
   const page = Number(router.query.page) || 0
 
   const ITEMS_PER_PAGE = 7
-  //move to label list
-  const [{ labels, hasMore }] = usePaginatedQuery(
-    getLabels,
-    {
-      where: { userId: currentUser!.id },
-    }
-    // orderBy: { id: "asc" },
-    // skip: ITEMS_PER_PAGE * page,
-    // take: ITEMS_PER_PAGE,
-  )
-  // console.log(labels)
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  //move to label list
+  const [{ labels, hasMore }, { refetch }] = usePaginatedQuery(getLabels, {
+    //where: { user: { id: { equals: userId! } } },
+    orderBy: { id: "asc" },
+    skip: ITEMS_PER_PAGE * page,
+    take: ITEMS_PER_PAGE,
+  })
+
+  const reloadTable = async () => {
+    await refetch()
+  }
 
   // Modal open logics
   const [openNewLabelModal, setOpenNewLabelModal] = useState(false)
@@ -129,6 +112,7 @@ const LabelBuilderPage = () => {
         userId: currentUser!.id,
         taxonomy: values.taxonomy,
       })
+      await reloadTable()
       await toast.promise(Promise.resolve(label), {
         loading: "Creating label...",
         success: "Label created!",
@@ -152,7 +136,7 @@ const LabelBuilderPage = () => {
         <h1 className="flex justify-center mb-2">Labels</h1>
         <div>
           <Suspense fallback={<div>Loading...</div>}>
-            <AllLabelsList userId={currentUser!.id} />
+            <AllLabelsList page={page} labels={labels} hasMore={hasMore} onChange={reloadTable} />
           </Suspense>
         </div>
 

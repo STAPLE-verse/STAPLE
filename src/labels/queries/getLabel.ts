@@ -10,7 +10,7 @@ const GetLabel = z.object({
 
 export default resolver.pipe(resolver.zod(GetLabel), resolver.authorize(), async ({ id }) => {
   // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-  const label = await db.contributorLabel.findFirst({ where: { id } })
+  const label = await db.label.findFirst({ where: { id } })
 
   if (!label) throw new NotFoundError()
 

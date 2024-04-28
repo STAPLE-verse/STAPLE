@@ -18,11 +18,12 @@ export type ContributorLabelInformation = {
   taxonomy?: string
   id: number
   userId: number
+  onChangeCallback?: () => void
 }
 
 const EditColunm = ({ row }) => {
   const [updateLabelMutation] = useMutation(updateLabel)
-  const { name, description, taxonomy, userId, id, ...rest } = { ...row }
+  const { name, description, taxonomy, userId, id, onChangeCallback, ...rest } = { ...row }
 
   const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
   const handleToggleEditLabelModal = () => {
@@ -43,6 +44,9 @@ const EditColunm = ({ row }) => {
         userId: userId,
         id: id,
       })
+      if (onChangeCallback != undefined) {
+        onChangeCallback()
+      }
       await toast.promise(Promise.resolve(updated), {
         loading: "Editing label...",
         success: "Label edited!",
@@ -101,7 +105,7 @@ const EditColunm = ({ row }) => {
 
 const DeleteColunm = ({ row }) => {
   const [deleteLabelMutation] = useMutation(deleteLabel)
-  const { id, ...rest } = { ...row }
+  const { id, onChangeCallback, ...rest } = { ...row }
 
   const handleDeleteLabel = async (values) => {
     // console.log(values)
@@ -109,6 +113,9 @@ const DeleteColunm = ({ row }) => {
       const updated = await deleteLabelMutation({
         id: id,
       })
+      if (onChangeCallback != undefined) {
+        onChangeCallback()
+      }
       await toast.promise(Promise.resolve(updated), {
         loading: "Deleting label...",
         success: "Label deleted!",
