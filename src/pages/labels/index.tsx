@@ -9,8 +9,8 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 import React, { useRef } from "react"
 import ReactDOM from "react-dom"
-import { ReactFormBuilder } from "staple-form-builder"
-import "staple-form-builder/dist/app.css"
+//import { ReactFormBuilder } from "staple-form-builder"
+//import "staple-form-builder/dist/app.css"
 
 const LabelBuilderPage = () => {
   const sidebarItems = HomeSidebarItems("Labels")
