@@ -173,7 +173,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       <div className="mt-4">
         <button
           type="button"
-          className="btn btn-outline btn-primary w-full max-w-sm"
+          className="btn btn-primary w-full max-w-sm"
           onClick={() => handleToggleContributorsModal()}
         >
           Assign contributors
@@ -197,7 +197,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
               <button
                 type="button"
                 /* button for popups */
-                className="btn btn-outline btn-primary"
+                className="btn btn-primary"
                 onClick={handleToggleContributorsModal}
               >
                 Close
@@ -239,7 +239,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       <div className="m-2">
         <button
           type="button"
-          className="btn btn-outline btn-primary w-full max-w-sm"
+          className="btn btn-primary w-full max-w-sm"
           onClick={() => handleToggleSchemaUpload()}
         >
           Assign Required Information
@@ -290,11 +290,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
               </Field>
             </div>
             <div className="modal-action">
-              <button
-                type="button"
-                className="btn btn-outline btn-primary"
-                onClick={handleToggleSchemaUpload}
-              >
+              <button type="button" className="btn btn-primary" onClick={handleToggleSchemaUpload}>
                 Close
               </button>
             </div>

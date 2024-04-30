@@ -78,13 +78,13 @@ export const SignupForm = (props: SignupFormProps) => {
       </Form>
 
       <div className="flex flex-row justify-end mb-4 mt-4">
-        <Link className="btn btn-outline btn-primary" href={Routes.LoginPage()}>
+        <Link className="btn btn-primary" href={Routes.LoginPage()}>
           I have an Account
         </Link>
       </div>
 
       <div className="flex flex-row justify-end mb-4">
-        <Link className="btn btn-outline btn-secondary" href={Routes.Home()}>
+        <Link className="btn btn-secondary" href={Routes.Home()}>
           Go Back Home
         </Link>
       </div>

@@ -107,10 +107,7 @@ const Navbar = () => {
             {/* TODO: Change to notifs */}
             <div className="card-body">
               <div className="card-actions">
-                <Link
-                  className="btn btn-primary btn-outline btn-block"
-                  href={Routes.NotificationsPage()}
-                >
+                <Link className="btn btn-primary btn-block" href={Routes.NotificationsPage()}>
                   View notifications
                 </Link>
               </div>

@@ -66,19 +66,19 @@ export const LoginForm = (props: LoginFormProps) => {
       </Form>
 
       <div className="flex flex-row justify-end mt-4">
-        <Link className="btn btn-outline btn-warning" href={Routes.ForgotPasswordPage()}>
+        <Link className="btn btn-warning" href={Routes.ForgotPasswordPage()}>
           Forgot Password
         </Link>
       </div>
 
       <div className="flex flex-row justify-end mt-4">
-        <Link className="btn btn-outline btn-info" href={Routes.SignupPage()}>
+        <Link className="btn btn-info" href={Routes.SignupPage()}>
           Register
         </Link>
       </div>
 
       <div className="flex flex-row justify-end mt-4">
-        <Link className="btn btn-outline btn-secondary" href={Routes.Home()}>
+        <Link className="btn btn-secondary" href={Routes.Home()}>
           Go Back Home
         </Link>
       </div>

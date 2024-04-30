@@ -59,7 +59,7 @@ const ForgotPasswordPage: BlitzPage = () => {
         </Form>
       )}
       <div className="flex flex-row justify-end mt-4">
-        <Link className="btn btn-outline btn-secondary" href={Routes.Home()}>
+        <Link className="btn btn-secondary" href={Routes.Home()}>
           Go Back Home
         </Link>
       </div>
