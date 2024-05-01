@@ -12,7 +12,7 @@ import updateLabel from "../mutations/updateLabel"
 import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
 
-export type ContributorLabelInformation = {
+export type LabelInformation = {
   name: string
   description?: string
   taxonomy?: string
@@ -143,10 +143,10 @@ const DeleteColunm = ({ row }) => {
   )
 }
 
-const columnHelper = createColumnHelper<ContributorLabelInformation>()
+const columnHelper = createColumnHelper<LabelInformation>()
 
 // ColumnDefs
-export const contributorLableTableColumns = [
+export const lableTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Label Name",

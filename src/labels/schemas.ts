@@ -15,3 +15,15 @@ export const UpdateLabelSchema = CreateLabelSchema.merge(
 export const DeleteLabelSchema = z.object({
   id: z.number(),
 })
+
+export const LabelFormSchema = z.object({
+  name: z.string(),
+  description: z.string().optional(),
+  taxonomy: z.string().optional(),
+  // template: __fieldName__: z.__zodType__(),
+})
+
+export const LabelTaskFormSchema = z.object({
+  labelsId: z.array(z.number()).optional().nullable(),
+  taskId: z.number(),
+})
