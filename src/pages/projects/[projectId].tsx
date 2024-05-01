@@ -68,9 +68,8 @@ export const ShowProjectPage = () => {
                 id="announcement"
                 value={announcementText}
                 onChange={(e) => setAnnouncementText(e.target.value)}
-              >
-                Enter your announcement here
-              </textarea>
+                placeholder="Enter your announcement here"
+              ></textarea>
               {/* Submit button */}
               <button type="button" className="btn btn-primary" onClick={handleSubmit}>
                 Submit
