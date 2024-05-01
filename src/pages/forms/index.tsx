@@ -84,17 +84,19 @@ const Example = () => {
 
         {/* Tabpanel for Visual Builder */}
         <Tab.Panel>
-          <FormBuilder
-            schema={state.schema}
-            uischema={state.uischema}
-            mods={{}}
-            onChange={(newSchema, newUiSchema) => {
-              setState({
-                schema: newSchema,
-                uischema: newUiSchema,
-              })
-            }}
-          />
+          <div className="formHead-wrapper">
+            <FormBuilder
+              schema={state.schema}
+              uischema={state.uischema}
+              mods={{}}
+              onChange={(newSchema, newUiSchema) => {
+                setState({
+                  schema: newSchema,
+                  uischema: newUiSchema,
+                })
+              }}
+            />
+          </div>
         </Tab.Panel>
 
         {/* Tabpanel for JSON Builder */}

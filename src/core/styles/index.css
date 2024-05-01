@@ -44,3 +44,52 @@
     font-weight: 700;
   }
 }
+
+.modal.show {
+  @apply fixed top-0 left-0 z-50 w-full h-full flex items-center justify-center;
+}
+
+.modal-content {
+  @apply bg-white p-4 rounded-lg shadow-lg;
+}
+
+.formHead-wrapper [class^="formHead"] {
+  width: 100%;
+  border: none;
+  margin: 0 auto;
+  display: block;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: oklch(var(--b3));
+  color: oklch(var(--bc));
+  font-size: 16px;
+}
+
+.formHead-wrapper [class^="formHead"] h5 {
+  font-size: 18px;
+  color: oklch(var(--bc));
+  padding-bottom: 10px;
+  font-family: inherit;
+}
+
+.formHead-wrapper .form-title,
+.form-description {
+  --tw-border-opacity: 1;
+  background-color: oklch(var(--b1));
+  border-radius: 3px;
+  border-color: oklch(var(--p) / var(--tw-border-opacity));
+  border-width: 1px;
+  font-family: inherit;
+}
+
+.add-details .popover-header,
+.popover-body {
+  background-color: oklch(var(--b3));
+  padding: 10px;
+  border: 0px;
+}
+
+.modal-dialog {
+  color: black;
+  background-color: white;
+}
