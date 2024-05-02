@@ -28,7 +28,7 @@ function TextFilter({ column, table }: { column: Column<any, unknown>; table: Ta
         onChange={(value) => column.setFilterValue(value)}
         //placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
         placeholder={"Search"}
-        className="w-36 border input-sm shadow rounded input-primary"
+        className="w-36 border input-sm shadow rounded input-primary bg-base-300"
         list={column.id + "list"}
       />
       <div className="h-1" />

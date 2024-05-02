@@ -382,12 +382,6 @@ const MainPage = () => {
           >
             <SortableBox boxes={boxes} />
           </DndContext>
-
-          <div className="flex flex-row mt-4 w-full">
-            <div className="card bg-base-300 text-base-content w-full justify-center items-center border-dashed border-primary border-2">
-              Drop Here
-            </div>
-          </div>
         </main>
       </Suspense>
     </Layout>
