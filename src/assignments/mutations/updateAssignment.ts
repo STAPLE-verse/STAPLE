@@ -63,7 +63,7 @@ export default resolver.pipe(
     }
 
     const completedByUsername = await db.contributor
-      .findUnique({ where: { id: completedBy }, include: { user: true } })
+      .findUnique({ where: { id: completedBy! }, include: { user: true } })
       .then((result) => (result ? result.user.username : ""))
 
     await sendNotification(
