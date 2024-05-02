@@ -60,20 +60,20 @@ export const SignupForm = (props: SignupFormProps) => {
           name="email"
           label="Email:"
           placeholder=""
-          className="mb-4 w-full text-primary border-primary border-2"
+          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
         />
         <LabeledTextField
           name="password"
           label="Password:"
           placeholder=""
           type="password"
-          className="mb-4 w-full text-primary border-primary border-2"
+          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
         />
         <LabeledTextField
           name="username"
           label="Username:"
           placeholder=""
-          className="w-full text-primary border-primary border-2 mb-4"
+          className="w-full text-primary border-primary border-2 mb-4 bg-base-300"
         />
       </Form>
 

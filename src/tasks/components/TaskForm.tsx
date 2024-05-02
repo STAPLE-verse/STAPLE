@@ -1,6 +1,7 @@
 // import React, { Suspense } from "react"
 import { Form, FormProps } from "src/core/components/Form"
 import { LabeledTextField } from "src/core/components/LabeledTextField"
+import { LabeledTextAreaField } from "src/core/components/LabeledTextAreaField"
 import { LabelSelectField } from "src/core/components/LabelSelectField"
 import getColumns from "../queries/getColumns"
 import getElements from "src/elements/queries/getElements"
@@ -106,6 +107,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         label="Task Name:"
         placeholder="Add Task Name"
         type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
 
       {/* Column */}
@@ -116,14 +118,16 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         options={columns}
         optionText="name"
         optionValue="id"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
       {/* Description */}
-      <LabeledTextField
+      <LabeledTextAreaField
         className="textarea textarea-primary textarea-bordered w-full resize max-w-sm m-2"
         name="description"
         label="Task Description (Optional):"
         placeholder="Add Description"
         type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
 
       {/* Deadline */}
@@ -166,6 +170,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         options={elements}
         optionText="name"
         optionValue="id"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
 
       {/* Contributors */}

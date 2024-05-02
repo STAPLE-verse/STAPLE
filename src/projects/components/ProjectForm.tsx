@@ -15,6 +15,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="Name"
         placeholder="Name"
         type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
       <br />
       <LabeledTextAreaField
@@ -22,7 +23,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         name="description"
         label="Description"
         placeholder="Description"
-        //type="textarea"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
       <br />
       <LabeledTextAreaField
@@ -30,7 +31,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         name="abstract"
         label="Abstract"
         placeholder="Abstract"
-        //type="textarea"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
       <br />
       <LabeledTextField
@@ -39,6 +40,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="Keywords"
         placeholder="Keywords separated by commas"
         type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
       <br />
       <LabeledTextField
@@ -47,6 +49,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="Citation"
         placeholder="Citation"
         type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
       <br />
       <LabeledTextField
@@ -55,6 +58,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="Publisher"
         placeholder="Publisher"
         type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
       <br />
       <LabeledTextField
@@ -63,6 +67,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="Identifier"
         placeholder="Identifier: DOI, ISBN, etc."
         type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>

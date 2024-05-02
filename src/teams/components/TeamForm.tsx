@@ -54,7 +54,13 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
 
   return (
     <Form<S> {...formProps}>
-      <LabeledTextField name="name" label="Name" placeholder="Name" type="text" />
+      <LabeledTextField
+        name="name"
+        label="Name"
+        placeholder="Name"
+        type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
+      />
       <div className="flex justify-start mt-4">
         <Field
           name="contributorsId"
