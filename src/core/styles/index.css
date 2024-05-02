@@ -289,7 +289,7 @@
   text-align: left;
 }
 
-.collapse:not(.show) {
+.formHead-wrapper .collapse:not(.show) {
   display: none;
 }
 

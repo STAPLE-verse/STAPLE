@@ -336,7 +336,7 @@ const MainPage = () => {
   const [boxes, setBoxes] = useState([
     { id: 1, title: "Upcoming Tasks", display: upcomingDisplay, link: taskLink },
     { id: 2, title: "Overdue Tasks", display: pastDueDisplay, link: taskLink },
-    { id: 3, title: "Last Updated Projects", display: projectsDisplay, link: taskLink },
+    { id: 3, title: "Last Updated Projects", display: projectsDisplay, link: projectLink },
     { id: 4, title: "Notifications", display: notificationsDisplay, link: notificationLink },
   ])
 
