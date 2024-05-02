@@ -27,7 +27,7 @@ export const LoginForm = (props: LoginFormProps) => {
         </picture>
       </center>
 
-      <h1 className="text-center text-4xl">Log In</h1>
+      <h1 className="text-center text-3xl">Log In</h1>
 
       <Form
         submitText="Log In"
@@ -61,7 +61,7 @@ export const LoginForm = (props: LoginFormProps) => {
           label="Password:"
           placeholder="Password"
           type="password"
-          className="w-full text-primary border-primary border-2 bg-base-300"
+          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
         />
       </Form>
 

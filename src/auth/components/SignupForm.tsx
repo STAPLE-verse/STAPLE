@@ -29,7 +29,7 @@ export const SignupForm = (props: SignupFormProps) => {
         </picture>
       </center>
 
-      <h1 className="text-center text-4xl mt-2">Sign Up</h1>
+      <h1 className="text-center text-3xl mt-2">Sign Up</h1>
       <Form
         className=""
         submitText="Create Account"
@@ -59,20 +59,20 @@ export const SignupForm = (props: SignupFormProps) => {
         <LabeledTextField
           name="email"
           label="Email:"
-          placeholder=""
+          placeholder="Email"
           className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
         />
         <LabeledTextField
           name="password"
           label="Password:"
-          placeholder=""
+          placeholder="Password"
           type="password"
           className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
         />
         <LabeledTextField
           name="username"
           label="Username:"
-          placeholder=""
+          placeholder="Username"
           className="w-full text-primary border-primary border-2 mb-4 bg-base-300"
         />
       </Form>
