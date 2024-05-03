@@ -66,7 +66,7 @@ export const ProjectSidebarItems = (
     },
     {
       icon: <CheckCircleIcon className="w-6 h-6" />,
-      text: "Credit",
+      text: "Labels",
       onClick: async () => {
         await router.push(Routes.CreditPage({ projectId: projectId }))
       },

@@ -130,3 +130,8 @@ export const UpdateTaskOrderSchema = z.object({
   activeIndex: z.any(),
   overIndex: z.any(),
 })
+
+export const UpdateTaskLabelSchema = z.object({
+  taskId: z.number(),
+  labelsId: z.array(z.number()).optional().nullable(),
+})
