@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import Modal from "src/core/components/Modal"
 import { FORM_ERROR, LabelForm } from "./LabelForm"
-import { LabelFormSchema } from "src/pages/labels"
+import { LabelFormSchema } from "src/labels/schemas"
 import toast from "react-hot-toast"
 import updateLabel from "../mutations/updateLabel"
 import deleteLabel from "../mutations/deleteLabel"
@@ -21,9 +21,17 @@ export type LabelInformation = {
   onChangeCallback?: () => void
 }
 
-const EditColunm = ({ row }) => {
+const EditColumn = ({ row }) => {
   const [updateLabelMutation] = useMutation(updateLabel)
-  const { name, description, taxonomy, userId, id, onChangeCallback, ...rest } = { ...row }
+  const {
+    name = "",
+    description = "",
+    taxonomy = "",
+    userId = null,
+    id = null,
+    onChangeCallback = undefined,
+    ...rest
+  } = { ...row }
 
   const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
   const handleToggleEditLabelModal = () => {
@@ -103,9 +111,9 @@ const EditColunm = ({ row }) => {
   )
 }
 
-const DeleteColunm = ({ row }) => {
+const DeleteColumn = ({ row }) => {
   const [deleteLabelMutation] = useMutation(deleteLabel)
-  const { id, onChangeCallback, ...rest } = { ...row }
+  const { id = null, onChangeCallback = undefined, ...rest } = { ...row }
 
   const handleDeleteLabel = async (values) => {
     // console.log(values)
@@ -166,7 +174,7 @@ export const lableTableColumns = [
     header: "",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <EditColunm row={info.row.original}></EditColunm>,
+    cell: (info) => <EditColumn row={info.row.original}></EditColumn>,
   }),
 
   columnHelper.accessor("id", {
@@ -174,6 +182,6 @@ export const lableTableColumns = [
     header: "",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <DeleteColunm row={info.row.original}></DeleteColunm>,
+    cell: (info) => <DeleteColumn row={info.row.original}></DeleteColumn>,
   }),
 ]

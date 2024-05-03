@@ -27,9 +27,12 @@ const SummaryPage = () => {
 
         {
           <Suspense fallback={<div>Loading...</div>}>
-            <div role="tablist" class="tabs tabs-lifted">
-              <input type="radio" name="my_tabs_2" role="tab" class="tab" aria-label="Edit" />
-              <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+            <div role="tablist" className="tabs tabs-lifted">
+              <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="Edit" />
+              <div
+                role="tabpanel"
+                className="tab-content bg-base-100 border-base-300 rounded-box p-6"
+              >
                 Edit
               </div>
 
@@ -37,11 +40,14 @@ const SummaryPage = () => {
                 type="radio"
                 name="my_tabs_2"
                 role="tab"
-                class="tab"
+                className="tab"
                 aria-label="View"
                 checked
               />
-              <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+              <div
+                role="tabpanel"
+                className="tab-content bg-base-100 border-base-300 rounded-box p-6"
+              >
                 View
               </div>
             </div>

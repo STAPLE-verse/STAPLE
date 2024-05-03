@@ -13,17 +13,17 @@ const ForgotPasswordPage: BlitzPage = () => {
 
   return (
     <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
-      <center>
+      <div className="flex justify-center items-center w-full">
         <picture>
           <source
-            srcset="/logo_white_big.png"
+            srcSet="/logo_white_big.png"
             media="(prefers-color-scheme: dark)"
-            alt="STAPLE Logo"
+            //alt="STAPLE Logo"
             width={200}
           />
           <img src="/logo_black_big.png" alt="STAPLE Logo" width={200} />
         </picture>
-      </center>
+      </div>
 
       <h1 className="text-center text-3xl">Reset Password</h1>
 
