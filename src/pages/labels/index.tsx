@@ -9,8 +9,6 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 import React, { useRef } from "react"
 import ReactDOM from "react-dom"
-import { ReactFormBuilder } from "staple-form-builder"
-import "staple-form-builder/dist/app.css"
 import Modal from "src/core/components/Modal"
 import { LabelForm, FORM_ERROR } from "src/labels/components/LabelForm"
 import { FormApi, SubmissionErrors, configOptions } from "final-form"

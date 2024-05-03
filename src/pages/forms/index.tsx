@@ -11,9 +11,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 import React, { useRef } from "react"
 import ReactDOM from "react-dom"
-import { ReactFormBuilder } from "staple-form-builder"
 import { FormBuilder, PredefinedGallery } from "@ginkgo-bioworks/react-json-schema-form-builder"
-// import "staple-form-builder/dist/app.css"
 
 const Example = () => {
   const [state, setState] = useState({ schema: "{}", uischema: "{}" })
