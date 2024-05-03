@@ -20,7 +20,7 @@ import Table from "src/core/components/Table"
 import { LabelInformation, lableTableColumns } from "src/labels/components/LabelTable"
 import { LabelFormSchema } from "src/labels/schemas"
 
-export const AllLabelsList = ({ hasMore, page, labels, onChange }) => {
+export const AllLabelsList = ({ hasMore, page, labels, onChange, taxonomyList }) => {
   const router = useRouter()
 
   const labelChanged = async () => {
@@ -29,13 +29,25 @@ export const AllLabelsList = ({ hasMore, page, labels, onChange }) => {
     }
   }
 
+  const uniqueValues = (value, index, self) => {
+    return self.indexOf(value) === index
+  }
+
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
+
+  // const taxonomyList = labels
+  //   .map((label) => {
+  //     const taxonomy = label.taxonomy || ""
+  //     return taxonomy
+  //   })
+  //   .filter(uniqueValues)
 
   const contributorLabelnformation = labels.map((label) => {
     const name = label.name
     const desciprition = label.description || ""
     const taxonomy = label.taxonomy || ""
+
     let t: LabelInformation = {
       name: name,
       description: desciprition,
@@ -43,6 +55,7 @@ export const AllLabelsList = ({ hasMore, page, labels, onChange }) => {
       taxonomy: taxonomy,
       userId: label.userId,
       onChangeCallback: labelChanged,
+      taxonomyList: taxonomyList,
     }
     return t
   })
@@ -86,11 +99,27 @@ const LabelBuilderPage = () => {
   const reloadTable = async () => {
     await refetch()
   }
+  const uniqueValues = (value, index, self) => {
+    return self.indexOf(value) === index
+  }
+
+  const taxonomyList = labels
+    .map((label) => {
+      const taxonomy = label.taxonomy || ""
+      return taxonomy
+    })
+    .filter(uniqueValues)
 
   // Modal open logics
   const [openNewLabelModal, setOpenNewLabelModal] = useState(false)
   const handleToggleNewLabelModal = () => {
     setOpenNewLabelModal((prev) => !prev)
+  }
+
+  const initialValues = {
+    name: "",
+    description: "",
+    taxonomy: " ",
   }
 
   const handleCreateLabel = async (values) => {
@@ -125,7 +154,13 @@ const LabelBuilderPage = () => {
         <h1 className="flex justify-center mb-2">Labels</h1>
         <div>
           <Suspense fallback={<div>Loading...</div>}>
-            <AllLabelsList page={page} labels={labels} hasMore={hasMore} onChange={reloadTable} />
+            <AllLabelsList
+              page={page}
+              labels={labels}
+              hasMore={hasMore}
+              onChange={reloadTable}
+              taxonomyList={taxonomyList}
+            />
           </Suspense>
         </div>
 
@@ -146,9 +181,11 @@ const LabelBuilderPage = () => {
                 submitText="Create Label"
                 className="flex flex-col"
                 onSubmit={handleCreateLabel}
-                name={""}
-                description={""}
-                taxonomy={""}
+                initialValues={initialValues}
+                // name={""}
+                // description={""}
+                // taxonomy={""}
+                taxonomyList={taxonomyList}
               ></LabelForm>
             </div>
 
