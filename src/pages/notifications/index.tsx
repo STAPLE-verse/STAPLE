@@ -42,7 +42,7 @@ export const NotificationList = () => {
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center mb-2 text-3xl">All Notifications</h1>
-      <Table columns={notificationTableColumns} data={notifications} />
+      <Table columns={columns} data={notifications} />
     </main>
   )
 }

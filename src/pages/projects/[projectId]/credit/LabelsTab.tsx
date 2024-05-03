@@ -116,7 +116,7 @@ const LabelsTab = () => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="flex justify-center mb-2">Labels</h1>
+      <h1 className="flex justify-center mb-2 text-3xl">Labels Coming Soon</h1>
     </main>
   )
 }
