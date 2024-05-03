@@ -4,12 +4,25 @@ import { z } from "zod"
 export const taskAssignedSchema = z.object({
   taskName: z.string(),
   createdBy: z.string(),
-  deadline: z.date(),
+  deadline: z.date().optional(),
 })
 
+export const addedToProjectSchema = z.object({
+  projectName: z.string(),
+  addedBy: z.string(),
+  privilege: z.string(),
+})
+
+export const changedAssignmentSchema = z.object({
+  taskName: z.string(),
+  assignmentStatus: z.string(),
+  completedBy: z.string(),
+})
 // Map template names to their corresponding Zod schemas
 export const templateToSchemaMap: Record<string, z.ZodSchema> = {
   taskAssigned: taskAssignedSchema,
+  addedToProject: addedToProjectSchema,
+  changedAssignment: changedAssignmentSchema,
   // Add other mappings
 }
 

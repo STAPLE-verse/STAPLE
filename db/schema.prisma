@@ -30,8 +30,8 @@ model User {
 
   contributions    Contributor[]
   forms            Forms[]
-  notifications    Notification[]     @relation("UserNotifications")
-  ContributorLabel ContributorLabel[]
+  notifications    Notification[] @relation("UserNotifications")
+  ContributorLabel Label[]
 }
 
 model Session {
@@ -103,13 +103,19 @@ model Contributor {
 }
 
 // Contribution type
-model ContributorLabel {
-  id          Int     @id @default(autoincrement())
+
+model Label {
+  id          Int      @id @default(autoincrement())
   userId      Int
+  user        User     @relation(fields: [userId], references: [id])
   name        String
   description String?
   taxonomy    String?
-  user        User    @relation(fields: [userId], references: [id])
+  Project     Project? @relation(fields: [projectId], references: [id])
+  projectId   Int?
+  // Task        Task?    @relation(fields: [taskId], references: [id])
+  // taskId      Int?
+  tasks       Task[]
 }
 
 model Project {
@@ -130,6 +136,7 @@ model Project {
 
   contributors Contributor[]
   teams        Team[]
+  labels       Label[]
 
   // contributor label options here in an array - relation
   // basically just a filter of what should be allowed in the
@@ -163,6 +170,7 @@ model Task {
   tags            String?
   // allow them to have multiple contributor labels, I think like the task array?
   // add contributor label link here
+  labels          Label[]
 }
 
 enum AssignmentStatus {
@@ -253,9 +261,10 @@ enum templateType {
 }
 
 model Notification {
-  id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  recipients User[]   @relation("UserNotifications")
-  message    String
-  read       Boolean  @default(false)
+  id           Int      @id @default(autoincrement())
+  createdAt    DateTime @default(now())
+  recipients   User[]   @relation("UserNotifications")
+  message      String
+  read         Boolean  @default(false)
+  announcement Boolean  @default(false)
 }

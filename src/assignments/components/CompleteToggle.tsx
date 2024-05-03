@@ -1,6 +1,6 @@
 import { useMutation } from "@blitzjs/rpc"
-import { AssignmentStatus, CompletedAs, Assignment } from "db"
-import { useEffect, useState } from "react"
+import { AssignmentStatus, CompletedAs } from "db"
+import { useState } from "react"
 import updateAssignment from "src/assignments/mutations/updateAssignment"
 
 const CompleteToggle = ({
@@ -20,7 +20,7 @@ const CompleteToggle = ({
     await updateAssignmentMutation({
       id: currentAssignment!.assignmentId,
       status: newStatus,
-      completedBy: newChecked ? completedBy : null,
+      completedBy: completedBy,
       completedAs: completedAs as CompletedAs,
     })
 

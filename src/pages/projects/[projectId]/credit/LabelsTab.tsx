@@ -18,7 +18,6 @@ import createLabel from "src/labels/mutations/createLabel"
 import getLabels from "src/labels/queries/getLabels"
 import Table from "src/core/components/Table"
 import { LabelInformation, lableTableColumns } from "src/labels/components/LabelTable"
-import { LabelFormSchema } from "src/labels/schemas"
 
 export const AllLabelsList = ({ hasMore, page, labels, onChange }) => {
   const router = useRouter()
@@ -67,7 +66,7 @@ export const AllLabelsList = ({ hasMore, page, labels, onChange }) => {
   )
 }
 
-const LabelBuilderPage = () => {
+const LabelsTab = () => {
   const sidebarItems = HomeSidebarItems("Labels")
   const currentUser = useCurrentUser()
   const [createLabelMutation] = useMutation(createLabel)
@@ -116,69 +115,10 @@ const LabelBuilderPage = () => {
   }
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
-      <Head>
-        <title>Contribution Labels</title>
-      </Head>
-
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2">Labels</h1>
-        <div>
-          <Suspense fallback={<div>Loading...</div>}>
-            <AllLabelsList page={page} labels={labels} hasMore={hasMore} onChange={reloadTable} />
-          </Suspense>
-        </div>
-
-        <button
-          type="button"
-          className="btn btn-outline btn-primary w-full max-w-sm"
-          onClick={() => handleToggleNewLabelModal()}
-        >
-          New Label
-        </button>
-
-        <Modal open={openNewLabelModal} size="w-7/8 max-w-xl">
-          <div className="">
-            <h1 className="flex justify-center mb-2">Creating new label</h1>
-            <div className="flex justify-start mt-4">
-              <LabelForm
-                schema={LabelFormSchema}
-                submitText="Create Label"
-                className="flex flex-col"
-                onSubmit={handleCreateLabel}
-                name={""}
-                description={""}
-                taxonomy={""}
-              ></LabelForm>
-            </div>
-
-            {/* closes the modal */}
-            <div className="modal-action flex justify-end mt-4">
-              <button
-                type="button"
-                /* button for popups */
-                className="btn btn-outline btn-primary"
-                onClick={handleToggleNewLabelModal}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </Modal>
-
-        {/* <Suspense fallback={<div>Loading...</div>}>
-          Label creation and updating will go here
-          <br />
-          - make this like the task table - where you can view all Labels with a view button that
-          opens a modal that allows you to edit or delete the label in case of misspellings
-          <br />
-          - at the bottom of the paged table have a create button that opens a modal that allows you
-          to add a new Label
-          <br />- new label page should have string fields for name, description, and taxonomy
-        </Suspense> */}
-      </main>
-    </Layout>
+    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <h1 className="flex justify-center mb-2">Labels</h1>
+    </main>
   )
 }
 
-export default LabelBuilderPage
+export default LabelsTab

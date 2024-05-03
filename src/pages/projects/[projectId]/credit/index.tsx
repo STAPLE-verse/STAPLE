@@ -10,12 +10,16 @@ import { Tab } from "@headlessui/react"
 import Layout from "src/core/layouts/Layout"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import LabelsTab from "./LabelsTab"
+import TasksTab from "./TasksTab"
+import ContributorsTab from "./ContributorsTab"
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
 }
 
-export const LabelsTabs = () => {
+export const CreditsTabs = () => {
   return (
     <Tab.Group defaultIndex={0}>
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
@@ -49,6 +53,7 @@ export const LabelsTabs = () => {
       <Tab.Panels>
         {/* Tab for Add Labels */}
         <Tab.Panel>
+          <LabelsTab />
           - a table of all the labels for all the PMs on a project - columns: - name - description -
           which PM the label comes from - check box column - For every PM on the project, add the
           labels here with check boxes, then a button to save
@@ -57,6 +62,7 @@ export const LabelsTabs = () => {
 
         {/* Tabpanel for Assign tasks */}
         <Tab.Panel>
+          <TasksTab></TasksTab>
           - Here it should show the complete list of Tasks in a Table - this is only tasks that are
           marked as complete (big task not assignments) - table columns: - name, - description, -
           current labels assigned (like paste them together in a single cell) - add labels button
@@ -71,6 +77,7 @@ export const LabelsTabs = () => {
 
         {/* Tabpanel for Assign Contributors */}
         <Tab.Panel>
+          <ContributorsTab></ContributorsTab>
           - Here it should show the complete list of Contributors in a Table - table columns: -
           username - first last name - current labels assigned (like paste them together in a single
           cell) - add labels button that opens a modal that allows you to view the current list of
@@ -101,7 +108,7 @@ const CreditPage = () => {
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         {
           <Suspense fallback={<div>Loading...</div>}>
-            <LabelsTabs />
+            <CreditsTabs />
           </Suspense>
         }
       </main>

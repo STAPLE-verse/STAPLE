@@ -2,6 +2,7 @@
   <p>You have been assigned to the
     <strong>{{taskName}}</strong>
     📝 by
-    <strong>{{createdBy}}</strong>. The deadline for completition is by
-    <strong>{{deadline}}</strong>.</p>
+    <strong>{{createdBy}}</strong>.
+    {{#if deadline}}The deadline for completion is by
+      <strong>{{deadline}}</strong>.{{/if}}</p>
 </div>

@@ -5,6 +5,7 @@ export const CreateContributorSchema = z.object({
   projectId: z.number(),
   userId: z.number(),
   privilege: z.nativeEnum(ContributorPrivileges),
+  addedBy: z.string(),
   // template: __fieldName__: z.__zodType__(),
 })
 
