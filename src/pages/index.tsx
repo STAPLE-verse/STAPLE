@@ -36,7 +36,7 @@ const Home: BlitzPage = () => {
             <source
               srcSet="/logo_white_big.png"
               media="(prefers-color-scheme: dark)"
-              alt="STAPLE Logo"
+              //alt="STAPLE Logo"
               width={200}
             />
             <img src="/logo_black_big.png" alt="STAPLE Logo" width={200} />

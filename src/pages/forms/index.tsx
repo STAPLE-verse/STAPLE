@@ -77,7 +77,7 @@ const Example = () => {
             //onChange={(newFormData) => setState({formData: newFormData.formData})}
             formData={state.formData}
             validator={validator}
-            submitButtonMessage={"Submit"}
+            //submitButtonMessage={"Submit"}
           />
         </Tab.Panel>
 
@@ -92,6 +92,7 @@ const Example = () => {
                 setState({
                   schema: newSchema,
                   uischema: newUiSchema,
+                  formData: state.formData,
                 })
               }}
             />

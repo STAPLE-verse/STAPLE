@@ -11,7 +11,7 @@ import getTasks from "src/tasks/queries/getTasks"
 import moment from "moment"
 import Table from "src/core/components/Table"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { Prisma, Project, TaskStatus } from "db"
+import { Prisma, Project, TaskStatus, Notification } from "db"
 import getNotifications from "src/messages/queries/getNotifications"
 import { notificationTableColumns } from "src/messages/components/notificationTable"
 
@@ -26,7 +26,7 @@ import {
   useSensors,
   closestCorners,
 } from "@dnd-kit/core"
-import { SortableBox } from "src/core/components/SortableBox.tsx"
+import { SortableBox } from "src/core/components/SortableBox"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 
 type TaskWithProjectName = Prisma.TaskGetPayload<{
@@ -126,8 +126,8 @@ const projectColumns: ColumnDef<Project>[] = [
   }),
 ]
 
-const notificationColumnHelper = createColumnHelper<Notifications>()
-const notificationColumns: ColumnDef<Notifications>[] = [
+const notificationColumnHelper = createColumnHelper<Notification>()
+const notificationColumns: ColumnDef<Notification>[] = [
   notificationColumnHelper.accessor("message", {
     cell: (info) => <span className="font-semibold">{info.getValue()}</span>,
     header: "Message",
