@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 import Head from "next/head"
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 
 import Layout from "src/core/layouts/Layout"
@@ -17,7 +17,7 @@ export const NotificationList = () => {
   const page = Number(router.query.page) || 0
   const currentUser = useCurrentUser()
 
-  const [{ notifications, hasMore }] = usePaginatedQuery(getNotifications, {
+  const [{ notifications, hasMore }, { refetch }] = usePaginatedQuery(getNotifications, {
     where: {
       recipients: {
         some: {
@@ -25,7 +25,10 @@ export const NotificationList = () => {
         },
       },
     },
-    orderBy: { id: "asc" },
+    orderBy: [
+      { read: "asc" }, // Show unread notifications first
+      { id: "asc" }, // Then sort by id
+    ],
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -33,10 +36,13 @@ export const NotificationList = () => {
   // const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   // const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
+  // Get columns and pass refetch
+  const columns = notificationTableColumns(refetch)
+
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center mb-2">All Notifications</h1>
-      <Table columns={notificationTableColumns} data={notifications} />
+      <Table columns={columns} data={notifications} />
     </main>
   )
 }

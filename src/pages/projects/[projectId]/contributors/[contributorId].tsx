@@ -30,7 +30,7 @@ export const ContributorPage = () => {
   }
 
   const user = contributor[0].user
-  console.log(user)
+
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Head>
@@ -81,7 +81,7 @@ export const ContributorPage = () => {
                   "This contributor will be removed from the project. Are you sure to continue?"
                 )
               ) {
-                await deleteContributorMutation({ id: contributor.id })
+                await deleteContributorMutation({ id: contributor[0].id })
                 // Check if User removed themselves and return to main page
                 // TODO: This my lead to an error if contributorspage is loaded too soon
                 if (user.id === currentUser?.id) {

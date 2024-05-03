@@ -13,6 +13,7 @@ import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { ContributorPrivilegesOptions } from "src/contributors/components/ContributorForm"
 import toast from "react-hot-toast"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 // TODO: if not all parameters that are present in the schema are in the returned values of the form the onsubmit fails without error
 // TODO: Thus we create a separate schema for the form and the create mutation
 export const ContributorFormSchema = z.object({
@@ -27,6 +28,7 @@ const NewContributorPage = () => {
   const [project] = useQuery(getProject, { id: projectId })
   const sidebarItems = ProjectSidebarItems(projectId!, null)
   const [createContributorMutation] = useMutation(createContributor)
+  const currentUser = useCurrentUser()
 
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
@@ -50,6 +52,7 @@ const NewContributorPage = () => {
                   privilege: ContributorPrivilegesOptions.find(
                     (option) => option.id === values.privilege
                   )!.value,
+                  addedBy: currentUser!.username,
                 })
                 await toast.promise(Promise.resolve(contributor), {
                   loading: "Adding contributor...",
