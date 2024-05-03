@@ -60,7 +60,15 @@ const Navbar = () => {
       {/* Tabs */}
       {/* On the left */}
       <div className="flex-1">
-        <h2>STAPLE</h2>
+        <picture>
+          <source
+            srcset="/stapler_white.png"
+            media="(prefers-color-scheme: dark)"
+            alt="STAPLE Logo"
+            width={25}
+          />
+          <img src="/stapler_black.png" alt="STAPLE Logo" width={25} />
+        </picture>
       </div>
       {/* On the right */}
       <div className="flex space-x-5">

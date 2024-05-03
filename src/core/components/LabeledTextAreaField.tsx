@@ -13,7 +13,7 @@ export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElem
   fieldProps?: UseFieldConfig<string>
 }
 
-export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
+export const LabeledTextAreaField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
   ({ name, label, outerProps, fieldProps, labelProps, ...props }, ref) => {
     const {
       input,
@@ -33,7 +33,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
       <div {...outerProps}>
         <label {...labelProps}>
           {label}
-          <input {...input} disabled={submitting} {...props} ref={ref} />
+          <textarea {...input} disabled={submitting} {...props} ref={ref} />
         </label>
 
         {touched && normalizedError && (
@@ -49,7 +49,8 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
             align-items: start;
             font-size: 1.25rem;
           }
-          input {
+
+          textarea {
             font-size: 1rem;
             padding: 0.25rem 0.5rem;
             border-radius: 3px;
@@ -62,4 +63,4 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
   }
 )
 
-export default LabeledTextField
+export default LabeledTextAreaField

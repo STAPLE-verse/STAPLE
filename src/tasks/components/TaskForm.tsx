@@ -1,6 +1,7 @@
 // import React, { Suspense } from "react"
 import { Form, FormProps } from "src/core/components/Form"
 import { LabeledTextField } from "src/core/components/LabeledTextField"
+import { LabeledTextAreaField } from "src/core/components/LabeledTextAreaField"
 import { LabelSelectField } from "src/core/components/LabelSelectField"
 import getColumns from "../queries/getColumns"
 import getElements from "src/elements/queries/getElements"
@@ -101,7 +102,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     <Form<S> {...formProps} encType="multipart/form-data">
       {/* Name */}
       <LabeledTextField
-        className="input input-primary input-bordered w-full max-w-sm m-2"
+        className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"
         name="name"
         label="Task Name:"
         placeholder="Add Task Name"
@@ -110,7 +111,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Column */}
       <LabelSelectField
-        className="select select-bordered select-primary w-full max-w-sm m-2"
+        className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"
         name="columnId"
         label="Current Status:"
         options={columns}
@@ -118,12 +119,12 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         optionValue="id"
       />
       {/* Description */}
-      <LabeledTextField
-        className="textarea textarea-primary textarea-bordered w-full resize max-w-sm m-2"
+      <LabeledTextAreaField
+        className="mb-4 textarea textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300"
         name="description"
-        label="Task Description (Optional):"
+        label="Task Description:"
         placeholder="Add Description"
-        type="text"
+        type="textarea"
       />
 
       {/* Deadline */}
@@ -143,7 +144,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
               <input
                 {...input}
                 value={formattedValue}
-                className="mt-2 text-lg border rounded p-2"
+                className="mb-4 text-lg border rounded p-2 w-1/2"
                 type="datetime-local"
                 min={today}
                 max="2050-01-01T00:00"
@@ -160,9 +161,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Elements */}
       <LabelSelectField
-        className="select select-bordered select-primary w-full max-w-sm m-2"
+        className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"
         name="elementId"
-        label="Assign to Element (Optional):"
+        label="Assign to Element:"
         options={elements}
         optionText="name"
         optionValue="id"
@@ -173,7 +174,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       <div className="mt-4">
         <button
           type="button"
-          className="btn btn-outline btn-primary w-full max-w-sm"
+          className="btn btn-primary w-1/2"
           onClick={() => handleToggleContributorsModal()}
         >
           Assign contributors
@@ -197,7 +198,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
               <button
                 type="button"
                 /* button for popups */
-                className="btn btn-outline btn-primary"
+                className="btn btn-primary"
                 onClick={handleToggleContributorsModal}
               >
                 Close
@@ -210,7 +211,11 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       {/* Teams */}
       {/* Button */}
       <div className="mt-4">
-        <button type="button" className="btn" onClick={() => handleToggleTeamsModal()}>
+        <button
+          type="button"
+          className="btn btn-primary w-1/2"
+          onClick={() => handleToggleTeamsModal()}
+        >
           Assign Team
         </button>
         <FormSpy subscription={{ errors: true }}>
@@ -236,10 +241,10 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         </Modal>
       </div>
 
-      <div className="m-2">
+      <div className="mt-4">
         <button
           type="button"
-          className="btn btn-outline btn-primary w-full max-w-sm"
+          className="btn btn-primary w-1/2"
           onClick={() => handleToggleSchemaUpload()}
         >
           Assign Required Information
@@ -290,11 +295,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
               </Field>
             </div>
             <div className="modal-action">
-              <button
-                type="button"
-                className="btn btn-outline btn-primary"
-                onClick={handleToggleSchemaUpload}
-              >
+              <button type="button" className="btn btn-primary" onClick={handleToggleSchemaUpload}>
                 Close
               </button>
             </div>

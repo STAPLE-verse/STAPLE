@@ -18,7 +18,7 @@ const Layout: BlitzLayout<{
         <title>{title || "STAPLE"}</title>
       </Head>
 
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col h-screen sticky top-0">
         <MainNavbar />
         <div className="flex flex-grow">
           <Sidebar title={sidebarTitle}>

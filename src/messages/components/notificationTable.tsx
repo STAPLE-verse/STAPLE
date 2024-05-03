@@ -13,15 +13,15 @@ export const notificationTableColumns = (refetch) => [
   }),
   columnHelper.accessor("message", {
     id: "message",
-    header: "",
-    enableColumnFilter: false,
-    enableSorting: false,
+    header: "Notification Message",
+    //enableColumnFilter: false,
+    //enableSorting: false,
     cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
   }),
   columnHelper.accessor("read", {
     enableColumnFilter: false,
-    enableSorting: false,
+    //enableSorting: false,
     cell: (info) => <ReadToggle notification={info.row.original} refetch={refetch} />,
-    header: "",
+    header: "Read",
   }),
 ]

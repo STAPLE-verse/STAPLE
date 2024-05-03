@@ -4,7 +4,6 @@ import {
   RegistryWidgetsType,
   RegistryFieldsType,
   RegistryTemplatesType,
-  TitleFieldProps,
   FieldTemplateProps,
   FormContextType,
   TitleFieldProps,

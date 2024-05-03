@@ -68,7 +68,7 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
             display: flex;
             flex-direction: column;
             align-items: start;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
           }
           select {
             font-size: 1rem;

@@ -46,7 +46,7 @@ export const ContributorsList = () => {
         const initial = getInitials(firstName, lastName)
 
         return (
-          <div className="card bg-base-200 mb-2" key={contributor.id}>
+          <div className="card bg-base-300 mb-2" key={contributor.id}>
             <div className="card-body flex flex-row justify-between">
               <div className="flex items-center">
                 <div className="avatar placeholder">
@@ -60,7 +60,7 @@ export const ContributorsList = () => {
               </div>
               <div className="justify-end">
                 <Link
-                  className="btn"
+                  className="btn btn-primary"
                   href={Routes.ShowContributorPage({
                     projectId: projectId!,
                     contributorId: contributor.id,
@@ -147,11 +147,7 @@ const ContributorsPage = () => {
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2">Contributors</h1>
-        <Link className="btn mb-4" href={Routes.NewContributorPage({ projectId: projectId! })}>
-          Add contributor
-          <PlusIcon className="w-5 h-5" />
-        </Link>
+        <h1 className="flex justify-center mb-2 text-3xl">Contributors</h1>
 
         {/* <Suspense fallback={<div>Loading...</div>}>
           <ContributorsList />
@@ -159,6 +155,13 @@ const ContributorsPage = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <AllContributorsList />
         </Suspense>
+        <Link
+          className="btn btn-secondary mb-4"
+          href={Routes.NewContributorPage({ projectId: projectId! })}
+        >
+          Add contributor
+          <PlusIcon className="w-5 h-5" />
+        </Link>
       </main>
     </Layout>
   )
