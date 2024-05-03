@@ -359,7 +359,7 @@ const ProjectDashboard = () => {
         <div className="card bg-base-300 mx-2 w-1/2">
           <div className="card-body">
             <div className="card-title">Recent Events</div>
-            - if project manager: show everyone's recent Events <br />
+            - if project manager: show everyone&apos;s recent Events <br />
             - if contributor: show your recent events <br />
           </div>
         </div>
