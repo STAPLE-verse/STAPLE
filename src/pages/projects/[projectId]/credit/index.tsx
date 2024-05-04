@@ -62,7 +62,7 @@ export const CreditsTabs = () => {
         {/* Tabpanel for Assign tasks */}
         <Tab.Panel>
           <TasksTab></TasksTab>
-          - Here it should show the complete list of Tasks in a Table - this is only tasks that are
+          {/* - Here it should show the complete list of Tasks in a Table - this is only tasks that are
           marked as complete (big task not assignments) - table columns: - name, - description, -
           current labels assigned (like paste them together in a single cell) - add labels button
           that opens a modal that allows you to view the current list of labels and update them save
@@ -71,7 +71,7 @@ export const CreditsTabs = () => {
           <br />
           Add multiple button that opens a modal to assign the tasks from the check boxes labels all
           at once - not sure how this would be done, but basically you can assign them one at a time
-          with the individual button or a lot at once by using the check boxes and this other button
+          with the individual button or a lot at once by using the check boxes and this other button */}
         </Tab.Panel>
 
         {/* Tabpanel for Assign Contributors */}

@@ -25,5 +25,4 @@ export const LabelFormSchema = z.object({
 
 export const LabelTaskFormSchema = z.object({
   labelsId: z.array(z.number()).optional().nullable(),
-  taskId: z.number(),
 })

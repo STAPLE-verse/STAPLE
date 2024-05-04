@@ -17,11 +17,11 @@ import getLabels from "../queries/getLabels"
 interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
   type?: string
-  taskId?: number
+  tasksId?: number[]
 }
 
 export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormProps<S>) {
-  const { projectId, type, taskId, ...formProps } = props
+  const { projectId, type, tasksId, ...formProps } = props
 
   // Contributors
   // const [{ contributors }] = useQuery(getContributors, {

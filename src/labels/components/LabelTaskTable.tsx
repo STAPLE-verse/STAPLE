@@ -15,13 +15,16 @@ import { AddLabelForm } from "./AddLabelForm"
 import { LabelTaskFormSchema } from "../schemas"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
 import { lableTableColumns } from "./LabelTable"
+import TaskTableModal from "./LabelAddTableModal"
 
 export type TaskLabelInformation = {
   name: string
   description?: string
   labels?: []
   id: number
+  selectedIds: number[]
   onChangeCallback?: () => void
+  onMultipledAdded?: (selectedId) => void
 }
 
 const AddLabelsColunm = ({ row }) => {
@@ -39,26 +42,23 @@ const AddLabelsColunm = ({ row }) => {
   const handleToggleEditLabelModal = () => {
     setOpenEditLabelModal((prev) => !prev)
   }
-
-  console.log(row)
   const labelsId = row.labels.map((label) => label.id)
-  console.log(labelsId)
   const initialValues = {
     labelsId: labelsId,
-    taskId: id,
   }
 
   const handleAddLabel = async (values) => {
-    console.log(values)
     try {
       const updated = await updateTaskLabelMutation({
         ...values,
+        tasksId: [row.id],
+        disconnect: true,
       })
       if (onChangeCallback != undefined) {
         onChangeCallback()
       }
       await toast.promise(Promise.resolve(updated), {
-        loading: "Adding labels to taks...",
+        loading: "Adding labels to tasks...",
         success: "Labels added!",
         error: "Failed to add the labels...",
       })
@@ -125,6 +125,39 @@ const LabelsColunm = ({ row }) => {
   )
 }
 
+const MultipleCheckboxColumn = ({ row }) => {
+  // const [contributorChecked, setcontributorChecked] = useState(teamOptions)
+  const handleOnChange = (id) => {
+    if (row.onMultipledAdded != undefined) {
+      row.onMultipledAdded(id)
+    }
+  }
+
+  return (
+    <div>
+      {/* <p>
+        Adding multple <span>{row.selectedIds.length}</span>
+      </p> */}
+      <span>
+        {
+          <div>
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-primary"
+                checked={row.selectedIds.includes(row.id)}
+                onChange={() => {
+                  handleOnChange(row.id)
+                }}
+              />
+            </label>
+          </div>
+        }
+      </span>
+    </div>
+  )
+}
+
 const columnHelper = createColumnHelper<TaskLabelInformation>()
 
 // ColumnDefs
@@ -152,29 +185,47 @@ export const labelTaskTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <AddLabelsColunm row={info.row.original}></AddLabelsColunm>,
+    // cell: (info) => (
+    //   <TaskTableModal
+    //     buttonName={"Add label"}
+    //     labels={info.row.original.labels}
+    //     tasksId={[info.row.original.id]}
+    //     onChangeCallback={info.row.original.onChangeCallback || null}
+    //   ></TaskTableModal>
+    // ),
   }),
 
   columnHelper.accessor("id", {
     id: "multiple",
-    cell: (info) => (
-      <span>
-        {
-          <div>
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-primary"
-                checked={false}
-                onChange={() => {
-                  // console.log("Add multiple")
-                  // handleOnChange(info.row.original)
-                }}
-              />
-            </label>
-          </div>
-        }
-      </span>
-    ),
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => <MultipleCheckboxColumn row={info.row.original}></MultipleCheckboxColumn>,
     header: "Add Multiple",
   }),
+
+  // columnHelper.accessor("id", {
+  //   id: "multiple",
+  //   enableColumnFilter: false,
+  //   enableSorting: false,
+  //   cell: (info) => (
+  //     <span>
+  //       {
+  //         <div>
+  //           <label className="label cursor-pointer">
+  //             <input
+  //               type="checkbox"
+  //               className="checkbox checkbox-primary"
+  //               checked={false}
+  //               onChange={() => {
+  //                 // console.log("Add multiple")
+  //                 // handleOnChange(info.row.original)
+  //               }}
+  //             />
+  //           </label>
+  //         </div>
+  //       }
+  //     </span>
+  //   ),
+  //   header: "Add Multiple",
+  // }),
 ]
