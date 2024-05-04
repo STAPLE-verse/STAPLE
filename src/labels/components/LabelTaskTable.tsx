@@ -14,6 +14,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
 import { LabelTaskFormSchema } from "../schemas"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
+import { lableTableColumns } from "./LabelTable"
 
 export type TaskLabelInformation = {
   name: string
@@ -39,10 +40,11 @@ const AddLabelsColunm = ({ row }) => {
     setOpenEditLabelModal((prev) => !prev)
   }
 
+  console.log(row)
+  const labelsId = row.labels.map((label) => label.id)
+  console.log(labelsId)
   const initialValues = {
-    // name: name,
-    // description: description,
-    // taxonomy: taxonomy,
+    labelsId: labelsId,
     taskId: id,
   }
 
@@ -51,17 +53,15 @@ const AddLabelsColunm = ({ row }) => {
     try {
       const updated = await updateTaskLabelMutation({
         ...values,
-        // userId: userId,
-        // id: id,
       })
-      // if (onChangeCallback != undefined) {
-      //   onChangeCallback()
-      // }
-      // await toast.promise(Promise.resolve(updated), {
-      //   loading: "Editing label...",
-      //   success: "Label edited!",
-      //   error: "Failed to edit the label...",
-      // })
+      if (onChangeCallback != undefined) {
+        onChangeCallback()
+      }
+      await toast.promise(Promise.resolve(updated), {
+        loading: "Adding labels to taks...",
+        success: "Labels added!",
+        error: "Failed to add the labels...",
+      })
     } catch (error: any) {
       console.error(error)
       return {
@@ -111,15 +111,13 @@ const AddLabelsColunm = ({ row }) => {
 }
 
 const LabelsColunm = ({ row }) => {
-  console.log(row)
   const labels = row.labels || []
-
   return (
-    <div className="modal-action flex justify-end mt-4">
+    <div className="modal-action flex justify-center mt-4">
       {
-        <ul className="menu menu-horizontal menu-lg">
+        <ul className="list-none">
           {labels.map((label) => (
-            <li key={label.id}>{label.name}</li>
+            <li key={label.id}> {label.name}</li>
           ))}
         </ul>
       }
@@ -133,11 +131,7 @@ const columnHelper = createColumnHelper<TaskLabelInformation>()
 export const labelTaskTableColumns = [
   columnHelper.accessor("name", {
     id: "name",
-    cell: (info) => (
-      <span>
-        {info.getValue()} :{info.row.original.id}
-      </span>
-    ),
+    cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
   }),
 
@@ -172,7 +166,7 @@ export const labelTaskTableColumns = [
                 className="checkbox checkbox-primary"
                 checked={false}
                 onChange={() => {
-                  console.log("Add multiple")
+                  // console.log("Add multiple")
                   // handleOnChange(info.row.original)
                 }}
               />

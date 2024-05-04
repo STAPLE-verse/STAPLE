@@ -21,6 +21,7 @@ import { TaskLabelInformation, labelTaskTableColumns } from "src/labels/componen
 import getTasks from "src/tasks/queries/getTasks"
 import { useParam } from "@blitzjs/next"
 import { truncate } from "fs"
+import { TaskStatus } from "db"
 
 export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
   const router = useRouter()
@@ -90,7 +91,7 @@ const TasksTab = () => {
 
   //TODO fix query to only completed tasks
   const [{ tasks, hasMore }, { refetch }] = usePaginatedQuery(getTasks, {
-    where: { project: { id: projectId! } },
+    where: { project: { id: projectId! }, status: TaskStatus.COMPLETED },
     include: { labels: true },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
@@ -105,28 +106,6 @@ const TasksTab = () => {
   const [openNewLabelModal, setOpenNewLabelModal] = useState(false)
   const handleToggleNewLabelModal = () => {
     setOpenNewLabelModal((prev) => !prev)
-  }
-
-  const handleCreateLabel = async (values) => {
-    try {
-      const label = await createLabelMutation({
-        name: values.name,
-        description: values.description,
-        userId: currentUser!.id,
-        taxonomy: values.taxonomy,
-      })
-      await reloadTable()
-      await toast.promise(Promise.resolve(label), {
-        loading: "Creating label...",
-        success: "Label created!",
-        error: "Failed to create the label...",
-      })
-    } catch (error: any) {
-      console.error(error)
-      return {
-        [FORM_ERROR]: error.toString(),
-      }
-    }
   }
 
   return (

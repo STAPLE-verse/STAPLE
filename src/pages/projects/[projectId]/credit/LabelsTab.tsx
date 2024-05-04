@@ -41,6 +41,7 @@ export const AllLabelsList = ({ hasMore, page, labels, onChange }) => {
       id: label.id,
       taxonomy: taxonomy,
       userId: label.userId,
+      taxonomyList: [],
       onChangeCallback: labelChanged,
     }
     return t
