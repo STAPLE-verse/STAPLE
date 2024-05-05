@@ -1,5 +1,12 @@
 import React from "react"
-import InputProps from "./input.type"
+
+interface InputProps {
+  type: string
+  name: string
+  placeholder?: string
+  value?: string
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
+}
 
 const TaskInput = ({ name, value, placeholder, onChange }: InputProps) => {
   return (

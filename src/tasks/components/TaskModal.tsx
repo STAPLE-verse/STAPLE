@@ -6,7 +6,14 @@ import { AnimatePresence, motion } from "framer-motion"
 import clsx from "clsx"
 
 // Types
-import ModalProps from "./modal.type"
+import { Dispatch, SetStateAction } from "react"
+
+interface ModalProps {
+  children: React.ReactNode
+  showModal: boolean
+  setShowModal: Dispatch<SetStateAction<boolean>>
+  containerClasses?: string
+}
 
 export default function TaskModal({
   children,
