@@ -26,9 +26,13 @@ import {
 } from "src/labels/components/LabelContributorTable"
 
 import getContributors from "src/contributors/queries/getContributors"
+import { AddLabelForm } from "src/labels/components/AddLabelForm"
+import { LabelIdsFormSchema } from "src/labels/schemas"
+import updateContributorLabel from "src/contributors/mutations/updateContributorLabel"
 
 export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange }) => {
   const router = useRouter()
+  const [updateContributorLabelMutation] = useMutation(updateContributorLabel)
 
   const labelChanged = async () => {
     if (onChange != undefined) {
@@ -39,23 +43,65 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
-  console.log(contributors)
+  const [selectedIds, setSelectedIds] = useState([] as number[])
+  //TODO refactor and merge with task tab
+  const handleMultipleChanged = (selectedId: number) => {
+    const isSelected = selectedIds.includes(selectedId)
+    // console.log("Id changed: ", selectedId, " is selected: ", isSelected)
+    const newSelectedIds = isSelected
+      ? selectedIds.filter((id) => id !== selectedId)
+      : [...selectedIds, selectedId]
+
+    setSelectedIds(newSelectedIds)
+  }
+
+  const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
+  const handleToggleEditLabelModal = () => {
+    setOpenEditLabelModal((prev) => !prev)
+  }
+
+  const handleAddLabel = async (values) => {
+    try {
+      console.log(values)
+      console.log(selectedIds)
+      const updated = await updateContributorLabelMutation({
+        ...values,
+        contributorsId: selectedIds,
+        disconnect: false,
+      })
+      await labelChanged()
+      await toast.promise(Promise.resolve(updated), {
+        loading: "Adding labels to contributors...",
+        success: "Labels added!",
+        error: "Failed to add the labels...",
+      })
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
+  const initialValues = {
+    labelsId: [],
+  }
 
   const taskInformation = contributors.map((contributor) => {
     const name = contributor.user.username
     const lastname = contributor.user.lastName
     const firstName = contributor.user.firstName
-    // const desciprition = task.description || ""
 
-    // console.log(task.labels)
-    //TODO LABels need from query
+    //TODO merge with task information tab
     let t: ContributorLabelInformation = {
       username: name,
       firstname: firstName,
       lastname: lastname,
       id: contributor.id,
-      labels: [], //task.labels,
+      labels: contributor.labels,
       onChangeCallback: labelChanged,
+      selectedIds: selectedIds,
+      onMultipledAdded: handleMultipleChanged,
     }
     return t
   })
@@ -81,10 +127,37 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
           type="button"
           /* button for popups */
           className="btn btn-outline btn-primary"
-          onClick={() => {}}
+          onClick={handleToggleEditLabelModal}
         >
           Add Multiple
         </button>
+
+        <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
+          <div className="">
+            <h1 className="flex justify-center mb-2">Add labels</h1>
+            <div className="flex justify-start mt-4">
+              <AddLabelForm
+                schema={LabelIdsFormSchema}
+                submitText="Update Label"
+                className="flex flex-col"
+                onSubmit={handleAddLabel}
+                initialValues={initialValues}
+              ></AddLabelForm>
+            </div>
+
+            {/* closes the modal */}
+            <div className="modal-action flex justify-end mt-4">
+              <button
+                type="button"
+                /* button for popups */
+                className="btn btn-outline btn-primary"
+                onClick={handleToggleEditLabelModal}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </Modal>
       </div>
     </main>
   )
@@ -98,19 +171,9 @@ const ContributorsTab = () => {
 
   const ITEMS_PER_PAGE = 7
 
-  //move to label list
-  // const [{ labels, hasMore }, { refetch }] = usePaginatedQuery(getLabels, {
-  //   //where: { user: { id: { equals: userId! } } },
-  //   orderBy: { id: "asc" },
-  //   skip: ITEMS_PER_PAGE * page,
-  //   take: ITEMS_PER_PAGE,
-  // })
-
-  //TODO fix query to include labels, add relationship on db
   const [{ contributors, hasMore }, { refetch }] = usePaginatedQuery(getContributors, {
     where: { project: { id: projectId! } },
-    include: { user: true },
-    // include: { labels: true },
+    include: { user: true, labels: true },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,

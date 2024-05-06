@@ -12,7 +12,7 @@ import updateLabel from "../mutations/updateLabel"
 import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
-import { LabelTaskFormSchema } from "../schemas"
+import { LabelIdsFormSchema } from "../schemas"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
 
 const TaskTableModal = ({ labels, tasksId, onChangeCallback, buttonName }) => {
@@ -65,7 +65,7 @@ const TaskTableModal = ({ labels, tasksId, onChangeCallback, buttonName }) => {
           <h1 className="flex justify-center mb-2">Add labels</h1>
           <div className="flex justify-start mt-4">
             <AddLabelForm
-              schema={LabelTaskFormSchema}
+              schema={LabelIdsFormSchema}
               submitText="Update Label"
               className="flex flex-col"
               onSubmit={handleAddLabel}

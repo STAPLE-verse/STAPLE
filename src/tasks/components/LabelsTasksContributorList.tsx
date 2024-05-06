@@ -27,7 +27,7 @@ import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
 import { LabelIdsFormSchema } from "src/labels/schemas"
 import { AddLabelForm } from "src/labels/components/AddLabelForm"
 
-export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
+export const AllLabelsList = ({ hasMore, page, tasks, onChange }) => {
   const [updateTaskLabelMutation] = useMutation(updateTaskLabel)
   const router = useRouter()
 
@@ -155,37 +155,4 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
   )
 }
 
-const TasksTab = () => {
-  const currentUser = useCurrentUser()
-
-  const page = Number(router.query.page) || 0
-  const projectId = useParam("projectId", "number")
-
-  const ITEMS_PER_PAGE = 7
-
-  //TODO fix query to only completed tasks
-  const [{ tasks, hasMore }, { refetch }] = usePaginatedQuery(getTasks, {
-    where: { project: { id: projectId! }, status: TaskStatus.COMPLETED },
-    include: { labels: true },
-    orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-
-  const reloadTable = async () => {
-    await refetch()
-  }
-
-  return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="flex justify-center mb-2">Tasks</h1>
-      <div>
-        <Suspense fallback={<div>Loading...</div>}>
-          <AllTasksLabelsList page={page} tasks={tasks} hasMore={hasMore} onChange={reloadTable} />
-        </Suspense>
-      </div>
-    </main>
-  )
-}
-
-export default TasksTab
+export default AllLabelsList

@@ -8,12 +8,11 @@ import Modal from "src/core/components/Modal"
 import { FORM_ERROR, LabelForm } from "./LabelForm"
 
 import toast from "react-hot-toast"
-import updateLabel from "../mutations/updateLabel"
-import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
-import { LabelTaskFormSchema } from "../schemas"
-import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
+import { LabelIdsFormSchema } from "../schemas"
+import { MultipleCheckboxColumn } from "./LabelTaskTable"
+import updateContributorLabel from "src/contributors/mutations/updateContributorLabel"
 
 export type ContributorLabelInformation = {
   username: string
@@ -22,10 +21,12 @@ export type ContributorLabelInformation = {
   labels?: []
   id: number
   onChangeCallback?: () => void
+  selectedIds: number[]
+  onMultipledAdded?: (selectedId) => void
 }
 
 const AddLabelsColunm = ({ row }) => {
-  const [updateTaskLabelMutation] = useMutation(updateTaskLabel)
+  const [updateContributorLabelMutation] = useMutation(updateContributorLabel)
   const {
     name = "",
     description = "",
@@ -40,29 +41,26 @@ const AddLabelsColunm = ({ row }) => {
     setOpenEditLabelModal((prev) => !prev)
   }
 
+  const labelsId = row.labels.map((label) => label.id)
   const initialValues = {
-    // name: name,
-    // description: description,
-    // taxonomy: taxonomy,
-    taskId: id,
+    labelsId: labelsId,
   }
 
   const handleAddLabel = async (values) => {
-    console.log(values)
     try {
-      // const updated = await updateTaskLabelMutation({
-      //   ...values,
-      //   // userId: userId,
-      //   // id: id,
-      // })
-      // if (onChangeCallback != undefined) {
-      //   onChangeCallback()
-      // }
-      // await toast.promise(Promise.resolve(updated), {
-      //   loading: "Editing label...",
-      //   success: "Label edited!",
-      //   error: "Failed to edit the label...",
-      // })
+      const updated = await updateContributorLabelMutation({
+        labelsId: values.labelsId,
+        contributorsId: [row.id],
+        disconnect: true,
+      })
+      if (onChangeCallback != undefined) {
+        onChangeCallback()
+      }
+      await toast.promise(Promise.resolve(updated), {
+        loading: "Adding labels to contributors...",
+        success: "Labels added!",
+        error: "Failed to add the labels...",
+      })
     } catch (error: any) {
       console.error(error)
       return {
@@ -86,7 +84,7 @@ const AddLabelsColunm = ({ row }) => {
           <h1 className="flex justify-center mb-2">Add labels</h1>
           <div className="flex justify-start mt-4">
             <AddLabelForm
-              schema={LabelTaskFormSchema}
+              schema={LabelIdsFormSchema}
               submitText="Update Label"
               className="flex flex-col"
               onSubmit={handleAddLabel}
@@ -111,16 +109,15 @@ const AddLabelsColunm = ({ row }) => {
   )
 }
 
+//TODO refactor with label task colunm
 const LabelsColunm = ({ row }) => {
-  console.log(row)
   const labels = row.labels || []
-
   return (
-    <div className="modal-action flex justify-end mt-4">
+    <div className="modal-action flex justify-center mt-4">
       {
-        <ul className="menu menu-horizontal menu-lg">
+        <ul className="list-none">
           {labels.map((label) => (
-            <li key={label.id}>{label.name}</li>
+            <li key={label.id}> {label.name}</li>
           ))}
         </ul>
       }
@@ -134,11 +131,7 @@ const columnHelper = createColumnHelper<ContributorLabelInformation>()
 export const labelContributorTableColumns = [
   columnHelper.accessor("username", {
     id: "username",
-    cell: (info) => (
-      <span>
-        {info.getValue()} :{info.row.original.id}
-      </span>
-    ),
+    cell: (info) => <span>{info.getValue()}</span>,
     header: "UserName",
   }),
 
@@ -165,28 +158,11 @@ export const labelContributorTableColumns = [
     enableSorting: false,
     cell: (info) => <AddLabelsColunm row={info.row.original}></AddLabelsColunm>,
   }),
-
   columnHelper.accessor("id", {
     id: "multiple",
-    cell: (info) => (
-      <span>
-        {
-          <div>
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-primary"
-                checked={false}
-                onChange={() => {
-                  console.log("Add multiple")
-                  // handleOnChange(info.row.original)
-                }}
-              />
-            </label>
-          </div>
-        }
-      </span>
-    ),
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => <MultipleCheckboxColumn row={info.row.original}></MultipleCheckboxColumn>,
     header: "Add Multiple",
   }),
 ]

@@ -12,7 +12,7 @@ import updateLabel from "../mutations/updateLabel"
 import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
-import { LabelTaskFormSchema } from "../schemas"
+import { LabelIdsFormSchema } from "../schemas"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
 import { lableTableColumns } from "./LabelTable"
 import TaskTableModal from "./LabelAddTableModal"
@@ -85,7 +85,7 @@ const AddLabelsColunm = ({ row }) => {
           <h1 className="flex justify-center mb-2">Add labels</h1>
           <div className="flex justify-start mt-4">
             <AddLabelForm
-              schema={LabelTaskFormSchema}
+              schema={LabelIdsFormSchema}
               submitText="Update Label"
               className="flex flex-col"
               onSubmit={handleAddLabel}
@@ -125,7 +125,8 @@ const LabelsColunm = ({ row }) => {
   )
 }
 
-const MultipleCheckboxColumn = ({ row }) => {
+//TODO move to another component
+export const MultipleCheckboxColumn = ({ row }) => {
   // const [contributorChecked, setcontributorChecked] = useState(teamOptions)
   const handleOnChange = (id) => {
     if (row.onMultipledAdded != undefined) {

@@ -18,3 +18,9 @@ export const UpdateContributorSchema = z.object({
 export const DeleteContributorSchema = z.object({
   id: z.number(),
 })
+
+export const UpdateContributorLabelSchema = z.object({
+  contributorsId: z.array(z.number()).nonempty(),
+  labelsId: z.array(z.number()).optional().nullable(),
+  disconnect: z.boolean(),
+})

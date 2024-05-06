@@ -100,22 +100,24 @@ model Contributor {
   AssignmentStatusLog AssignmentStatusLog[]
   // allow them to have multiple contributor labels, I think like the task array?
   // add contributor label link here
+  labels              Label[]
 }
 
 // Contribution type
 
 model Label {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  user        User     @relation(fields: [userId], references: [id])
-  name        String
-  description String?
-  taxonomy    String?
-  Project     Project? @relation(fields: [projectId], references: [id])
-  projectId   Int?
+  id           Int           @id @default(autoincrement())
+  userId       Int
+  user         User          @relation(fields: [userId], references: [id])
+  name         String
+  description  String?
+  taxonomy     String?
+  Project      Project?      @relation(fields: [projectId], references: [id])
+  projectId    Int?
   // Task        Task?    @relation(fields: [taskId], references: [id])
   // taskId      Int?
-  tasks       Task[]
+  tasks        Task[]
+  contributors Contributor[]
 }
 
 model Project {
@@ -168,9 +170,8 @@ model Task {
   schema          Json?
   status          TaskStatus   @default(NOT_COMPLETED)
   tags            String?
-  // allow them to have multiple contributor labels, I think like the task array?
-  // add contributor label link here
-  labels          Label[]
+
+  labels Label[]
 }
 
 enum AssignmentStatus {
