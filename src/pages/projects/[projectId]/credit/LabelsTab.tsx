@@ -10,17 +10,25 @@ import { FORM_ERROR } from "src/labels/components/LabelForm"
 import getLabels from "src/labels/queries/getLabels"
 import Table from "src/core/components/Table"
 import { useParam } from "@blitzjs/next"
-import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
 
 import { LabelIdsFormSchema } from "src/labels/schemas"
 import { AddLabelForm } from "src/labels/components/AddLabelForm"
 import { PmLabelInformation, labelPmTableColumns } from "src/labels/components/LabelPmTable"
+import toast from "react-hot-toast"
+import updateProjectLabel from "src/projects/mutations/updateProjectLabel"
 
-export const AlPmsLabelsList = ({ hasMore, page, labels, onChange }) => {
-  const [updateTaskLabelMutation] = useMutation(updateTaskLabel)
+export const AlPmsLabelsList = ({
+  hasMore,
+  page,
+  labels,
+  onChange,
+  projectId,
+  labelsInProject,
+}) => {
+  const [updateProjectLabelMutation] = useMutation(updateProjectLabel)
   const router = useRouter()
 
-  const [selectedIds, setSelectedIds] = useState([] as number[])
+  const [selectedIds, setSelectedIds] = useState(labelsInProject)
 
   const labelChanged = async () => {
     if (onChange != undefined) {
@@ -44,18 +52,17 @@ export const AlPmsLabelsList = ({ hasMore, page, labels, onChange }) => {
 
   const handleAddLabel = async (values) => {
     try {
-      console.log(values)
-      // const updated = await updateTaskLabelMutation({
-      //   ...values,
-      //   tasksId: selectedIds,
-      //   disconnect: false,
-      // })
-      // await labelChanged()
-      // await toast.promise(Promise.resolve(updated), {
-      //   loading: "Adding labels to tasks...",
-      //   success: "Labels added!",
-      //   error: "Failed to add the labels...",
-      // })
+      const updated = await updateProjectLabelMutation({
+        projectsId: [projectId],
+        labelsId: selectedIds,
+        disconnect: true,
+      })
+      await labelChanged()
+      await toast.promise(Promise.resolve(updated), {
+        loading: "Adding labels to projects...",
+        success: "Labels added!",
+        error: "Failed to add the labels...",
+      })
     } catch (error: any) {
       console.error(error)
       return {
@@ -108,37 +115,10 @@ export const AlPmsLabelsList = ({ hasMore, page, labels, onChange }) => {
           type="button"
           /* button for popups */
           className="btn btn-outline btn-primary"
-          onClick={handleToggleEditLabelModal}
+          onClick={handleAddLabel}
         >
           Save
         </button>
-
-        <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
-          <div className="">
-            <h1 className="flex justify-center mb-2">Add labels</h1>
-            <div className="flex justify-start mt-4">
-              <AddLabelForm
-                schema={LabelIdsFormSchema}
-                submitText="Update Label"
-                className="flex flex-col"
-                onSubmit={handleAddLabel}
-                initialValues={initialValues}
-              ></AddLabelForm>
-            </div>
-
-            {/* closes the modal */}
-            <div className="modal-action flex justify-end mt-4">
-              <button
-                type="button"
-                /* button for popups */
-                className="btn btn-outline btn-primary"
-                onClick={handleToggleEditLabelModal}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </Modal>
       </div>
     </main>
   )
@@ -157,10 +137,22 @@ const LabelssTab = () => {
   //TODO fix query to only pms on the project
   const [{ labels, hasMore }, { refetch }] = usePaginatedQuery(getLabels, {
     // where: { project: { id: projectId! }, status: TaskStatus.COMPLETED },
-    include: { user: true },
+    include: { user: true, projects: true },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
+  })
+
+  const projectInLabel = (projects, projectId) => {
+    let t = false
+    let s = projects.findIndex((p) => p.id == projectId)
+    return s != -1
+  }
+
+  let checkedIds = []
+  labels.forEach((label) => {
+    let s = projectInLabel(label.projects, projectId)
+    if (s) checkedIds.push(label.id)
   })
 
   const reloadTable = async () => {
@@ -172,7 +164,14 @@ const LabelssTab = () => {
       <h1 className="flex justify-center mb-2">Tasks</h1>
       <div>
         <Suspense fallback={<div>Loading...</div>}>
-          <AlPmsLabelsList page={page} labels={labels} hasMore={hasMore} onChange={reloadTable} />
+          <AlPmsLabelsList
+            page={page}
+            labels={labels}
+            hasMore={hasMore}
+            onChange={reloadTable}
+            projectId={projectId}
+            labelsInProject={checkedIds}
+          />
         </Suspense>
       </div>
     </main>

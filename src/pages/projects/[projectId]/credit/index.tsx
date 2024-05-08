@@ -53,10 +53,10 @@ export const CreditsTabs = () => {
         {/* Tab for Add Labels */}
         <Tab.Panel>
           <LabelsTab />
-          - a table of all the labels for all the PMs on a project - columns: - name - description -
+          {/* - a table of all the labels for all the PMs on a project - columns: - name - description -
           which PM the label comes from - check box column - For every PM on the project, add the
           labels here with check boxes, then a button to save
-          <br />- These will get added to the project table in the database
+          <br />- These will get added to the project table in the database */}
         </Tab.Panel>
 
         {/* Tabpanel for Assign tasks */}

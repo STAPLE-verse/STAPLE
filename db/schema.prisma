@@ -112,10 +112,11 @@ model Label {
   name         String
   description  String?
   taxonomy     String?
-  Project      Project?      @relation(fields: [projectId], references: [id])
-  projectId    Int?
+  // Project      Project?      @relation(fields: [projectId], references: [id])
+  // projectId    Int?
   // Task        Task?    @relation(fields: [taskId], references: [id])
   // taskId      Int?
+  projects     Project[]
   tasks        Task[]
   contributors Contributor[]
 }

@@ -125,9 +125,7 @@ const LabelsColunm = ({ row }) => {
   )
 }
 
-//TODO move to another component
 export const MultipleCheckboxColumn = ({ row }) => {
-  // const [contributorChecked, setcontributorChecked] = useState(teamOptions)
   const handleOnChange = (id) => {
     if (row.onMultipledAdded != undefined) {
       row.onMultipledAdded(id)
@@ -136,9 +134,6 @@ export const MultipleCheckboxColumn = ({ row }) => {
 
   return (
     <div>
-      {/* <p>
-        Adding multple <span>{row.selectedIds.length}</span>
-      </p> */}
       <span>
         {
           <div>
