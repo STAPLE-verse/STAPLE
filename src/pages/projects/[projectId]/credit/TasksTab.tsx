@@ -1,26 +1,17 @@
 import { Suspense, useState } from "react"
-import Head from "next/head"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import router, { useRouter } from "next/router"
 
-import Layout from "src/core/layouts/Layout"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
-import React, { useRef } from "react"
-import ReactDOM from "react-dom"
+import React from "react"
 import Modal from "src/core/components/Modal"
-import { LabelForm, FORM_ERROR } from "src/labels/components/LabelForm"
-import { FormApi, SubmissionErrors, configOptions } from "final-form"
-import { number, z } from "zod"
+import { FORM_ERROR } from "src/labels/components/LabelForm"
 import toast from "react-hot-toast"
-import createLabel from "src/labels/mutations/createLabel"
-import getLabels from "src/labels/queries/getLabels"
 import Table from "src/core/components/Table"
 import { TaskLabelInformation, labelTaskTableColumns } from "src/labels/components/LabelTaskTable"
 import getTasks from "src/tasks/queries/getTasks"
 import { useParam } from "@blitzjs/next"
-import { truncate } from "fs"
 import { TaskStatus } from "db"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
 
@@ -55,7 +46,6 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
 
   const handleAddLabel = async (values) => {
     try {
-      console.log(values)
       const updated = await updateTaskLabelMutation({
         ...values,
         tasksId: selectedIds,
@@ -156,7 +146,7 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
 }
 
 const TasksTab = () => {
-  const currentUser = useCurrentUser()
+  //const currentUser = useCurrentUser()
 
   const page = Number(router.query.page) || 0
   const projectId = useParam("projectId", "number")

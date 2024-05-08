@@ -77,7 +77,7 @@ export const CreditsTabs = () => {
         {/* Tabpanel for Assign Contributors */}
         <Tab.Panel>
           <ContributorsTab></ContributorsTab>
-          - Here it should show the complete list of Contributors in a Table - table columns: -
+          {/* - Here it should show the complete list of Contributors in a Table - table columns: -
           username - first last name - current labels assigned (like paste them together in a single
           cell) - add labels button that opens a modal that allows you to view the current list of
           labels and update them save and close - add multiple column that has a check box that
@@ -86,7 +86,7 @@ export const CreditsTabs = () => {
           Add multiple button that opens a modal to assign the contributors from the check boxes
           labels all at once - not sure how this would be done, but basically you can assign them
           one at a time with the individual button or a lot at once by using the check boxes and
-          this other button
+          this other button */}
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>

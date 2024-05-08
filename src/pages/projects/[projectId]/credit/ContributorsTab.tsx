@@ -1,25 +1,16 @@
 import { Suspense, useState } from "react"
-import Head from "next/head"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import router, { useRouter } from "next/router"
 
-import Layout from "src/core/layouts/Layout"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
-import React, { useRef } from "react"
-import ReactDOM from "react-dom"
+import React from "react"
 import Modal from "src/core/components/Modal"
-import { LabelForm, FORM_ERROR } from "src/labels/components/LabelForm"
-import { FormApi, SubmissionErrors, configOptions } from "final-form"
-import { number, z } from "zod"
+import { FORM_ERROR } from "src/labels/components/LabelForm"
 import toast from "react-hot-toast"
 import createLabel from "src/labels/mutations/createLabel"
-import getLabels from "src/labels/queries/getLabels"
 import Table from "src/core/components/Table"
-import getTasks from "src/tasks/queries/getTasks"
 import { useParam } from "@blitzjs/next"
-import { truncate } from "fs"
 import {
   ContributorLabelInformation,
   labelContributorTableColumns,
@@ -108,7 +99,6 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
       <Table columns={labelContributorTableColumns} data={taskInformation} />
       <div className="join grid grid-cols-2 my-6">
         <button
@@ -164,8 +154,8 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
 }
 
 const ContributorsTab = () => {
-  const currentUser = useCurrentUser()
-  const [createLabelMutation] = useMutation(createLabel)
+  // const currentUser = useCurrentUser()
+
   const page = Number(router.query.page) || 0
   const projectId = useParam("projectId", "number")
 
@@ -181,34 +171,6 @@ const ContributorsTab = () => {
 
   const reloadTable = async () => {
     await refetch()
-  }
-
-  // Modal open logics
-  const [openNewLabelModal, setOpenNewLabelModal] = useState(false)
-  const handleToggleNewLabelModal = () => {
-    setOpenNewLabelModal((prev) => !prev)
-  }
-
-  const handleCreateLabel = async (values) => {
-    try {
-      const label = await createLabelMutation({
-        name: values.name,
-        description: values.description,
-        userId: currentUser!.id,
-        taxonomy: values.taxonomy,
-      })
-      await reloadTable()
-      await toast.promise(Promise.resolve(label), {
-        loading: "Creating label...",
-        success: "Label created!",
-        error: "Failed to create the label...",
-      })
-    } catch (error: any) {
-      console.error(error)
-      return {
-        [FORM_ERROR]: error.toString(),
-      }
-    }
   }
 
   return (
