@@ -20,10 +20,14 @@ function classNames(...classes) {
 }
 import JSONInput from "react-json-editor-ajrm"
 import locale from "react-json-editor-ajrm/locale/en"
+import { CreateForm } from "src/forms/mutations/CreateForm"
+import { useMutation } from "@blitzjs/rpc"
 
-const Example = () => {
+const FormPlayground = () => {
   const [state, setState] = useState({ schema: "{}", uischema: "{}", formData: {} })
   const [render, setRender] = useState(false)
+  const [CreateFormMutation] = useMutation(CreateForm)
+  const currentUser = useCurrentUser()
 
   useEffect(() => {
     if (!render) {
@@ -37,6 +41,15 @@ const Example = () => {
   useEffect(() => {
     //console.log(state.formData)
   })
+
+  const saveForm = async () => {
+    const form = await CreateFormMutation({
+      schema: state.schema,
+      uiSchema: state.uischema,
+      userId: currentUser.id,
+    })
+    console.log(form)
+  }
 
   return render ? (
     <Tab.Group defaultIndex={0}>
@@ -84,6 +97,11 @@ const Example = () => {
         {/* Tabpanel for Visual Builder */}
         <Tab.Panel>
           <div className="formHead-wrapper">
+            <button type="button" className="btn btn-primary" onClick={saveForm}>
+              Save
+            </button>
+
+            <br />
             <FormBuilder
               schema={state.schema}
               uischema={state.uischema}
@@ -150,7 +168,7 @@ const FormBuilderPage = () => {
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <Suspense fallback={<div>Loading...</div>}>
-          <Example />
+          <FormPlayground />
         </Suspense>
       </main>
     </Layout>
