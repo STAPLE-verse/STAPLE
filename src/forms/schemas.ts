@@ -1,4 +1,4 @@
-import { Prisma, TaskStatus } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 import { z } from "zod"
 
 export const CreateFormSchema = z.object({
@@ -15,16 +15,18 @@ export const CreateFormSchema = z.object({
       },
       { message: "Invalid JSON format" }
     )
-    .transform((data) => data as Prisma.JsonValue),
+    .transform((data) => {
+      if (data === null) return Prisma.JsonNull
+      else return data as Prisma.JsonValue
+    }),
   uiSchema: z
     .unknown()
     .nullable()
     .refine(
       (data) => {
         if (data === null || data === undefined) {
-          return true // Allow null or undefined
+          return true
         }
-
         try {
           JSON.parse(JSON.stringify(data))
           return true
@@ -34,7 +36,9 @@ export const CreateFormSchema = z.object({
       },
       { message: "Invalid JSON format" }
     )
-    .transform((data) => data as Prisma.NullableJsonNullValueInput),
+    .transform((data) => {
+      if (data === null) return Prisma.JsonNull
+      else return data as Prisma.NullableJsonNullValueInput
+    }),
   userId: z.number(),
-  // template: __fieldName__: z.__zodType__(),
 })

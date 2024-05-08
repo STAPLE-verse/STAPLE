@@ -1,5 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import { CreateFormSchema } from "../schemas"
+import db from "db"
 
 export default resolver.pipe(
   resolver.zod(CreateFormSchema),
