@@ -21,7 +21,7 @@ export type AssignmentWithRelations = Prisma.AssignmentGetPayload<{
 // Column helper
 const columnHelper = createColumnHelper<AssignmentWithRelations>()
 
-const AssignmentMetadataModal = ({ metadata }) => {
+export const AssignmentMetadataModal = ({ metadata }) => {
   const [openModal, setOpenModal] = useState(false)
 
   const handleToggle = () => {
@@ -53,7 +53,7 @@ const AssignmentMetadataModal = ({ metadata }) => {
   )
 }
 
-function getName(info) {
+export function getName(info) {
   if (info.contributorId != null && info.hasOwnProperty("contributor") && info.contributor.user) {
     const { firstName, lastName, username } = info.contributor.user
     if (firstName && lastName) {
