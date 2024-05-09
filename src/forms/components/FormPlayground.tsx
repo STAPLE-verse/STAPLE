@@ -27,10 +27,30 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
     //console.log(state.schema)
   }, [])
 
-  // TODO: This logs a lot - remove
-  useEffect(() => {
-    //console.log(state.formData)
-  })
+  // Update functions for form JSON editor
+  const updateSchema = (newSchema) => {
+    try {
+      const parsedSchema = JSON.stringify(newSchema, null, 2)
+      setState((prevState) => ({
+        ...prevState,
+        schema: parsedSchema,
+      }))
+    } catch (error) {
+      console.error("Failed to parse schema:", error)
+    }
+  }
+
+  const updateUiSchema = (newUiSchema) => {
+    try {
+      const parsedUiSchema = JSON.stringify(newUiSchema, null, 2)
+      setState((prevState) => ({
+        ...prevState,
+        uischema: parsedUiSchema,
+      }))
+    } catch (error) {
+      console.error("Failed to parse UI schema:", error)
+    }
+  }
 
   return render ? (
     <Tab.Group defaultIndex={0}>
@@ -119,7 +139,7 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
                 }
                 locale={locale}
                 height="550px"
-                //onChange={(data: any) => updateSchema(data.json)}
+                onChange={(data) => updateSchema(data.jsObject)}
               />
             </div>
             <div>
@@ -129,7 +149,7 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
                 placeholder={state.uischema ? JSON.parse(state.uischema) : {}}
                 locale={locale}
                 height="550px"
-                //onChange={(data: any) => this.updateUISchema(data.json)}
+                onChange={(data) => updateUiSchema(data.jsObject)}
               />
             </div>
           </div>
