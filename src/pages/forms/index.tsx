@@ -9,6 +9,8 @@ import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import Table from "src/core/components/Table"
 import { formsTableColumns } from "src/forms/components/FormsTable"
+import Link from "next/link"
+import { Routes } from "@blitzjs/next"
 
 const ITEMS_PER_PAGE = 100
 
@@ -50,6 +52,11 @@ const AllFormsPage = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <AllFormsList />
         </Suspense>
+        <div className="flex justify-start">
+          <Link className="btn btn-primary" href={Routes.FormBuilderPage()}>
+            Create new form
+          </Link>
+        </div>
       </main>
     </Layout>
   )
