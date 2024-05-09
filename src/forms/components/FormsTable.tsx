@@ -22,6 +22,8 @@ export const formsTableColumns = [
   }),
   columnHelper.accessor((row) => "view", {
     id: "view",
+    enableColumnFilter: false,
+    enableSorting: false,
     cell: (info) => {
       const uiSchema = info.row.original.uiSchema || {}
       let extendedUiSchema = {}
@@ -49,8 +51,15 @@ export const formsTableColumns = [
     },
     header: "",
   }),
-  // columnHelper.accessor("schema", {
-  //   cell: (info) => <span>{info.getValue()}</span>,
-  //   header: "Edit",
-  // }),
+  columnHelper.accessor("id", {
+    id: "edit",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <Link className="btn btn-primary" href={Routes.FormEditPage({ formsId: info.getValue() })}>
+        Edit
+      </Link>
+    ),
+    header: "",
+  }),
 ]
