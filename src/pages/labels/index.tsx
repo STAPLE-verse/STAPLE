@@ -87,10 +87,11 @@ const LabelBuilderPage = () => {
   const page = Number(router.query.page) || 0
 
   const ITEMS_PER_PAGE = 7
+  console.log(currentUser)
 
-  //move to label list
+  //Only show labels that belongs to current user
   const [{ labels, hasMore }, { refetch }] = usePaginatedQuery(getLabels, {
-    //where: { user: { id: { equals: userId! } } },
+    where: { user: { id: currentUser?.id } },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,

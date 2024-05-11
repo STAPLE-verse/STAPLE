@@ -93,7 +93,7 @@ export const AlPmsLabelsList = ({
     }
     return t
   })
-
+  const hasElements = labels.length < 1
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
@@ -114,6 +114,7 @@ export const AlPmsLabelsList = ({
         <button
           type="button"
           /* button for popups */
+          disabled={hasElements}
           className="btn btn-outline btn-primary"
           onClick={handleAddLabel}
         >
@@ -132,11 +133,9 @@ const LabelssTab = () => {
 
   const ITEMS_PER_PAGE = 7
 
-  //TODO first get pms from projects, then get labels
-
-  //TODO fix query to only pms on the project
+  //only get labels that belongs to pms of current project
   const [{ labels, hasMore }, { refetch }] = usePaginatedQuery(getLabels, {
-    // where: { project: { id: projectId! }, status: TaskStatus.COMPLETED },
+    where: { user: { contributions: { some: { projectId: projectId } } } },
     include: { user: true, projects: true },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,

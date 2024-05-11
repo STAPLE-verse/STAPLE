@@ -87,6 +87,7 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
     }
     return t
   })
+  const hasElements = tasks.length < 1
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
@@ -109,6 +110,7 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
           type="button"
           /* button for popups */
           className="btn btn-outline btn-primary"
+          disabled={hasElements}
           onClick={handleToggleEditLabelModal}
         >
           Add Multiple

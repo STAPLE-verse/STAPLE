@@ -96,6 +96,7 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
     }
     return t
   })
+  const hasElements = contributors.length < 1
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
@@ -118,6 +119,7 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
           /* button for popups */
           className="btn btn-outline btn-primary"
           onClick={handleToggleEditLabelModal}
+          disabled={hasElements}
         >
           Add Multiple
         </button>
