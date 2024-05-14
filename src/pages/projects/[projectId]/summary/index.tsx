@@ -41,6 +41,8 @@ const SummaryPage = () => {
                 <br />
                 Created: CREATEDAT
                 <br />
+                Update: UPDATEDAT
+                <br />
                 Description: DESCRIPTION
                 <br />
                 Abstract: ABSTRACT
