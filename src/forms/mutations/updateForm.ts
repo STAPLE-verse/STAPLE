@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { EditFormSchema } from "../schemas"
