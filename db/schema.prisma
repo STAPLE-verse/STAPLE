@@ -24,6 +24,7 @@ model User {
   role           String   @default("USER")
   institution    String?
   tos            Boolean?
+  orcid          String?
 
   tokens   Token[]
   sessions Session[]
