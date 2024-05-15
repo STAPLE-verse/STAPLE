@@ -6,15 +6,18 @@ import {
 
 import { Boxes } from "src/core/components/Boxes"
 
-export const SortableBox = ({ widgets }) => {
-  // console.log(widgets)
+export const SortableBox = ({ boxes }) => {
   return (
     <div className="grid grid-cols-2 justify-center">
-      <SortableContext items={widgets.map((widget) => widget.id)} strategy={rectSwappingStrategy}>
-        {widgets.map(({ id, Component, props }) => (
-          <Boxes key={id} id={id}>
-            <Component {...props} />
-          </Boxes>
+      <SortableContext items={boxes} strategy={rectSwappingStrategy}>
+        {boxes.map((boxes) => (
+          <Boxes
+            key={boxes.id}
+            id={boxes.id}
+            title={boxes.title}
+            display={boxes.display}
+            link={boxes.link}
+          />
         ))}
       </SortableContext>
     </div>

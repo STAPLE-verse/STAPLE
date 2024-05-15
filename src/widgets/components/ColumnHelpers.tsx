@@ -8,7 +8,7 @@ type TaskWithProjectName = Prisma.TaskGetPayload<{
   include: { project: { select: { name: true } } }
 }>
 
-export const taskColumnHelper = createColumnHelper<TaskWithProjectName>()
+const taskColumnHelper = createColumnHelper<TaskWithProjectName>()
 
 export const tasksColumns: ColumnDef<TaskWithProjectName>[] = [
   taskColumnHelper.accessor("name", {
@@ -60,7 +60,7 @@ export const tasksColumns: ColumnDef<TaskWithProjectName>[] = [
 ]
 
 // Projects table
-export const projectColumnHelper = createColumnHelper<Project>()
+const projectColumnHelper = createColumnHelper<Project>()
 export const projectColumns: ColumnDef<Project>[] = [
   projectColumnHelper.accessor("name", {
     cell: (info) => <span className="font-semibold"> {info.getValue()} </span>,
@@ -103,7 +103,7 @@ export const projectColumns: ColumnDef<Project>[] = [
 ]
 
 // Notifciation table
-export const notificationColumnHelper = createColumnHelper<Notification>()
+const notificationColumnHelper = createColumnHelper<Notification>()
 export const notificationColumns: ColumnDef<Notification>[] = [
   notificationColumnHelper.accessor("message", {
     cell: (info) => <span className="font-semibold"> {info.getValue()} </span>,
