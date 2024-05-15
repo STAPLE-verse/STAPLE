@@ -1,4 +1,5 @@
 // @ts-nocheck
+// null not assignable to json null
 
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
