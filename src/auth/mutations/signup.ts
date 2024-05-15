@@ -17,6 +17,21 @@ export default resolver.pipe(resolver.zod(Signup), async ({ email, password, use
     select: { id: true, email: true, role: true, username: true, tos: true },
   })
 
+  // Adding main dashboard default widgets
+  const widgetTypes = ["LastProject", "OverdueTask", "UpcomingTask", "Notifications"]
+
+  const widgets = widgetTypes.map((type, index) => ({
+    userId: user.id,
+    type: type,
+    show: true,
+    position: index + 1,
+  }))
+
   await ctx.session.$create({ userId: user.id, role: user.role as Role })
+
+  await db.widget.createMany({
+    data: widgets,
+  })
+
   return user
 })

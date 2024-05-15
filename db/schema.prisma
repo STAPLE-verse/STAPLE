@@ -32,6 +32,8 @@ model User {
   forms            Forms[]
   notifications    Notification[] @relation("UserNotifications")
   ContributorLabel Label[]
+
+  widgets Widget[]
 }
 
 model Session {
@@ -152,7 +154,7 @@ model Task {
   id              Int          @id @default(autoincrement())
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
-  createdBy       Contributor  @relation(fields: [createdById], references: [id])
+  createdBy       Contributor  @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById     Int
   deadline        DateTime?
   name            String
@@ -188,12 +190,12 @@ model AssignmentStatusLog {
   createdAt    DateTime         @default(now())
   assignmentId Int
   changedAt    DateTime         @default(now()) // When the status was changed
-  assignment   Assignment       @relation(fields: [assignmentId], references: [id])
+  assignment   Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   status       AssignmentStatus @default(NOT_COMPLETED)
   metadata     Json?
   completedBy  Int?
   completedAs  CompletedAs      @default(INDIVIDUAL)
-  contributor  Contributor?     @relation(fields: [completedBy], references: [id])
+  contributor  Contributor?     @relation(fields: [completedBy], references: [id], onDelete: SetNull)
 
   @@unique([assignmentId, changedAt])
 }
@@ -205,9 +207,9 @@ model Assignment {
   taskId        Int
   task          Task                  @relation(fields: [taskId], references: [id], onDelete: Cascade)
   contributorId Int?
-  contributor   Contributor?          @relation(fields: [contributorId], references: [id], onDelete: Cascade)
+  contributor   Contributor?          @relation(fields: [contributorId], references: [id], onDelete: SetNull)
   teamId        Int?
-  team          Team?                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team          Team?                 @relation(fields: [teamId], references: [id], onDelete: SetNull)
   statusLogs    AssignmentStatusLog[]
 }
 
@@ -268,4 +270,15 @@ model Notification {
   message      String
   read         Boolean  @default(false)
   announcement Boolean  @default(false)
+}
+
+model Widget {
+  id       Int     @id @default(autoincrement())
+  userId   Int
+  user     User    @relation(fields: [userId], references: [id])
+  type     String // "LastProject", "Notifications", "OverdueTask", "UpcomingTask"
+  show     Boolean @default(true)
+  position Int
+
+  @@unique([userId, type])
 }
