@@ -1,7 +1,5 @@
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import Link from "next/link"
-import { Routes } from "@blitzjs/next"
 
 export const Boxes = ({ id, title, display, link }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
