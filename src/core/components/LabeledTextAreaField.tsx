@@ -1,7 +1,8 @@
 import { forwardRef, ComponentPropsWithoutRef, PropsWithoutRef } from "react"
 import { useField, UseFieldConfig } from "react-final-form"
 
-export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElements["input"]> {
+export interface LabeledTextAreaFieldProps
+  extends PropsWithoutRef<JSX.IntrinsicElements["textarea"]> {
   /** Field name. */
   name: string
   /** Field label. */
@@ -13,7 +14,7 @@ export interface LabeledTextFieldProps extends PropsWithoutRef<JSX.IntrinsicElem
   fieldProps?: UseFieldConfig<string>
 }
 
-export const LabeledTextAreaField = forwardRef<HTMLInputElement, LabeledTextFieldProps>(
+export const LabeledTextAreaField = forwardRef<HTMLTextAreaElement, LabeledTextAreaFieldProps>(
   ({ name, label, outerProps, fieldProps, labelProps, ...props }, ref) => {
     const {
       input,

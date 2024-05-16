@@ -1,9 +1,17 @@
 import React from "react"
-import ContainerProps from "./container.type"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import clsx from "clsx"
 import { Bars2Icon } from "@heroicons/react/24/outline"
+import { UniqueIdentifier } from "@dnd-kit/core"
+
+interface ContainerProps {
+  id: UniqueIdentifier
+  children: React.ReactNode
+  title?: string
+  description?: string
+  onAddItem?: () => void
+}
 
 const TaskContainer = ({ id, children, title, description, onAddItem }: ContainerProps) => {
   const { attributes, setNodeRef, listeners, transform, transition, isDragging } = useSortable({

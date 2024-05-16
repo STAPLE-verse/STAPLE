@@ -34,9 +34,9 @@ const Home: BlitzPage = () => {
         <div className="flex flex-col items-center flex-grow justify-center">
           <picture>
             <source
-              srcset="/logo_white_big.png"
+              srcSet="/logo_white_big.png"
               media="(prefers-color-scheme: dark)"
-              alt="STAPLE Logo"
+              //alt="STAPLE Logo"
               width={200}
             />
             <img src="/logo_black_big.png" alt="STAPLE Logo" width={200} />
