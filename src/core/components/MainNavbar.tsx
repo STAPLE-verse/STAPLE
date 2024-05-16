@@ -62,9 +62,9 @@ const Navbar = () => {
       <div className="flex-1">
         <picture>
           <source
-            srcset="/stapler_white.png"
+            srcSet="/stapler_white.png"
             media="(prefers-color-scheme: dark)"
-            alt="STAPLE Logo"
+            //alt="STAPLE Logo"
             width={25}
           />
           <img src="/stapler_black.png" alt="STAPLE Logo" width={25} />

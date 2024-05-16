@@ -36,13 +36,13 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
 
   const taskInformation = tasks.map((task) => {
     const name = task.name
-    const desciprition = task.description || ""
+    const description = task.description || ""
 
     console.log(task.labels)
 
     let t: TaskLabelInformation = {
       name: name,
-      description: desciprition,
+      description: description,
       id: task.id,
       labels: task.labels,
       onChangeCallback: labelChanged,

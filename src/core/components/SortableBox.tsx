@@ -4,7 +4,7 @@ import {
   rectSwappingStrategy,
 } from "@dnd-kit/sortable"
 
-import { Boxes } from "src/core/components/Boxes.tsx"
+import { Boxes } from "src/core/components/Boxes"
 
 export const SortableBox = ({ boxes }) => {
   return (

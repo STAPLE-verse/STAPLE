@@ -249,7 +249,8 @@ model Forms {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  json      String
+  schema    Json
+  uiSchema  Json?
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   // shareable option so you can see if it you are PM-ing with someone else

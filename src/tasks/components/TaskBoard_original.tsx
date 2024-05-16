@@ -18,7 +18,7 @@ interface ColumnWithTasks extends Column {
   tasks: Task[] // Assuming "Task" is the type for tasks
 }
 
-const TaskBoard = ({ projectId }: TaskBoardProps) => {
+const TaskBoard_original = ({ projectId }: TaskBoardProps) => {
   // TODO: columnTaskIndex task parameter is currently not used due to the lack of sortable
   // Get all the columns for the project
   // TODO: question, do we want pagination for columns? how would that look like?

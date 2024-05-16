@@ -1,3 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+// see here https://github.com/microsoft/TypeScript/issues/49613
+
 //packages
 import { useState } from "react"
 import { v4 as uuidv4 } from "uuid"

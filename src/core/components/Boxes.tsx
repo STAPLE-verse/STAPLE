@@ -24,7 +24,7 @@ export const Boxes = ({ id, title, display, link }) => {
         {display}
       </div>
 
-      <div class="card-actions justify-end">{link}</div>
+      <div className="card-actions justify-end">{link}</div>
     </div>
   )
 }
