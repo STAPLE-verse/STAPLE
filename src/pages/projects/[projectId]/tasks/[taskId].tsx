@@ -29,6 +29,7 @@ import updateTaskStatus from "src/tasks/mutations/updateTaskStatus"
 import toast from "react-hot-toast"
 import getAssignmentProgress from "src/assignments/queries/getAssignmentProgress"
 import getAssignments from "src/assignments/queries/getAssignments"
+import AssignmentHistoryModal from "src/assignments/components/AssignmentHistoryModal"
 
 export const ShowTaskPage = () => {
   // Setup
@@ -299,20 +300,23 @@ export const ShowTaskPage = () => {
                 completedBy={currentContributor.id}
                 completedAs={CompletedAs.INDIVIDUAL}
               />
+              <AssignmentHistoryModal assignmentStatusLog={individualAssignments[0]!.statusLogs} />
             </div>
           )}
 
           {!task["schema"] && currentAssignments && teamAssignments.length > 0 && (
             <div className="flex flex-col gap-2">
               {teamAssignments.map((teamAssignment) => (
-                <CompleteToggle
-                  key={teamAssignment.id}
-                  currentAssignment={teamAssignment.statusLogs[0]}
-                  refetch={refetchAssignments}
-                  completedLabel={`Completed as ${teamAssignment.team.name} Team`}
-                  completedBy={currentContributor.id}
-                  completedAs={CompletedAs.TEAM}
-                />
+                <div key={teamAssignment.id}>
+                  <CompleteToggle
+                    currentAssignment={teamAssignment.statusLogs[0]}
+                    refetch={refetchAssignments}
+                    completedLabel={`Completed as ${teamAssignment.team.name} Team`}
+                    completedBy={currentContributor.id}
+                    completedAs={CompletedAs.TEAM}
+                  />
+                  <AssignmentHistoryModal assignmentStatusLog={teamAssignment.statusLogs} />
+                </div>
               ))}
             </div>
           )}
