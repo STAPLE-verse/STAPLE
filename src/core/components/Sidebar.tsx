@@ -25,17 +25,17 @@ export default function Sidebar({ children, title }: SidebarProps) {
         <nav className="h-full flex flex-col border-r shadow-sm">
           <div className="p-4 pb-2 flex justify-between items-center">
             {/* Add your logo component here */}
-            <h3
-              className={`overflow-hidden transition-all ${
+            <h2
+              className={`text-2xl overflow-hidden transition-all ${
                 expanded ? "w-46" : "w-0"
               } max-w-[15ch] whitespace-nowrap overflow-ellipsis`}
               title={title}
             >
               {title ? title : "Home"}
-            </h3>
+            </h2>
             <button
               onClick={() => setExpanded((curr) => !curr)}
-              className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
+              className="p-1.5 rounded-lg hover:bg-indigo-50"
             >
               {expanded ? (
                 <ChevronLeftIcon className="w-6 h-6" />
@@ -83,7 +83,7 @@ export function SidebarItem({ icon, text, active, alert, onClick }: SidebarItemP
       className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
         active
           ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
-          : "hover:bg-indigo-50 text-gray-600"
+          : "hover:bg-indigo-50 text-gray-400"
       }`}
       onClick={handleClick}
     >

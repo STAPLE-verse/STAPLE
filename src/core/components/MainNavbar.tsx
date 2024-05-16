@@ -2,11 +2,13 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import React, { Suspense, startTransition } from "react"
 import logout from "src/auth/mutations/logout"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getInitials } from "src/services/getInitials"
 import { BellIcon, HomeIcon } from "@heroicons/react/24/outline"
+import getNotifications from "src/messages/queries/getNotifications"
+import NotificationsMenu from "./NotificationMenu"
 
 // MainNavbar
 // Always present on the top of the page
@@ -58,7 +60,15 @@ const Navbar = () => {
       {/* Tabs */}
       {/* On the left */}
       <div className="flex-1">
-        <h2>STAPLE</h2>
+        <picture>
+          <source
+            srcSet="/stapler_white.png"
+            media="(prefers-color-scheme: dark)"
+            //alt="STAPLE Logo"
+            width={25}
+          />
+          <img src="/stapler_black.png" alt="STAPLE Logo" width={25} />
+        </picture>
       </div>
       {/* On the right */}
       <div className="flex space-x-5">
@@ -82,32 +92,7 @@ const Navbar = () => {
           </div>
         </label>
         {/* Notifications tab */}
-        <div className="dropdown dropdown-end">
-          <label tabIndex={0} className="btn btn-ghost btn-circle">
-            <div className="indicator">
-              {/* Icon */}
-              <BellIcon className="w-5 h-5" />
-              {/* Number of notifs */}
-              <span className="badge badge-sm indicator-item">8</span>
-            </div>
-          </label>
-          {/* Notification card */}
-          <div
-            tabIndex={0}
-            className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow"
-          >
-            {/* TODO: Change to notifs */}
-            <div className="card-body">
-              <span className="font-bold text-lg">8 Notifications</span>
-              <span className="text-info">One new contributor</span>
-              <div className="card-actions">
-                <Link className="btn btn-primary btn-block" href={Routes.NotificationsPage()}>
-                  View notifications
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
+        <NotificationsMenu userId={currentUser!.id} />
         {/* Profile tab */}
         <div className="dropdown dropdown-end">
           {/* TODO: Change to avatar if image is uploaded */}

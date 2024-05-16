@@ -13,11 +13,11 @@ import Image from "next/image"
 const UserInfo = () => {
   return (
     <>
-      <Link href={Routes.SignupPage()} className="btn">
+      <Link href={Routes.SignupPage()} className="btn btn-primary">
         <strong>Sign Up</strong>
       </Link>
-      <Link href={Routes.LoginPage()} className="btn">
-        <strong>Login</strong>
+      <Link href={Routes.LoginPage()} className="btn btn-secondary">
+        <strong>Log In</strong>
       </Link>
     </>
   )
@@ -34,9 +34,9 @@ const Home: BlitzPage = () => {
         <div className="flex flex-col items-center flex-grow justify-center">
           <picture>
             <source
-              srcset="/logo_white_big.png"
+              srcSet="/logo_white_big.png"
               media="(prefers-color-scheme: dark)"
-              alt="STAPLE Logo"
+              //alt="STAPLE Logo"
               width={200}
             />
             <img src="/logo_black_big.png" alt="STAPLE Logo" width={200} />

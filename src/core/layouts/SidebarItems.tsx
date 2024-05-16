@@ -133,7 +133,7 @@ export const HomeSidebarItems = (whichActive: string | null = null): SidebarItem
       icon: <BeakerIcon className="w-6 h-6" />,
       text: "Forms",
       onClick: async () => {
-        await router.push(Routes.FormBuilderPage())
+        await router.push(Routes.AllFormsPage())
       },
       active: whichActive === "Forms",
     },

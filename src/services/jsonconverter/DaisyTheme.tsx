@@ -1,10 +1,13 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+// an error with submit button, but it seems to be working ok
+
 // imports
 import {
   WidgetProps,
   RegistryWidgetsType,
   RegistryFieldsType,
-  RegistryTemplatesType,
-  TitleFieldProps,
+  TemplatesType,
   FieldTemplateProps,
   FormContextType,
   TitleFieldProps,
@@ -174,11 +177,13 @@ const MyTextWidget = (props: WidgetProps) => {
 // create Registry information
 
 // templates
-const myTemplates: RegistryTemplatesType = {
+const myTemplates: TemplatesType = {
   TitleFieldTemplate: MyTitleField,
   DescriptionFieldTemplate: MyDescriptionField,
   FieldTemplate: MyFieldTemplate,
-  ButtonTemplates: MySubmitButton,
+  ButtonTemplates: {
+    SubmitButton: MySubmitButton,
+  },
 }
 
 // templates

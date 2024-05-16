@@ -14,11 +14,9 @@ const ProfilePage = () => {
 
     return (
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2">Your profile</h1>
-        <div>
+        <h1 className="text-3xl flex justify-center mb-2">Your profile</h1>
+        <div className="text-lg">
           <span className="font-semibold">Username:</span> {currentUser.username}
-          <br />
-          <span className="font-semibold">Role:</span> {currentUser.role}
           <br />
           <span className="font-semibold">Email:</span> {currentUser.email}
           <br />
@@ -31,11 +29,20 @@ const ProfilePage = () => {
             </span>
           )}
           <br />
-          <span className="font-semibold">Date of signup:</span> {currentUser.createdAt.toString()}
+          <span className="font-semibold">Institution:</span>{" "}
+          {!!currentUser.institution ? (
+            currentUser.institution
+          ) : (
+            <span className="italic">
+              No institution is provided. Use the Edit Profile button to add your information.
+            </span>
+          )}
+          <br />
+          <span className="font-semibold">Signup Date:</span> {currentUser.createdAt.toString()}
         </div>
         <div className="flex justify-start mt-4">
           {/* TODO: I do not know why it cannot find the page in the app it works */}
-          <Link className="btn" href={Routes.EditProfilePage()}>
+          <Link className="btn btn-primary" href={Routes.EditProfilePage()}>
             Edit profile
           </Link>
         </div>

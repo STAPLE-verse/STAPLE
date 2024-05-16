@@ -49,7 +49,7 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
   return (
     <div>
       {projects.map((project) => (
-        <div className="collapse collapse-arrow bg-base-200 mb-2" key={project.id}>
+        <div className="collapse collapse-arrow bg-base-300 mb-2" key={project.id}>
           <input type="checkbox" />
           <div className="collapse-title text-xl font-medium">{project.name}</div>
           <div className="collapse-content mb-4">
@@ -57,7 +57,10 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
             <p className="italic mb-2">Last update: {project.updatedAt.toString()}</p>
             {/* TODO: Change button position by other method then using absolute */}
             <div className="justify-end absolute bottom-2 right-6">
-              <Link className="btn" href={Routes.ShowProjectPage({ projectId: project.id })}>
+              <Link
+                className="btn btn-primary mb-2"
+                href={Routes.ShowProjectPage({ projectId: project.id })}
+              >
                 Open
               </Link>
             </div>
@@ -67,13 +70,13 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
       {/* Previous and next page btns */}
       <div className="join grid grid-cols-2 mt-4">
         <button
-          className="join-item btn btn-outline"
+          className="join-item btn btn-primary"
           disabled={page === 0}
           onClick={goToPreviousPage}
         >
           Previous
         </button>
-        <button className="join-item btn btn-outline" disabled={!hasMore} onClick={goToNextPage}>
+        <button className="join-item btn btn-primary" disabled={!hasMore} onClick={goToNextPage}>
           Next
         </button>
       </div>

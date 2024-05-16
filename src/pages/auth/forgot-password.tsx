@@ -1,21 +1,35 @@
 import Layout from "src/core/layouts/Layout"
+import Link from "next/link"
 import { LabeledTextField } from "src/core/components/LabeledTextField"
 import { Form, FORM_ERROR } from "src/core/components/Form"
 import { ForgotPassword } from "src/auth/schemas"
 import forgotPassword from "src/auth/mutations/forgotPassword"
 import { useMutation } from "@blitzjs/rpc"
 import { BlitzPage } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 
 const ForgotPasswordPage: BlitzPage = () => {
   const [forgotPasswordMutation, { isSuccess }] = useMutation(forgotPassword)
 
   return (
-    <Layout title="Forgot Your Password?">
-      <h1>Forgot your password?</h1>
+    <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
+      <div className="flex justify-center items-center w-full">
+        <picture>
+          <source
+            srcSet="/logo_white_big.png"
+            media="(prefers-color-scheme: dark)"
+            //alt="STAPLE Logo"
+            width={200}
+          />
+          <img src="/logo_black_big.png" alt="STAPLE Logo" width={200} />
+        </picture>
+      </div>
+
+      <h1 className="text-center text-3xl">Reset Password</h1>
 
       {isSuccess ? (
-        <div>
-          <h2>Request Submitted</h2>
+        <div className="mt-2 mb-2">
+          <h2 className="text-center text-3xl">Request Submitted</h2>
           <p>
             If your email is in our system, you will receive instructions to reset your password
             shortly.
@@ -36,10 +50,20 @@ const ForgotPasswordPage: BlitzPage = () => {
             }
           }}
         >
-          <LabeledTextField name="email" label="Email" placeholder="Email" />
+          <LabeledTextField
+            name="email"
+            label="Email:"
+            placeholder="Email"
+            className="mb-4 mt-4 w-full text-primary border-primary border-2 bg-base-300"
+          />
         </Form>
       )}
-    </Layout>
+      <div className="flex flex-row justify-end mt-4">
+        <Link className="btn btn-secondary" href={Routes.Home()}>
+          Go Back Home
+        </Link>
+      </div>
+    </div>
   )
 }
 

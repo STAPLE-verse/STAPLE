@@ -93,7 +93,7 @@ export default resolver.pipe(
           },
         })
       })
-      // Send notification to the contributor
+      // Send notification to the contributors
       await sendNotification(
         {
           templateId: "taskAssigned",
@@ -105,6 +105,27 @@ export default resolver.pipe(
     }
 
     if (teamsId != null && teamsId.length != 0) {
+      // Fetch User IDs corresponding to the Contributor IDs
+      const teams = await db.team.findMany({
+        where: {
+          id: {
+            in: teamsId,
+          },
+        },
+        include: {
+          contributors: {
+            include: {
+              user: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      })
+      // Map to extract just the userIds
+      const userIds = teams.flatMap((team) =>
+        team.contributors.map((contributor) => contributor.user.id)
+      )
+
       teamsId.forEach(async (teamId) => {
         // Create the assignment
         const assignment = await db.assignment.create({
@@ -121,6 +142,15 @@ export default resolver.pipe(
           },
         })
       })
+      // Send notification to the contributors
+      await sendNotification(
+        {
+          templateId: "taskAssigned",
+          recipients: userIds,
+          data: { taskName: name, createdBy: createdByUsername, deadline: deadline },
+        },
+        ctx
+      )
     }
 
     return task

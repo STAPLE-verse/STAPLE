@@ -61,7 +61,7 @@ const Table = <TData,>({
   return (
     <>
       <table className={classNames?.table || "table"}>
-        <thead className={classNames?.thead || "text-xl"}>
+        <thead className={classNames?.thead || "text-xl text-base-content"}>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (

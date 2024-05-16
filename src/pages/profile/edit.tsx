@@ -18,11 +18,37 @@ import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
     <Form<S> {...props}>
-      <LabeledTextField name="email" label="Email" placeholder="Email" type="text" />
+      <LabeledTextField
+        name="email"
+        label="Email"
+        placeholder="Email"
+        type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
+      />
       <br />
-      <LabeledTextField name="firstName" label="First name" placeholder="First name" type="text" />
+      <LabeledTextField
+        name="firstName"
+        label="First name"
+        placeholder="First name"
+        type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
+      />
       <br />
-      <LabeledTextField name="lastName" label="Last name" placeholder="Last name" type="text" />
+      <LabeledTextField
+        name="lastName"
+        label="Last name"
+        placeholder="Last name"
+        type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
+      />
+      <br />
+      <LabeledTextField
+        name="institution"
+        label="Institution"
+        placeholder="Institution"
+        type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
+      />
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )
@@ -53,7 +79,7 @@ export const EditProfile = () => {
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2">Edit profile</h1>
+        <h1 className="text-3xl flex justify-center mb-2">Edit profile</h1>
         <Suspense fallback={<div>Loading...</div>}>
           <ProfileForm
             submitText="Update Profile"
@@ -80,7 +106,7 @@ export const EditProfile = () => {
           <div className="flex justify-end mt-4">
             <button
               type="button"
-              className="btn"
+              className="btn btn-warning"
               onClick={async () => {
                 if (
                   window.confirm("The user will be permanently deleted. Are you sure to continue?")
