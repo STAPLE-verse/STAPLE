@@ -1,16 +1,13 @@
 import React, { useState } from "react"
-import { Task } from "db"
-
-import { RowSelection, createColumnHelper } from "@tanstack/react-table"
-import Link from "next/link"
-import { Routes } from "@blitzjs/next"
+import { createColumnHelper } from "@tanstack/react-table"
 import Modal from "src/core/components/Modal"
 import { FORM_ERROR, LabelForm } from "./LabelForm"
-import { LabelFormSchema } from "src/labels/schemas"
 import toast from "react-hot-toast"
 import updateLabel from "../mutations/updateLabel"
 import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
+import { strict } from "assert"
+import { LabelFormSchema } from "../schemas"
 
 export type LabelInformation = {
   name: string
@@ -19,9 +16,10 @@ export type LabelInformation = {
   id: number
   userId: number
   onChangeCallback?: () => void
+  taxonomyList: string[]
 }
 
-const EditColumn = ({ row }) => {
+const EditColunm = ({ row }) => {
   const [updateLabelMutation] = useMutation(updateLabel)
   const {
     name = "",
@@ -29,7 +27,7 @@ const EditColumn = ({ row }) => {
     taxonomy = "",
     userId = null,
     id = null,
-    onChangeCallback = undefined,
+    onChangeCallback = null,
     ...rest
   } = { ...row }
 
@@ -43,6 +41,7 @@ const EditColumn = ({ row }) => {
     description: description,
     taxonomy: taxonomy,
   }
+  const taxonomyList = row.taxonomyList
 
   const handleEditLabel = async (values) => {
     // console.log(values)
@@ -88,9 +87,10 @@ const EditColumn = ({ row }) => {
               className="flex flex-col"
               onSubmit={handleEditLabel}
               initialValues={initialValues}
-              name={""}
-              description={""}
-              taxonomy={""}
+              taxonomyList={taxonomyList}
+              // name={""}
+              // description={""}
+              // taxonomy={""}
             ></LabelForm>
           </div>
 
@@ -111,9 +111,9 @@ const EditColumn = ({ row }) => {
   )
 }
 
-const DeleteColumn = ({ row }) => {
+const DeleteColunm = ({ row }) => {
   const [deleteLabelMutation] = useMutation(deleteLabel)
-  const { id = null, onChangeCallback = undefined, ...rest } = { ...row }
+  const { id = null, onChangeCallback = null, ...rest } = { ...row }
 
   const handleDeleteLabel = async (values) => {
     // console.log(values)
@@ -174,7 +174,7 @@ export const lableTableColumns = [
     header: "",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <EditColumn row={info.row.original}></EditColumn>,
+    cell: (info) => <EditColunm row={info.row.original}></EditColunm>,
   }),
 
   columnHelper.accessor("id", {
@@ -182,6 +182,6 @@ export const lableTableColumns = [
     header: "",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <DeleteColumn row={info.row.original}></DeleteColumn>,
+    cell: (info) => <DeleteColunm row={info.row.original}></DeleteColunm>,
   }),
 ]

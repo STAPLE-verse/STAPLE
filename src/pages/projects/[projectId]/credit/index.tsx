@@ -52,15 +52,52 @@ export const CreditsTabs = () => {
       <Tab.Panels>
         {/* Tab for Add Labels */}
         <Tab.Panel>
+<<<<<<< label_feature
+          <LabelsTab />
+          {/* - a table of all the labels for all the PMs on a project - columns: - name - description -
+          which PM the label comes from - check box column - For every PM on the project, add the
+          labels here with check boxes, then a button to save
+          <br />- These will get added to the project table in the database */}
+        </Tab.Panel>
+
+        {/* Tabpanel for Assign tasks */}
+        <Tab.Panel>
+          <TasksTab></TasksTab>
+          {/* - Here it should show the complete list of Tasks in a Table - this is only tasks that are
+          marked as complete (big task not assignments) - table columns: - name, - description, -
+          current labels assigned (like paste them together in a single cell) - add labels button
+          that opens a modal that allows you to view the current list of labels and update them save
+          and close - add multiple column that has a check box that allows you to apply labels to
+          many things at once
+          <br />
+          Add multiple button that opens a modal to assign the tasks from the check boxes labels all
+          at once - not sure how this would be done, but basically you can assign them one at a time
+          with the individual button or a lot at once by using the check boxes and this other button */}
+        </Tab.Panel>
+=======
           <LabelsTab></LabelsTab>
         </Tab.Panel>
 
         {/* Tabpanel for Assign tasks */}
         <Tab.Panel>{/*<TasksTab></TasksTab>*/}</Tab.Panel>
+>>>>>>> main
 
         {/* Tabpanel for Assign Contributors */}
         <Tab.Panel>
           <ContributorsTab></ContributorsTab>
+<<<<<<< label_feature
+          {/* - Here it should show the complete list of Contributors in a Table - table columns: -
+          username - first last name - current labels assigned (like paste them together in a single
+          cell) - add labels button that opens a modal that allows you to view the current list of
+          labels and update them save and close - add multiple column that has a check box that
+          allows you to apply labels to many things at once
+          <br />
+          Add multiple button that opens a modal to assign the contributors from the check boxes
+          labels all at once - not sure how this would be done, but basically you can assign them
+          one at a time with the individual button or a lot at once by using the check boxes and
+          this other button */}
+=======
+>>>>>>> main
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>

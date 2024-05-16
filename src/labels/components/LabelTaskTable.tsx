@@ -12,15 +12,19 @@ import updateLabel from "../mutations/updateLabel"
 import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
-import { LabelTaskFormSchema } from "../schemas"
+import { LabelIdsFormSchema } from "../schemas"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
+import { lableTableColumns } from "./LabelTable"
+import TaskTableModal from "./LabelAddTableModal"
 
 export type TaskLabelInformation = {
   name: string
   description?: string
   labels?: []
   id: number
+  selectedIds: number[]
   onChangeCallback?: () => void
+  onMultipledAdded?: (selectedId) => void
 }
 
 const AddLabelsColunm = ({ row }) => {
@@ -38,30 +42,26 @@ const AddLabelsColunm = ({ row }) => {
   const handleToggleEditLabelModal = () => {
     setOpenEditLabelModal((prev) => !prev)
   }
-
+  const labelsId = row.labels.map((label) => label.id)
   const initialValues = {
-    // name: name,
-    // description: description,
-    // taxonomy: taxonomy,
-    taskId: id,
+    labelsId: labelsId,
   }
 
   const handleAddLabel = async (values) => {
-    console.log(values)
     try {
       const updated = await updateTaskLabelMutation({
         ...values,
-        // userId: userId,
-        // id: id,
+        tasksId: [row.id],
+        disconnect: true,
       })
-      // if (onChangeCallback != undefined) {
-      //   onChangeCallback()
-      // }
-      // await toast.promise(Promise.resolve(updated), {
-      //   loading: "Editing label...",
-      //   success: "Label edited!",
-      //   error: "Failed to edit the label...",
-      // })
+      if (onChangeCallback != undefined) {
+        onChangeCallback()
+      }
+      await toast.promise(Promise.resolve(updated), {
+        loading: "Adding labels to tasks...",
+        success: "Labels added!",
+        error: "Failed to add the labels...",
+      })
     } catch (error: any) {
       console.error(error)
       return {
@@ -85,7 +85,7 @@ const AddLabelsColunm = ({ row }) => {
           <h1 className="flex justify-center mb-2">Add labels</h1>
           <div className="flex justify-start mt-4">
             <AddLabelForm
-              schema={LabelTaskFormSchema}
+              schema={LabelIdsFormSchema}
               submitText="Update Label"
               className="flex flex-col"
               onSubmit={handleAddLabel}
@@ -111,18 +111,45 @@ const AddLabelsColunm = ({ row }) => {
 }
 
 const LabelsColunm = ({ row }) => {
-  console.log(row)
   const labels = row.labels || []
-
   return (
-    <div className="modal-action flex justify-end mt-4">
+    <div className="modal-action flex justify-center mt-4">
       {
-        <ul className="menu menu-horizontal menu-lg">
+        <ul className="list-none">
           {labels.map((label) => (
-            <li key={label.id}>{label.name}</li>
+            <li key={label.id}> {label.name}</li>
           ))}
         </ul>
       }
+    </div>
+  )
+}
+
+export const MultipleCheckboxColumn = ({ row }) => {
+  const handleOnChange = (id) => {
+    if (row.onMultipledAdded != undefined) {
+      row.onMultipledAdded(id)
+    }
+  }
+
+  return (
+    <div>
+      <span>
+        {
+          <div>
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-primary"
+                checked={row.selectedIds.includes(row.id)}
+                onChange={() => {
+                  handleOnChange(row.id)
+                }}
+              />
+            </label>
+          </div>
+        }
+      </span>
     </div>
   )
 }
@@ -133,11 +160,7 @@ const columnHelper = createColumnHelper<TaskLabelInformation>()
 export const labelTaskTableColumns = [
   columnHelper.accessor("name", {
     id: "name",
-    cell: (info) => (
-      <span>
-        {info.getValue()} :{info.row.original.id}
-      </span>
-    ),
+    cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
   }),
 
@@ -158,29 +181,47 @@ export const labelTaskTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <AddLabelsColunm row={info.row.original}></AddLabelsColunm>,
+    // cell: (info) => (
+    //   <TaskTableModal
+    //     buttonName={"Add label"}
+    //     labels={info.row.original.labels}
+    //     tasksId={[info.row.original.id]}
+    //     onChangeCallback={info.row.original.onChangeCallback || null}
+    //   ></TaskTableModal>
+    // ),
   }),
 
   columnHelper.accessor("id", {
     id: "multiple",
-    cell: (info) => (
-      <span>
-        {
-          <div>
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-primary"
-                checked={false}
-                onChange={() => {
-                  console.log("Add multiple")
-                  // handleOnChange(info.row.original)
-                }}
-              />
-            </label>
-          </div>
-        }
-      </span>
-    ),
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => <MultipleCheckboxColumn row={info.row.original}></MultipleCheckboxColumn>,
     header: "Add Multiple",
   }),
+
+  // columnHelper.accessor("id", {
+  //   id: "multiple",
+  //   enableColumnFilter: false,
+  //   enableSorting: false,
+  //   cell: (info) => (
+  //     <span>
+  //       {
+  //         <div>
+  //           <label className="label cursor-pointer">
+  //             <input
+  //               type="checkbox"
+  //               className="checkbox checkbox-primary"
+  //               checked={false}
+  //               onChange={() => {
+  //                 // console.log("Add multiple")
+  //                 // handleOnChange(info.row.original)
+  //               }}
+  //             />
+  //           </label>
+  //         </div>
+  //       }
+  //     </span>
+  //   ),
+  //   header: "Add Multiple",
+  // }),
 ]

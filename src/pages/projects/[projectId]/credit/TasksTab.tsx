@@ -1,34 +1,72 @@
 import { Suspense, useState } from "react"
-import Head from "next/head"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import router, { useRouter } from "next/router"
 
-import Layout from "src/core/layouts/Layout"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
-import React, { useRef } from "react"
-import ReactDOM from "react-dom"
+import React from "react"
 import Modal from "src/core/components/Modal"
-import { LabelForm, FORM_ERROR } from "src/labels/components/LabelForm"
-import { FormApi, SubmissionErrors, configOptions } from "final-form"
-import { number, z } from "zod"
+import { FORM_ERROR } from "src/labels/components/LabelForm"
 import toast from "react-hot-toast"
-import createLabel from "src/labels/mutations/createLabel"
-import getLabels from "src/labels/queries/getLabels"
 import Table from "src/core/components/Table"
 import { TaskLabelInformation, labelTaskTableColumns } from "src/labels/components/LabelTaskTable"
 import getTasks from "src/tasks/queries/getTasks"
 import { useParam } from "@blitzjs/next"
-import { truncate } from "fs"
+import { TaskStatus } from "db"
+import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
+
+import { LabelIdsFormSchema } from "src/labels/schemas"
+import { AddLabelForm } from "src/labels/components/AddLabelForm"
 
 export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
+  const [updateTaskLabelMutation] = useMutation(updateTaskLabel)
   const router = useRouter()
+
+  const [selectedIds, setSelectedIds] = useState([] as number[])
 
   const labelChanged = async () => {
     if (onChange != undefined) {
       onChange()
     }
+  }
+  const handleMultipleChanged = (selectedId: number) => {
+    const isSelected = selectedIds.includes(selectedId)
+    // console.log("Id changed: ", selectedId, " is selected: ", isSelected)
+    const newSelectedIds = isSelected
+      ? selectedIds.filter((id) => id !== selectedId)
+      : [...selectedIds, selectedId]
+
+    setSelectedIds(newSelectedIds)
+  }
+
+  const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
+  const handleToggleEditLabelModal = () => {
+    setOpenEditLabelModal((prev) => !prev)
+  }
+
+  const handleAddLabel = async (values) => {
+    try {
+      const updated = await updateTaskLabelMutation({
+        ...values,
+        tasksId: selectedIds,
+        disconnect: false,
+      })
+      await labelChanged()
+      await toast.promise(Promise.resolve(updated), {
+        loading: "Adding labels to tasks...",
+        success: "Labels added!",
+        error: "Failed to add the labels...",
+      })
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
+  const initialValues = {
+    labelsId: [],
   }
 
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
@@ -38,17 +76,18 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
     const name = task.name
     const description = task.description || ""
 
-    console.log(task.labels)
-
     let t: TaskLabelInformation = {
       name: name,
       description: description,
       id: task.id,
       labels: task.labels,
+      selectedIds: selectedIds,
       onChangeCallback: labelChanged,
+      onMultipledAdded: handleMultipleChanged,
     }
     return t
   })
+  const hasElements = tasks.length < 1
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
@@ -71,18 +110,46 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
           type="button"
           /* button for popups */
           className="btn btn-outline btn-primary"
-          onClick={() => {}}
+          disabled={hasElements}
+          onClick={handleToggleEditLabelModal}
         >
           Add Multiple
         </button>
+
+        <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
+          <div className="">
+            <h1 className="flex justify-center mb-2">Add labels</h1>
+            <div className="flex justify-start mt-4">
+              <AddLabelForm
+                schema={LabelIdsFormSchema}
+                submitText="Update Label"
+                className="flex flex-col"
+                onSubmit={handleAddLabel}
+                initialValues={initialValues}
+              ></AddLabelForm>
+            </div>
+
+            {/* closes the modal */}
+            <div className="modal-action flex justify-end mt-4">
+              <button
+                type="button"
+                /* button for popups */
+                className="btn btn-outline btn-primary"
+                onClick={handleToggleEditLabelModal}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </Modal>
       </div>
     </main>
   )
 }
 
 const TasksTab = () => {
-  const currentUser = useCurrentUser()
-  const [createLabelMutation] = useMutation(createLabel)
+  //const currentUser = useCurrentUser()
+
   const page = Number(router.query.page) || 0
   const projectId = useParam("projectId", "number")
 
@@ -90,7 +157,7 @@ const TasksTab = () => {
 
   //TODO fix query to only completed tasks
   const [{ tasks, hasMore }, { refetch }] = usePaginatedQuery(getTasks, {
-    where: { project: { id: projectId! } },
+    where: { project: { id: projectId! }, status: TaskStatus.COMPLETED },
     include: { labels: true },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
@@ -99,34 +166,6 @@ const TasksTab = () => {
 
   const reloadTable = async () => {
     await refetch()
-  }
-
-  // Modal open logics
-  const [openNewLabelModal, setOpenNewLabelModal] = useState(false)
-  const handleToggleNewLabelModal = () => {
-    setOpenNewLabelModal((prev) => !prev)
-  }
-
-  const handleCreateLabel = async (values) => {
-    try {
-      const label = await createLabelMutation({
-        name: values.name,
-        description: values.description,
-        userId: currentUser!.id,
-        taxonomy: values.taxonomy,
-      })
-      await reloadTable()
-      await toast.promise(Promise.resolve(label), {
-        loading: "Creating label...",
-        success: "Label created!",
-        error: "Failed to create the label...",
-      })
-    } catch (error: any) {
-      console.error(error)
-      return {
-        [FORM_ERROR]: error.toString(),
-      }
-    }
   }
 
   return (

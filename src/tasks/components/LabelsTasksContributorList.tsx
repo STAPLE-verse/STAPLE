@@ -1,41 +1,43 @@
 import { Suspense, useState } from "react"
+import Head from "next/head"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import router, { useRouter } from "next/router"
 
+import Layout from "src/core/layouts/Layout"
+import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
-import React from "react"
+import React, { useRef } from "react"
+import ReactDOM from "react-dom"
 import Modal from "src/core/components/Modal"
-import { FORM_ERROR } from "src/labels/components/LabelForm"
+import { LabelForm, FORM_ERROR } from "src/labels/components/LabelForm"
+import { FormApi, SubmissionErrors, configOptions } from "final-form"
+import { number, z } from "zod"
 import toast from "react-hot-toast"
 import createLabel from "src/labels/mutations/createLabel"
+import getLabels from "src/labels/queries/getLabels"
 import Table from "src/core/components/Table"
+import { TaskLabelInformation, labelTaskTableColumns } from "src/labels/components/LabelTaskTable"
+import getTasks from "src/tasks/queries/getTasks"
 import { useParam } from "@blitzjs/next"
-import {
-  ContributorLabelInformation,
-  labelContributorTableColumns,
-} from "src/labels/components/LabelContributorTable"
+import { truncate } from "fs"
+import { TaskStatus } from "db"
+import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
 
-import getContributors from "src/contributors/queries/getContributors"
-import { AddLabelForm } from "src/labels/components/AddLabelForm"
 import { LabelIdsFormSchema } from "src/labels/schemas"
-import updateContributorLabel from "src/contributors/mutations/updateContributorLabel"
+import { AddLabelForm } from "src/labels/components/AddLabelForm"
 
-export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange }) => {
+export const AllLabelsList = ({ hasMore, page, tasks, onChange }) => {
+  const [updateTaskLabelMutation] = useMutation(updateTaskLabel)
   const router = useRouter()
-  const [updateContributorLabelMutation] = useMutation(updateContributorLabel)
+
+  const [selectedIds, setSelectedIds] = useState([] as number[])
 
   const labelChanged = async () => {
     if (onChange != undefined) {
       onChange()
     }
   }
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
-
-  const [selectedIds, setSelectedIds] = useState([] as number[])
-  //TODO refactor and merge with task tab
   const handleMultipleChanged = (selectedId: number) => {
     const isSelected = selectedIds.includes(selectedId)
     // console.log("Id changed: ", selectedId, " is selected: ", isSelected)
@@ -54,15 +56,14 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
   const handleAddLabel = async (values) => {
     try {
       console.log(values)
-      console.log(selectedIds)
-      const updated = await updateContributorLabelMutation({
+      const updated = await updateTaskLabelMutation({
         ...values,
-        contributorsId: selectedIds,
+        tasksId: selectedIds,
         disconnect: false,
       })
       await labelChanged()
       await toast.promise(Promise.resolve(updated), {
-        loading: "Adding labels to contributors...",
+        loading: "Adding labels to tasks...",
         success: "Labels added!",
         error: "Failed to add the labels...",
       })
@@ -78,29 +79,29 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
     labelsId: [],
   }
 
-  const taskInformation = contributors.map((contributor) => {
-    const name = contributor.user.username
-    const lastname = contributor.user.lastName
-    const firstName = contributor.user.firstName
+  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
-    //TODO merge with task information tab
-    let t: ContributorLabelInformation = {
-      username: name,
-      firstname: firstName,
-      lastname: lastname,
-      id: contributor.id,
-      labels: contributor.labels,
-      onChangeCallback: labelChanged,
+  const taskInformation = tasks.map((task) => {
+    const name = task.name
+    const desciprition = task.description || ""
+
+    let t: TaskLabelInformation = {
+      name: name,
+      description: desciprition,
+      id: task.id,
+      labels: task.labels,
       selectedIds: selectedIds,
+      onChangeCallback: labelChanged,
       onMultipledAdded: handleMultipleChanged,
     }
     return t
   })
-  const hasElements = contributors.length < 1
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <Table columns={labelContributorTableColumns} data={taskInformation} />
+      {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
+      <Table columns={labelTaskTableColumns} data={taskInformation} />
       <div className="join grid grid-cols-2 my-6">
         <button
           className="join-item btn btn-outline"
@@ -119,7 +120,6 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
           /* button for popups */
           className="btn btn-outline btn-primary"
           onClick={handleToggleEditLabelModal}
-          disabled={hasElements}
         >
           Add Multiple
         </button>
@@ -155,41 +155,4 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
   )
 }
 
-const ContributorsTab = () => {
-  // const currentUser = useCurrentUser()
-
-  const page = Number(router.query.page) || 0
-  const projectId = useParam("projectId", "number")
-
-  const ITEMS_PER_PAGE = 7
-
-  const [{ contributors, hasMore }, { refetch }] = usePaginatedQuery(getContributors, {
-    where: { project: { id: projectId! } },
-    include: { user: true, labels: true },
-    orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-
-  const reloadTable = async () => {
-    await refetch()
-  }
-
-  return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="flex justify-center mb-2">Contributors</h1>
-      <div>
-        <Suspense fallback={<div>Loading...</div>}>
-          <AllContributorLabelsList
-            page={page}
-            contributors={contributors}
-            hasMore={hasMore}
-            onChange={reloadTable}
-          />
-        </Suspense>
-      </div>
-    </main>
-  )
-}
-
-export default ContributorsTab
+export default AllLabelsList

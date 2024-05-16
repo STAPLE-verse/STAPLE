@@ -23,7 +23,6 @@ export const LabelFormSchema = z.object({
   // template: __fieldName__: z.__zodType__(),
 })
 
-export const LabelTaskFormSchema = z.object({
+export const LabelIdsFormSchema = z.object({
   labelsId: z.array(z.number()).optional().nullable(),
-  taskId: z.number(),
 })
