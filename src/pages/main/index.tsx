@@ -41,19 +41,19 @@ import toast from "react-hot-toast"
 
 const projectLink = (
   <Link className="btn btn-primary self-end m-4" href={Routes.ProjectsPage()}>
-    Show all projects
+    All Projects
   </Link>
 )
 
 const taskLink = (
   <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
-    Show all tasks
+    All Tasks
   </Link>
 )
 
 const notificationLink = (
   <Link className="btn btn-primary self-end m-4" href={Routes.NotificationsPage()}>
-    Show all notifications
+    All Notifications
   </Link>
 )
 

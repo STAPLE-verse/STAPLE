@@ -106,7 +106,7 @@ export const projectColumns: ColumnDef<Project>[] = [
 const notificationColumnHelper = createColumnHelper<Notification>()
 export const notificationColumns: ColumnDef<Notification>[] = [
   notificationColumnHelper.accessor("message", {
-    cell: (info) => <span className="font-semibold"> {info.getValue()} </span>,
+    cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
     header: "Message",
     enableColumnFilter: false,
   }),
