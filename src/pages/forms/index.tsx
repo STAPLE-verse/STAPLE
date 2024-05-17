@@ -54,7 +54,7 @@ const AllFormsPage = () => {
         </Suspense>
         <div className="flex justify-start">
           <Link className="btn btn-primary" href={Routes.FormBuilderPage()}>
-            Create new form
+            Create Form
           </Link>
         </div>
       </main>

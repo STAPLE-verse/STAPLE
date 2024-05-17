@@ -11,8 +11,8 @@ export const JsonFormModal = ({ schema, uiSchema, metadata, label }) => {
 
   return (
     <>
-      <div className="mt-4">
-        <button type="button" className="btn" onClick={handleToggle}>
+      <div>
+        <button type="button" className="btn btn-primary" onClick={handleToggle}>
           {label}
         </button>
 
