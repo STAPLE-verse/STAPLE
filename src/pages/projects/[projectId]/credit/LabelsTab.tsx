@@ -125,7 +125,7 @@ export const AlPmsLabelsList = ({
   )
 }
 
-const LabelssTab = () => {
+const LabelsTab = () => {
   const currentUser = useCurrentUser()
 
   const page = Number(router.query.page) || 0
@@ -177,4 +177,4 @@ const LabelssTab = () => {
   )
 }
 
-export default LabelssTab
+export default LabelsTab

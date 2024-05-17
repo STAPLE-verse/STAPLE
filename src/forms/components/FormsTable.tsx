@@ -49,7 +49,7 @@ export const formsTableColumns = [
         </>
       )
     },
-    header: "",
+    header: "View",
   }),
   columnHelper.accessor("id", {
     id: "edit",
@@ -60,6 +60,6 @@ export const formsTableColumns = [
         Edit
       </Link>
     ),
-    header: "",
+    header: "Edit",
   }),
 ]

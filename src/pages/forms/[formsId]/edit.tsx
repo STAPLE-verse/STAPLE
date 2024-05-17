@@ -18,13 +18,16 @@ const FormEditPage = () => {
   const sidebarItems = HomeSidebarItems("Forms")
   const [UpdateFormMutation] = useMutation(updateForm)
   const formsId = useParam("formsId", "number")
-  const [currentForm] = useQuery(getForm, { id: formsId! })
+  const [currentForm, { refetch: refetchGetForm }] = useQuery(getForm, { id: formsId! })
+
   const saveForm = async (state) => {
     const form = await UpdateFormMutation({
       id: formsId!,
       schema: JSON.parse(state.schema),
       uiSchema: JSON.parse(state.uischema),
     })
+
+    await refetchGetForm()
     await router.push(Routes.AllFormsPage())
   }
 
