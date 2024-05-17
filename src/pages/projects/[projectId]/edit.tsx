@@ -33,6 +33,11 @@ export const EditProject = () => {
   const initialValues = {
     name: project.name,
     description: project.description!,
+    abstract: project.abstract!,
+    keywords: project.keywords!,
+    citation: project.citation!,
+    publisher: project.publisher!,
+    identifier: project.identifier!,
   }
 
   const sidebarItems = ProjectSidebarItems(projectId!, null)
@@ -59,6 +64,7 @@ export const EditProject = () => {
                   id: project.id,
                   ...values,
                 })
+                console.log(updated)
 
                 await toast.promise(Promise.resolve(updated), {
                   loading: "Updating project...",
