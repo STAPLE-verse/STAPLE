@@ -160,7 +160,6 @@ const LabelssTab = () => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-<<<<<<< label_feature
       <h1 className="flex justify-center mb-2">Tasks</h1>
       <div>
         <Suspense fallback={<div>Loading...</div>}>
@@ -174,9 +173,6 @@ const LabelssTab = () => {
           />
         </Suspense>
       </div>
-=======
-      <h1 className="flex justify-center mb-2 text-3xl">Labels Coming Soon</h1>
->>>>>>> main
     </main>
   )
 }
