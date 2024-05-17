@@ -8,7 +8,19 @@ const columnHelper = createColumnHelper<Notification>()
 // ColumnDefs
 export const notificationTableColumns = (refetch) => [
   columnHelper.accessor("createdAt", {
-    cell: (info) => <span>{info.getValue().toString()}</span>,
+    cell: (info) => (
+      <span>
+        {info.getValue()?.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false, // Use 24-hour format
+        })}
+      </span>
+    ),
     header: "Date",
   }),
   columnHelper.accessor("message", {
