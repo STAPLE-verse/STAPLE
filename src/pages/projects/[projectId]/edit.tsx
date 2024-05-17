@@ -64,7 +64,7 @@ export const EditProject = () => {
                   id: project.id,
                   ...values,
                 })
-                console.log(updated)
+                //console.log(updated)
 
                 await toast.promise(Promise.resolve(updated), {
                   loading: "Updating project...",
