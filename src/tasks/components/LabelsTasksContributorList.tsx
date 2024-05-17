@@ -104,13 +104,13 @@ export const AllLabelsList = ({ hasMore, page, tasks, onChange }) => {
       <Table columns={labelTaskTableColumns} data={taskInformation} />
       <div className="join grid grid-cols-2 my-6">
         <button
-          className="join-item btn btn-outline"
+          className="join-item btn btn-primary"
           disabled={page === 0}
           onClick={goToPreviousPage}
         >
           Previous
         </button>
-        <button className="join-item btn btn-outline " disabled={!hasMore} onClick={goToNextPage}>
+        <button className="join-item btn btn-primary " disabled={!hasMore} onClick={goToNextPage}>
           Next
         </button>
       </div>
@@ -118,7 +118,7 @@ export const AllLabelsList = ({ hasMore, page, tasks, onChange }) => {
         <button
           type="button"
           /* button for popups */
-          className="btn btn-outline btn-primary"
+          className="btn btn-primary"
           onClick={handleToggleEditLabelModal}
         >
           Add Multiple
@@ -142,7 +142,7 @@ export const AllLabelsList = ({ hasMore, page, tasks, onChange }) => {
               <button
                 type="button"
                 /* button for popups */
-                className="btn btn-outline btn-primary"
+                className="btn btn-primary"
                 onClick={handleToggleEditLabelModal}
               >
                 Close

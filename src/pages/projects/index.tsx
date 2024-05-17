@@ -37,7 +37,7 @@ const ProjectsPage = () => {
             <ProjectsList searchTerm={searchTerm} currentUser={currentUser} page={page} />
           </Suspense>
         </div>
-        <Link className="btn btn-secondary mb-4 mt-4" href={Routes.NewProjectPage()}>
+        <Link className="btn btn-primary mb-4 mt-4" href={Routes.NewProjectPage()}>
           Create Project
           <svg
             xmlns="http://www.w3.org/2000/svg"

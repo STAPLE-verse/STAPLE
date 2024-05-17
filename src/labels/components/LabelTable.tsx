@@ -19,7 +19,7 @@ export type LabelInformation = {
   taxonomyList: string[]
 }
 
-const EditColunm = ({ row }) => {
+const EditColumn = ({ row }) => {
   const [updateLabelMutation] = useMutation(updateLabel)
   const {
     name = "",
@@ -68,18 +68,18 @@ const EditColunm = ({ row }) => {
   }
 
   return (
-    <div className="modal-action flex justify-end mt-4">
+    <div>
       <button
         type="button"
         /* button for popups */
-        className="btn btn-outline btn-primary"
+        className="btn btn-primary"
         onClick={handleToggleEditLabelModal}
       >
         Edit
       </button>
       <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
         <div className="">
-          <h1 className="flex justify-center mb-2">Editing label</h1>
+          <h1 className="flex justify-center mb-2 text-3xl">Editing label</h1>
           <div className="flex justify-start mt-4">
             <LabelForm
               schema={LabelFormSchema}
@@ -99,7 +99,7 @@ const EditColunm = ({ row }) => {
             <button
               type="button"
               /* button for popups */
-              className="btn btn-outline btn-primary"
+              className="btn btn-primary"
               onClick={handleToggleEditLabelModal}
             >
               Close
@@ -111,7 +111,7 @@ const EditColunm = ({ row }) => {
   )
 }
 
-const DeleteColunm = ({ row }) => {
+const DeleteColumn = ({ row }) => {
   const [deleteLabelMutation] = useMutation(deleteLabel)
   const { id = null, onChangeCallback = null, ...rest } = { ...row }
 
@@ -127,7 +127,7 @@ const DeleteColunm = ({ row }) => {
       await toast.promise(Promise.resolve(updated), {
         loading: "Deleting label...",
         success: "Label deleted!",
-        error: "Failed to edit the label...",
+        error: "Failed to delete the label...",
       })
     } catch (error: any) {
       console.error(error)
@@ -138,11 +138,11 @@ const DeleteColunm = ({ row }) => {
   }
 
   return (
-    <div className="modal-action flex justify-end mt-4">
+    <div>
       <button
         type="button"
         /* button for popups */
-        className="btn btn-outline btn-primary"
+        className="btn btn-primary"
         onClick={handleDeleteLabel}
       >
         Delete
@@ -171,17 +171,17 @@ export const lableTableColumns = [
 
   columnHelper.accessor("id", {
     id: "edit",
-    header: "",
+    header: "Edit",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <EditColunm row={info.row.original}></EditColunm>,
+    cell: (info) => <EditColumn row={info.row.original}></EditColumn>,
   }),
 
   columnHelper.accessor("id", {
     id: "delete",
-    header: "",
+    header: "Delete",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <DeleteColunm row={info.row.original}></DeleteColunm>,
+    cell: (info) => <DeleteColumn row={info.row.original}></DeleteColumn>,
   }),
 ]

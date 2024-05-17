@@ -152,7 +152,7 @@ const LabelBuilderPage = () => {
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2">Labels</h1>
+        <h1 className="flex justify-center mb-2 text-3xl">All Labels</h1>
         <div>
           <Suspense fallback={<div>Loading...</div>}>
             <AllLabelsList
@@ -164,18 +164,19 @@ const LabelBuilderPage = () => {
             />
           </Suspense>
         </div>
-
-        <button
-          type="button"
-          className="btn btn-outline btn-primary w-full max-w-sm"
-          onClick={() => handleToggleNewLabelModal()}
-        >
-          New Label
-        </button>
+        <div>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => handleToggleNewLabelModal()}
+          >
+            New Label
+          </button>
+        </div>
 
         <Modal open={openNewLabelModal} size="w-7/8 max-w-xl">
           <div className="">
-            <h1 className="flex justify-center mb-2">Creating new label</h1>
+            <h1 className="flex justify-center mb-2 text-3xl">Create New Label</h1>
             <div className="flex justify-start mt-4">
               <LabelForm
                 schema={LabelFormSchema}
