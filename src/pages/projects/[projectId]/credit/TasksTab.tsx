@@ -118,7 +118,7 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
 
         <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
           <div className="">
-            <h1 className="flex justify-center mb-2">Add labels</h1>
+            <h1 className="flex justify-center mb-2 text-3xl">Add Labels</h1>
             <div className="flex justify-start mt-4">
               <AddLabelForm
                 schema={LabelIdsFormSchema}
@@ -134,7 +134,7 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
               <button
                 type="button"
                 /* button for popups */
-                className="btn btn-outline btn-primary"
+                className="btn btn-secondary"
                 onClick={handleToggleEditLabelModal}
               >
                 Close

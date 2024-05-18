@@ -79,7 +79,7 @@ const EditColumn = ({ row }) => {
       </button>
       <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
         <div className="">
-          <h1 className="flex justify-center mb-2 text-3xl">Editing label</h1>
+          <h1 className="flex justify-center mb-2 text-3xl">Edit Label</h1>
           <div className="flex justify-start mt-4">
             <LabelForm
               schema={LabelFormSchema}
@@ -99,7 +99,7 @@ const EditColumn = ({ row }) => {
             <button
               type="button"
               /* button for popups */
-              className="btn btn-primary"
+              className="btn btn-secondary"
               onClick={handleToggleEditLabelModal}
             >
               Close

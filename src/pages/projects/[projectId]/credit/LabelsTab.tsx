@@ -115,7 +115,7 @@ export const AlPmsLabelsList = ({
           type="button"
           /* button for popups */
           disabled={hasElements}
-          className="btn btn-outline btn-primary"
+          className="btn btn-primary"
           onClick={handleAddLabel}
         >
           Save
