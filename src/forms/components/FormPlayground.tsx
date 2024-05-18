@@ -2,7 +2,7 @@ import JSONInput from "react-json-editor-ajrm"
 import locale from "react-json-editor-ajrm/locale/en"
 
 import { FormBuilder } from "@ginkgo-bioworks/react-json-schema-form-builder"
-import Form from "@rjsf/core"
+import JsonForm from "src/assignments/components/JsonForm"
 import validator from "@rjsf/validator-ajv8"
 import { Tab } from "@headlessui/react"
 import { useEffect, useState } from "react"
@@ -85,7 +85,7 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
       <Tab.Panels>
         {/* Tab for Preview */}
         <Tab.Panel>
-          <Form
+          <JsonForm
             schema={JSON.parse(state.schema)}
             uiSchema={JSON.parse(state.uischema)}
             //onChange={(newFormData) => setState({formData: newFormData.formData})}
