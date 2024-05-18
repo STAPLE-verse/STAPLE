@@ -28,15 +28,26 @@ export const Element = () => {
       </Head>
 
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1>{element.name}</h1>
+        <h1 className="text-3xlfupd">{element.name}</h1>
         {/* <pre>{JSON.stringify(element, null, 2)}</pre> */}
         <div className="flex flex-col gap-2">
           <p>{element.description}</p>
-          <p className="italic">Last update: {element.updatedAt.toString()}</p>
+          <p className="italic">
+            Last update:{" "}
+            {element.updatedAt.toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: false, // Use 24-hour format
+            })}
+          </p>
         </div>
         <div className="flex justify-start mt-4">
           <Link
-            className="btn"
+            className="btn btn-primary"
             href={Routes.EditElementPage({ projectId: projectId!, elementId: element.id })}
           >
             Update element
@@ -45,9 +56,9 @@ export const Element = () => {
         <div className="flex justify-end mt-4">
           <button
             type="button"
-            className="btn"
+            className="btn btn-secondary"
             onClick={async () => {
-              if (window.confirm("This will be deleted")) {
+              if (window.confirm("This element will be deleted. Is that ok?")) {
                 await deleteElementMutation({ id: element.id })
                 await router.push(Routes.ElementsPage({ projectId: projectId! }))
               }
