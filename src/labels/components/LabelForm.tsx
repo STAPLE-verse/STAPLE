@@ -27,13 +27,13 @@ export function LabelForm<S extends z.ZodType<any, any>>(props: LabelFormProps<S
         className="mb-4 text-primary border-primary border-2 bg-base-300"
         name="name"
         label="Label Name:"
-        placeholder="Add label Name"
+        placeholder="Add Label Name"
         type="text"
       />
 
       {/* Description */}
       <LabeledTextAreaField
-        className="mb-4 text-primary border-primary border-2 bg-base-300"
+        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg bg-base-300 border-2"
         name="description"
         label="Label Description:"
         placeholder="Add Label Description"
@@ -44,7 +44,7 @@ export function LabelForm<S extends z.ZodType<any, any>>(props: LabelFormProps<S
         className="mb-4 text-primary border-primary border-2 bg-base-300"
         name="taxonomy"
         label="Taxonomy:"
-        placeholder="Label taxonomy"
+        placeholder="Label Taxonomy"
         type="text"
         list="taxonomy_tags"
       />

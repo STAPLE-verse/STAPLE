@@ -21,7 +21,7 @@ export function ElementForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="Description"
         placeholder="Description"
         type="text"
-        className="mb-4 text-primary border-primary border-2 bg-base-300"
+        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg bg-base-300 border-2"
       />
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>

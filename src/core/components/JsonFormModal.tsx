@@ -23,7 +23,7 @@ export const JsonFormModal = ({ schema, uiSchema, metadata, label }) => {
             </div>
             {/* Closes the modal */}
             <div className="flex justify-end">
-              <button type="button" className="btn btn-primary" onClick={handleToggle}>
+              <button type="button" className="btn btn-secondary" onClick={handleToggle}>
                 Close
               </button>
             </div>

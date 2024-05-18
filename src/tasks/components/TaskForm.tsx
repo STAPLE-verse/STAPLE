@@ -109,7 +109,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       />
       {/* Description */}
       <LabeledTextAreaField
-        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300"
+        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2"
         name="description"
         label="Task Description:"
         placeholder="Add Description"

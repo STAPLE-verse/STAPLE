@@ -130,7 +130,7 @@ const LabelBuilderPage = () => {
               <button
                 type="button"
                 /* button for popups */
-                className="btn btn-outline btn-primary"
+                className="btn btn-secondary"
                 onClick={handleToggleNewLabelModal}
               >
                 Close

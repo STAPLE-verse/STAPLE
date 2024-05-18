@@ -126,7 +126,7 @@ export const AllLabelsList = ({ hasMore, page, tasks, onChange }) => {
 
         <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
           <div className="">
-            <h1 className="flex justify-center mb-2">Add labels</h1>
+            <h1 className="flex justify-center mb-2 text-3xl">Add labels</h1>
             <div className="flex justify-start mt-4">
               <AddLabelForm
                 schema={LabelIdsFormSchema}
