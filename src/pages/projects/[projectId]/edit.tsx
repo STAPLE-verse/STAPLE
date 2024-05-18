@@ -86,7 +86,7 @@ export const EditProject = () => {
           <div className="flex justify-end mt-4">
             <button
               type="button"
-              className="btn"
+              className="btn btn-warning"
               onClick={async () => {
                 if (
                   window.confirm(

@@ -350,3 +350,15 @@
 .popover-body {
   padding: 10px;
 }
+
+.tooltip-inner,
+.tooltip-arrow,
+.tooltip-left,
+.tooltip-right {
+  padding: 10px;
+  border-radius: 10px;
+  color: oklch(var(--bc));
+  background-color: oklch(var(--b1));
+  z-index: 2000 !important;
+  position: static;
+}

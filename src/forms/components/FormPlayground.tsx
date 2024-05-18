@@ -98,9 +98,11 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
         {/* Tabpanel for Visual Builder */}
         <Tab.Panel>
           <div className="formHead-wrapper">
-            <button type="button" className="btn btn-primary" onClick={() => saveForm(state)}>
-              Save
-            </button>
+            <div className="w-full flex justify-end">
+              <button type="button" className="btn btn-primary" onClick={() => saveForm(state)}>
+                Save Form
+              </button>
+            </div>
 
             <br />
             <FormBuilder
