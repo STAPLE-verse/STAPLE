@@ -117,22 +117,24 @@ const DeleteColumn = ({ row }) => {
 
   const handleDeleteLabel = async (values) => {
     // console.log(values)
-    try {
-      const updated = await deleteLabelMutation({
-        id: id,
-      })
-      if (onChangeCallback != undefined) {
-        onChangeCallback()
-      }
-      await toast.promise(Promise.resolve(updated), {
-        loading: "Deleting label...",
-        success: "Label deleted!",
-        error: "Failed to delete the label...",
-      })
-    } catch (error: any) {
-      console.error(error)
-      return {
-        [FORM_ERROR]: error.toString(),
+    if (window.confirm("This label will be permanently deleted. Are you sure to continue?")) {
+      try {
+        const updated = await deleteLabelMutation({
+          id: id,
+        })
+        if (onChangeCallback != undefined) {
+          onChangeCallback()
+        }
+        await toast.promise(Promise.resolve(updated), {
+          loading: "Deleting label...",
+          success: "Label deleted!",
+          error: "Failed to delete the label...",
+        })
+      } catch (error: any) {
+        console.error(error)
+        return {
+          [FORM_ERROR]: error.toString(),
+        }
       }
     }
   }

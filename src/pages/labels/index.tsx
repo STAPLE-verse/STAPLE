@@ -2,83 +2,17 @@ import { Suspense, useState } from "react"
 import Head from "next/head"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import router, { useRouter } from "next/router"
-
 import Layout from "src/core/layouts/Layout"
 import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-
-import React, { useRef } from "react"
-import ReactDOM from "react-dom"
 import Modal from "src/core/components/Modal"
 import { LabelForm, FORM_ERROR } from "src/labels/components/LabelForm"
-import { FormApi, SubmissionErrors, configOptions } from "final-form"
 import { number, z } from "zod"
 import toast from "react-hot-toast"
 import createLabel from "src/labels/mutations/createLabel"
 import getLabels from "src/labels/queries/getLabels"
-import Table from "src/core/components/Table"
-import { LabelInformation, lableTableColumns } from "src/labels/components/LabelTable"
 import { LabelFormSchema } from "src/labels/schemas"
-
-export const AllLabelsList = ({ hasMore, page, labels, onChange, taxonomyList }) => {
-  const router = useRouter()
-
-  const labelChanged = async () => {
-    if (onChange != undefined) {
-      onChange()
-    }
-  }
-
-  const uniqueValues = (value, index, self) => {
-    return self.indexOf(value) === index
-  }
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
-
-  // const taxonomyList = labels
-  //   .map((label) => {
-  //     const taxonomy = label.taxonomy || ""
-  //     return taxonomy
-  //   })
-  //   .filter(uniqueValues)
-
-  const contributorLabelnformation = labels.map((label) => {
-    const name = label.name
-    const desciprition = label.description || ""
-    const taxonomy = label.taxonomy || ""
-
-    let t: LabelInformation = {
-      name: name,
-      description: desciprition,
-      id: label.id,
-      taxonomy: taxonomy,
-      userId: label.userId,
-      onChangeCallback: labelChanged,
-      taxonomyList: taxonomyList,
-    }
-    return t
-  })
-
-  return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
-      <Table columns={lableTableColumns} data={contributorLabelnformation} />
-      <div className="join grid grid-cols-2 my-6">
-        <button
-          className="join-item btn btn-secondary"
-          disabled={page === 0}
-          onClick={goToPreviousPage}
-        >
-          Previous
-        </button>
-        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
-      </div>
-    </main>
-  )
-}
+import { AllLabelsList } from "src/labels/components/AllLabelsList"
 
 const LabelBuilderPage = () => {
   const sidebarItems = HomeSidebarItems("Labels")
@@ -204,17 +138,6 @@ const LabelBuilderPage = () => {
             </div>
           </div>
         </Modal>
-
-        {/* <Suspense fallback={<div>Loading...</div>}>
-          Label creation and updating will go here
-          <br />
-          - make this like the task table - where you can view all Labels with a view button that
-          opens a modal that allows you to edit or delete the label in case of misspellings
-          <br />
-          - at the bottom of the paged table have a create button that opens a modal that allows you
-          to add a new Label
-          <br />- new label page should have string fields for name, description, and taxonomy
-        </Suspense> */}
       </main>
     </Layout>
   )
