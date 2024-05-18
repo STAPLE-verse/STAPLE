@@ -155,13 +155,14 @@ const ContributorsPage = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <AllContributorsList />
         </Suspense>
-        <Link
-          className="btn btn-secondary mb-4"
-          href={Routes.NewContributorPage({ projectId: projectId! })}
-        >
-          Add contributor
-          <PlusIcon className="w-5 h-5" />
-        </Link>
+        <div>
+          <Link
+            className="btn btn-secondary mb-4"
+            href={Routes.NewContributorPage({ projectId: projectId! })}
+          >
+            Add Contributor
+          </Link>
+        </div>
       </main>
     </Layout>
   )

@@ -54,26 +54,18 @@ export const ContributorPage = () => {
           {getPrivilegeText(contributor[0].privilege)}
         </p>
         <div className="flex flex-col gap-2">
-          <h2>List of contributions</h2>
+          <h2 className="text-2xl">Contribution Labels</h2>
           {/* Add list of tasks for the contributor in this specific project */}
         </div>
 
-        {/* TODO: Do we need an edit contributor information section? Or the affiliations etc will be collected as metadata anyways? */}
-        {/* <div className="flex justify-start mt-4">
-          <Link
-            className="btn"
-            href={Routes.EditContributorPage({
-              projectId: projectId!,
-              contributorId: contributor.id,
-            })}
-          >
-            Edit
-          </Link>
-        </div> */}
+        <div className="flex flex-col gap-2">
+          <h2 className="text-2xl">Contribution Task</h2>
+          {/* Add list of tasks for the contributor in this specific project */}
+        </div>
 
         <div className="flex justify-end mt-4">
           <button
-            className="btn"
+            className="btn btn-secondary"
             type="button"
             onClick={async () => {
               if (
@@ -93,7 +85,7 @@ export const ContributorPage = () => {
             }}
             style={{ marginLeft: "0.5rem" }}
           >
-            Remove
+            Delete Contributor
           </button>
         </div>
       </main>
