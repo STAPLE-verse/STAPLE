@@ -37,17 +37,17 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
   return (
     <Form<S> {...formProps}>
       <LabelSelectField
-        className="select select-bordered w-full max-w-xs mt-2"
+        className="select text-primary select-bordered w-1/2 mt-4 mb-4"
         name="userId"
-        label="Select User"
+        label="Select User:"
         options={users}
         optionText="username"
         optionValue="id"
       />
       <LabelSelectField
-        className="select select-bordered w-full max-w-xs mt-2"
+        className="select text-primary select-bordered w-1/2 mt-4"
         name="privilege"
-        label="Select privilege"
+        label="Select Privilege:"
         options={ContributorPrivilegesOptions}
         optionText="label"
         optionValue="id"

@@ -26,12 +26,23 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
         const tasks = element.Task
 
         return (
-          <div className="collapse collapse-arrow bg-base-200 mb-2" key={element.id}>
+          <div className="collapse collapse-arrow bg-base-300 mb-2" key={element.id}>
             <input type="checkbox" />
             <div className="collapse-title text-xl font-medium">{element.name}</div>
             <div className="collapse-content mb-4">
               <p className="mb-2">{element.description}</p>
-              <p className="italic mb-2">Last update: {element.updatedAt.toString()}</p>
+              <p className="italic mb-2">
+                Last update:{" "}
+                {element.updatedAt.toLocaleDateString(undefined, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                  hour12: false, // Use 24-hour format
+                })}
+              </p>
               <div className="divider">Tasks</div>
               <div
                 className="flex flex-col flex-1 bg-gray-300 p-4 rounded-lg"
@@ -56,10 +67,10 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
               </div>
               <div className="justify-end mt-4">
                 <Link
-                  className="btn"
+                  className="btn btn-primary"
                   href={Routes.ShowElementPage({ projectId: projectId!, elementId: element.id })}
                 >
-                  Open element
+                  View Element
                 </Link>
               </div>
             </div>
