@@ -10,7 +10,7 @@ import Table from "src/core/components/Table"
 import getNotifications from "src/messages/queries/getNotifications"
 import { notificationTableColumns } from "src/messages/components/notificationTable"
 
-const ITEMS_PER_PAGE = 100
+const ITEMS_PER_PAGE = 10
 
 export const NotificationList = () => {
   const router = useRouter()

@@ -12,7 +12,7 @@ import { formsTableColumns } from "src/forms/components/FormsTable"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 
-const ITEMS_PER_PAGE = 100
+const ITEMS_PER_PAGE = 10
 
 export const AllFormsList = () => {
   const router = useRouter()

@@ -20,7 +20,7 @@ function classNames(...classes) {
 }
 
 // TODO: The number of items per page will affect the number of tasks shown in the table
-const ITEMS_PER_PAGE = 100
+const ITEMS_PER_PAGE = 10
 
 export const TasksList = () => {
   const router = useRouter()
