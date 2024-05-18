@@ -60,7 +60,7 @@ export const labelPmTableColumns = [
   columnHelper.accessor("user", {
     id: "pm",
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "PM(username)",
+    header: "PM Username",
   }),
 
   columnHelper.accessor("id", {

@@ -117,7 +117,7 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
         <button
           type="button"
           /* button for popups */
-          className="btn btn-outline btn-primary"
+          className="btn btn-primary"
           onClick={handleToggleEditLabelModal}
           disabled={hasElements}
         >
