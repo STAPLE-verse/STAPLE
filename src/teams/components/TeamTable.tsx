@@ -23,13 +23,13 @@ export const teamTableColumns = [
 
   columnHelper.accessor("id", {
     id: "view",
-    header: "",
+    header: "View",
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
-      <div className="justify-end">
+      <div className="">
         <Link
-          className="btn "
+          className="btn btn-primary"
           href={Routes.ShowTeamPage({
             projectId: info.row.original.projectId!,
             teamId: info.getValue(),

@@ -41,15 +41,15 @@ export const TeamList = () => {
                   <p>{team.name}</p>
                 </div>
               </div>
-              <div className="justify-end">
+              <div className="">
                 <Link
-                  className="btn"
+                  className="btn btn-primary"
                   href={Routes.ShowTeamPage({
                     projectId: projectId!,
                     teamId: team.id,
                   })}
                 >
-                  See Team
+                  View Team
                 </Link>
               </div>
             </div>
@@ -118,12 +118,7 @@ const TeamsPage = () => {
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2">Teams</h1>
-
-        <Link className="btn mb-4" href={Routes.NewTeamPage({ projectId: projectId! })}>
-          Add Team
-          <PlusIcon className="w-5 h-5" />
-        </Link>
+        <h1 className="flex justify-center mb-2 text-3xl">Teams</h1>
 
         {/* {
           <Suspense fallback={<div>Loading...</div>}>
@@ -136,6 +131,14 @@ const TeamsPage = () => {
             <AllTeamList />
           </Suspense>
         }
+        <div>
+          <Link
+            className="btn btn-primary mb-4"
+            href={Routes.NewTeamPage({ projectId: projectId! })}
+          >
+            Add Team
+          </Link>
+        </div>
       </main>
     </Layout>
   )

@@ -134,18 +134,18 @@ export const labelContributorTableColumns = [
   columnHelper.accessor("username", {
     id: "username",
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "UserName",
+    header: "Username",
   }),
 
   columnHelper.accessor("firstname", {
     id: "firstname",
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Firstname",
+    header: "First Name",
   }),
   columnHelper.accessor("lastname", {
     id: "lastaname",
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Lastname",
+    header: "Last Name",
   }),
   columnHelper.accessor("labels", {
     id: "labels",

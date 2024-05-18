@@ -60,7 +60,7 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
 
     columnHelper.accessor("userName", {
       cell: (info) => <span>{`${info.row.original.userName}`}</span>,
-      header: "Contributor UserName",
+      header: "Contributor Username",
     }),
   ]
 

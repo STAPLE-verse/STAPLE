@@ -38,7 +38,7 @@ export const ContributorPage = () => {
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1>
+        <h1 className="text-3xl">
           {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.username}
         </h1>
         {user.firstName && user.lastName ? (
