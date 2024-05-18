@@ -332,3 +332,21 @@
 .card-enum {
   background-color: oklch(var(--b1)) !important;
 }
+
+.popover,
+.popover-header,
+.popover-body,
+.popover-inner {
+  background-color: oklch(var(--b1));
+  border: 2px solid !important;
+  border-color: oklch(var(--b6)) !important;
+}
+
+.popover {
+  border-radius: 10px;
+}
+
+.popover-header,
+.popover-body {
+  padding: 10px;
+}
