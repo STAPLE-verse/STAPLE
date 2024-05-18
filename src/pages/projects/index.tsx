@@ -29,7 +29,7 @@ const ProjectsPage = () => {
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2 text-3xl">Projects</h1>
+        <h1 className="flex justify-center mb-2 text-3xl">All Projects</h1>
 
         <SearchButton onChange={handleSearch}></SearchButton>
         <div>
@@ -37,19 +37,11 @@ const ProjectsPage = () => {
             <ProjectsList searchTerm={searchTerm} currentUser={currentUser} page={page} />
           </Suspense>
         </div>
-        <Link className="btn btn-primary mb-4 mt-4" href={Routes.NewProjectPage()}>
-          Create Project
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            className="h-6 w-6"
-            viewBox="0 0 16 16"
-          >
-            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
-          </svg>
-        </Link>
+        <div>
+          <Link className="btn btn-primary mb-4 mt-4" href={Routes.NewProjectPage()}>
+            Create Project
+          </Link>
+        </div>
       </main>
     </Layout>
   )

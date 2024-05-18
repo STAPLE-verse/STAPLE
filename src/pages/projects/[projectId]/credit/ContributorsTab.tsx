@@ -103,13 +103,13 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
       <Table columns={labelContributorTableColumns} data={taskInformation} />
       <div className="join grid grid-cols-2 my-6">
         <button
-          className="join-item btn btn-outline"
+          className="join-item btn btn-secondary"
           disabled={page === 0}
           onClick={goToPreviousPage}
         >
           Previous
         </button>
-        <button className="join-item btn btn-outline " disabled={!hasMore} onClick={goToNextPage}>
+        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
           Next
         </button>
       </div>
