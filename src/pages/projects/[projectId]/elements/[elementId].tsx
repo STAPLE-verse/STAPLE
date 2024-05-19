@@ -28,7 +28,7 @@ export const Element = () => {
       </Head>
 
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xlfupd">{element.name}</h1>
+        <h1 className="text-3xl">{element.name}</h1>
         {/* <pre>{JSON.stringify(element, null, 2)}</pre> */}
         <div className="flex flex-col gap-2">
           <p>{element.description}</p>
@@ -44,6 +44,7 @@ export const Element = () => {
               hour12: false, // Use 24-hour format
             })}
           </p>
+          Add the list of tasks here with their metadata.
         </div>
         <div className="flex justify-start mt-4">
           <Link
