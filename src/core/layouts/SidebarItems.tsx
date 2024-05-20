@@ -12,10 +12,12 @@ import {
   NewspaperIcon,
   TagIcon,
   CheckCircleIcon,
+  QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline"
 import { useRouter } from "next/router"
 import { SidebarItemProps } from "../components/Sidebar"
 import { Routes } from "@blitzjs/next"
+import { Tooltip } from "react-tooltip"
 
 export const ProjectSidebarItems = (
   projectId: number,
@@ -152,6 +154,14 @@ export const HomeSidebarItems = (whichActive: string | null = null): SidebarItem
         await router.push(Routes.LabelBuilderPage())
       },
       active: whichActive === "Labels",
+    },
+    {
+      icon: <QuestionMarkCircleIcon className="w-6 h-6" />,
+      text: "Help",
+      onClick: async () => {
+        await router.push(Routes.HelpPage())
+      },
+      active: whichActive === "Help",
     },
   ]
 }
