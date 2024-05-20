@@ -17,12 +17,15 @@ export default resolver.pipe(
           create: [
             {
               name: "To Do",
+              columnIndex: 0,
             },
             {
               name: "In Progress",
+              columnIndex: 1,
             },
             {
               name: "Done",
+              columnIndex: 2,
             },
           ],
         },

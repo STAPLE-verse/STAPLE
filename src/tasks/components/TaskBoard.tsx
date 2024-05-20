@@ -3,7 +3,7 @@
 // see here https://github.com/microsoft/TypeScript/issues/49613
 
 //packages
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { v4 as uuidv4 } from "uuid"
 import {
   DndContext,
@@ -20,7 +20,11 @@ import {
 } from "@dnd-kit/core"
 import { SortableContext, arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import { HTMLAttributes, ClassAttributes } from "react"
-import { Column, Task } from "db"
+import { useQuery, useMutation } from "@blitzjs/rpc"
+import getColumns from "../queries/getColumns"
+import createColumn from "src/tasks/mutations/createColumn"
+import updateTaskOrder from "../mutations/updateTaskOrder"
+import updateColumnOrder from "../mutations/updateColumnOrder"
 
 // get specific components for this board
 import TaskContainer from "src/tasks/components/TaskContainer"
@@ -33,11 +37,15 @@ interface TaskBoardProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HT
   projectId: number
 }
 
-interface ColumnWithTasks extends Column {
-  tasks: Task[] // Assuming "Task" is the type for tasks
-}
+// interface ColumnWithTasks extends Column {
+//   tasks: Task[] // Assuming "Task" is the type for tasks
+// }
 
 const TaskBoard = ({ projectId }: TaskBoardProps) => {
+  const [createColumnMutation] = useMutation(createColumn)
+  const [updateTaskOderMutation] = useMutation(updateTaskOrder)
+  const [updateColumnOderMutation] = useMutation(updateColumnOrder)
+
   type DNDType = {
     id: UniqueIdentifier
     title: string
@@ -50,63 +58,45 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
   // here we need to loop through their tasks and
   // put them where they were but need to integrate
   // with saving as well
-  const [containers, setContainers] = useState<DNDType[]>([
-    {
-      id: `container-${uuidv4()}`,
-      title: "To Do",
-      items: [
-        {
-          id: `item-${uuidv4()}`,
-          title: "Item 1",
+  const [containers, setContainers] = useState<DNDType[]>([])
+  const [columns, { refetch }]: [ColumnWithTasks[], any] = useQuery(getColumns, {
+    orderBy: { columnIndex: "asc" },
+    where: { project: { id: projectId! } },
+    include: {
+      tasks: {
+        orderBy: {
+          columnTaskIndex: "asc",
         },
-      ],
+      },
     },
-    {
-      id: `container-${uuidv4()}`,
-      title: "Done",
-      items: [
-        {
-          id: `item-${uuidv4()}`,
-          title: "Item 2",
-        },
-      ],
-    },
-  ])
+  })
+
+  useEffect(() => {
+    // Transform query data to the desired structure
+    const transformedData = columns.map((container) => ({
+      id: `container-${container.id}`,
+      title: container.name,
+      items: container.tasks.map((task) => ({
+        id: `item-${task.id}`,
+        title: task.name,
+      })),
+    }))
+
+    // Update state with the transformed data
+    setContainers(transformedData)
+  }, [columns])
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const [currentContainerId, setCurrentContainerId] = useState<UniqueIdentifier>()
   const [containerName, setContainerName] = useState("")
-  const [itemName, setItemName] = useState("")
   const [showAddContainerModal, setShowAddContainerModal] = useState(false)
-  const [showAddItemModal, setShowAddItemModal] = useState(false)
 
-  const onAddContainer = () => {
+  const onAddContainer = async () => {
     if (!containerName) return
-    const id = `container-${uuidv4()}`
-    setContainers([
-      ...containers,
-      {
-        id,
-        title: containerName,
-        items: [],
-      },
-    ])
+    await createColumnMutation({ projectId: projectId, name: containerName })
     setContainerName("")
     setShowAddContainerModal(false)
-  }
-
-  const onAddItem = () => {
-    if (!itemName) return
-    const id = `item-${uuidv4()}`
-    const container = containers.find((item) => item.id === currentContainerId)
-    if (!container) return
-    container.items.push({
-      id,
-      title: itemName,
-    })
-    setContainers([...containers])
-    setItemName("")
-    setShowAddItemModal(false)
+    refetch()
   }
 
   // Find the value of the items
@@ -231,6 +221,7 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
       let newItems = [...containers]
       const [removeditem] = newItems[activeContainerIndex].items.splice(activeitemIndex, 1)
       newItems[overContainerIndex].items.push(removeditem)
+      // console.log(newItems)
       setContainers(newItems)
     }
   }
@@ -238,6 +229,7 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
   // This is the function that handles the sorting of the containers and items when the user is done dragging.
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
+    let newContainers = [...containers]
 
     // Handling Container Sorting
     if (
@@ -251,82 +243,98 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
       const activeContainerIndex = containers.findIndex((container) => container.id === active.id)
       const overContainerIndex = containers.findIndex((container) => container.id === over.id)
       // Swap the active and over container
-      let newItems = [...containers]
-      newItems = arrayMove(newItems, activeContainerIndex, overContainerIndex)
-      setContainers(newItems)
-    }
-
-    // Handling item Sorting
-    if (
-      active.id.toString().includes("item") &&
-      over?.id.toString().includes("item") &&
-      active &&
-      over &&
-      active.id !== over.id
-    ) {
-      // Find the active and over container
-      const activeContainer = findValueOfItems(active.id, "item")
-      const overContainer = findValueOfItems(over.id, "item")
-
-      // If the active or over container is not found, return
-      if (!activeContainer || !overContainer) return
-      // Find the index of the active and over container
-      const activeContainerIndex = containers.findIndex(
-        (container) => container.id === activeContainer.id
+      newContainers = arrayMove(newContainers, activeContainerIndex, overContainerIndex)
+      setContainers(newContainers)
+      const newColumnOrder = newContainers.map((container) =>
+        parseInt(container.id.replace("container-", ""))
       )
-      const overContainerIndex = containers.findIndex(
-        (container) => container.id === overContainer.id
-      )
-      // Find the index of the active and over item
-      const activeitemIndex = activeContainer.items.findIndex((item) => item.id === active.id)
-      const overitemIndex = overContainer.items.findIndex((item) => item.id === over.id)
+      updateColumnOderMutation({ columnIds: newColumnOrder })
+        .then(() => console.log("Column order updated successfully!"))
+        .catch((error) => console.error("Failed to update column order", error))
+    } else {
+      // Handling item Sorting
+      if (
+        active.id.toString().includes("item") &&
+        over?.id.toString().includes("item") &&
+        active &&
+        over &&
+        active.id !== over.id
+      ) {
+        // Find the active and over container
+        const activeContainer = findValueOfItems(active.id, "item")
+        const overContainer = findValueOfItems(over.id, "item")
 
-      // In the same container
-      if (activeContainerIndex === overContainerIndex) {
-        let newItems = [...containers]
-        newItems[activeContainerIndex].items = arrayMove(
-          newItems[activeContainerIndex].items,
-          activeitemIndex,
-          overitemIndex
+        // If the active or over container is not found, return
+        if (!activeContainer || !overContainer) return
+        // Find the index of the active and over container
+        const activeContainerIndex = containers.findIndex(
+          (container) => container.id === activeContainer.id
         )
-        setContainers(newItems)
-      } else {
-        // In different containers
-        let newItems = [...containers]
-        const [removeditem] = newItems[activeContainerIndex].items.splice(activeitemIndex, 1)
-        newItems[overContainerIndex].items.splice(overitemIndex, 0, removeditem)
-        setContainers(newItems)
+        const overContainerIndex = containers.findIndex(
+          (container) => container.id === overContainer.id
+        )
+        // Find the index of the active and over item
+        const activeitemIndex = activeContainer.items.findIndex((item) => item.id === active.id)
+        const overitemIndex = overContainer.items.findIndex((item) => item.id === over.id)
+
+        // In the same container
+        if (activeContainerIndex === overContainerIndex) {
+          newContainers[activeContainerIndex].items = arrayMove(
+            newContainers[activeContainerIndex].items,
+            activeitemIndex,
+            overitemIndex
+          )
+          setContainers(newContainers)
+        } else {
+          // In different containers
+          const [removeditem] = newContainers[activeContainerIndex].items.splice(activeitemIndex, 1)
+          newContainers[overContainerIndex].items.splice(overitemIndex, 0, removeditem)
+          setContainers(newContainers)
+        }
       }
-    }
-    // Handling item dropping into Container
-    if (
-      active.id.toString().includes("item") &&
-      over?.id.toString().includes("container") &&
-      active &&
-      over &&
-      active.id !== over.id
-    ) {
-      // Find the active and over container
-      const activeContainer = findValueOfItems(active.id, "item")
-      const overContainer = findValueOfItems(over.id, "container")
 
-      // If the active or over container is not found, return
-      if (!activeContainer || !overContainer) return
-      // Find the index of the active and over container
-      const activeContainerIndex = containers.findIndex(
-        (container) => container.id === activeContainer.id
-      )
-      const overContainerIndex = containers.findIndex(
-        (container) => container.id === overContainer.id
-      )
-      // Find the index of the active and over item
-      const activeitemIndex = activeContainer.items.findIndex((item) => item.id === active.id)
+      // Handling item dropping into Container
+      if (
+        active.id.toString().includes("item") &&
+        over?.id.toString().includes("container") &&
+        active &&
+        over &&
+        active.id !== over.id
+      ) {
+        // Find the active and over container
+        const activeContainer = findValueOfItems(active.id, "item")
+        const overContainer = findValueOfItems(over.id, "container")
 
-      let newItems = [...containers]
-      const [removeditem] = newItems[activeContainerIndex].items.splice(activeitemIndex, 1)
-      newItems[overContainerIndex].items.push(removeditem)
-      setContainers(newItems)
+        // If the active or over container is not found, return
+        if (!activeContainer || !overContainer) return
+        // Find the index of the active and over container
+        const activeContainerIndex = containers.findIndex(
+          (container) => container.id === activeContainer.id
+        )
+        const overContainerIndex = containers.findIndex(
+          (container) => container.id === overContainer.id
+        )
+        // Find the index of the active and over item
+        const activeitemIndex = activeContainer.items.findIndex((item) => item.id === active.id)
+
+        const [removeditem] = newContainers[activeContainerIndex].items.splice(activeitemIndex, 1)
+        newContainers[overContainerIndex].items.push(removeditem)
+        setContainers(newContainers)
+      }
+
+      const updateTasksList = newContainers.flatMap((container) =>
+        container.items.map((item, itemIdx) => ({
+          taskId: parseInt(item.id.replace("item-", "")),
+          columnId: parseInt(container.id.replace("container-", "")),
+          columnTaskIndex: itemIdx,
+        }))
+      )
+
+      updateTaskOderMutation({ tasks: updateTasksList })
+        .then(() => console.log("Tasks updated successfully!"))
+        .catch((error) => console.error("Failed to update tasks", error))
     }
+
     setActiveId(null)
   }
 
@@ -345,23 +353,6 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
           />
           <button type="button" className="btn btn-primary" onClick={onAddContainer}>
             Add container
-          </button>
-        </div>
-      </TaskModal>
-
-      {/* Add Item Modal */}
-      <TaskModal showModal={showAddItemModal} setShowModal={setShowAddItemModal}>
-        <div className="flex flex-col w-full items-start gap-y-4">
-          <h1 className="text-3xl font-bold">Add Item</h1>
-          <TaskInput
-            type="text"
-            placeholder="Item Title"
-            name="itemname"
-            value={itemName}
-            onChange={(e) => setItemName(e.target.value)}
-          />
-          <button type="button" className="btn btn-primary" onClick={onAddItem}>
-            Add Item
           </button>
         </div>
       </TaskModal>

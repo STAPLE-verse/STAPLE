@@ -125,10 +125,13 @@ export const DeleteTaskSchema = z.object({
 })
 
 export const UpdateTaskOrderSchema = z.object({
-  activeId: z.any(),
-  overId: z.any(),
-  activeIndex: z.any(),
-  overIndex: z.any(),
+  tasks: z.array(
+    z.object({
+      taskId: z.number(),
+      columnId: z.number(),
+      columnTaskIndex: z.number(),
+    })
+  ),
 })
 
 // export const UpdateTaskLabelSchema = z.object({
@@ -140,4 +143,13 @@ export const UpdateTaskLabelSchema = z.object({
   tasksId: z.array(z.number()).nonempty(),
   labelsId: z.array(z.number()).optional().nullable(),
   disconnect: z.boolean(),
+})
+
+export const CreateColumnSchema = z.object({
+  name: z.string(),
+  projectId: z.number(),
+})
+
+export const UpdateColumnOrderSchema = z.object({
+  columnIds: z.array(z.number()),
 })

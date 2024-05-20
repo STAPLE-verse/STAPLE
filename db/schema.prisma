@@ -227,13 +227,14 @@ model Team {
 }
 
 model Column {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String   @default("To Do") // Might not need this
-  tasks     Task[]
-  projectId Int
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String   @default("To Do") // Might not need this
+  tasks       Task[]
+  columnIndex Int
+  projectId   Int
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 model Element {
