@@ -10,6 +10,11 @@ import Layout from "src/core/layouts/Layout"
 import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { PlusIcon } from "@heroicons/react/24/outline"
+import ByContributors from "./ByContributors"
+import ByTasks from "./ByTasks"
+import ByLabels from "./ByLabels"
+import ByDate from "./ByDate"
+import ByElements from "./ByElements"
 
 //could refactor other places and move this to utils
 const formatDate = (myDate) =>
@@ -57,7 +62,7 @@ const SummaryPage = () => {
               </option>
               <option value="date">Organize project by Date</option>
               <option value="task">Organize project by Task</option>
-              <option value="contributor">Organize project by Contributor</option>
+              <option value="contributor">Organize project by Contributor (Assigment)</option>
               <option value="label">Organize project by Label</option>
               <option value="element">Organize project by Element</option>
             </select>
@@ -102,13 +107,23 @@ const SummaryPage = () => {
             <div className="card bg-base-300 mx-2 w-full">
               <div className="card-body">
                 <div className="card-title">Organized Metadata</div>
-                <br />
+                {selectedOrganization === "contributor" && (
+                  <ByContributors projectId={projectId}></ByContributors>
+                )}
+                {selectedOrganization === "task" && <ByTasks></ByTasks>}
+                {selectedOrganization === "label" && <ByLabels></ByLabels>}
+                {selectedOrganization === "date" && <ByDate></ByDate>}
+                {selectedOrganization === "element" && <ByElements></ByElements>}
+                {selectedOrganization === "none" && (
+                  <span>Needs to select an organization or should we have a default?</span>
+                )}
+                {/* <br />
                 Here we will print out the database basically by organization they pick at the top
                 <br />
                 So, if they pick by date: Print out the date, everything that happened on that date
                 with breaks between the dates
                 <br />
-                If they pick by task, loop through the tasks and print out each thing, etc.
+                If they pick by task, loop through the tasks and print out each thing, etc. */}
               </div>
             </div>
           </div>
