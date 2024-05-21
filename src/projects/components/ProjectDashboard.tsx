@@ -3,7 +3,7 @@
 // react tanstack error
 
 import { Routes, useParam } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { Contributor, ContributorPrivileges, Prisma, Task, TaskStatus, User, Assignment } from "db"
 import moment from "moment"
@@ -30,15 +30,15 @@ import {
 } from "@dnd-kit/core"
 import { SortableBox } from "src/core/components/SortableBox"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
-import updateWidget from "src/widgets/mutations/updateWidget"
-import setWidgets from "src/widgets/mutations/setWidgets"
+import updateProjectWidgets from "src/widgets/mutations/updateProjectWidgets"
+import setProjectWidgets from "src/widgets/mutations/setProjectWidgets"
 import getProjectWidgets from "src/widgets/queries/getProjectWidgets"
 
 const ProjectDashboard = () => {
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
   const [currentContributor] = useQuery(getContributor, {
-    where: { projectId: projectId, userId: currentUser!.id },
+    where: { userId: currentUser!.id, projectId: projectId },
   })
 
   // dragging information
@@ -79,14 +79,21 @@ const ProjectDashboard = () => {
 
   // Get the widgets for the user
   const [boxes, setBoxes] = useState([])
+  // console.log(currentUser.id, projectId)
   const [fetchedWidgets] = useQuery(getProjectWidgets, {
     userId: currentUser?.id,
     projectId: projectId,
   })
 
+  // if the length is 0, then create widgets
+
+  // else grab the widgets
+
+  console.log(fetchedWidgets.length)
+
   // mutations for the widgets
-  const [updateWidgetMutation] = useMutation(updateWidget)
-  const [setWidgetMutation] = useMutation(setWidgets)
+  const [updateWidgetMutation] = useMutation(updateProjectWidgets)
+  const [setWidgetMutation] = useMutation(setProjectWidgets)
 
   return (
     <div className="flex flex-col space-y-4">
