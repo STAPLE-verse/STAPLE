@@ -391,7 +391,7 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
                   <SortableContext items={container.items.map((i) => i.id)}>
                     <div className="flex items-start flex-col gap-y-4">
                       {container.items.map((i) => (
-                        <TaskItems title={i.title} id={i.id} key={i.id} />
+                        <TaskItems title={i.title} id={i.id} key={i.id} projectId={projectId} />
                       ))}
                     </div>
                   </SortableContext>
