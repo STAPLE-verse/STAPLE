@@ -2,6 +2,7 @@
 // @ts-nocheck
 // react tanstack error
 
+import { useEffect } from "react"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
@@ -33,6 +34,7 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import updateProjectWidgets from "src/widgets/mutations/updateProjectWidgets"
 import setProjectWidgets from "src/widgets/mutations/setProjectWidgets"
 import getProjectWidgets from "src/widgets/queries/getProjectWidgets"
+import toast from "react-hot-toast"
 
 const ProjectDashboard = () => {
   const projectId = useParam("projectId", "number")
@@ -85,15 +87,76 @@ const ProjectDashboard = () => {
     projectId: projectId,
   })
 
-  // if the length is 0, then create widgets
-
-  // else grab the widgets
-
-  console.log(fetchedWidgets.length)
-
   // mutations for the widgets
   const [updateWidgetMutation] = useMutation(updateProjectWidgets)
   const [setWidgetMutation] = useMutation(setProjectWidgets)
+
+  // if the length is 0, then create widgets
+  useEffect(() => {
+    if (fetchedWidgets.length === 0) {
+      //console.log("no widgets")
+      var setUpProjectDashboard = setWidgetMutation({
+        userId: currentUser?.id,
+        projectId: projectId,
+      })
+        .then(() => {
+          //console.log("Widget positions updated successfully")
+          toast.success(`Added dashboard, please refresh!`)
+        })
+        .catch((error) => {
+          //console.error("Error updating widget positions:", error)
+          toast.error(`Issue with dashboard, please contact help.`)
+        })
+    } else {
+      // else start dealing with widgets
+      const sortedWidgets = fetchedWidgets.sort((a, b) => a.position - b.position)
+      const updatedBoxes = sortedWidgets.map((widget) => {
+        switch (widget.type) {
+          case "LastProject":
+            return {
+              id: widget.id,
+              title: "Last Updated Projects",
+              display: getProjectDisplay(projects),
+              link: projectLink,
+              position: widget.position,
+            }
+          case "Notifications":
+            return {
+              id: widget.id,
+              title: "Notifications",
+              display: getNotificationDisplay(notifications),
+              link: notificationLink,
+              position: widget.position,
+            }
+          case "OverdueTask":
+            return {
+              id: widget.id,
+              title: "Overdue Tasks",
+              display: getOverdueTaskDisplay(pastDueTasks),
+              link: taskLink,
+              position: widget.position,
+            }
+          case "UpcomingTask":
+            return {
+              id: widget.id,
+              title: "Upcoming Tasks",
+              display: getUpcomingTaskDisplay(upcomingTasks),
+              link: taskLink,
+              position: widget.position,
+            }
+          default:
+            return {
+              id: widget.id,
+              title: "Unknown Widget",
+              display: <div>Widget configuration error</div>,
+              link: <div />,
+              position: widget.position,
+            }
+        }
+      })
+      setBoxes(updatedBoxes)
+    }
+  }, [fetchedWidgets])
 
   return (
     <div className="flex flex-col space-y-4">
