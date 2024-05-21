@@ -4,6 +4,7 @@ import {
   ChevronRightIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 interface SidebarContextProps {
   expanded: boolean
@@ -60,9 +61,10 @@ export interface SidebarItemProps {
   active?: boolean
   alert?: boolean
   onClick?: MouseEventHandler<HTMLLIElement>
+  tooltipId: string
 }
 
-export function SidebarItem({ icon, text, active, alert, onClick }: SidebarItemProps) {
+export function SidebarItem({ icon, text, active, alert, onClick, tooltipId }: SidebarItemProps) {
   const contextValue = useContext(SidebarContext)
 
   if (!contextValue) {
@@ -78,8 +80,11 @@ export function SidebarItem({ icon, text, active, alert, onClick }: SidebarItemP
     }
   }
 
+  //console.log(tooltipId)
+
   return (
     <li
+      data-tooltip-id={tooltipId}
       className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
         active
           ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
@@ -87,6 +92,50 @@ export function SidebarItem({ icon, text, active, alert, onClick }: SidebarItemP
       }`}
       onClick={handleClick}
     >
+      <Tooltip id="project-dashboard-tooltip" content="See overall project information dashboard" />
+      <Tooltip
+        id="project-tasks-tooltip"
+        content="View, add, edit, and complete project specific tasks"
+      />
+      <Tooltip
+        id="project-elements-tooltip"
+        content="Elements help you organize tasks into buckets"
+      />
+      <Tooltip
+        id="project-contributors-tooltip"
+        content="Add, edit, and view all people on the project"
+      />
+      <Tooltip id="project-teams-tooltip" content="Add, edit, and view project teams" />
+      <Tooltip
+        id="project-credit-tooltip"
+        content="Add, edit, and view contribution explanations with labels"
+      />
+      <Tooltip
+        id="project-form-tooltip"
+        content="Review and download project form data (metadata)"
+      />
+      <Tooltip
+        id="project-summary-tooltip"
+        content="Review and download project summary (metadata)"
+      />
+      <Tooltip
+        id="project-settings-tooltip"
+        content="Add, edit, and view project overview information (metadata)"
+      />
+      <Tooltip id="dashboard-tooltip" content="View the home page dashboard for all projects" />
+      <Tooltip id="projects-tooltip" content="View all projects and open a specific one" />
+      <Tooltip id="tasks-tooltip" content="View all tasks for all projects" />
+      <Tooltip
+        id="forms-tooltip"
+        content="Build your own forms to collect data in a task (metadata)"
+      />
+      <Tooltip id="notifications-tooltip" content="View all notifications for projects" />
+      <Tooltip
+        id="labels-tooltip"
+        content="View, add, and edit contribution categories with labels"
+      />
+      <Tooltip id="help-tooltip" content="Get help with STAPLE" />
+
       {icon}
       <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
         {text}

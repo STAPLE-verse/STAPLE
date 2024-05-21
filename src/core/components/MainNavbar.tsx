@@ -70,7 +70,7 @@ const Navbar = () => {
       "sunset",
     ].includes(theme)
   ) {
-    console.log(theme)
+    //console.log(theme)
     logo = <img src="/stapler_white.png" width={25} />
   } else {
     logo = <img src="/stapler_black.png" width={25} />
@@ -112,7 +112,7 @@ const Navbar = () => {
             <div
               // TODO: DaisyUI tooltip is not working because css cannot deal with element edge
               // https://github.com/saadeghi/daisyui/discussions/1695
-              className="w-10 rounded-full tooltip"
+              className="w-10 rounded-full our-tooltip"
               data-tip={initial ? "" : "Go to Profile to add your name."}
             >
               <span className="text-1xl">{initial ? initial : "?"}</span>

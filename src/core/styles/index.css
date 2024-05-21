@@ -362,3 +362,10 @@
   z-index: 2000 !important;
   position: static;
 }
+
+.our-tooltip {
+  padding: 10px;
+  border-radius: 10px;
+  color: oklch(var(--bc));
+  background-color: oklch(var(--b1));
+}
