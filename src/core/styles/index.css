@@ -359,7 +359,7 @@
   border-radius: 10px;
   color: oklch(var(--bc));
   background-color: oklch(var(--b1));
-  z-index: 2000 !important;
+  z-index: 9999 !important;
   position: static;
 }
 
