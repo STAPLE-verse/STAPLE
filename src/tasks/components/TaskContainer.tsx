@@ -42,9 +42,9 @@ const TaskContainer = ({ id, children, title, description, onAddItem }: Containe
       </div>
 
       {children}
-      <button type="button" className="btn btn-primary" onClick={onAddItem}>
+      {/* <button type="button" className="btn btn-primary" onClick={onAddItem}>
         Add Item
-      </button>
+      </button> */}
     </div>
   )
 }

@@ -29,7 +29,7 @@ const NewTeamPage = () => {
         <title>Add New Team</title>
       </Head>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1>Add New Team</h1>
+        <h1 className="text-3xl">Add New Team</h1>
         <Suspense fallback={<div>Loading...</div>}>
           <TeamForm
             projectId={projectId!}

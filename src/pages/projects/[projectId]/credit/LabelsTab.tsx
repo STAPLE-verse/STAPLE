@@ -100,13 +100,13 @@ export const AlPmsLabelsList = ({
       <Table columns={labelPmTableColumns} data={labelInformation} />
       <div className="join grid grid-cols-2 my-6">
         <button
-          className="join-item btn btn-outline"
+          className="join-item btn btn-secondary"
           disabled={page === 0}
           onClick={goToPreviousPage}
         >
           Previous
         </button>
-        <button className="join-item btn btn-outline " disabled={!hasMore} onClick={goToNextPage}>
+        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
           Next
         </button>
       </div>
@@ -115,7 +115,7 @@ export const AlPmsLabelsList = ({
           type="button"
           /* button for popups */
           disabled={hasElements}
-          className="btn btn-outline btn-primary"
+          className="btn btn-primary"
           onClick={handleAddLabel}
         >
           Save
@@ -125,7 +125,7 @@ export const AlPmsLabelsList = ({
   )
 }
 
-const LabelssTab = () => {
+const LabelsTab = () => {
   const currentUser = useCurrentUser()
 
   const page = Number(router.query.page) || 0
@@ -160,8 +160,6 @@ const LabelssTab = () => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-<<<<<<< label_feature
-      <h1 className="flex justify-center mb-2">Tasks</h1>
       <div>
         <Suspense fallback={<div>Loading...</div>}>
           <AlPmsLabelsList
@@ -174,11 +172,8 @@ const LabelssTab = () => {
           />
         </Suspense>
       </div>
-=======
-      <h1 className="flex justify-center mb-2 text-3xl">Labels Coming Soon</h1>
->>>>>>> main
     </main>
   )
 }
 
-export default LabelssTab
+export default LabelsTab

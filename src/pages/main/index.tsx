@@ -36,22 +36,24 @@ import {
 import { SortableBox } from "src/core/components/SortableBox"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import updateWidget from "src/widgets/mutations/updateWidget"
+import setWidgets from "src/widgets/mutations/setWidgets"
+import toast from "react-hot-toast"
 
 const projectLink = (
   <Link className="btn btn-primary self-end m-4" href={Routes.ProjectsPage()}>
-    Show all projects
+    All Projects
   </Link>
 )
 
 const taskLink = (
   <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
-    Show all tasks
+    All Tasks
   </Link>
 )
 
 const notificationLink = (
   <Link className="btn btn-primary self-end m-4" href={Routes.NotificationsPage()}>
-    Show all notifications
+    All Notifications
   </Link>
 )
 
@@ -132,6 +134,7 @@ const MainPage = () => {
   const currentUser = useCurrentUser()
   const today = moment().startOf("day")
   const [updateWidgetMutation] = useMutation(updateWidget)
+  const [setWidgetMutation] = useMutation(setWidgets)
 
   // Get data
   // get all tasks
@@ -198,14 +201,15 @@ const MainPage = () => {
   })
 
   // Get the widgets for the user
+  const [boxes, setBoxes] = useState([])
+
   const [fetchedWidgets] = useQuery(getUserWidgets, {
     userId: currentUser?.id,
   })
 
-  const [boxes, setBoxes] = useState([])
-
+  // then update them on their screen
   useEffect(() => {
-    if (fetchedWidgets) {
+    if (fetchedWidgets.length > 0) {
       const sortedWidgets = fetchedWidgets.sort((a, b) => a.position - b.position)
       const updatedBoxes = sortedWidgets.map((widget) => {
         switch (widget.type) {
@@ -252,6 +256,18 @@ const MainPage = () => {
         }
       })
       setBoxes(updatedBoxes)
+    } else {
+      console.log("no widgets")
+      // Call the mutation
+      setWidgetMutation({ id: currentUser?.id })
+        .then(() => {
+          //console.log("Widget positions updated successfully")
+          toast.success(`Added dashboard, please refresh!`)
+        })
+        .catch((error) => {
+          //console.error("Error updating widget positions:", error)
+          toast.error(`Issue with dashboard, please contact help.`)
+        })
     }
   }, [fetchedWidgets])
 
@@ -272,10 +288,10 @@ const MainPage = () => {
         // Call the mutation
         updateWidgetMutation({ positions: updatedPositions })
           .then(() => {
-            console.log("Widget positions updated successfully")
+            //console.log("Widget positions updated successfully")
           })
           .catch((error) => {
-            console.error("Error updating widget positions:", error)
+            //console.error("Error updating widget positions:", error)
           })
 
         return newBoxes

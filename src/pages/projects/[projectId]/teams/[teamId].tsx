@@ -43,12 +43,12 @@ export const ShowTeamPage = () => {
 
         <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
           <div className="flex mt-4">
-            <h1>Team: {team.name}</h1>
+            <h1 className="text-3xl">Team: {team.name}</h1>
           </div>
-          <div className="flex mt-4 text-2xl">Members</div>
+          <div className="flex mt-4 text-2xl">Members: </div>
 
           {/* TODO refactor this to a global compoenent to show contributors , also used in contributor page */}
-          <div className="">
+          <div className="mt-4">
             {contributors.map((contributor) => {
               const firstName = contributor["user"].firstName
               const lastName = contributor["user"].lastName
@@ -56,7 +56,7 @@ export const ShowTeamPage = () => {
               const initial = getInitials(firstName, lastName)
 
               return (
-                <div className="card bg-base-200 mb-2" key={contributor.id}>
+                <div className="card bg-base-300 mb-2" key={contributor.id}>
                   <div className="card-body flex flex-row justify-between">
                     <div className="flex items-center">
                       <div className="avatar placeholder">
@@ -70,7 +70,7 @@ export const ShowTeamPage = () => {
                     </div>
                     <div className="justify-end">
                       <Link
-                        className="btn"
+                        className="btn btn-primary"
                         href={Routes.ShowContributorPage({
                           projectId: projectId!,
                           contributorId: contributor.id,
@@ -87,7 +87,7 @@ export const ShowTeamPage = () => {
 
           <div className="flex justify-start mt-4">
             <Link
-              className="btn"
+              className="btn btn-primary"
               href={Routes.EditTeamPage({ projectId: projectId!, teamId: team.id })}
             >
               Update Team
@@ -97,7 +97,7 @@ export const ShowTeamPage = () => {
           <div className="flex justify-end mt-4">
             <button
               type="button"
-              className="btn"
+              className="btn btn-secondary"
               onClick={async () => {
                 if (
                   window.confirm("The team will be permanently deleted. Are you sure to continue?")
@@ -107,7 +107,7 @@ export const ShowTeamPage = () => {
                 }
               }}
             >
-              Delete team
+              Delete Team
             </button>
           </div>
         </main>

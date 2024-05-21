@@ -12,11 +12,11 @@ const columnHelper = createColumnHelper<AssignmentStatusLog>()
 const assignmentHistoryTableColumns: ColumnDef<AssignmentStatusLog>[] = [
   columnHelper.accessor("completedBy", {
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Changed by",
+    header: "Changed By",
   }),
   columnHelper.accessor((row) => row.changedAt.toISOString(), {
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Last update",
+    header: "Last Update",
     id: "changedAt",
   }),
   columnHelper.accessor((row) => row.status, {
@@ -34,7 +34,7 @@ const assignmentHistoryTableColumns: ColumnDef<AssignmentStatusLog>[] = [
         )}
       </>
     ),
-    header: "Assignment metadata",
+    header: "Assignment Metadata",
   }),
 ]
 

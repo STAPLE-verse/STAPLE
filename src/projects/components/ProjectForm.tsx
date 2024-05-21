@@ -18,14 +18,14 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       />
       <br />
       <LabeledTextAreaField
-        className="mb-4 textarea textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300"
+        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2"
         name="description"
         label="Description"
         placeholder="Description"
       />
       <br />
       <LabeledTextAreaField
-        className="mb-4 textarea textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300"
+        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2"
         name="abstract"
         label="Abstract"
         placeholder="Abstract"

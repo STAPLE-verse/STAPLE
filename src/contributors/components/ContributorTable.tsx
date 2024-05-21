@@ -23,19 +23,19 @@ export const contributorTableColumns = [
 
   columnHelper.accessor("id", {
     id: "view",
-    header: "",
+    header: "View",
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
-      <div className="justify-end">
+      <div className="">
         <Link
-          className="btn "
+          className="btn btn-primary"
           href={Routes.ShowContributorPage({
             projectId: info.row.original.projectId!,
             contributorId: info.getValue(),
           })}
         >
-          See contributions
+          See Contributions
         </Link>
       </div>
     ),
