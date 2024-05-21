@@ -11,7 +11,7 @@ export default api(
       {
         strategy: new OrcidStrategy(
           {
-            sandbox: process.env.ORCID_CLIENT_SANDBOX === "true",
+            sandbox: process.env.ORCID_CLIENT_SANDBOX === "false",
             clientID: process.env.ORCID_CLIENT_ID,
             clientSecret: process.env.ORCID_CLIENT_SECRET,
             callbackURL: `${process.env.APP_ORIGIN}/api/auth/orcid/callback`,
