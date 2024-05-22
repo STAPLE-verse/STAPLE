@@ -43,6 +43,7 @@ import {
   projectColumns,
   notificationColumns,
   projectManagersColumns,
+  projectTaskColumns,
 } from "src/widgets/components/ColumnHelpers"
 
 const ProjectDashboard = () => {
@@ -155,7 +156,7 @@ const ProjectDashboard = () => {
         />
       </div>
     )
-  } // updated
+  }
   const getUpcomingTaskDisplay = (upcomingTasks) => {
     if (upcomingTasks.length === 0) {
       return <p className="italic p-2">No upcoming tasks</p>
@@ -163,7 +164,7 @@ const ProjectDashboard = () => {
 
     return (
       <Table
-        columns={tasksColumns}
+        columns={projectTaskColumns}
         data={upcomingTasks}
         classNames={{
           thead: "text-sm text-base-content",
@@ -180,7 +181,7 @@ const ProjectDashboard = () => {
 
     return (
       <Table
-        columns={tasksColumns}
+        columns={projectTaskColumns}
         data={pastDueTasks}
         classNames={{
           thead: "text-sm text-base-content",
@@ -311,7 +312,7 @@ const ProjectDashboard = () => {
               display: getOverdueTaskDisplay(pastDueTasks),
               link: taskLink,
               position: widget.position,
-              size: "col-span-4",
+              size: "col-span-6",
             }
           case "UpcomingTask":
             return {

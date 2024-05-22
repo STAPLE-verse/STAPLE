@@ -7,9 +7,7 @@ import Link from "next/link"
 type TaskWithProjectName = Prisma.TaskGetPayload<{
   include: { project: { select: { name: true } } }
 }>
-
 const taskColumnHelper = createColumnHelper<TaskWithProjectName>()
-
 export const tasksColumns: ColumnDef<TaskWithProjectName>[] = [
   taskColumnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
@@ -158,4 +156,47 @@ export const projectManagersColumns: ColumnDef<ContributorWithUser>[] = [
   //      </Link>
   //    ),
   //  },
+]
+
+//past due project Tasks
+const projectTaskColumnHelper = createColumnHelper<Tasks>()
+const projectTaskColumns: ColumnDef<Tasks>[] = [
+  projectTaskColumnHelper.accessor("name", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Name",
+  }),
+  projectTaskColumnHelper.accessor("deadline", {
+    cell: (info) => (
+      <span>
+        {" "}
+        {info.getValue()
+          ? info.getValue()?.toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: false, // Use 24-hour format
+            })
+          : "No Deadline"}
+      </span>
+    ),
+    header: "Deadline",
+  }),
+  projectTaskColumnHelper.accessor("id", {
+    id: "view",
+    header: "View",
+    cell: (info) => (
+      <Link
+        className="btn btn-sm btn-secondary"
+        href={Routes.ShowTaskPage({
+          projectId: info.row.original.projectId,
+          taskId: info.getValue(),
+        })}
+      >
+        View
+      </Link>
+    ),
+  }),
 ]
