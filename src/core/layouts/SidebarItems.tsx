@@ -72,15 +72,6 @@ export const ProjectSidebarItems = (
       tooltipId: "project-teams-tooltip",
     },
     {
-      icon: <CheckCircleIcon className="w-6 h-6" />,
-      text: "Labels",
-      onClick: async () => {
-        await router.push(Routes.CreditPage({ projectId: projectId }))
-      },
-      active: whichActive === "Credit",
-      tooltipId: "project-credit-tooltip",
-    },
-    {
       icon: <DocumentChartBarIcon className="w-6 h-6" />,
       text: "Form Data",
       onClick: async () => {
@@ -89,7 +80,24 @@ export const ProjectSidebarItems = (
       active: whichActive === "Form Data",
       tooltipId: "project-form-tooltip",
     },
-
+    {
+      icon: <BellIcon className="w-6 h-6" />,
+      text: "Notifications",
+      onClick: async () => {
+        await router.push(Routes.ProjectNotificationsPage({ projectId: projectId }))
+      },
+      active: whichActive === "Notifications",
+      tooltipId: "project-notification-tooltip",
+    },
+    {
+      icon: <CheckCircleIcon className="w-6 h-6" />,
+      text: "Labels",
+      onClick: async () => {
+        await router.push(Routes.CreditPage({ projectId: projectId }))
+      },
+      active: whichActive === "Credit",
+      tooltipId: "project-credit-tooltip",
+    },
     {
       icon: <NewspaperIcon className="w-6 h-6" />,
       text: "Summary",
@@ -144,15 +152,6 @@ export const HomeSidebarItems = (whichActive: string | null = null): SidebarItem
       tooltipId: "tasks-tooltip",
     },
     {
-      icon: <BeakerIcon className="w-6 h-6" />,
-      text: "Forms",
-      onClick: async () => {
-        await router.push(Routes.AllFormsPage())
-      },
-      active: whichActive === "Forms",
-      tooltipId: "forms-tooltip",
-    },
-    {
       icon: <BellIcon className="w-6 h-6" />,
       text: "Notifications",
       onClick: async () => {
@@ -160,6 +159,15 @@ export const HomeSidebarItems = (whichActive: string | null = null): SidebarItem
       },
       active: whichActive === "Notifications",
       tooltipId: "notifications-tooltip",
+    },
+    {
+      icon: <BeakerIcon className="w-6 h-6" />,
+      text: "Forms",
+      onClick: async () => {
+        await router.push(Routes.AllFormsPage())
+      },
+      active: whichActive === "Forms",
+      tooltipId: "forms-tooltip",
     },
     {
       icon: <TagIcon className="w-6 h-6" />,

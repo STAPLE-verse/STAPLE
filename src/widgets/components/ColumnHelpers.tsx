@@ -128,3 +128,34 @@ export const notificationColumns: ColumnDef<Notification>[] = [
     enableColumnFilter: false,
   }),
 ]
+
+// project Managers
+type ContributorWithUser = Prisma.ContributorGetPayload<{
+  include: { user: { select: { username: true; firstName: true; lastName: true } } }
+}>
+export const projectManagersColumns: ColumnDef<ContributorWithUser>[] = [
+  {
+    accessorKey: "user.username",
+    cell: (info) => <span>{info.getValue() as string}</span>,
+    header: "Username",
+  },
+  {
+    accessorKey: "user.firstName",
+    cell: (info) => <span>{info.getValue() as string}</span>,
+    header: "First Name",
+  },
+  {
+    accessorKey: "user.lastName",
+    cell: (info) => <span>{info.getValue() as string}</span>,
+    header: "Last Name",
+  },
+  //  { // email PM coming later
+  //    accessorKey: "action",
+  //    header: "Contact",
+  //    cell: (info) => (
+  //      <Link className="btn btn-sm btn-secondary" href="">
+  //        Ask for help
+  //      </Link>
+  //    ),
+  //  },
+]

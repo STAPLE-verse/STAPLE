@@ -220,6 +220,7 @@ const MainPage = () => {
               display: getProjectDisplay(projects),
               link: projectLink,
               position: widget.position,
+              size: "col-span-6",
             }
           case "Notifications":
             return {
@@ -228,6 +229,7 @@ const MainPage = () => {
               display: getNotificationDisplay(notifications),
               link: notificationLink,
               position: widget.position,
+              size: "col-span-6",
             }
           case "OverdueTask":
             return {
@@ -236,6 +238,7 @@ const MainPage = () => {
               display: getOverdueTaskDisplay(pastDueTasks),
               link: taskLink,
               position: widget.position,
+              size: "col-span-6",
             }
           case "UpcomingTask":
             return {
@@ -244,6 +247,7 @@ const MainPage = () => {
               display: getUpcomingTaskDisplay(upcomingTasks),
               link: taskLink,
               position: widget.position,
+              size: "col-span-6",
             }
           default:
             return {
@@ -252,6 +256,7 @@ const MainPage = () => {
               display: <div>Widget configuration error</div>,
               link: <div />,
               position: widget.position,
+              size: "col-span-6",
             }
         }
       })

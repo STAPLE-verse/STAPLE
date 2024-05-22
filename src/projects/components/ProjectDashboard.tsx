@@ -35,21 +35,25 @@ import updateProjectWidgets from "src/widgets/mutations/updateProjectWidgets"
 import setProjectWidgets from "src/widgets/mutations/setProjectWidgets"
 import getProjectWidgets from "src/widgets/queries/getProjectWidgets"
 import toast from "react-hot-toast"
-import getProjects from "src/projects/queries/getProjects"
+import getProjects from "src/projects/queries/getProjects" // remove
+import getProject from "src/projects/queries/getProject"
 import getNotifications from "src/messages/queries/getNotifications"
 import {
   tasksColumns,
   projectColumns,
   notificationColumns,
+  projectManagersColumns,
 } from "src/widgets/components/ColumnHelpers"
 
 const ProjectDashboard = () => {
+  //default information
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
-  const today = moment().startOf("day")
+  const today = moment().startOf("minute")
   const [currentContributor] = useQuery(getContributor, {
     where: { userId: currentUser!.id, projectId: projectId },
   })
+  const [project] = useQuery(getProject, { id: projectId }) // updated
 
   // dragging information
   const handleDragEnd = async (event) => {
@@ -100,35 +104,58 @@ const ProjectDashboard = () => {
 
   // links
   const projectLink = (
-    <Link className="btn btn-primary self-end m-4" href={Routes.ProjectsPage()}>
-      All Projects
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.EditProjectPage({ projectId: projectId! })}
+    >
+      Edit Project
     </Link>
-  )
+  ) // updated
   const taskLink = (
     <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
       All Tasks
     </Link>
   )
   const notificationLink = (
-    <Link className="btn btn-primary self-end m-4" href={Routes.NotificationsPage()}>
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.ProjectNotificationsPage({ projectId: projectId! })}
+    >
       All Notifications
     </Link>
   )
 
   // displays
-  const getProjectDisplay = (projects) => {
+  const getProjectDisplay = (project) => {
     return (
-      <Table
-        columns={projectColumns}
-        data={projects}
-        classNames={{
-          thead: "text-sm text-base-content",
-          tbody: "text-sm text-base-content",
-          td: "text-sm text-base-content",
-        }}
-      />
+      <div>
+        {project.description}
+        <p className="italic">
+          Last update:{" "}
+          {project.updatedAt.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false, // Use 24-hour format
+          })}
+        </p>
+
+        <p className="font-bold mt-4">Contacts for the Project: </p>
+        <Table
+          columns={projectManagersColumns}
+          data={projectManagers}
+          classNames={{
+            thead: "text-sm",
+            tbody: "text-sm",
+            td: "text-sm",
+          }}
+        />
+      </div>
     )
-  }
+  } // updated
   const getUpcomingTaskDisplay = (upcomingTasks) => {
     if (upcomingTasks.length === 0) {
       return <p className="italic p-2">No upcoming tasks</p>
@@ -182,6 +209,16 @@ const ProjectDashboard = () => {
   }
 
   //get the data
+  // get the project manangers
+  const [{ contributors: projectManagers }] = useQuery(getContributors, {
+    where: {
+      projectId: projectId,
+      privilege: "PROJECT_MANAGER",
+    },
+    include: {
+      user: true,
+    },
+  })
   // get all tasks
   const [{ tasks }] = useQuery(getTasks, {
     include: {
@@ -213,18 +250,6 @@ const ProjectDashboard = () => {
       return moment(task.deadline).isBefore(moment(), "minute")
     }
     return false
-  })
-  // get all projects
-  const [{ projects }] = useQuery(getProjects, {
-    where: {
-      contributors: {
-        some: {
-          userId: currentUser?.id,
-        },
-      },
-    },
-    orderBy: { updatedAt: "asc" },
-    take: 3,
   })
   // get all notifications
   const [{ notifications }] = useQuery(getNotifications, {
@@ -264,10 +289,11 @@ const ProjectDashboard = () => {
           case "ProjectSummary":
             return {
               id: widget.id,
-              title: "Last Updated Projects",
-              display: getProjectDisplay(projects),
+              title: project.name,
+              display: getProjectDisplay(project),
               link: projectLink,
               position: widget.position,
+              size: "col-span-8",
             }
           case "Notifications":
             return {
@@ -276,6 +302,7 @@ const ProjectDashboard = () => {
               display: getNotificationDisplay(notifications),
               link: notificationLink,
               position: widget.position,
+              size: "col-span-4",
             }
           case "OverdueTask":
             return {
@@ -284,6 +311,7 @@ const ProjectDashboard = () => {
               display: getOverdueTaskDisplay(pastDueTasks),
               link: taskLink,
               position: widget.position,
+              size: "col-span-4",
             }
           case "UpcomingTask":
             return {
@@ -292,6 +320,7 @@ const ProjectDashboard = () => {
               display: getUpcomingTaskDisplay(upcomingTasks),
               link: taskLink,
               position: widget.position,
+              size: "col-span-4",
             }
           case "ContributorNumber":
             return {
@@ -300,6 +329,7 @@ const ProjectDashboard = () => {
               display: getUpcomingTaskDisplay(upcomingTasks),
               link: taskLink,
               position: widget.position,
+              size: "col-span-4",
             }
           case "TeamNumber":
             return {
@@ -308,6 +338,7 @@ const ProjectDashboard = () => {
               display: getUpcomingTaskDisplay(upcomingTasks),
               link: taskLink,
               position: widget.position,
+              size: "col-span-4",
             }
           case "FormNumber":
             return {
@@ -316,6 +347,7 @@ const ProjectDashboard = () => {
               display: getUpcomingTaskDisplay(upcomingTasks),
               link: taskLink,
               position: widget.position,
+              size: "col-span-4",
             }
           case "TaskTotal":
             return {
@@ -332,6 +364,7 @@ const ProjectDashboard = () => {
               display: getUpcomingTaskDisplay(upcomingTasks),
               link: taskLink,
               position: widget.position,
+              size: "col-span-4",
             }
           case "LabelsSummary":
             return {
@@ -340,6 +373,7 @@ const ProjectDashboard = () => {
               display: getUpcomingTaskDisplay(upcomingTasks),
               link: taskLink,
               position: widget.position,
+              size: "col-span-4",
             }
           default:
             return {
@@ -348,6 +382,7 @@ const ProjectDashboard = () => {
               display: <div>Widget configuration error</div>,
               link: <div />,
               position: widget.position,
+              size: "col-span-4",
             }
         }
       })

@@ -164,6 +164,11 @@ export function SidebarItem({ icon, text, active, alert, onClick, tooltipId }: S
         className="z-[1080]"
       />
       <Tooltip id="help-tooltip" content="Get help with STAPLE" className="z-[1080]" />
+      <Tooltip
+        id="project-notification-tooltip"
+        content="View notifications for this project"
+        className="z-[1080]"
+      />
 
       {icon}
       <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
