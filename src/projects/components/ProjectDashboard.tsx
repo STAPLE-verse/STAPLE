@@ -303,7 +303,7 @@ const ProjectDashboard = () => {
               display: getNotificationDisplay(notifications),
               link: notificationLink,
               position: widget.position,
-              size: "col-span-4",
+              size: "col-span-6",
             }
           case "OverdueTask":
             return {
@@ -321,7 +321,7 @@ const ProjectDashboard = () => {
               display: getUpcomingTaskDisplay(upcomingTasks),
               link: taskLink,
               position: widget.position,
-              size: "col-span-4",
+              size: "col-span-6",
             }
           case "ContributorNumber":
             return {

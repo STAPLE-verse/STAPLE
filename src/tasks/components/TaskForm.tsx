@@ -148,7 +148,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
                 className="mb-4 text-lg border-2 border-primary rounded p-2 w-full"
                 type="datetime-local"
                 min={today}
-                //value={today}
+                //placeholder={today}
                 max="2050-01-01T00:00"
                 onChange={(event) => {
                   const dateValue = event.target.value ? new Date(event.target.value) : null

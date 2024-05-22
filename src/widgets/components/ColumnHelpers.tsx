@@ -160,7 +160,7 @@ export const projectManagersColumns: ColumnDef<ContributorWithUser>[] = [
 
 //past due project Tasks
 const projectTaskColumnHelper = createColumnHelper<Tasks>()
-const projectTaskColumns: ColumnDef<Tasks>[] = [
+export const projectTaskColumns: ColumnDef<Tasks>[] = [
   projectTaskColumnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
