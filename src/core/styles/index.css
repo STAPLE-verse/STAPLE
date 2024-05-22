@@ -89,6 +89,9 @@
   display: none;
   transform: none;
 }
+.modal {
+  background-color: none;
+}
 
 .modal-backdrop {
   z-index: 1050;
@@ -359,8 +362,16 @@
   border-radius: 10px;
   color: oklch(var(--bc));
   background-color: oklch(var(--b1));
-  z-index: 2000 !important;
-  position: static;
+  /* position: absolute; */
+  margin: 8px;
+}
+
+div.tooltip.show {
+  z-index: 9999 !important;
+}
+
+span.arrow.tooltip-arrow {
+  display: none;
 }
 
 .our-tooltip {
