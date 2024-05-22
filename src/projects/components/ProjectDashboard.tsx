@@ -35,10 +35,18 @@ import updateProjectWidgets from "src/widgets/mutations/updateProjectWidgets"
 import setProjectWidgets from "src/widgets/mutations/setProjectWidgets"
 import getProjectWidgets from "src/widgets/queries/getProjectWidgets"
 import toast from "react-hot-toast"
+import getProjects from "src/projects/queries/getProjects"
+import getNotifications from "src/messages/queries/getNotifications"
+import {
+  tasksColumns,
+  projectColumns,
+  notificationColumns,
+} from "src/widgets/components/ColumnHelpers"
 
 const ProjectDashboard = () => {
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
+  const today = moment().startOf("day")
   const [currentContributor] = useQuery(getContributor, {
     where: { userId: currentUser!.id, projectId: projectId },
   })
@@ -81,7 +89,6 @@ const ProjectDashboard = () => {
 
   // Get the widgets for the user
   const [boxes, setBoxes] = useState([])
-  // console.log(currentUser.id, projectId)
   const [fetchedWidgets] = useQuery(getProjectWidgets, {
     userId: currentUser?.id,
     projectId: projectId,
@@ -90,6 +97,151 @@ const ProjectDashboard = () => {
   // mutations for the widgets
   const [updateWidgetMutation] = useMutation(updateProjectWidgets)
   const [setWidgetMutation] = useMutation(setProjectWidgets)
+
+  // links
+  const projectLink = (
+    <Link className="btn btn-primary self-end m-4" href={Routes.ProjectsPage()}>
+      All Projects
+    </Link>
+  )
+  const taskLink = (
+    <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
+      All Tasks
+    </Link>
+  )
+  const notificationLink = (
+    <Link className="btn btn-primary self-end m-4" href={Routes.NotificationsPage()}>
+      All Notifications
+    </Link>
+  )
+
+  // displays
+  const getProjectDisplay = (projects) => {
+    if (projects.length === 0) {
+      return <p className="italic p-2">No projects</p>
+    }
+    return (
+      <Table
+        columns={projectColumns}
+        data={projects}
+        classNames={{
+          thead: "text-sm text-base-content",
+          tbody: "text-sm text-base-content",
+          td: "text-sm text-base-content",
+        }}
+      />
+    )
+  }
+  const getUpcomingTaskDisplay = (upcomingTasks) => {
+    if (upcomingTasks.length === 0) {
+      return <p className="italic p-2">No upcoming tasks</p>
+    }
+
+    return (
+      <Table
+        columns={tasksColumns}
+        data={upcomingTasks}
+        classNames={{
+          thead: "text-sm text-base-content",
+          tbody: "text-sm text-base-content",
+          td: "text-sm text-base-content",
+        }}
+      />
+    )
+  }
+  const getOverdueTaskDisplay = (pastDueTasks) => {
+    if (pastDueTasks.length === 0) {
+      return <p className="italic p-2">No overdue tasks</p>
+    }
+
+    return (
+      <Table
+        columns={tasksColumns}
+        data={pastDueTasks}
+        classNames={{
+          thead: "text-sm text-base-content",
+          tbody: "text-sm text-base-content",
+          td: "text-sm text-base-content",
+        }}
+      />
+    )
+  }
+  const getNotificationDisplay = (notifications) => {
+    if (notifications.length === 0) {
+      return <p className="italic p-2">No unread notifications</p>
+    }
+
+    return (
+      <Table
+        columns={notificationColumns}
+        data={notifications}
+        classNames={{
+          thead: "text-sm text-base-content",
+          tbody: "text-sm text-base-content",
+          td: "text-sm text-base-content",
+        }}
+      />
+    )
+  }
+
+  //get the data
+  // get all tasks
+  const [{ tasks }] = useQuery(getTasks, {
+    include: {
+      project: { select: { name: true } },
+    },
+    where: {
+      assignees: { some: { contributor: { user: { id: currentUser?.id } } } },
+      status: TaskStatus.NOT_COMPLETED,
+    },
+    orderBy: { id: "desc" },
+  })
+  // get only upcoming
+  const upcomingTasks = tasks.filter((task) => {
+    if (task && task.deadline) {
+      return moment(task.deadline).isSameOrAfter(today, "day")
+    }
+    return false
+  })
+  // get no deadline
+  const noDeadlineTasks = tasks.filter((task) => {
+    if (task && task.deadline === null) {
+      return moment(task.deadline)
+    }
+    return false
+  })
+  // get pastDue
+  const pastDueTasks = tasks.filter((task) => {
+    if (task && task.deadline) {
+      return moment(task.deadline).isBefore(moment(), "minute")
+    }
+    return false
+  })
+  // get all projects
+  const [{ projects }] = useQuery(getProjects, {
+    where: {
+      contributors: {
+        some: {
+          userId: currentUser?.id,
+        },
+      },
+    },
+    orderBy: { updatedAt: "asc" },
+    take: 3,
+  })
+  // get all notifications
+  const [{ notifications }] = useQuery(getNotifications, {
+    where: {
+      recipients: {
+        some: {
+          id: currentUser!.id,
+        },
+      },
+      read: false,
+    },
+    orderBy: { id: "desc" },
+    take: 3,
+  })
 
   // if the length is 0, then create widgets
   useEffect(() => {
@@ -112,7 +264,7 @@ const ProjectDashboard = () => {
       const sortedWidgets = fetchedWidgets.sort((a, b) => a.position - b.position)
       const updatedBoxes = sortedWidgets.map((widget) => {
         switch (widget.type) {
-          case "LastProject":
+          case "ProjectSummary":
             return {
               id: widget.id,
               title: "Last Updated Projects",
@@ -140,6 +292,54 @@ const ProjectDashboard = () => {
             return {
               id: widget.id,
               title: "Upcoming Tasks",
+              display: getUpcomingTaskDisplay(upcomingTasks),
+              link: taskLink,
+              position: widget.position,
+            }
+          case "ContributorNumber":
+            return {
+              id: widget.id,
+              title: "Contributors",
+              display: getUpcomingTaskDisplay(upcomingTasks),
+              link: taskLink,
+              position: widget.position,
+            }
+          case "TeamNumber":
+            return {
+              id: widget.id,
+              title: "Teams",
+              display: getUpcomingTaskDisplay(upcomingTasks),
+              link: taskLink,
+              position: widget.position,
+            }
+          case "FormNumber":
+            return {
+              id: widget.id,
+              title: "Forms",
+              display: getUpcomingTaskDisplay(upcomingTasks),
+              link: taskLink,
+              position: widget.position,
+            }
+          case "TaskTotal":
+            return {
+              id: widget.id,
+              title: "Tasks",
+              display: getUpcomingTaskDisplay(upcomingTasks),
+              link: taskLink,
+              position: widget.position,
+            }
+          case "ElementSummary":
+            return {
+              id: widget.id,
+              title: "Elements",
+              display: getUpcomingTaskDisplay(upcomingTasks),
+              link: taskLink,
+              position: widget.position,
+            }
+          case "LabelsSummary":
+            return {
+              id: widget.id,
+              title: "Labels",
               display: getUpcomingTaskDisplay(upcomingTasks),
               link: taskLink,
               position: widget.position,
