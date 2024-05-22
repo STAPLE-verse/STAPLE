@@ -117,9 +117,6 @@ const ProjectDashboard = () => {
 
   // displays
   const getProjectDisplay = (projects) => {
-    if (projects.length === 0) {
-      return <p className="italic p-2">No projects</p>
-    }
     return (
       <Table
         columns={projectColumns}

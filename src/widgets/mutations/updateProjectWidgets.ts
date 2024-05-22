@@ -20,7 +20,7 @@ export default resolver.pipe(
     }
 
     const updates = positions.map(async ({ id, position }) => {
-      const widget = await db.widget.findFirst({
+      const widget = await db.ProjectWidget.findFirst({
         where: { id, userId },
       })
 
@@ -28,7 +28,7 @@ export default resolver.pipe(
         throw new Error("Widget not found or does not belong to the user")
       }
 
-      return db.widget.update({
+      return db.ProjectWidget.update({
         where: { id },
         data: { position },
       })
