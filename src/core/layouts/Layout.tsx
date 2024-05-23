@@ -4,6 +4,7 @@ import { BlitzLayout } from "@blitzjs/next"
 import MainNavbar from "../components/MainNavbar"
 import Sidebar, { SidebarItem, SidebarItemProps } from "../components/Sidebar"
 import { Toaster } from "react-hot-toast"
+import { Tooltip } from "react-tooltip"
 
 const Layout: BlitzLayout<{
   title?: string
@@ -18,7 +19,7 @@ const Layout: BlitzLayout<{
         <title>{title || "STAPLE"}</title>
       </Head>
 
-      <div className="flex flex-col h-screen sticky top-0">
+      <div className="flex flex-col min-h-screen">
         <MainNavbar />
         <div className="flex flex-grow">
           <Sidebar title={sidebarTitle}>
@@ -30,10 +31,11 @@ const Layout: BlitzLayout<{
                 onClick={item.onClick}
                 alert={item.alert}
                 active={item.active}
+                tooltipId={item.tooltipId}
               />
             ))}
           </Sidebar>
-          <div className="flex-1 overflow-auto p-4">{children}</div>
+          <div className="flex-1 overflow-scroll p-4">{children}</div>
         </div>
       </div>
     </>
