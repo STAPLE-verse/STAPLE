@@ -100,7 +100,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Column */}
       <LabelSelectField
-        className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"
+        className="mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="columnId"
         label="Current Status:"
         options={columns}
@@ -127,15 +127,28 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
           return (
             <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Deadline</span>
-              </label>
+              <style jsx>{`
+                label {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: start;
+                  font-size: 1.25rem;
+                }
+                input {
+                  font-size: 1rem;
+                  padding: 0.25rem 0.5rem;
+                  border-radius: 3px;
+                  appearance: none;
+                }
+              `}</style>
+              <label>Deadline:</label>
               <input
                 {...input}
                 value={formattedValue}
-                className="mb-4 text-lg border rounded p-2 w-1/2"
+                className="mb-4 text-lg border-2 border-primary rounded p-2 w-full"
                 type="datetime-local"
                 min={today}
+                //placeholder={today}
                 max="2050-01-01T00:00"
                 onChange={(event) => {
                   const dateValue = event.target.value ? new Date(event.target.value) : null
@@ -150,7 +163,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Elements */}
       <LabelSelectField
-        className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"
+        className="mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="elementId"
         label="Assign to Element:"
         options={elements}

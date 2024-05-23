@@ -54,22 +54,34 @@ const Navbar = () => {
     }
   }, [theme])
 
+  var logo = ""
+
+  if (
+    [
+      "dark",
+      "dracula",
+      "halloween",
+      "forest",
+      "luxury",
+      "business",
+      "night",
+      "coffee",
+      "dim",
+      "sunset",
+    ].includes(theme)
+  ) {
+    //console.log(theme)
+    logo = <img src="/stapler_white.png" width={25} />
+  } else {
+    logo = <img src="/stapler_black.png" width={25} />
+  }
+
   // return pages
   return (
     <div className="flex-0 navbar bg-base-100 sticky z-[9999] top-0 border-b border-gray-300 sm:px-4 md:px-6 lg:px-8 xl:px-10">
       {/* Tabs */}
       {/* On the left */}
-      <div className="flex-1">
-        <picture>
-          <source
-            srcSet="/stapler_white.png"
-            media="(prefers-color-scheme: dark)"
-            //alt="STAPLE Logo"
-            width={25}
-          />
-          <img src="/stapler_black.png" alt="STAPLE Logo" width={25} />
-        </picture>
-      </div>
+      <div className="flex-1">{logo}</div>
       {/* On the right */}
       <div className="flex space-x-5">
         {/* Templated tabs tab */}
@@ -100,7 +112,7 @@ const Navbar = () => {
             <div
               // TODO: DaisyUI tooltip is not working because css cannot deal with element edge
               // https://github.com/saadeghi/daisyui/discussions/1695
-              className="w-10 rounded-full tooltip"
+              className="w-10 rounded-full our-tooltip"
               data-tip={initial ? "" : "Go to Profile to add your name."}
             >
               <span className="text-1xl">{initial ? initial : "?"}</span>

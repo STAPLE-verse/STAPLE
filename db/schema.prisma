@@ -33,7 +33,8 @@ model User {
   notifications    Notification[] @relation("UserNotifications")
   ContributorLabel Label[]
 
-  widgets Widget[]
+  widgets       Widget[]
+  ProjectWidget ProjectWidget[]
 }
 
 model Session {
@@ -114,38 +115,29 @@ model Label {
   name         String
   description  String?
   taxonomy     String?
-  // Project      Project?      @relation(fields: [projectId], references: [id])
-  // projectId    Int?
-  // Task        Task?    @relation(fields: [taskId], references: [id])
-  // taskId      Int?
   projects     Project[]
   tasks        Task[]
   contributors Contributor[]
 }
 
 model Project {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String
-  description String?
-  abstract    String?
-  keywords    String?
-  citation    String?
-  publisher   String?
-  identifier  String?
-
-  tasks    Task[]
-  elements Element[]
-  columns  Column[]
-
-  contributors Contributor[]
-  teams        Team[]
-  labels       Label[]
-
-  // contributor label options here in an array - relation
-  // basically just a filter of what should be allowed in the
-  // assignment to the tasks and contributors
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  name          String
+  description   String?
+  abstract      String?
+  keywords      String?
+  citation      String?
+  publisher     String?
+  identifier    String?
+  tasks         Task[]
+  elements      Element[]
+  columns       Column[]
+  contributors  Contributor[]
+  teams         Team[]
+  labels        Label[]
+  projectwidget ProjectWidget[]
 }
 
 enum TaskStatus {
@@ -284,4 +276,17 @@ model Widget {
   position Int
 
   @@unique([userId, type])
+}
+
+model ProjectWidget {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  projectId Int
+  project   Project @relation(fields: [projectId], references: [id])
+  type      String
+  show      Boolean @default(true)
+  position  Int
+
+  @@unique([userId, projectId, type])
 }

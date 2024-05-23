@@ -4,6 +4,7 @@ import { BlitzLayout } from "@blitzjs/next"
 import MainNavbar from "../components/MainNavbar"
 import Sidebar, { SidebarItem, SidebarItemProps } from "../components/Sidebar"
 import { Toaster } from "react-hot-toast"
+import { Tooltip } from "react-tooltip"
 
 const Layout: BlitzLayout<{
   title?: string
@@ -30,6 +31,7 @@ const Layout: BlitzLayout<{
                 onClick={item.onClick}
                 alert={item.alert}
                 active={item.active}
+                tooltipId={item.tooltipId}
               />
             ))}
           </Sidebar>
