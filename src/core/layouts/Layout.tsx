@@ -18,7 +18,7 @@ const Layout: BlitzLayout<{
         <title>{title || "STAPLE"}</title>
       </Head>
 
-      <div className="flex flex-col h-screen sticky top-0">
+      <div className="flex flex-col min-h-screen">
         <MainNavbar />
         <div className="flex flex-grow">
           <Sidebar title={sidebarTitle}>
@@ -33,7 +33,7 @@ const Layout: BlitzLayout<{
               />
             ))}
           </Sidebar>
-          <div className="flex-1 overflow-auto p-4">{children}</div>
+          <div className="flex-1 overflow-scroll p-4">{children}</div>
         </div>
       </div>
     </>

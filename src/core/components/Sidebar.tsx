@@ -21,7 +21,7 @@ export default function Sidebar({ children, title }: SidebarProps) {
 
   return (
     <>
-      <aside className="h-screen">
+      <aside className="h-[calc(100vh-60px)] sticky top-[60px] overflow-y-auto">
         <nav className="h-full flex flex-col border-r shadow-sm">
           <div className="p-4 pb-2 flex justify-between items-center">
             {/* Add your logo component here */}
