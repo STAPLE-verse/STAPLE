@@ -68,6 +68,6 @@ export const labelPmTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <MultipleCheckboxColumn row={info.row.original}></MultipleCheckboxColumn>,
-    header: "Add to Project",
+    header: "Use in Project",
   }),
 ]
