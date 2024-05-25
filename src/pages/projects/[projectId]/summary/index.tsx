@@ -15,6 +15,7 @@ import ByTasks from "./ByTasks"
 import ByLabels from "./ByLabels"
 import ByDate from "./ByDate"
 import ByElements from "./ByElements"
+import getTasks from "src/tasks/queries/getTasks"
 
 //could refactor other places and move this to utils
 const formatDate = (myDate) =>
@@ -34,9 +35,38 @@ const SummaryPage = () => {
   const sidebarItems = ProjectSidebarItems(projectId!, "Summary")
   const [selectedOrganization, setSelectedOrganization] = useState("none")
 
+  const [{ tasks }] = useQuery(getTasks, {
+    where: { projectId: projectId },
+    include: {
+      createdBy: {
+        include: { user: true },
+      },
+      assignees: {
+        include: {
+          statusLogs: {
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
+          team: {
+            include: {
+              contributors: {
+                include: { user: true },
+              },
+            },
+          },
+          contributor: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
   const handleOrganizationChanged = (e) => {
     //do query based on organization
-    console.log(e)
     setSelectedOrganization(e)
   }
 
@@ -108,9 +138,9 @@ const SummaryPage = () => {
               <div className="card-body">
                 <div className="card-title">Organized Metadata</div>
                 {selectedOrganization === "contributor" && (
-                  <ByContributors projectId={projectId}></ByContributors>
+                  <ByContributors tasks={tasks}></ByContributors>
                 )}
-                {selectedOrganization === "task" && <ByTasks></ByTasks>}
+                {selectedOrganization === "task" && <ByTasks tasks={tasks}></ByTasks>}
                 {selectedOrganization === "label" && <ByLabels></ByLabels>}
                 {selectedOrganization === "date" && <ByDate></ByDate>}
                 {selectedOrganization === "element" && <ByElements></ByElements>}
