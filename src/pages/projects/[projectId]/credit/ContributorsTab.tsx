@@ -96,7 +96,7 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
     }
     return t
   })
-  const hasElements = contributors.length < 1
+  const hasElements = contributors.length < 1 || selectedIds.length < 1
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
