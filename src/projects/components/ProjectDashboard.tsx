@@ -272,16 +272,29 @@ const ProjectDashboard = () => {
     return <div className="flex justify-center font-bold text-3xl">{projectStats.allTeams}</div>
   }
   const getFormDisplay = (projectStats) => {
-    return <div className="flex justify-center font-bold text-3xl">To do</div>
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        {projectStats.completedForms} / {projectStats.allForms}
+      </div>
+    )
   }
   const getTotalTaskDisplay = (projectStats) => {
-    return <div className="flex justify-center font-bold text-3xl">To do</div>
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        {projectStats.completedTask} / {projectStats.allTask}
+      </div>
+    )
   }
   const getElementDisplay = (projectStats) => {
-    return <div className="flex justify-center font-bold text-3xl">To do</div>
+    return <div className="flex justify-center font-bold text-3xl">{projectStats.allElements}</div>
   }
   const getLabelsDisplay = (projectStats) => {
-    return <div className="flex justify-center font-bold text-3xl">To do</div>
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        {projectStats.completedContribLabels + projectStats.completedTaskLabels} /
+        {projectStats.allContributor + projectStats.allTask}
+      </div>
+    )
   }
 
   //get the data
