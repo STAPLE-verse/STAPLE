@@ -66,6 +66,7 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
         success: "Labels added!",
         error: "Failed to add the labels...",
       })
+      handleToggleEditLabelModal()
     } catch (error: any) {
       console.error(error)
       return {

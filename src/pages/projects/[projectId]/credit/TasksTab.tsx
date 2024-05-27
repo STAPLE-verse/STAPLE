@@ -57,6 +57,7 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
         success: "Labels added!",
         error: "Failed to add the labels...",
       })
+      handleToggleEditLabelModal()
     } catch (error: any) {
       console.error(error)
       return {
