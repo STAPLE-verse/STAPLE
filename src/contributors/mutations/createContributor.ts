@@ -36,6 +36,7 @@ export default resolver.pipe(
           addedBy: input.addedBy,
           privilege: getPrivilegeText(input.privilege),
         },
+        projectId: input.projectId,
       },
       ctx
     )

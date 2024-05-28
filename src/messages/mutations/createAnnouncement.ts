@@ -32,6 +32,7 @@ export default resolver.pipe(
           connect: userIds.map((id) => ({ id })),
         },
         announcement: true,
+        projectId: projectId,
       },
     })
 
