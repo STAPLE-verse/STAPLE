@@ -39,35 +39,33 @@ export default resolver.pipe(
       },
     })
 
-    const allForms = await db.assignment.count({
+    const allForms = await db.task.count({
       where: {
-        //projectId: id, where task is part of project?
+        projectId: id,
+        //schema: true
         //statusLogs: { metadata: true } where the metadata isn't empty
       },
     })
 
-    const completedForms = await db.assignment.count({
+    const completedForms = await db.task.count({
       where: {
-        //projectId: id, where task is part of project?
-        //statusLogs: { metadata: !isEmpty() } where the metadata isn't empty
-        //where assignment isn't completed
+        projectId: id,
+        schema: undefined!, // schema must be defined
+        //assignees: { statusLogs: { status: { AssignmentStatus.NOT_COMPLETED } } },
       },
     })
 
     const completedContribLabels = await db.contributor.count({
       where: {
         projectId: id,
-        //labels:
-        //labels are empty
+        labels: undefined, // labels are empty
       },
     })
 
     const completedTaskLabels = await db.task.count({
       where: {
         projectId: id,
-
-        //labels:
-        //labels are empty
+        labels: undefined,
       },
     })
 
