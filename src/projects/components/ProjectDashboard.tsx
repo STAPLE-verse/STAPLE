@@ -355,8 +355,8 @@ const ProjectDashboard = () => {
   })
   // get project stats
   const [projectStats] = useQuery(getProjectStats, { id: projectId! })
-  console.log(projectStats.contribLabels)
-  console.log(projectStats.completedContribLabels)
+  //console.log(projectStats.contribLabels)
+  //console.log(projectStats.completedContribLabels)
 
   // if the length is 0, then create widgets
   useEffect(() => {
