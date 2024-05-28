@@ -233,7 +233,6 @@ const ProjectDashboard = () => {
     if (pastDueTasks.length === 0) {
       return <p className="italic p-2">No overdue tasks</p>
     }
-
     return (
       <Table
         columns={projectTaskColumns}
@@ -274,7 +273,7 @@ const ProjectDashboard = () => {
   const getFormDisplay = (projectStats) => {
     return (
       <div className="flex justify-center font-bold text-3xl">
-        {projectStats.completedForms} / {projectStats.allForms}
+        {projectStats.completedAssignments} / {projectStats.allAssignments}
       </div>
     )
   }
@@ -285,13 +284,14 @@ const ProjectDashboard = () => {
       </div>
     )
   }
+
   const getElementDisplay = (projectStats) => {
     return <div className="flex justify-center font-bold text-3xl">{projectStats.allElements}</div>
   }
   const getLabelsDisplay = (projectStats) => {
     return (
       <div className="flex justify-center font-bold text-3xl">
-        {projectStats.completedContribLabels + projectStats.completedTaskLabels} /
+        {projectStats.completedContribLabels + projectStats.completedTaskLabels} /{" "}
         {projectStats.allContributor + projectStats.allTask}
       </div>
     )
@@ -355,6 +355,8 @@ const ProjectDashboard = () => {
   })
   // get project stats
   const [projectStats] = useQuery(getProjectStats, { id: projectId! })
+  console.log(projectStats.contribLabels)
+  console.log(projectStats.completedContribLabels)
 
   // if the length is 0, then create widgets
   useEffect(() => {

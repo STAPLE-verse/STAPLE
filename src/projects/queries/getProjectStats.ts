@@ -3,6 +3,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { TaskStatus } from "db"
 import { z } from "zod"
+import { AssignmentStatus } from "db"
 
 const GetProjectStatsSchema = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -39,35 +40,41 @@ export default resolver.pipe(
       },
     })
 
-    const allForms = await db.task.count({
+    const assignmentForms = await db.task.findMany({
       where: {
         projectId: id,
-        //schema: true
-        //statusLogs: { metadata: true } where the metadata isn't empty
+        schema: { not: undefined }, // schema must be defined
       },
+      include: { assignees: { include: { statusLogs: true } } },
     })
 
-    const completedForms = await db.task.count({
+    // all assignments that have a schema required
+    const allAssignments = assignmentForms.flatMap((task) => task.assignees)
+
+    // not completed assignments with schema
+    const completedAssignments = allAssignments.filter(
+      (assignment) => assignment.statusLogs[0].status === AssignmentStatus.NOT_COMPLETED
+    )
+
+    // no labels for contributors
+    const contribLabels = await db.contributor.findMany({
       where: {
         projectId: id,
-        schema: undefined!, // schema must be defined
-        //assignees: { statusLogs: { status: { AssignmentStatus.NOT_COMPLETED } } },
       },
+      include: { labels: true },
     })
 
-    const completedContribLabels = await db.contributor.count({
+    const completedContribLabels = contribLabels.filter((label) => label.labels.length === 0)
+
+    // no labels for tasks
+    const taskLabels = await db.task.findMany({
       where: {
         projectId: id,
-        labels: undefined, // labels are empty
       },
+      include: { labels: true },
     })
 
-    const completedTaskLabels = await db.task.count({
-      where: {
-        projectId: id,
-        labels: undefined,
-      },
-    })
+    const completedTaskLabels = taskLabels.filter((label) => label.labels.length === 0)
 
     return {
       allContributor: allContributor,
@@ -75,10 +82,12 @@ export default resolver.pipe(
       completedTask: completedTask,
       allTeams: allTeams,
       allElements: allElements,
-      allForms: allForms,
-      completedForms: completedForms,
-      completedContribLabels: completedContribLabels,
-      completedTaskLabels: completedTaskLabels,
+      //contribLabels: contribLabels,
+      completedContribLabels: completedContribLabels.length,
+      completedTaskLabels: completedTaskLabels.length,
+      //assignmentForms: assignmentForms,
+      allAssignments: allAssignments.length,
+      completedAssignments: completedAssignments.length,
     }
   }
 )
