@@ -28,7 +28,9 @@ const NewTaskPage = () => {
   const sidebarItems = ProjectSidebarItems(projectId!, null)
   const defaultSchemas = getDefaultSchemaLists()
   //console.log(defaultSchemas)
-  let ui
+
+  //const tempui = defaultSchemas.find((schema) => schema.name === "Contributor Information")?.ui
+  //console.log(tempui)
 
   const initialValues = {
     // Making sure that conributorsId always returns an empty array even if it is not touched
@@ -53,6 +55,7 @@ const NewTaskPage = () => {
             onSubmit={async (values) => {
               // Get selected schema
               let schema
+              let ui
               if (values.files != undefined) {
                 const file = values.files[0]
                 try {
@@ -65,7 +68,6 @@ const NewTaskPage = () => {
               } else {
                 schema = defaultSchemas.find((schema) => schema.name === values.schema)?.schema
                 ui = defaultSchemas.find((schema) => schema.name === values.schema)?.ui
-                console.log(ui)
               }
 
               // let teamsId = values.teamsId?.filter((el) => el.checked).map((val) => val["id"])

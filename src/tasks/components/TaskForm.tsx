@@ -179,7 +179,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           className="btn btn-primary w-1/2"
           onClick={() => handleToggleContributorsModal()}
         >
-          Assign contributors
+          Assign Contributors
         </button>
         <FormSpy subscription={{ errors: true }}>
           {({ form }) => {
@@ -256,8 +256,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         <Modal open={openSchemaModal} size="w-11/12 max-w-1xl">
           <div className="">
             <div>
-              <label className="text-lg font-bold mb-4">Choose a Form Template: </label>
-              <br />
+              <label className="text-lg font-bold">Choose a Form Template: </label>
+              <br className="mb-2" />
               <Field
                 name="schema"
                 component="select"
