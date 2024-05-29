@@ -1,4 +1,4 @@
-const JsonFunder = `
+export const JsonFunder = `
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
@@ -27,4 +27,12 @@ const JsonFunder = `
 }
 `
 
-export default JsonFunder
+export const JsonFunderUI = `
+{
+  "ui:order": [
+    "funder",
+    "description",
+    "identifier"
+  ]
+}
+`

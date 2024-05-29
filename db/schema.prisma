@@ -163,6 +163,7 @@ model Task {
   element         Element?     @relation(fields: [elementId], references: [id])
   assignees       Assignment[]
   schema          Json?
+  ui              Json?
   status          TaskStatus   @default(NOT_COMPLETED)
   tags            String?
 

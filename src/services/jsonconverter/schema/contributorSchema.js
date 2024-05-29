@@ -1,4 +1,4 @@
-const JsonContributor = `
+export const JsonContributor = `
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
@@ -40,4 +40,14 @@ const JsonContributor = `
 }
 `
 
-export default JsonContributor
+export const JsonContributorUI = `
+{
+  "ui:order": [
+    "givenName",
+    "additionalName",
+    "familyName",
+    "email",
+    "identifier"
+  ]
+}
+`

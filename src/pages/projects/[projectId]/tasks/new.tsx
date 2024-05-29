@@ -27,6 +27,7 @@ const NewTaskPage = () => {
   })
   const sidebarItems = ProjectSidebarItems(projectId!, null)
   const defaultSchemas = getDefaultSchemaLists()
+  var ui = ""
 
   const initialValues = {
     // Making sure that conributorsId always returns an empty array even if it is not touched
@@ -62,6 +63,7 @@ const NewTaskPage = () => {
                 }
               } else {
                 schema = defaultSchemas.find((schema) => schema.name === values.schema)?.schema
+                ui = defaultSchemas.find((schema) => schema.ui)
               }
 
               // let teamsId = values.teamsId?.filter((el) => el.checked).map((val) => val["id"])
@@ -80,6 +82,7 @@ const NewTaskPage = () => {
                   contributorsId: values.contributorsId,
                   teamsId: values.teamsId,
                   schema: schema,
+                  ui: ui,
                 })
 
                 await toast.promise(Promise.resolve(task), {

@@ -30,6 +30,25 @@ export const FormTaskSchema = z
         { message: "Invalid JSON format" }
       )
       .transform((data) => data as Prisma.NullableJsonNullValueInput),
+    ui: z
+      .unknown()
+      .nullable()
+      .refine(
+        (data) => {
+          if (data === null || data === undefined) {
+            return true // Allow null or undefined
+          }
+
+          try {
+            JSON.parse(JSON.stringify(data))
+            return true
+          } catch (error) {
+            return false
+          }
+        },
+        { message: "Invalid JSON format" }
+      )
+      .transform((data) => data as Prisma.NullableJsonNullValueInput),
     files: z
       .unknown()
       .nullable()
@@ -84,6 +103,25 @@ export const CreateTaskSchema = z.object({
       { message: "Invalid JSON format" }
     )
     .transform((data) => data as Prisma.NullableJsonNullValueInput),
+  ui: z
+    .unknown()
+    .nullable()
+    .refine(
+      (data) => {
+        if (data === null || data === undefined) {
+          return true // Allow null or undefined
+        }
+
+        try {
+          JSON.parse(JSON.stringify(data))
+          return true
+        } catch (error) {
+          return false
+        }
+      },
+      { message: "Invalid JSON format" }
+    )
+    .transform((data) => data as Prisma.NullableJsonNullValueInput),
 })
 
 export const UpdateTaskSchema = z.object({
@@ -95,6 +133,25 @@ export const UpdateTaskSchema = z.object({
   contributorsId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.any()).optional().nullable(),
   schema: z
+    .unknown()
+    .nullable()
+    .refine(
+      (data) => {
+        if (data === null || data === undefined) {
+          return true // Allow null or undefined
+        }
+
+        try {
+          JSON.parse(JSON.stringify(data))
+          return true
+        } catch (error) {
+          return false
+        }
+      },
+      { message: "Invalid JSON format" }
+    )
+    .transform((data) => data as Prisma.NullableJsonNullValueInput),
+  ui: z
     .unknown()
     .nullable()
     .refine(

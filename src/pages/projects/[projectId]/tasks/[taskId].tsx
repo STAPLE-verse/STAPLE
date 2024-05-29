@@ -41,6 +41,7 @@ export const ShowTaskPage = () => {
   const currentUser = useCurrentUser()
   const taskId = useParam("taskId", "number")
   const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
+  console.log(task)
   const projectId = useParam("projectId", "number")
   // TODO: we only need this to send the project name to sidebar see if there is an option to get around this by making the sidebar component more abstract
   const [project] = useQuery(getProject, { id: projectId })
@@ -279,6 +280,7 @@ export const ShowTaskPage = () => {
                       onSubmit={handleJsonFormSubmit}
                       schema={getJsonSchema(task["schema"])}
                       onError={handleJsonFormError}
+                      uiSchema={task["ui"]}
                     />
                   }
                 </div>
