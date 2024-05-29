@@ -16,6 +16,8 @@ import ByLabels from "./ByLabels"
 import ByDate from "./ByDate"
 import ByElements from "./ByElements"
 import getTasks from "src/tasks/queries/getTasks"
+import getLabels from "src/labels/queries/getLabels"
+import getElements from "src/elements/queries/getElements"
 
 //could refactor other places and move this to utils
 const formatDate = (myDate) =>
@@ -65,6 +67,18 @@ const SummaryPage = () => {
     },
   })
 
+  //needs some clause for project
+  const [{ labels }] = useQuery(getLabels, {
+    //where: { projectId: projectId },
+    // include: {},
+  })
+
+  const [elements] = useQuery(getElements, {
+    where: { project: { id: projectId! } },
+    orderBy: { id: "asc" },
+    include: { Task: true },
+  })
+
   const handleOrganizationChanged = (e) => {
     //do query based on organization
     setSelectedOrganization(e)
@@ -92,7 +106,7 @@ const SummaryPage = () => {
               </option>
               <option value="date">Organize project by Date</option>
               <option value="task">Organize project by Task</option>
-              <option value="contributor">Organize project by Contributor (Assigment)</option>
+              <option value="contributor">Organize project by Contributor </option>
               <option value="label">Organize project by Label</option>
               <option value="element">Organize project by Element</option>
             </select>
@@ -141,9 +155,11 @@ const SummaryPage = () => {
                   <ByContributors tasks={tasks}></ByContributors>
                 )}
                 {selectedOrganization === "task" && <ByTasks tasks={tasks}></ByTasks>}
-                {selectedOrganization === "label" && <ByLabels></ByLabels>}
+                {selectedOrganization === "label" && <ByLabels labels={labels}></ByLabels>}
                 {selectedOrganization === "date" && <ByDate></ByDate>}
-                {selectedOrganization === "element" && <ByElements></ByElements>}
+                {selectedOrganization === "element" && (
+                  <ByElements elements={elements}></ByElements>
+                )}
                 {selectedOrganization === "none" && (
                   <span>Needs to select an organization or should we have a default?</span>
                 )}

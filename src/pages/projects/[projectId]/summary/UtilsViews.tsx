@@ -79,3 +79,55 @@ export const ContributorsView = ({ contributor, tasks, id, printTask = false }) 
     </div>
   )
 }
+
+export const LabelView = ({ label, contributors, id, tasks, printTask = false }) => {
+  let newTasks = tasks
+  return (
+    <div>
+      <br />
+      <h3> Name: {label.name} </h3>
+      Description: {label.desciprition}
+      <br />
+      Taxonomy: {label.taxonomy}
+      <br />
+      <div>
+        <h5>Contributors</h5>
+        {contributors.map((element) => (
+          <div key={element.id}>user name: {element.user.username}</div>
+        ))}
+      </div>
+      {printTask && (
+        <div>
+          <br />
+          <h5>Tasks with completed assigments</h5>
+
+          {newTasks.map((task) => (
+            <TaskView key={task.id} task={task}></TaskView>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export const ElementView = ({ element, tasks, printTask = false }) => {
+  let newTasks = tasks
+  return (
+    <div>
+      <br />
+      <h3> Name: {element.name} </h3>
+      Description: {element.desciprition}
+      <br />
+      {printTask && (
+        <div>
+          <br />
+          <h5>Tasks with completed assigments</h5>
+
+          {newTasks.map((task) => (
+            <TaskView key={task.id} task={task}></TaskView>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
