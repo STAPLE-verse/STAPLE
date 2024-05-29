@@ -18,6 +18,8 @@ import ByElements from "./ByElements"
 import getTasks from "src/tasks/queries/getTasks"
 import getLabels from "src/labels/queries/getLabels"
 import getElements from "src/elements/queries/getElements"
+import getTeams from "src/teams/queries/getTeams"
+import getContributors from "src/contributors/queries/getContributors"
 
 //could refactor other places and move this to utils
 const formatDate = (myDate) =>
@@ -77,6 +79,24 @@ const SummaryPage = () => {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
     include: { Task: true },
+  })
+
+  // Teams
+  const [{ teams }] = useQuery(getTeams, {
+    where: { project: { id: projectId! } },
+    include: {
+      contributors: {
+        include: { user: true },
+      },
+    },
+  })
+
+  // Contributors
+  const [{ contributors }] = useQuery(getContributors, {
+    where: { project: { id: projectId! } },
+    include: {
+      user: true,
+    },
   })
 
   const handleOrganizationChanged = (e) => {
@@ -158,7 +178,11 @@ const SummaryPage = () => {
                 {selectedOrganization === "label" && <ByLabels labels={labels}></ByLabels>}
                 {selectedOrganization === "date" && <ByDate></ByDate>}
                 {selectedOrganization === "element" && (
-                  <ByElements elements={elements}></ByElements>
+                  <ByElements
+                    elements={elements}
+                    teams={teams}
+                    contributors={contributors}
+                  ></ByElements>
                 )}
                 {selectedOrganization === "none" && (
                   <span>Needs to select an organization or should we have a default?</span>

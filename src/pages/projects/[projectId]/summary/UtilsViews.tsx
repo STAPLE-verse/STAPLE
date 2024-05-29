@@ -30,6 +30,7 @@ export const TeamView = ({ team, tasks, id, printTask = false }) => {
   // console.log(team)
   //TODO Needs to sort and filter tasks
   let newTasks = tasks
+
   return (
     <div>
       <br />
@@ -45,7 +46,7 @@ export const TeamView = ({ team, tasks, id, printTask = false }) => {
       {printTask && (
         <div>
           <br />
-          <h5>Tasks with completed assigments</h5>
+          {newTasks.length > 0 && <h5>Tasks with completed assigments</h5>}
 
           {newTasks.map((task) => (
             <TaskView key={task.id} task={task}></TaskView>
@@ -70,7 +71,7 @@ export const ContributorsView = ({ contributor, tasks, id, printTask = false }) 
       {printTask && (
         <div>
           <br />
-          <h5>Tasks with completed assigments</h5>
+          {newTasks.length > 0 && <h5>Tasks with completed assigments</h5>}
           {newTasks.map((task) => (
             <TaskView key={task.id} task={task}></TaskView>
           ))}
@@ -116,12 +117,12 @@ export const ElementView = ({ element, tasks, printTask = false }) => {
     <div>
       <br />
       <h3> Name: {element.name} </h3>
-      Description: {element.desciprition}
+      Description: {element.description}
       <br />
       {printTask && (
         <div>
           <br />
-          <h5>Tasks with completed assigments</h5>
+          {newTasks.length > 0 && <h5>Tasks </h5>}
 
           {newTasks.map((task) => (
             <TaskView key={task.id} task={task}></TaskView>
