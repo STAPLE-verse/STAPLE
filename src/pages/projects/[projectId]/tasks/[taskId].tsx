@@ -103,6 +103,11 @@ export const ShowTaskPage = () => {
     setOpenAssignmentModal((prev) => !prev)
   }
 
+  const [openMetadataInspectModal, setOpenMetadataInspectModal] = useState(false)
+  const handleMetadataInspectToggle = () => {
+    setOpenMetadataInspectModal((prev) => !prev)
+  }
+
   const handleJsonFormSubmit = async (data) => {
     if (currentAssignments) {
       // Users can overwrite their responses
@@ -226,7 +231,25 @@ export const ShowTaskPage = () => {
             </p>
             <p>
               <span className="font-semibold">Current metadata schema:</span>{" "}
-              {task["schema"] ? JSON.stringify(task["schema"]) : "no metadata schema assigned"}
+              {task["schema"] ? (
+                <div>
+                  <button className="btn" onClick={() => handleMetadataInspectToggle()}>
+                    Inspect
+                  </button>
+                  <Modal open={openMetadataInspectModal} size="w-11/12 max-w-5xl">
+                    <div className="font-sans">
+                      {<JsonForm schema={getJsonSchema(task["schema"])} uiSchema={task["ui"]} />}
+                    </div>
+                    <div className="modal-action">
+                      <button className="btn btn-primary" onClick={handleMetadataInspectToggle}>
+                        Close
+                      </button>
+                    </div>
+                  </Modal>
+                </div>
+              ) : (
+                "no metadata schema assigned"
+              )}
             </p>
           </div>
           {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
