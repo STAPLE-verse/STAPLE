@@ -16,6 +16,9 @@ import getTeams from "src/teams/queries/getTeams"
 export { FORM_ERROR } from "src/core/components/Form"
 import CheckboxFieldTable from "src/core/components/CheckboxFieldTable"
 import moment from "moment"
+import { ContributorPrivileges } from "db"
+import getForms from "src/forms/queries/getForms"
+import { formsTableColumns } from "src/forms/components/FormsTable"
 
 // TODO: Check whether this is a good method to go
 // Other methods could be: passing the columns directly
@@ -69,7 +72,31 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // Schema
-  const schemas = getDefaultSchemaLists()
+  const defaultSchemas = getDefaultSchemaLists()
+  // Get the schemas of the PMs on the project
+  // Get PM userids
+  const pmList = contributors
+    .filter((contributor) => contributor.privilege === ContributorPrivileges.PROJECT_MANAGER)
+    .map((pm) => pm.userId)
+
+  const [pmForms] = useQuery(getForms, {
+    where: {
+      userId: {
+        in: pmList,
+      },
+    },
+  })
+
+  const pmSchemas = pmForms.forms
+    // Dropping forms that do not have a title added by the user
+    .filter((form) => form.schema && form.schema.title)
+    .map((form) => ({
+      name: form.schema?.title,
+      schema: form.schema,
+      ui: form.uiSchema,
+    }))
+  // Merge schema
+  const schemas = [...defaultSchemas, ...pmSchemas]
 
   // Modal open logics
   const [openSchemaModal, setopenSchemaModal] = useState(false)
@@ -258,22 +285,32 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
             <div>
               <label className="text-lg font-bold">Choose a Form Template: </label>
               <br className="mb-2" />
-              <Field
-                name="schema"
-                component="select"
-                className="select select-primary border-2 w-full max-w-xs"
-                defaultValue="disable"
-              >
-                <option disabled value="disable">
-                  {" "}
-                  -- select an option --{" "}
-                </option>
-                {schemas &&
-                  schemas.map((schema) => (
-                    <option key={schema.name} value={schema.name}>
-                      {schema.name}
-                    </option>
-                  ))}
+              <Field name="schema">
+                {({ input, meta }) => (
+                  <div>
+                    <select
+                      className="select select-primary border-2 w-full max-w-xs"
+                      {...input}
+                      value={input.value ? input.value.name : ""}
+                      onChange={(event) => {
+                        const selectedSchema = event.target.value
+                          ? schemas.find((schema) => schema.name === event.target.value)
+                          : null
+                        input.onChange(selectedSchema)
+                      }}
+                    >
+                      <option value="" disabled>
+                        -- select an option --
+                      </option>
+                      {schemas.map((schema) => (
+                        <option key={schema.name} value={schema.name}>
+                          {schema.name}
+                        </option>
+                      ))}
+                    </select>
+                    {meta.touched && meta.error && <span>{meta.error}</span>}
+                  </div>
+                )}
               </Field>
             </div>
 

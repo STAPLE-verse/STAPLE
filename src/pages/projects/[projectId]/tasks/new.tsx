@@ -10,7 +10,6 @@ import Layout from "src/core/layouts/Layout"
 import Head from "next/head"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import getProject from "src/projects/queries/getProject"
-import { fileReader } from "src/services/fileReader"
 import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 import toast from "react-hot-toast"
 import getContributor from "src/contributors/queries/getContributor"
@@ -26,11 +25,6 @@ const NewTaskPage = () => {
     where: { projectId: projectId, userId: currentUser!.id },
   })
   const sidebarItems = ProjectSidebarItems(projectId!, null)
-  const defaultSchemas = getDefaultSchemaLists()
-  //console.log(defaultSchemas)
-
-  //const tempui = defaultSchemas.find((schema) => schema.name === "Contributor Information")?.ui
-  //console.log(tempui)
 
   const initialValues = {
     // Making sure that conributorsId always returns an empty array even if it is not touched
@@ -53,15 +47,6 @@ const NewTaskPage = () => {
             // TODO: if I add initial values there is a lag in task creation
             // initialValues={initialValues}
             onSubmit={async (values) => {
-              // Get selected schema
-              let schema
-              let ui
-
-              schema = defaultSchemas.find((schema) => schema.name === values.schema)?.schema
-              ui = defaultSchemas.find((schema) => schema.name === values.schema)?.ui
-
-              // let teamsId = values.teamsId?.filter((el) => el.checked).map((val) => val["id"])
-
               // Create new task
               try {
                 // if (true) return
@@ -75,8 +60,8 @@ const NewTaskPage = () => {
                   createdById: currentContributor.id,
                   contributorsId: values.contributorsId,
                   teamsId: values.teamsId,
-                  schema: schema,
-                  ui: ui,
+                  schema: values.schema?.schema,
+                  ui: values.schema?.ui,
                 })
 
                 await toast.promise(Promise.resolve(task), {
