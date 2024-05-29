@@ -256,13 +256,18 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         <Modal open={openSchemaModal} size="w-11/12 max-w-1xl">
           <div className="">
             <div>
-              <label className="text-lg font-bold">Choose a Form Template: </label>
+              <label className="text-lg font-bold mb-4">Choose a Form Template: </label>
               <br />
               <Field
                 name="schema"
                 component="select"
-                className="select select-primary w-full max-w-xs"
+                className="select select-primary border-2 w-full max-w-xs"
+                defaultValue="disable"
               >
+                <option disabled value="disable">
+                  {" "}
+                  -- select an option --{" "}
+                </option>
                 {schemas &&
                   schemas.map((schema) => (
                     <option key={schema.name} value={schema.name}>
