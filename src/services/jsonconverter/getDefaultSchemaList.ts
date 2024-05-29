@@ -1,8 +1,8 @@
-import JsonSchema1 from "src/services/jsonconverter/schema/schema1"
-import JsonSchema2 from "src/services/jsonconverter/schema/schema2"
+import JsonContributor from "src/services/jsonconverter/schema/contributorSchema"
+import JsonFunder from "src/services/jsonconverter/schema/funderSchema"
 
 export function getDefaultSchemaLists() {
-  const schemas = [JsonSchema1, JsonSchema2]
+  const schemas = [JsonContributor, JsonFunder]
 
   const restructured = schemas.map((schema) => {
     const parsed = JSON.parse(schema)

@@ -272,30 +272,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
               </Field>
             </div>
 
-            <div className="mt-4">
-              <label className="text-lg font-bold">Upload A Form Template: </label>
-              <br />
-              <Field
-                name="files"
-                className="file-input file-input-bordered file-input-primary w-full max-w-xs"
-              >
-                {({ input: { value, onChange, ...input } }) => {
-                  return (
-                    <div>
-                      <input
-                        onChange={({ target }) => {
-                          onChange(target.files)
-                        }}
-                        {...input}
-                        type="file"
-                        className="file-input w-full max-w-xs"
-                        accept=".json"
-                      />
-                    </div>
-                  )
-                }}
-              </Field>
-            </div>
             <div className="modal-action">
               <button type="button" className="btn btn-primary" onClick={handleToggleSchemaUpload}>
                 Close
