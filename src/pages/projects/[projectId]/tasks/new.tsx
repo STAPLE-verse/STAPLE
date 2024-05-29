@@ -56,19 +56,9 @@ const NewTaskPage = () => {
               // Get selected schema
               let schema
               let ui
-              if (values.files != undefined) {
-                const file = values.files[0]
-                try {
-                  const fileContent = await fileReader(file)
-                  schema = JSON.parse(fileContent)
-                } catch (error) {
-                  // Handle any errors during file reading
-                  console.error("Error reading file:", error)
-                }
-              } else {
-                schema = defaultSchemas.find((schema) => schema.name === values.schema)?.schema
-                ui = defaultSchemas.find((schema) => schema.name === values.schema)?.ui
-              }
+
+              schema = defaultSchemas.find((schema) => schema.name === values.schema)?.schema
+              ui = defaultSchemas.find((schema) => schema.name === values.schema)?.ui
 
               // let teamsId = values.teamsId?.filter((el) => el.checked).map((val) => val["id"])
 
