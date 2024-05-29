@@ -10,10 +10,17 @@ import AssignmentProgress from "src/tasks/components/AssignmentProgress"
 import toast from "react-hot-toast"
 import getAssignmentProgress from "src/assignments/queries/getAssignmentProgress"
 import updateTaskStatus from "src/tasks/mutations/updateTaskStatus"
+import JsonForm from "src/assignments/components/JsonForm"
+import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
+import { Routes } from "@blitzjs/next"
+import Link from "next/link"
+import { useRouter } from "next/router"
 
 // create task view
 export const PMTaskView = () => {
+  const router = useRouter()
   const taskId = useParam("taskId", "number")
+  const projectId = useParam("projectId", "number")
   const [deleteTaskMutation] = useMutation(deleteTask)
   const [updateTaskStatusMutation] = useMutation(updateTaskStatus)
   const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
@@ -47,7 +54,10 @@ export const PMTaskView = () => {
       toast.error("Failed to update task status")
     }
   }
-
+  const [openMetadataInspectModal, setOpenMetadataInspectModal] = useState(false)
+  const handleMetadataInspectToggle = () => {
+    setOpenMetadataInspectModal((prev) => !prev)
+  }
   // Get assignments
   const [assignmentProgress, { refetch: refetchAssignmentProgress }] = useQuery(
     getAssignmentProgress,
@@ -61,39 +71,110 @@ export const PMTaskView = () => {
         <div className="card-body">
           <div className="card-title">PM Information</div>
 
-          <div className="form-control">
-            <label className="label cursor-pointer">
-              <span className="label-text text-lg">Task Status</span>
-              <input
-                type="checkbox"
-                checked={taskStatus === TaskStatus.COMPLETED}
-                onChange={handleTaskStatus}
-                className="checkbox checkbox-primary"
-              />
-            </label>
-          </div>
-          <Modal open={isConfirmModalOpen} size="w-11/12 max-w-3xl">
-            <div className="flex flex-col justify-center items-center space-y-4">
-              <p>
-                Are you sure you want to update the task status since not all assignments are
-                completed?
-              </p>
-              <div className="flex flex-row space-x-4">
-                <button
-                  className="btn"
-                  onClick={async () => {
-                    await taskStatusUpdate()
-                    await setIsConfirmModalOpen(false)
-                  }}
-                >
-                  Confirm
-                </button>
-                <button className="btn" onClick={() => setIsConfirmModalOpen(false)}>
-                  Cancel
-                </button>
+          <div class="stats bg-base-300 text-lg font-bold">
+            <div class="stat place-items-center">
+              <div class="stat-title text-2xl">Task Status</div>
+              <div class="stat-value">
+                <input
+                  type="checkbox"
+                  checked={taskStatus === TaskStatus.COMPLETED}
+                  onChange={handleTaskStatus}
+                  className="checkbox checkbox-primary border-2"
+                />
+                <Modal open={isConfirmModalOpen} size="w-11/12 max-w-3xl">
+                  <div className="flex flex-col justify-center items-center space-y-4">
+                    <p>
+                      Are you sure you want to update the task status since not all assignments are
+                      completed?
+                    </p>
+                    <div className="flex flex-row space-x-4">
+                      <button
+                        className="btn btn-primary"
+                        onClick={async () => {
+                          await taskStatusUpdate()
+                          await setIsConfirmModalOpen(false)
+                        }}
+                      >
+                        Confirm
+                      </button>
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => setIsConfirmModalOpen(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </Modal>
+              </div>
+              <div class="stat-desc text-lg text-base">
+                {taskStatus === "COMPLETED" ? "Completed" : "Not Completed"}
               </div>
             </div>
-          </Modal>
+          </div>
+
+          <div className="form-control">
+            <span className="font-semibold"> </span>
+          </div>
+
+          <p>
+            <span className="font-semibold">Current metadata schema:</span>{" "}
+            {task["schema"] ? (
+              <div>
+                <button className="btn btn-primary" onClick={() => handleMetadataInspectToggle()}>
+                  Review
+                </button>
+                <Modal open={openMetadataInspectModal} size="w-11/12 max-w-5xl">
+                  <div className="font-sans">
+                    {<JsonForm schema={getJsonSchema(task["schema"])} uiSchema={task["ui"]} />}
+                  </div>
+                  <div className="modal-action">
+                    <button className="btn btn-primary" onClick={handleMetadataInspectToggle}>
+                      Close
+                    </button>
+                  </div>
+                </Modal>
+              </div>
+            ) : (
+              "no metadata schema assigned"
+            )}
+          </p>
+
+          <div>
+            <h3 className="mb-2">Assignment progress</h3>
+            <AssignmentProgress taskId={task.id} />
+            <div className="flex justify-start mt-4">
+              <Link
+                className="btn btn-primary"
+                href={Routes.AssignmentsPage({ projectId: projectId!, taskId: task.id })}
+              >
+                Review
+              </Link>
+            </div>
+          </div>
+
+          <div className="flex flex-row justify-end mt-4 space-x-4">
+            <Link
+              className="btn btn-primary"
+              href={Routes.EditTaskPage({ projectId: projectId!, taskId: task.id })}
+            >
+              Update task
+            </Link>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={async () => {
+                if (
+                  window.confirm("The task will be permanently deleted. Are you sure to continue?")
+                ) {
+                  await deleteTaskMutation({ id: task.id })
+                  await router.push(Routes.TasksPage({ projectId: projectId! }))
+                }
+              }}
+            >
+              Delete task
+            </button>
+          </div>
         </div>
       </div>
     </div>
