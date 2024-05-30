@@ -66,7 +66,7 @@ export const EditTask = () => {
       </Head>
 
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1>Edit {task.name}</h1>
+        <h1 className="text-3xl">Edit {task.name}</h1>
         {/* For debugging Task schema */}
         {/* <pre>{JSON.stringify(task, null, 2)}</pre> */}
         <Suspense fallback={<div>Loading...</div>}>

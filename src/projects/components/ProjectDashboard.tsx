@@ -15,7 +15,7 @@ import getTasks from "src/tasks/queries/getTasks"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProjectStats from "../queries/getProjectStats"
 import getContributors from "src/contributors/queries/getContributors"
-import { HeartIcon } from "@heroicons/react/24/outline"
+import { HeartIcon, UserIcon, GlobeAltIcon, ArchiveBoxIcon } from "@heroicons/react/24/outline"
 import getProlificContributors from "src/contributors/queries/getProlificContributors"
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import "react-circular-progressbar/dist/styles.css"
@@ -266,11 +266,19 @@ const ProjectDashboard = () => {
   }
   const getContributorDisplay = (projectStats) => {
     return (
-      <div className="flex justify-center font-bold text-3xl">{projectStats.allContributor}</div>
+      <div className="flex justify-center font-bold text-3xl">
+        {projectStats.allContributor}
+        <UserIcon className="w-20" />
+      </div>
     )
   }
   const getTeamDisplay = (projectStats) => {
-    return <div className="flex justify-center font-bold text-3xl">{projectStats.allTeams}</div>
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        {projectStats.allTeams}
+        <GlobeAltIcon className="w-20" />
+      </div>
+    )
   }
   const getFormDisplay = (projectStats) => {
     return (
@@ -309,7 +317,12 @@ const ProjectDashboard = () => {
     )
   }
   const getElementDisplay = (projectStats) => {
-    return <div className="flex justify-center font-bold text-3xl">{projectStats.allElements}</div>
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        {projectStats.allElements}
+        <ArchiveBoxIcon className="w-20" />
+      </div>
+    )
   }
   const getLabelsDisplay = (projectStats) => {
     return (
