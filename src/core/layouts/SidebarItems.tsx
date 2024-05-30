@@ -17,7 +17,7 @@ import {
 import { useRouter } from "next/router"
 import { SidebarItemProps } from "../components/Sidebar"
 import { Routes } from "@blitzjs/next"
-import { Tooltip } from "react-tooltip"
+import { ContributorPrivileges } from "db"
 
 export const ProjectSidebarItems = (
   projectId: number,
@@ -34,6 +34,10 @@ export const ProjectSidebarItems = (
       },
       active: whichActive === "Dashboard",
       tooltipId: "project-dashboard-tooltip",
+      privilege: new Set([
+        ContributorPrivileges.CONTRIBUTOR,
+        ContributorPrivileges.PROJECT_MANAGER,
+      ]),
     },
     {
       icon: <ClipboardDocumentListIcon className="w-6 h-6" />,
@@ -43,6 +47,10 @@ export const ProjectSidebarItems = (
       },
       active: whichActive === "Tasks",
       tooltipId: "project-tasks-tooltip",
+      privilege: new Set([
+        ContributorPrivileges.CONTRIBUTOR,
+        ContributorPrivileges.PROJECT_MANAGER,
+      ]),
     },
     {
       icon: <RectangleStackIcon className="w-6 h-6" />,
@@ -52,6 +60,7 @@ export const ProjectSidebarItems = (
       },
       active: whichActive === "Elements",
       tooltipId: "project-elements-tooltip",
+      privilege: new Set([ContributorPrivileges.PROJECT_MANAGER]),
     },
     {
       icon: <UsersIcon className="w-6 h-6" />,
@@ -61,6 +70,7 @@ export const ProjectSidebarItems = (
       },
       active: whichActive === "Contributors",
       tooltipId: "project-contributors-tooltip",
+      privilege: new Set([ContributorPrivileges.PROJECT_MANAGER]),
     },
     {
       icon: <UserGroupIcon className="w-6 h-6" />,
@@ -70,6 +80,7 @@ export const ProjectSidebarItems = (
       },
       active: whichActive === "Teams",
       tooltipId: "project-teams-tooltip",
+      privilege: new Set([ContributorPrivileges.PROJECT_MANAGER]),
     },
     {
       icon: <DocumentChartBarIcon className="w-6 h-6" />,
@@ -79,6 +90,7 @@ export const ProjectSidebarItems = (
       },
       active: whichActive === "Form Data",
       tooltipId: "project-form-tooltip",
+      privilege: new Set([ContributorPrivileges.PROJECT_MANAGER]),
     },
     {
       icon: <BellIcon className="w-6 h-6" />,
@@ -88,6 +100,10 @@ export const ProjectSidebarItems = (
       },
       active: whichActive === "Notifications",
       tooltipId: "project-notification-tooltip",
+      privilege: new Set([
+        ContributorPrivileges.CONTRIBUTOR,
+        ContributorPrivileges.PROJECT_MANAGER,
+      ]),
     },
     {
       icon: <CheckCircleIcon className="w-6 h-6" />,
@@ -97,6 +113,7 @@ export const ProjectSidebarItems = (
       },
       active: whichActive === "Credit",
       tooltipId: "project-credit-tooltip",
+      privilege: new Set([ContributorPrivileges.PROJECT_MANAGER]),
     },
     {
       icon: <NewspaperIcon className="w-6 h-6" />,
@@ -106,6 +123,7 @@ export const ProjectSidebarItems = (
       },
       active: whichActive === "Summary",
       tooltipId: "project-summary-tooltip",
+      privilege: new Set([ContributorPrivileges.PROJECT_MANAGER]),
     },
 
     {
@@ -116,6 +134,7 @@ export const ProjectSidebarItems = (
       },
       active: whichActive === "Settings",
       tooltipId: "project-settings-tooltip",
+      privilege: new Set([ContributorPrivileges.PROJECT_MANAGER]),
     },
   ]
 }

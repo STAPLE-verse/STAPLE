@@ -13,6 +13,7 @@ import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { Contributor, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
+import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
 export const ContributorPage = () => {
   const currentUser = useCurrentUser()

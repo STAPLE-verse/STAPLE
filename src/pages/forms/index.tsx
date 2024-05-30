@@ -1,13 +1,7 @@
 import { Suspense } from "react"
 import Head from "next/head"
-import { usePaginatedQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
-
 import Layout from "src/core/layouts/Layout"
-import getForms from "src/forms/queries/getForms"
 import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import Table from "src/core/components/Table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { AllFormsList } from "src/forms/components/AllFormsList"

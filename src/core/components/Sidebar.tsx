@@ -5,6 +5,7 @@ import {
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import { ContributorPrivileges } from "db"
 
 interface SidebarContextProps {
   expanded: boolean
@@ -62,6 +63,7 @@ export interface SidebarItemProps {
   alert?: boolean
   onClick?: MouseEventHandler<HTMLLIElement>
   tooltipId: string
+  privilege?: Set<ContributorPrivileges>
 }
 
 export function SidebarItem({ icon, text, active, alert, onClick, tooltipId }: SidebarItemProps) {
