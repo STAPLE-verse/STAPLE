@@ -30,7 +30,7 @@ export default resolver.pipe(
     const completedTask = await db.task.count({
       where: {
         projectId: id,
-        status: TaskStatus.NOT_COMPLETED,
+        status: TaskStatus.COMPLETED,
       },
     })
 
@@ -53,7 +53,7 @@ export default resolver.pipe(
 
     // not completed assignments with schema
     const completedAssignments = allAssignments.filter(
-      (assignment) => assignment.statusLogs[0].status === AssignmentStatus.NOT_COMPLETED
+      (assignment) => assignment.statusLogs[0].status === AssignmentStatus.COMPLETED
     )
 
     // no labels for contributors
@@ -64,7 +64,7 @@ export default resolver.pipe(
       include: { labels: true },
     })
 
-    const completedContribLabels = contribLabels.filter((label) => label.labels.length === 0)
+    const completedContribLabels = contribLabels.filter((label) => label.labels.length > 0)
 
     // no labels for tasks
     const taskLabels = await db.task.findMany({
@@ -74,7 +74,7 @@ export default resolver.pipe(
       include: { labels: true },
     })
 
-    const completedTaskLabels = taskLabels.filter((label) => label.labels.length === 0)
+    const completedTaskLabels = taskLabels.filter((label) => label.labels.length > 0)
 
     return {
       allContributor: allContributor,

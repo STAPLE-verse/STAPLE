@@ -17,6 +17,8 @@ import getProjectStats from "../queries/getProjectStats"
 import getContributors from "src/contributors/queries/getContributors"
 import { HeartIcon } from "@heroicons/react/24/outline"
 import getProlificContributors from "src/contributors/queries/getProlificContributors"
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
+import "react-circular-progressbar/dist/styles.css"
 
 // make things draggable
 import React, { useState } from "react"
@@ -273,26 +275,57 @@ const ProjectDashboard = () => {
   const getFormDisplay = (projectStats) => {
     return (
       <div className="flex justify-center font-bold text-3xl">
-        {projectStats.completedAssignments} / {projectStats.allAssignments}
+        <CircularProgressbar
+          value={formPercent * 100}
+          text={`${Math.round(formPercent * 100)}%`}
+          styles={buildStyles({
+            textSize: "16px",
+            pathTransitionDuration: "none",
+            pathColor: "oklch(var(--p))",
+            textColor: "oklch(var(--s))",
+            trailColor: "oklch(var(--pc))",
+            backgroundColor: "oklch(var(--b3))",
+          })}
+        />
       </div>
     )
   }
   const getTotalTaskDisplay = (projectStats) => {
     return (
       <div className="flex justify-center font-bold text-3xl">
-        {projectStats.completedTask} / {projectStats.allTask}
+        <CircularProgressbar
+          value={taskPercent * 100}
+          text={`${Math.round(taskPercent * 100)}%`}
+          styles={buildStyles({
+            textSize: "16px",
+            pathTransitionDuration: "none",
+            pathColor: "oklch(var(--p))",
+            textColor: "oklch(var(--s))",
+            trailColor: "oklch(var(--pc))",
+            backgroundColor: "oklch(var(--b3))",
+          })}
+        />
       </div>
     )
   }
-
   const getElementDisplay = (projectStats) => {
     return <div className="flex justify-center font-bold text-3xl">{projectStats.allElements}</div>
   }
   const getLabelsDisplay = (projectStats) => {
     return (
       <div className="flex justify-center font-bold text-3xl">
-        {projectStats.completedContribLabels + projectStats.completedTaskLabels} /{" "}
-        {projectStats.allContributor + projectStats.allTask}
+        <CircularProgressbar
+          value={labelPercent * 100}
+          text={`${Math.round(labelPercent * 100)}%`}
+          styles={buildStyles({
+            textSize: "16px",
+            pathTransitionDuration: "none",
+            pathColor: "oklch(var(--p))",
+            textColor: "oklch(var(--s))",
+            trailColor: "oklch(var(--pc))",
+            backgroundColor: "oklch(var(--b3))",
+          })}
+        />
       </div>
     )
   }
@@ -357,6 +390,11 @@ const ProjectDashboard = () => {
   const [projectStats] = useQuery(getProjectStats, { id: projectId! })
   //console.log(projectStats.contribLabels)
   //console.log(projectStats.completedContribLabels)
+  const formPercent = projectStats.completedAssignments / projectStats.allAssignments
+  const taskPercent = projectStats.completedTask / projectStats.allTask
+  const labelPercent =
+    (projectStats.completedContribLabels + projectStats.completedTaskLabels) /
+    (projectStats.allContributor + projectStats.allTask)
 
   // if the length is 0, then create widgets
   useEffect(() => {

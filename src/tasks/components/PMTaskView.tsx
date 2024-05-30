@@ -73,7 +73,7 @@ export const PMTaskView = () => {
 
           <div class="stats bg-base-300 text-lg font-bold">
             <div class="stat place-items-center">
-              <div class="stat-title text-2xl">Task Status</div>
+              <div class="stat-title text-2xl text-inherit">Task Status</div>
               <div class="stat-value">
                 <input
                   type="checkbox"
@@ -107,73 +107,83 @@ export const PMTaskView = () => {
                   </div>
                 </Modal>
               </div>
-              <div class="stat-desc text-lg text-base">
+              <div class="stat-desc text-lg text-inherit">
                 {taskStatus === "COMPLETED" ? "Completed" : "Not Completed"}
               </div>
             </div>
-          </div>
 
-          <div className="form-control">
-            <span className="font-semibold"> </span>
-          </div>
-
-          <p>
-            <span className="font-semibold">Current metadata schema:</span>{" "}
-            {task["schema"] ? (
-              <div>
-                <button className="btn btn-primary" onClick={() => handleMetadataInspectToggle()}>
-                  Review
-                </button>
-                <Modal open={openMetadataInspectModal} size="w-11/12 max-w-5xl">
-                  <div className="font-sans">
-                    {<JsonForm schema={getJsonSchema(task["schema"])} uiSchema={task["ui"]} />}
-                  </div>
-                  <div className="modal-action">
-                    <button className="btn btn-primary" onClick={handleMetadataInspectToggle}>
-                      Close
+            <div class="stat place-items-center">
+              <div class="stat-title text-2xl text-inherit">Form Data</div>
+              <div class="">
+                {task["schema"] ? (
+                  <div>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => handleMetadataInspectToggle()}
+                    >
+                      Review
                     </button>
+                    <Modal open={openMetadataInspectModal} size="w-11/12 max-w-5xl">
+                      <div className="font-sans">
+                        {<JsonForm schema={getJsonSchema(task["schema"])} uiSchema={task["ui"]} />}
+                      </div>
+                      <div className="modal-action">
+                        <button className="btn btn-primary" onClick={handleMetadataInspectToggle}>
+                          Close
+                        </button>
+                      </div>
+                    </Modal>
                   </div>
-                </Modal>
+                ) : (
+                  "No Form Data Required"
+                )}
               </div>
-            ) : (
-              "no metadata schema assigned"
-            )}
-          </p>
-
-          <div>
-            <h3 className="mb-2">Assignment progress</h3>
-            <AssignmentProgress taskId={task.id} />
-            <div className="flex justify-start mt-4">
-              <Link
-                className="btn btn-primary"
-                href={Routes.AssignmentsPage({ projectId: projectId!, taskId: task.id })}
-              >
-                Review
-              </Link>
+              <div class="stat-desc text-lg text-inherit"> </div>
             </div>
-          </div>
 
-          <div className="flex flex-row justify-end mt-4 space-x-4">
-            <Link
-              className="btn btn-primary"
-              href={Routes.EditTaskPage({ projectId: projectId!, taskId: task.id })}
-            >
-              Update task
-            </Link>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={async () => {
-                if (
-                  window.confirm("The task will be permanently deleted. Are you sure to continue?")
-                ) {
-                  await deleteTaskMutation({ id: task.id })
-                  await router.push(Routes.TasksPage({ projectId: projectId! }))
-                }
-              }}
-            >
-              Delete task
-            </button>
+            <div class="stat place-items-center">
+              <div class="stat-title text-2xl text-inherit">Task Progress</div>
+              <div class="">
+                <AssignmentProgress taskId={task.id} />
+              </div>
+              <div class="stat-desc text-lg text-inherit">
+                <Link
+                  className="btn btn-primary"
+                  href={Routes.AssignmentsPage({ projectId: projectId!, taskId: task.id })}
+                >
+                  Review
+                </Link>
+              </div>
+            </div>
+
+            <div class="stat place-items-center">
+              <div class="stat-title text-2xl text-inherit">
+                <Link
+                  className="btn btn-primary"
+                  href={Routes.EditTaskPage({ projectId: projectId!, taskId: task.id })}
+                >
+                  Update task
+                </Link>
+              </div>
+              <div class="stat-value">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={async () => {
+                    if (
+                      window.confirm(
+                        "The task will be permanently deleted. Are you sure to continue?"
+                      )
+                    ) {
+                      await deleteTaskMutation({ id: task.id })
+                      await router.push(Routes.TasksPage({ projectId: projectId! }))
+                    }
+                  }}
+                >
+                  Delete task
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
