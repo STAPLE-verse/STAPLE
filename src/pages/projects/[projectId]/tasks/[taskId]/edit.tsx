@@ -36,7 +36,7 @@ export const EditTask = () => {
   const [assignments] = useQuery(getAssignments, {
     where: { taskId: taskId },
   })
-  console.log()
+  // console.log()
   const contributorsId = assignments
     .map((assignment) => assignment.contributorId)
     // assignment.contributorId is nullable thus we filter for initialValues

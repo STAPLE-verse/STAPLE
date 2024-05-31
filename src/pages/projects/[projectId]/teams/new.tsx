@@ -37,11 +37,11 @@ const NewTeamPage = () => {
             submitText="Add Team"
             schema={TeamFormSchema}
             onSubmit={async (values) => {
-              console.log("adding team", values)
+              // console.log("adding team", values)
               let membersId: number[] = values.contributorsId
                 .filter((el) => el.checked)
                 .map((val) => val.id)
-              console.log(membersId)
+              // console.log(membersId)
               try {
                 //get this after team is created
 

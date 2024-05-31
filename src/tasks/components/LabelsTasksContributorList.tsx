@@ -55,7 +55,7 @@ export const AllLabelsList = ({ hasMore, page, tasks, onChange }) => {
 
   const handleAddLabel = async (values) => {
     try {
-      console.log(values)
+      // console.log(values)
       const updated = await updateTaskLabelMutation({
         ...values,
         tasksId: selectedIds,
