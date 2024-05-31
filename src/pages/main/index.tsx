@@ -157,14 +157,6 @@ const MainPage = () => {
     return false
   })
 
-  // get no deadline
-  const noDeadlineTasks = tasks.filter((task) => {
-    if (task && task.deadline === null) {
-      return moment(task.deadline)
-    }
-    return false
-  })
-
   // get pastDue
   const pastDueTasks = tasks.filter((task) => {
     if (task && task.deadline) {
