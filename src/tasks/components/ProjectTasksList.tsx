@@ -74,13 +74,15 @@ export const ProjectTasksList = () => {
       <Tab.Group defaultIndex={0}>
         <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
           {/* Tablink for board view */}
-          <Tab
-            className={({ selected }) =>
-              classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
-            }
-          >
-            Board
-          </Tab>
+          {currentContributor.privilege === ContributorPrivileges.PROJECT_MANAGER && (
+            <Tab
+              className={({ selected }) =>
+                classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
+              }
+            >
+              Board
+            </Tab>
+          )}
           {/* TabLink for table view */}
           <Tab
             className={({ selected }) =>
@@ -94,9 +96,11 @@ export const ProjectTasksList = () => {
 
         <Tab.Panels>
           {/* Tabpanel for kanban board */}
-          <Tab.Panel>
-            <TaskBoard projectId={projectId!} />
-          </Tab.Panel>
+          {currentContributor.privilege === ContributorPrivileges.PROJECT_MANAGER && (
+            <Tab.Panel>
+              <TaskBoard projectId={projectId!} />
+            </Tab.Panel>
+          )}
           {/* Tabpanel for table view */}
           <Tab.Panel>
             {currentContributor.privilege === ContributorPrivileges.CONTRIBUTOR && (
