@@ -18,7 +18,6 @@ import CheckboxFieldTable from "src/core/components/CheckboxFieldTable"
 import moment from "moment"
 import { ContributorPrivileges } from "db"
 import getForms from "src/forms/queries/getForms"
-import { formsTableColumns } from "src/forms/components/FormsTable"
 
 // TODO: Check whether this is a good method to go
 // Other methods could be: passing the columns directly
@@ -91,6 +90,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     // Dropping forms that do not have a title added by the user
     .filter((form) => form.schema && form.schema.title)
     .map((form) => ({
+      id: form.id,
       name: form.schema?.title,
       schema: form.schema,
       ui: form.uiSchema,
@@ -291,19 +291,20 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
                     <select
                       className="select select-primary border-2 w-full max-w-xs"
                       {...input}
-                      value={input.value ? input.value.name : ""}
+                      value={input.value ? input.value.id : ""}
                       onChange={(event) => {
-                        const selectedSchema = event.target.value
-                          ? schemas.find((schema) => schema.name === event.target.value)
-                          : null
-                        input.onChange(selectedSchema)
+                        const selectedId = event.target.value
+                        const selectedSchema = schemas.find(
+                          (schema) => schema.id.toString() === selectedId
+                        )
+                        input.onChange(selectedSchema ? selectedSchema : null)
                       }}
                     >
                       <option value="" disabled>
                         -- select an option --
                       </option>
                       {schemas.map((schema) => (
-                        <option key={schema.name} value={schema.name}>
+                        <option key={schema.id} value={schema.id}>
                           {schema.name}
                         </option>
                       ))}
