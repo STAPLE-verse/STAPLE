@@ -5,15 +5,14 @@ import Head from "next/head"
 import getCurrentUser from "src/users/queries/getCurrentUser"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import deleteUser from "src/users/mutations/deleteUser"
-import { FORM_ERROR, Form, FormProps } from "src/core/components/Form"
-import { LabeledTextField } from "src/core/components/LabeledTextField"
+import { FORM_ERROR, Form, FormProps } from "src/core/components/fields/Form"
+import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import updateUser from "src/users/mutations/updateUser"
 import { z } from "zod"
-export { FORM_ERROR } from "src/core/components/Form"
 import { FormProfileSchema } from "src/users/schemas"
 import { Routes } from "@blitzjs/next"
 import logout from "src/auth/mutations/logout"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
+import { HomeSidebarItems } from "src/core/components/sidebar/SidebarItems"
 
 export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (

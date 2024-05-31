@@ -15,7 +15,7 @@ import {
   QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline"
 import { useRouter } from "next/router"
-import { SidebarItemProps } from "../components/Sidebar"
+import { SidebarItemProps } from "./Sidebar"
 import { Routes } from "@blitzjs/next"
 import { ContributorPrivileges } from "db"
 

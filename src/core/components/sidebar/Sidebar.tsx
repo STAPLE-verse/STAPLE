@@ -1,25 +1,22 @@
-import React, { createContext, useContext, useState, ReactNode, MouseEventHandler } from "react"
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  EllipsisVerticalIcon,
-} from "@heroicons/react/24/outline"
+import React, { useContext, ReactNode, MouseEventHandler } from "react"
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import { ContributorPrivileges } from "db"
+import SidebarContext from "./sidebarContext"
+import { ProjectSidebarItems, HomeSidebarItems } from "./SidebarItems"
 
-interface SidebarContextProps {
-  expanded: boolean
-}
+export default function Sidebar() {
+  const context = useContext(SidebarContext)
 
-const SidebarContext = createContext<SidebarContextProps | undefined>(undefined)
+  if (!context) {
+    return null
+  }
 
-interface SidebarProps {
-  children: ReactNode
-  title?: string
-}
+  const { sidebarTitle, sidebarPrivilege, isProjectSidebar, expanded, setSidebarState } = context
 
-export default function Sidebar({ children, title }: SidebarProps) {
-  const [expanded, setExpanded] = useState(true)
+  const toggleExpand = () => {
+    setSidebarState({ expanded: !expanded })
+  }
 
   return (
     <>
@@ -31,14 +28,11 @@ export default function Sidebar({ children, title }: SidebarProps) {
               className={`text-2xl overflow-hidden transition-all ${
                 expanded ? "w-46" : "w-0"
               } max-w-[15ch] whitespace-nowrap overflow-ellipsis`}
-              title={title}
+              title={sidebarTitle}
             >
-              {title ? title : "Home"}
+              {sidebarTitle ? sidebarTitle : "Home"}
             </h2>
-            <button
-              onClick={() => setExpanded((curr) => !curr)}
-              className="p-1.5 rounded-lg hover:bg-indigo-50"
-            >
+            <button onClick={toggleExpand} className="p-1.5 rounded-lg hover:bg-indigo-50">
               {expanded ? (
                 <ChevronLeftIcon className="w-6 h-6" />
               ) : (
@@ -47,9 +41,24 @@ export default function Sidebar({ children, title }: SidebarProps) {
             </button>
           </div>
 
-          <SidebarContext.Provider value={{ expanded }}>
-            <ul className="flex-1 px-3">{children}</ul>
-          </SidebarContext.Provider>
+          <ul className="flex-1 px-3">
+            {" "}
+            {sidebarItems
+              ?.filter((item) => {
+                return !item.privilege || !sidebarPrivilege || item.privilege.has(sidebarPrivilege)
+              })
+              .map((item, index) => (
+                <SidebarItem
+                  key={index}
+                  icon={item.icon}
+                  text={item.text}
+                  onClick={item.onClick}
+                  alert={item.alert}
+                  active={item.active}
+                  tooltipId={item.tooltipId}
+                />
+              ))}
+          </ul>
         </nav>
       </aside>
     </>
@@ -70,7 +79,6 @@ export function SidebarItem({ icon, text, active, alert, onClick, tooltipId }: S
   const contextValue = useContext(SidebarContext)
 
   if (!contextValue) {
-    // Handle the case where context value is undefined
     return null
   }
 
@@ -81,9 +89,6 @@ export function SidebarItem({ icon, text, active, alert, onClick, tooltipId }: S
       onClick(event)
     }
   }
-
-  //console.log(tooltipId)
-
   return (
     <li
       data-tooltip-id={tooltipId}

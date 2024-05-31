@@ -1,14 +1,13 @@
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import React, { Suspense, startTransition } from "react"
+import React, { Suspense } from "react"
 import logout from "src/auth/mutations/logout"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getInitials } from "src/services/getInitials"
-import { BellIcon, HomeIcon } from "@heroicons/react/24/outline"
-import getNotifications from "src/messages/queries/getNotifications"
-import NotificationsMenu from "./NotificationMenu"
+import { HomeIcon } from "@heroicons/react/24/outline"
+import NotificationsMenu from "src/core/components/NotificationMenu"
 
 // MainNavbar
 // Always present on the top of the page

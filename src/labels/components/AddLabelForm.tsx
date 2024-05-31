@@ -1,14 +1,11 @@
 // import React, { Suspense } from "react"
-import { Form, FormProps } from "src/core/components/Form"
+import { Form, FormProps } from "src/core/components/fields/Form"
 import { useQuery } from "@blitzjs/rpc"
 
 import { z } from "zod"
-import getContributors from "src/contributors/queries/getContributors"
 
-import { useState } from "react"
-import getTeams from "src/teams/queries/getTeams"
-export { FORM_ERROR } from "src/core/components/Form"
-import CheckboxFieldTable from "src/core/components/CheckboxFieldTable"
+export { FORM_ERROR } from "src/core/components/fields/Form"
+import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import getLabels from "../queries/getLabels"
 
 // TODO: Check whether this is a good method to go
