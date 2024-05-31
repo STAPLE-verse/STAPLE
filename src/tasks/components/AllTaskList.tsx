@@ -38,7 +38,7 @@ export const AllTasksList = () => {
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 
-  console.log(tasks)
+  // console.log(tasks)
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">

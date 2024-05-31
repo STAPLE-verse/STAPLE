@@ -5,9 +5,15 @@ import Link from "next/link"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import getTasks from "src/tasks/queries/getTasks"
-import { taskProjectTableColumns } from "src/tasks/components/TaskTable"
+import {
+  taskProjectTableColumnsContrib,
+  taskProjectTableColumnsPM,
+} from "src/tasks/components/TaskTable"
 import TaskBoard from "src/tasks/components/TaskBoard"
 import Table from "src/core/components/Table"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import getContributor from "src/contributors/queries/getContributor"
+import { ContributorPrivileges } from "@prisma/client"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -19,19 +25,49 @@ const ITEMS_PER_PAGE = 10
 export const ProjectTasksList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
+  const page2 = Number(router.query.page) || 0
   const projectId = useParam("projectId", "number")
+  const currentUser = useCurrentUser()
+  const [currentContributor] = useQuery(getContributor, {
+    where: { projectId: projectId, userId: currentUser!.id },
+  })
+
+  // all tasks for PM
   const [{ tasks, hasMore }] = usePaginatedQuery(getTasks, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
-    include: {
-      assignees: { include: { statusLogs: { orderBy: { changedAt: "desc" } } } },
-    },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
-
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
+
+  // only contributor tasks and assignment status
+  const [{ tasksContrib, hasMore2 }] = usePaginatedQuery(getTasks, {
+    where: {
+      OR: [
+        { assignees: { some: { contributor: { user: { id: currentUser?.id } }, teamId: null } } },
+        {
+          assignees: {
+            some: {
+              team: { contributors: { some: { id: currentUser?.id } } },
+              contributorId: null,
+            },
+          },
+        },
+      ],
+      project: { id: projectId! },
+    },
+    include: {
+      project: true,
+      assignees: { include: { statusLogs: { orderBy: { changedAt: "desc" } } } },
+    },
+    orderBy: { id: "asc" },
+    skip: ITEMS_PER_PAGE * page2,
+    take: ITEMS_PER_PAGE,
+  })
+  const goToPreviousPage2 = () => router.push({ query: { page: page2 - 1 } })
+  const goToNextPage2 = () => router.push({ query: { page: page2 + 1 } })
 
   return (
     <div>
@@ -63,19 +99,42 @@ export const ProjectTasksList = () => {
           </Tab.Panel>
           {/* Tabpanel for table view */}
           <Tab.Panel>
-            <Table columns={taskProjectTableColumns} data={tasks} />
-            <div className="join grid grid-cols-2 mt-4">
+            {currentContributor.privilege === ContributorPrivileges.CONTRIBUTOR && (
+              <Table columns={taskProjectTableColumnsContrib} data={tasksContrib} />
+            )}
+
+            {currentContributor.privilege === ContributorPrivileges.PROJECT_MANAGER && (
+              <Table columns={taskProjectTableColumnsPM} data={tasks} />
+            )}
+
+            <div className="join grid grid-cols-2 my-6">
               <button
                 className="join-item btn btn-secondary"
-                disabled={page === 0}
-                onClick={goToPreviousPage}
+                disabled={
+                  currentContributor.privilege === ContributorPrivileges.CONTRIBUTOR
+                    ? page2 === 0
+                    : page === 0
+                }
+                onClick={
+                  currentContributor.privilege === ContributorPrivileges.CONTRIBUTOR
+                    ? goToPreviousPage2
+                    : goToPreviousPage
+                }
               >
                 Previous
               </button>
               <button
                 className="join-item btn btn-secondary"
-                disabled={!hasMore}
-                onClick={goToNextPage}
+                disabled={
+                  currentContributor.privilege === ContributorPrivileges.CONTRIBUTOR
+                    ? !hasMore2
+                    : !hasMore
+                }
+                onClick={
+                  currentContributor.privilege === ContributorPrivileges.CONTRIBUTOR
+                    ? goToNextPage2
+                    : goToNextPage
+                }
               >
                 Next
               </button>
@@ -85,12 +144,16 @@ export const ProjectTasksList = () => {
       </Tab.Group>
 
       {/* Create new task btn */}
-
-      <p>
-        <Link className="btn mt-4 btn-primary" href={Routes.NewTaskPage({ projectId: projectId! })}>
-          Create New Task
-        </Link>
-      </p>
+      {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
+        <p>
+          <Link
+            className="btn mt-4 btn-primary"
+            href={Routes.NewTaskPage({ projectId: projectId! })}
+          >
+            Create New Task
+          </Link>
+        </p>
+      )}
     </div>
   )
 }

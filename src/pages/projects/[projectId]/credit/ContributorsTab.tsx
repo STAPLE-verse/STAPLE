@@ -53,8 +53,8 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
 
   const handleAddLabel = async (values) => {
     try {
-      console.log(values)
-      console.log(selectedIds)
+      //console.log(values)
+      //console.log(selectedIds)
       const updated = await updateContributorLabelMutation({
         ...values,
         contributorsId: selectedIds,

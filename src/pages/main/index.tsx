@@ -262,7 +262,7 @@ const MainPage = () => {
       })
       setBoxes(updatedBoxes)
     } else {
-      console.log("no widgets")
+      // console.log("no widgets")
       // Call the mutation
       setWidgetMutation({ id: currentUser?.id })
         .then(() => {
