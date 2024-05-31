@@ -164,3 +164,53 @@ export const taskProjectTableColumnsPM = [
     ),
   }),
 ]
+
+export const taskElementColumns = [
+  columnHelper.accessor("name", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Name",
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelper.accessor("deadline", {
+    cell: (info) => (
+      <span>
+        {info.getValue()?.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false, // Use 24-hour format
+        })}
+      </span>
+    ),
+    header: "Due Date",
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelper.accessor("status", {
+    header: "Completed",
+    enableSorting: false,
+    enableColumnFilter: false,
+    cell: (info) => <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>,
+  }),
+  columnHelper.accessor("id", {
+    id: "view",
+    header: "View",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <Link
+        className="btn btn-primary"
+        href={Routes.ShowTaskPage({
+          projectId: info.row.original.projectId,
+          taskId: info.getValue(),
+        })}
+      >
+        View
+      </Link>
+    ),
+  }),
+]

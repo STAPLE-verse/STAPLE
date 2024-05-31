@@ -66,7 +66,7 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
                   <p>There are no tasks in the element.</p>
                 )}
               </div>
-              <div className="justify-end mt-4">
+              <div className="flex justify-end mt-4">
                 <Link
                   className="btn btn-primary"
                   href={Routes.ShowElementPage({ projectId: projectId!, elementId: element.id })}

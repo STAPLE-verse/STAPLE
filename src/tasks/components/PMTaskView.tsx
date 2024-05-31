@@ -74,7 +74,7 @@ export const PMTaskView = () => {
           <div class="stats bg-base-300 text-lg font-bold">
             <div class="stat place-items-center">
               <div class="stat-title text-2xl text-inherit">Task Status</div>
-              <div class="stat-value">
+              <div class="">
                 <input
                   type="checkbox"
                   checked={taskStatus === TaskStatus.COMPLETED}

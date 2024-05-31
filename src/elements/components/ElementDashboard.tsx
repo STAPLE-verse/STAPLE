@@ -7,7 +7,7 @@ import getElement from "src/elements/queries/getElement"
 import deleteElement from "src/elements/mutations/deleteElement"
 import getProject from "src/projects/queries/getProject"
 import getTasks from "src/tasks/queries/getTasks"
-import { taskProjectTableColumns } from "src/tasks/components/TaskTable"
+import { taskElementColumns } from "src/tasks/components/TaskTable"
 import Table from "src/core/components/Table"
 
 export const OverallElement = () => {
@@ -15,7 +15,6 @@ export const OverallElement = () => {
   const elementId = useParam("elementId", "number")
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
-  const [deleteElementMutation] = useMutation(deleteElement)
   const [element] = useQuery(getElement, { id: elementId })
 
   const ITEMS_PER_PAGE = 5
@@ -65,7 +64,7 @@ export const OverallElement = () => {
       <div className="card bg-base-300 w-1/2">
         <div className="card-body">
           <div className="card-title">Tasks</div>
-          <Table columns={taskProjectTableColumns} data={tasks} />
+          <Table columns={taskElementColumns} data={tasks} />
           <div className="join grid grid-cols-2 mt-4">
             <button
               className="join-item btn btn-secondary"
@@ -89,6 +88,11 @@ export const OverallElement = () => {
 }
 
 export const PMElement = () => {
+  const router = useRouter()
+  const [deleteElementMutation] = useMutation(deleteElement)
+  const [element] = useQuery(getElement, { id: elementId })
+  const projectId = useParam("projectId", "number")
+
   return (
     <div className="flex flex-row justify-center mt-2">
       <div className="card bg-base-300 w-full">
@@ -97,43 +101,39 @@ export const PMElement = () => {
 
           <div class="stats bg-base-300 text-lg font-bold">
             <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit">Task Number</div>
-              <div class="stat-value">CHART</div>
-              <div class="stat-desc text-lg text-inherit">Number Complete</div>
-            </div>
-
-            <div class="stat place-items-center">
               <div class="stat-title text-2xl text-inherit">Task Status</div>
-              <div class="stat-value">CHART</div>
+              Chart
               <div class="stat-desc text-lg text-inherit">Number Complete</div>
             </div>
 
             <div class="stat place-items-center">
               <div class="stat-title text-2xl text-inherit">Form Data</div>
-              FORM CHART
+              chart
+              <div class="stat-desc text-lg text-inherit">Number Complete</div>
+            </div>
+
+            <div class="stat place-items-center">
+              <div class="stat-title text-2xl text-inherit">Labels</div>
+              chart
               <div class="stat-desc text-lg text-inherit">Number Completed</div>
             </div>
 
             <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit">Task Progress</div>
-              PROGRESS BAR
-              <div class="stat-desc text-lg text-inherit">TASKS</div>
+              <div class="stat-title text-2xl text-inherit">Delete Element</div>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={async () => {
+                  if (window.confirm("This element will be deleted. Is that ok?")) {
+                    await deleteElementMutation({ id: element.id })
+                    await router.push(Routes.ElementsPage({ projectId: projectId! }))
+                  }
+                }}
+              >
+                Delete
+              </button>
             </div>
           </div>
-        </div>
-        <div className="card-actions justify-end">
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={async () => {
-              if (window.confirm("This element will be deleted. Is that ok?")) {
-                await deleteElementMutation({ id: element.id })
-                await router.push(Routes.ElementsPage({ projectId: projectId! }))
-              }
-            }}
-          >
-            Delete
-          </button>
         </div>
       </div>
     </div>
