@@ -50,7 +50,7 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
                         <div className="card-title text-base-content justify-center">
                           {task.name}
                         </div>
-                        <center>{task.description}</center>
+                        <center>{task.description.substring(0, 50)}</center>
                       </div>
                       <div className="card-actions justify-center">
                         <Link

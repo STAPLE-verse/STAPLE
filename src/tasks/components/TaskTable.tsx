@@ -69,7 +69,7 @@ export const taskProjectTableColumnsContrib = [
     header: "Name",
   }),
   columnHelper.accessor("description", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => <span>{info.getValue().substring(0, 50)}</span>,
     header: "Description",
   }),
   // TODO: Check how to use anonym function in accessor to get column name
@@ -122,7 +122,7 @@ export const taskProjectTableColumnsPM = [
     header: "Name",
   }),
   columnHelper.accessor("description", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => <span>{info.getValue().substring(0, 50)}</span>,
     header: "Description",
   }),
   // TODO: Check how to use anonym function in accessor to get column name

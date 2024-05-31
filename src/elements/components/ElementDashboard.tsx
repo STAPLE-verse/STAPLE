@@ -9,6 +9,7 @@ import getProject from "src/projects/queries/getProject"
 import getTasks from "src/tasks/queries/getTasks"
 import { taskElementColumns } from "src/tasks/components/TaskTable"
 import Table from "src/core/components/Table"
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 
 export const OverallElement = () => {
   const router = useRouter()
@@ -89,9 +90,14 @@ export const OverallElement = () => {
 
 export const PMElement = () => {
   const router = useRouter()
+  const elementId = useParam("elementId", "number")
   const [deleteElementMutation] = useMutation(deleteElement)
   const [element] = useQuery(getElement, { id: elementId })
   const projectId = useParam("projectId", "number")
+
+  const taskPercent = 0.1
+  const formPercent = 0.3
+  const labelPercent = 0.5
 
   return (
     <div className="flex flex-row justify-center mt-2">
@@ -102,19 +108,58 @@ export const PMElement = () => {
           <div class="stats bg-base-300 text-lg font-bold">
             <div class="stat place-items-center">
               <div class="stat-title text-2xl text-inherit">Task Status</div>
-              Chart
+              <div className="w-20 h-20 m-2">
+                <CircularProgressbar
+                  value={taskPercent * 100}
+                  text={`${Math.round(taskPercent * 100)}%`}
+                  styles={buildStyles({
+                    textSize: "16px",
+                    pathTransitionDuration: "none",
+                    pathColor: "oklch(var(--p))",
+                    textColor: "oklch(var(--s))",
+                    trailColor: "oklch(var(--pc))",
+                    backgroundColor: "oklch(var(--b3))",
+                  })}
+                />
+              </div>
               <div class="stat-desc text-lg text-inherit">Number Complete</div>
             </div>
 
             <div class="stat place-items-center">
               <div class="stat-title text-2xl text-inherit">Form Data</div>
-              chart
+              <div className="w-20 h-20 m-2">
+                <CircularProgressbar
+                  value={formPercent * 100}
+                  text={`${Math.round(formPercent * 100)}%`}
+                  styles={buildStyles({
+                    textSize: "16px",
+                    pathTransitionDuration: "none",
+                    pathColor: "oklch(var(--p))",
+                    textColor: "oklch(var(--s))",
+                    trailColor: "oklch(var(--pc))",
+                    backgroundColor: "oklch(var(--b3))",
+                  })}
+                />
+              </div>
               <div class="stat-desc text-lg text-inherit">Number Complete</div>
             </div>
 
             <div class="stat place-items-center">
               <div class="stat-title text-2xl text-inherit">Labels</div>
-              chart
+              <div className="w-20 h-20 m-2">
+                <CircularProgressbar
+                  value={labelPercent * 100}
+                  text={`${Math.round(labelPercent * 100)}%`}
+                  styles={buildStyles({
+                    textSize: "16px",
+                    pathTransitionDuration: "none",
+                    pathColor: "oklch(var(--p))",
+                    textColor: "oklch(var(--s))",
+                    trailColor: "oklch(var(--pc))",
+                    backgroundColor: "oklch(var(--b3))",
+                  })}
+                />
+              </div>
               <div class="stat-desc text-lg text-inherit">Number Completed</div>
             </div>
 
