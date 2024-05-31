@@ -4,7 +4,6 @@
 import { Suspense, useEffect } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
-import Link from "next/link"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import getProjects from "src/projects/queries/getProjects"
@@ -38,24 +37,7 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import updateWidget from "src/widgets/mutations/updateWidget"
 import setWidgets from "src/widgets/mutations/setWidgets"
 import toast from "react-hot-toast"
-
-const projectLink = (
-  <Link className="btn btn-primary self-end m-4" href={Routes.ProjectsPage()}>
-    All Projects
-  </Link>
-)
-
-const taskLink = (
-  <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
-    All Tasks
-  </Link>
-)
-
-const notificationLink = (
-  <Link className="btn btn-primary self-end m-4" href={Routes.NotificationsPage()}>
-    All Notifications
-  </Link>
-)
+import PrimaryButton from "../../core/components/PrimaryButton"
 
 // Define displays as functions to easily handle the fetching logic if necessary
 const getProjectDisplay = (projects) => {
@@ -210,7 +192,7 @@ const MainPage = () => {
               id: widget.id,
               title: "Last Updated Projects",
               display: getProjectDisplay(projects),
-              link: projectLink,
+              link: <PrimaryButton route={Routes.ProjectsPage()} text="All Projects" />,
               position: widget.position,
               size: "col-span-6",
             }
@@ -219,7 +201,7 @@ const MainPage = () => {
               id: widget.id,
               title: "Notifications",
               display: getNotificationDisplay(notifications),
-              link: notificationLink,
+              link: <PrimaryButton route={Routes.AllTasksPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
             }
@@ -228,7 +210,7 @@ const MainPage = () => {
               id: widget.id,
               title: "Overdue Tasks",
               display: getOverdueTaskDisplay(pastDueTasks),
-              link: taskLink,
+              link: <PrimaryButton route={Routes.NotificationsPage()} text="All Notifications" />,
               position: widget.position,
               size: "col-span-6",
             }
@@ -237,7 +219,7 @@ const MainPage = () => {
               id: widget.id,
               title: "Upcoming Tasks",
               display: getUpcomingTaskDisplay(upcomingTasks),
-              link: taskLink,
+              link: <PrimaryButton route={Routes.AllTasksPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
             }
