@@ -11,14 +11,8 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import getTasks from "src/tasks/queries/getTasks"
 import moment from "moment"
-import Table from "src/core/components/Table"
 import { TaskStatus } from "db"
 import getNotifications from "src/messages/queries/getNotifications"
-import {
-  tasksColumns,
-  projectColumns,
-  notificationColumns,
-} from "src/widgets/components/ColumnHelpers"
 import getUserWidgets from "src/widgets/queries/getUserWidgets"
 
 // make things draggable
@@ -38,78 +32,12 @@ import updateWidget from "src/widgets/mutations/updateWidget"
 import setWidgets from "src/widgets/mutations/setWidgets"
 import toast from "react-hot-toast"
 import PrimaryButton from "../../core/components/PrimaryButton"
-
-// Define displays as functions to easily handle the fetching logic if necessary
-const getProjectDisplay = (projects) => {
-  if (projects.length === 0) {
-    return <p className="italic p-2">No projects</p>
-  }
-  return (
-    <Table
-      columns={projectColumns}
-      data={projects}
-      classNames={{
-        thead: "text-sm text-base-content",
-        tbody: "text-sm text-base-content",
-        td: "text-sm text-base-content",
-      }}
-    />
-  )
-}
-
-const getUpcomingTaskDisplay = (upcomingTasks) => {
-  if (upcomingTasks.length === 0) {
-    return <p className="italic p-2">No upcoming tasks</p>
-  }
-
-  return (
-    <Table
-      columns={tasksColumns}
-      data={upcomingTasks}
-      classNames={{
-        thead: "text-sm text-base-content",
-        tbody: "text-sm text-base-content",
-        td: "text-sm text-base-content",
-      }}
-    />
-  )
-}
-
-const getOverdueTaskDisplay = (pastDueTasks) => {
-  if (pastDueTasks.length === 0) {
-    return <p className="italic p-2">No overdue tasks</p>
-  }
-
-  return (
-    <Table
-      columns={tasksColumns}
-      data={pastDueTasks}
-      classNames={{
-        thead: "text-sm text-base-content",
-        tbody: "text-sm text-base-content",
-        td: "text-sm text-base-content",
-      }}
-    />
-  )
-}
-
-const getNotificationDisplay = (notifications) => {
-  if (notifications.length === 0) {
-    return <p className="italic p-2">No unread notifications</p>
-  }
-
-  return (
-    <Table
-      columns={notificationColumns}
-      data={notifications}
-      classNames={{
-        thead: "text-sm text-base-content",
-        tbody: "text-sm text-base-content",
-        td: "text-sm text-base-content",
-      }}
-    />
-  )
-}
+import {
+  GetProjectDisplay,
+  GetUpcomingTaskDisplay,
+  GetOverdueTaskDisplay,
+  GetNotificationDisplay,
+} from "../../core/components/GetDashboardDisplay"
 
 const MainPage = () => {
   const sidebarItems = HomeSidebarItems("Dashboard")
@@ -191,7 +119,7 @@ const MainPage = () => {
             return {
               id: widget.id,
               title: "Last Updated Projects",
-              display: getProjectDisplay(projects),
+              display: <GetProjectDisplay projects={projects} />,
               link: <PrimaryButton route={Routes.ProjectsPage()} text="All Projects" />,
               position: widget.position,
               size: "col-span-6",
@@ -200,7 +128,7 @@ const MainPage = () => {
             return {
               id: widget.id,
               title: "Notifications",
-              display: getNotificationDisplay(notifications),
+              display: <GetNotificationDisplay notifications={notifications} />,
               link: <PrimaryButton route={Routes.AllTasksPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
@@ -209,7 +137,7 @@ const MainPage = () => {
             return {
               id: widget.id,
               title: "Overdue Tasks",
-              display: getOverdueTaskDisplay(pastDueTasks),
+              display: <GetOverdueTaskDisplay pastDueTasks={pastDueTasks} />,
               link: <PrimaryButton route={Routes.NotificationsPage()} text="All Notifications" />,
               position: widget.position,
               size: "col-span-6",
@@ -218,7 +146,7 @@ const MainPage = () => {
             return {
               id: widget.id,
               title: "Upcoming Tasks",
-              display: getUpcomingTaskDisplay(upcomingTasks),
+              display: <GetUpcomingTaskDisplay upcomingTasks={upcomingTasks} />,
               link: <PrimaryButton route={Routes.AllTasksPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
