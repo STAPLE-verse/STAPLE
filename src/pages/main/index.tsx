@@ -6,13 +6,8 @@ import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
-import getProjects from "src/projects/queries/getProjects"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
-import getTasks from "src/tasks/queries/getTasks"
-import moment from "moment"
-import { TaskStatus } from "db"
-import getNotifications from "src/messages/queries/getNotifications"
 import getUserWidgets from "src/widgets/queries/getUserWidgets"
 
 // make things draggable
@@ -38,69 +33,18 @@ import {
   GetOverdueTaskDisplay,
   GetNotificationDisplay,
 } from "../../core/components/GetDashboardDisplay"
+import getDashboardTasks from "../../tasks/queries/getDashboardTasks"
+import getDashboardProjects from "src/projects/queries/getDashboardProjects"
+import getDashboardNotifications from "src/messages/queries/getDashboardNotifications"
 
 const MainPage = () => {
   const sidebarItems = HomeSidebarItems("Dashboard")
   const currentUser = useCurrentUser()
-  const today = moment().startOf("day")
   const [updateWidgetMutation] = useMutation(updateWidget)
   const [setWidgetMutation] = useMutation(setWidgets)
-
-  // Get data
-  // get all tasks
-  const [{ tasks }] = useQuery(getTasks, {
-    include: {
-      project: { select: { name: true } },
-    },
-    where: {
-      assignees: { some: { contributor: { user: { id: currentUser?.id } } } },
-      status: TaskStatus.NOT_COMPLETED,
-    },
-    orderBy: { id: "desc" },
-  })
-
-  // get only upcoming
-  const upcomingTasks = tasks.filter((task) => {
-    if (task && task.deadline) {
-      return moment(task.deadline).isSameOrAfter(today, "day")
-    }
-    return false
-  })
-
-  // get pastDue
-  const pastDueTasks = tasks.filter((task) => {
-    if (task && task.deadline) {
-      return moment(task.deadline).isBefore(moment(), "minute")
-    }
-    return false
-  })
-
-  // get all projects
-  const [{ projects }] = useQuery(getProjects, {
-    where: {
-      contributors: {
-        some: {
-          userId: currentUser?.id,
-        },
-      },
-    },
-    orderBy: { updatedAt: "asc" },
-    take: 3,
-  })
-
-  // get all notifications
-  const [{ notifications }] = useQuery(getNotifications, {
-    where: {
-      recipients: {
-        some: {
-          id: currentUser!.id,
-        },
-      },
-      read: false,
-    },
-    orderBy: { id: "desc" },
-    take: 3,
-  })
+  const [{ upcomingTasks, pastDueTasks }] = useQuery(getDashboardTasks, undefined)
+  const [{ projects }] = useQuery(getDashboardProjects, undefined)
+  const [{ notifications }] = useQuery(getDashboardNotifications, undefined)
 
   // Get the widgets for the user
   const [boxes, setBoxes] = useState([])
