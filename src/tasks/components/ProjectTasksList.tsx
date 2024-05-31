@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import getTasks from "src/tasks/queries/getTasks"
-import { taskTableColumns } from "src/tasks/components/TaskTable"
+import { taskProjectTableColumns } from "src/tasks/components/TaskTable"
 import TaskBoard from "src/tasks/components/TaskBoard"
 import Table from "src/core/components/Table"
 
@@ -23,6 +23,9 @@ export const ProjectTasksList = () => {
   const [{ tasks, hasMore }] = usePaginatedQuery(getTasks, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
+    include: {
+      assignees: { include: { statusLogs: { orderBy: { changedAt: "desc" } } } },
+    },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
@@ -60,7 +63,7 @@ export const ProjectTasksList = () => {
           </Tab.Panel>
           {/* Tabpanel for table view */}
           <Tab.Panel>
-            <Table columns={taskTableColumns} data={tasks} />
+            <Table columns={taskProjectTableColumns} data={tasks} />
             <div className="join grid grid-cols-2 mt-4">
               <button
                 className="join-item btn btn-secondary"

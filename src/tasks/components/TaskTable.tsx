@@ -15,12 +15,12 @@ export const taskTableColumns = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
   }),
-  columnHelper.accessor("description", {
+  columnHelper.accessor("project.name", {
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Description",
+    header: "Project",
   }),
   // TODO: Check how to use anonym function in accessor to get column name
-  columnHelper.accessor("updatedAt", {
+  columnHelper.accessor("deadline", {
     cell: (info) => (
       <span>
         {info.getValue()?.toLocaleDateString(undefined, {
@@ -34,7 +34,68 @@ export const taskTableColumns = [
         })}
       </span>
     ),
-    header: "Last Update",
+    header: "Due Date",
+  }),
+  columnHelper.accessor("assignees", {
+    header: "Completed",
+    cell: (info) => {
+      const value = info.getValue() as String[]
+      const answer = value.map((v) => v.statusLogs[0].status)
+      return <>{answer[0] === "COMPLETED" ? "Complete" : "Not Complete"}</>
+    },
+  }),
+  columnHelper.accessor("id", {
+    id: "view",
+    header: "View",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <Link
+        className="btn btn-primary"
+        href={Routes.ShowTaskPage({
+          projectId: info.row.original.projectId,
+          taskId: info.getValue(),
+        })}
+      >
+        View
+      </Link>
+    ),
+  }),
+]
+
+export const taskProjectTableColumns = [
+  columnHelper.accessor("name", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Name",
+  }),
+  columnHelper.accessor("description", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Description",
+  }),
+  // TODO: Check how to use anonym function in accessor to get column name
+  columnHelper.accessor("deadline", {
+    cell: (info) => (
+      <span>
+        {info.getValue()?.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false, // Use 24-hour format
+        })}
+      </span>
+    ),
+    header: "Due Date",
+  }),
+  columnHelper.accessor("assignees", {
+    header: "Completed",
+    cell: (info) => {
+      const value = info.getValue() as String[]
+      const answer = value.map((v) => v.statusLogs[0].status)
+      return <>{answer[0] === "COMPLETED" ? "Complete" : "Not Complete"}</>
+    },
   }),
   columnHelper.accessor("id", {
     id: "view",
