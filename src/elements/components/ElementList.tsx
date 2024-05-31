@@ -1,8 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { Element, Task } from "db"
-import { DndContext, useDroppable } from "@dnd-kit/core"
-import TaskCard from "src/tasks/components/TaskCard"
 
 interface ElementsListProps {
   // Element type extended with Task array
@@ -44,23 +42,26 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
                 })}
               </p>
               <div className="divider">Tasks</div>
-              <div
-                className="flex flex-col flex-1 bg-gray-300 p-4 rounded-lg"
-                // ref={setNodeRef}
-                // style={style}
-              >
+              <div className="flex flex-row bg-base-100 rounded-lg">
                 {tasks && tasks.length > 0 ? (
-                  <DndContext>
-                    {tasks.map((task) => (
-                      <TaskCard
-                        taskId={task.id}
-                        key={task.id}
-                        name={task.name}
-                        projectId={task.projectId}
-                        // disable={true}
-                      />
-                    ))}
-                  </DndContext>
+                  tasks.map((task) => (
+                    <div className="card bg-base-100 text-base-content m-2 w-1/4">
+                      <div className="card-body">
+                        <div className="card-title text-base-content justify-center">
+                          {task.name}
+                        </div>
+                        <center>{task.description}</center>
+                      </div>
+                      <div className="card-actions justify-center">
+                        <Link
+                          className="btn btn-secondary"
+                          href={Routes.ShowTaskPage({ projectId: projectId!, taskId: task.id })}
+                        >
+                          View
+                        </Link>
+                      </div>
+                    </div>
+                  ))
                 ) : (
                   <p>There are no tasks in the element.</p>
                 )}
