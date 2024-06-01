@@ -128,7 +128,7 @@ export const ContributorTaskView = () => {
 
           {/* if no schema complete task as a Individual*/}
           {!task["schema"] && currentAssignments && individualAssignments.length > 0 && (
-            <div>
+            <div className="flex grid-col-2">
               <CompleteToggle
                 currentAssignment={individualAssignments[0]!.statusLogs[0]}
                 refetch={refetchAssignments}
@@ -136,23 +136,30 @@ export const ContributorTaskView = () => {
                 completedBy={currentContributor.id}
                 completedAs={CompletedAs.INDIVIDUAL}
               />
-              <AssignmentHistoryModal assignmentStatusLog={individualAssignments[0]!.statusLogs} />
+              <span className="mx-2">
+                <AssignmentHistoryModal
+                  assignmentStatusLog={individualAssignments[0]!.statusLogs}
+                />
+              </span>
             </div>
           )}
 
           {/* if no schema complete task as a Team*/}
           {!task["schema"] && currentAssignments && teamAssignments.length > 0 && (
-            <div className="flex flex-col gap-2">
+            <div>
               {teamAssignments.map((teamAssignment) => (
-                <div key={teamAssignment.id}>
+                <div key={teamAssignment.id} className="flex flex-col gap-2">
                   <CompleteToggle
                     currentAssignment={teamAssignment.statusLogs[0]}
                     refetch={refetchAssignments}
-                    completedLabel={`Completed as ${teamAssignment.team.name} Team`}
+                    completedLabel="Completed"
                     completedBy={currentContributor.id}
                     completedAs={CompletedAs.TEAM}
+                    teamName={teamAssignment.team.name}
                   />
-                  <AssignmentHistoryModal assignmentStatusLog={teamAssignment.statusLogs} />
+                  <span className="mx-2">
+                    <AssignmentHistoryModal assignmentStatusLog={teamAssignment.statusLogs} />
+                  </span>
                 </div>
               ))}
             </div>
@@ -160,7 +167,7 @@ export const ContributorTaskView = () => {
 
           {/* if schema and individual*/}
           {task["schema"] && currentAssignments && individualAssignments.length > 0 && (
-            <div>
+            <div className="flex grid-col-2">
               <CompleteSchema
                 currentAssignment={individualAssignments[0]!}
                 refetch={refetchAssignments}
@@ -169,14 +176,19 @@ export const ContributorTaskView = () => {
                 schema={task["schema"]}
                 ui={task["ui"]}
               />
+              <span className="mx-2">
+                <AssignmentHistoryModal
+                  assignmentStatusLog={individualAssignments[0]!.statusLogs}
+                />
+              </span>
             </div>
           )}
 
           {/* if schema and team*/}
           {task["schema"] && currentAssignments && teamAssignments.length > 0 && (
-            <div>
+            <div className="">
               {teamAssignments.map((teamAssignment) => (
-                <div key={teamAssignment.id} className="mb-2">
+                <div key={teamAssignment.id} className="mb-2 flex grid-col-2">
                   <CompleteSchema
                     currentAssignment={teamAssignment}
                     refetch={refetchAssignments}
@@ -185,6 +197,10 @@ export const ContributorTaskView = () => {
                     schema={task["schema"]}
                     ui={task["ui"]}
                   />
+
+                  <span className="mx-2">
+                    <AssignmentHistoryModal assignmentStatusLog={teamAssignment.statusLogs} />
+                  </span>
                 </div>
               ))}
             </div>

@@ -88,7 +88,7 @@ export const AssignmentHistoryModal = ({ assignmentStatusLog }) => {
 
   return (
     <>
-      <div className="mt-4">
+      <div className="">
         <button type="button" className="btn btn-primary" onClick={handleToggle}>
           Show History
         </button>
