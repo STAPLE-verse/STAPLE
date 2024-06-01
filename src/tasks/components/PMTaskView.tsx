@@ -15,6 +15,7 @@ import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import { Tooltip } from "react-tooltip"
 
 // create task view
 export const PMTaskView = () => {
@@ -87,7 +88,14 @@ export const PMTaskView = () => {
 
           <div class="stats bg-base-300 text-lg font-bold">
             <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit">Task Status</div>
+              <div class="stat-title text-2xl text-inherit" data-tooltip-id="status-tool">
+                Task Status
+              </div>
+              <Tooltip
+                id="status-tool"
+                content="Complete the entire task even if not all contributors have finished"
+                className="z-[1099]"
+              />
               <div class="">
                 <input
                   type="checkbox"
@@ -127,7 +135,14 @@ export const PMTaskView = () => {
             </div>
 
             <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit">Form Data</div>
+              <div class="stat-title text-2xl text-inherit" data-tooltip-id="form-tool">
+                Form Data
+              </div>
+              <Tooltip
+                id="form-tool"
+                content="Review the form requirements for this task"
+                className="z-[1099]"
+              />
               <div class="">
                 {task["schema"] ? (
                   <div>
@@ -161,7 +176,14 @@ export const PMTaskView = () => {
             </div>
 
             <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit">Task Progress</div>
+              <div class="stat-title text-2xl text-inherit" data-tooltip-id="progress-tool">
+                Task Progress
+              </div>
+              <Tooltip
+                id="progress-tool"
+                content="Percent of contributors/teams that have finished the task"
+                className="z-[1099]"
+              />
               <div class="">
                 <AssignmentProgress taskId={task.id} />
               </div>

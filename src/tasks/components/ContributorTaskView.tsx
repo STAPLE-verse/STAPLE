@@ -10,6 +10,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import CompleteToggle from "src/assignments/components/CompleteToggle"
 import { CompletedAs } from "@prisma/client"
 import CompleteSchema from "src/assignments/components/CompleteSchema"
+import { Tooltip } from "react-tooltip"
 
 // create task view
 export const ContributorTaskView = () => {
@@ -68,7 +69,14 @@ export const ContributorTaskView = () => {
       {/* overall project information */}
       <div className="card bg-base-300 mx-2 w-1/2">
         <div className="card-body">
-          <div className="card-title">Task Information</div>
+          <div className="card-title" data-tooltip-id="tool-task">
+            Task Information
+          </div>
+          <Tooltip
+            id="tool-task"
+            content="Overall information about this task"
+            className="z-[1099]"
+          />
 
           <p>
             <span className="font-semibold">Name: </span> {task.name}
@@ -124,7 +132,15 @@ export const ContributorTaskView = () => {
       {/* task completion*/}
       <div className="card bg-base-300 mx-2 w-1/2">
         <div className="card-body">
-          <div className="card-title">Complete Task</div>
+          <div className="card-title" data-tooltip-id="tool-complete">
+            Complete Task
+          </div>
+
+          <Tooltip
+            id="tool-complete"
+            content="Complete your individual or team task and view completion history"
+            className="z-[1099]"
+          />
 
           {/* if no schema complete task as a Individual*/}
           {!task["schema"] && currentAssignments && individualAssignments.length > 0 && (
