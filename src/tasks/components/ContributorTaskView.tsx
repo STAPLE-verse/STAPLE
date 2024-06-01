@@ -160,7 +160,7 @@ export const ContributorTaskView = () => {
 
           {/* if schema and individual*/}
           {task["schema"] && currentAssignments && individualAssignments.length > 0 && (
-            <div className="mt-4">
+            <div>
               <CompleteSchema
                 currentAssignment={individualAssignments[0]!}
                 refetch={refetchAssignments}
@@ -174,9 +174,9 @@ export const ContributorTaskView = () => {
 
           {/* if schema and team*/}
           {task["schema"] && currentAssignments && teamAssignments.length > 0 && (
-            <div className="mt-2">
+            <div>
               {teamAssignments.map((teamAssignment) => (
-                <div key={teamAssignment.id}>
+                <div key={teamAssignment.id} className="mb-2">
                   <CompleteSchema
                     currentAssignment={teamAssignment}
                     refetch={refetchAssignments}
