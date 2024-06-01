@@ -75,8 +75,8 @@ export const AlPmsLabelsList = ({
     labelsId: [],
   }
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
 
   const labelInformation = labels.map((task) => {
     const name = task.name

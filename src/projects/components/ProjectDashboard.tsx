@@ -438,6 +438,8 @@ const ProjectDashboard = () => {
               link: projectLink,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-project",
+              tooltipContent: "Overall project information",
             }
           case "Notifications":
             return {
@@ -447,6 +449,8 @@ const ProjectDashboard = () => {
               link: notificationLink,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-notification",
+              tooltipContent: "Three notifications for this project",
             }
           case "OverdueTask":
             return {
@@ -456,6 +460,8 @@ const ProjectDashboard = () => {
               link: taskLink,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-overdue",
+              tooltipContent: "Three overdue tasks for this project",
             }
           case "UpcomingTask":
             return {
@@ -465,6 +471,8 @@ const ProjectDashboard = () => {
               link: taskLink,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-upcoming",
+              tooltipContent: "Three upcoming tasks for this project",
             }
           case "ContributorNumber":
             return {
@@ -474,6 +482,8 @@ const ProjectDashboard = () => {
               link: contributorLink,
               position: widget.position,
               size: "col-span-2",
+              tooltipId: "tool-contributors",
+              tooltipContent: "Total number of contributors",
             }
           case "TeamNumber":
             return {
@@ -483,6 +493,8 @@ const ProjectDashboard = () => {
               link: teamLink,
               position: widget.position,
               size: "col-span-2",
+              tooltipId: "tool-teams",
+              tooltipContent: "Total number of teams",
             }
           case "FormNumber":
             return {
@@ -492,6 +504,8 @@ const ProjectDashboard = () => {
               link: formLink,
               position: widget.position,
               size: "col-span-2",
+              tooltipId: "tool-forms",
+              tooltipContent: "Percent of forms completed",
             }
           case "TaskTotal":
             return {
@@ -501,6 +515,8 @@ const ProjectDashboard = () => {
               link: taskSummaryLink,
               position: widget.position,
               size: "col-span-2",
+              tooltipId: "tool-tasks",
+              tooltipContent: "Percent of tasks completed",
             }
           case "ElementSummary":
             return {
@@ -510,6 +526,8 @@ const ProjectDashboard = () => {
               link: elementLink,
               position: widget.position,
               size: "col-span-2",
+              tooltipId: "tool-element",
+              tooltipContent: "Number of elements for this project",
             }
           case "LabelsSummary":
             return {
@@ -519,6 +537,8 @@ const ProjectDashboard = () => {
               link: labelLink,
               position: widget.position,
               size: "col-span-2",
+              tooltipId: "tool-labels",
+              tooltipContent: "Percent of contributors or tasks labeled",
             }
           default:
             return {
@@ -528,6 +548,8 @@ const ProjectDashboard = () => {
               link: <div />,
               position: widget.position,
               size: "col-span-4",
+              tooltipId: "tool-unknown",
+              tooltipContent: "Unknown widget",
             }
         }
       })

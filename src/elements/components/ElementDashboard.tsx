@@ -31,8 +31,10 @@ export const OverallElement = () => {
     take: ITEMS_PER_PAGE,
   })
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  const goToPreviousPage = () =>
+    router.push({ query: { projectId: projectId, elementId: elementId, page: page - 1 } })
+  const goToNextPage = () =>
+    router.push({ query: { projectId: projectId, elementId: elementId, page: page + 1 } })
 
   return (
     <div className="flex flex-row justify-center w-full">

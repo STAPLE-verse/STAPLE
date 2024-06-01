@@ -221,6 +221,8 @@ const MainPage = () => {
               link: projectLink,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-last-project",
+              tooltipContent: "Three recently updated projects",
             }
           case "Notifications":
             return {
@@ -230,6 +232,8 @@ const MainPage = () => {
               link: notificationLink,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-notifications",
+              tooltipContent: "Three recent notifications for all projects",
             }
           case "OverdueTask":
             return {
@@ -239,6 +243,8 @@ const MainPage = () => {
               link: taskLink,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-overdue",
+              tooltipContent: "Three overdue tasks for all projects",
             }
           case "UpcomingTask":
             return {
@@ -248,6 +254,8 @@ const MainPage = () => {
               link: taskLink,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-upcoming",
+              tooltipContent: "Three upcoming tasks for all projects",
             }
           default:
             return {
@@ -257,6 +265,8 @@ const MainPage = () => {
               link: <div />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-unknown",
+              tooltipContent: "Unknown widget",
             }
         }
       })

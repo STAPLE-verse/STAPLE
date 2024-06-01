@@ -70,8 +70,8 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
     labelsId: [],
   }
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
 
   const taskInformation = tasks.map((task) => {
     const name = task.name
