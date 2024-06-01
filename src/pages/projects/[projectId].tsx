@@ -42,7 +42,7 @@ export const ShowProjectPage = () => {
 
         <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
           <button type="button" className="btn" onClick={handleToggle}>
-            Create announcement
+            Send Announcement
           </button>
           <Modal open={openModal} size="w-11/12 max-w-3xl">
             <div className="modal-action">

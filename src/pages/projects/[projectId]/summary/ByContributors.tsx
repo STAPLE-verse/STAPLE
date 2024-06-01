@@ -78,7 +78,7 @@ const ByContributors = ({ projectId }) => {
       })
     }
   })
-  console.log(teams)
+  //console.log(teams)
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">

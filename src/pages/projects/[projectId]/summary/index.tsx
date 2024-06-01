@@ -36,7 +36,7 @@ const SummaryPage = () => {
 
   const handleOrganizationChanged = (e) => {
     //do query based on organization
-    console.log(e)
+    // console.log(e)
     setSelectedOrganization(e)
   }
 
