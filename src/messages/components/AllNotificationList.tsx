@@ -20,6 +20,7 @@ export const AllNotificationList = () => {
         },
       },
     },
+    include: { project: true },
     orderBy: [
       { read: "asc" }, // Show unread notifications first
       { id: "asc" }, // Then sort by id
@@ -27,6 +28,8 @@ export const AllNotificationList = () => {
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
+
+  console.log(notifications)
 
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
