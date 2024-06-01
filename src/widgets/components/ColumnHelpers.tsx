@@ -107,6 +107,7 @@ export const notificationColumns: ColumnDef<Notification>[] = [
     cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
     header: "Message",
     enableColumnFilter: false,
+    enableSorting: false,
   }),
   notificationColumnHelper.accessor("createdAt", {
     cell: (info) => (
@@ -122,8 +123,9 @@ export const notificationColumns: ColumnDef<Notification>[] = [
         })}
       </span>
     ),
-    header: "Posted",
+    header: "Date",
     enableColumnFilter: false,
+    enableSorting: false,
   }),
 ]
 
@@ -136,16 +138,22 @@ export const projectManagersColumns: ColumnDef<ContributorWithUser>[] = [
     accessorKey: "user.username",
     cell: (info) => <span>{info.getValue() as string}</span>,
     header: "Username",
+    enableColumnFilter: false,
+    enableSorting: false,
   },
   {
     accessorKey: "user.firstName",
     cell: (info) => <span>{info.getValue() as string}</span>,
     header: "First Name",
+    enableColumnFilter: false,
+    enableSorting: false,
   },
   {
     accessorKey: "user.lastName",
     cell: (info) => <span>{info.getValue() as string}</span>,
     header: "Last Name",
+    enableColumnFilter: false,
+    enableSorting: false,
   },
   //  { // email PM coming later
   //    accessorKey: "action",
@@ -164,6 +172,8 @@ export const projectTaskColumns: ColumnDef<Tasks>[] = [
   projectTaskColumnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
+    enableSorting: false,
+    enableColumnFilter: false,
   }),
   projectTaskColumnHelper.accessor("deadline", {
     cell: (info) => (
@@ -183,10 +193,14 @@ export const projectTaskColumns: ColumnDef<Tasks>[] = [
       </span>
     ),
     header: "Deadline",
+    enableSorting: false,
+    enableColumnFilter: false,
   }),
   projectTaskColumnHelper.accessor("id", {
     id: "view",
     header: "View",
+    enableSorting: false,
+    enableColumnFilter: false,
     cell: (info) => (
       <Link
         className="btn btn-sm btn-secondary"

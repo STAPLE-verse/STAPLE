@@ -15,8 +15,10 @@ import getTasks from "src/tasks/queries/getTasks"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProjectStats from "../queries/getProjectStats"
 import getContributors from "src/contributors/queries/getContributors"
-import { HeartIcon } from "@heroicons/react/24/outline"
+import { HeartIcon, UserIcon, GlobeAltIcon, ArchiveBoxIcon } from "@heroicons/react/24/outline"
 import getProlificContributors from "src/contributors/queries/getProlificContributors"
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
+import "react-circular-progressbar/dist/styles.css"
 
 // make things draggable
 import React, { useState } from "react"
@@ -54,7 +56,7 @@ const ProjectDashboard = () => {
   const [currentContributor] = useQuery(getContributor, {
     where: { userId: currentUser!.id, projectId: projectId },
   })
-  const [project] = useQuery(getProject, { id: projectId }) // updated
+  const [project] = useQuery(getProject, { id: projectId })
 
   // dragging information
   const handleDragEnd = async (event) => {
@@ -111,9 +113,14 @@ const ProjectDashboard = () => {
     >
       Edit Project
     </Link>
-  ) // updated
+  )
   const taskLink = (
-    <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.TasksPage({
+        projectId: projectId,
+      })}
+    >
       All Tasks
     </Link>
   )
@@ -123,6 +130,56 @@ const ProjectDashboard = () => {
       href={Routes.ProjectNotificationsPage({ projectId: projectId! })}
     >
       All Notifications
+    </Link>
+  )
+  const contributorLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.ContributorsPage({ projectId: projectId! })}
+    >
+      View
+    </Link>
+  )
+  const teamLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.TeamsPage({ projectId: projectId! })}
+    >
+      View
+    </Link>
+  )
+  const formLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.MetadataPage({ projectId: projectId! })}
+    >
+      View
+    </Link>
+  )
+  const elementLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.ElementsPage({ projectId: projectId! })}
+    >
+      View
+    </Link>
+  )
+  const labelLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.CreditPage({ projectId: projectId! })}
+    >
+      View
+    </Link>
+  )
+  const taskSummaryLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.TasksPage({
+        projectId: projectId,
+      })}
+    >
+      View
     </Link>
   )
 
@@ -178,7 +235,6 @@ const ProjectDashboard = () => {
     if (pastDueTasks.length === 0) {
       return <p className="italic p-2">No overdue tasks</p>
     }
-
     return (
       <Table
         columns={projectTaskColumns}
@@ -206,6 +262,84 @@ const ProjectDashboard = () => {
           td: "text-sm text-base-content",
         }}
       />
+    )
+  }
+  const getContributorDisplay = (projectStats) => {
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        {projectStats.allContributor}
+        <UserIcon className="w-20" />
+      </div>
+    )
+  }
+  const getTeamDisplay = (projectStats) => {
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        {projectStats.allTeams}
+        <GlobeAltIcon className="w-20" />
+      </div>
+    )
+  }
+  const getFormDisplay = (projectStats) => {
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        <CircularProgressbar
+          value={formPercent * 100}
+          text={`${Math.round(formPercent * 100)}%`}
+          styles={buildStyles({
+            textSize: "16px",
+            pathTransitionDuration: "none",
+            pathColor: "oklch(var(--p))",
+            textColor: "oklch(var(--s))",
+            trailColor: "oklch(var(--pc))",
+            backgroundColor: "oklch(var(--b3))",
+          })}
+        />
+      </div>
+    )
+  }
+  const getTotalTaskDisplay = (projectStats) => {
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        <CircularProgressbar
+          value={taskPercent * 100}
+          text={`${Math.round(taskPercent * 100)}%`}
+          styles={buildStyles({
+            textSize: "16px",
+            pathTransitionDuration: "none",
+            pathColor: "oklch(var(--p))",
+            textColor: "oklch(var(--s))",
+            trailColor: "oklch(var(--pc))",
+            backgroundColor: "oklch(var(--b3))",
+          })}
+        />
+      </div>
+    )
+  }
+  const getElementDisplay = (projectStats) => {
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        {projectStats.allElements}
+        <ArchiveBoxIcon className="w-20" />
+      </div>
+    )
+  }
+  const getLabelsDisplay = (projectStats) => {
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        <CircularProgressbar
+          value={labelPercent * 100}
+          text={`${Math.round(labelPercent * 100)}%`}
+          styles={buildStyles({
+            textSize: "16px",
+            pathTransitionDuration: "none",
+            pathColor: "oklch(var(--p))",
+            textColor: "oklch(var(--s))",
+            trailColor: "oklch(var(--pc))",
+            backgroundColor: "oklch(var(--b3))",
+          })}
+        />
+      </div>
     )
   }
 
@@ -265,6 +399,15 @@ const ProjectDashboard = () => {
     orderBy: { id: "desc" },
     take: 3,
   })
+  // get project stats
+  const [projectStats] = useQuery(getProjectStats, { id: projectId! })
+  //console.log(projectStats.contribLabels)
+  //console.log(projectStats.completedContribLabels)
+  const formPercent = projectStats.completedAssignments / projectStats.allAssignments
+  const taskPercent = projectStats.completedTask / projectStats.allTask
+  const labelPercent =
+    (projectStats.completedContribLabels + projectStats.completedTaskLabels) /
+    (projectStats.allContributor + projectStats.allTask)
 
   // if the length is 0, then create widgets
   useEffect(() => {
@@ -294,7 +437,7 @@ const ProjectDashboard = () => {
               display: getProjectDisplay(project),
               link: projectLink,
               position: widget.position,
-              size: "col-span-8",
+              size: "col-span-6",
             }
           case "Notifications":
             return {
@@ -327,54 +470,55 @@ const ProjectDashboard = () => {
             return {
               id: widget.id,
               title: "Contributors",
-              display: getUpcomingTaskDisplay(upcomingTasks),
-              link: taskLink,
+              display: getContributorDisplay(projectStats),
+              link: contributorLink,
               position: widget.position,
-              size: "col-span-4",
+              size: "col-span-2",
             }
           case "TeamNumber":
             return {
               id: widget.id,
               title: "Teams",
-              display: getUpcomingTaskDisplay(upcomingTasks),
-              link: taskLink,
+              display: getTeamDisplay(projectStats),
+              link: teamLink,
               position: widget.position,
-              size: "col-span-4",
+              size: "col-span-2",
             }
           case "FormNumber":
             return {
               id: widget.id,
               title: "Forms",
-              display: getUpcomingTaskDisplay(upcomingTasks),
-              link: taskLink,
+              display: getFormDisplay(projectStats),
+              link: formLink,
               position: widget.position,
-              size: "col-span-4",
+              size: "col-span-2",
             }
           case "TaskTotal":
             return {
               id: widget.id,
               title: "Tasks",
-              display: getUpcomingTaskDisplay(upcomingTasks),
-              link: taskLink,
+              display: getTotalTaskDisplay(projectStats),
+              link: taskSummaryLink,
               position: widget.position,
+              size: "col-span-2",
             }
           case "ElementSummary":
             return {
               id: widget.id,
               title: "Elements",
-              display: getUpcomingTaskDisplay(upcomingTasks),
-              link: taskLink,
+              display: getElementDisplay(projectStats),
+              link: elementLink,
               position: widget.position,
-              size: "col-span-4",
+              size: "col-span-2",
             }
           case "LabelsSummary":
             return {
               id: widget.id,
               title: "Labels",
-              display: getUpcomingTaskDisplay(upcomingTasks),
-              link: taskLink,
+              display: getLabelsDisplay(projectStats),
+              link: labelLink,
               position: widget.position,
-              size: "col-span-4",
+              size: "col-span-2",
             }
           default:
             return {

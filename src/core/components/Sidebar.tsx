@@ -95,79 +95,79 @@ export function SidebarItem({ icon, text, active, alert, onClick, tooltipId }: S
       <Tooltip
         id="project-dashboard-tooltip"
         content="See overall project information dashboard"
-        className="z-[1080]"
+        className="z-[1099]"
       />
       <Tooltip
         id="project-tasks-tooltip"
         content="View, add, edit, and complete project specific tasks"
-        className="z-[1080]"
+        className="z-[1099]"
       />
       <Tooltip
         id="project-elements-tooltip"
         content="Elements help you organize tasks into buckets"
-        className="z-[1080]"
+        className="z-[1099]"
       />
       <Tooltip
         id="project-contributors-tooltip"
         content="Add, edit, and view all people on the project"
-        className="z-[1080]"
+        className="z-[1099]"
       />
       <Tooltip
         id="project-teams-tooltip"
         content="Add, edit, and view project teams"
-        className="z-[1080]"
+        className="z-[1099]"
       />
       <Tooltip
         id="project-credit-tooltip"
         content="Add, edit, and view contribution explanations with labels"
-        className="z-[1080]"
+        className="z-[1099]"
       />
       <Tooltip
         id="project-form-tooltip"
         content="Review and download project form data (metadata)"
-        className="z-[1080]"
+        className="z-[1099]"
       />
       <Tooltip
         id="project-summary-tooltip"
         content="Review and download project summary (metadata)"
-        className="z-[1080]"
+        className="z-[1099]"
       />
       <Tooltip
         id="project-settings-tooltip"
         content="Add, edit, and view project overview information (metadata)"
-        className="z-[1080]"
+        className="z-[1099]"
       />
       <Tooltip
         id="dashboard-tooltip"
         content="View the home page dashboard for all projects"
-        className="z-[1080]"
+        className="z-[1099]"
       />
       <Tooltip
         id="projects-tooltip"
         content="View all projects and open a specific one"
-        className="z-[1080]"
+        className="z-[1099]"
       />
-      <Tooltip id="tasks-tooltip" content="View all tasks for all projects" className="z-[1080]" />
+      <Tooltip id="tasks-tooltip" content="View all tasks for all projects" className="z-[1099]" />
       <Tooltip
         id="forms-tooltip"
         content="Build your own forms to collect data in a task (metadata)"
-        className="z-[1080]"
+        className="z-[1099]"
       />
       <Tooltip
         id="notifications-tooltip"
         content="View all notifications for projects"
-        className="z-[1080]"
+        className="z-[1099]"
       />
       <Tooltip
         id="labels-tooltip"
         content="View, add, and edit contribution categories with labels"
-        className="z-[1080]"
+        className="z-[1099]"
       />
-      <Tooltip id="help-tooltip" content="Get help with STAPLE" className="z-[1080]" />
+      <Tooltip id="help-tooltip" content="Get help with STAPLE" className="z-[1099]" />
       <Tooltip
         id="project-notification-tooltip"
         content="View notifications for this project"
-        className="z-[1080]"
+        className="z-[1099]"
       />
 
       {icon}

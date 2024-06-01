@@ -1,15 +1,21 @@
-import JsonSchema1 from "src/services/jsonconverter/schema/schema1"
-import JsonSchema2 from "src/services/jsonconverter/schema/schema2"
+import {
+  JsonContributor,
+  JsonContributorUI,
+} from "src/services/jsonconverter/schema/contributorSchema"
+import { JsonFunder, JsonFunderUI } from "src/services/jsonconverter/schema/funderSchema"
 
 export function getDefaultSchemaLists() {
-  const schemas = [JsonSchema1, JsonSchema2]
+  const schemas = [JsonContributor, JsonFunder]
+  const uis = [JsonContributorUI, JsonFunderUI]
 
-  const restructured = schemas.map((schema) => {
+  const restructured = schemas.map((schema, index) => {
     const parsed = JSON.parse(schema)
+    const uiparse = JSON.parse(uis[index])
     return {
       name: parsed.title,
-      // 'id': parsed.$id,
+      id: -(index + 1),
       schema: parsed,
+      ui: uiparse,
     }
   })
 

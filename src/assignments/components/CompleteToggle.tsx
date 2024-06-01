@@ -36,6 +36,10 @@ const CompleteToggle = ({
     <div>
       {currentAssignment ? (
         <div className="flex items-center space-x-2">
+          <span className="font-semibold">
+            {completedAs == "INDIVIDUAL" && "Individual: "}
+            {completedAs == "TEAM" && "Team: "}
+          </span>
           <span>Not Completed</span>
           <label className="flex items-center cursor-pointer">
             <input

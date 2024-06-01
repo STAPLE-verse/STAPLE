@@ -16,6 +16,9 @@ import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import toast from "react-hot-toast"
 import getAssignments from "src/assignments/queries/getAssignments"
 
+import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
+const defaultSchemas = getDefaultSchemaLists()
+
 export const EditTask = () => {
   const router = useRouter()
   const taskId = useParam("taskId", "number")
@@ -33,7 +36,7 @@ export const EditTask = () => {
   const [assignments] = useQuery(getAssignments, {
     where: { taskId: taskId },
   })
-
+  // console.log()
   const contributorsId = assignments
     .map((assignment) => assignment.contributorId)
     // assignment.contributorId is nullable thus we filter for initialValues
@@ -53,6 +56,7 @@ export const EditTask = () => {
     deadline: task.deadline,
     contributorsId: contributorsId,
     teamsId: teamsId,
+    schema: task.schema.title,
   }
 
   return (
@@ -62,7 +66,7 @@ export const EditTask = () => {
       </Head>
 
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1>Edit {task.name}</h1>
+        <h1 className="text-3xl">Edit {task.name}</h1>
         {/* For debugging Task schema */}
         {/* <pre>{JSON.stringify(task, null, 2)}</pre> */}
         <Suspense fallback={<div>Loading...</div>}>
@@ -73,6 +77,12 @@ export const EditTask = () => {
             schema={FormTaskSchema}
             initialValues={initialValues}
             onSubmit={async (values) => {
+              let schema
+              let ui
+
+              schema = defaultSchemas.find((schema) => schema.name === values.schema)?.schema
+              ui = defaultSchemas.find((schema) => schema.name === values.schema)?.ui
+
               const toastId = "update-task-id"
               toast.dismiss(toastId)
 
@@ -83,6 +93,8 @@ export const EditTask = () => {
                 const updated = await updateTaskMutation({
                   ...values,
                   id: task.id,
+                  schema: schema,
+                  ui: ui,
                 })
 
                 toast.success("Task updated!", { id: toastId })

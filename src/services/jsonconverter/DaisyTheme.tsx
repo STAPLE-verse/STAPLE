@@ -174,6 +174,21 @@ const MyTextWidget = (props: WidgetProps) => {
   )
 }
 
+const MyEmailWidget = (props: WidgetProps) => {
+  return (
+    <div className="flex">
+      <input
+        type="email"
+        style={{ fontSize: "1rem" }}
+        className="input input-primary input-bordered w-full max-w-sm m-2"
+        value={props.value || ""}
+        required={props.required}
+        onChange={(event) => props.onChange(event.target.value)}
+      />
+    </div>
+  )
+}
+
 // create Registry information
 
 // templates
@@ -189,6 +204,7 @@ const myTemplates: TemplatesType = {
 // templates
 const myWidgets: RegistryWidgetsType = {
   TextWidget: MyTextWidget,
+  EmailWidget: MyEmailWidget,
 }
 
 // create the overall theme to use on the other page

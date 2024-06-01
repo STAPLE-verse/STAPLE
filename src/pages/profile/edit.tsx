@@ -14,13 +14,14 @@ import { FormProfileSchema } from "src/users/schemas"
 import { Routes } from "@blitzjs/next"
 import logout from "src/auth/mutations/logout"
 import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
+import Link from "next/link"
 
 export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
     <Form<S> {...props}>
       <LabeledTextField
         name="email"
-        label="Email"
+        label="Email:"
         placeholder="Email"
         type="text"
         className="mb-4 text-primary border-primary border-2 bg-base-300"
@@ -28,7 +29,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <br />
       <LabeledTextField
         name="firstName"
-        label="First name"
+        label="First Name:"
         placeholder="First name"
         type="text"
         className="mb-4 text-primary border-primary border-2 bg-base-300"
@@ -36,7 +37,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <br />
       <LabeledTextField
         name="lastName"
-        label="Last name"
+        label="Last Name:"
         placeholder="Last name"
         type="text"
         className="mb-4 text-primary border-primary border-2 bg-base-300"
@@ -44,7 +45,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <br />
       <LabeledTextField
         name="institution"
-        label="Institution"
+        label="Institution:"
         placeholder="Institution"
         type="text"
         className="mb-4 text-primary border-primary border-2 bg-base-300"
@@ -79,7 +80,7 @@ export const EditProfile = () => {
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl flex justify-center mb-2">Edit profile</h1>
+        <h1 className="text-3xl flex mb-2">Edit profile</h1>
         <Suspense fallback={<div>Loading...</div>}>
           <ProfileForm
             submitText="Update Profile"
@@ -102,6 +103,11 @@ export const EditProfile = () => {
               }
             }}
           />
+          <Link href="/api/auth/orcid" legacyBehavior>
+            <button className="mb-1 flex rounded-md bg-emerald-50 py-2 px-4 text-sm font-medium text-emerald-700 hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-0 dark:border dark:border-gray-600 dark:bg-gray-800 dark:text-emerald-500 dark:hover:border-gray-400 dark:hover:bg-gray-700">
+              Connect your ORCID
+            </button>
+          </Link>
 
           <div className="flex justify-end mt-4">
             <button
