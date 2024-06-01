@@ -39,8 +39,8 @@ export const ProjectTasksList = () => {
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
 
   // only contributor tasks and assignment status
   const [{ tasksContrib, hasMore2 }] = usePaginatedQuery(getTasks, {
@@ -66,8 +66,8 @@ export const ProjectTasksList = () => {
     skip: ITEMS_PER_PAGE * page2,
     take: ITEMS_PER_PAGE,
   })
-  const goToPreviousPage2 = () => router.push({ query: { page: page2 - 1 } })
-  const goToNextPage2 = () => router.push({ query: { page: page2 + 1 } })
+  const goToPreviousPage2 = () => router.push({ projectId: projectId, query: { page: page2 - 1 } })
+  const goToNextPage2 = () => router.push({ projectId: projectId, query: { page: page2 + 1 } })
 
   return (
     <div>

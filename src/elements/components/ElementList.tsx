@@ -8,15 +8,14 @@ interface ElementsListProps {
   projectId: number
 }
 
-export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId }) => {
-  // const { isOver, setNodeRef } = useDroppable({
-  //   id: `element-${element.id}`,
-  // })
-
-  // const style = {
-  //   boxShadow: isOver ? "0 0 8px gray" : undefined,
-  // }
-
+export const ElementsList: React.FC<ElementsListProps> = ({
+  elements,
+  projectId,
+  page,
+  hasMore,
+  goToNextPage,
+  goToPreviousPage,
+}) => {
   return (
     <div>
       {elements.map((element) => {
@@ -78,6 +77,20 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
           </div>
         )
       })}
+
+      {/* Previous and next page btns */}
+      <div className="join grid grid-cols-2 mt-4">
+        <button
+          className="join-item btn btn-secondary"
+          disabled={page === 0}
+          onClick={goToPreviousPage}
+        >
+          Previous
+        </button>
+        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
+          Next
+        </button>
+      </div>
     </div>
   )
 }
