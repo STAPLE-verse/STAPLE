@@ -14,6 +14,7 @@ export const ProjectNotificationList = ({ projectId: projectId }) => {
 
   const [{ notifications, hasMore }, { refetch }] = usePaginatedQuery(getNotifications, {
     where: {
+      projectId: projectId,
       recipients: {
         some: {
           id: currentUser!.id,

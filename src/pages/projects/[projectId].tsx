@@ -45,23 +45,26 @@ export const ShowProjectPage = () => {
             Send Announcement
           </button>
           <Modal open={openModal} size="w-11/12 max-w-3xl">
-            <div className="modal-action">
+            <div className="modal-action flex flex-col">
               {/* Modal content */}
               <textarea
+                className="text-base py-1 px-2 rounded appearance-none"
                 id="announcement"
                 value={announcementText}
                 onChange={(e) => setAnnouncementText(e.target.value)}
                 placeholder="Enter your announcement here"
               ></textarea>
-              {/* Submit button */}
-              <button type="button" className="btn btn-primary" onClick={handleSubmit}>
-                Submit
-              </button>
+              <div className="flex justify-end space-x-2 mt-2">
+                {/* Submit button */}
+                <button type="button" className="btn btn-primary" onClick={handleSubmit}>
+                  Submit
+                </button>
 
-              {/* Closes the modal */}
-              <button type="button" className="btn btn-primary" onClick={handleToggle}>
-                Close
-              </button>
+                {/* Closes the modal */}
+                <button type="button" className="btn btn-primary" onClick={handleToggle}>
+                  Close
+                </button>
+              </div>
             </div>
           </Modal>
           <ProjectDashboard />

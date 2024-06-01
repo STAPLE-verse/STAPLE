@@ -10,7 +10,7 @@ import { Field, FormSpy } from "react-final-form"
 import { z } from "zod"
 import getContributors from "src/contributors/queries/getContributors"
 import Modal from "src/core/components/Modal"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 import getTeams from "src/teams/queries/getTeams"
 export { FORM_ERROR } from "src/core/components/Form"
@@ -30,6 +30,15 @@ interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
 
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
   const { projectId, type, taskId, ...formProps } = props
+
+  // Handle date input as a state
+  const [dateInputValue, setDateInputValue] = useState("")
+
+  useEffect(() => {
+    // Initialize the input with today's date when the component mounts
+    const today = moment().format("YYYY-MM-DDTHH:mm")
+    setDateInputValue(today)
+  }, [])
 
   // Columns
   const [columns] = useQuery(getColumns, {
@@ -146,12 +155,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       {/* Deadline */}
       <Field name="deadline">
         {({ input, meta }) => {
-          const formattedValue =
-            input.value instanceof Date
-              ? moment(input.value).format("YYYY-MM-DDTHH:mm")
-              : input.value
-          const today = moment().format("YYYY-MM-DDTHH:mm")
-
           return (
             <div className="form-control w-full max-w-xs">
               <style jsx>{`
@@ -171,15 +174,22 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
               <label>Deadline:</label>
               <input
                 {...input}
-                value={formattedValue}
+                value={dateInputValue}
                 className="mb-4 text-lg border-2 border-primary rounded p-2 w-full"
                 type="datetime-local"
-                min={today}
+                min={moment().format("YYYY-MM-DDTHH:mm")}
                 //placeholder={today}
                 max="2050-01-01T00:00"
                 onChange={(event) => {
-                  const dateValue = event.target.value ? new Date(event.target.value) : null
-                  input.onChange(dateValue)
+                  const value = event.target.value
+                  setDateInputValue(value)
+                  if (value === "") {
+                    // Handle cleared input by user
+                    input.onChange("")
+                  } else {
+                    // Convert to date if there's a valid value
+                    input.onChange(new Date(value))
+                  }
                 }}
               />
               {meta.touched && meta.error && <span className="text-error">{meta.error}</span>}

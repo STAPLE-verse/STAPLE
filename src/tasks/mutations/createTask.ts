@@ -101,6 +101,7 @@ export default resolver.pipe(
           templateId: "taskAssigned",
           recipients: userIds,
           data: { taskName: name, createdBy: createdByUsername, deadline: deadline },
+          projectId: projectId,
         },
         ctx
       )
@@ -150,6 +151,7 @@ export default resolver.pipe(
           templateId: "taskAssigned",
           recipients: userIds,
           data: { taskName: name, createdBy: createdByUsername, deadline: deadline },
+          projectId: projectId,
         },
         ctx
       )
