@@ -64,6 +64,20 @@ export const PMTaskView = () => {
     { taskId: taskId! }
   )
 
+  const uiSchema = task["ui"] || {}
+  let extendedUiSchema = {}
+  // TODO: This assumes uiSchema is always an object, although the type def allows for string, number(?) as well
+  // I am not sure where would we encounter those
+  if (uiSchema && typeof uiSchema === "object" && !Array.isArray(uiSchema)) {
+    // We do not want to show the submit button
+    extendedUiSchema = {
+      ...uiSchema,
+      "ui:submitButtonOptions": {
+        norender: true,
+      },
+    }
+  }
+
   return (
     <div className="flex flex-row justify-center m-2">
       {/* overall project information */}
@@ -125,7 +139,12 @@ export const PMTaskView = () => {
                     </button>
                     <Modal open={openMetadataInspectModal} size="w-11/12 max-w-5xl">
                       <div className="font-sans">
-                        {<JsonForm schema={getJsonSchema(task["schema"])} uiSchema={task["ui"]} />}
+                        {
+                          <JsonForm
+                            schema={getJsonSchema(task["schema"])}
+                            uiSchema={extendedUiSchema}
+                          />
+                        }
                       </div>
                       <div className="modal-action">
                         <button className="btn btn-primary" onClick={handleMetadataInspectToggle}>
