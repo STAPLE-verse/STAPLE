@@ -54,7 +54,18 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
           <div className="collapse-title text-xl font-medium">{project.name}</div>
           <div className="collapse-content mb-4">
             <p className="mb-2">{project.description}</p>
-            <p className="italic mb-2">Last update: {project.updatedAt.toString()}</p>
+            <p className="italic mb-2">
+              Last update:{" "}
+              {project.updatedAt.toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false, // Use 24-hour format
+              })}
+            </p>
             {/* TODO: Change button position by other method then using absolute */}
             <div className="justify-end absolute bottom-2 right-6">
               <Link
@@ -70,13 +81,13 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
       {/* Previous and next page btns */}
       <div className="join grid grid-cols-2 mt-4">
         <button
-          className="join-item btn btn-primary"
+          className="join-item btn btn-secondary"
           disabled={page === 0}
           onClick={goToPreviousPage}
         >
           Previous
         </button>
-        <button className="join-item btn btn-primary" disabled={!hasMore} onClick={goToNextPage}>
+        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
           Next
         </button>
       </div>

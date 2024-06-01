@@ -89,6 +89,9 @@
   display: none;
   transform: none;
 }
+.modal {
+  background-color: none;
+}
 
 .modal-backdrop {
   z-index: 1050;
@@ -331,4 +334,49 @@
 
 .card-enum {
   background-color: oklch(var(--b1)) !important;
+}
+
+.popover,
+.popover-header,
+.popover-body,
+.popover-inner {
+  background-color: oklch(var(--b1));
+  border: 2px solid !important;
+  border-color: oklch(var(--b6)) !important;
+}
+
+.popover {
+  border-radius: 10px;
+}
+
+.popover-header,
+.popover-body {
+  padding: 10px;
+}
+
+.tooltip-inner,
+.tooltip-arrow,
+.tooltip-left,
+.tooltip-right {
+  padding: 10px;
+  border-radius: 10px;
+  color: oklch(var(--bc));
+  background-color: oklch(var(--b1));
+  /* position: absolute; */
+  margin: 8px;
+}
+
+div.tooltip.show {
+  z-index: 9999 !important;
+}
+
+span.arrow.tooltip-arrow {
+  display: none;
+}
+
+.our-tooltip {
+  padding: 10px;
+  border-radius: 10px;
+  color: oklch(var(--bc));
+  background-color: oklch(var(--b1));
 }

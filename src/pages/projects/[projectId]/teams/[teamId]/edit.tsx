@@ -45,7 +45,7 @@ export const EditTeam = () => {
       </Head>
 
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1>Edit {team.name}</h1>
+        <h1 className="text-3xl">Edit {team.name}</h1>
 
         {
           <Suspense fallback={<div>Loading...</div>}>
@@ -91,7 +91,7 @@ export const EditTeam = () => {
             />
 
             <Link
-              className="btn self-end mt-4"
+              className="btn btn-secondary self-end mt-4"
               href={Routes.ShowTeamPage({ projectId: projectId!, teamId: teamId! })}
             >
               Cancel

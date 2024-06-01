@@ -3,20 +3,24 @@ import { useSortable } from "@dnd-kit/sortable"
 import React from "react"
 import { CSS } from "@dnd-kit/utilities"
 import clsx from "clsx"
-import { Bars3Icon } from "@heroicons/react/24/outline"
+import { Bars3Icon, EllipsisHorizontalCircleIcon } from "@heroicons/react/24/outline"
+import Link from "next/link"
+import { Routes } from "@blitzjs/next"
 
 type ItemsType = {
-  id: UniqueIdentifier
+  id: string
   title: string
+  projectId: number
 }
 
-const TaskItems = ({ id, title }: ItemsType) => {
+const TaskItems = ({ id, title, projectId }: ItemsType) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: id,
     data: {
       type: "item",
     },
   })
+  const taskId = parseInt(id.replace("item-", ""))
   return (
     <div
       ref={setNodeRef}
@@ -32,7 +36,15 @@ const TaskItems = ({ id, title }: ItemsType) => {
     >
       <div className="flex items-center justify-between">
         <b className="text-accent-content">{title}</b>
-        <Bars3Icon className="w-5 h-5" {...listeners}></Bars3Icon>
+        <div className="flex justify-end items-center">
+          <Link
+            href={Routes.ShowTaskPage({ projectId: projectId, taskId: taskId })}
+            // data-dnd-drag-handle="true"
+          >
+            <EllipsisHorizontalCircleIcon className="w-5 h-5 mr-2 border-transparent rounded-2xl shadow-sm hover:opacity-50"></EllipsisHorizontalCircleIcon>
+          </Link>
+          <Bars3Icon className="w-5 h-5" {...listeners}></Bars3Icon>
+        </div>
       </div>
     </div>
   )

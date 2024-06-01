@@ -56,7 +56,9 @@ export const CreditsTabs = () => {
         </Tab.Panel>
 
         {/* Tabpanel for Assign tasks */}
-        <Tab.Panel>{/*<TasksTab></TasksTab>*/}</Tab.Panel>
+        <Tab.Panel>
+          <TasksTab></TasksTab>
+        </Tab.Panel>
 
         {/* Tabpanel for Assign Contributors */}
         <Tab.Panel>

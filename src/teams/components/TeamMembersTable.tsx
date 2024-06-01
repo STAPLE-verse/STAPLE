@@ -46,7 +46,7 @@ const AssignTeamMembers = ({ onChange, teamOptions, showCheckbox }: Props) => {
                 <label className="label cursor-pointer">
                   <input
                     type="checkbox"
-                    className="checkbox checkbox-primary"
+                    className="checkbox checkbox-primary border-2"
                     checked={info.row.original.checked}
                     onChange={() => {
                       handleOnChange(info.row.original)
@@ -57,20 +57,36 @@ const AssignTeamMembers = ({ onChange, teamOptions, showCheckbox }: Props) => {
             }
           </span>
         ),
-        header: "",
+        header: "Select",
       })
     )
   }
   contributorTableColumns.push(
     columnHelper.accessor("userName", {
       cell: (info) => <span>{`${info.row.original.userName}`}</span>,
-      header: "UserName",
+      header: "User Name",
     })
   )
 
   return (
     <div>
-      <div className="flex  mt-2 font-bold">Team Members</div>
+      <div className="flex">
+        <style jsx>{`
+          label {
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+            font-size: 1.25rem;
+          }
+          input {
+            font-size: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            appearance: none;
+          }
+        `}</style>
+        <label>Add Team Members:</label>
+      </div>
       <Table columns={contributorTableColumns} data={contributorChecked}></Table>
     </div>
   )

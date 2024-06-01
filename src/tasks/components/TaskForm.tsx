@@ -16,6 +16,8 @@ import getTeams from "src/teams/queries/getTeams"
 export { FORM_ERROR } from "src/core/components/Form"
 import CheckboxFieldTable from "src/core/components/CheckboxFieldTable"
 import moment from "moment"
+import { ContributorPrivileges } from "db"
+import getForms from "src/forms/queries/getForms"
 
 // TODO: Check whether this is a good method to go
 // Other methods could be: passing the columns directly
@@ -69,7 +71,32 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // Schema
-  const schemas = getDefaultSchemaLists()
+  const defaultSchemas = getDefaultSchemaLists()
+  // Get the schemas of the PMs on the project
+  // Get PM userids
+  const pmList = contributors
+    .filter((contributor) => contributor.privilege === ContributorPrivileges.PROJECT_MANAGER)
+    .map((pm) => pm.userId)
+
+  const [pmForms] = useQuery(getForms, {
+    where: {
+      userId: {
+        in: pmList,
+      },
+    },
+  })
+
+  const pmSchemas = pmForms.forms
+    // Dropping forms that do not have a title added by the user
+    .filter((form) => form.schema && form.schema.title)
+    .map((form) => ({
+      id: form.id,
+      name: form.schema?.title,
+      schema: form.schema,
+      ui: form.uiSchema,
+    }))
+  // Merge schema
+  const schemas = [...defaultSchemas, ...pmSchemas]
 
   // Modal open logics
   const [openSchemaModal, setopenSchemaModal] = useState(false)
@@ -100,7 +127,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Column */}
       <LabelSelectField
-        className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"
+        className="mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="columnId"
         label="Current Status:"
         options={columns}
@@ -109,7 +136,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       />
       {/* Description */}
       <LabeledTextAreaField
-        className="mb-4 textarea textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300"
+        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2"
         name="description"
         label="Task Description:"
         placeholder="Add Description"
@@ -127,15 +154,28 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
           return (
             <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Deadline</span>
-              </label>
+              <style jsx>{`
+                label {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: start;
+                  font-size: 1.25rem;
+                }
+                input {
+                  font-size: 1rem;
+                  padding: 0.25rem 0.5rem;
+                  border-radius: 3px;
+                  appearance: none;
+                }
+              `}</style>
+              <label>Deadline:</label>
               <input
                 {...input}
                 value={formattedValue}
-                className="mb-4 text-lg border rounded p-2 w-1/2"
+                className="mb-4 text-lg border-2 border-primary rounded p-2 w-full"
                 type="datetime-local"
                 min={today}
+                //placeholder={today}
                 max="2050-01-01T00:00"
                 onChange={(event) => {
                   const dateValue = event.target.value ? new Date(event.target.value) : null
@@ -150,7 +190,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Elements */}
       <LabelSelectField
-        className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"
+        className="mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="elementId"
         label="Assign to Element:"
         options={elements}
@@ -166,7 +206,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           className="btn btn-primary w-1/2"
           onClick={() => handleToggleContributorsModal()}
         >
-          Assign contributors
+          Assign Contributors
         </button>
         <FormSpy subscription={{ errors: true }}>
           {({ form }) => {
@@ -244,45 +284,37 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           <div className="">
             <div>
               <label className="text-lg font-bold">Choose a Form Template: </label>
-              <br />
-              <Field
-                name="schema"
-                component="select"
-                className="select select-primary w-full max-w-xs"
-              >
-                {schemas &&
-                  schemas.map((schema) => (
-                    <option key={schema.name} value={schema.name}>
-                      {schema.name}
-                    </option>
-                  ))}
+              <br className="mb-2" />
+              <Field name="schema">
+                {({ input, meta }) => (
+                  <div>
+                    <select
+                      className="select select-primary border-2 w-full max-w-xs"
+                      {...input}
+                      value={input.value ? input.value.id : ""}
+                      onChange={(event) => {
+                        const selectedId = event.target.value
+                        const selectedSchema = schemas.find(
+                          (schema) => schema.id.toString() === selectedId
+                        )
+                        input.onChange(selectedSchema ? selectedSchema : null)
+                      }}
+                    >
+                      <option value="" disabled>
+                        -- select an option --
+                      </option>
+                      {schemas.map((schema) => (
+                        <option key={schema.id} value={schema.id}>
+                          {schema.name}
+                        </option>
+                      ))}
+                    </select>
+                    {meta.touched && meta.error && <span>{meta.error}</span>}
+                  </div>
+                )}
               </Field>
             </div>
 
-            <div className="mt-4">
-              <label className="text-lg font-bold">Upload A Form Template: </label>
-              <br />
-              <Field
-                name="files"
-                className="file-input file-input-bordered file-input-primary w-full max-w-xs"
-              >
-                {({ input: { value, onChange, ...input } }) => {
-                  return (
-                    <div>
-                      <input
-                        onChange={({ target }) => {
-                          onChange(target.files)
-                        }}
-                        {...input}
-                        type="file"
-                        className="file-input w-full max-w-xs"
-                        accept=".json"
-                      />
-                    </div>
-                  )
-                }}
-              </Field>
-            </div>
             <div className="modal-action">
               <button type="button" className="btn btn-primary" onClick={handleToggleSchemaUpload}>
                 Close

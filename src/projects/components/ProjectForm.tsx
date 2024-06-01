@@ -12,28 +12,28 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <LabeledTextField
         name="name"
         label="Name"
-        placeholder="Name"
+        placeholder="Name:"
         type="text"
         className="mb-4 text-primary w-1/2 border-primary border-2 bg-base-300"
       />
       <br />
       <LabeledTextAreaField
-        className="mb-4 textarea textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300"
+        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2"
         name="description"
-        label="Description"
+        label="Description:"
         placeholder="Description"
       />
       <br />
       <LabeledTextAreaField
-        className="mb-4 textarea textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300"
+        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2"
         name="abstract"
-        label="Abstract"
+        label="Abstract:"
         placeholder="Abstract"
       />
       <br />
       <LabeledTextField
         name="keywords"
-        label="Keywords"
+        label="Keywords:"
         placeholder="Keywords separated by commas"
         type="text"
         className="mb-4 text-primary w-1/2 border-primary border-2 bg-base-300"
@@ -42,7 +42,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <LabeledTextField
         name="citation"
         label="Citation"
-        placeholder="Citation"
+        placeholder="Citation:"
         type="text"
         className="mb-4 text-primary w-1/2 border-primary border-2 bg-base-300"
       />
@@ -50,14 +50,14 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <LabeledTextField
         name="publisher"
         label="Publisher"
-        placeholder="Publisher"
+        placeholder="Publisher:"
         type="text"
         className="mb-4 text-primary w-1/2 border-primary border-2 bg-base-300"
       />
       <br />
       <LabeledTextField
         name="identifier"
-        label="Identifier"
+        label="Identifier:"
         placeholder="Identifier: DOI, ISBN, etc."
         type="text"
         className="mb-4 text-primary w-1/2 border-primary border-2 bg-base-300"

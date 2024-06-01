@@ -2,8 +2,9 @@
 // @ts-nocheck
 // react tanstack error
 
+import { useEffect } from "react"
 import { Routes, useParam } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { Contributor, ContributorPrivileges, Prisma, Task, TaskStatus, User, Assignment } from "db"
 import moment from "moment"
@@ -14,212 +15,336 @@ import getTasks from "src/tasks/queries/getTasks"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProjectStats from "../queries/getProjectStats"
 import getContributors from "src/contributors/queries/getContributors"
-import { HeartIcon } from "@heroicons/react/24/outline"
+import { HeartIcon, UserIcon, GlobeAltIcon, ArchiveBoxIcon } from "@heroicons/react/24/outline"
 import getProlificContributors from "src/contributors/queries/getProlificContributors"
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
+import "react-circular-progressbar/dist/styles.css"
+
+// make things draggable
+import React, { useState } from "react"
+import {
+  DndContext,
+  KeyboardSensor,
+  TouchSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCorners,
+} from "@dnd-kit/core"
+import { SortableBox } from "src/core/components/SortableBox"
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+import updateProjectWidgets from "src/widgets/mutations/updateProjectWidgets"
+import setProjectWidgets from "src/widgets/mutations/setProjectWidgets"
+import getProjectWidgets from "src/widgets/queries/getProjectWidgets"
+import toast from "react-hot-toast"
+import getProjects from "src/projects/queries/getProjects" // remove
+import getProject from "src/projects/queries/getProject"
+import getNotifications from "src/messages/queries/getNotifications"
+import {
+  tasksColumns,
+  projectColumns,
+  notificationColumns,
+  projectManagersColumns,
+  projectTaskColumns,
+} from "src/widgets/components/ColumnHelpers"
 
 const ProjectDashboard = () => {
+  //default information
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
-  const [currentContributor] = useQuery(getContributor, {
-    where: { projectId: projectId, userId: currentUser!.id },
-  })
-
-  const taskColumnHelper = createColumnHelper<Task>()
-
-  // ColumnDefs
-  const tasksColumns: ColumnDef<Task>[] = [
-    taskColumnHelper.accessor("name", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Name",
-    }),
-    taskColumnHelper.accessor("deadline", {
-      cell: (info) => (
-        <span>
-          {" "}
-          {info.getValue()
-            ? info.getValue()?.toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false, // Use 24-hour format
-              })
-            : "No Deadline"}
-        </span>
-      ),
-      header: "Deadline",
-    }),
-    taskColumnHelper.accessor("id", {
-      id: "view",
-      header: "View",
-      cell: (info) => (
-        <Link
-          className="btn btn-sm btn-secondary"
-          href={Routes.ShowTaskPage({
-            projectId: info.row.original.projectId,
-            taskId: info.getValue(),
-          })}
-        >
-          View
-        </Link>
-      ),
-    }),
-  ]
-
-  const pastDueTasksColumns: ColumnDef<Task>[] = [
-    taskColumnHelper.accessor("name", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Name",
-    }),
-    taskColumnHelper.accessor("deadline", {
-      cell: (info) => (
-        <span>
-          {" "}
-          {info.getValue()
-            ? info.getValue()?.toLocaleDateString(undefined, {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false, // Use 24-hour format
-              })
-            : "No Deadline"}
-        </span>
-      ),
-      header: "Deadline",
-    }),
-    // TODO: Change this if completed tasks are added
-    taskColumnHelper.accessor("id", {
-      id: "view",
-      header: "View",
-      cell: (info) => (
-        <Link
-          className="btn btn-sm btn-secondary"
-          href={Routes.ShowTaskPage({
-            projectId: info.row.original.projectId,
-            taskId: info.getValue(),
-          })}
-        >
-          View
-        </Link>
-      ),
-    }),
-  ]
-
-  type ContributorWithUser = Prisma.ContributorGetPayload<{
-    include: { user: { select: { username: true; firstName: true; lastName: true } } }
-  }>
-
-  const projectManagersColumns: ColumnDef<ContributorWithUser>[] = [
-    {
-      accessorKey: "user.username",
-      cell: (info) => <span>{info.getValue() as string}</span>,
-      header: "Username",
-    },
-    {
-      accessorKey: "user.firstName",
-      cell: (info) => <span>{info.getValue() as string}</span>,
-      header: "First Name",
-    },
-    {
-      accessorKey: "user.lastName",
-      cell: (info) => <span>{info.getValue() as string}</span>,
-      header: "Last Name",
-    },
-    {
-      accessorKey: "action",
-      header: "Contact",
-      cell: (info) => (
-        <Link className="btn btn-sm btn-secondary" href="">
-          Ask for help
-        </Link>
-      ),
-    },
-  ]
-
   const today = moment().startOf("minute")
-  //const tomorrow = moment(today).add(1, "days")
-
-  // coming up tasks for everyone
-  const [{ tasks }] = useQuery(getTasks, {
-    where: {
-      project: { id: projectId },
-      deadline: {
-        gte: today.toDate(),
-        //lt: moment(tomorrow).add(1, "days").toDate(),
-      },
-      status: TaskStatus.NOT_COMPLETED,
-    },
-    orderBy: { deadline: "asc" },
+  const [currentContributor] = useQuery(getContributor, {
+    where: { userId: currentUser!.id, projectId: projectId },
   })
+  const [project] = useQuery(getProject, { id: projectId })
 
-  const upcomingTasks = tasks.filter((task) => {
-    if (task && task.deadline) {
-      return moment(task.deadline).isSameOrAfter(today, "day")
+  // dragging information
+  const handleDragEnd = async (event) => {
+    const { active, over } = event
+    if (over && active.id !== over.id) {
+      setBoxes((currentBoxes) => {
+        const oldIndex = currentBoxes.findIndex((box) => box.id === active.id)
+        const newIndex = currentBoxes.findIndex((box) => box.id === over.id)
+        const newBoxes = arrayMove(currentBoxes, oldIndex, newIndex)
+
+        // Update positions based on new order in the state
+        const updatedPositions = newBoxes.map((box, index) => ({
+          id: box.id,
+          position: index + 1,
+        }))
+
+        // Call the mutation
+        updateWidgetMutation({ positions: updatedPositions })
+          .then(() => {
+            //console.log("Widget positions updated successfully")
+          })
+          .catch((error) => {
+            //console.error("Error updating widget positions:", error)
+          })
+
+        return newBoxes
+      })
     }
-    return false
+  }
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
+
+  // Get the widgets for the user
+  const [boxes, setBoxes] = useState([])
+  const [fetchedWidgets] = useQuery(getProjectWidgets, {
+    userId: currentUser?.id,
+    projectId: projectId,
   })
 
-  //past due for everyone
-  const [{ tasks: pastDueTasks }] = useQuery(getTasks, {
-    where: {
-      project: { id: projectId },
-      deadline: {
-        lt: today.toDate(),
-      },
-      status: TaskStatus.NOT_COMPLETED,
-    },
-    orderBy: { id: "asc" },
-  })
+  // mutations for the widgets
+  const [updateWidgetMutation] = useMutation(updateProjectWidgets)
+  const [setWidgetMutation] = useMutation(setProjectWidgets)
 
-  // coming up for Contributor
-  const [{ tasks: upcomingTasksContributor }] = useQuery(getTasks, {
-    where: {
-      project: { id: projectId },
-      deadline: { gte: today.toDate() },
-      status: TaskStatus.NOT_COMPLETED,
-      OR: [
-        { assignees: { some: { contributor: { user: { id: currentUser?.id } }, teamId: null } } },
-        {
-          assignees: {
-            some: {
-              team: { contributors: { some: { id: currentUser?.id } } },
-              contributorId: null,
-            },
-          },
-        },
-      ],
-    },
-    orderBy: { id: "asc" },
-  })
+  // links
+  const projectLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.EditProjectPage({ projectId: projectId! })}
+    >
+      Edit Project
+    </Link>
+  )
+  const taskLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.TasksPage({
+        projectId: projectId,
+      })}
+    >
+      All Tasks
+    </Link>
+  )
+  const notificationLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.ProjectNotificationsPage({ projectId: projectId! })}
+    >
+      All Notifications
+    </Link>
+  )
+  const contributorLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.ContributorsPage({ projectId: projectId! })}
+    >
+      View
+    </Link>
+  )
+  const teamLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.TeamsPage({ projectId: projectId! })}
+    >
+      View
+    </Link>
+  )
+  const formLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.MetadataPage({ projectId: projectId! })}
+    >
+      View
+    </Link>
+  )
+  const elementLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.ElementsPage({ projectId: projectId! })}
+    >
+      View
+    </Link>
+  )
+  const labelLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.CreditPage({ projectId: projectId! })}
+    >
+      View
+    </Link>
+  )
+  const taskSummaryLink = (
+    <Link
+      className="btn btn-primary self-end m-4"
+      href={Routes.TasksPage({
+        projectId: projectId,
+      })}
+    >
+      View
+    </Link>
+  )
 
-  // past due for contributor
-  const [{ tasks: pastDueTasksContributor }] = useQuery(getTasks, {
-    where: {
-      project: { id: projectId },
-      deadline: { lt: today.toDate() },
-      status: TaskStatus.NOT_COMPLETED,
-      OR: [
-        { assignees: { some: { contributor: { user: { id: currentUser?.id } }, teamId: null } } },
-        {
-          assignees: {
-            some: {
-              team: { contributors: { some: { id: currentUser?.id } } },
-              contributorId: null,
-            },
-          },
-        },
-      ],
-    },
-    orderBy: { id: "asc" },
-  })
+  // displays
+  const getProjectDisplay = (project) => {
+    return (
+      <div>
+        {project.description}
+        <p className="italic">
+          Last update:{" "}
+          {project.updatedAt.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false, // Use 24-hour format
+          })}
+        </p>
 
-  const [projectStats] = useQuery(getProjectStats, { id: projectId! })
+        <p className="font-bold mt-4">Contacts for the Project: </p>
+        <Table
+          columns={projectManagersColumns}
+          data={projectManagers}
+          classNames={{
+            thead: "text-sm",
+            tbody: "text-sm",
+            td: "text-sm",
+          }}
+        />
+      </div>
+    )
+  }
+  const getUpcomingTaskDisplay = (upcomingTasks) => {
+    if (upcomingTasks.length === 0) {
+      return <p className="italic p-2">No upcoming tasks</p>
+    }
 
+    return (
+      <Table
+        columns={projectTaskColumns}
+        data={upcomingTasks}
+        classNames={{
+          thead: "text-sm text-base-content",
+          tbody: "text-sm text-base-content",
+          td: "text-sm text-base-content",
+        }}
+      />
+    )
+  }
+  const getOverdueTaskDisplay = (pastDueTasks) => {
+    if (pastDueTasks.length === 0) {
+      return <p className="italic p-2">No overdue tasks</p>
+    }
+    return (
+      <Table
+        columns={projectTaskColumns}
+        data={pastDueTasks}
+        classNames={{
+          thead: "text-sm text-base-content",
+          tbody: "text-sm text-base-content",
+          td: "text-sm text-base-content",
+        }}
+      />
+    )
+  }
+  const getNotificationDisplay = (notifications) => {
+    if (notifications.length === 0) {
+      return <p className="italic p-2">No unread notifications</p>
+    }
+
+    return (
+      <Table
+        columns={notificationColumns}
+        data={notifications}
+        classNames={{
+          thead: "text-sm text-base-content",
+          tbody: "text-sm text-base-content",
+          td: "text-sm text-base-content",
+        }}
+      />
+    )
+  }
+  const getContributorDisplay = (projectStats) => {
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        {projectStats.allContributor}
+        <UserIcon className="w-20" />
+      </div>
+    )
+  }
+  const getTeamDisplay = (projectStats) => {
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        {projectStats.allTeams}
+        <GlobeAltIcon className="w-20" />
+      </div>
+    )
+  }
+  const getFormDisplay = (projectStats) => {
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        <CircularProgressbar
+          value={formPercent * 100}
+          text={`${Math.round(formPercent * 100)}%`}
+          styles={buildStyles({
+            textSize: "16px",
+            pathTransitionDuration: "none",
+            pathColor: "oklch(var(--p))",
+            textColor: "oklch(var(--s))",
+            trailColor: "oklch(var(--pc))",
+            backgroundColor: "oklch(var(--b3))",
+          })}
+        />
+      </div>
+    )
+  }
+  const getTotalTaskDisplay = (projectStats) => {
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        <CircularProgressbar
+          value={taskPercent * 100}
+          text={`${Math.round(taskPercent * 100)}%`}
+          styles={buildStyles({
+            textSize: "16px",
+            pathTransitionDuration: "none",
+            pathColor: "oklch(var(--p))",
+            textColor: "oklch(var(--s))",
+            trailColor: "oklch(var(--pc))",
+            backgroundColor: "oklch(var(--b3))",
+          })}
+        />
+      </div>
+    )
+  }
+  const getElementDisplay = (projectStats) => {
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        {projectStats.allElements}
+        <ArchiveBoxIcon className="w-20" />
+      </div>
+    )
+  }
+  const getLabelsDisplay = (projectStats) => {
+    return (
+      <div className="flex justify-center font-bold text-3xl">
+        <CircularProgressbar
+          value={labelPercent * 100}
+          text={`${Math.round(labelPercent * 100)}%`}
+          styles={buildStyles({
+            textSize: "16px",
+            pathTransitionDuration: "none",
+            pathColor: "oklch(var(--p))",
+            textColor: "oklch(var(--s))",
+            trailColor: "oklch(var(--pc))",
+            backgroundColor: "oklch(var(--b3))",
+          })}
+        />
+      </div>
+    )
+  }
+
+  //get the data
+  // get the project manangers
   const [{ contributors: projectManagers }] = useQuery(getContributors, {
     where: {
       projectId: projectId,
@@ -229,192 +354,192 @@ const ProjectDashboard = () => {
       user: true,
     },
   })
+  // get all tasks
+  const [{ tasks }] = useQuery(getTasks, {
+    include: {
+      project: { select: { name: true } },
+    },
+    where: {
+      assignees: { some: { contributor: { user: { id: currentUser?.id } } } },
+      status: TaskStatus.NOT_COMPLETED,
+    },
+    orderBy: { id: "desc" },
+  })
+  // get only upcoming
+  const upcomingTasks = tasks.filter((task) => {
+    if (task && task.deadline) {
+      return moment(task.deadline).isSameOrAfter(today, "day")
+    }
+    return false
+  })
+  // get no deadline
+  const noDeadlineTasks = tasks.filter((task) => {
+    if (task && task.deadline === null) {
+      return moment(task.deadline)
+    }
+    return false
+  })
+  // get pastDue
+  const pastDueTasks = tasks.filter((task) => {
+    if (task && task.deadline) {
+      return moment(task.deadline).isBefore(moment(), "minute")
+    }
+    return false
+  })
+  // get all notifications
+  const [{ notifications }] = useQuery(getNotifications, {
+    where: {
+      recipients: {
+        some: {
+          id: currentUser!.id,
+        },
+      },
+      read: false,
+    },
+    orderBy: { id: "desc" },
+    take: 3,
+  })
+  // get project stats
+  const [projectStats] = useQuery(getProjectStats, { id: projectId! })
+  //console.log(projectStats.contribLabels)
+  //console.log(projectStats.completedContribLabels)
+  const formPercent = projectStats.completedAssignments / projectStats.allAssignments
+  const taskPercent = projectStats.completedTask / projectStats.allTask
+  const labelPercent =
+    (projectStats.completedContribLabels + projectStats.completedTaskLabels) /
+    (projectStats.allContributor + projectStats.allTask)
 
-  var upcomingDisplay = <div></div>
-  var pastDueDisplay = <div></div>
-
-  // create if else for showing tasks
-  if (currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER) {
-    upcomingTasks.length === 0
-      ? (upcomingDisplay = <p className="italic p-2">No upcoming tasks</p>)
-      : (upcomingDisplay = (
-          <Table
-            columns={tasksColumns}
-            data={upcomingTasks}
-            classNames={{
-              thead: "text-sm",
-              tbody: "text-sm",
-              td: "text-sm",
-            }}
-          />
-        ))
-
-    pastDueTasks.length === 0
-      ? (pastDueDisplay = <p className="italic p-2">No overdue tasks</p>)
-      : (pastDueDisplay = (
-          <Table
-            columns={pastDueTasksColumns}
-            data={pastDueTasks}
-            classNames={{
-              thead: "text-sm",
-              tbody: "text-sm",
-              td: "text-sm",
-            }}
-          />
-        ))
-  } else if (currentContributor.privilege == ContributorPrivileges.CONTRIBUTOR) {
-    upcomingTasksContributor.length === 0
-      ? (upcomingDisplay = <p className="italic p-2">No upcoming tasks</p>)
-      : (upcomingDisplay = (
-          <Table
-            columns={tasksColumns}
-            data={upcomingTasksContributor}
-            classNames={{
-              thead: "text-sm",
-              tbody: "text-sm",
-              td: "text-sm",
-            }}
-          />
-        ))
-
-    pastDueTasksContributor.length === 0
-      ? (pastDueDisplay = <p className="italic p-2">No overdue tasks</p>)
-      : (pastDueDisplay = (
-          <Table
-            columns={pastDueTasksColumns}
-            data={pastDueTasksContributor}
-            classNames={{
-              thead: "text-sm",
-              tbody: "text-sm",
-              td: "text-sm",
-            }}
-          />
-        ))
-  }
+  // if the length is 0, then create widgets
+  useEffect(() => {
+    if (fetchedWidgets.length === 0) {
+      //console.log("no widgets")
+      var setUpProjectDashboard = setWidgetMutation({
+        userId: currentUser?.id,
+        projectId: projectId,
+      })
+        .then(() => {
+          //console.log("Widget positions updated successfully")
+          toast.success(`Added dashboard, please refresh!`)
+        })
+        .catch((error) => {
+          //console.error("Error updating widget positions:", error)
+          toast.error(`Issue with dashboard, please contact help.`)
+        })
+    } else {
+      // else start dealing with widgets
+      const sortedWidgets = fetchedWidgets.sort((a, b) => a.position - b.position)
+      const updatedBoxes = sortedWidgets.map((widget) => {
+        switch (widget.type) {
+          case "ProjectSummary":
+            return {
+              id: widget.id,
+              title: project.name,
+              display: getProjectDisplay(project),
+              link: projectLink,
+              position: widget.position,
+              size: "col-span-6",
+            }
+          case "Notifications":
+            return {
+              id: widget.id,
+              title: "Notifications",
+              display: getNotificationDisplay(notifications),
+              link: notificationLink,
+              position: widget.position,
+              size: "col-span-6",
+            }
+          case "OverdueTask":
+            return {
+              id: widget.id,
+              title: "Overdue Tasks",
+              display: getOverdueTaskDisplay(pastDueTasks),
+              link: taskLink,
+              position: widget.position,
+              size: "col-span-6",
+            }
+          case "UpcomingTask":
+            return {
+              id: widget.id,
+              title: "Upcoming Tasks",
+              display: getUpcomingTaskDisplay(upcomingTasks),
+              link: taskLink,
+              position: widget.position,
+              size: "col-span-6",
+            }
+          case "ContributorNumber":
+            return {
+              id: widget.id,
+              title: "Contributors",
+              display: getContributorDisplay(projectStats),
+              link: contributorLink,
+              position: widget.position,
+              size: "col-span-2",
+            }
+          case "TeamNumber":
+            return {
+              id: widget.id,
+              title: "Teams",
+              display: getTeamDisplay(projectStats),
+              link: teamLink,
+              position: widget.position,
+              size: "col-span-2",
+            }
+          case "FormNumber":
+            return {
+              id: widget.id,
+              title: "Forms",
+              display: getFormDisplay(projectStats),
+              link: formLink,
+              position: widget.position,
+              size: "col-span-2",
+            }
+          case "TaskTotal":
+            return {
+              id: widget.id,
+              title: "Tasks",
+              display: getTotalTaskDisplay(projectStats),
+              link: taskSummaryLink,
+              position: widget.position,
+              size: "col-span-2",
+            }
+          case "ElementSummary":
+            return {
+              id: widget.id,
+              title: "Elements",
+              display: getElementDisplay(projectStats),
+              link: elementLink,
+              position: widget.position,
+              size: "col-span-2",
+            }
+          case "LabelsSummary":
+            return {
+              id: widget.id,
+              title: "Labels",
+              display: getLabelsDisplay(projectStats),
+              link: labelLink,
+              position: widget.position,
+              size: "col-span-2",
+            }
+          default:
+            return {
+              id: widget.id,
+              title: "Unknown Widget",
+              display: <div>Widget configuration error</div>,
+              link: <div />,
+              position: widget.position,
+              size: "col-span-4",
+            }
+        }
+      })
+      setBoxes(updatedBoxes)
+    }
+  }, [fetchedWidgets])
 
   return (
     <div className="flex flex-col space-y-4">
-      {/* General stats row 1 across the top
-        only project managers see this*/}
-
-      {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
-        <div className="flex flex-row justify-center">
-          <div className="stats bg-base-300 mx-2 w-1/4">
-            <div className="stat">
-              <div className="stat-title text-center">Contributors</div>
-              <div className="stat-value text-center">{projectStats.allContributor}</div>
-              <div className="stat-actions text-center">
-                <Link
-                  className="btn btn-sm btn-secondary"
-                  href={Routes.ContributorsPage({ projectId: projectId! })}
-                >
-                  View
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="stats bg-base-300 mx-2 w-1/4">
-            <div className="stat">
-              <div className="stat-title text-center">Teams</div>
-              <div className="stat-value text-center">{projectStats.allTeams}</div>
-              <div className="stat-actions text-center">
-                <Link
-                  className="btn btn-sm btn-secondary"
-                  href={Routes.TeamsPage({ projectId: projectId! })}
-                >
-                  View
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="stats bg-base-300 mx-2 w-1/4">
-            <div className="stat">
-              <div className="stat-title text-center">Incomplete Tasks</div>
-              <div className="stat-value text-center">
-                {projectStats.completedTask} / {projectStats.allTask}
-              </div>
-              <div className="stat-actions text-center">
-                <Link
-                  className="btn btn-sm btn-secondary"
-                  href={Routes.TasksPage({ projectId: projectId! })}
-                >
-                  View
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="stats bg-base-300 mx-2 w-1/4">
-            <div className="stat">
-              <div className="stat-title text-center">Form Data</div>
-              <div className="stat-value text-center">XX</div>
-              <div className="stat-actions text-center">
-                <button className="btn btn-sm btn-secondary">Coming Soon</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* row 2 for recent events*/}
-      <div className="flex flex-row justify-center">
-        <div className="card bg-base-300 mx-2 w-1/2">
-          <div className="card-body">
-            <div className="card-title">Recent Events</div>
-            - if project manager: show everyone&apos;s recent Events <br />
-            - if contributor: show your recent events <br />
-          </div>
-        </div>
-
-        <div className="card bg-base-300 mx-2 w-1/2">
-          <div className="card-body">
-            <div className="card-title">Task Summary</div>
-            <b>Upcoming:</b> <br />
-            {upcomingDisplay}
-            <b>Overdue:</b> <br />
-            {pastDueDisplay}
-          </div>
-        </div>
-      </div>
-
-      {/* row 3 for announcements events*/}
-      <div className="flex flex-row justify-center">
-        <div className="card bg-base-300 mx-2 w-1/2">
-          <div className="card-body">
-            <div className="card-title">Announcements</div>
-          </div>
-        </div>
-
-        <div className="stats bg-base-300 mx-2 w-1/2">
-          <div className="card-body">
-            <div className="card-title">Notifications</div>
-          </div>
-        </div>
-      </div>
-
-      {/* row 4 for contributors*/}
-      {currentContributor.privilege == ContributorPrivileges.CONTRIBUTOR && (
-        <div className="flex flex-row justify-center">
-          <div className="card bg-base-300 mx-2 w-full">
-            <div className="card-body">
-              <div className="card-title">Project Managers</div>
-              <b>Contacts for the Project: </b>
-              <br />
-              <Table
-                columns={projectManagersColumns}
-                data={projectManagers}
-                classNames={{
-                  thead: "text-sm",
-                  tbody: "text-sm",
-                  td: "text-sm",
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+      <DndContext collisionDectection={closestCorners} onDragEnd={handleDragEnd} sensors={sensors}>
+        <SortableBox boxes={boxes} />
+      </DndContext>
     </div>
   )
 }

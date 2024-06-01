@@ -1,11 +1,11 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
-import { Suspense } from "react"
+import { Suspense, useEffect } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { useQuery } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import getProjects from "src/projects/queries/getProjects"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
@@ -13,10 +13,14 @@ import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import getTasks from "src/tasks/queries/getTasks"
 import moment from "moment"
 import Table from "src/core/components/Table"
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { Prisma, Project, TaskStatus, Notification } from "db"
+import { TaskStatus } from "db"
 import getNotifications from "src/messages/queries/getNotifications"
-import { notificationTableColumns } from "src/messages/components/notificationTable"
+import {
+  tasksColumns,
+  projectColumns,
+  notificationColumns,
+} from "src/widgets/components/ColumnHelpers"
+import getUserWidgets from "src/widgets/queries/getUserWidgets"
 
 // make things draggable
 import React, { useState } from "react"
@@ -31,161 +35,108 @@ import {
 } from "@dnd-kit/core"
 import { SortableBox } from "src/core/components/SortableBox"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+import updateWidget from "src/widgets/mutations/updateWidget"
+import setWidgets from "src/widgets/mutations/setWidgets"
+import toast from "react-hot-toast"
 
-type TaskWithProjectName = Prisma.TaskGetPayload<{
-  include: { project: { select: { name: true } } }
-}>
+const projectLink = (
+  <Link className="btn btn-primary self-end m-4" href={Routes.ProjectsPage()}>
+    All Projects
+  </Link>
+)
 
-//column information
-const taskColumnHelper = createColumnHelper<TaskWithProjectName>()
-const tasksColumns: ColumnDef<TaskWithProjectName>[] = [
-  taskColumnHelper.accessor("name", {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Name",
-    enableColumnFilter: false,
-  }),
-  taskColumnHelper.accessor((row) => row.project.name, {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Project",
-    enableColumnFilter: false,
-  }),
-  taskColumnHelper.accessor("deadline", {
-    cell: (info) => (
-      <span>
-        {" "}
-        {info.getValue()
-          ? info.getValue()?.toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: false, // Use 24-hour format
-            })
-          : "No Deadline"}
-      </span>
-    ),
-    header: "Deadline",
-    enableColumnFilter: false,
-  }),
-  taskColumnHelper.accessor("id", {
-    id: "view",
-    header: "View",
-    cell: (info) => (
-      <Link
-        className="btn btn-sm btn-secondary"
-        href={Routes.ShowTaskPage({
-          projectId: info.row.original.projectId,
-          taskId: info.getValue(),
-        })}
-      >
-        View
-      </Link>
-    ),
-    enableColumnFilter: false,
-  }),
-]
+const taskLink = (
+  <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
+    All Tasks
+  </Link>
+)
 
-const projectColumnHelper = createColumnHelper<Project>()
-const projectColumns: ColumnDef<Project>[] = [
-  projectColumnHelper.accessor("name", {
-    cell: (info) => <span className="font-semibold">{info.getValue()}</span>,
-    header: "Name",
-    enableColumnFilter: false,
-  }),
-  projectColumnHelper.accessor("updatedAt", {
-    cell: (info) => (
-      <span>
-        {info.getValue()?.toLocaleDateString(undefined, {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false, // Use 24-hour format
-        })}
-      </span>
-    ),
-    header: "Updated",
-    enableColumnFilter: false,
-  }),
-  projectColumnHelper.accessor("id", {
-    id: "view",
-    header: "View",
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => (
-      <Link
-        className="btn btn-sm btn-secondary"
-        href={Routes.ShowProjectPage({
-          projectId: info.getValue(),
-        })}
-      >
-        View
-      </Link>
-    ),
-  }),
-]
+const notificationLink = (
+  <Link className="btn btn-primary self-end m-4" href={Routes.NotificationsPage()}>
+    All Notifications
+  </Link>
+)
 
-const notificationColumnHelper = createColumnHelper<Notification>()
-const notificationColumns: ColumnDef<Notification>[] = [
-  notificationColumnHelper.accessor("message", {
-    cell: (info) => <span className="font-semibold">{info.getValue()}</span>,
-    header: "Message",
-    enableColumnFilter: false,
-  }),
-  notificationColumnHelper.accessor("createdAt", {
-    cell: (info) => (
-      <span>
-        {info.getValue()?.toLocaleDateString(undefined, {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false, // Use 24-hour format
-        })}
-      </span>
-    ),
-    header: "Posted",
-    enableColumnFilter: false,
-  }),
-]
+// Define displays as functions to easily handle the fetching logic if necessary
+const getProjectDisplay = (projects) => {
+  if (projects.length === 0) {
+    return <p className="italic p-2">No projects</p>
+  }
+  return (
+    <Table
+      columns={projectColumns}
+      data={projects}
+      classNames={{
+        thead: "text-sm text-base-content",
+        tbody: "text-sm text-base-content",
+        td: "text-sm text-base-content",
+      }}
+    />
+  )
+}
 
-//start page
+const getUpcomingTaskDisplay = (upcomingTasks) => {
+  if (upcomingTasks.length === 0) {
+    return <p className="italic p-2">No upcoming tasks</p>
+  }
+
+  return (
+    <Table
+      columns={tasksColumns}
+      data={upcomingTasks}
+      classNames={{
+        thead: "text-sm text-base-content",
+        tbody: "text-sm text-base-content",
+        td: "text-sm text-base-content",
+      }}
+    />
+  )
+}
+
+const getOverdueTaskDisplay = (pastDueTasks) => {
+  if (pastDueTasks.length === 0) {
+    return <p className="italic p-2">No overdue tasks</p>
+  }
+
+  return (
+    <Table
+      columns={tasksColumns}
+      data={pastDueTasks}
+      classNames={{
+        thead: "text-sm text-base-content",
+        tbody: "text-sm text-base-content",
+        td: "text-sm text-base-content",
+      }}
+    />
+  )
+}
+
+const getNotificationDisplay = (notifications) => {
+  if (notifications.length === 0) {
+    return <p className="italic p-2">No unread notifications</p>
+  }
+
+  return (
+    <Table
+      columns={notificationColumns}
+      data={notifications}
+      classNames={{
+        thead: "text-sm text-base-content",
+        tbody: "text-sm text-base-content",
+        td: "text-sm text-base-content",
+      }}
+    />
+  )
+}
+
 const MainPage = () => {
   const sidebarItems = HomeSidebarItems("Dashboard")
   const currentUser = useCurrentUser()
   const today = moment().startOf("day")
+  const [updateWidgetMutation] = useMutation(updateWidget)
+  const [setWidgetMutation] = useMutation(setWidgets)
 
-  //variable definitions
-  var upcomingDisplay = <div></div>
-  var pastDueDisplay = <div></div>
-  var noDeadlineDisplay = <div></div>
-  var projectsDisplay = <div></div>
-  var notificationsDisplay = <div></div>
-  var taskLink = (
-    <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
-      {" "}
-      Show all tasks{" "}
-    </Link>
-  )
-  var projectLink = (
-    <Link className="btn btn-primary self-end m-4" href={Routes.ProjectsPage()}>
-      {" "}
-      Show all projects{" "}
-    </Link>
-  )
-  var notificationLink = (
-    <Link className="btn btn-primary self-end m-4" href={Routes.NotificationsPage()}>
-      {" "}
-      Show all notifications{" "}
-    </Link>
-  )
-
+  // Get data
   // get all tasks
   const [{ tasks }] = useQuery(getTasks, {
     include: {
@@ -193,11 +144,6 @@ const MainPage = () => {
     },
     where: {
       assignees: { some: { contributor: { user: { id: currentUser?.id } } } },
-      //deadline: {
-      // TODO: return all not completed tasks even with due date
-      //gte: today.toDate(),
-      //lt: moment(tomorrow).add(1, "days").toDate(),
-      //},
       status: TaskStatus.NOT_COMPLETED,
     },
     orderBy: { id: "desc" },
@@ -254,108 +200,108 @@ const MainPage = () => {
     take: 3,
   })
 
-  // displays
-  if (upcomingTasks.length === 0) {
-    upcomingDisplay = <p className="italic p-2">No upcoming tasks</p>
-  } else {
-    upcomingDisplay = (
-      <Table
-        columns={tasksColumns}
-        data={upcomingTasks}
-        classNames={{
-          thead: "text-sm text-base-content",
-          tbody: "text-sm text-base-content",
-          td: "text-sm text-base-content",
-        }}
-      />
-    )
-  }
+  // Get the widgets for the user
+  const [boxes, setBoxes] = useState([])
 
-  if (pastDueTasks.length === 0) {
-    pastDueDisplay = <p className="italic p-2">No overdue tasks</p>
-  } else {
-    pastDueDisplay = (
-      <Table
-        columns={tasksColumns}
-        data={pastDueTasks}
-        classNames={{
-          thead: "text-sm text-base-content",
-          tbody: "text-sm text-base-content",
-          td: "text-sm text-base-content",
-        }}
-      />
-    )
-  }
+  const [fetchedWidgets] = useQuery(getUserWidgets, {
+    userId: currentUser?.id,
+  })
 
-  if (projects.length === 0) {
-    projectsDisplay = <p className="italic p-2">No projects</p>
-  } else {
-    projectsDisplay = (
-      <Table
-        columns={projectColumns}
-        data={projects}
-        classNames={{
-          thead: "text-sm text-base-content",
-          tbody: "text-sm text-base-content",
-          td: "text-sm text-base-content",
-        }}
-      />
-    )
-  }
+  // then update them on their screen
+  useEffect(() => {
+    if (fetchedWidgets.length > 0) {
+      const sortedWidgets = fetchedWidgets.sort((a, b) => a.position - b.position)
+      const updatedBoxes = sortedWidgets.map((widget) => {
+        switch (widget.type) {
+          case "LastProject":
+            return {
+              id: widget.id,
+              title: "Last Updated Projects",
+              display: getProjectDisplay(projects),
+              link: projectLink,
+              position: widget.position,
+              size: "col-span-6",
+            }
+          case "Notifications":
+            return {
+              id: widget.id,
+              title: "Notifications",
+              display: getNotificationDisplay(notifications),
+              link: notificationLink,
+              position: widget.position,
+              size: "col-span-6",
+            }
+          case "OverdueTask":
+            return {
+              id: widget.id,
+              title: "Overdue Tasks",
+              display: getOverdueTaskDisplay(pastDueTasks),
+              link: taskLink,
+              position: widget.position,
+              size: "col-span-6",
+            }
+          case "UpcomingTask":
+            return {
+              id: widget.id,
+              title: "Upcoming Tasks",
+              display: getUpcomingTaskDisplay(upcomingTasks),
+              link: taskLink,
+              position: widget.position,
+              size: "col-span-6",
+            }
+          default:
+            return {
+              id: widget.id,
+              title: "Unknown Widget",
+              display: <div>Widget configuration error</div>,
+              link: <div />,
+              position: widget.position,
+              size: "col-span-6",
+            }
+        }
+      })
+      setBoxes(updatedBoxes)
+    } else {
+      // console.log("no widgets")
+      // Call the mutation
+      setWidgetMutation({ id: currentUser?.id })
+        .then(() => {
+          //console.log("Widget positions updated successfully")
+          toast.success(`Added dashboard, please refresh!`)
+        })
+        .catch((error) => {
+          //console.error("Error updating widget positions:", error)
+          toast.error(`Issue with dashboard, please contact help.`)
+        })
+    }
+  }, [fetchedWidgets])
 
-  if (pastDueTasks.length === 0) {
-    pastDueDisplay = <p className="italic p-2">No overdue tasks</p>
-  } else {
-    pastDueDisplay = (
-      <Table
-        columns={tasksColumns}
-        data={pastDueTasks}
-        classNames={{
-          thead: "text-sm text-base-content",
-          tbody: "text-sm text-base-content",
-          td: "text-sm text-base-content",
-        }}
-      />
-    )
-  }
-
-  if (notifications.length === 0) {
-    notificationsDisplay = <p className="italic p-2">No unread notifications</p>
-  } else {
-    notificationsDisplay = (
-      <Table
-        columns={notificationColumns}
-        data={notifications}
-        classNames={{
-          thead: "text-sm text-base-content",
-          tbody: "text-sm text-base-content",
-          td: "text-sm text-base-content",
-        }}
-      />
-    )
-  }
-
-  // make things drag and droppable
-  const [boxes, setBoxes] = useState([
-    { id: 1, title: "Upcoming Tasks", display: upcomingDisplay, link: taskLink },
-    { id: 2, title: "Overdue Tasks", display: pastDueDisplay, link: taskLink },
-    { id: 3, title: "Last Updated Projects", display: projectsDisplay, link: projectLink },
-    { id: 4, title: "Notifications", display: notificationsDisplay, link: notificationLink },
-  ])
-
-  const getBoxesPos = (id) => boxes.findIndex((boxes) => boxes.id === id)
-
-  const handleDragEnd = (event) => {
+  const handleDragEnd = async (event) => {
     const { active, over } = event
+    if (over && active.id !== over.id) {
+      setBoxes((currentBoxes) => {
+        const oldIndex = currentBoxes.findIndex((box) => box.id === active.id)
+        const newIndex = currentBoxes.findIndex((box) => box.id === over.id)
+        const newBoxes = arrayMove(currentBoxes, oldIndex, newIndex)
 
-    if (active.id === over.id) return
+        // Update positions based on new order in the state
+        const updatedPositions = newBoxes.map((box, index) => ({
+          id: box.id,
+          position: index + 1,
+        }))
 
-    setBoxes((boxes) => {
-      const originalPos = getBoxesPos(active.id)
-      const newPos = getBoxesPos(over.id)
+        // Call the mutation
+        updateWidgetMutation({ positions: updatedPositions })
+          .then(() => {
+            //console.log("Widget positions updated successfully")
+          })
+          .catch((error) => {
+            //console.error("Error updating widget positions:", error)
+          })
 
-      return arrayMove(boxes, originalPos, newPos)
-    })
+        return newBoxes
+      })
+    }
   }
 
   const sensors = useSensors(
@@ -374,7 +320,7 @@ const MainPage = () => {
 
       <Suspense fallback={<div>Loading...</div>}>
         <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl h-full space-y-4">
-          <div className="mb-4">
+          <div className="mb-4 justify-center flex">
             <h3 className="text-3xl">Welcome, {currentUser!.username}!</h3>
           </div>
 

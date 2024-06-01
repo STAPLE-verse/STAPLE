@@ -3,7 +3,7 @@ export async function fileReader(file: File): Promise<string> {
     const reader = new FileReader()
 
     reader.onload = () => {
-      console.log("File content:", reader.result)
+      // console.log("File content:", reader.result)
 
       if (reader.result && typeof reader.result === "string") {
         resolve(reader.result)

@@ -17,19 +17,19 @@ import getLabels from "../queries/getLabels"
 interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
   type?: string
-  taskId?: number
+  tasksId?: number[]
 }
 
 export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormProps<S>) {
-  const { projectId, type, taskId, ...formProps } = props
+  const { projectId, type, tasksId, ...formProps } = props
 
   // Contributors
-  const [{ contributors }] = useQuery(getContributors, {
-    where: { project: { id: projectId! } },
-    include: {
-      user: true,
-    },
-  })
+  // const [{ contributors }] = useQuery(getContributors, {
+  //   where: { project: { id: projectId! } },
+  //   include: {
+  //     user: true,
+  //   },
+  // })
 
   const [{ labels }] = useQuery(getLabels, {
     // where: { project: { id: projectId! } },
@@ -37,7 +37,6 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
     //   user: true,
     // },
   })
-  // console.log(labels)
 
   const labelOptions = labels.map((labels) => {
     return {
@@ -45,11 +44,6 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
       id: labels["id"],
     }
   })
-
-  // // Teams
-  // const [{ teams }] = useQuery(getTeams, {
-  //   where: { project: { id: projectId! } },
-  // })
 
   return (
     <Form<S> {...formProps} encType="multipart/form-data">

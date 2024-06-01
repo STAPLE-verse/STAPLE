@@ -26,7 +26,7 @@ const NewElementPage = () => {
         <title>Create New Element</title>
       </Head>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1>Create New Element</h1>
+        <h1 className="text-3xl">Create New Element</h1>
         <Suspense fallback={<div>Loading...</div>}>
           <ElementForm
             submitText="Create Element"

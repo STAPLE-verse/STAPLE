@@ -17,8 +17,20 @@ export const formsTableColumns = [
     header: "Name",
   }),
   columnHelper.accessor("updatedAt", {
-    cell: (info) => <span>{info.getValue().toISOString()}</span>,
-    header: "Updated at",
+    cell: (info) => (
+      <span>
+        {info.getValue()?.toLocaleDateString(undefined, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false, // Use 24-hour format
+        })}
+      </span>
+    ),
+    header: "Last Update",
   }),
   columnHelper.accessor((row) => "view", {
     id: "view",
@@ -49,7 +61,7 @@ export const formsTableColumns = [
         </>
       )
     },
-    header: "",
+    header: "View",
   }),
   columnHelper.accessor("id", {
     id: "edit",
@@ -60,6 +72,6 @@ export const formsTableColumns = [
         Edit
       </Link>
     ),
-    header: "",
+    header: "Edit",
   }),
 ]

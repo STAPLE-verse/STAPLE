@@ -1,16 +1,13 @@
 import React, { useState } from "react"
-import { Task } from "db"
-
-import { RowSelection, createColumnHelper } from "@tanstack/react-table"
-import Link from "next/link"
-import { Routes } from "@blitzjs/next"
+import { createColumnHelper } from "@tanstack/react-table"
 import Modal from "src/core/components/Modal"
 import { FORM_ERROR, LabelForm } from "./LabelForm"
-import { LabelFormSchema } from "src/labels/schemas"
 import toast from "react-hot-toast"
 import updateLabel from "../mutations/updateLabel"
 import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
+import { strict } from "assert"
+import { LabelFormSchema } from "../schemas"
 
 export type LabelInformation = {
   name: string
@@ -19,6 +16,7 @@ export type LabelInformation = {
   id: number
   userId: number
   onChangeCallback?: () => void
+  taxonomyList: string[]
 }
 
 const EditColumn = ({ row }) => {
@@ -29,7 +27,7 @@ const EditColumn = ({ row }) => {
     taxonomy = "",
     userId = null,
     id = null,
-    onChangeCallback = undefined,
+    onChangeCallback = null,
     ...rest
   } = { ...row }
 
@@ -43,6 +41,7 @@ const EditColumn = ({ row }) => {
     description: description,
     taxonomy: taxonomy,
   }
+  const taxonomyList = row.taxonomyList
 
   const handleEditLabel = async (values) => {
     // console.log(values)
@@ -69,18 +68,18 @@ const EditColumn = ({ row }) => {
   }
 
   return (
-    <div className="modal-action flex justify-end mt-4">
+    <div>
       <button
         type="button"
         /* button for popups */
-        className="btn btn-outline btn-primary"
+        className="btn btn-primary"
         onClick={handleToggleEditLabelModal}
       >
         Edit
       </button>
       <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
         <div className="">
-          <h1 className="flex justify-center mb-2">Editing label</h1>
+          <h1 className="flex justify-center mb-2 text-3xl">Edit Label</h1>
           <div className="flex justify-start mt-4">
             <LabelForm
               schema={LabelFormSchema}
@@ -88,9 +87,10 @@ const EditColumn = ({ row }) => {
               className="flex flex-col"
               onSubmit={handleEditLabel}
               initialValues={initialValues}
-              name={""}
-              description={""}
-              taxonomy={""}
+              taxonomyList={taxonomyList}
+              // name={""}
+              // description={""}
+              // taxonomy={""}
             ></LabelForm>
           </div>
 
@@ -99,7 +99,7 @@ const EditColumn = ({ row }) => {
             <button
               type="button"
               /* button for popups */
-              className="btn btn-outline btn-primary"
+              className="btn btn-secondary"
               onClick={handleToggleEditLabelModal}
             >
               Close
@@ -113,36 +113,38 @@ const EditColumn = ({ row }) => {
 
 const DeleteColumn = ({ row }) => {
   const [deleteLabelMutation] = useMutation(deleteLabel)
-  const { id = null, onChangeCallback = undefined, ...rest } = { ...row }
+  const { id = null, onChangeCallback = null, ...rest } = { ...row }
 
   const handleDeleteLabel = async (values) => {
     // console.log(values)
-    try {
-      const updated = await deleteLabelMutation({
-        id: id,
-      })
-      if (onChangeCallback != undefined) {
-        onChangeCallback()
-      }
-      await toast.promise(Promise.resolve(updated), {
-        loading: "Deleting label...",
-        success: "Label deleted!",
-        error: "Failed to edit the label...",
-      })
-    } catch (error: any) {
-      console.error(error)
-      return {
-        [FORM_ERROR]: error.toString(),
+    if (window.confirm("This label will be permanently deleted. Are you sure to continue?")) {
+      try {
+        const updated = await deleteLabelMutation({
+          id: id,
+        })
+        if (onChangeCallback != undefined) {
+          onChangeCallback()
+        }
+        await toast.promise(Promise.resolve(updated), {
+          loading: "Deleting label...",
+          success: "Label deleted!",
+          error: "Failed to delete the label...",
+        })
+      } catch (error: any) {
+        console.error(error)
+        return {
+          [FORM_ERROR]: error.toString(),
+        }
       }
     }
   }
 
   return (
-    <div className="modal-action flex justify-end mt-4">
+    <div>
       <button
         type="button"
         /* button for popups */
-        className="btn btn-outline btn-primary"
+        className="btn btn-primary"
         onClick={handleDeleteLabel}
       >
         Delete
@@ -171,7 +173,7 @@ export const lableTableColumns = [
 
   columnHelper.accessor("id", {
     id: "edit",
-    header: "",
+    header: "Edit",
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <EditColumn row={info.row.original}></EditColumn>,
@@ -179,7 +181,7 @@ export const lableTableColumns = [
 
   columnHelper.accessor("id", {
     id: "delete",
-    header: "",
+    header: "Delete",
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <DeleteColumn row={info.row.original}></DeleteColumn>,

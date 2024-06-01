@@ -11,25 +11,86 @@ export const FormTaskSchema = z
     teamsId: z.array(z.number()).optional().nullable(),
     deadline: z.date().optional().nullable(),
     // template: __fieldName__: z.__zodType__(),
-    schema: z
-      .unknown()
-      .nullable()
-      .refine(
-        (data) => {
-          if (data === null || data === undefined) {
-            return true // Allow null or undefined
-          }
+    // schema: z
+    //   .unknown()
+    //   .nullable()
+    //   .refine(
+    //     (data) => {
+    //       if (data === null || data === undefined) {
+    //         return true // Allow null or undefined
+    //       }
 
-          try {
-            JSON.parse(JSON.stringify(data))
-            return true
-          } catch (error) {
-            return false
-          }
-        },
-        { message: "Invalid JSON format" }
-      )
-      .transform((data) => data as Prisma.NullableJsonNullValueInput),
+    //       try {
+    //         JSON.parse(JSON.stringify(data))
+    //         return true
+    //       } catch (error) {
+    //         return false
+    //       }
+    //     },
+    //     { message: "Invalid JSON format" }
+    //   )
+    //   .transform((data) => data as Prisma.NullableJsonNullValueInput),
+    // ui: z
+    //   .unknown()
+    //   .nullable()
+    //   .refine(
+    //     (data) => {
+    //       if (data === null || data === undefined) {
+    //         return true // Allow null or undefined
+    //       }
+
+    //       try {
+    //         JSON.parse(JSON.stringify(data))
+    //         return true
+    //       } catch (error) {
+    //         return false
+    //       }
+    //     },
+    //     { message: "Invalid JSON format" }
+    //   )
+    //   .transform((data) => data as Prisma.NullableJsonNullValueInput),
+    schema: z
+      .object({
+        name: z.string().nullable(), // name is nullable, but present in the object structure
+        schema: z
+          .unknown()
+          .nullable()
+          .refine(
+            (data) => {
+              if (data === null) {
+                return true // Allow null
+              }
+              try {
+                JSON.parse(JSON.stringify(data))
+                return true
+              } catch (error) {
+                return false
+              }
+            },
+            { message: "Invalid JSON format" }
+          )
+          .transform((data) => data as Prisma.JsonValue | null),
+        ui: z
+          .unknown()
+          .nullable()
+          .refine(
+            (data) => {
+              if (data === null) {
+                return true // Allow null
+              }
+              try {
+                JSON.parse(JSON.stringify(data))
+                return true
+              } catch (error) {
+                return false
+              }
+            },
+            { message: "Invalid JSON format" }
+          )
+          .transform((data) => data as Prisma.JsonValue | null),
+      })
+      .optional()
+      .nullable(),
     files: z
       .unknown()
       .nullable()
@@ -84,6 +145,25 @@ export const CreateTaskSchema = z.object({
       { message: "Invalid JSON format" }
     )
     .transform((data) => data as Prisma.NullableJsonNullValueInput),
+  ui: z
+    .unknown()
+    .nullable()
+    .refine(
+      (data) => {
+        if (data === null || data === undefined) {
+          return true // Allow null or undefined
+        }
+
+        try {
+          JSON.parse(JSON.stringify(data))
+          return true
+        } catch (error) {
+          return false
+        }
+      },
+      { message: "Invalid JSON format" }
+    )
+    .transform((data) => data as Prisma.NullableJsonNullValueInput),
 })
 
 export const UpdateTaskSchema = z.object({
@@ -95,6 +175,25 @@ export const UpdateTaskSchema = z.object({
   contributorsId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.any()).optional().nullable(),
   schema: z
+    .unknown()
+    .nullable()
+    .refine(
+      (data) => {
+        if (data === null || data === undefined) {
+          return true // Allow null or undefined
+        }
+
+        try {
+          JSON.parse(JSON.stringify(data))
+          return true
+        } catch (error) {
+          return false
+        }
+      },
+      { message: "Invalid JSON format" }
+    )
+    .transform((data) => data as Prisma.NullableJsonNullValueInput),
+  ui: z
     .unknown()
     .nullable()
     .refine(
@@ -125,13 +224,31 @@ export const DeleteTaskSchema = z.object({
 })
 
 export const UpdateTaskOrderSchema = z.object({
-  activeId: z.any(),
-  overId: z.any(),
-  activeIndex: z.any(),
-  overIndex: z.any(),
+  tasks: z.array(
+    z.object({
+      taskId: z.number(),
+      columnId: z.number(),
+      columnTaskIndex: z.number(),
+    })
+  ),
 })
 
+// export const UpdateTaskLabelSchema = z.object({
+//   taskId: z.number(),
+//   labelsId: z.array(z.number()).optional().nullable(),
+// })
+
 export const UpdateTaskLabelSchema = z.object({
-  taskId: z.number(),
+  tasksId: z.array(z.number()).nonempty(),
   labelsId: z.array(z.number()).optional().nullable(),
+  disconnect: z.boolean(),
+})
+
+export const CreateColumnSchema = z.object({
+  name: z.string(),
+  projectId: z.number(),
+})
+
+export const UpdateColumnOrderSchema = z.object({
+  columnIds: z.array(z.number()),
 })

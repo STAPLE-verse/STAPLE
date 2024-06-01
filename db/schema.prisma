@@ -32,6 +32,9 @@ model User {
   forms            Forms[]
   notifications    Notification[] @relation("UserNotifications")
   ContributorLabel Label[]
+
+  widgets       Widget[]
+  ProjectWidget ProjectWidget[]
 }
 
 model Session {
@@ -100,47 +103,41 @@ model Contributor {
   AssignmentStatusLog AssignmentStatusLog[]
   // allow them to have multiple contributor labels, I think like the task array?
   // add contributor label link here
+  labels              Label[]
 }
 
 // Contribution type
 
 model Label {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  user        User     @relation(fields: [userId], references: [id])
-  name        String
-  description String?
-  taxonomy    String?
-  Project     Project? @relation(fields: [projectId], references: [id])
-  projectId   Int?
-  // Task        Task?    @relation(fields: [taskId], references: [id])
-  // taskId      Int?
-  tasks       Task[]
+  id           Int           @id @default(autoincrement())
+  userId       Int
+  user         User          @relation(fields: [userId], references: [id])
+  name         String
+  description  String?
+  taxonomy     String?
+  projects     Project[]
+  tasks        Task[]
+  contributors Contributor[]
 }
 
 model Project {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String
-  description String?
-  abstract    String?
-  keywords    String?
-  citation    String?
-  publisher   String?
-  identifier  String?
-
-  tasks    Task[]
-  elements Element[]
-  columns  Column[]
-
-  contributors Contributor[]
-  teams        Team[]
-  labels       Label[]
-
-  // contributor label options here in an array - relation
-  // basically just a filter of what should be allowed in the
-  // assignment to the tasks and contributors
+  id            Int             @id @default(autoincrement())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  name          String
+  description   String?
+  abstract      String?
+  keywords      String?
+  citation      String?
+  publisher     String?
+  identifier    String?
+  tasks         Task[]
+  elements      Element[]
+  columns       Column[]
+  contributors  Contributor[]
+  teams         Team[]
+  labels        Label[]
+  projectwidget ProjectWidget[]
 }
 
 enum TaskStatus {
@@ -152,7 +149,7 @@ model Task {
   id              Int          @id @default(autoincrement())
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
-  createdBy       Contributor  @relation(fields: [createdById], references: [id])
+  createdBy       Contributor  @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById     Int
   deadline        DateTime?
   name            String
@@ -166,11 +163,11 @@ model Task {
   element         Element?     @relation(fields: [elementId], references: [id])
   assignees       Assignment[]
   schema          Json?
+  ui              Json         @default("{}")
   status          TaskStatus   @default(NOT_COMPLETED)
   tags            String?
-  // allow them to have multiple contributor labels, I think like the task array?
-  // add contributor label link here
-  labels          Label[]
+
+  labels Label[]
 }
 
 enum AssignmentStatus {
@@ -188,12 +185,12 @@ model AssignmentStatusLog {
   createdAt    DateTime         @default(now())
   assignmentId Int
   changedAt    DateTime         @default(now()) // When the status was changed
-  assignment   Assignment       @relation(fields: [assignmentId], references: [id])
+  assignment   Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   status       AssignmentStatus @default(NOT_COMPLETED)
   metadata     Json?
   completedBy  Int?
   completedAs  CompletedAs      @default(INDIVIDUAL)
-  contributor  Contributor?     @relation(fields: [completedBy], references: [id])
+  contributor  Contributor?     @relation(fields: [completedBy], references: [id], onDelete: SetNull)
 
   @@unique([assignmentId, changedAt])
 }
@@ -205,9 +202,9 @@ model Assignment {
   taskId        Int
   task          Task                  @relation(fields: [taskId], references: [id], onDelete: Cascade)
   contributorId Int?
-  contributor   Contributor?          @relation(fields: [contributorId], references: [id], onDelete: Cascade)
+  contributor   Contributor?          @relation(fields: [contributorId], references: [id], onDelete: SetNull)
   teamId        Int?
-  team          Team?                 @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team          Team?                 @relation(fields: [teamId], references: [id], onDelete: SetNull)
   statusLogs    AssignmentStatusLog[]
 }
 
@@ -223,13 +220,14 @@ model Team {
 }
 
 model Column {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name      String   @default("To Do") // Might not need this
-  tasks     Task[]
-  projectId Int
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String   @default("To Do") // Might not need this
+  tasks       Task[]
+  columnIndex Int
+  projectId   Int
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 model Element {
@@ -268,4 +266,28 @@ model Notification {
   message      String
   read         Boolean  @default(false)
   announcement Boolean  @default(false)
+}
+
+model Widget {
+  id       Int     @id @default(autoincrement())
+  userId   Int
+  user     User    @relation(fields: [userId], references: [id])
+  type     String // "LastProject", "Notifications", "OverdueTask", "UpcomingTask"
+  show     Boolean @default(true)
+  position Int
+
+  @@unique([userId, type])
+}
+
+model ProjectWidget {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  projectId Int
+  project   Project @relation(fields: [projectId], references: [id])
+  type      String
+  show      Boolean @default(true)
+  position  Int
+
+  @@unique([userId, projectId, type])
 }

@@ -38,7 +38,7 @@ export const EditElement = () => {
       </Head>
 
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1>Edit {element.name}</h1>
+        <h1 className="text-3xl">Edit {element.name}</h1>
         {/* <pre>{JSON.stringify(element, null, 2)}</pre> */}
         <Suspense fallback={<div>Loading...</div>}>
           <ElementForm
@@ -69,7 +69,7 @@ export const EditElement = () => {
             }}
           />
           <Link
-            className="btn self-end mt-4"
+            className="btn btn-secondary self-end mt-4"
             href={Routes.ShowElementPage({ projectId: projectId!, elementId: elementId! })}
           >
             Cancel

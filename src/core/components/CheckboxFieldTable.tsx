@@ -24,7 +24,7 @@ const CheckboxFieldTable = ({ name, options }) => {
     () => [
       {
         id: "selection",
-        header: () => null,
+        header: "Select",
         cell: ({ row }) => (
           <input
             type="checkbox"
@@ -34,6 +34,7 @@ const CheckboxFieldTable = ({ name, options }) => {
         ),
       },
       {
+        id: "name",
         accessorKey: "label",
         header: "Name",
         cell: (info) => info.getValue(),

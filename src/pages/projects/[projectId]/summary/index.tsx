@@ -112,7 +112,7 @@ const SummaryPage = () => {
         </Head>
 
         <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-          <h1 className="flex justify-center mb-2">Project Summary</h1>
+          <h1 className="flex justify-center mb-2 text-3xl">Project Summary</h1>
 
           <div className="flex flex-row justify-center m-2">
             {/* A dropdown menu here for organization: By Date, By Task, By Contributor, By Label, By

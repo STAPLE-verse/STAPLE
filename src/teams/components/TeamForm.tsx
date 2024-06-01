@@ -56,8 +56,8 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
     <Form<S> {...formProps}>
       <LabeledTextField
         name="name"
-        label="Name"
-        placeholder="Name"
+        label="Team Name:"
+        placeholder="Team Name"
         type="text"
         className="mb-4 text-primary border-primary border-2 bg-base-300"
       />

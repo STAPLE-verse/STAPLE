@@ -29,14 +29,19 @@ const ElementsPage = () => {
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2">Elements</h1>
-        <Link className="btn mb-4" href={Routes.NewElementPage({ projectId: projectId! })}>
-          Create Element
-          <PlusIcon className="w-5 h-5" />
-        </Link>
+        <h1 className="flex justify-center mb-2 text-3xl">Elements</h1>
+
         <Suspense fallback={<div>Loading...</div>}>
           <ElementsList projectId={projectId!} elements={elements} />
         </Suspense>
+        <div>
+          <Link
+            className="btn btn-primary mb-4"
+            href={Routes.NewElementPage({ projectId: projectId! })}
+          >
+            Create Element
+          </Link>
+        </div>
       </main>
     </Layout>
   )

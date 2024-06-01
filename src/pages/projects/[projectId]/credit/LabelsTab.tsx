@@ -1,110 +1,67 @@
 import { Suspense, useState } from "react"
-import Head from "next/head"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import router, { useRouter } from "next/router"
 
-import Layout from "src/core/layouts/Layout"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
-import React, { useRef } from "react"
-import ReactDOM from "react-dom"
+import React from "react"
 import Modal from "src/core/components/Modal"
-import { LabelForm, FORM_ERROR } from "src/labels/components/LabelForm"
-import { FormApi, SubmissionErrors, configOptions } from "final-form"
-import { number, z } from "zod"
-import toast from "react-hot-toast"
-import createLabel from "src/labels/mutations/createLabel"
+import { FORM_ERROR } from "src/labels/components/LabelForm"
 import getLabels from "src/labels/queries/getLabels"
 import Table from "src/core/components/Table"
-import { LabelInformation, lableTableColumns } from "src/labels/components/LabelTable"
+import { useParam } from "@blitzjs/next"
 
-export const AllLabelsList = ({ hasMore, page, labels, onChange }) => {
+import { LabelIdsFormSchema } from "src/labels/schemas"
+import { AddLabelForm } from "src/labels/components/AddLabelForm"
+import { PmLabelInformation, labelPmTableColumns } from "src/labels/components/LabelPmTable"
+import toast from "react-hot-toast"
+import updateProjectLabel from "src/projects/mutations/updateProjectLabel"
+
+export const AlPmsLabelsList = ({
+  hasMore,
+  page,
+  labels,
+  onChange,
+  projectId,
+  labelsInProject,
+}) => {
+  const [updateProjectLabelMutation] = useMutation(updateProjectLabel)
   const router = useRouter()
+
+  const [selectedIds, setSelectedIds] = useState(labelsInProject)
 
   const labelChanged = async () => {
     if (onChange != undefined) {
       onChange()
     }
   }
+  const handleMultipleChanged = (selectedId: number) => {
+    const isSelected = selectedIds.includes(selectedId)
+    // console.log("Id changed: ", selectedId, " is selected: ", isSelected)
+    const newSelectedIds = isSelected
+      ? selectedIds.filter((id) => id !== selectedId)
+      : [...selectedIds, selectedId]
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
-
-  const contributorLabelnformation = labels.map((label) => {
-    const name = label.name
-    const desciprition = label.description || ""
-    const taxonomy = label.taxonomy || ""
-    let t: LabelInformation = {
-      name: name,
-      description: desciprition,
-      id: label.id,
-      taxonomy: taxonomy,
-      userId: label.userId,
-      onChangeCallback: labelChanged,
-    }
-    return t
-  })
-
-  return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
-      <Table columns={lableTableColumns} data={contributorLabelnformation} />
-      <div className="join grid grid-cols-2 my-6">
-        <button
-          className="join-item btn btn-outline"
-          disabled={page === 0}
-          onClick={goToPreviousPage}
-        >
-          Previous
-        </button>
-        <button className="join-item btn btn-outline " disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
-      </div>
-    </main>
-  )
-}
-
-const LabelsTab = () => {
-  const sidebarItems = HomeSidebarItems("Labels")
-  const currentUser = useCurrentUser()
-  const [createLabelMutation] = useMutation(createLabel)
-  const page = Number(router.query.page) || 0
-
-  const ITEMS_PER_PAGE = 7
-
-  //move to label list
-  const [{ labels, hasMore }, { refetch }] = usePaginatedQuery(getLabels, {
-    //where: { user: { id: { equals: userId! } } },
-    orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-
-  const reloadTable = async () => {
-    await refetch()
+    setSelectedIds(newSelectedIds)
   }
 
-  // Modal open logics
-  const [openNewLabelModal, setOpenNewLabelModal] = useState(false)
-  const handleToggleNewLabelModal = () => {
-    setOpenNewLabelModal((prev) => !prev)
+  const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
+  const handleToggleEditLabelModal = () => {
+    setOpenEditLabelModal((prev) => !prev)
   }
 
-  const handleCreateLabel = async (values) => {
+  const handleAddLabel = async (values) => {
     try {
-      const label = await createLabelMutation({
-        name: values.name,
-        description: values.description,
-        userId: currentUser!.id,
-        taxonomy: values.taxonomy,
+      const updated = await updateProjectLabelMutation({
+        projectsId: [projectId],
+        labelsId: selectedIds,
+        disconnect: true,
       })
-      await reloadTable()
-      await toast.promise(Promise.resolve(label), {
-        loading: "Creating label...",
-        success: "Label created!",
-        error: "Failed to create the label...",
+      await labelChanged()
+      await toast.promise(Promise.resolve(updated), {
+        loading: "Adding labels to projects...",
+        success: "Labels added!",
+        error: "Failed to add the labels...",
       })
     } catch (error: any) {
       console.error(error)
@@ -114,9 +71,107 @@ const LabelsTab = () => {
     }
   }
 
+  const initialValues = {
+    labelsId: [],
+  }
+
+  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+
+  const labelInformation = labels.map((task) => {
+    const name = task.name
+    const desciprition = task.description || ""
+
+    let t: PmLabelInformation = {
+      name: name,
+      description: desciprition,
+      id: task.id,
+      selectedIds: selectedIds,
+      user: task.user.username,
+      onChangeCallback: labelChanged,
+      onMultipledAdded: handleMultipleChanged,
+    }
+    return t
+  })
+  const hasElements = labels.length < 1
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="flex justify-center mb-2 text-3xl">Labels Coming Soon</h1>
+      {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
+      <Table columns={labelPmTableColumns} data={labelInformation} />
+      <div className="join grid grid-cols-2 my-6">
+        <button
+          className="join-item btn btn-secondary"
+          disabled={page === 0}
+          onClick={goToPreviousPage}
+        >
+          Previous
+        </button>
+        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
+          Next
+        </button>
+      </div>
+      <div className="modal-action flex justify-end mt-4">
+        <button
+          type="button"
+          /* button for popups */
+          disabled={hasElements}
+          className="btn btn-primary"
+          onClick={handleAddLabel}
+        >
+          Save
+        </button>
+      </div>
+    </main>
+  )
+}
+
+const LabelsTab = () => {
+  const currentUser = useCurrentUser()
+
+  const page = Number(router.query.page) || 0
+  const projectId = useParam("projectId", "number")
+
+  const ITEMS_PER_PAGE = 7
+
+  //only get labels that belongs to pms of current project
+  const [{ labels, hasMore }, { refetch }] = usePaginatedQuery(getLabels, {
+    where: { user: { contributions: { some: { projectId: projectId } } } },
+    include: { user: true, projects: true },
+    orderBy: { id: "asc" },
+    skip: ITEMS_PER_PAGE * page,
+    take: ITEMS_PER_PAGE,
+  })
+
+  const projectInLabel = (projects, projectId) => {
+    let t = false
+    let s = projects.findIndex((p) => p.id == projectId)
+    return s != -1
+  }
+
+  let checkedIds = []
+  labels.forEach((label) => {
+    let s = projectInLabel(label.projects, projectId)
+    if (s) checkedIds.push(label.id)
+  })
+
+  const reloadTable = async () => {
+    await refetch()
+  }
+
+  return (
+    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <AlPmsLabelsList
+            page={page}
+            labels={labels}
+            hasMore={hasMore}
+            onChange={reloadTable}
+            projectId={projectId}
+            labelsInProject={checkedIds}
+          />
+        </Suspense>
+      </div>
     </main>
   )
 }
