@@ -222,7 +222,7 @@ const ProjectDashboard = () => {
     return (
       <Table
         columns={projectTaskColumns}
-        data={upcomingTasks}
+        data={upcomingTasks.slice(0, 3)}
         classNames={{
           thead: "text-sm text-base-content",
           tbody: "text-sm text-base-content",
@@ -238,7 +238,7 @@ const ProjectDashboard = () => {
     return (
       <Table
         columns={projectTaskColumns}
-        data={pastDueTasks}
+        data={pastDueTasks.slice(0, 3)}
         classNames={{
           thead: "text-sm text-base-content",
           tbody: "text-sm text-base-content",

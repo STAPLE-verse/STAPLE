@@ -101,6 +101,18 @@ export const AllTeamList = () => {
       {/* <h1 className="flex justify-center mb-2">All Teams</h1> */}
 
       <Table columns={teamTableColumns} data={teamInformation} />
+      <div className="join grid grid-cols-2 my-6">
+        <button
+          className="join-item btn btn-secondary"
+          disabled={page === 0}
+          onClick={goToPreviousPage}
+        >
+          Previous
+        </button>
+        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
+          Next
+        </button>
+      </div>
     </div>
   )
 }

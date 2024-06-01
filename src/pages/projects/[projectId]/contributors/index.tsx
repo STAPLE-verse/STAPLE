@@ -131,6 +131,18 @@ export const AllContributorsList = () => {
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
       <Table columns={contributorTableColumns} data={contributorInformation} />
+      <div className="join grid grid-cols-2 my-6">
+        <button
+          className="join-item btn btn-secondary"
+          disabled={page === 0}
+          onClick={goToPreviousPage}
+        >
+          Previous
+        </button>
+        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
+          Next
+        </button>
+      </div>
     </main>
   )
 }

@@ -83,7 +83,7 @@ const getUpcomingTaskDisplay = (upcomingTasks) => {
   return (
     <Table
       columns={tasksColumns}
-      data={upcomingTasks}
+      data={upcomingTasks.slice(0, 3)}
       classNames={{
         thead: "text-sm text-base-content",
         tbody: "text-sm text-base-content",
@@ -101,7 +101,7 @@ const getOverdueTaskDisplay = (pastDueTasks) => {
   return (
     <Table
       columns={tasksColumns}
-      data={pastDueTasks}
+      data={pastDueTasks.slice(0, 3)}
       classNames={{
         thead: "text-sm text-base-content",
         tbody: "text-sm text-base-content",
