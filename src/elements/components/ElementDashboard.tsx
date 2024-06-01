@@ -10,6 +10,7 @@ import getTasks from "src/tasks/queries/getTasks"
 import { taskElementColumns } from "src/tasks/components/TaskTable"
 import Table from "src/core/components/Table"
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
+import "react-circular-progressbar/dist/styles.css"
 
 export const OverallElement = () => {
   const router = useRouter()
@@ -95,9 +96,48 @@ export const PMElement = () => {
   const [element] = useQuery(getElement, { id: elementId })
   const projectId = useParam("projectId", "number")
 
-  const taskPercent = 0.1
-  const formPercent = 0.3
-  const labelPercent = 0.5
+  const [{ tasks }] = useQuery(getTasks, {
+    include: {
+      assignees: { include: { statusLogs: true } },
+      labels: true,
+    },
+    where: {
+      projectId: projectId,
+      elementId: elementId,
+    },
+  })
+
+  let taskPercent
+  let formPercent
+  let labelPercent
+  if (tasks.length > 0) {
+    const completedTask = tasks.filter((task) => {
+      return task.status === "COMPLETED"
+    })
+    taskPercent = completedTask.length / tasks.length
+
+    const allAssignments = tasks.filter((task) => {
+      return task.schema !== null
+    })
+    if (allAssignments.length > 0) {
+      const allForms = allAssignments.flatMap((assignment) => assignment.assignees)
+      const completedAssignments = allForms.filter(
+        (assignment) => assignment.statusLogs[0].status === "COMPLETED"
+      )
+      formPercent = completedAssignments.length / allAssignments.length
+    } else {
+      formPercent = 0
+    }
+
+    const completedLabels = tasks.filter((task) => {
+      return task.labels.length > 0
+    })
+    labelPercent = completedLabels.length / tasks.length
+  } else {
+    taskPercent = 0
+    formPercent = 0
+    labelPercent = 0
+  }
 
   return (
     <div className="flex flex-row justify-center mt-2">
@@ -105,9 +145,9 @@ export const PMElement = () => {
         <div className="card-body">
           <div className="card-title">PM Information</div>
 
-          <div class="stats bg-base-300 text-lg font-bold">
-            <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit">Task Status</div>
+          <div className="stats bg-base-300 text-lg font-bold">
+            <div className="stat place-items-center">
+              <div className="stat-title text-2xl text-inherit">Task Status</div>
               <div className="w-20 h-20 m-2">
                 <CircularProgressbar
                   value={taskPercent * 100}
@@ -122,11 +162,10 @@ export const PMElement = () => {
                   })}
                 />
               </div>
-              <div class="stat-desc text-lg text-inherit">Number Complete</div>
             </div>
 
-            <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit">Form Data</div>
+            <div className="stat place-items-center">
+              <div className="stat-title text-2xl text-inherit">Form Data</div>
               <div className="w-20 h-20 m-2">
                 <CircularProgressbar
                   value={formPercent * 100}
@@ -141,11 +180,10 @@ export const PMElement = () => {
                   })}
                 />
               </div>
-              <div class="stat-desc text-lg text-inherit">Number Complete</div>
             </div>
 
-            <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit">Labels</div>
+            <div className="stat place-items-center">
+              <div className="stat-title text-2xl text-inherit">Labels</div>
               <div className="w-20 h-20 m-2">
                 <CircularProgressbar
                   value={labelPercent * 100}
@@ -160,11 +198,10 @@ export const PMElement = () => {
                   })}
                 />
               </div>
-              <div class="stat-desc text-lg text-inherit">Number Completed</div>
             </div>
 
-            <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit">Delete Element</div>
+            <div className="stat place-items-center">
+              <div className="stat-title text-2xl text-inherit">Delete Element</div>
               <button
                 type="button"
                 className="btn btn-secondary"

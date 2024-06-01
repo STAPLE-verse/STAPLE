@@ -45,7 +45,7 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
               <div className="flex flex-row bg-base-100 rounded-lg">
                 {tasks && tasks.length > 0 ? (
                   tasks.map((task) => (
-                    <div className="card bg-base-100 text-base-content m-2 w-1/4">
+                    <div key={task} className="card bg-base-100 text-base-content m-2 w-1/4">
                       <div className="card-body">
                         <div className="card-title text-base-content justify-center">
                           {task.name}
