@@ -41,7 +41,9 @@ const SummaryPage = () => {
 
   const [{ tasks }] = useQuery(getTasks, {
     where: { projectId: projectId },
+    orderBy: { createdAt: "desc" },
     include: {
+      labels: true,
       createdBy: {
         include: { user: true },
       },
@@ -84,6 +86,7 @@ const SummaryPage = () => {
   // Teams
   const [{ teams }] = useQuery(getTeams, {
     where: { project: { id: projectId! } },
+    orderBy: { name: "asc" },
     include: {
       contributors: {
         include: { user: true },
@@ -94,8 +97,10 @@ const SummaryPage = () => {
   // Contributors
   const [{ contributors }] = useQuery(getContributors, {
     where: { project: { id: projectId! } },
+    orderBy: { user: { lastName: "asc" } },
     include: {
       user: true,
+      labels: true,
     },
   })
 
@@ -174,7 +179,9 @@ const SummaryPage = () => {
                 {selectedOrganization === "contributor" && (
                   <ByContributors tasks={tasks}></ByContributors>
                 )}
-                {selectedOrganization === "task" && <ByTasks tasks={tasks}></ByTasks>}
+                {selectedOrganization === "task" && (
+                  <ByTasks tasks={tasks} contributors={contributors} teams={teams}></ByTasks>
+                )}
                 {selectedOrganization === "label" && <ByLabels labels={labels}></ByLabels>}
                 {selectedOrganization === "date" && <ByDate></ByDate>}
                 {selectedOrganization === "element" && (

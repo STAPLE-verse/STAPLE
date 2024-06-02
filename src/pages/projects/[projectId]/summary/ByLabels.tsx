@@ -20,7 +20,6 @@ const ByLabels = ({ labels }) => {
           <LabelView
             label={label}
             tasks={[]}
-            id={label.id}
             key={label.id}
             printTask={true}
             contributors={[]}
