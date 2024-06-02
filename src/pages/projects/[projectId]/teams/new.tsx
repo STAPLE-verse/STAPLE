@@ -1,17 +1,13 @@
 import { Routes } from "@blitzjs/next"
-import Link from "next/link"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 
 import { TeamForm, FORM_ERROR } from "src/teams/components/TeamForm"
 import { TeamFormSchema } from "src/teams/schemas"
 import { Suspense } from "react"
 import Head from "next/head"
-import { z } from "zod"
-import getProject from "src/projects/queries/getProject"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import toast from "react-hot-toast"
 import createTeam from "src/teams/mutations/createTeam"
 
@@ -20,11 +16,8 @@ const NewTeamPage = () => {
   const projectId = useParam("projectId", "number")
   const [createTeamMutation] = useMutation(createTeam)
 
-  const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
-
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Add New Team</title>
       </Head>

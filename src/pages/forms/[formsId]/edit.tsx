@@ -4,7 +4,6 @@ import { Suspense } from "react"
 import Head from "next/head"
 
 import Layout from "src/core/layouts/Layout"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 
 import React from "react"
 import { FormPlayground } from "src/forms/components/FormPlayground"
@@ -15,7 +14,6 @@ import updateForm from "src/forms/mutations/updateForm"
 import getForm from "src/forms/queries/getForm"
 
 const FormEditPage = () => {
-  const sidebarItems = HomeSidebarItems("Forms")
   const [UpdateFormMutation] = useMutation(updateForm)
   const formsId = useParam("formsId", "number")
   const [currentForm, { refetch: refetchGetForm }] = useQuery(getForm, { id: formsId! })
@@ -32,7 +30,7 @@ const FormEditPage = () => {
   }
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
+    <Layout>
       <Head>
         <title>Form Builder</title>
       </Head>

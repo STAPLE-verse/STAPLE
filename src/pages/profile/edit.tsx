@@ -12,7 +12,6 @@ import { z } from "zod"
 import { FormProfileSchema } from "src/users/schemas"
 import { Routes } from "@blitzjs/next"
 import logout from "src/auth/mutations/logout"
-import { HomeSidebarItems } from "src/core/components/sidebar/SidebarItems"
 
 export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
@@ -137,13 +136,7 @@ const EditProfilePage = () => {
 
 EditProfilePage.authenticate = true
 EditProfilePage.getLayout = (page) => {
-  const sidebarItems = HomeSidebarItems(null)
-
-  return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
-      {page}
-    </Layout>
-  )
+  return <Layout>{page}</Layout>
 }
 
 export default EditProfilePage

@@ -9,7 +9,6 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import getProjects from "src/projects/queries/getProjects"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import getTasks from "src/tasks/queries/getTasks"
 import moment from "moment"
 import Table from "src/core/components/Table"
@@ -130,7 +129,6 @@ const getNotificationDisplay = (notifications) => {
 }
 
 const MainPage = () => {
-  const sidebarItems = HomeSidebarItems("Dashboard")
   const currentUser = useCurrentUser()
   const today = moment().startOf("day")
   const [updateWidgetMutation] = useMutation(updateWidget)
@@ -313,7 +311,7 @@ const MainPage = () => {
   )
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
+    <Layout>
       <Head>
         <title>Home</title>
       </Head>

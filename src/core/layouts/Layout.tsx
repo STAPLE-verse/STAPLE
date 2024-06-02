@@ -3,7 +3,7 @@ import React from "react"
 import { BlitzLayout } from "@blitzjs/next"
 import MainNavbar from "../components/navbar/MainNavbar"
 import Sidebar from "../components/sidebar/Sidebar"
-import SidebarProvider from "../components/sidebar/sidebarContext"
+import { SidebarProvider } from "../components/sidebar/sidebarContext"
 import { Toaster } from "react-hot-toast"
 
 const Layout: BlitzLayout<{

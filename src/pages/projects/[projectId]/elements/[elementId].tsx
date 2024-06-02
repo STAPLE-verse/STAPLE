@@ -9,20 +9,16 @@ import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import getElement from "src/elements/queries/getElement"
 import deleteElement from "src/elements/mutations/deleteElement"
-import getProject from "src/projects/queries/getProject"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 
 export const Element = () => {
   const router = useRouter()
   const elementId = useParam("elementId", "number")
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
   const [deleteElementMutation] = useMutation(deleteElement)
   const [element] = useQuery(getElement, { id: elementId })
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Element {element.id}</title>
       </Head>

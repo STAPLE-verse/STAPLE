@@ -10,8 +10,6 @@ import Layout from "src/core/layouts/Layout"
 import getContributors from "src/contributors/queries/getContributors"
 import { getInitials } from "src/services/getInitials"
 import getProject from "src/projects/queries/getProject"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
-import { PlusIcon } from "@heroicons/react/24/outline"
 import {
   ContributorInformation,
   contributorTableColumns,
@@ -137,11 +135,9 @@ export const AllContributorsList = () => {
 // issue 37
 const ContributorsPage = () => {
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, "Contributors")
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>All Contributors</title>
       </Head>

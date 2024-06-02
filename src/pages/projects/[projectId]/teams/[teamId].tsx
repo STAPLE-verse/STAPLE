@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from "react"
+import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
@@ -9,8 +9,6 @@ import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import getTeam from "src/teams/queries/getTeam"
 import deleteTeam from "src/teams/mutations/deleteTeam"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
-import getProject from "src/projects/queries/getProject"
 import getContributors from "src/contributors/queries/getContributors"
 import { getInitials } from "src/services/getInitials"
 
@@ -30,12 +28,9 @@ export const ShowTeamPage = () => {
   })
 
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
-  // Get sidebar options
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Suspense fallback={<div>Loading...</div>}>
         <Head>
           <title>Team {team.name}</title>

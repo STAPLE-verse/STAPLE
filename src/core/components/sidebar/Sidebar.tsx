@@ -1,9 +1,9 @@
-import React, { useContext, ReactNode, MouseEventHandler } from "react"
+import React, { useContext } from "react"
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
-import { ContributorPrivileges } from "db"
 import SidebarContext from "./sidebarContext"
-import { ProjectSidebarItems, HomeSidebarItems } from "./SidebarItems"
+import { useRouter } from "next/router"
+import { SidebarItemProps } from "./SidebarItems"
 
 export default function Sidebar() {
   const context = useContext(SidebarContext)
@@ -12,7 +12,7 @@ export default function Sidebar() {
     return null
   }
 
-  const { sidebarTitle, sidebarPrivilege, isProjectSidebar, expanded, setSidebarState } = context
+  const { sidebarTitle, sidebarPrivilege, expanded, setSidebarState, sidebarItems } = context
 
   const toggleExpand = () => {
     setSidebarState({ expanded: !expanded })
@@ -45,18 +45,14 @@ export default function Sidebar() {
             {" "}
             {sidebarItems
               ?.filter((item) => {
-                return !item.privilege || !sidebarPrivilege || item.privilege.has(sidebarPrivilege)
+                return (
+                  !item.privilege ||
+                  !sidebarPrivilege ||
+                  item.privilege.some((privilege) => sidebarPrivilege.includes(privilege))
+                )
               })
               .map((item, index) => (
-                <SidebarItem
-                  key={index}
-                  icon={item.icon}
-                  text={item.text}
-                  onClick={item.onClick}
-                  alert={item.alert}
-                  active={item.active}
-                  tooltipId={item.tooltipId}
-                />
+                <SidebarItem key={index} {...item} />
               ))}
           </ul>
         </nav>
@@ -65,35 +61,29 @@ export default function Sidebar() {
   )
 }
 
-export interface SidebarItemProps {
-  icon: ReactNode
-  text: string
-  active?: boolean
-  alert?: boolean
-  onClick?: MouseEventHandler<HTMLLIElement>
-  tooltipId: string
-  privilege?: Set<ContributorPrivileges>
-}
-
-export function SidebarItem({ icon, text, active, alert, onClick, tooltipId }: SidebarItemProps) {
+export function SidebarItem(item: SidebarItemProps) {
   const contextValue = useContext(SidebarContext)
+  const router = useRouter()
 
   if (!contextValue) {
     return null
   }
-
+  const { icon, text, route, alert, tooltipId } = item
   const { expanded } = contextValue
 
-  const handleClick: MouseEventHandler<HTMLLIElement> = (event) => {
-    if (onClick) {
-      onClick(event)
+  const handleClick = async () => {
+    try {
+      await router.push(route)
+    } catch (error) {
+      console.error("Failed to navigate:", error)
     }
   }
+
   return (
     <li
       data-tooltip-id={tooltipId}
       className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
-        active
+        router.pathname === route.pathname
           ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
           : "hover:bg-indigo-50 text-gray-400"
       }`}

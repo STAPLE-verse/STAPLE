@@ -16,8 +16,6 @@ import deleteTask from "src/tasks/mutations/deleteTask"
 import JsonForm from "src/assignments/components/JsonForm"
 
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
-import getProject from "src/projects/queries/getProject"
 import Modal from "src/core/components/Modal"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import updateAssignment from "src/assignments/mutations/updateAssignment"
@@ -41,12 +39,8 @@ export const ShowTaskPage = () => {
   const currentUser = useCurrentUser()
   const taskId = useParam("taskId", "number")
   const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
-  console.log(task)
   const projectId = useParam("projectId", "number")
-  // TODO: we only need this to send the project name to sidebar see if there is an option to get around this by making the sidebar component more abstract
-  const [project] = useQuery(getProject, { id: projectId })
-  // Get sidebar options
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
+
   const [currentContributor] = useQuery(getContributor, {
     where: { projectId: projectId, userId: currentUser!.id },
   })
@@ -157,7 +151,7 @@ export const ShowTaskPage = () => {
   }
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Suspense fallback={<div>Loading...</div>}>
         <Head>
           <title>Task {task.name}</title>

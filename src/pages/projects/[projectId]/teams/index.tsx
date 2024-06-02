@@ -2,14 +2,11 @@ import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 
 import Layout from "src/core/layouts/Layout"
-import getProject from "src/projects/queries/getProject"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
-import { PlusIcon } from "@heroicons/react/24/outline"
 import getTeams from "src/teams/queries/getTeams"
 import { TeamInformation, teamTableColumns } from "src/teams/components/TeamTable"
 import Table from "src/core/components/Table"
@@ -108,11 +105,9 @@ export const AllTeamList = () => {
 // Issue 37
 const TeamsPage = () => {
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, "Teams")
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>All Teams</title>
       </Head>

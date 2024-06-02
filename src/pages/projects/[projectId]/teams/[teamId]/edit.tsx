@@ -7,8 +7,6 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
-import getProject from "src/projects/queries/getProject"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import toast from "react-hot-toast"
 import getTeam from "src/teams/queries/getTeam"
 import { TeamForm, FORM_ERROR } from "src/teams/components/TeamForm"
@@ -19,7 +17,6 @@ export const EditTeam = () => {
   const router = useRouter()
   const teamId = useParam("teamId", "number")
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
   const [team, { setQueryData }] = useQuery(
     getTeam,
     { id: teamId, include: { contributors: true } },
@@ -29,8 +26,6 @@ export const EditTeam = () => {
   )
   const [updateTeamMutation] = useMutation(updateTeam)
 
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
-
   const currentContributorsId =
     team["contributors"] != undefined ? team["contributors"].map((el) => el["id"]) : []
 
@@ -39,7 +34,7 @@ export const EditTeam = () => {
   }
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Edit {team.name}</title>
       </Head>
@@ -53,7 +48,6 @@ export const EditTeam = () => {
               projectId={projectId!}
               teamId={team.id}
               currentContributorsId={currentContributorsId}
-              className=""
               initialValues={initialValues}
               submitText="Update Team"
               schema={TeamFormSchema}

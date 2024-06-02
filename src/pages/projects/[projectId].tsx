@@ -8,14 +8,12 @@ import getProject from "src/projects/queries/getProject"
 import ProjectDashboard from "src/projects/components/ProjectDashboard"
 import Modal from "src/core/components/Modal"
 import createAnnouncement from "src/messages/mutations/createAnnouncement"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 import { ContributorPrivileges } from "db"
 
 export const ShowProjectPage = () => {
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, "Dashboard")
   const [announcementText, setAnnouncementText] = useState("")
   const { contributor: currentContributor } = useCurrentContributor(projectId)
   const [openModal, setOpenModal] = useState(false)
@@ -36,11 +34,7 @@ export const ShowProjectPage = () => {
   }
 
   return (
-    <Layout
-      sidebarItems={sidebarItems}
-      sidebarTitle={project.name}
-      sidebarPrivilege={currentContributor?.privilege}
-    >
+    <Layout>
       <Suspense fallback={<div>Loading...</div>}>
         <Head>
           <title>Project {project.name}</title>

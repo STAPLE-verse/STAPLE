@@ -6,16 +6,14 @@ import { FormProjectSchema } from "src/projects/schemas"
 import createProject from "src/projects/mutations/createProject"
 import { ProjectForm, FORM_ERROR } from "src/projects/components/ProjectForm"
 import { Suspense } from "react"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import toast from "react-hot-toast"
 
 const NewProjectPage = () => {
   const router = useRouter()
   const [createProjectMutation] = useMutation(createProject)
-  const sidebarItems = HomeSidebarItems("Projects")
 
   return (
-    <Layout title={"Create New Project"} sidebarItems={sidebarItems} sidebarTitle="Home">
+    <Layout>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Create New Project</h1>
         <Suspense fallback={<div>Loading...</div>}>

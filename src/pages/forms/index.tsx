@@ -1,16 +1,13 @@
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { AllFormsList } from "src/forms/components/AllFormsList"
 
 const AllFormsPage = () => {
-  const sidebarItems = HomeSidebarItems("Forms")
-
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
+    <Layout>
       <Head>
         <title>All Forms</title>
       </Head>

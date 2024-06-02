@@ -1,15 +1,8 @@
 import { Suspense } from "react"
-import { Routes } from "@blitzjs/next"
 import Head from "next/head"
-import Link from "next/link"
-import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
-import { useRouter } from "next/router"
 import { Tab } from "@headlessui/react"
 
 import Layout from "src/core/layouts/Layout"
-import getProject from "src/projects/queries/getProject"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import LabelsTab from "./LabelsTab"
 import TasksTab from "./TasksTab"
 import ContributorsTab from "./ContributorsTab"
@@ -70,12 +63,8 @@ export const CreditsTabs = () => {
 }
 
 const CreditPage = () => {
-  const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, "Credit")
-
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Assign Labels to Contributions</title>
       </Head>
