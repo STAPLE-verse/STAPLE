@@ -73,7 +73,7 @@ const SummaryPage = () => {
 
   //needs some clause for project
   const [{ labels }] = useQuery(getLabels, {
-    //where: { projectId: projectId },
+    where: { projects: { some: { id: projectId! } } },
     // include: {},
   })
 

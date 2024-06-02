@@ -37,7 +37,7 @@ const ByTasks = ({ tasks, contributors, teams }) => {
       <div className="my-2 ">
         <h2>Tasks Summary</h2>
         {tasks.map((task) => (
-          <TaskView task={task} key={task.id} printLabels={true}></TaskView>
+          <TaskView task={task} key={task.id} printLabels={true} printAssignees={true}></TaskView>
         ))}
       </div>
     </main>

@@ -1,11 +1,40 @@
 import { formatDate } from "src/services/formatDate"
 import { ContributorInformation, TeamInformation } from "./flattenTasksInformation"
+import { teamAssignmentTableColumns } from "src/assignments/components/TeamAssignmentTable"
+import { AssignmentStatus, CompletedAs } from "db"
 
-export const TaskView = ({ task, printLabels = false }) => {
+export const TaskView = ({ task, printLabels = false, printAssignees = false }) => {
   // console.log(task)
   let user = task.createdBy.user
 
-  console.log(task)
+  // console.log(task)
+
+  const getLatest = (statusLog) => {
+    const max = statusLog.reduce(function (prev, current) {
+      return prev && prev.createdAt > current.createdAt ? prev : current
+    })
+    return max
+  }
+
+  const getLastUpdated = (assignees) => {
+    const maxs: any[] = []
+    assignees.forEach((element) => {
+      let max = getLatest(element.statusLogs)
+      maxs.push(max)
+    })
+    const last = getLatest(maxs)
+    return last
+  }
+
+  const getAssigmentCompletedBy = (task, lastChanged) => {
+    const changedAssigment = task.assignees.find(
+      (element) => lastChanged.assignmentId == element.id
+    )
+    return changedAssigment
+  }
+
+  const lastChangedLog = getLastUpdated(task.assignees)
+  const lastChangedByAssigment = getAssigmentCompletedBy(task, lastChangedLog)
 
   return (
     <div className="my-2 ">
@@ -14,11 +43,53 @@ export const TaskView = ({ task, printLabels = false }) => {
       <br />
       Created At: {formatDate(task.createdAt)}
       <br />
-      Updated At:
+      Updated At: {formatDate(lastChangedLog.changedAt)}
       <br />
       Created By: {user.firstName} {user.lastName}
-      <br />
-      Completed By:assignmentstatuslog.completedBy
+      {printAssignees && (
+        <div>
+          {task.assignees.length < 0 && <h6>The task does have assignees</h6>}
+          {task.assignees.length > 0 && <h6>Assigned to:</h6>}
+          {task.assignees.map((assigment) => (
+            <div key={assigment.id} className="">
+              {assigment.team != null && <span>Team Name: {assigment.team.name} </span>}
+              {assigment.contributor != null && (
+                <span>
+                  Contributor Name: {assigment.contributor.user.firstName}{" "}
+                  {assigment.contributor.user.lastName}{" "}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+      {/* TODO refactor this */}
+      {lastChangedLog.status == AssignmentStatus.NOT_COMPLETED && (
+        <h6>The task is not completed</h6>
+      )}
+      {lastChangedLog.status == AssignmentStatus.COMPLETED && (
+        <div>
+          <div>
+            {lastChangedLog.completedAs == CompletedAs.INDIVIDUAL && (
+              <div>
+                Completed as an individual by:{" "}
+                <span>
+                  {" "}
+                  {lastChangedByAssigment.contributor.user.firstName}{" "}
+                  {lastChangedByAssigment.contributor.user.lastName}
+                </span>
+              </div>
+            )}
+          </div>
+          <div>
+            {lastChangedLog.completedAs == CompletedAs.TEAM && (
+              <div>
+                Completed as a team by: <span>{lastChangedByAssigment.team.name}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       {printLabels && (
         <div className="">
           {task.labels.length < 1 && <h6>This task does not have labels</h6>}
