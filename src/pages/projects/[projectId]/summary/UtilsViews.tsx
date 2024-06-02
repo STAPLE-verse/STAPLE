@@ -3,7 +3,12 @@ import { ContributorInformation, TeamInformation } from "./flattenTasksInformati
 import { teamAssignmentTableColumns } from "src/assignments/components/TeamAssignmentTable"
 import { AssignmentStatus, CompletedAs } from "db"
 
-export const TaskView = ({ task, printLabels = false, printAssignees = false }) => {
+export const TaskView = ({
+  task,
+  printLabels = false,
+  printAssignees = false,
+  printElement = true,
+}) => {
   // console.log(task)
   let user = task.createdBy.user
 
@@ -37,9 +42,9 @@ export const TaskView = ({ task, printLabels = false, printAssignees = false }) 
   const lastChangedByAssigment = getAssigmentCompletedBy(task, lastChangedLog)
 
   return (
-    <div className="my-2 ">
-      <h3>Name: {task.name} </h3>
-      Description:{task.description}
+    <div className="my-1 ">
+      <h5>Name: {task.name} </h5>
+      Description: {task.description}
       <br />
       Created At: {formatDate(task.createdAt)}
       <br />
@@ -105,6 +110,15 @@ export const TaskView = ({ task, printLabels = false, printAssignees = false }) 
           )}
         </div>
       )}
+      {printElement && (
+        <div>
+          {task.element != undefined ? (
+            <span>Element: {task.element.name}</span>
+          ) : (
+            <span>This task does not have element</span>
+          )}
+        </div>
+      )}
       Metadata:assignmentstatuslog.metadata (if exists)
       <br />
     </div>
@@ -117,11 +131,9 @@ export const TeamView = ({ team, tasks, id, printTask = false }) => {
   let newTasks = tasks
 
   return (
-    <div>
-      <br />
-      <h3> Name: {team.name} </h3>
+    <div className="my-2">
+      <h5> Name: {team.name} </h5>
       Created: {formatDate(team.createdAt)}
-      <br />
       <div>
         <h6>Members</h6>
         {team.contributors.map((element) => (
@@ -152,8 +164,6 @@ export const ContributorsView = ({
   printTask = false,
   printLabels = false,
 }) => {
-  // console.log(contributor)
-  //TODO Needs to sort and filter tasks
   let newTasks = tasks
   return (
     <div>
@@ -191,28 +201,36 @@ export const ContributorsView = ({
   )
 }
 
-export const LabelView = ({ label, contributors, tasks, printTask = false }) => {
-  let newTasks = tasks
+export const LabelView = ({
+  label,
+  contributors,
+  tasks,
+  printTask = false,
+  printContributor = false,
+}) => {
   return (
-    <div>
-      <h6> Name: {label.name} </h6>
+    <div className="my-2">
+      <h5> Name: {label.name} </h5>
       Description: {label.desciprition}
       <br />
       Taxonomy: {label.taxonomy}
-      <br />
-      <div>
-        <h5>Contributors</h5>
-        {contributors.map((element) => (
-          <div key={element.id}>user name: {element.user.username}</div>
-        ))}
-      </div>
+      {printContributor && (
+        <div>
+          <h6>Contributors</h6>
+          {contributors.length < 1 && <h6>This label does not have contributors</h6>}
+          {contributors.map((element) => (
+            <div key={element.id}>
+              user: {element.user.firstName} {element.user.lastName}
+            </div>
+          ))}
+        </div>
+      )}
       {printTask && (
         <div>
-          <br />
-          <h5>Tasks with completed assigments</h5>
-
-          {newTasks.map((task) => (
-            <TaskView key={task.id} task={task}></TaskView>
+          <h6>Tasks</h6>
+          {tasks.length < 1 && <h6>This label does not have tasks</h6>}
+          {tasks.map((task) => (
+            <TaskView key={task.id} task={task} printAssignees={true}></TaskView>
           ))}
         </div>
       )}
@@ -220,22 +238,24 @@ export const LabelView = ({ label, contributors, tasks, printTask = false }) => 
   )
 }
 
-export const ElementView = ({ element, tasks, printTask = false }) => {
-  let newTasks = tasks
+export const ElementView = ({ element, task, printTask = false }) => {
   return (
     <div>
-      <br />
-      <h3> Name: {element.name} </h3>
+      <h5> Element Name: {element.name} </h5>
       Description: {element.description}
-      <br />
       {printTask && (
         <div>
-          <br />
-          {newTasks.length > 0 && <h5>Tasks </h5>}
-
-          {newTasks.map((task) => (
-            <TaskView key={task.id} task={task}></TaskView>
-          ))}
+          {task == undefined && <h5>The element does not have a task </h5>}
+          {task && <h6>Element Task </h6>}
+          {task && (
+            <TaskView
+              key={task.id}
+              task={task}
+              printAssignees={true}
+              printElement={false}
+              printLabels={true}
+            ></TaskView>
+          )}
         </div>
       )}
     </div>

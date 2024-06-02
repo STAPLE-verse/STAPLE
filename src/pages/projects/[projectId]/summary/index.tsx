@@ -44,6 +44,7 @@ const SummaryPage = () => {
     orderBy: { createdAt: "desc" },
     include: {
       labels: true,
+      element: true,
       createdBy: {
         include: { user: true },
       },
@@ -74,13 +75,14 @@ const SummaryPage = () => {
   //needs some clause for project
   const [{ labels }] = useQuery(getLabels, {
     where: { projects: { some: { id: projectId! } } },
+    orderBy: { name: "asc" },
     // include: {},
   })
 
   const [elements] = useQuery(getElements, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
-    include: { Task: true },
+    // include: { Task: true },
   })
 
   // Teams
@@ -95,6 +97,7 @@ const SummaryPage = () => {
   })
 
   // Contributors
+  //TODO: Only needs tos include label id
   const [{ contributors }] = useQuery(getContributors, {
     where: { project: { id: projectId! } },
     orderBy: { user: { lastName: "asc" } },
@@ -182,13 +185,16 @@ const SummaryPage = () => {
                 {selectedOrganization === "task" && (
                   <ByTasks tasks={tasks} contributors={contributors} teams={teams}></ByTasks>
                 )}
-                {selectedOrganization === "label" && <ByLabels labels={labels}></ByLabels>}
+                {selectedOrganization === "label" && (
+                  <ByLabels labels={labels} tasks={tasks} contributors={contributors}></ByLabels>
+                )}
                 {selectedOrganization === "date" && <ByDate></ByDate>}
                 {selectedOrganization === "element" && (
                   <ByElements
                     elements={elements}
                     teams={teams}
                     contributors={contributors}
+                    tasks={tasks}
                   ></ByElements>
                 )}
                 {selectedOrganization === "none" && (
