@@ -3,7 +3,6 @@ import React from "react"
 import { BlitzLayout } from "@blitzjs/next"
 import MainNavbar from "../components/navbar/MainNavbar"
 import Sidebar from "../components/sidebar/Sidebar"
-import { SidebarProvider } from "../components/sidebar/sidebarContext"
 import { Toaster } from "react-hot-toast"
 
 const Layout: BlitzLayout<{
@@ -11,7 +10,8 @@ const Layout: BlitzLayout<{
   children?: React.ReactNode
 }> = ({ title, children }) => {
   return (
-    <SidebarProvider>
+    // <SidebarProvider>
+    <>
       <Toaster position="bottom-center" reverseOrder={false} />
       <Head>
         <title>{title || "STAPLE"}</title>
@@ -24,7 +24,8 @@ const Layout: BlitzLayout<{
           <div className="flex-1 overflow-scroll p-4">{children}</div>
         </div>
       </div>
-    </SidebarProvider>
+    </>
+    // </SidebarProvider>
   )
 }
 

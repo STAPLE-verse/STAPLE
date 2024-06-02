@@ -1,7 +1,6 @@
 import { useQuery } from "@blitzjs/rpc"
 import getContributor from "../queries/getContributor"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { NotFoundError } from "blitz"
 
 export const useCurrentContributor = (projectId) => {
   const currentUser = useCurrentUser()
@@ -14,7 +13,7 @@ export const useCurrentContributor = (projectId) => {
       where: { projectId: projectId, userId: currentUser?.id },
     },
     {
-      enabled: true,
+      enabled: shouldFetch,
     }
   )
 

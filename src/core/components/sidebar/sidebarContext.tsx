@@ -1,6 +1,5 @@
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { ContributorPrivileges } from "@prisma/client"
 import React, { createContext, useState, useMemo, ReactNode, useEffect } from "react"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 import getProject from "src/projects/queries/getProject"
@@ -9,8 +8,6 @@ import { ProjectSidebarItems, HomeSidebarItems } from "./SidebarItems"
 
 interface SidebarState {
   sidebarTitle: string
-  sidebarPrivilege?: ContributorPrivileges[]
-  isProjectSidebar: boolean
   expanded: boolean
   sidebarItems: SidebarItemProps[]
 }
@@ -25,18 +22,12 @@ export const SidebarProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [sidebarState, setSidebarState] = useState<SidebarState>({
     sidebarTitle: "Home",
     expanded: true,
-    isProjectSidebar: false,
     sidebarItems: HomeSidebarItems(),
   })
 
+  // Sidebar has two different states: home or project specific sidebar
   const projectId = useParam("projectId", "number")
-
   const { contributor: currentContributor } = useCurrentContributor(projectId)
-
-  const handleSetSidebarState = (updates: Partial<SidebarState>) => {
-    setSidebarState((prev) => ({ ...prev, ...updates }))
-  }
-
   const [project] = useQuery(
     getProject,
     { id: projectId },
@@ -46,23 +37,31 @@ export const SidebarProvider: React.FC<{ children: ReactNode }> = ({ children })
   )
 
   useEffect(() => {
-    if (project) {
-      const newPrivileges = currentContributor ? [currentContributor.privilege] : undefined
+    if (project && currentContributor) {
+      const sidebarItems = ProjectSidebarItems(project.id).filter((item) => {
+        return (
+          !item.privilege ||
+          !currentContributor.privilege ||
+          item.privilege.some((privilege) => currentContributor.privilege.includes(privilege))
+        )
+      })
       setSidebarState((prev) => ({
         ...prev,
-        sidebarPrivilege: newPrivileges,
         sidebarTitle: project.name,
-        sidebarItems: ProjectSidebarItems(project.id),
+        sidebarItems: sidebarItems,
       }))
     } else {
       setSidebarState((prev) => ({
         ...prev,
-        sidebarPrivilege: undefined,
         sidebarTitle: "Home",
         sidebarItems: HomeSidebarItems(),
       }))
     }
   }, [project, currentContributor])
+
+  const handleSetSidebarState = (updates: Partial<SidebarState>) => {
+    setSidebarState((prev) => ({ ...prev, ...updates }))
+  }
 
   const value = useMemo(
     () => ({

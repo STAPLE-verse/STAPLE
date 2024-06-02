@@ -8,11 +8,11 @@ import { SidebarItemProps } from "./SidebarItems"
 export default function Sidebar() {
   const context = useContext(SidebarContext)
 
-  if (!context) {
-    return null
+  if (!context || context.sidebarTitle === "Loading Project...") {
+    return <div className="loading">Loading...</div>
   }
 
-  const { sidebarTitle, sidebarPrivilege, expanded, setSidebarState, sidebarItems } = context
+  const { sidebarTitle, expanded, setSidebarState, sidebarItems } = context
 
   const toggleExpand = () => {
     setSidebarState({ expanded: !expanded })
@@ -43,17 +43,9 @@ export default function Sidebar() {
 
           <ul className="flex-1 px-3">
             {" "}
-            {sidebarItems
-              ?.filter((item) => {
-                return (
-                  !item.privilege ||
-                  !sidebarPrivilege ||
-                  item.privilege.some((privilege) => sidebarPrivilege.includes(privilege))
-                )
-              })
-              .map((item, index) => (
-                <SidebarItem key={index} {...item} />
-              ))}
+            {sidebarItems.map((item, index) => (
+              <SidebarItem key={index} {...item} />
+            ))}
           </ul>
         </nav>
       </aside>
