@@ -2,6 +2,7 @@ import { formatDate } from "src/services/formatDate"
 import { ContributorInformation, TeamInformation } from "./flattenTasksInformation"
 import { teamAssignmentTableColumns } from "src/assignments/components/TeamAssignmentTable"
 import { AssignmentStatus, CompletedAs } from "db"
+import { useState } from "react"
 
 export const TaskView = ({
   task,
@@ -256,6 +257,98 @@ export const ElementView = ({ element, task, printTask = false }) => {
               printLabels={true}
             ></TaskView>
           )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export const compareDateSeconds = (d1, d2) => {
+  var d1Seconds = Math.round(d1.getTime() / 1000)
+  var d2Seconds = Math.round(d2.getTime() / 1000)
+
+  return d1Seconds == d2Seconds
+}
+
+export const DateLogView = ({ tasks, contributors, log, teams, printHeader }) => {
+  const getTasksForDate = (tasks, log) => {
+    const t = tasks.filter(
+      (task) => log.belongsTo == "task" && task.id == log.elementId
+      // compareDateSeconds(task.updatedAt, log.changedAt) ||
+      // compareDateSeconds(task.createdAt, log.changedAt)
+    )
+    return t
+  }
+
+  const getTeamsForDate = (teams, log) => {
+    const t = teams.filter((team) => log.belongsTo == "team" && team.id == log.elementId)
+    return t
+  }
+
+  const getContributorForDate = (contributors, log) => {
+    let t
+    if (log.belongsTo == "contributor") {
+      t = contributors.filter((contributor) => contributor.id == log.elementId)
+    }
+    //  else if (log.belongsTo == "contributor" && !log.fromLog){
+    //   t = contributors.filter((contributor) => contributor.id == log.elementId)
+    // }
+    else {
+      t = contributors.filter((contributor) =>
+        compareDateSeconds(contributor.createdAt, log.changedAt)
+      )
+    }
+
+    return t
+  }
+
+  let filteredTask = getTasksForDate(tasks, log)
+  let filteredContributors = getContributorForDate(contributors, log)
+  let filteredTeams = getTeamsForDate(teams, log)
+
+  return (
+    <div>
+      {printHeader && <h3> Date: {formatDate(log.changedAt)}</h3>}
+      {/* {filteredContributors.length < 1 && <h4>Not activity for contributors</h4>} */}
+      {filteredContributors.length > 0 && (
+        <div className="my-1">
+          <h5>Contributor created or updated</h5>
+          {filteredContributors.map((contributor) => (
+            <ContributorsView
+              contributor={contributor}
+              tasks={[]}
+              printTask={false}
+              id={contributor.id}
+              key={contributor.id}
+              printLabels={true}
+            ></ContributorsView>
+          ))}
+        </div>
+      )}
+
+      {/* {filteredTeams.length < 1 && <h4>Not activity for teams</h4>} */}
+      {filteredTeams.length > 0 && (
+        <div className="my-1">
+          <h6>Team created or updated</h6>
+          {filteredTeams.map((team) => (
+            <TeamView
+              team={team}
+              tasks={[]}
+              printTask={false}
+              id={team.id}
+              key={team.id}
+            ></TeamView>
+          ))}
+        </div>
+      )}
+
+      {/* {filteredTask.length < 1 && <h4>Not activity for tasks</h4>} */}
+      {filteredTask.length > 0 && (
+        <div className="my-1">
+          <h6>Task created or updated</h6>
+          {filteredTask.map((task) => (
+            <TaskView task={task} key={task.id} printLabels={true} printAssignees={true}></TaskView>
+          ))}
         </div>
       )}
     </div>

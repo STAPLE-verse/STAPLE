@@ -49,10 +49,13 @@ const SummaryPage = () => {
         include: { user: true },
       },
       assignees: {
+        orderBy: {
+          updatedAt: "desc",
+        },
         include: {
           statusLogs: {
             orderBy: {
-              createdAt: "desc",
+              changedAt: "desc",
             },
           },
           team: {
@@ -90,6 +93,15 @@ const SummaryPage = () => {
     where: { project: { id: projectId! } },
     orderBy: { name: "asc" },
     include: {
+      assignments: {
+        include: {
+          statusLogs: {
+            orderBy: {
+              changedAt: "desc",
+            },
+          },
+        },
+      },
       contributors: {
         include: { user: true },
       },
@@ -104,6 +116,7 @@ const SummaryPage = () => {
     include: {
       user: true,
       labels: true,
+      AssignmentStatusLog: true,
     },
   })
 
@@ -188,7 +201,9 @@ const SummaryPage = () => {
                 {selectedOrganization === "label" && (
                   <ByLabels labels={labels} tasks={tasks} contributors={contributors}></ByLabels>
                 )}
-                {selectedOrganization === "date" && <ByDate></ByDate>}
+                {selectedOrganization === "date" && (
+                  <ByDate tasks={tasks} contributors={contributors} teams={teams}></ByDate>
+                )}
                 {selectedOrganization === "element" && (
                   <ByElements
                     elements={elements}
