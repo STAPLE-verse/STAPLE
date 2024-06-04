@@ -1,7 +1,6 @@
 import { useQuery } from "@blitzjs/rpc"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import getColumns from "../queries/getColumns"
-import { UniqueIdentifier } from "@dnd-kit/core"
 import { Column, Task } from "db"
 
 interface ColumnWithTasks extends Column {
