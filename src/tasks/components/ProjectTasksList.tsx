@@ -84,13 +84,13 @@ export const ProjectTasksList = () => {
             </Tab>
           )}
           {/* TabLink for table view */}
-          <Tab
+          {/* <Tab
             className={({ selected }) =>
               classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
             }
           >
             Table
-          </Tab>
+          </Tab> */}
           {/* TODO: First click on board does not change it after init */}
         </Tab.List>
 
@@ -102,7 +102,7 @@ export const ProjectTasksList = () => {
             </Tab.Panel>
           )}
           {/* Tabpanel for table view */}
-          <Tab.Panel>
+          {/* <Tab.Panel>
             {currentContributor.privilege === ContributorPrivileges.CONTRIBUTOR && (
               <Table columns={taskProjectTableColumnsContrib} data={tasksContrib} />
             )}
@@ -143,7 +143,7 @@ export const ProjectTasksList = () => {
                 Next
               </button>
             </div>
-          </Tab.Panel>
+          </Tab.Panel> */}
         </Tab.Panels>
       </Tab.Group>
 

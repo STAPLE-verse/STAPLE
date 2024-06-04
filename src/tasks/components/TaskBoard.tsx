@@ -3,8 +3,7 @@
 // see here https://github.com/microsoft/TypeScript/issues/49613
 
 //packages
-import { useEffect, useState } from "react"
-import { v4 as uuidv4 } from "uuid"
+import { useState } from "react"
 import {
   DndContext,
   DragEndEvent,
@@ -20,84 +19,29 @@ import {
 } from "@dnd-kit/core"
 import { SortableContext, arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import { HTMLAttributes, ClassAttributes } from "react"
-import { useQuery, useMutation } from "@blitzjs/rpc"
-import getColumns from "../queries/getColumns"
-import createColumn from "src/tasks/mutations/createColumn"
+import { useMutation } from "@blitzjs/rpc"
 import updateTaskOrder from "../mutations/updateTaskOrder"
 import updateColumnOrder from "../mutations/updateColumnOrder"
 
 // get specific components for this board
 import TaskContainer from "src/tasks/components/TaskContainer"
 import TaskItems from "src/tasks/components/TaskItems"
-import TaskModal from "src/tasks/components/TaskModal"
-import TaskInput from "src/tasks/components/TaskInput"
+import AddContainer from "./AddContainer"
+import useTaskBoardData from "../hooks/useTaskBoardData"
 
 //interface
 interface TaskBoardProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
   projectId: number
 }
 
-// interface ColumnWithTasks extends Column {
-//   tasks: Task[] // Assuming "Task" is the type for tasks
-// }
-
 const TaskBoard = ({ projectId }: TaskBoardProps) => {
-  const [createColumnMutation] = useMutation(createColumn)
-  const [updateTaskOderMutation] = useMutation(updateTaskOrder)
-  const [updateColumnOderMutation] = useMutation(updateColumnOrder)
+  const [updateTaskOrderMutation] = useMutation(updateTaskOrder)
+  const [updateColumnOrderMutation] = useMutation(updateColumnOrder)
 
-  type DNDType = {
-    id: UniqueIdentifier
-    title: string
-    items: {
-      id: UniqueIdentifier
-      title: string
-    }[]
-  }
-
-  // here we need to loop through their tasks and
-  // put them where they were but need to integrate
-  // with saving as well
-  const [containers, setContainers] = useState<DNDType[]>([])
-  const [columns, { refetch }]: [ColumnWithTasks[], any] = useQuery(getColumns, {
-    orderBy: { columnIndex: "asc" },
-    where: { project: { id: projectId! } },
-    include: {
-      tasks: {
-        orderBy: {
-          columnTaskIndex: "asc",
-        },
-      },
-    },
-  })
-
-  useEffect(() => {
-    // Transform query data to the desired structure
-    const transformedData = columns.map((container) => ({
-      id: `container-${container.id}`,
-      title: container.name,
-      items: container.tasks.map((task) => ({
-        id: `item-${task.id}`,
-        title: task.name,
-      })),
-    }))
-
-    // Update state with the transformed data
-    setContainers(transformedData)
-  }, [columns])
+  const { containers, refetch, updateContainers } = useTaskBoardData(projectId)
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const [currentContainerId, setCurrentContainerId] = useState<UniqueIdentifier>()
-  const [containerName, setContainerName] = useState("")
-  const [showAddContainerModal, setShowAddContainerModal] = useState(false)
-
-  const onAddContainer = async () => {
-    if (!containerName) return
-    await createColumnMutation({ projectId: projectId, name: containerName })
-    setContainerName("")
-    setShowAddContainerModal(false)
-    refetch()
-  }
 
   // Find the value of the items
   function findValueOfItems(id: UniqueIdentifier | undefined, type: string) {
@@ -181,13 +125,13 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
           overitemIndex
         )
 
-        setContainers(newItems)
+        updateContainers(newItems)
       } else {
         // In different containers
         let newItems = [...containers]
         const [removeditem] = newItems[activeContainerIndex].items.splice(activeitemIndex, 1)
         newItems[overContainerIndex].items.splice(overitemIndex, 0, removeditem)
-        setContainers(newItems)
+        updateContainers(newItems)
       }
     }
 
@@ -221,8 +165,8 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
       let newItems = [...containers]
       const [removeditem] = newItems[activeContainerIndex].items.splice(activeitemIndex, 1)
       newItems[overContainerIndex].items.push(removeditem)
-      // console.log(newItems)
-      setContainers(newItems)
+
+      updateContainers(newItems)
     }
   }
 
@@ -244,11 +188,11 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
       const overContainerIndex = containers.findIndex((container) => container.id === over.id)
       // Swap the active and over container
       newContainers = arrayMove(newContainers, activeContainerIndex, overContainerIndex)
-      setContainers(newContainers)
+      updateContainers(newContainers)
       const newColumnOrder = newContainers.map((container) =>
         parseInt(container.id.replace("container-", ""))
       )
-      updateColumnOderMutation({ columnIds: newColumnOrder })
+      updateColumnOrderMutation({ columnIds: newColumnOrder })
         .then(() => console.log("Column order updated successfully!"))
         .catch((error) => console.error("Failed to update column order", error))
     } else {
@@ -284,12 +228,12 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
             activeitemIndex,
             overitemIndex
           )
-          setContainers(newContainers)
+          updateContainers(newContainers)
         } else {
           // In different containers
           const [removeditem] = newContainers[activeContainerIndex].items.splice(activeitemIndex, 1)
           newContainers[overContainerIndex].items.splice(overitemIndex, 0, removeditem)
-          setContainers(newContainers)
+          updateContainers(newContainers)
         }
       }
 
@@ -319,7 +263,7 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
 
         const [removeditem] = newContainers[activeContainerIndex].items.splice(activeitemIndex, 1)
         newContainers[overContainerIndex].items.push(removeditem)
-        setContainers(newContainers)
+        updateContainers(newContainers)
       }
 
       const updateTasksList = newContainers.flatMap((container) =>
@@ -330,7 +274,7 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
         }))
       )
 
-      updateTaskOderMutation({ tasks: updateTasksList })
+      updateTaskOrderMutation({ tasks: updateTasksList })
         .then(() => console.log("Tasks updated successfully!"))
         .catch((error) => console.error("Failed to update tasks", error))
     }
@@ -340,34 +284,7 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
 
   return (
     <div className="mx-auto max-w-7xl py-10">
-      {/* Add Container Modal */}
-      <TaskModal showModal={showAddContainerModal} setShowModal={setShowAddContainerModal}>
-        <div className="flex flex-col w-full items-start gap-y-4">
-          <h1 className="text-3xl font-bold">Add Container</h1>
-          <TaskInput
-            type="text"
-            placeholder="Container Title"
-            name="containername"
-            value={containerName}
-            onChange={(e) => setContainerName(e.target.value)}
-          />
-          <button type="button" className="btn btn-primary" onClick={onAddContainer}>
-            Add container
-          </button>
-        </div>
-      </TaskModal>
-
-      <div className="flex items-center justify-between gap-y-2">
-        <h1 className="text-3xl font-bold">Project Tasks</h1>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => setShowAddContainerModal(true)}
-        >
-          Add Container
-        </button>
-      </div>
-
+      <AddContainer projectId={projectId} refetch={refetch}></AddContainer>
       <div className="mt-10">
         <div className="grid grid-cols-3 gap-6">
           <DndContext
