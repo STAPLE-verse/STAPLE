@@ -5,7 +5,7 @@ import { ContributorPrivileges } from "@prisma/client"
 
 const ITEMS_PER_PAGE = 10
 
-export default function useProjecTasksListData(projectId: number, page: number) {
+export default function useProjecTasksListData(projectId: number | undefined, page: number) {
   const currentUser = useCurrentUser()
 
   let queryParams: GetTasksInput = {
