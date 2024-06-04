@@ -1,5 +1,5 @@
 import { useQuery } from "@blitzjs/rpc"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import getColumns from "../queries/getColumns"
 import { UniqueIdentifier } from "@dnd-kit/core"
 import { Column, Task } from "db"
@@ -8,23 +8,19 @@ interface ColumnWithTasks extends Column {
   tasks: Task[]
 }
 
-export default function useTaskBoardData(projectId) {
-  // Define type for dnd-kit
-  type DNDType = {
-    id: UniqueIdentifier
+// Define type for dnd-kit
+export type DNDType = {
+  id: string
+  title: string
+  items: {
+    id: string
     title: string
-    items: {
-      id: UniqueIdentifier
-      title: string
-    }[]
-  }
+  }[]
+}
+
+export default function useTaskBoardData(projectId) {
   // Create state for storing the columns with the tasks
   const [containers, setContainers] = useState<DNDType[]>([])
-
-  // Create a callback for updating containers state
-  const updateContainers = useCallback((newContainers) => {
-    setContainers(newContainers)
-  }, [])
 
   // Get data
   const [columns, { refetch }]: [ColumnWithTasks[], any] = useQuery(getColumns, {
@@ -40,20 +36,20 @@ export default function useTaskBoardData(projectId) {
     },
   })
 
-  useEffect(() => {
-    // Transform query data to the desired structure
-    const transformedData = columns.map((container) => ({
-      id: `container-${container.id}`,
-      title: container.name,
-      items: container.tasks.map((task) => ({
+  const transformedData = useMemo(() => {
+    return columns.map((column) => ({
+      id: `container-${column.id}`,
+      title: column.name,
+      items: column.tasks.map((task) => ({
         id: `item-${task.id}`,
         title: task.name,
       })),
     }))
-
-    // Update state with the transformed data
-    setContainers(transformedData)
   }, [columns])
 
-  return { containers, refetch, updateContainers }
+  useEffect(() => {
+    setContainers(transformedData)
+  }, [transformedData])
+
+  return { containers, refetch, updateContainers: setContainers }
 }

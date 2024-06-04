@@ -10,10 +10,9 @@ interface ContainerProps {
   children: React.ReactNode
   title?: string
   description?: string
-  onAddItem?: () => void
 }
 
-const TaskContainer = ({ id, children, title, description, onAddItem }: ContainerProps) => {
+const TaskContainer = ({ id, children, title, description }: ContainerProps) => {
   const { attributes, setNodeRef, listeners, transform, transition, isDragging } = useSortable({
     id: id,
     data: {
@@ -42,9 +41,6 @@ const TaskContainer = ({ id, children, title, description, onAddItem }: Containe
       </div>
 
       {children}
-      {/* <button type="button" className="btn btn-primary" onClick={onAddItem}>
-        Add Item
-      </button> */}
     </div>
   )
 }
