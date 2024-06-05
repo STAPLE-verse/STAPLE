@@ -120,7 +120,7 @@ export const TaskView = ({
           )}
         </div>
       )}
-      Metadata:assignmentstatuslog.metadata (if exists)
+      {/* Metadata:assignmentstatuslog.metadata (if exists) */}
       <br />
     </div>
   )
@@ -207,7 +207,7 @@ export const LabelView = ({
   return (
     <div className="my-2">
       <h5> Name: {label.name} </h5>
-      Description: {label.desciprition}
+      Description: {label.description}
       <br />
       Taxonomy: {label.taxonomy}
       {printContributor && (

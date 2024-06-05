@@ -8,9 +8,9 @@ import { AssignmentStatus, CompletedAs } from "@prisma/client"
 const ByContributors = ({ contributors, teams, tasks }) => {
   const page = Number(router.query.page) || 0
 
-  let flattenTasks = flattenTasksInformation(tasks)
-  let sortedContributors = flattenTasks.contributorsInformation
-  console.log(tasks)
+  // let flattenTasks = flattenTasksInformation(tasks)
+  // let sortedContributors = flattenTasks.contributorsInformation
+  //console.log(tasks)
 
   const assigmentCompletedBy = (statusLog, completedAs, completedBy) => {
     let index = statusLog.findIndex(
