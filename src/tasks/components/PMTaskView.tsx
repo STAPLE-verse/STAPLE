@@ -86,9 +86,9 @@ export const PMTaskView = () => {
         <div className="card-body">
           <div className="card-title">PM Information</div>
 
-          <div class="stats bg-base-300 text-lg font-bold">
-            <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit" data-tooltip-id="status-tool">
+          <div className="stats bg-base-300 text-lg font-bold">
+            <div className="stat place-items-center">
+              <div className="stat-title text-2xl text-inherit" data-tooltip-id="status-tool">
                 Task Status
               </div>
               <Tooltip
@@ -96,7 +96,7 @@ export const PMTaskView = () => {
                 content="Complete the entire task even if not all contributors have finished"
                 className="z-[1099]"
               />
-              <div class="">
+              <div>
                 <input
                   type="checkbox"
                   checked={taskStatus === TaskStatus.COMPLETED}
@@ -129,13 +129,13 @@ export const PMTaskView = () => {
                   </div>
                 </Modal>
               </div>
-              <div class="stat-desc text-lg text-inherit">
+              <div className="stat-desc text-lg text-inherit">
                 {taskStatus === "COMPLETED" ? "Completed" : "Not Completed"}
               </div>
             </div>
 
-            <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit" data-tooltip-id="form-tool">
+            <div className="stat place-items-center">
+              <div className="stat-title text-2xl text-inherit" data-tooltip-id="form-tool">
                 Form Data
               </div>
               <Tooltip
@@ -143,7 +143,7 @@ export const PMTaskView = () => {
                 content="Review the form requirements for this task"
                 className="z-[1099]"
               />
-              <div class="">
+              <div className="">
                 {task["schema"] ? (
                   <div>
                     <button
@@ -172,11 +172,11 @@ export const PMTaskView = () => {
                   "No Form Data Required"
                 )}
               </div>
-              <div class="stat-desc text-lg text-inherit"> </div>
+              <div className="stat-desc text-lg text-inherit"> </div>
             </div>
 
-            <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit" data-tooltip-id="progress-tool">
+            <div className="stat place-items-center">
+              <div className="stat-title text-2xl text-inherit" data-tooltip-id="progress-tool">
                 Task Progress
               </div>
               <Tooltip
@@ -184,10 +184,10 @@ export const PMTaskView = () => {
                 content="Percent of contributors/teams that have finished the task"
                 className="z-[1099]"
               />
-              <div class="">
+              <div>
                 <AssignmentProgress taskId={task.id} />
               </div>
-              <div class="stat-desc text-lg text-inherit">
+              <div className="stat-desc text-lg text-inherit">
                 <Link
                   className="btn btn-primary"
                   href={Routes.AssignmentsPage({ projectId: projectId!, taskId: task.id })}
@@ -197,8 +197,8 @@ export const PMTaskView = () => {
               </div>
             </div>
 
-            <div class="stat place-items-center">
-              <div class="stat-title text-2xl text-inherit">
+            <div className="stat place-items-center">
+              <div className="stat-title text-2xl text-inherit">
                 <Link
                   className="btn btn-primary"
                   href={Routes.EditTaskPage({ projectId: projectId!, taskId: task.id })}
@@ -206,7 +206,7 @@ export const PMTaskView = () => {
                   Update task
                 </Link>
               </div>
-              <div class="stat-value">
+              <div className="stat-value">
                 <button
                   type="button"
                   className="btn btn-secondary"

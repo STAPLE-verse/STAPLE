@@ -22,7 +22,7 @@ const AssignmentProgress = ({ taskId }: AssignmentProgressProps) => {
         data-tooltip-content={`${assignmentProgress.completed} tasks out of ${assignmentProgress.all}`}
         styles={buildStyles({
           textSize: "16px",
-          pathTransitionDuration: "none",
+          pathTransitionDuration: 0,
           pathColor: "oklch(var(--p))",
           textColor: "oklch(var(--s))",
           trailColor: "oklch(var(--pc))",
