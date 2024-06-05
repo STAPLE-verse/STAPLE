@@ -87,7 +87,7 @@ export const LabelView = ({ label, contributors, id, tasks, printTask = false })
     <div>
       <br />
       <h3> Name: {label.name} </h3>
-      Description: {label.desciprition}
+      Description: {label.description}
       <br />
       Taxonomy: {label.taxonomy}
       <br />

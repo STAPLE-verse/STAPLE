@@ -11,6 +11,8 @@ import getProject from "src/projects/queries/getProject"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { PlusIcon } from "@heroicons/react/24/outline"
 
+import { ProjectFormTable, projectFormTableColumns } from "src/forms/components/ProjectFormsTable"
+
 const MetadataPage = () => {
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
@@ -27,30 +29,7 @@ const MetadataPage = () => {
 
         {
           <Suspense fallback={<div>Loading...</div>}>
-            <div role="tablist" className="tabs tabs-lifted">
-              <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="Edit" />
-              <div
-                role="tabpanel"
-                className="tab-content bg-base-100 border-base-300 rounded-box p-6"
-              >
-                Edit
-              </div>
-
-              <input
-                type="radio"
-                name="my_tabs_2"
-                role="tab"
-                className="tab"
-                aria-label="View"
-                checked
-              />
-              <div
-                role="tabpanel"
-                className="tab-content bg-base-100 border-base-300 rounded-box p-6"
-              >
-                View
-              </div>
-            </div>
+            <ProjectFormTable />
           </Suspense>
         }
       </main>

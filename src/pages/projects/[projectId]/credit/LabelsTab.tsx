@@ -80,11 +80,11 @@ export const AlPmsLabelsList = ({
 
   const labelInformation = labels.map((task) => {
     const name = task.name
-    const desciprition = task.description || ""
+    const description = task.description || ""
 
     let t: PmLabelInformation = {
       name: name,
-      description: desciprition,
+      description: description,
       id: task.id,
       selectedIds: selectedIds,
       user: task.user.username,

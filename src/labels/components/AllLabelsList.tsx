@@ -28,12 +28,12 @@ export const AllLabelsList = ({ hasMore, page, labels, onChange, taxonomyList })
 
   const contributorLabelnformation = labels.map((label) => {
     const name = label.name
-    const desciprition = label.description || ""
+    const description = label.description || ""
     const taxonomy = label.taxonomy || ""
 
     let t: LabelInformation = {
       name: name,
-      description: desciprition,
+      description: description,
       id: label.id,
       taxonomy: taxonomy,
       userId: label.userId,
