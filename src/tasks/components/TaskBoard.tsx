@@ -21,7 +21,7 @@ import TaskItems from "src/tasks/components/TaskItems"
 import AddContainer from "./AddContainer"
 import useTaskBoardData from "../hooks/useTaskBoardData"
 // Get helper functions
-import { findItemTitle, findContainerTitle, findContainerItems } from "../utils/findHelpers"
+import { findContainerTitle, findContainerItems, findItemValue } from "../utils/findHelpers"
 import useDragHandlers from "../hooks/useDragHandlers"
 
 //interface
@@ -63,7 +63,13 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
                   <SortableContext items={container.items.map((i) => i.id)}>
                     <div className="flex items-start flex-col gap-y-4">
                       {container.items.map((i) => (
-                        <TaskItems title={i.title} id={i.id} key={i.id} projectId={projectId} />
+                        <TaskItems
+                          title={i.title}
+                          id={i.id}
+                          key={i.id}
+                          projectId={projectId}
+                          completed={i.completed}
+                        />
                       ))}
                     </div>
                   </SortableContext>
@@ -74,13 +80,17 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
             <DragOverlay adjustScale={false}>
               {/* Drag Overlay For item Item */}
               {activeId && activeId.toString().includes("item") && (
-                <TaskItems id={activeId} title={findItemTitle(activeId, containers)} />
+                <TaskItems
+                  id={activeId}
+                  title={findItemValue(activeId, containers, "title")}
+                  completed={findItemValue(activeId, containers, "completed")}
+                />
               )}
               {/* Drag Overlay For Container */}
               {activeId && activeId.toString().includes("container") && (
                 <TaskContainer id={activeId} title={findContainerTitle(activeId, containers)}>
                   {findContainerItems(activeId, containers).map((i) => (
-                    <TaskItems key={i.id} title={i.title} id={i.id} />
+                    <TaskItems key={i.id} title={i.title} id={i.id} completed={i.completed} />
                   ))}
                 </TaskContainer>
               )}

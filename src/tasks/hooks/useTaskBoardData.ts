@@ -1,7 +1,7 @@
 import { useQuery } from "@blitzjs/rpc"
 import { useEffect, useMemo, useState } from "react"
 import getColumns from "../queries/getColumns"
-import { Column, Task } from "db"
+import { Column, Task, TaskStatus } from "db"
 
 interface ColumnWithTasks extends Column {
   tasks: Task[]
@@ -9,11 +9,14 @@ interface ColumnWithTasks extends Column {
 
 // Define type for dnd-kit
 export type DNDType = {
+  // containers (columns)
   id: string
   title: string
+  // items (tasks)
   items: {
     id: string
     title: string
+    completed: boolean
   }[]
 }
 
@@ -42,6 +45,7 @@ export default function useTaskBoardData(projectId) {
       items: column.tasks.map((task) => ({
         id: `item-${task.id}`,
         title: task.name,
+        completed: task.status === TaskStatus.COMPLETED,
       })),
     }))
   }, [columns])

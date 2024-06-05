@@ -14,14 +14,6 @@ export function findValueOfItems(
   }
 }
 
-export function findItemTitle(id: UniqueIdentifier | undefined, containers: DNDType[]) {
-  const container = findValueOfItems(id, "item", containers)
-  if (!container) return ""
-  const item = container.items.find((item) => item.id === id)
-  if (!item) return ""
-  return item.title
-}
-
 export function findContainerTitle(id: UniqueIdentifier | undefined, containers: DNDType[]) {
   const container = findValueOfItems(id, "container", containers)
   if (!container) return ""
@@ -32,4 +24,18 @@ export function findContainerItems(id: UniqueIdentifier | undefined, containers:
   const container = findValueOfItems(id, "container", containers)
   if (!container) return []
   return container.items
+}
+
+type ItemKeys = keyof DNDType["items"]
+
+export function findItemValue(
+  id: UniqueIdentifier | undefined,
+  containers: DNDType[],
+  key: ItemKeys
+): string {
+  const container = findValueOfItems(id, "item", containers)
+  if (!container) return ""
+  const item = container.items.find((item) => item.id === id)
+  if (!item) return ""
+  return item[key] ?? ""
 }
