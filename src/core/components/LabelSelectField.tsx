@@ -47,6 +47,7 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
               Please select an option
             </option>
             {options &&
+              options.length !== 0 &&
               options.map((v) => {
                 return (
                   <option key={v.id} value={v[optionValue]}>

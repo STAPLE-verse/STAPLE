@@ -47,7 +47,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // Elements
-  const [elements] = useQuery(getElements, {
+  const [{ elements: elements }] = useQuery(getElements, {
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
   })

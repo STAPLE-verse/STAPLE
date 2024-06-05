@@ -3,7 +3,7 @@ import { OverallElement, PMElement } from "src/elements/components/ElementDashbo
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
-import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import getProject from "src/projects/queries/getProject"
 import getElement from "src/elements/queries/getElement"
