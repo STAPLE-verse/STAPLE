@@ -193,7 +193,11 @@ const SummaryPage = () => {
               <div className="card-body">
                 <div className="card-title">Organized Metadata</div>
                 {selectedOrganization === "contributor" && (
-                  <ByContributors tasks={tasks}></ByContributors>
+                  <ByContributors
+                    tasks={tasks}
+                    teams={teams}
+                    contributors={contributors}
+                  ></ByContributors>
                 )}
                 {selectedOrganization === "task" && (
                   <ByTasks tasks={tasks} contributors={contributors} teams={teams}></ByTasks>

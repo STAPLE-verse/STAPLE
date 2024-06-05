@@ -126,11 +126,7 @@ export const TaskView = ({
   )
 }
 
-export const TeamView = ({ team, tasks, id, printTask = false }) => {
-  // console.log(team)
-  //TODO Needs to sort and filter tasks
-  let newTasks = tasks
-
+export const TeamView = ({ team, tasks, printTask = false }) => {
   return (
     <div className="my-2">
       <h5> Name: {team.name} </h5>
@@ -145,10 +141,10 @@ export const TeamView = ({ team, tasks, id, printTask = false }) => {
       </div>
       {printTask && (
         <div className="my-2 ">
-          {newTasks.length < 1 && <h5>This team does not have completed assigments</h5>}
+          {tasks.length < 1 && <h5>This team does not have completed assigments</h5>}
           <div>
-            {newTasks.length > 0 && <h5>Tasks with completed assigments</h5>}
-            {newTasks.map((task) => (
+            {tasks.length > 0 && <h5>Tasks with completed assigments</h5>}
+            {tasks.map((task) => (
               <TaskView key={task.id} task={task}></TaskView>
             ))}
           </div>
@@ -161,7 +157,6 @@ export const TeamView = ({ team, tasks, id, printTask = false }) => {
 export const ContributorsView = ({
   contributor,
   tasks,
-  id,
   printTask = false,
   printLabels = false,
 }) => {
@@ -318,7 +313,6 @@ export const DateLogView = ({ tasks, contributors, log, teams, printHeader }) =>
               contributor={contributor}
               tasks={[]}
               printTask={false}
-              id={contributor.id}
               key={contributor.id}
               printLabels={true}
             ></ContributorsView>
@@ -331,13 +325,7 @@ export const DateLogView = ({ tasks, contributors, log, teams, printHeader }) =>
         <div className="my-1">
           <h6>Team created or updated</h6>
           {filteredTeams.map((team) => (
-            <TeamView
-              team={team}
-              tasks={[]}
-              printTask={false}
-              id={team.id}
-              key={team.id}
-            ></TeamView>
+            <TeamView team={team} tasks={[]} printTask={false} key={team.id}></TeamView>
           ))}
         </div>
       )}
