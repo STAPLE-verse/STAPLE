@@ -9,7 +9,6 @@ const CompleteToggle = ({
   completedLabel,
   completedBy,
   completedAs,
-  teamName,
 }) => {
   const [updateAssignmentMutation] = useMutation(updateAssignment)
 
@@ -19,7 +18,7 @@ const CompleteToggle = ({
     const newStatus = newChecked ? AssignmentStatus.COMPLETED : AssignmentStatus.NOT_COMPLETED
 
     await updateAssignmentMutation({
-      id: currentAssignment!.assignmentId,
+      id: currentAssignment.id,
       status: newStatus,
       completedBy: completedBy,
       completedAs: completedAs as CompletedAs,
@@ -29,17 +28,23 @@ const CompleteToggle = ({
     await refetch()
   }
 
-  const [isChecked, setIsChecked] = useState(
-    currentAssignment!.status === AssignmentStatus.COMPLETED
-  )
+  const latestStatusLog = currentAssignment.statusLogs.reduce((latest, current) => {
+    return latest.changedAt > current.changedAt ? latest : current
+  }, currentAssignment.statusLogs[0])
+
+  // console.log(currentAssignment)
+  const [isChecked, setIsChecked] = useState(latestStatusLog.status === AssignmentStatus.COMPLETED)
+
+  // Get team name if assignment is completed as a team
+  const teamName = completedAs === CompletedAs.TEAM ? currentAssignment.team.name : undefined
 
   return (
     <div>
       {currentAssignment ? (
         <div className="flex items-center space-x-2">
           <span className="font-semibold">
-            {completedAs == "INDIVIDUAL" && "Individual: "}
-            {completedAs == "TEAM" && `${teamName}:`}
+            {completedAs == CompletedAs.INDIVIDUAL && "Individual: "}
+            {completedAs == CompletedAs.TEAM && teamName && `${teamName}:`}
           </span>
           <span>Not Completed</span>
           <label className="flex items-center cursor-pointer">
