@@ -1,26 +1,34 @@
 //imports
-import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import deleteTask from "src/tasks/mutations/deleteTask"
 import ShowAssignmentProgress from "src/tasks/components/ShowAssignmentProgress"
-import getAssignmentProgress from "src/assignments/queries/getAssignmentProgress"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { Tooltip } from "react-tooltip"
 import { CompleteTaskToggle } from "./CompleteTaskToggle"
 import { TaskFormData } from "./TaskFormData"
+import { useContext } from "react"
+import { TaskContext } from "src/tasks/components/TaskContext"
 
 // create task view
-export const TaskSummary = ({ task }) => {
+export const TaskSummary = () => {
   // Setup
   const router = useRouter()
   const [deleteTaskMutation] = useMutation(deleteTask)
 
-  // Get assignments
-  const [assignmentProgress, { refetch: refetchAssignmentProgress }] = useQuery(
-    getAssignmentProgress,
-    { taskId: task.id }
-  )
+  const taskContext = useContext(TaskContext)
+
+  if (!taskContext || !taskContext.task) {
+    return <div>Loading...</div>
+  }
+
+  const { task } = taskContext
+
+  // // Get assignments
+  // const [assignmentProgress, { refetch: refetchAssignmentProgress }] = useQuery(
+  //   getAssignmentProgress,
+  //   { taskId: task.id }
+  // )
 
   return (
     <div className="flex flex-row justify-center m-2">
@@ -29,13 +37,11 @@ export const TaskSummary = ({ task }) => {
         <div className="card-body">
           <div className="card-title">PM Information</div>
           {/* Complete task widget */}
-          <CompleteTaskToggle task={task} assignmentProgress={assignmentProgress} />
+          <CompleteTaskToggle />
           {/* Task form data widget */}
-          <TaskFormData task={task} />
+          <TaskFormData />
           {/* Assignment Progress widget */}
-
-          <ShowAssignmentProgress task={task} assignmentProgress={assignmentProgress} />
-
+          <ShowAssignmentProgress />
           {/* Task edit buttons */}
           <div className="stat place-items-center">
             <div className="stat-title text-2xl text-inherit">

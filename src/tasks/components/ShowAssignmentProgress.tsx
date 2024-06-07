@@ -5,8 +5,18 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import "react-circular-progressbar/dist/styles.css"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
+import { useContext } from "react"
+import { TaskContext } from "./TaskContext"
 
-const ShowAssignmentProgress = ({ task, assignmentProgress }) => {
+const ShowAssignmentProgress = () => {
+  const taskContext = useContext(TaskContext)
+
+  if (!taskContext || !taskContext.assignmentProgress || !taskContext.task) {
+    return <div>Loading...</div>
+  }
+
+  const { task, assignmentProgress } = taskContext
+
   const assignmentPercent = assignmentProgress.completed / assignmentProgress.all
 
   return (

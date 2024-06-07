@@ -1,12 +1,25 @@
 import { useQuery } from "@blitzjs/rpc"
+import { Assignment, AssignmentStatusLog, Contributor, Team } from "db"
 import getAssignments from "src/assignments/queries/getAssignments"
 import getContributor from "src/contributors/queries/getContributor"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
+export type AssignmentsType = Assignment & {
+  contributor?: Contributor | null
+  team?: Team | null
+  statusLogs?: AssignmentStatusLog[]
+}
+
+type AssignmentsDataType = {
+  individualAssignments: AssignmentsType[]
+  teamAssignments: AssignmentsType[]
+  refetchCurrentAssignments: () => void
+}
+
 export default function useAssignmentData(
   taskId: number | undefined,
   projectId: number | undefined
-) {
+): AssignmentsDataType {
   const currentUser = useCurrentUser()
 
   // TODO: Replace by hook

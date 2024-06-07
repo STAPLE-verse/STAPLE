@@ -2,24 +2,34 @@ import { Tooltip } from "react-tooltip"
 import AssignmentHistoryModal from "./AssignmentHistoryModal"
 import CompleteSchema from "./CompleteSchema"
 import CompleteToggle from "./CompleteToggle"
-import useAssignmentData from "../hooks/useAssignmentData"
 import { CompletedAs } from "db"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getContributor from "src/contributors/queries/getContributor"
 import { useQuery } from "@blitzjs/rpc"
+import { useContext } from "react"
+import { TaskContext } from "src/tasks/components/TaskContext"
+import { useParam } from "@blitzjs/next"
 
-export const AssignmentCompletion = ({ task }) => {
+export const AssignmentCompletion = () => {
+  const projectId = useParam("projectId", "number")
   // TODO: Replace by hook
   const currentUser = useCurrentUser()
   const [currentContributor] = useQuery(getContributor, {
-    where: { projectId: task.projectId, userId: currentUser!.id },
+    where: { projectId: projectId, userId: currentUser!.id },
   })
 
-  // Get assignment data
-  const { individualAssignments, teamAssignments, refetchCurrentAssignments } = useAssignmentData(
-    task.id,
-    task.projectId
-  )
+  const taskContext = useContext(TaskContext)
+
+  if (
+    !taskContext ||
+    !taskContext.individualAssignments ||
+    !taskContext.teamAssignments ||
+    !taskContext.task
+  ) {
+    return <div>Loading...</div>
+  }
+
+  const { task, individualAssignments, teamAssignments, refetchCurrentAssignments } = taskContext
 
   // const refetchAssignments = async () => {
   //   await refetchCurrentAssignments()

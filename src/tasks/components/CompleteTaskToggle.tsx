@@ -1,15 +1,25 @@
 import { useMutation } from "@blitzjs/rpc"
 import { TaskStatus } from "db"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import updateTaskStatus from "../mutations/updateTaskStatus"
 import toast from "react-hot-toast"
 import { Tooltip } from "react-tooltip"
 import Modal from "src/core/components/Modal"
+import { TaskContext } from "./TaskContext"
 
-export const CompleteTaskToggle = ({ task, assignmentProgress }) => {
+export const CompleteTaskToggle = () => {
   const [updateTaskStatusMutation] = useMutation(updateTaskStatus)
-  const [taskStatus, setTaskStatus] = useState(task.status)
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+
+  const taskContext = useContext(TaskContext)
+  const task = taskContext?.task
+  const assignmentProgress = taskContext?.assignmentProgress
+
+  const [taskStatus, setTaskStatus] = useState(task?.status || TaskStatus.NOT_COMPLETED)
+
+  if (!taskContext || !assignmentProgress || !task) {
+    return <div>Loading...</div>
+  }
 
   const handleTaskStatus = async () => {
     if (
@@ -21,6 +31,7 @@ export const CompleteTaskToggle = ({ task, assignmentProgress }) => {
       await taskStatusUpdate()
     }
   }
+
   const taskStatusUpdate = async () => {
     const newStatus =
       taskStatus === TaskStatus.COMPLETED ? TaskStatus.NOT_COMPLETED : TaskStatus.COMPLETED
@@ -37,6 +48,11 @@ export const CompleteTaskToggle = ({ task, assignmentProgress }) => {
       console.error("Error updating task status:", error)
       toast.error("Failed to update task status")
     }
+  }
+
+  const confirmUpdateTaskStatus = async () => {
+    await taskStatusUpdate()
+    setIsConfirmModalOpen(false)
   }
 
   return (
@@ -63,13 +79,7 @@ export const CompleteTaskToggle = ({ task, assignmentProgress }) => {
               completed?
             </p>
             <div className="flex flex-row space-x-4">
-              <button
-                className="btn btn-primary"
-                onClick={async () => {
-                  await taskStatusUpdate()
-                  await setIsConfirmModalOpen(false)
-                }}
-              >
+              <button className="btn btn-primary" onClick={confirmUpdateTaskStatus}>
                 Confirm
               </button>
               <button className="btn btn-secondary" onClick={() => setIsConfirmModalOpen(false)}>

@@ -1,11 +1,19 @@
 import { useQuery } from "@blitzjs/rpc"
+import { useContext } from "react"
 import { Tooltip } from "react-tooltip"
 import getUsers from "src/users/queries/getUsers"
+import { TaskContext } from "./TaskContext"
 
-export const TaskInformation = ({ task }) => {
+export const TaskInformation = () => {
+  const taskContext = useContext(TaskContext)
+  const task = taskContext?.task
   const [pm] = useQuery(getUsers, {
-    where: { id: task.createdById },
+    where: { id: task?.createdById },
   })
+
+  if (!taskContext || !task) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="card bg-base-300 mx-2 w-1/2">
@@ -43,7 +51,7 @@ export const TaskInformation = ({ task }) => {
         </p>
 
         <p>
-          <span className="font-semibold">Column:</span> {task["column"].name}
+          <span className="font-semibold">Column:</span> {task["column"]?.name}
         </p>
 
         <p>

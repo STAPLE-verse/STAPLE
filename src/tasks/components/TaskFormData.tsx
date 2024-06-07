@@ -1,11 +1,20 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { Tooltip } from "react-tooltip"
 import JsonForm from "src/assignments/components/JsonForm"
 import Modal from "src/core/components/Modal"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
+import { TaskContext } from "./TaskContext"
 
-export const TaskFormData = ({ task }) => {
+export const TaskFormData = () => {
   const [openMetadataInspectModal, setOpenMetadataInspectModal] = useState(false)
+
+  const taskContext = useContext(TaskContext)
+
+  if (!taskContext || !taskContext.task) {
+    return <div>Loading...</div>
+  }
+
+  const { task } = taskContext
 
   const handleMetadataInspectToggle = () => {
     setOpenMetadataInspectModal((prev) => !prev)
