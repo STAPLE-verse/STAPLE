@@ -43,7 +43,10 @@ export default resolver.pipe(
     const assignmentForms = await db.task.findMany({
       where: {
         projectId: id,
-        schema: { not: undefined }, // schema must be defined
+        schema: {
+          not: undefined,
+          not: Prisma.DbNull,
+        },
       },
       include: { assignees: { include: { statusLogs: true } } },
     })
