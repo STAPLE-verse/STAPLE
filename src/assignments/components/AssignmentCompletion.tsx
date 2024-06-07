@@ -29,12 +29,7 @@ export const AssignmentCompletion = () => {
     return <div>Loading...</div>
   }
 
-  const { task, individualAssignments, teamAssignments, refetchCurrentAssignments } = taskContext
-
-  // const refetchAssignments = async () => {
-  //   await refetchCurrentAssignments()
-  //   //await refetchAssignmentProgress()
-  // }
+  const { task, individualAssignments, teamAssignments, refetchTaskData } = taskContext
 
   return (
     <div className="card bg-base-300 mx-2 w-1/2">
@@ -54,7 +49,7 @@ export const AssignmentCompletion = () => {
           <div className="flex grid-col-2">
             <CompleteToggle
               currentAssignment={individualAssignments[0]}
-              refetch={refetchCurrentAssignments}
+              refetch={refetchTaskData}
               completedLabel="Completed"
               completedBy={currentContributor.id}
               completedAs={CompletedAs.INDIVIDUAL}
@@ -72,7 +67,7 @@ export const AssignmentCompletion = () => {
               <div key={teamAssignment.id} className="flex flex-col gap-2">
                 <CompleteToggle
                   currentAssignment={teamAssignment}
-                  refetch={refetchCurrentAssignments}
+                  refetch={refetchTaskData}
                   completedLabel="Completed"
                   completedBy={currentContributor.id}
                   completedAs={CompletedAs.TEAM}
@@ -90,7 +85,7 @@ export const AssignmentCompletion = () => {
           <div className="flex grid-col-2">
             <CompleteSchema
               currentAssignment={individualAssignments[0]}
-              refetch={refetchCurrentAssignments}
+              refetch={refetchTaskData}
               completedBy={currentContributor.id}
               completedAs={CompletedAs.INDIVIDUAL}
               schema={task["schema"]}
@@ -109,7 +104,7 @@ export const AssignmentCompletion = () => {
               <div key={teamAssignment.id} className="mb-2 flex grid-col-2">
                 <CompleteSchema
                   currentAssignment={teamAssignment}
-                  refetch={refetchCurrentAssignments}
+                  refetch={refetchTaskData}
                   completedBy={currentContributor.id}
                   completedAs={CompletedAs.TEAM}
                   schema={task["schema"]}

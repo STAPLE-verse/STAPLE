@@ -26,17 +26,17 @@ export const EditTask = () => {
   const [project] = useQuery(getProject, { id: projectId })
   const [task, { setQueryData }] = useQuery(
     getTask,
-    { id: taskId },
+    { where: { id: taskId } },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
     }
   )
+
   const [updateTaskMutation] = useMutation(updateTask)
   const [assignments] = useQuery(getAssignments, {
     where: { taskId: taskId },
   })
-  // console.log()
   const contributorsId = assignments
     .map((assignment) => assignment.contributorId)
     // assignment.contributorId is nullable thus we filter for initialValues
@@ -56,7 +56,7 @@ export const EditTask = () => {
     deadline: task.deadline,
     contributorsId: contributorsId,
     teamsId: teamsId,
-    schema: task.schema.title,
+    schema: task.schema ? task.schema.title : undefined,
   }
 
   return (

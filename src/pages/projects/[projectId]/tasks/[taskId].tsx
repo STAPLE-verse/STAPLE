@@ -63,7 +63,7 @@ export const ShowTaskPage = () => {
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
       <Suspense fallback={<div>Loading...</div>}>
-        <TaskProvider taskId={taskId} projectId={projectId}>
+        <TaskProvider taskId={taskId}>
           <TaskContent />
         </TaskProvider>
       </Suspense>

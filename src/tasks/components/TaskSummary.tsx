@@ -10,7 +10,7 @@ import { TaskFormData } from "./TaskFormData"
 import { useContext } from "react"
 import { TaskContext } from "src/tasks/components/TaskContext"
 
-// create task view
+// Create task summary for the PM
 export const TaskSummary = () => {
   // Setup
   const router = useRouter()
@@ -23,12 +23,6 @@ export const TaskSummary = () => {
   }
 
   const { task } = taskContext
-
-  // // Get assignments
-  // const [assignmentProgress, { refetch: refetchAssignmentProgress }] = useQuery(
-  //   getAssignmentProgress,
-  //   { taskId: task.id }
-  // )
 
   return (
     <div className="flex flex-row justify-center m-2">
