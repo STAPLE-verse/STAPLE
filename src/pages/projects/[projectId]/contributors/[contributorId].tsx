@@ -14,9 +14,15 @@ import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { Contributor, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 
+import { ContributorTaskList } from "src/tasks/components/ContributorTaskList"
+import { ContributorLabelsList } from "src/labels/components/ContributorLabelsList"
+
 export const ContributorPage = () => {
+  const ITEMS_PER_PAGE = 7
+
   const currentUser = useCurrentUser()
   const router = useRouter()
+
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
@@ -55,12 +61,13 @@ export const ContributorPage = () => {
         </p>
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl">Contribution Labels</h2>
-          {/* Add list of tasks for the contributor in this specific project */}
+          <ContributorLabelsList userId={user?.id}></ContributorLabelsList>
         </div>
 
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl">Contribution Task</h2>
           {/* Add list of tasks for the contributor in this specific project */}
+          <ContributorTaskList userId={user?.id}></ContributorTaskList>
         </div>
 
         <div className="flex justify-end mt-4">
