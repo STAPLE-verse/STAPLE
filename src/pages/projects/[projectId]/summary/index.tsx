@@ -41,15 +41,21 @@ const SummaryPage = () => {
 
   const [{ tasks }] = useQuery(getTasks, {
     where: { projectId: projectId },
+    orderBy: { createdAt: "desc" },
     include: {
+      labels: true,
+      element: true,
       createdBy: {
         include: { user: true },
       },
       assignees: {
+        orderBy: {
+          updatedAt: "desc",
+        },
         include: {
           statusLogs: {
             orderBy: {
-              createdAt: "desc",
+              changedAt: "desc",
             },
           },
           team: {
@@ -71,20 +77,31 @@ const SummaryPage = () => {
 
   //needs some clause for project
   const [{ labels }] = useQuery(getLabels, {
-    //where: { projectId: projectId },
+    where: { projects: { some: { id: projectId! } } },
+    orderBy: { name: "asc" },
     // include: {},
   })
 
   const [elements] = useQuery(getElements, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
-    include: { Task: true },
+    // include: { Task: true },
   })
 
   // Teams
   const [{ teams }] = useQuery(getTeams, {
     where: { project: { id: projectId! } },
+    orderBy: { name: "asc" },
     include: {
+      assignments: {
+        include: {
+          statusLogs: {
+            orderBy: {
+              changedAt: "desc",
+            },
+          },
+        },
+      },
       contributors: {
         include: { user: true },
       },
@@ -92,10 +109,14 @@ const SummaryPage = () => {
   })
 
   // Contributors
+  //TODO: Only needs tos include label id
   const [{ contributors }] = useQuery(getContributors, {
     where: { project: { id: projectId! } },
+    orderBy: { user: { lastName: "asc" } },
     include: {
       user: true,
+      labels: true,
+      AssignmentStatusLog: true,
     },
   })
 
@@ -172,16 +193,27 @@ const SummaryPage = () => {
               <div className="card-body">
                 <div className="card-title">Organized Metadata</div>
                 {selectedOrganization === "contributor" && (
-                  <ByContributors tasks={tasks}></ByContributors>
+                  <ByContributors
+                    tasks={tasks}
+                    teams={teams}
+                    contributors={contributors}
+                  ></ByContributors>
                 )}
-                {selectedOrganization === "task" && <ByTasks tasks={tasks}></ByTasks>}
-                {selectedOrganization === "label" && <ByLabels labels={labels}></ByLabels>}
-                {selectedOrganization === "date" && <ByDate></ByDate>}
+                {selectedOrganization === "task" && (
+                  <ByTasks tasks={tasks} contributors={contributors} teams={teams}></ByTasks>
+                )}
+                {selectedOrganization === "label" && (
+                  <ByLabels labels={labels} tasks={tasks} contributors={contributors}></ByLabels>
+                )}
+                {selectedOrganization === "date" && (
+                  <ByDate tasks={tasks} contributors={contributors} teams={teams}></ByDate>
+                )}
                 {selectedOrganization === "element" && (
                   <ByElements
                     elements={elements}
                     teams={teams}
                     contributors={contributors}
+                    tasks={tasks}
                   ></ByElements>
                 )}
                 {selectedOrganization === "none" && (
