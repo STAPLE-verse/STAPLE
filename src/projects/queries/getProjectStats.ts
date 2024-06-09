@@ -4,6 +4,7 @@ import db from "db"
 import { TaskStatus } from "db"
 import { z } from "zod"
 import { AssignmentStatus } from "db"
+import { Prisma } from "@prisma/client"
 
 const GetProjectStatsSchema = z.object({
   // This accepts type of undefined, but is required at runtime
