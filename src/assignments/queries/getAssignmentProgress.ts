@@ -6,10 +6,15 @@ const GetAssignmentProgress = z.object({
   taskId: z.number(),
 })
 
+export type AssignmentProgressType = {
+  all: number
+  completed: number
+}
+
 export default resolver.pipe(
   resolver.zod(GetAssignmentProgress),
   resolver.authorize(),
-  async ({ taskId }) => {
+  async ({ taskId }): Promise<AssignmentProgressType> => {
     // Get all the assignments for the given task
     const assignments = await db.assignment.findMany({
       where: { taskId },

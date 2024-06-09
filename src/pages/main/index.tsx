@@ -67,6 +67,8 @@ const MainPage = () => {
               link: <PrimaryButton route={Routes.ProjectsPage()} text="All Projects" />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-last-project",
+              tooltipContent: "Three recently updated projects",
             }
           case "Notifications":
             return {
@@ -76,6 +78,8 @@ const MainPage = () => {
               link: <PrimaryButton route={Routes.AllTasksPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-notifications",
+              tooltipContent: "Three recent notifications for all projects",
             }
           case "OverdueTask":
             return {
@@ -85,6 +89,8 @@ const MainPage = () => {
               link: <PrimaryButton route={Routes.NotificationsPage()} text="All Notifications" />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-overdue",
+              tooltipContent: "Three overdue tasks for all projects",
             }
           case "UpcomingTask":
             return {
@@ -94,6 +100,8 @@ const MainPage = () => {
               link: <PrimaryButton route={Routes.AllTasksPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-upcoming",
+              tooltipContent: "Three upcoming tasks for all projects",
             }
           default:
             return {
@@ -103,6 +111,8 @@ const MainPage = () => {
               link: <div />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-unknown",
+              tooltipContent: "Unknown widget",
             }
         }
       })

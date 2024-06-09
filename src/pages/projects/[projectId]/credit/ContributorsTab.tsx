@@ -31,8 +31,8 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
     }
   }
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
 
   const [selectedIds, setSelectedIds] = useState([] as number[])
   //TODO refactor and merge with task tab

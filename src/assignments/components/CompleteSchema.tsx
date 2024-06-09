@@ -44,7 +44,7 @@ const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, 
     <div>
       {currentAssignment ? (
         <div>
-          <button className="btn btn-primary mb-4" onClick={() => handleToggle()}>
+          <button className="btn btn-primary" onClick={() => handleToggle()}>
             {/* TODO: rewrite */}
             {completedAs === CompletedAsType.TEAM &&
               assignmentStatus.status === AssignmentStatus.COMPLETED &&
