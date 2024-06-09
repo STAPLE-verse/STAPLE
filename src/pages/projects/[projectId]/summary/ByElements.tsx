@@ -5,10 +5,11 @@ import router, { useRouter } from "next/router"
 import React, { useRef } from "react"
 import { ContributorsView, ElementView, TeamView } from "./UtilsViews"
 
-const ByElements = ({ elements, teams, contributors }) => {
-  const sortedTeams = teams
-  const sortedContributors = contributors
-
+const ByElements = ({ elements, teams, contributors, tasks }) => {
+  const getElementTask = (elementId, tasks) => {
+    let r = tasks.find((task) => task.element != null && task.elementId == elementId)
+    return r
+  }
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center mb-2 text-3xl">By elements organization</h1>
@@ -16,7 +17,7 @@ const ByElements = ({ elements, teams, contributors }) => {
         {/* <h2>Elements Summary</h2> */}
         <div>
           <h2>Contributors Summary</h2>
-          {sortedContributors.map((contributor) => (
+          {contributors.map((contributor) => (
             <ContributorsView
               contributor={contributor}
               tasks={[]}
@@ -28,7 +29,7 @@ const ByElements = ({ elements, teams, contributors }) => {
         </div>
         <div>
           <h2>Teams Summary</h2>
-          {sortedTeams.map((teamInfo) => (
+          {teams.map((teamInfo) => (
             <TeamView
               team={teamInfo}
               tasks={[]}
@@ -43,7 +44,7 @@ const ByElements = ({ elements, teams, contributors }) => {
           {elements.map((element) => (
             <ElementView
               element={element}
-              tasks={[]}
+              task={getElementTask(element.id, tasks)}
               key={element.id}
               printTask={true}
             ></ElementView>
