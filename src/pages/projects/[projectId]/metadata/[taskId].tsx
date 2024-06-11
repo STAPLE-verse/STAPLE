@@ -7,7 +7,6 @@ import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import getProject from "src/projects/queries/getProject"
-import FormDisplay from "src/forms/components/FormDisplay"
 import Table from "src/core/components/Table"
 
 const TaskContent = () => {
@@ -21,24 +20,31 @@ const TaskContent = () => {
   const printForm = statusLogs.filter((complete) => {
     return complete.status == "COMPLETED"
   })
-  const dataForm = printForm.flatMap((meta, idx, arr) => ({
-    // make sure only latest
-    // contributor name or team name
-
-    completedBy: meta.completedBy,
-    changedAt: meta.changedAt,
-    ...meta.metadata,
-  }))
-
-  console.log(printForm)
+  const dataForm = printForm.flatMap((meta, idx, arr) => {
+    const contributorId = meta.completedBy // always returns who did it
+    console.log(contributorId)
+    const assignment = task.assignees.find((contributor) => {
+      return contributor.contributorId === contributorId
+      // this should return null when team because contributor.contributorId is null when team
+      // but it will always find something, since this isn't technically a filtered loop
+      // return contributorId and teamId
+    })
+    console.log(task)
+    return {
+      userId: assignment.contributor.userId,
+      teamId: "...",
+      changedAt: meta.changedAt,
+      ...meta.metadata,
+    }
+  })
 
   const makeTableColumns = () => {
     const schemaProps = task.schema.properties
     let columns = [
       {
         header: "Completed By",
-        accessorKey: "completedBy",
-        id: "completedBy",
+        accessorKey: "userId",
+        id: "userId",
       },
       {
         header: "Changed At",
