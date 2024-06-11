@@ -60,7 +60,7 @@ export function SidebarItem(item: SidebarItemProps) {
   if (!contextValue) {
     return null
   }
-  const { icon, text, route, alert, tooltipId } = item
+  const { icon: Icon, text, route, alert, tooltipId } = item
   const { expanded } = contextValue
 
   const handleClick = async () => {
@@ -159,7 +159,7 @@ export function SidebarItem(item: SidebarItemProps) {
         className="z-[1080]"
       />
 
-      {icon}
+      <Icon className="w-6 h-6" />
       <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
         {text}
       </span>
