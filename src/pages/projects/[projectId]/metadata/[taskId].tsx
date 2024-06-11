@@ -30,7 +30,7 @@ const TaskContent = () => {
     return Object.keys(dataForm[0])
   }
 
-  console.log(dataForm)
+  //console.log(dataForm)
 
   return (
     <>
