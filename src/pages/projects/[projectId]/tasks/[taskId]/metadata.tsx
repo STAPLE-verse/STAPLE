@@ -8,10 +8,16 @@ import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import getProject from "src/projects/queries/getProject"
 import Table from "src/core/components/Table"
+import Link from "next/link"
+import { Routes } from "@blitzjs/next"
+import DownloadJSON from "src/forms/components/DownloadJSON"
+import DownloadXLSX from "src/forms/components/DownloadXLSX"
 
 const TaskContent = () => {
   const taskContext = useContext(TaskContext)
   const { task } = taskContext
+  const projectId = useParam("projectId", "number")
+  const taskId = useParam("taskId", "number")
   if (!task) {
     return <div>Loading...</div>
   }
@@ -22,14 +28,12 @@ const TaskContent = () => {
   })
   const dataForm = printForm.flatMap((meta, idx, arr) => {
     const contributorId = meta.completedBy // always returns who did it
-    console.log(contributorId)
     const assignment = task.assignees.find((contributor) => {
       return contributor.contributorId === contributorId
       // this should return null when team because contributor.contributorId is null when team
       // but it will always find something, since this isn't technically a filtered loop
       // return contributorId and teamId
     })
-    console.log(task)
     return {
       userId: assignment.contributor.userId,
       teamId: "...",
@@ -37,6 +41,8 @@ const TaskContent = () => {
       ...meta.metadata,
     }
   })
+
+  console.log(dataForm)
 
   const makeTableColumns = () => {
     const schemaProps = task.schema.properties
@@ -73,6 +79,35 @@ const TaskContent = () => {
       </Head>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <div className="flex flex-row justify-center">
+          <div className="card bg-base-300 mb-2 w-full">
+            <div className="card-body">
+              <div className="flex justify-center">
+                <Link className="btn btn-primary mx-2" href={Routes.ForgotPasswordPage()}>
+                  Form Requirements
+                </Link>
+
+                <Link
+                  className="btn btn-secondary mx-2"
+                  href={Routes.AssignmentsPage({
+                    projectId: projectId,
+                    taskId: taskId,
+                  })}
+                >
+                  Review and Edit Form Tasks
+                </Link>
+
+                <DownloadJSON data={dataForm} fileName={task.name} className="btn btn-info mx-2" />
+
+                <DownloadXLSX
+                  data={dataForm}
+                  fileName={task.name}
+                  className="btn btn-accent mx-2"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-row justify-center">
           <div className="card bg-base-300 w-full">
             <div className="card-body overflow-x-auto">
               <div className="card-title">Form Data for {task.name}</div>
@@ -90,7 +125,6 @@ export const ShowFormPage = () => {
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
   const sidebarItems = ProjectSidebarItems(projectId!, null)
-
   const taskId = useParam("taskId", "number")
 
   // return the page
