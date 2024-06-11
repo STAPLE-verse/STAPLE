@@ -22,15 +22,43 @@ const TaskContent = () => {
     return complete.status == "COMPLETED"
   })
   const dataForm = printForm.flatMap((meta, idx, arr) => ({
-    id: arr[idx].id,
+    // make sure only latest
+    // contributor name or team name
+
+    completedBy: meta.completedBy,
+    changedAt: meta.changedAt,
     ...meta.metadata,
   }))
 
-  const getHeadings = () => {
-    return Object.keys(dataForm[0])
-  }
+  console.log(printForm)
 
-  //console.log(dataForm)
+  const makeTableColumns = () => {
+    const schemaProps = task.schema.properties
+    let columns = [
+      {
+        header: "Completed By",
+        accessorKey: "completedBy",
+        id: "completedBy",
+      },
+      {
+        header: "Changed At",
+        accessorKey: "changedAt",
+        id: "changedAt",
+      },
+    ]
+
+    for (const [key, value] of Object.entries(schemaProps)) {
+      if (typeof value === "object" && value !== null) {
+        const columnObject = {
+          header: value.title,
+          accessorKey: key,
+          id: key,
+        }
+        columns.push(columnObject)
+      }
+    }
+    return columns
+  }
 
   return (
     <>
@@ -40,9 +68,9 @@ const TaskContent = () => {
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <div className="flex flex-row justify-center">
           <div className="card bg-base-300 w-full">
-            <div className="card-body">
+            <div className="card-body overflow-x-auto">
               <div className="card-title">Form Data for {task.name}</div>
-              <FormDisplay theadData={getHeadings()} tbodyData={dataForm} />
+              <Table columns={makeTableColumns()} data={dataForm} />
             </div>
           </div>
         </div>

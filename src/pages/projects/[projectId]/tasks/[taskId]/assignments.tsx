@@ -20,6 +20,7 @@ import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import Link from "next/link"
 
 export const AssignmentsPage = () => {
+  console.log(assignmentTableColumns)
   // Get values
   const taskId = useParam("taskId", "number")
   const projectId = useParam("projectId", "number")
