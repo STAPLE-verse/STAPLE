@@ -1,8 +1,9 @@
 import React, { useState } from "react"
-import { Assignment, Prisma } from "db"
+import { Prisma } from "db"
 
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import Modal from "src/core/components/Modal"
+import CompleteToggle from "./CompleteToggle"
 
 export type AssignmentWithRelations = Prisma.AssignmentGetPayload<{
   include: {
@@ -94,5 +95,10 @@ export const assignmentTableColumns: ColumnDef<AssignmentWithRelations>[] = [
       </>
     ),
     header: "Task Schema",
+  }),
+  columnHelper.accessor((row) => row.statusLogs[0]?.status, {
+    cell: (info) => <CompleteToggle />,
+    header: "Change status",
+    id: "updateStatus",
   }),
 ]
