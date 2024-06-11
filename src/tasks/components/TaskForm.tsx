@@ -206,6 +206,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         options={elements}
         optionText="name"
         optionValue="id"
+        disableFirstOption={false}
       />
 
       {/* Contributors */}

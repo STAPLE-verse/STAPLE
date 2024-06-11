@@ -12,6 +12,7 @@ export interface LabeledSelectFieldProps extends PropsWithoutRef<JSX.IntrinsicEl
   optionValue: string
   outerProps?: PropsWithoutRef<JSX.IntrinsicElements["div"]>
   multiple?: boolean
+  disableFirstOption?: boolean
 }
 
 export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectFieldProps>(
@@ -24,6 +25,7 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
       optionText,
       optionValue,
       multiple,
+      disableFirstOption = true,
       type = "number",
       ...props
     },
@@ -33,18 +35,25 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
       input,
       meta: { touched, error, submitError, submitting },
     } = useField(name, {
-      parse: type === "number" ? Number : undefined,
+      parse: (value) => {
+        if (value === "") {
+          return null
+        }
+        return type === "number" ? Number(value) : value
+      },
     })
 
     const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
+
+    const firstOptionText = disableFirstOption ? "Please select an option" : "Select none"
 
     return (
       <div {...outerProps}>
         <label>
           {label}
           <select {...input} disabled={submitting} multiple={multiple} {...props} ref={ref}>
-            <option disabled value="">
-              Please select an option
+            <option disabled={disableFirstOption} value="">
+              {firstOptionText}
             </option>
             {options &&
               options.length !== 0 &&
