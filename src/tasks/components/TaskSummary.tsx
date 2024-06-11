@@ -31,7 +31,7 @@ export const TaskSummary = () => {
         <div className="card-body">
           <div className="card-title">PM Information</div>
 
-          <div class="stats bg-base-300 text-lg font-bold">
+          <div className="stats bg-base-300 text-lg font-bold">
             {/* Complete task widget */}
             <CompleteTaskToggle />
             {/* Task form data widget */}
