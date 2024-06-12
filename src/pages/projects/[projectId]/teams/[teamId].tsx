@@ -13,6 +13,8 @@ import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import getProject from "src/projects/queries/getProject"
 import getContributors from "src/contributors/queries/getContributors"
 import { getInitials } from "src/services/getInitials"
+import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
+import { ContributorTaskList } from "src/tasks/components/ContributorsTaskList"
 
 export const ShowTeamPage = () => {
   const router = useRouter()
@@ -33,6 +35,8 @@ export const ShowTeamPage = () => {
   const [project] = useQuery(getProject, { id: projectId })
   // Get sidebar options
   const sidebarItems = ProjectSidebarItems(projectId!, null)
+
+  const membersId = contributors.map((contributor) => contributor.userId)
 
   return (
     <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
@@ -83,6 +87,17 @@ export const ShowTeamPage = () => {
                 </div>
               )
             })}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <h2 className="text-2xl">Team members contribution labels</h2>
+            <ContributorLabelsList usersId={membersId}></ContributorLabelsList>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <h2 className="text-2xl">Team members contribution Tasks</h2>
+
+            <ContributorTaskList usersId={membersId}></ContributorTaskList>
           </div>
 
           <div className="flex justify-start mt-4">

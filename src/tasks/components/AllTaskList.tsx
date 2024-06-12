@@ -5,7 +5,7 @@ import { Routes } from "@blitzjs/next"
 import router, { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTasks from "src/tasks/queries/getTasks"
-import { ContributorTaskList } from "./ContributorTaskList"
+import { ContributorTaskList } from "./ContributorsTaskList"
 
 const ITEMS_PER_PAGE = 10
 

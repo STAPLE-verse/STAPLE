@@ -4,13 +4,13 @@ import getLabels from "../queries/getLabels"
 import { LabelInformation, labelTableColumnsSimple } from "./LabelTable"
 import Table from "src/core/components/Table"
 
-export const ContributorLabelsList = ({ userId }) => {
+export const ContributorLabelsList = ({ usersId }) => {
   const ITEMS_PER_PAGE = 7
 
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ labels, hasMore }, { refetch }] = usePaginatedQuery(getLabels, {
-    where: { user: { id: userId } },
+    where: { user: { id: { in: usersId } } },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,

@@ -6,17 +6,17 @@ import getTasks from "src/tasks/queries/getTasks"
 
 const ITEMS_PER_PAGE = 10
 
-export const ContributorTaskList = ({ userId }) => {
+export const ContributorTaskList = ({ usersId }) => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const [{ tasks, hasMore }] = usePaginatedQuery(getTasks, {
     where: {
       OR: [
-        { assignees: { some: { contributor: { user: { id: userId! } }, teamId: null } } },
+        { assignees: { some: { contributor: { user: { id: { in: usersId } } }, teamId: null } } },
         {
           assignees: {
             some: {
-              team: { contributors: { some: { id: userId! } } },
+              team: { contributors: { some: { id: { in: usersId } } } },
               contributorId: null,
             },
           },
