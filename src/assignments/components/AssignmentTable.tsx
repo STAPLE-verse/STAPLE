@@ -97,7 +97,8 @@ export const assignmentTableColumns: ColumnDef<AssignmentWithRelations>[] = [
     header: "Task Schema",
   }),
   columnHelper.accessor((row) => row.statusLogs[0]?.status, {
-    cell: (info) => <CompleteToggle />,
+    cell: (info) => "Cheese",
+    //<CompleteToggle />,
     header: "Change status",
     id: "updateStatus",
   }),
