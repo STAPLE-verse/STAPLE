@@ -2,14 +2,11 @@ import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import { useRouter } from "next/router"
 
 import Layout from "src/core/layouts/Layout"
 import getProject from "src/projects/queries/getProject"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
-import { PlusIcon } from "@heroicons/react/24/outline"
 import ByContributors from "./ByContributors"
 import ByTasks from "./ByTasks"
 import ByLabels from "./ByLabels"
@@ -36,20 +33,25 @@ const formatDate = (myDate) =>
 const SummaryPage = () => {
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, "Summary")
   const [selectedOrganization, setSelectedOrganization] = useState("none")
 
   const [{ tasks }] = useQuery(getTasks, {
     where: { projectId: projectId },
+    orderBy: { createdAt: "desc" },
     include: {
+      labels: true,
+      element: true,
       createdBy: {
         include: { user: true },
       },
       assignees: {
+        orderBy: {
+          updatedAt: "desc",
+        },
         include: {
           statusLogs: {
             orderBy: {
-              createdAt: "desc",
+              changedAt: "desc",
             },
           },
           team: {
@@ -71,20 +73,31 @@ const SummaryPage = () => {
 
   //needs some clause for project
   const [{ labels }] = useQuery(getLabels, {
-    //where: { projectId: projectId },
+    where: { projects: { some: { id: projectId! } } },
+    orderBy: { name: "asc" },
     // include: {},
   })
 
   const [elements] = useQuery(getElements, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
-    include: { Task: true },
+    // include: { Task: true },
   })
 
   // Teams
   const [{ teams }] = useQuery(getTeams, {
     where: { project: { id: projectId! } },
+    orderBy: { name: "asc" },
     include: {
+      assignments: {
+        include: {
+          statusLogs: {
+            orderBy: {
+              changedAt: "desc",
+            },
+          },
+        },
+      },
       contributors: {
         include: { user: true },
       },
@@ -92,10 +105,14 @@ const SummaryPage = () => {
   })
 
   // Contributors
+  //TODO: Only needs tos include label id
   const [{ contributors }] = useQuery(getContributors, {
     where: { project: { id: projectId! } },
+    orderBy: { user: { lastName: "asc" } },
     include: {
       user: true,
+      labels: true,
+      AssignmentStatusLog: true,
     },
   })
 
@@ -105,7 +122,7 @@ const SummaryPage = () => {
   }
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Suspense fallback={<div>Loading...</div>}>
         <Head>
           <title>Project Summary</title>
@@ -172,16 +189,27 @@ const SummaryPage = () => {
               <div className="card-body">
                 <div className="card-title">Organized Metadata</div>
                 {selectedOrganization === "contributor" && (
-                  <ByContributors tasks={tasks}></ByContributors>
+                  <ByContributors
+                    tasks={tasks}
+                    teams={teams}
+                    contributors={contributors}
+                  ></ByContributors>
                 )}
-                {selectedOrganization === "task" && <ByTasks tasks={tasks}></ByTasks>}
-                {selectedOrganization === "label" && <ByLabels labels={labels}></ByLabels>}
-                {selectedOrganization === "date" && <ByDate></ByDate>}
+                {selectedOrganization === "task" && (
+                  <ByTasks tasks={tasks} contributors={contributors} teams={teams}></ByTasks>
+                )}
+                {selectedOrganization === "label" && (
+                  <ByLabels labels={labels} tasks={tasks} contributors={contributors}></ByLabels>
+                )}
+                {selectedOrganization === "date" && (
+                  <ByDate tasks={tasks} contributors={contributors} teams={teams}></ByDate>
+                )}
                 {selectedOrganization === "element" && (
                   <ByElements
                     elements={elements}
                     teams={teams}
                     contributors={contributors}
+                    tasks={tasks}
                   ></ByElements>
                 )}
                 {selectedOrganization === "none" && (

@@ -1,13 +1,13 @@
 import React, { Suspense, useState } from "react"
-import { Form, FormProps } from "src/core/components/Form"
+import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { useQuery } from "@blitzjs/rpc"
 import { ContributorPrivileges } from "@prisma/client"
-import LabeledTextField from "src/core/components/LabeledTextField"
+import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import getContributors from "src/contributors/queries/getContributors"
 import AssignTeamMembers, { TeamOption } from "./TeamMembersTable"
 import { Field } from "react-final-form"
-export { FORM_ERROR } from "src/core/components/Form"
+export { FORM_ERROR } from "src/core/components/fields/Form"
 
 interface TeamFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number

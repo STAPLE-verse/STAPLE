@@ -1,5 +1,5 @@
-import { LabeledCheckboxField } from "src/core/components/LabeledCheckboxField"
-import { Form } from "src/core/components/Form"
+import { LabeledCheckboxField } from "src/core/components/fields/LabeledCheckboxField"
+import { Form } from "src/core/components/fields/Form"
 import { Tos } from "src/auth/schemas"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"

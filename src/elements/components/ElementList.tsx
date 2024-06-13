@@ -1,21 +1,36 @@
-import { Routes } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
 import Link from "next/link"
 import { Element, Task } from "db"
+import { useRouter } from "next/router"
+import { usePaginatedQuery } from "@blitzjs/rpc"
+import getElements from "../queries/getElements"
 
-interface ElementsListProps {
-  // Element type extended with Task array
-  elements: (Element & { Task?: Task[] })[]
-  projectId: number
+interface ElementsWithTasks extends Element {
+  Task?: Task[]
 }
 
-export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId }) => {
-  // const { isOver, setNodeRef } = useDroppable({
-  //   id: `element-${element.id}`,
-  // })
+export const ElementsList: React.FC = ({}) => {
+  // Setup
+  const router = useRouter()
+  const ITEMS_PER_PAGE = 7
+  const page = Number(router.query.page) || 0
+  const projectId = useParam("projectId", "number")
 
-  // const style = {
-  //   boxShadow: isOver ? "0 0 8px gray" : undefined,
-  // }
+  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
+
+  // Get elements data
+  const queryResult = usePaginatedQuery(getElements, {
+    where: { project: { id: projectId! } },
+    orderBy: { id: "asc" },
+    include: { Task: true },
+    skip: ITEMS_PER_PAGE * page,
+    take: ITEMS_PER_PAGE,
+  })
+
+  // Needed separate restructure to define type because of include in the query call
+  const elements = queryResult[0].elements as ElementsWithTasks[]
+  const { hasMore } = queryResult[0]
 
   return (
     <div>
@@ -45,12 +60,12 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
               <div className="flex flex-row bg-base-100 rounded-lg">
                 {tasks && tasks.length > 0 ? (
                   tasks.map((task) => (
-                    <div key={task} className="card bg-base-100 text-base-content m-2 w-1/4">
+                    <div key={task.id} className="card bg-base-100 text-base-content m-2 w-1/4">
                       <div className="card-body">
                         <div className="card-title text-base-content justify-center">
                           {task.name}
                         </div>
-                        <center>{task.description.substring(0, 50)}</center>
+                        {task.description && <div>{task.description.substring(0, 50)}</div>}
                       </div>
                       <div className="card-actions justify-center">
                         <Link
@@ -78,6 +93,20 @@ export const ElementsList: React.FC<ElementsListProps> = ({ elements, projectId 
           </div>
         )
       })}
+
+      {/* Previous and next page btns */}
+      <div className="join grid grid-cols-2 mt-4">
+        <button
+          className="join-item btn btn-secondary"
+          disabled={page === 0}
+          onClick={goToPreviousPage}
+        >
+          Previous
+        </button>
+        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
+          Next
+        </button>
+      </div>
     </div>
   )
 }

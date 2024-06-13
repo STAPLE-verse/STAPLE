@@ -10,10 +10,10 @@ import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, schema, ui }) => {
   // Setup
   const [updateAssignmentMutation] = useMutation(updateAssignment)
-  // Get the latest assignmentStatus
-  const assignmentStatus = currentAssignment.statusLogs[0]
+  // Get the latest assignment status from the AssignmentStatusLog
+  const latestAssignmentStatus = currentAssignment.statusLogs[0]
   // State to store metadata
-  const [assignmentMetadata, setAssignmentMetadata] = useState(assignmentStatus!.metadata)
+  const [assignmentMetadata, setAssignmentMetadata] = useState(latestAssignmentStatus!.metadata)
 
   // Handle metadata form open toggle
   const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
@@ -30,8 +30,11 @@ const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, 
       completedAs: completedAs as CompletedAsType,
       metadata: data.formData,
     })
-    // console.log(data.formData)
+
     setAssignmentMetadata(data.formData)
+
+    // Close modal
+    setOpenAssignmentModal(false)
 
     await refetch()
   }
@@ -40,23 +43,43 @@ const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, 
     console.log(errors)
   }
 
+  // Handle reset metadata
+  // Using hard reset to bypass validation
+  const handleResetMetadata = async () => {
+    await updateAssignmentMutation({
+      id: currentAssignment!.id,
+      status: AssignmentStatus.NOT_COMPLETED,
+      completedBy: completedBy,
+      completedAs: completedAs as CompletedAsType,
+      metadata: {}, // Reset metadata to an empty object
+    })
+
+    setAssignmentMetadata({})
+
+    // Close modal
+    setOpenAssignmentModal(false)
+
+    // Refetch the data
+    await refetch()
+  }
+
   return (
     <div>
       {currentAssignment ? (
         <div>
-          <button className="btn btn-primary mb-4" onClick={() => handleToggle()}>
+          <button className="btn btn-primary" onClick={() => handleToggle()}>
             {/* TODO: rewrite */}
             {completedAs === CompletedAsType.TEAM &&
-              assignmentStatus.status === AssignmentStatus.COMPLETED &&
+              latestAssignmentStatus.status === AssignmentStatus.COMPLETED &&
               `Update ${currentAssignment.team.name} Data`}
             {completedAs === CompletedAsType.TEAM &&
-              assignmentStatus.status === AssignmentStatus.NOT_COMPLETED &&
+              latestAssignmentStatus.status === AssignmentStatus.NOT_COMPLETED &&
               `Provide ${currentAssignment.team.name} Data`}
             {completedAs === CompletedAsType.INDIVIDUAL &&
-              assignmentStatus.status === AssignmentStatus.COMPLETED &&
+              latestAssignmentStatus.status === AssignmentStatus.COMPLETED &&
               `Update Individual Data`}
             {completedAs === CompletedAsType.INDIVIDUAL &&
-              assignmentStatus.status === AssignmentStatus.NOT_COMPLETED &&
+              latestAssignmentStatus.status === AssignmentStatus.NOT_COMPLETED &&
               `Provide Individual Data`}
           </button>
           <Modal open={openAssignmentModal} size="w-11/12 max-w-5xl">
@@ -74,6 +97,9 @@ const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, 
             <div className="modal-action">
               <button className="btn btn-primary" onClick={handleToggle}>
                 Close
+              </button>
+              <button className="btn btn-secondary ml-2" onClick={handleResetMetadata}>
+                Reset form data
               </button>
             </div>
           </Modal>

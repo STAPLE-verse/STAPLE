@@ -1,5 +1,4 @@
 import { Routes } from "@blitzjs/next"
-import Link from "next/link"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation, useQuery } from "@blitzjs/rpc"
@@ -9,11 +8,10 @@ import { ContributorForm, FORM_ERROR } from "src/contributors/components/Contrib
 import { Suspense } from "react"
 import Head from "next/head"
 import { z } from "zod"
-import getProject from "src/projects/queries/getProject"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { ContributorPrivilegesOptions } from "src/contributors/components/ContributorForm"
 import toast from "react-hot-toast"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+
 // TODO: if not all parameters that are present in the schema are in the returned values of the form the onsubmit fails without error
 // TODO: Thus we create a separate schema for the form and the create mutation
 export const ContributorFormSchema = z.object({
@@ -25,13 +23,11 @@ export const ContributorFormSchema = z.object({
 const NewContributorPage = () => {
   const router = useRouter()
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
   const [createContributorMutation] = useMutation(createContributor)
   const currentUser = useCurrentUser()
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Add New Contributor</title>
       </Head>

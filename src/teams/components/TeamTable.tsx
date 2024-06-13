@@ -1,6 +1,4 @@
 import React from "react"
-import { Task } from "db"
-
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"

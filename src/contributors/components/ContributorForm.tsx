@@ -1,12 +1,12 @@
 import React, { Suspense } from "react"
-import { Form, FormProps } from "src/core/components/Form"
+import { Form, FormProps } from "src/core/components/fields/Form"
 
 import { z } from "zod"
-import { LabelSelectField } from "src/core/components/LabelSelectField"
+import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
 import getUsers from "src/users/queries/getUsers"
 import { ContributorPrivileges } from "@prisma/client"
-export { FORM_ERROR } from "src/core/components/Form"
+export { FORM_ERROR } from "src/core/components/fields/Form"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number

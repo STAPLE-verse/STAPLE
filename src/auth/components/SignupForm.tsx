@@ -1,5 +1,5 @@
-import { LabeledTextField } from "src/core/components/LabeledTextField"
-import { Form, FORM_ERROR } from "src/core/components/Form"
+import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
+import { Form, FORM_ERROR } from "src/core/components/fields/Form"
 import { Signup } from "src/auth/schemas"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"

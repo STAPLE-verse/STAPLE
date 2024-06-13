@@ -7,7 +7,16 @@ import Head from "next/head"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
+import getTasks from "src/tasks/queries/getTasks"
+import moment from "moment"
+import Table from "src/core/components/Table"
+import { TaskStatus } from "db"
+import getNotifications from "src/messages/queries/getNotifications"
+import {
+  tasksColumns,
+  projectColumns,
+  notificationColumns,
+} from "src/widgets/components/ColumnHelpers"
 import getUserWidgets from "src/widgets/queries/getUserWidgets"
 
 // make things draggable
@@ -38,7 +47,6 @@ import getDashboardProjects from "src/projects/queries/getDashboardProjects"
 import getDashboardNotifications from "src/messages/queries/getDashboardNotifications"
 
 const MainPage = () => {
-  const sidebarItems = HomeSidebarItems("Dashboard")
   const currentUser = useCurrentUser()
   const [updateWidgetMutation] = useMutation(updateWidget)
   const [setWidgetMutation] = useMutation(setWidgets)
@@ -67,6 +75,8 @@ const MainPage = () => {
               link: <PrimaryButton route={Routes.ProjectsPage()} text="All Projects" />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-last-project",
+              tooltipContent: "Three recently updated projects",
             }
           case "Notifications":
             return {
@@ -76,6 +86,8 @@ const MainPage = () => {
               link: <PrimaryButton route={Routes.AllTasksPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-notifications",
+              tooltipContent: "Three recent notifications for all projects",
             }
           case "OverdueTask":
             return {
@@ -85,6 +97,8 @@ const MainPage = () => {
               link: <PrimaryButton route={Routes.NotificationsPage()} text="All Notifications" />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-overdue",
+              tooltipContent: "Three overdue tasks for all projects",
             }
           case "UpcomingTask":
             return {
@@ -94,6 +108,8 @@ const MainPage = () => {
               link: <PrimaryButton route={Routes.AllTasksPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-upcoming",
+              tooltipContent: "Three upcoming tasks for all projects",
             }
           default:
             return {
@@ -103,6 +119,8 @@ const MainPage = () => {
               link: <div />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-unknown",
+              tooltipContent: "Unknown widget",
             }
         }
       })
@@ -159,7 +177,7 @@ const MainPage = () => {
   )
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
+    <Layout>
       <Head>
         <title>Home</title>
       </Head>

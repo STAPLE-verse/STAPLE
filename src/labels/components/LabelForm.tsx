@@ -1,18 +1,11 @@
 // import React, { Suspense } from "react"
-import { Form, FormProps } from "src/core/components/Form"
-import { LabeledTextField } from "src/core/components/LabeledTextField"
-import { LabeledTextAreaField } from "src/core/components/LabeledTextAreaField"
+import { Form, FormProps } from "src/core/components/fields/Form"
+import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
+import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
 
-import { Field, useField, FormSpy } from "react-final-form"
-
-import { boolean, z } from "zod"
-
-export { FORM_ERROR } from "src/core/components/Form"
+import { z } from "zod"
 
 interface LabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
-  // name: string
-  // description: string
-  // taxonomy: string
   userId?: number
   taxonomyList: string[]
 }

@@ -12,15 +12,15 @@ function TextFilter({ column, table }: { column: Column<any, unknown>; table: Ta
       typeof firstValue === "number"
         ? []
         : Array.from(column.getFacetedUniqueValues().keys()).sort(),
-    [column.getFacetedUniqueValues()]
+    [column, firstValue]
   )
 
   return (
     <>
       <datalist id={column.id + "list"}>
-        {sortedUniqueValues.slice(0, 5000).map((value: any) => (
-          <option value={value} key={value} />
-        ))}
+        {sortedUniqueValues.slice(0, 5000).map((value: any) => {
+          return <option value={value} key={value} />
+        })}
       </datalist>
       <DebouncedInput
         type="text"
@@ -58,7 +58,7 @@ function DebouncedInput({
     }, debounce)
 
     return () => clearTimeout(timeout)
-  }, [value])
+  }, [debounce, onChange, value])
 
   return <input {...props} value={value} onChange={(e) => setValue(e.target.value)} />
 }

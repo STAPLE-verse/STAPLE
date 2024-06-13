@@ -11,6 +11,7 @@ import { taskElementColumns } from "src/tasks/components/TaskTable"
 import Table from "src/core/components/Table"
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import "react-circular-progressbar/dist/styles.css"
+import { Tooltip } from "react-tooltip"
 
 export const OverallElement = () => {
   const router = useRouter()
@@ -31,14 +32,19 @@ export const OverallElement = () => {
     take: ITEMS_PER_PAGE,
   })
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  const goToPreviousPage = () =>
+    router.push({ query: { projectId: projectId, elementId: elementId, page: page - 1 } })
+  const goToNextPage = () =>
+    router.push({ query: { projectId: projectId, elementId: elementId, page: page + 1 } })
 
   return (
     <div className="flex flex-row justify-center w-full">
       <div className="card bg-base-300 w-1/2 mr-2">
         <div className="card-body">
-          <div className="card-title">{element.name}</div>
+          <div className="card-title" data-tooltip-id="element-tool">
+            {element.name}
+          </div>
+          <Tooltip id="element-tool" content="Overall element information" className="z-[1099]" />
           {element.description}
           <p className="italic">
             Last update:{" "}
@@ -65,7 +71,10 @@ export const OverallElement = () => {
 
       <div className="card bg-base-300 w-1/2">
         <div className="card-body">
-          <div className="card-title">Tasks</div>
+          <div className="card-title" data-tooltip-id="tasks-tool">
+            Tasks
+          </div>
+          <Tooltip id="tasks-tool" content="Tasks assigned to this element" className="z-[1099]" />
           <Table columns={taskElementColumns} data={tasks} />
           <div className="join grid grid-cols-2 mt-4">
             <button
@@ -147,7 +156,14 @@ export const PMElement = () => {
 
           <div className="stats bg-base-300 text-lg font-bold">
             <div className="stat place-items-center">
-              <div className="stat-title text-2xl text-inherit">Task Status</div>
+              <div className="stat-title text-2xl text-inherit" data-tooltip-id="status-tool">
+                Task Status
+              </div>
+              <Tooltip
+                id="status-tool"
+                content="Percent of overall tasks completed by PM"
+                className="z-[1099]"
+              />
               <div className="w-20 h-20 m-2">
                 <CircularProgressbar
                   value={taskPercent * 100}
@@ -165,7 +181,14 @@ export const PMElement = () => {
             </div>
 
             <div className="stat place-items-center">
-              <div className="stat-title text-2xl text-inherit">Form Data</div>
+              <div className="stat-title text-2xl text-inherit" data-tooltip-id="form-tool">
+                Form Data
+              </div>
+              <Tooltip
+                id="form-tool"
+                content="Percent of required forms completed"
+                className="z-[1099]"
+              />
               <div className="w-20 h-20 m-2">
                 <CircularProgressbar
                   value={formPercent * 100}
@@ -183,7 +206,14 @@ export const PMElement = () => {
             </div>
 
             <div className="stat place-items-center">
-              <div className="stat-title text-2xl text-inherit">Labels</div>
+              <div className="stat-title text-2xl text-inherit" data-tooltip-id="label-tool">
+                Labels
+              </div>
+              <Tooltip
+                id="label-tool"
+                content="Percent of tasks in this element with labels"
+                className="z-[1099]"
+              />
               <div className="w-20 h-20 m-2">
                 <CircularProgressbar
                   value={labelPercent * 100}

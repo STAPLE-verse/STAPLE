@@ -8,9 +8,6 @@ import { TaskForm, FORM_ERROR } from "src/tasks/components/TaskForm"
 import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
 import Head from "next/head"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
-import getProject from "src/projects/queries/getProject"
-import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 import toast from "react-hot-toast"
 import getContributor from "src/contributors/queries/getContributor"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
@@ -18,13 +15,11 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 const NewTaskPage = () => {
   const router = useRouter()
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
   const [createTaskMutation] = useMutation(createTask)
   const currentUser = useCurrentUser()
   const [currentContributor] = useQuery(getContributor, {
     where: { projectId: projectId, userId: currentUser!.id },
   })
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
 
   const initialValues = {
     // Making sure that conributorsId always returns an empty array even if it is not touched
@@ -32,7 +27,7 @@ const NewTaskPage = () => {
   }
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Create New Task</title>
       </Head>

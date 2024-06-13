@@ -5,16 +5,13 @@ import Head from "next/head"
 import getCurrentUser from "src/users/queries/getCurrentUser"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import deleteUser from "src/users/mutations/deleteUser"
-import { FORM_ERROR, Form, FormProps } from "src/core/components/Form"
-import { LabeledTextField } from "src/core/components/LabeledTextField"
+import { FORM_ERROR, Form, FormProps } from "src/core/components/fields/Form"
+import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import updateUser from "src/users/mutations/updateUser"
 import { z } from "zod"
-export { FORM_ERROR } from "src/core/components/Form"
 import { FormProfileSchema } from "src/users/schemas"
 import { Routes } from "@blitzjs/next"
 import logout from "src/auth/mutations/logout"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
-import Link from "next/link"
 
 export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
@@ -103,13 +100,12 @@ export const EditProfile = () => {
               }
             }}
           />
-          <Link href="/api/auth/orcid" legacyBehavior>
-            <button className="mb-1 flex rounded-md bg-emerald-50 py-2 px-4 text-sm font-medium text-emerald-700 hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-0 dark:border dark:border-gray-600 dark:bg-gray-800 dark:text-emerald-500 dark:hover:border-gray-400 dark:hover:bg-gray-700">
-              Connect your ORCID
-            </button>
-          </Link>
 
           <div className="flex justify-end mt-4">
+            <Link href="/api/auth/orcid" legacyBehavior>
+              <button className="btn btn-info mr-2">Connect your ORCID</button>
+            </Link>
+
             <button
               type="button"
               className="btn btn-warning"
@@ -144,13 +140,7 @@ const EditProfilePage = () => {
 
 EditProfilePage.authenticate = true
 EditProfilePage.getLayout = (page) => {
-  const sidebarItems = HomeSidebarItems(null)
-
-  return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
-      {page}
-    </Layout>
-  )
+  return <Layout>{page}</Layout>
 }
 
 export default EditProfilePage

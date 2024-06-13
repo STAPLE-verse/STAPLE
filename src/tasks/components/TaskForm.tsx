@@ -1,8 +1,7 @@
-// import React, { Suspense } from "react"
-import { Form, FormProps } from "src/core/components/Form"
-import { LabeledTextField } from "src/core/components/LabeledTextField"
-import { LabeledTextAreaField } from "src/core/components/LabeledTextAreaField"
-import { LabelSelectField } from "src/core/components/LabelSelectField"
+import { Form, FormProps } from "src/core/components/fields/Form"
+import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
+import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
+import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import getColumns from "../queries/getColumns"
 import getElements from "src/elements/queries/getElements"
 import { useQuery } from "@blitzjs/rpc"
@@ -13,8 +12,8 @@ import Modal from "src/core/components/Modal"
 import { useEffect, useState } from "react"
 import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 import getTeams from "src/teams/queries/getTeams"
-export { FORM_ERROR } from "src/core/components/Form"
-import CheckboxFieldTable from "src/core/components/CheckboxFieldTable"
+export { FORM_ERROR } from "src/core/components/fields/Form"
+import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import moment from "moment"
 import { ContributorPrivileges } from "db"
 import getForms from "src/forms/queries/getForms"
@@ -47,7 +46,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // Elements
-  const [elements] = useQuery(getElements, {
+  const [{ elements: elements }] = useQuery(getElements, {
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
   })
@@ -206,6 +205,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         options={elements}
         optionText="name"
         optionValue="id"
+        disableFirstOption={false}
       />
 
       {/* Contributors */}

@@ -5,14 +5,11 @@ import router, { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 import React from "react"
-import Modal from "src/core/components/Modal"
 import { FORM_ERROR } from "src/labels/components/LabelForm"
 import getLabels from "src/labels/queries/getLabels"
 import Table from "src/core/components/Table"
 import { useParam } from "@blitzjs/next"
 
-import { LabelIdsFormSchema } from "src/labels/schemas"
-import { AddLabelForm } from "src/labels/components/AddLabelForm"
 import { PmLabelInformation, labelPmTableColumns } from "src/labels/components/LabelPmTable"
 import toast from "react-hot-toast"
 import updateProjectLabel from "src/projects/mutations/updateProjectLabel"
@@ -75,16 +72,16 @@ export const AlPmsLabelsList = ({
     labelsId: [],
   }
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
 
   const labelInformation = labels.map((task) => {
     const name = task.name
-    const desciprition = task.description || ""
+    const description = task.description || ""
 
     let t: PmLabelInformation = {
       name: name,
-      description: desciprition,
+      description: description,
       id: task.id,
       selectedIds: selectedIds,
       user: task.user.username,

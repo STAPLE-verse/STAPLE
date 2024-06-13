@@ -1,16 +1,13 @@
-import { Suspense, useEffect } from "react"
+import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useParam } from "@blitzjs/next"
-import React, { useCallback } from "react"
-import { PlusIcon } from "@heroicons/react/24/outline"
+import React from "react"
 import { ElementsList } from "src/elements/components/ElementList"
 import getElements from "src/elements/queries/getElements"
-import getProject from "src/projects/queries/getProject"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 
 const ElementsPage = () => {
   const projectId = useParam("projectId", "number")
@@ -19,11 +16,9 @@ const ElementsPage = () => {
     orderBy: { id: "asc" },
     include: { Task: true },
   })
-  const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, "Elements")
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Elements</title>
       </Head>
@@ -32,11 +27,11 @@ const ElementsPage = () => {
         <h1 className="flex justify-center mb-2 text-3xl">Elements</h1>
 
         <Suspense fallback={<div>Loading...</div>}>
-          <ElementsList projectId={projectId!} elements={elements} />
+          <ElementsList />
         </Suspense>
         <div>
           <Link
-            className="btn btn-primary mb-4"
+            className="btn btn-primary mb-4 mt-4"
             href={Routes.NewElementPage({ projectId: projectId! })}
           >
             Create Element

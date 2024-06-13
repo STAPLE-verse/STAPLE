@@ -1,10 +1,10 @@
 import React, { Suspense } from "react"
-import { Form, FormProps } from "src/core/components/Form"
-import { LabeledTextField } from "src/core/components/LabeledTextField"
-import { LabeledTextAreaField } from "src/core/components/LabeledTextAreaField"
+import { Form, FormProps } from "src/core/components/fields/Form"
+import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
+import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
 
 import { z } from "zod"
-export { FORM_ERROR } from "src/core/components/Form"
+export { FORM_ERROR } from "src/core/components/fields/Form"
 
 export function ElementForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (

@@ -18,6 +18,8 @@ export const SortableBox = ({ boxes }) => {
             display={boxes.display}
             link={boxes.link}
             size={boxes.size}
+            tooltipId={boxes.tooltipId}
+            tooltipContent={boxes.tooltipContent}
           />
         ))}
       </SortableContext>
@@ -36,6 +38,8 @@ export const SortableProjectBox = ({ boxes }) => {
             title={boxes.title}
             display={boxes.display}
             link={boxes.link}
+            tooltipId={boxes.tooltipId}
+            tooltipContent={boxes.tooltipContent}
           />
         ))}
       </SortableContext>
