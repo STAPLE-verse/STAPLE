@@ -54,6 +54,7 @@ export const EditTask = () => {
     contributorsId: contributorsId,
     teamsId: teamsId,
     schema: task.schema ? task.schema.title : undefined,
+    elementId: task.elementId,
   }
 
   return (
