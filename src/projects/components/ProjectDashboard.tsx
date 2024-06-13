@@ -129,7 +129,7 @@ const ProjectDashboard = () => {
       className="btn btn-primary self-end m-4"
       href={Routes.ProjectNotificationsPage({ projectId: projectId! })}
     >
-      All Notifications
+      Project Notifications
     </Link>
   )
   const contributorLink = (
