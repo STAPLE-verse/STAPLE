@@ -4,10 +4,8 @@
 import { Suspense, useEffect } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
-import Link from "next/link"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
-import getProjects from "src/projects/queries/getProjects"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTasks from "src/tasks/queries/getTasks"
 import moment from "moment"
@@ -37,166 +35,24 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import updateWidget from "src/widgets/mutations/updateWidget"
 import setWidgets from "src/widgets/mutations/setWidgets"
 import toast from "react-hot-toast"
-
-const projectLink = (
-  <Link className="btn btn-primary self-end m-4" href={Routes.ProjectsPage()}>
-    All Projects
-  </Link>
-)
-
-const taskLink = (
-  <Link className="btn btn-primary self-end m-4" href={Routes.AllTasksPage()}>
-    All Tasks
-  </Link>
-)
-
-const notificationLink = (
-  <Link className="btn btn-primary self-end m-4" href={Routes.NotificationsPage()}>
-    All Notifications
-  </Link>
-)
-
-// Define displays as functions to easily handle the fetching logic if necessary
-const getProjectDisplay = (projects) => {
-  if (projects.length === 0) {
-    return <p className="italic p-2">No projects</p>
-  }
-  return (
-    <Table
-      columns={projectColumns}
-      data={projects}
-      classNames={{
-        thead: "text-sm text-base-content",
-        tbody: "text-sm text-base-content",
-        td: "text-sm text-base-content",
-      }}
-    />
-  )
-}
-
-const getUpcomingTaskDisplay = (upcomingTasks) => {
-  if (upcomingTasks.length === 0) {
-    return <p className="italic p-2">No upcoming tasks</p>
-  }
-
-  return (
-    <Table
-      columns={tasksColumns}
-      data={upcomingTasks}
-      classNames={{
-        thead: "text-sm text-base-content",
-        tbody: "text-sm text-base-content",
-        td: "text-sm text-base-content",
-      }}
-    />
-  )
-}
-
-const getOverdueTaskDisplay = (pastDueTasks) => {
-  if (pastDueTasks.length === 0) {
-    return <p className="italic p-2">No overdue tasks</p>
-  }
-
-  return (
-    <Table
-      columns={tasksColumns}
-      data={pastDueTasks}
-      classNames={{
-        thead: "text-sm text-base-content",
-        tbody: "text-sm text-base-content",
-        td: "text-sm text-base-content",
-      }}
-    />
-  )
-}
-
-const getNotificationDisplay = (notifications) => {
-  if (notifications.length === 0) {
-    return <p className="italic p-2">No unread notifications</p>
-  }
-
-  return (
-    <Table
-      columns={notificationColumns}
-      data={notifications}
-      classNames={{
-        thead: "text-sm text-base-content",
-        tbody: "text-sm text-base-content",
-        td: "text-sm text-base-content",
-      }}
-    />
-  )
-}
+import PrimaryButton from "../../core/components/PrimaryButton"
+import {
+  GetProjectDisplay,
+  GetUpcomingTaskDisplay,
+  GetOverdueTaskDisplay,
+  GetNotificationDisplay,
+} from "../../core/components/GetDashboardDisplay"
+import getDashboardTasks from "../../tasks/queries/getDashboardTasks"
+import getDashboardProjects from "src/projects/queries/getDashboardProjects"
+import getDashboardNotifications from "src/messages/queries/getDashboardNotifications"
 
 const MainPage = () => {
   const currentUser = useCurrentUser()
-  const today = moment().startOf("day")
   const [updateWidgetMutation] = useMutation(updateWidget)
   const [setWidgetMutation] = useMutation(setWidgets)
-
-  // Get data
-  // get all tasks
-  const [{ tasks }] = useQuery(getTasks, {
-    include: {
-      project: { select: { name: true } },
-    },
-    where: {
-      assignees: { some: { contributor: { user: { id: currentUser?.id } } } },
-      status: TaskStatus.NOT_COMPLETED,
-    },
-    orderBy: { id: "desc" },
-  })
-
-  // get only upcoming
-  const upcomingTasks = tasks.filter((task) => {
-    if (task && task.deadline) {
-      return moment(task.deadline).isSameOrAfter(today, "day")
-    }
-    return false
-  })
-
-  // get no deadline
-  const noDeadlineTasks = tasks.filter((task) => {
-    if (task && task.deadline === null) {
-      return moment(task.deadline)
-    }
-    return false
-  })
-
-  // get pastDue
-  const pastDueTasks = tasks.filter((task) => {
-    if (task && task.deadline) {
-      return moment(task.deadline).isBefore(moment(), "minute")
-    }
-    return false
-  })
-
-  // get all projects
-  const [{ projects }] = useQuery(getProjects, {
-    where: {
-      contributors: {
-        some: {
-          userId: currentUser?.id,
-        },
-      },
-    },
-    orderBy: { updatedAt: "asc" },
-    take: 3,
-  })
-
-  // get all notifications
-  const [{ notifications }] = useQuery(getNotifications, {
-    where: {
-      recipients: {
-        some: {
-          id: currentUser!.id,
-        },
-      },
-      read: false,
-    },
-    orderBy: { id: "desc" },
-    take: 3,
-  })
+  const [{ upcomingTasks, pastDueTasks }] = useQuery(getDashboardTasks, undefined)
+  const [{ projects }] = useQuery(getDashboardProjects, undefined)
+  const [{ notifications }] = useQuery(getDashboardNotifications, undefined)
 
   // Get the widgets for the user
   const [boxes, setBoxes] = useState([])
@@ -215,37 +71,45 @@ const MainPage = () => {
             return {
               id: widget.id,
               title: "Last Updated Projects",
-              display: getProjectDisplay(projects),
-              link: projectLink,
+              display: <GetProjectDisplay projects={projects} />,
+              link: <PrimaryButton route={Routes.ProjectsPage()} text="All Projects" />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-last-project",
+              tooltipContent: "Three recently updated projects",
             }
           case "Notifications":
             return {
               id: widget.id,
               title: "Notifications",
-              display: getNotificationDisplay(notifications),
-              link: notificationLink,
+              display: <GetNotificationDisplay notifications={notifications} />,
+              link: <PrimaryButton route={Routes.AllTasksPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-notifications",
+              tooltipContent: "Three recent notifications for all projects",
             }
           case "OverdueTask":
             return {
               id: widget.id,
               title: "Overdue Tasks",
-              display: getOverdueTaskDisplay(pastDueTasks),
-              link: taskLink,
+              display: <GetOverdueTaskDisplay pastDueTasks={pastDueTasks} />,
+              link: <PrimaryButton route={Routes.NotificationsPage()} text="All Notifications" />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-overdue",
+              tooltipContent: "Three overdue tasks for all projects",
             }
           case "UpcomingTask":
             return {
               id: widget.id,
               title: "Upcoming Tasks",
-              display: getUpcomingTaskDisplay(upcomingTasks),
-              link: taskLink,
+              display: <GetUpcomingTaskDisplay upcomingTasks={upcomingTasks} />,
+              link: <PrimaryButton route={Routes.AllTasksPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-upcoming",
+              tooltipContent: "Three upcoming tasks for all projects",
             }
           default:
             return {
@@ -255,12 +119,14 @@ const MainPage = () => {
               link: <div />,
               position: widget.position,
               size: "col-span-6",
+              tooltipId: "tool-unknown",
+              tooltipContent: "Unknown widget",
             }
         }
       })
       setBoxes(updatedBoxes)
     } else {
-      console.log("no widgets")
+      // console.log("no widgets")
       // Call the mutation
       setWidgetMutation({ id: currentUser?.id })
         .then(() => {
@@ -318,7 +184,7 @@ const MainPage = () => {
 
       <Suspense fallback={<div>Loading...</div>}>
         <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl h-full space-y-4">
-          <div className="mb-4">
+          <div className="mb-4 justify-center flex">
             <h3 className="text-3xl">Welcome, {currentUser!.username}!</h3>
           </div>
 

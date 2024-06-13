@@ -20,6 +20,7 @@ export const AllNotificationList = () => {
         },
       },
     },
+    include: { project: true },
     orderBy: [
       { read: "asc" }, // Show unread notifications first
       { id: "asc" }, // Then sort by id

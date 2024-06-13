@@ -10,10 +10,11 @@ import { Routes } from "@blitzjs/next"
 type ItemsType = {
   id: string
   title: string
+  completed: boolean
   projectId: number
 }
 
-const TaskItems = ({ id, title, projectId }: ItemsType) => {
+const TaskItems = ({ id, title, completed, projectId }: ItemsType) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: id,
     data: {
@@ -21,6 +22,7 @@ const TaskItems = ({ id, title, projectId }: ItemsType) => {
     },
   })
   const taskId = parseInt(id.replace("item-", ""))
+  // console.log(completed)
   return (
     <div
       ref={setNodeRef}
@@ -30,8 +32,9 @@ const TaskItems = ({ id, title, projectId }: ItemsType) => {
         transform: CSS.Translate.toString(transform),
       }}
       className={clsx(
-        "px-2 py-4 bg-accent shadow-md rounded-xl w-full border border-transparent hover:border-accent-content cursor-pointer",
-        isDragging && "opacity-50"
+        "px-2 py-4 shadow-md rounded-xl w-full border border-transparent hover:border-accent-content cursor-pointer",
+        isDragging && "opacity-50",
+        completed ? "bg-accent" : "bg-warning"
       )}
     >
       <div className="flex items-center justify-between">

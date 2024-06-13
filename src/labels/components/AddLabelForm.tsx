@@ -8,9 +8,6 @@ export { FORM_ERROR } from "src/core/components/fields/Form"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import getLabels from "../queries/getLabels"
 
-// TODO: Check whether this is a good method to go
-// Other methods could be: passing the columns directly
-// Adding projectId directly to Form props as an optional value
 interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
   type?: string
@@ -19,14 +16,6 @@ interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> 
 
 export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormProps<S>) {
   const { projectId, type, tasksId, ...formProps } = props
-
-  // Contributors
-  // const [{ contributors }] = useQuery(getContributors, {
-  //   where: { project: { id: projectId! } },
-  //   include: {
-  //     user: true,
-  //   },
-  // })
 
   const [{ labels }] = useQuery(getLabels, {
     // where: { project: { id: projectId! } },

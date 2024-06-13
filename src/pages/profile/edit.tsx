@@ -18,7 +18,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
     <Form<S> {...props}>
       <LabeledTextField
         name="email"
-        label="Email"
+        label="Email:"
         placeholder="Email"
         type="text"
         className="mb-4 text-primary border-primary border-2 bg-base-300"
@@ -26,7 +26,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <br />
       <LabeledTextField
         name="firstName"
-        label="First name"
+        label="First Name:"
         placeholder="First name"
         type="text"
         className="mb-4 text-primary border-primary border-2 bg-base-300"
@@ -34,7 +34,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <br />
       <LabeledTextField
         name="lastName"
-        label="Last name"
+        label="Last Name:"
         placeholder="Last name"
         type="text"
         className="mb-4 text-primary border-primary border-2 bg-base-300"
@@ -42,7 +42,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <br />
       <LabeledTextField
         name="institution"
-        label="Institution"
+        label="Institution:"
         placeholder="Institution"
         type="text"
         className="mb-4 text-primary border-primary border-2 bg-base-300"
@@ -77,7 +77,7 @@ export const EditProfile = () => {
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl flex justify-center mb-2">Edit profile</h1>
+        <h1 className="text-3xl flex mb-2">Edit profile</h1>
         <Suspense fallback={<div>Loading...</div>}>
           <ProfileForm
             submitText="Update Profile"
@@ -102,6 +102,10 @@ export const EditProfile = () => {
           />
 
           <div className="flex justify-end mt-4">
+            <Link href="/api/auth/orcid" legacyBehavior>
+              <button className="btn btn-info mr-2">Connect your ORCID</button>
+            </Link>
+
             <button
               type="button"
               className="btn btn-warning"

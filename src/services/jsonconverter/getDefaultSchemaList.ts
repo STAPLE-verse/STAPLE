@@ -13,7 +13,7 @@ export function getDefaultSchemaLists() {
     const uiparse = JSON.parse(uis[index])
     return {
       name: parsed.title,
-      // 'id': parsed.$id,
+      id: -(index + 1),
       schema: parsed,
       ui: uiparse,
     }

@@ -12,7 +12,7 @@ const TasksPage = () => {
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <Suspense fallback={<div>Loading...</div>}>
-          <ProjectTasksList />
+          <ProjectTasksTabs />
         </Suspense>
       </main>
     </Layout>

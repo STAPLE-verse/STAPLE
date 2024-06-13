@@ -12,6 +12,11 @@ import ByTasks from "./ByTasks"
 import ByLabels from "./ByLabels"
 import ByDate from "./ByDate"
 import ByElements from "./ByElements"
+import getTasks from "src/tasks/queries/getTasks"
+import getLabels from "src/labels/queries/getLabels"
+import getElements from "src/elements/queries/getElements"
+import getTeams from "src/teams/queries/getTeams"
+import getContributors from "src/contributors/queries/getContributors"
 
 //could refactor other places and move this to utils
 const formatDate = (myDate) =>
@@ -30,9 +35,89 @@ const SummaryPage = () => {
   const [project] = useQuery(getProject, { id: projectId })
   const [selectedOrganization, setSelectedOrganization] = useState("none")
 
+  const [{ tasks }] = useQuery(getTasks, {
+    where: { projectId: projectId },
+    orderBy: { createdAt: "desc" },
+    include: {
+      labels: true,
+      element: true,
+      createdBy: {
+        include: { user: true },
+      },
+      assignees: {
+        orderBy: {
+          updatedAt: "desc",
+        },
+        include: {
+          statusLogs: {
+            orderBy: {
+              changedAt: "desc",
+            },
+          },
+          team: {
+            include: {
+              contributors: {
+                include: { user: true },
+              },
+            },
+          },
+          contributor: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      },
+    },
+  })
+
+  //needs some clause for project
+  const [{ labels }] = useQuery(getLabels, {
+    where: { projects: { some: { id: projectId! } } },
+    orderBy: { name: "asc" },
+    // include: {},
+  })
+
+  const [elements] = useQuery(getElements, {
+    where: { project: { id: projectId! } },
+    orderBy: { id: "asc" },
+    // include: { Task: true },
+  })
+
+  // Teams
+  const [{ teams }] = useQuery(getTeams, {
+    where: { project: { id: projectId! } },
+    orderBy: { name: "asc" },
+    include: {
+      assignments: {
+        include: {
+          statusLogs: {
+            orderBy: {
+              changedAt: "desc",
+            },
+          },
+        },
+      },
+      contributors: {
+        include: { user: true },
+      },
+    },
+  })
+
+  // Contributors
+  //TODO: Only needs tos include label id
+  const [{ contributors }] = useQuery(getContributors, {
+    where: { project: { id: projectId! } },
+    orderBy: { user: { lastName: "asc" } },
+    include: {
+      user: true,
+      labels: true,
+      AssignmentStatusLog: true,
+    },
+  })
+
   const handleOrganizationChanged = (e) => {
     //do query based on organization
-    console.log(e)
     setSelectedOrganization(e)
   }
 
@@ -58,7 +143,7 @@ const SummaryPage = () => {
               </option>
               <option value="date">Organize project by Date</option>
               <option value="task">Organize project by Task</option>
-              <option value="contributor">Organize project by Contributor (Assigment)</option>
+              <option value="contributor">Organize project by Contributor </option>
               <option value="label">Organize project by Label</option>
               <option value="element">Organize project by Element</option>
             </select>
@@ -104,12 +189,29 @@ const SummaryPage = () => {
               <div className="card-body">
                 <div className="card-title">Organized Metadata</div>
                 {selectedOrganization === "contributor" && (
-                  <ByContributors projectId={projectId}></ByContributors>
+                  <ByContributors
+                    tasks={tasks}
+                    teams={teams}
+                    contributors={contributors}
+                  ></ByContributors>
                 )}
-                {selectedOrganization === "task" && <ByTasks></ByTasks>}
-                {selectedOrganization === "label" && <ByLabels></ByLabels>}
-                {selectedOrganization === "date" && <ByDate></ByDate>}
-                {selectedOrganization === "element" && <ByElements></ByElements>}
+                {selectedOrganization === "task" && (
+                  <ByTasks tasks={tasks} contributors={contributors} teams={teams}></ByTasks>
+                )}
+                {selectedOrganization === "label" && (
+                  <ByLabels labels={labels} tasks={tasks} contributors={contributors}></ByLabels>
+                )}
+                {selectedOrganization === "date" && (
+                  <ByDate tasks={tasks} contributors={contributors} teams={teams}></ByDate>
+                )}
+                {selectedOrganization === "element" && (
+                  <ByElements
+                    elements={elements}
+                    teams={teams}
+                    contributors={contributors}
+                    tasks={tasks}
+                  ></ByElements>
+                )}
                 {selectedOrganization === "none" && (
                   <span>Needs to select an organization or should we have a default?</span>
                 )}

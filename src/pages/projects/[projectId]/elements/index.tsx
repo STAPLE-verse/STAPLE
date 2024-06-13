@@ -27,11 +27,11 @@ const ElementsPage = () => {
         <h1 className="flex justify-center mb-2 text-3xl">Elements</h1>
 
         <Suspense fallback={<div>Loading...</div>}>
-          <ElementsList projectId={projectId!} elements={elements} />
+          <ElementsList />
         </Suspense>
         <div>
           <Link
-            className="btn btn-primary mb-4"
+            className="btn btn-primary mb-4 mt-4"
             href={Routes.NewElementPage({ projectId: projectId! })}
           >
             Create Element

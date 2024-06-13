@@ -1,91 +1,66 @@
-import { Suspense, useState } from "react"
-import { useMutation, usePaginatedQuery, useQuery } from "@blitzjs/rpc"
-import router, { useRouter } from "next/router"
+import router from "next/router"
 
-import React, { useRef } from "react"
-import getTasks from "src/tasks/queries/getTasks"
+import React from "react"
+import flattenTasksInformation from "./flattenTasksInformation"
+import { ContributorsView, TeamView } from "./UtilsViews"
+import { AssignmentStatus, CompletedAs } from "@prisma/client"
 
-//Move this to utils
-const formatDate = (myDate) =>
-  myDate.toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false, // Use 24-hour format
-  })
-
-const TeamView = ({ team }) => {
-  return (
-    <div>
-      <br />
-      Name: {team.name}
-      <br />
-      Created: {formatDate(team.createdAt)}
-      <br />
-      Members
-      <div>
-        {team.contributors.map((element) => (
-          <div key={element.id}>user name: {element.user.username}</div>
-        ))}
-      </div>
-      <div></div>
-    </div>
-  )
-}
-
-const ByContributors = ({ projectId }) => {
+const ByContributors = ({ contributors, teams, tasks }) => {
   const page = Number(router.query.page) || 0
 
-  const [{ tasks }] = useQuery(getTasks, {
-    where: { projectId: projectId },
-    include: {
-      assignees: {
-        include: {
-          statusLogs: {
-            orderBy: {
-              createdAt: "desc",
-            },
-          },
-          team: {
-            include: {
-              contributors: {
-                include: { user: true },
-              },
-            },
-          },
-          contributor: {
-            include: {
-              user: true,
-            },
-          },
-        },
-      },
-    },
-  })
-  let teams: any[] = []
-  tasks.forEach((task) => {
-    if (task.assignees != undefined) {
-      task.assignees.forEach((element) => {
-        let team = element.team
-        if (team != null) {
-          if (teams.findIndex((x) => x.id == team.id)) {
-            teams.push(team)
-          }
+  // let flattenTasks = flattenTasksInformation(tasks)
+  // let sortedContributors = flattenTasks.contributorsInformation
+  //console.log(tasks)
+
+  const assigmentCompletedBy = (statusLog, completedAs, completedBy) => {
+    let index = statusLog.findIndex(
+      (log) =>
+        log.status == AssignmentStatus.COMPLETED &&
+        log.completedAs == completedAs &&
+        log.completedBy == completedBy
+    )
+    return index
+  }
+
+  const getCompletedTask = (tasks, completedAs, completedBy) => {
+    let temp: any[] = []
+    tasks.forEach((task) => {
+      task.assignees.forEach((assigment) => {
+        let i = assigmentCompletedBy(assigment.statusLogs, completedAs, completedBy)
+        if (i >= 0) {
+          temp.push(task)
         }
       })
-    }
-  })
-  console.log(teams)
+    })
+
+    return temp
+  }
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center mb-2 text-3xl">By contributors organization</h1>
-      {teams.map((team) => (
-        <TeamView team={team} key={team.id}></TeamView>
-      ))}
+      <div>
+        <h2>Teams Summary</h2>
+        {teams.map((team) => (
+          <TeamView
+            team={team}
+            tasks={getCompletedTask(tasks, CompletedAs.TEAM, team.id)}
+            key={team.id}
+            printTask={true}
+          ></TeamView>
+        ))}
+      </div>
+      <div>
+        <h2>Contributors Summary</h2>
+        {contributors.map((contributor) => (
+          <ContributorsView
+            contributor={contributor}
+            tasks={getCompletedTask(tasks, CompletedAs.INDIVIDUAL, contributor.id)}
+            key={contributor.id}
+            printTask={true}
+          ></ContributorsView>
+        ))}
+      </div>
     </main>
   )
 }

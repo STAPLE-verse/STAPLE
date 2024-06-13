@@ -3,7 +3,7 @@ import { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import Table from "src/core/components/Table"
 import getNotifications from "src/messages/queries/getNotifications"
-import { notificationTableColumns } from "src/messages/components/notificationTable"
+import { projectNotificationTableColumns } from "src/messages/components/notificationTable"
 
 const ITEMS_PER_PAGE = 10
 
@@ -14,6 +14,7 @@ export const ProjectNotificationList = ({ projectId: projectId }) => {
 
   const [{ notifications, hasMore }, { refetch }] = usePaginatedQuery(getNotifications, {
     where: {
+      projectId: projectId,
       recipients: {
         some: {
           id: currentUser!.id,
@@ -28,11 +29,11 @@ export const ProjectNotificationList = ({ projectId: projectId }) => {
     take: ITEMS_PER_PAGE,
   })
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
 
   // Get columns and pass refetch
-  const columns = notificationTableColumns(refetch)
+  const columns = projectNotificationTableColumns(refetch)
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">

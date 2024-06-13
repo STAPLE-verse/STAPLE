@@ -4,6 +4,7 @@ import db from "db"
 import { TaskStatus } from "db"
 import { z } from "zod"
 import { AssignmentStatus } from "db"
+import { Prisma } from "@prisma/client"
 
 const GetProjectStatsSchema = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -30,7 +31,7 @@ export default resolver.pipe(
     const completedTask = await db.task.count({
       where: {
         projectId: id,
-        status: TaskStatus.NOT_COMPLETED,
+        status: TaskStatus.COMPLETED,
       },
     })
 
@@ -43,7 +44,10 @@ export default resolver.pipe(
     const assignmentForms = await db.task.findMany({
       where: {
         projectId: id,
-        schema: { not: undefined }, // schema must be defined
+        schema: {
+          not: undefined,
+          not: Prisma.DbNull,
+        },
       },
       include: { assignees: { include: { statusLogs: true } } },
     })
@@ -53,7 +57,7 @@ export default resolver.pipe(
 
     // not completed assignments with schema
     const completedAssignments = allAssignments.filter(
-      (assignment) => assignment.statusLogs[0].status === AssignmentStatus.NOT_COMPLETED
+      (assignment) => assignment.statusLogs[0].status === AssignmentStatus.COMPLETED
     )
 
     // no labels for contributors
@@ -64,7 +68,7 @@ export default resolver.pipe(
       include: { labels: true },
     })
 
-    const completedContribLabels = contribLabels.filter((label) => label.labels.length === 0)
+    const completedContribLabels = contribLabels.filter((label) => label.labels.length > 0)
 
     // no labels for tasks
     const taskLabels = await db.task.findMany({
@@ -74,7 +78,7 @@ export default resolver.pipe(
       include: { labels: true },
     })
 
-    const completedTaskLabels = taskLabels.filter((label) => label.labels.length === 0)
+    const completedTaskLabels = taskLabels.filter((label) => label.labels.length > 0)
 
     return {
       allContributor: allContributor,

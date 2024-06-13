@@ -9,7 +9,7 @@ import { Field, FormSpy } from "react-final-form"
 import { z } from "zod"
 import getContributors from "src/contributors/queries/getContributors"
 import Modal from "src/core/components/Modal"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 import getTeams from "src/teams/queries/getTeams"
 export { FORM_ERROR } from "src/core/components/fields/Form"
@@ -30,6 +30,15 @@ interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
   const { projectId, type, taskId, ...formProps } = props
 
+  // Handle date input as a state
+  const [dateInputValue, setDateInputValue] = useState("")
+
+  useEffect(() => {
+    // Initialize the input with today's date when the component mounts
+    const today = moment().format("YYYY-MM-DDTHH:mm")
+    setDateInputValue(today)
+  }, [])
+
   // Columns
   const [columns] = useQuery(getColumns, {
     orderBy: { id: "asc" },
@@ -37,7 +46,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // Elements
-  const [elements] = useQuery(getElements, {
+  const [{ elements: elements }] = useQuery(getElements, {
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
   })
@@ -89,6 +98,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     // Dropping forms that do not have a title added by the user
     .filter((form) => form.schema && form.schema.title)
     .map((form) => ({
+      id: form.id,
       name: form.schema?.title,
       schema: form.schema,
       ui: form.uiSchema,
@@ -144,12 +154,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       {/* Deadline */}
       <Field name="deadline">
         {({ input, meta }) => {
-          const formattedValue =
-            input.value instanceof Date
-              ? moment(input.value).format("YYYY-MM-DDTHH:mm")
-              : input.value
-          const today = moment().format("YYYY-MM-DDTHH:mm")
-
           return (
             <div className="form-control w-full max-w-xs">
               <style jsx>{`
@@ -169,15 +173,22 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
               <label>Deadline:</label>
               <input
                 {...input}
-                value={formattedValue}
+                value={dateInputValue}
                 className="mb-4 text-lg border-2 border-primary rounded p-2 w-full"
                 type="datetime-local"
-                min={today}
+                min={moment().format("YYYY-MM-DDTHH:mm")}
                 //placeholder={today}
                 max="2050-01-01T00:00"
                 onChange={(event) => {
-                  const dateValue = event.target.value ? new Date(event.target.value) : null
-                  input.onChange(dateValue)
+                  const value = event.target.value
+                  setDateInputValue(value)
+                  if (value === "") {
+                    // Handle cleared input by user
+                    input.onChange("")
+                  } else {
+                    // Convert to date if there's a valid value
+                    input.onChange(new Date(value))
+                  }
                 }}
               />
               {meta.touched && meta.error && <span className="text-error">{meta.error}</span>}
@@ -289,19 +300,20 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
                     <select
                       className="select select-primary border-2 w-full max-w-xs"
                       {...input}
-                      value={input.value ? input.value.name : ""}
+                      value={input.value ? input.value.id : ""}
                       onChange={(event) => {
-                        const selectedSchema = event.target.value
-                          ? schemas.find((schema) => schema.name === event.target.value)
-                          : null
-                        input.onChange(selectedSchema)
+                        const selectedId = event.target.value
+                        const selectedSchema = schemas.find(
+                          (schema) => schema.id.toString() === selectedId
+                        )
+                        input.onChange(selectedSchema ? selectedSchema : null)
                       }}
                     >
                       <option value="" disabled>
                         -- select an option --
                       </option>
                       {schemas.map((schema) => (
-                        <option key={schema.name} value={schema.name}>
+                        <option key={schema.id} value={schema.id}>
                           {schema.name}
                         </option>
                       ))}

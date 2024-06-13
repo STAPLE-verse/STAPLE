@@ -2,6 +2,8 @@ import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 
+import { ProjectFormTable, projectFormTableColumns } from "src/forms/components/ProjectFormsTable"
+
 const MetadataPage = () => {
   return (
     <Layout>
@@ -14,30 +16,7 @@ const MetadataPage = () => {
 
         {
           <Suspense fallback={<div>Loading...</div>}>
-            <div role="tablist" className="tabs tabs-lifted">
-              <input type="radio" name="my_tabs_2" role="tab" className="tab" aria-label="Edit" />
-              <div
-                role="tabpanel"
-                className="tab-content bg-base-100 border-base-300 rounded-box p-6"
-              >
-                Edit
-              </div>
-
-              <input
-                type="radio"
-                name="my_tabs_2"
-                role="tab"
-                className="tab"
-                aria-label="View"
-                checked
-              />
-              <div
-                role="tabpanel"
-                className="tab-content bg-base-100 border-base-300 rounded-box p-6"
-              >
-                View
-              </div>
-            </div>
+            <ProjectFormTable />
           </Suspense>
         }
       </main>

@@ -24,12 +24,13 @@ export const EditTask = () => {
 
   const [task, { setQueryData }] = useQuery(
     getTask,
-    { id: taskId },
+    { where: { id: taskId } },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
     }
   )
+
   const [updateTaskMutation] = useMutation(updateTask)
   const [assignments] = useQuery(getAssignments, {
     where: { taskId: taskId },
@@ -52,7 +53,7 @@ export const EditTask = () => {
     deadline: task.deadline,
     contributorsId: contributorsId,
     teamsId: teamsId,
-    schema: task.schema.title,
+    schema: task.schema ? task.schema.title : undefined,
   }
 
   return (
@@ -62,7 +63,7 @@ export const EditTask = () => {
       </Head>
 
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1>Edit {task.name}</h1>
+        <h1 className="text-3xl">Edit {task.name}</h1>
         {/* For debugging Task schema */}
         {/* <pre>{JSON.stringify(task, null, 2)}</pre> */}
         <Suspense fallback={<div>Loading...</div>}>

@@ -31,8 +31,8 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
     }
   }
 
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
+  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
+  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
 
   const [selectedIds, setSelectedIds] = useState([] as number[])
   //TODO refactor and merge with task tab
@@ -53,8 +53,8 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
 
   const handleAddLabel = async (values) => {
     try {
-      console.log(values)
-      console.log(selectedIds)
+      //console.log(values)
+      //console.log(selectedIds)
       const updated = await updateContributorLabelMutation({
         ...values,
         contributorsId: selectedIds,
@@ -66,6 +66,7 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
         success: "Labels added!",
         error: "Failed to add the labels...",
       })
+      handleToggleEditLabelModal()
     } catch (error: any) {
       console.error(error)
       return {
@@ -96,7 +97,7 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
     }
     return t
   })
-  const hasElements = contributors.length < 1
+  const hasElements = contributors.length < 1 || selectedIds.length < 1
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">

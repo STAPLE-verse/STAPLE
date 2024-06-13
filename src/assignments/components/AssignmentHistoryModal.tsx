@@ -14,13 +14,25 @@ const assignmentHistoryTableColumns: ColumnDef<AssignmentStatusLog>[] = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Changed By",
   }),
-  columnHelper.accessor((row) => row.changedAt.toISOString(), {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Last Update",
-    id: "changedAt",
-  }),
+  columnHelper.accessor(
+    (row) =>
+      row.changedAt.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      }),
+    {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "Last Update",
+      id: "changedAt",
+    }
+  ),
   columnHelper.accessor((row) => row.status, {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>,
     header: "Status",
     id: "status",
   }),
@@ -34,7 +46,35 @@ const assignmentHistoryTableColumns: ColumnDef<AssignmentStatusLog>[] = [
         )}
       </>
     ),
-    header: "Assignment Metadata",
+    header: "Form Data",
+  }),
+]
+const assignmentHistoryTableColumnsNoMeta: ColumnDef<AssignmentStatusLog>[] = [
+  columnHelper.accessor("completedBy", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Changed By",
+  }),
+  columnHelper.accessor(
+    (row) =>
+      row.changedAt.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      }),
+    {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "Last Update",
+      id: "changedAt",
+    }
+  ),
+  columnHelper.accessor((row) => row.status, {
+    cell: (info) => <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>,
+    header: "Status",
+    id: "status",
   }),
 ]
 
@@ -48,15 +88,19 @@ export const AssignmentHistoryModal = ({ assignmentStatusLog }) => {
 
   return (
     <>
-      <div className="mt-4">
-        <button type="button" className="btn" onClick={handleToggle}>
-          Show assignment history
+      <div className="">
+        <button type="button" className="btn btn-primary" onClick={handleToggle}>
+          Show History
         </button>
 
         <Modal open={openModal} size="w-11/12 max-w-3xl">
           <div className="modal-action flex flex-col">
             <Table
-              columns={assignmentHistoryTableColumns}
+              columns={
+                assignmentStatusLog[0].metadata
+                  ? assignmentHistoryTableColumns
+                  : assignmentHistoryTableColumnsNoMeta
+              }
               data={assignmentStatusLog}
               classNames={{
                 thead: "text-base",

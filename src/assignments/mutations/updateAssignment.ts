@@ -75,6 +75,7 @@ export default resolver.pipe(
           completedBy: completedByUsername,
           assignmentStatus: getAssignmentStatusText(status),
         },
+        projectId: assignment?.task["projectId"],
       },
       ctx
     )
