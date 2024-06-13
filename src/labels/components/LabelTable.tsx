@@ -156,7 +156,7 @@ const DeleteColumn = ({ row }) => {
 const columnHelper = createColumnHelper<LabelInformation>()
 
 // ColumnDefs
-export const lableTableColumns = [
+export const labelTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Label Name",
@@ -185,5 +185,21 @@ export const lableTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <DeleteColumn row={info.row.original}></DeleteColumn>,
+  }),
+]
+
+export const labelTableColumnsSimple = [
+  columnHelper.accessor("name", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Label Name",
+  }),
+
+  columnHelper.accessor("description", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Description",
+  }),
+  columnHelper.accessor("taxonomy", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Taxonomy",
   }),
 ]

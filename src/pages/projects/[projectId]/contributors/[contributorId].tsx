@@ -12,9 +12,15 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { Contributor, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 
+import { ContributorTaskList } from "src/tasks/components/ContributorsTaskList"
+import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
+
 export const ContributorPage = () => {
+  const ITEMS_PER_PAGE = 7
+
   const currentUser = useCurrentUser()
   const router = useRouter()
+
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
   const [deleteContributorMutation] = useMutation(deleteContributor)
@@ -51,12 +57,13 @@ export const ContributorPage = () => {
         </p>
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl">Contribution Labels</h2>
-          {/* Add list of tasks for the contributor in this specific project */}
+          <ContributorLabelsList usersId={[user?.id]}></ContributorLabelsList>
         </div>
 
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl">Contribution Task</h2>
           {/* Add list of tasks for the contributor in this specific project */}
+          <ContributorTaskList usersId={[user?.id]}></ContributorTaskList>
         </div>
 
         <div className="flex justify-end mt-4">

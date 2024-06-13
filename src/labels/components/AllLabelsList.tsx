@@ -1,7 +1,6 @@
-import router, { useRouter } from "next/router"
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { useRouter } from "next/router"
 import Table from "src/core/components/Table"
-import { LabelInformation, lableTableColumns } from "src/labels/components/LabelTable"
+import { LabelInformation, labelTableColumns } from "src/labels/components/LabelTable"
 
 export const AllLabelsList = ({ hasMore, page, labels, onChange, taxonomyList }) => {
   const router = useRouter()
@@ -12,19 +11,8 @@ export const AllLabelsList = ({ hasMore, page, labels, onChange, taxonomyList })
     }
   }
 
-  const uniqueValues = (value, index, self) => {
-    return self.indexOf(value) === index
-  }
-
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
-
-  // const taxonomyList = labels
-  //   .map((label) => {
-  //     const taxonomy = label.taxonomy || ""
-  //     return taxonomy
-  //   })
-  //   .filter(uniqueValues)
 
   const contributorLabelnformation = labels.map((label) => {
     const name = label.name
@@ -46,7 +34,7 @@ export const AllLabelsList = ({ hasMore, page, labels, onChange, taxonomyList })
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
-      <Table columns={lableTableColumns} data={contributorLabelnformation} />
+      <Table columns={labelTableColumns} data={contributorLabelnformation} />
       <div className="join grid grid-cols-2 my-6">
         <button
           className="join-item btn btn-secondary"

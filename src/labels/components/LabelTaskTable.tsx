@@ -14,7 +14,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
 import { LabelIdsFormSchema } from "../schemas"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
-import { lableTableColumns } from "./LabelTable"
+import { labelTableColumns } from "./LabelTable"
 import TaskTableModal from "./LabelAddTableModal"
 
 export type TaskLabelInformation = {

@@ -18,7 +18,6 @@ const LabelBuilderPage = () => {
   const page = Number(router.query.page) || 0
 
   const ITEMS_PER_PAGE = 7
-
   //Only show labels that belongs to current user
   const [{ labels, hasMore }, { refetch }] = usePaginatedQuery(getLabels, {
     where: { user: { id: currentUser?.id } },
@@ -114,9 +113,6 @@ const LabelBuilderPage = () => {
                 className="flex flex-col"
                 onSubmit={handleCreateLabel}
                 initialValues={initialValues}
-                // name={""}
-                // description={""}
-                // taxonomy={""}
                 taxonomyList={taxonomyList}
               ></LabelForm>
             </div>
