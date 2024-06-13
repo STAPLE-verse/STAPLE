@@ -14,6 +14,8 @@ import { getPrivilegeText } from "src/services/getPrivilegeText"
 
 import { ContributorTaskList } from "src/tasks/components/ContributorsTaskList"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
+import Link from "next/link"
+import { ContributorPrivileges } from "db"
 
 export const ContributorPage = () => {
   const ITEMS_PER_PAGE = 7
@@ -31,39 +33,79 @@ export const ContributorPage = () => {
     user: User
   }
 
+  const [currentContributor] = useQuery(getContributor, {
+    where: { projectId: projectId, userId: currentUser!.id },
+  })
+
   const user = contributor[0].user
 
   return (
     <Layout>
       <Head>
-        <title>{user.username}</title>
+        <title>{user.username} Contributions</title>
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">
-          {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.username}
-        </h1>
-        {user.firstName && user.lastName ? (
-          <p className="mb-2">
-            <span className="font-semibold">Username:</span> {user.username}
-          </p>
-        ) : null}
-        <p className="mb-2">
-          <span className="font-semibold">Email:</span> {user.email}
-        </p>
-        <p className="mb-2">
-          <span className="font-semibold">Privilege:</span>{" "}
-          {getPrivilegeText(contributor[0].privilege)}
-        </p>
-        <div className="flex flex-col gap-2">
-          <h2 className="text-2xl">Contribution Labels</h2>
-          <ContributorLabelsList usersId={[user?.id]}></ContributorLabelsList>
+        <div className="card bg-base-300 w-full">
+          <div className="card-body">
+            <div className="card-title">
+              {user.firstName && user.lastName
+                ? `${user.firstName} ${user.lastName}`
+                : user.username}
+            </div>
+            {user.firstName && user.lastName ? (
+              <p>
+                <span className="font-semibold">Username:</span> {user.username}
+              </p>
+            ) : null}
+            <p>
+              <span className="font-semibold">Email:</span> {user.email}
+            </p>
+            <p>
+              <span className="font-semibold">Privilege:</span>{" "}
+              {getPrivilegeText(contributor[0].privilege)}
+            </p>
+
+            <div className="card-actions justify-end">
+              {currentContributor.privilege === ContributorPrivileges.PROJECT_MANAGER ? (
+                <Link
+                  className="btn btn-primary"
+                  href={Routes.EditContributorPage({
+                    projectId: projectId,
+                    contributorId: contributorId,
+                  })}
+                >
+                  Edit Contributor
+                </Link>
+              ) : (
+                ""
+              )}
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <h2 className="text-2xl">Contribution Task</h2>
-          {/* Add list of tasks for the contributor in this specific project */}
-          <ContributorTaskList usersId={[user?.id]}></ContributorTaskList>
+        <div className="card bg-base-300 w-full mt-2">
+          <div className="card-body">
+            <div className="card-title">Contribution Labels</div>
+            <ContributorLabelsList usersId={[user?.id]}></ContributorLabelsList>
+            <div className="card-actions justify-end">
+              <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId })}>
+                Edit Labels
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="card bg-base-300 w-full mt-2">
+          <div className="card-body">
+            <div className="card-title">Contribution Tasks</div>
+            <ContributorTaskList usersId={[user?.id]}></ContributorTaskList>
+            <div className="card-actions justify-end">
+              <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId })}>
+                Edit Labels
+              </Link>
+            </div>
+          </div>
         </div>
 
         <div className="flex justify-end mt-4">

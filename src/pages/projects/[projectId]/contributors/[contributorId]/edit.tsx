@@ -11,7 +11,7 @@ import Layout from "src/core/layouts/Layout"
 import { UpdateContributorSchema } from "src/contributors/schemas"
 import getContributor from "src/contributors/queries/getContributor"
 import updateContributor from "src/contributors/mutations/updateContributor"
-import { ContributorForm, FORM_ERROR } from "src/contributors/components/ContributorForm"
+import { ContributorFormEdit, FORM_ERROR } from "src/contributors/components/ContributorFormEdit"
 
 export const EditContributor = () => {
   const router = useRouter()
@@ -27,6 +27,8 @@ export const EditContributor = () => {
   )
   const [updateContributorMutation] = useMutation(updateContributor)
 
+  console.log(contributor)
+
   return (
     <Layout>
       <Head>
@@ -34,10 +36,10 @@ export const EditContributor = () => {
       </Head>
 
       <div>
-        <h1>Edit Contributor {contributor.id}</h1>
+        <h1 className="text-3xl">Edit Contributor {contributor.id}</h1>
         <pre>{JSON.stringify(contributor, null, 2)}</pre>
         <Suspense fallback={<div>Loading...</div>}>
-          <ContributorForm
+          <ContributorFormEdit
             submitText="Update Contributor"
             schema={UpdateContributorSchema}
             initialValues={contributor}

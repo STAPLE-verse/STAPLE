@@ -12,6 +12,7 @@ import { z } from "zod"
 import { FormProfileSchema } from "src/users/schemas"
 import { Routes } from "@blitzjs/next"
 import logout from "src/auth/mutations/logout"
+import Link from "next/link"
 
 export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
