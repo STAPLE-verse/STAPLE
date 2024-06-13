@@ -7,7 +7,16 @@ import Head from "next/head"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
+import getTasks from "src/tasks/queries/getTasks"
+import moment from "moment"
+import Table from "src/core/components/Table"
+import { TaskStatus } from "db"
+import getNotifications from "src/messages/queries/getNotifications"
+import {
+  tasksColumns,
+  projectColumns,
+  notificationColumns,
+} from "src/widgets/components/ColumnHelpers"
 import getUserWidgets from "src/widgets/queries/getUserWidgets"
 
 // make things draggable
@@ -38,7 +47,6 @@ import getDashboardProjects from "src/projects/queries/getDashboardProjects"
 import getDashboardNotifications from "src/messages/queries/getDashboardNotifications"
 
 const MainPage = () => {
-  const sidebarItems = HomeSidebarItems("Dashboard")
   const currentUser = useCurrentUser()
   const [updateWidgetMutation] = useMutation(updateWidget)
   const [setWidgetMutation] = useMutation(setWidgets)
@@ -169,7 +177,7 @@ const MainPage = () => {
   )
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
+    <Layout>
       <Head>
         <title>Home</title>
       </Head>

@@ -11,7 +11,6 @@ import { FormProjectSchema } from "src/projects/schemas"
 import getProject from "src/projects/queries/getProject"
 import updateProject from "src/projects/mutations/updateProject"
 import { ProjectForm, FORM_ERROR } from "src/projects/components/ProjectForm"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import toast from "react-hot-toast"
 
 export const EditProject = () => {
@@ -40,10 +39,8 @@ export const EditProject = () => {
     identifier: project.identifier!,
   }
 
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
-
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Edit {project.name}</title>
       </Head>

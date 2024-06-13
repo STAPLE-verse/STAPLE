@@ -2,21 +2,17 @@ import { Suspense } from "react"
 import { OverallElement, PMElement } from "src/elements/components/ElementDashboard"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
-import { useQuery } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
-import getProject from "src/projects/queries/getProject"
 import getElement from "src/elements/queries/getElement"
+import deleteElement from "src/elements/mutations/deleteElement"
 
 const ShowElementPage = () => {
   const elementId = useParam("elementId", "number")
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
+  const [deleteElementMutation] = useMutation(deleteElement)
   const [element] = useQuery(getElement, { id: elementId })
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Element {element.id}</title>
       </Head>

@@ -17,8 +17,6 @@ export const EditContributor = () => {
   const router = useRouter()
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
   const [contributor, { setQueryData }] = useQuery(
     getContributor,
     { id: contributorId },
@@ -30,7 +28,7 @@ export const EditContributor = () => {
   const [updateContributorMutation] = useMutation(updateContributor)
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Edit Contributor {contributor.id}</title>
       </Head>

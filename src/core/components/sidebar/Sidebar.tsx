@@ -1,24 +1,22 @@
-import React, { createContext, useContext, useState, ReactNode, MouseEventHandler } from "react"
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  EllipsisVerticalIcon,
-} from "@heroicons/react/24/outline"
+import React, { useContext } from "react"
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import SidebarContext from "./sidebarContext"
+import { useRouter } from "next/router"
+import { SidebarItemProps } from "./SidebarItems"
 
-interface SidebarContextProps {
-  expanded: boolean
-}
+export default function Sidebar() {
+  const context = useContext(SidebarContext)
 
-const SidebarContext = createContext<SidebarContextProps | undefined>(undefined)
+  if (!context || context.sidebarTitle === "Loading Project...") {
+    return <div className="loading">Loading...</div>
+  }
 
-interface SidebarProps {
-  children: ReactNode
-  title?: string
-}
+  const { sidebarTitle, expanded, setSidebarState, sidebarItems } = context
 
-export default function Sidebar({ children, title }: SidebarProps) {
-  const [expanded, setExpanded] = useState(true)
+  const toggleExpand = () => {
+    setSidebarState({ expanded: !expanded })
+  }
 
   return (
     <>
@@ -30,14 +28,11 @@ export default function Sidebar({ children, title }: SidebarProps) {
               className={`text-2xl overflow-hidden transition-all ${
                 expanded ? "w-46" : "w-0"
               } max-w-[15ch] whitespace-nowrap overflow-ellipsis`}
-              title={title}
+              title={sidebarTitle}
             >
-              {title ? title : "Home"}
+              {sidebarTitle ? sidebarTitle : "Home"}
             </h2>
-            <button
-              onClick={() => setExpanded((curr) => !curr)}
-              className="p-1.5 rounded-lg hover:bg-indigo-50"
-            >
+            <button onClick={toggleExpand} className="p-1.5 rounded-lg hover:bg-indigo-50">
               {expanded ? (
                 <ChevronLeftIcon className="w-6 h-6" />
               ) : (
@@ -46,47 +41,41 @@ export default function Sidebar({ children, title }: SidebarProps) {
             </button>
           </div>
 
-          <SidebarContext.Provider value={{ expanded }}>
-            <ul className="flex-1 px-3">{children}</ul>
-          </SidebarContext.Provider>
+          <ul className="flex-1 px-3">
+            {" "}
+            {sidebarItems.map((item, index) => (
+              <SidebarItem key={index} {...item} />
+            ))}
+          </ul>
         </nav>
       </aside>
     </>
   )
 }
 
-export interface SidebarItemProps {
-  icon: ReactNode
-  text: string
-  active?: boolean
-  alert?: boolean
-  onClick?: MouseEventHandler<HTMLLIElement>
-  tooltipId: string
-}
-
-export function SidebarItem({ icon, text, active, alert, onClick, tooltipId }: SidebarItemProps) {
+export function SidebarItem(item: SidebarItemProps) {
   const contextValue = useContext(SidebarContext)
+  const router = useRouter()
 
   if (!contextValue) {
-    // Handle the case where context value is undefined
     return null
   }
-
+  const { icon: Icon, text, route, alert, tooltipId } = item
   const { expanded } = contextValue
 
-  const handleClick: MouseEventHandler<HTMLLIElement> = (event) => {
-    if (onClick) {
-      onClick(event)
+  const handleClick = async () => {
+    try {
+      await router.push(route)
+    } catch (error) {
+      console.error("Failed to navigate:", error)
     }
   }
-
-  //console.log(tooltipId)
 
   return (
     <li
       data-tooltip-id={tooltipId}
       className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
-        active
+        router.pathname === route.pathname
           ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
           : "hover:bg-indigo-50 text-gray-400"
       }`}
@@ -170,7 +159,7 @@ export function SidebarItem({ icon, text, active, alert, onClick, tooltipId }: S
         className="z-[1099]"
       />
 
-      {icon}
+      <Icon className="w-6 h-6" />
       <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
         {text}
       </span>

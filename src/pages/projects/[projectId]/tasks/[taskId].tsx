@@ -7,10 +7,12 @@ import { TaskSummary } from "src/tasks/components/TaskSummary"
 import { Suspense, useContext } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
-import { useParam } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
-import getProject from "src/projects/queries/getProject"
+import getTask from "src/tasks/queries/getTask"
+import deleteTask from "src/tasks/mutations/deleteTask"
+import JsonForm from "src/assignments/components/JsonForm"
+
+import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
+import Modal from "src/core/components/Modal"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getContributor from "src/contributors/queries/getContributor"
 import { ContributorPrivileges } from "@prisma/client"
@@ -18,13 +20,18 @@ import { TaskInformation } from "src/tasks/components/TaskInformation"
 import { AssignmentCompletion } from "src/assignments/components/AssignmentCompletion"
 import { TaskProvider, TaskContext } from "src/tasks/components/TaskContext"
 
-const TaskContent = () => {
+export const ShowTaskPage = () => {
+  // Setup
+  const router = useRouter()
+  const [deleteTaskMutation] = useMutation(deleteTask)
+  const [updateAssignmentMutation] = useMutation(updateAssignment)
+  const [updateTaskStatusMutation] = useMutation(updateTaskStatus)
+  // Get values
+  const currentUser = useCurrentUser()
+  const taskId = useParam("taskId", "number")
+  const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
   const projectId = useParam("projectId", "number")
 
-  const taskContext = useContext(TaskContext)
-  const { task } = taskContext
-  // TODO: replace by hook
-  const currentUser = useCurrentUser()
   const [currentContributor] = useQuery(getContributor, {
     where: { projectId: projectId, userId: currentUser!.id },
   })
@@ -61,7 +68,7 @@ export const ShowTaskPage = () => {
 
   // return the page
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Suspense fallback={<div>Loading...</div>}>
         <TaskProvider taskId={taskId}>
           <TaskContent />

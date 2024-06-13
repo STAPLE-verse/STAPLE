@@ -1,19 +1,14 @@
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { ProjectNotificationList } from "src/messages/components/ProjectNotificationList"
-import { useQuery } from "@blitzjs/rpc"
-import getProject from "src/projects/queries/getProject"
 import { useParam } from "@blitzjs/next"
 
 const ProjectNotificationsPage = () => {
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, "Notifications")
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Project Notifications</title>
       </Head>

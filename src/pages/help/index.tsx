@@ -1,16 +1,10 @@
 import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { Routes } from "@blitzjs/next"
-import Link from "next/link"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import Head from "next/head"
 
 const HelpPage = () => {
-  const sidebarItems = HomeSidebarItems("Help")
-
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
+    <Layout>
       <Head>
         <title>Get Help</title>
       </Head>
