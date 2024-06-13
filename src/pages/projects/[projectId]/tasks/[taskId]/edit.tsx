@@ -11,8 +11,6 @@ import { FormTaskSchema } from "src/tasks/schemas"
 import getTask from "src/tasks/queries/getTask"
 import updateTask from "src/tasks/mutations/updateTask"
 import { TaskForm, FORM_ERROR } from "src/tasks/components/TaskForm"
-import getProject from "src/projects/queries/getProject"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import toast from "react-hot-toast"
 import getAssignments from "src/assignments/queries/getAssignments"
 
@@ -23,7 +21,7 @@ export const EditTask = () => {
   const router = useRouter()
   const taskId = useParam("taskId", "number")
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
+
   const [task, { setQueryData }] = useQuery(
     getTask,
     { where: { id: taskId } },
@@ -37,6 +35,7 @@ export const EditTask = () => {
   const [assignments] = useQuery(getAssignments, {
     where: { taskId: taskId },
   })
+
   const contributorsId = assignments
     .map((assignment) => assignment.contributorId)
     // assignment.contributorId is nullable thus we filter for initialValues
@@ -46,8 +45,6 @@ export const EditTask = () => {
     .map((assignment) => assignment.teamId)
     // assignment.contributorId is nullable thus we filter for initialValues
     .filter((id): id is number => id !== null)
-
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
 
   const initialValues = {
     name: task.name,
@@ -61,7 +58,7 @@ export const EditTask = () => {
   }
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Edit {task.name}</title>
       </Head>

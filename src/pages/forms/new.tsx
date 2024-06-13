@@ -4,7 +4,6 @@ import { Suspense } from "react"
 import Head from "next/head"
 
 import Layout from "src/core/layouts/Layout"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 import React from "react"
@@ -15,7 +14,6 @@ import router from "next/router"
 import { Routes } from "@blitzjs/next"
 
 const FormBuilderPage = () => {
-  const sidebarItems = HomeSidebarItems("Forms")
   const [CreateFormMutation] = useMutation(createForm)
   const currentUser = useCurrentUser()
 
@@ -29,7 +27,7 @@ const FormBuilderPage = () => {
   }
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
+    <Layout>
       <Head>
         <title>Form Builder</title>
       </Head>

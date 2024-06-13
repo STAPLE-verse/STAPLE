@@ -5,13 +5,10 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import ProjectsList from "src/projects/components/ProjectsList"
 import SearchButton from "src/core/components/SearchButton"
 
 const ProjectsPage = () => {
-  const sidebarItems = HomeSidebarItems("Projects")
-
   const [searchTerm, setSearchTerm] = useState("")
 
   const router = useRouter()
@@ -23,7 +20,7 @@ const ProjectsPage = () => {
   }
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
+    <Layout>
       <Head>
         <title>Projects</title>
       </Head>

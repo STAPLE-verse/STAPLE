@@ -1,4 +1,3 @@
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import React from "react"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 
@@ -8,8 +7,6 @@ type Props = {
 }
 
 const SearchButton = ({ onChange, debounceTime = 500 }: Props) => {
-  const sidebarItems = HomeSidebarItems("Projects")
-
   const currentSearchTerm = ""
   const handleSearch = (value) => {
     if (onChange != undefined) {

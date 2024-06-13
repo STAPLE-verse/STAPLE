@@ -1,13 +1,11 @@
 import { Suspense, useState } from "react"
 import Head from "next/head"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
-import router, { useRouter } from "next/router"
+import router from "next/router"
 import Layout from "src/core/layouts/Layout"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import Modal from "src/core/components/Modal"
 import { LabelForm, FORM_ERROR } from "src/labels/components/LabelForm"
-import { number, z } from "zod"
 import toast from "react-hot-toast"
 import createLabel from "src/labels/mutations/createLabel"
 import getLabels from "src/labels/queries/getLabels"
@@ -15,13 +13,11 @@ import { LabelFormSchema } from "src/labels/schemas"
 import { AllLabelsList } from "src/labels/components/AllLabelsList"
 
 const LabelBuilderPage = () => {
-  const sidebarItems = HomeSidebarItems("Labels")
   const currentUser = useCurrentUser()
   const [createLabelMutation] = useMutation(createLabel)
   const page = Number(router.query.page) || 0
 
   const ITEMS_PER_PAGE = 7
-  // console.log(currentUser)
 
   //Only show labels that belongs to current user
   const [{ labels, hasMore }, { refetch }] = usePaginatedQuery(getLabels, {
@@ -80,7 +76,7 @@ const LabelBuilderPage = () => {
   }
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle="Home">
+    <Layout>
       <Head>
         <title>Contribution Labels</title>
       </Head>

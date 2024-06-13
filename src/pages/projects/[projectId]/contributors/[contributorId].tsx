@@ -9,8 +9,6 @@ import Layout from "src/core/layouts/Layout"
 import getContributor from "src/contributors/queries/getContributor"
 import deleteContributor from "src/contributors/mutations/deleteContributor"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getProject from "src/projects/queries/getProject"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { Contributor, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 
@@ -19,8 +17,6 @@ export const ContributorPage = () => {
   const router = useRouter()
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
   const [deleteContributorMutation] = useMutation(deleteContributor)
   const contributor = useQuery(getContributor, {
     where: { id: contributorId },
@@ -32,7 +28,7 @@ export const ContributorPage = () => {
   const user = contributor[0].user
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>{user.username}</title>
       </Head>

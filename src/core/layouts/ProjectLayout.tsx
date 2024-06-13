@@ -1,11 +1,8 @@
-import React, { FC, Suspense } from "react"
+import React, { Suspense } from "react"
 import { BlitzLayout } from "@blitzjs/next"
-import ProjectNavbar from "../components/ProjectNavbar"
+import ProjectNavbar from "../components/navbar/ProjectNavbar"
 
-const ProjectLayout: BlitzLayout<{ title?: string; children?: React.ReactNode }> = ({
-  title,
-  children,
-}) => {
+const ProjectLayout: BlitzLayout<{ children?: React.ReactNode }> = ({ children }) => {
   return (
     <>
       <Suspense>

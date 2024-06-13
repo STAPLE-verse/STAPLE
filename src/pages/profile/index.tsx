@@ -3,7 +3,6 @@ import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
-import { HomeSidebarItems } from "src/core/layouts/SidebarItems"
 
 const ProfilePage = () => {
   const currentUser = useCurrentUser()
@@ -69,11 +68,9 @@ const ProfilePage = () => {
 ProfilePage.authenticate = true
 
 ProfilePage.getLayout = () => {
-  const sidebarItems = HomeSidebarItems(null)
-
   return (
     <Suspense>
-      <Layout sidebarItems={sidebarItems} title="Profile" sidebarTitle="Home">
+      <Layout>
         <ProfilePage />
       </Layout>
     </Suspense>

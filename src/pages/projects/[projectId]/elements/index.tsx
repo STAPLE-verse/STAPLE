@@ -7,18 +7,18 @@ import Layout from "src/core/layouts/Layout"
 import { useParam } from "@blitzjs/next"
 import React from "react"
 import { ElementsList } from "src/elements/components/ElementList"
-import getProject from "src/projects/queries/getProject"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
+import getElements from "src/elements/queries/getElements"
 
 const ElementsPage = () => {
   const projectId = useParam("projectId", "number")
-
-  const [project] = useQuery(getProject, { id: projectId })
-
-  const sidebarItems = ProjectSidebarItems(projectId!, "Elements")
+  const [elements] = useQuery(getElements, {
+    where: { project: { id: projectId! } },
+    orderBy: { id: "asc" },
+    include: { Task: true },
+  })
 
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Head>
         <title>Elements</title>
       </Head>
