@@ -3,7 +3,6 @@ import { TaskProvider, TaskContext } from "src/Tasks/components/TaskContext"
 import { Suspense, useContext } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import getProject from "src/projects/queries/getProject"
@@ -124,12 +123,11 @@ const TaskContent = () => {
 export const ShowFormPage = () => {
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
   const taskId = useParam("taskId", "number")
 
   // return the page
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Suspense fallback={<div>Loading...</div>}>
         <TaskProvider taskId={taskId}>
           <TaskContent />

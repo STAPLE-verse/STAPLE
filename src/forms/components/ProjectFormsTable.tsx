@@ -39,13 +39,6 @@ export const projectFormTableColumns = [
     ),
     header: "View",
   }),
-  columnHelper.accessor("id", {
-    id: "edit",
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => "Download",
-    header: "Download",
-  }),
 ]
 
 export const ProjectFormTable = () => {
