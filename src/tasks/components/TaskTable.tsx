@@ -68,9 +68,29 @@ export const taskFinishedTableColumns = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
   }),
-  columnHelper.accessor("project.name", {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Project",
+  columnHelper.accessor("labels", {
+    cell: (info) => {
+      let temp
+      temp = info.getValue().map((i) => i.name)
+      return <span>{temp.join(", ")}</span>
+    },
+    header: "Labels",
+  }),
+  columnHelper.accessor("assignees", {
+    cell: (info) => {
+      const varName = "statusLogs"
+      const temp = info.getValue()[0].statusLogs[0].changedAt?.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      })
+      return <span>{temp}</span>
+    },
+    header: "Completed",
   }),
   columnHelper.accessor("id", {
     id: "view",
