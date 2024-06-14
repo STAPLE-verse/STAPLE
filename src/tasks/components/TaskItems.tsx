@@ -34,7 +34,7 @@ const TaskItems = ({ id, title, completed, projectId }: ItemsType) => {
       className={clsx(
         "px-2 py-4 shadow-md rounded-xl w-full border border-transparent hover:border-accent-content cursor-pointer",
         isDragging && "opacity-50",
-        completed ? "bg-accent" : "bg-success"
+        completed ? "bg-success" : "bg-accent"
       )}
     >
       <div className="flex items-center justify-between">
