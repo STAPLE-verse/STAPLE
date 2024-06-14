@@ -6,6 +6,8 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
+import getUsers from "src/users/queries/getUsers"
+import toast from "react-hot-toast"
 
 import Layout from "src/core/layouts/Layout"
 import { UpdateContributorSchema } from "src/contributors/schemas"
@@ -17,26 +19,31 @@ export const EditContributor = () => {
   const router = useRouter()
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
-  const [contributor, { setQueryData }] = useQuery(
-    getContributor,
-    { id: contributorId },
-    {
-      // This ensures the query never refreshes and overwrites the form data while the user is editing.
-      staleTime: Infinity,
-    }
-  )
+  const [contributor, { setQueryData }] = useQuery(getContributor, {
+    where: { id: contributorId, project: { id: projectId! } },
+  })
   const [updateContributorMutation] = useMutation(updateContributor)
+
+  const [user] = useQuery(getUsers, {
+    where: { id: contributor.userId },
+    take: 1,
+  })
 
   console.log(contributor)
 
   return (
     <Layout>
       <Head>
-        <title>Edit Contributor {contributor.id}</title>
+        <title>Edit Contributor {user[0].username} </title>
       </Head>
 
       <div>
-        <h1 className="text-3xl">Edit Contributor {contributor.id}</h1>
+        <h1 className="text-3xl">
+          Edit Contributor{" "}
+          {user[0].firstName || user[0].lastName
+            ? `${user[0].firstName} ${user[0].lastName}`
+            : user[0].username}
+        </h1>
         <pre>{JSON.stringify(contributor, null, 2)}</pre>
         <Suspense fallback={<div>Loading...</div>}>
           <ContributorFormEdit

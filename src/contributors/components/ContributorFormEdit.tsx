@@ -4,7 +4,6 @@ import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
-import getUsers from "src/users/queries/getUsers"
 import { ContributorPrivileges } from "@prisma/client"
 export { FORM_ERROR } from "src/core/components/fields/Form"
 
@@ -13,28 +12,14 @@ interface ContributorFormEditProps<S extends z.ZodType<any, any>> extends FormPr
 }
 
 export const ContributorPrivilegesOptions = [
-  { id: 0, value: ContributorPrivileges.PROJECT_MANAGER, label: "Project Manager" },
-  { id: 1, value: ContributorPrivileges.CONTRIBUTOR, label: "Contributor" },
+  { id: 0, value: "PROJECT_MANAGER", label: "Project Manager" },
+  { id: 1, value: "CONTRIBUTOR", label: "Contributor" },
 ]
 
 export function ContributorFormEdit<S extends z.ZodType<any, any>>(
   props: ContributorFormEditProps<S>
 ) {
   const { projectId, ...formProps } = props
-
-  const [users] = useQuery(getUsers, {
-    where: {
-      NOT: {
-        contributions: {
-          some: {
-            project: {
-              id: projectId,
-            },
-          },
-        },
-      },
-    },
-  })
 
   return (
     <Form<S> {...formProps}>
