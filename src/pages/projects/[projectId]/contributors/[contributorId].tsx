@@ -12,7 +12,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { Contributor, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 
-import { ContributorTaskList } from "src/tasks/components/ContributorsTaskList"
+import { ContributorTaskListDone } from "src/tasks/components/ContributorsTaskList"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
 import Link from "next/link"
 import { ContributorPrivileges } from "db"
@@ -99,7 +99,7 @@ export const ContributorPage = () => {
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
             <div className="card-title">Contribution Tasks</div>
-            <ContributorTaskList usersId={[user?.id]}></ContributorTaskList>
+            <ContributorTaskListDone usersId={[user?.id]}></ContributorTaskListDone>
             <div className="card-actions justify-end">
               <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId })}>
                 Edit Labels

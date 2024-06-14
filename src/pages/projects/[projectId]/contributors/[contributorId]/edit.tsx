@@ -13,7 +13,7 @@ import Layout from "src/core/layouts/Layout"
 import { UpdateContributorSchema } from "src/contributors/schemas"
 import getContributor from "src/contributors/queries/getContributor"
 import updateContributor from "src/contributors/mutations/updateContributor"
-import { ContributorFormEdit, FORM_ERROR } from "src/contributors/components/ContributorFormEdit"
+import { ContributorFormEdit, FORM_ERROR } from "src/contributors/components/ContributorForm"
 
 export const EditContributor = () => {
   const router = useRouter()
@@ -54,6 +54,7 @@ export const EditContributor = () => {
               try {
                 const updated = await updateContributorMutation({
                   id: contributor.id,
+                  projectId: projectId,
                   ...values,
                 })
                 await toast.promise(Promise.resolve(updated), {
