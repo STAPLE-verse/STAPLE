@@ -63,7 +63,7 @@ export const ProjectFormTable = () => {
     take: ITEMS_PER_PAGE,
   })
 
-  console.log(tasks)
+  //console.log(tasks)
 
   return (
     <div>

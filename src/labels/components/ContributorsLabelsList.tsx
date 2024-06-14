@@ -15,7 +15,7 @@ export const ContributorLabelsList = ({ usersId, projectId }) => {
     orderBy: { id: "asc" },
   })
 
-  console.log(labels)
+  //console.log(labels)
 
   const contributorLabelnformation = labels.map((label) => {
     const name = label.name

@@ -29,7 +29,7 @@ export const EditContributor = () => {
     take: 1,
   })
 
-  console.log(contributor)
+  //console.log(contributor)
 
   return (
     <Layout>

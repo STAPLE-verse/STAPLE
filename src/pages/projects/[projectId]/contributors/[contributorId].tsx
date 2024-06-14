@@ -11,6 +11,7 @@ import deleteContributor from "src/contributors/mutations/deleteContributor"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { Contributor, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
+import getTeams from "src/teams/queries/getTeams"
 
 import { ContributorTaskListDone } from "src/tasks/components/ContributorsTaskList"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
@@ -35,9 +36,11 @@ export const ContributorPage = () => {
 
   const [currentContributor] = useQuery(getContributor, {
     where: { projectId: projectId, userId: currentUser!.id },
+    include: { teams: true },
   })
 
   const user = contributor[0].user
+  const teams = currentContributor.teams.map((team) => team.name)
 
   return (
     <Layout>
@@ -64,6 +67,10 @@ export const ContributorPage = () => {
             <p>
               <span className="font-semibold">Privilege:</span>{" "}
               {getPrivilegeText(contributor[0].privilege)}
+            </p>
+
+            <p>
+              <span className="font-semibold">Team Membership:</span> {teams.join(", ")}
             </p>
 
             <div className="card-actions justify-end">
