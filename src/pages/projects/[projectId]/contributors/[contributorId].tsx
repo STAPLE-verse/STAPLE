@@ -87,7 +87,10 @@ export const ContributorPage = () => {
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
             <div className="card-title">Contribution Labels</div>
-            <ContributorLabelsList usersId={[user?.id]}></ContributorLabelsList>
+            <ContributorLabelsList
+              usersId={[user?.id]}
+              projectId={projectId}
+            ></ContributorLabelsList>
             <div className="card-actions justify-end">
               <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId })}>
                 Edit Labels
@@ -99,7 +102,10 @@ export const ContributorPage = () => {
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
             <div className="card-title">Contribution Tasks</div>
-            <ContributorTaskListDone usersId={[user?.id]}></ContributorTaskListDone>
+            <ContributorTaskListDone
+              usersId={[user?.id]}
+              projectId={projectId}
+            ></ContributorTaskListDone>
             <div className="card-actions justify-end">
               <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId })}>
                 Edit Labels

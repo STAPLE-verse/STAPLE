@@ -12,7 +12,7 @@ import deleteTeam from "src/teams/mutations/deleteTeam"
 import getContributors from "src/contributors/queries/getContributors"
 import { getInitials } from "src/services/getInitials"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
-import { ContributorTaskList } from "src/tasks/components/ContributorsTaskList"
+import { ContributorTaskListDone } from "src/tasks/components/ContributorsTaskList"
 
 export const ShowTeamPage = () => {
   const router = useRouter()
@@ -86,13 +86,19 @@ export const ShowTeamPage = () => {
 
           <div className="flex flex-col gap-2">
             <h2 className="text-2xl">Team members contribution labels</h2>
-            <ContributorLabelsList usersId={membersId}></ContributorLabelsList>
+            <ContributorLabelsList
+              usersId={membersId}
+              projectId={projectId}
+            ></ContributorLabelsList>
           </div>
 
           <div className="flex flex-col gap-2">
             <h2 className="text-2xl">Team members contribution Tasks</h2>
 
-            <ContributorTaskList usersId={membersId}></ContributorTaskList>
+            <ContributorTaskListDone
+              usersId={membersId}
+              projectId={projectId}
+            ></ContributorTaskListDone>
           </div>
 
           <div className="flex justify-start mt-4">

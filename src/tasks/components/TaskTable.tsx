@@ -72,31 +72,6 @@ export const taskFinishedTableColumns = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Project",
   }),
-  // TODO: Check how to use anonym function in accessor to get column name
-  columnHelper.accessor("deadline", {
-    cell: (info) => (
-      <span>
-        {info.getValue()?.toLocaleDateString(undefined, {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false, // Use 24-hour format
-        })}
-      </span>
-    ),
-    header: "Due Date",
-  }),
-  columnHelper.accessor("assignees", {
-    header: "Completed",
-    cell: (info) => {
-      const value = info.getValue() as String[]
-      const answer = value.map((v) => v.statusLogs[0].status)
-      return <>{answer[0] === "COMPLETED" ? "Complete" : "Not Complete"}</>
-    },
-  }),
   columnHelper.accessor("id", {
     id: "view",
     header: "View",
