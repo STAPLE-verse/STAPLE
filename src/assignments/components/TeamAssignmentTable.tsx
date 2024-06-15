@@ -8,6 +8,13 @@ import TeamMembersTable, { TeamOption } from "src/teams/components/TeamMembersTa
 import AssignTeamMembers from "src/teams/components/TeamMembersTable"
 import { AssignmentToggleModal } from "src/assignments/components/AssignmentTable"
 
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { CompletedAs } from "db"
+import getContributor from "src/contributors/queries/getContributor"
+import { useQuery } from "@blitzjs/rpc"
+import { useParam } from "@blitzjs/next"
+import CompleteSchemaPM from "src/assignments/components/CompleteSchemaPM"
+
 export type TeamAssignmentWithRelations = Prisma.AssignmentGetPayload<{
   include: {
     task: true
@@ -181,16 +188,25 @@ export const teamAssignmentTableColumnsSchema: ColumnDef<TeamAssignmentWithRelat
     header: "Status",
     id: "status",
   }),
-  columnHelper.accessor("task.schema", {
-    cell: (info) => (
-      <>
-        {info.row.original.task.schema ? (
-          <AssignmentMetadataModal metadata={info.row.original.statusLogs[0]?.metadata} />
-        ) : (
-          <span>No schema provided</span>
-        )}
-      </>
-    ),
-    header: "Task Schema",
+  columnHelper.accessor((row) => row, {
+    cell: (info) => {
+      const currentUser = useCurrentUser()
+      const projectId = useParam("projectId", "number")
+      const [currentContributor] = useQuery(getContributor, {
+        where: { projectId: projectId, userId: currentUser!.id },
+      })
+      console.log(info.getValue())
+
+      return (
+        <CompleteSchemaPM
+          currentAssignment={info.getValue()}
+          completedBy={currentContributor.id}
+          completedAs={CompletedAs.TEAM}
+          schema={info.getValue().task.schema}
+          ui={info.getValue().task.ui}
+        />
+      )
+    },
+    header: "Form Data",
   }),
 ]

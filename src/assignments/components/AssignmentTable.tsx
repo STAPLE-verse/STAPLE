@@ -10,6 +10,7 @@ import { CompletedAs } from "db"
 import getContributor from "src/contributors/queries/getContributor"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
+import CompleteSchemaPM from "src/assignments/components/CompleteSchemaPM"
 
 export type AssignmentWithRelations = Prisma.AssignmentGetPayload<{
   include: {
@@ -73,7 +74,7 @@ export const AssignmentToggleModal = ({ assignment }) => {
     window.location.reload()
   }
 
-  console.log(assignment)
+  //console.log(assignment)
 
   return (
     <>
@@ -86,7 +87,7 @@ export const AssignmentToggleModal = ({ assignment }) => {
             <CompleteTogglePM
               currentAssignment={assignment}
               completedLabel="Completed"
-              completedBy={assignment.teamId ? assignment.teamId : currentContributor.id}
+              completedBy={currentContributor.id}
               completedAs={assignment.teamId ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
             />
             <button type="button" className="btn btn-primary" onClick={handleToggleClose}>
@@ -184,16 +185,25 @@ export const assignmentTableColumnsSchema: ColumnDef<AssignmentWithRelations>[] 
     header: "Status",
     id: "status",
   }),
-  columnHelper.accessor("task.schema", {
-    cell: (info) => (
-      <>
-        {info.row.original.task.schema ? (
-          <AssignmentMetadataModal metadata={info.row.original.statusLogs[0]?.metadata} />
-        ) : (
-          <span>No schema provided</span>
-        )}
-      </>
-    ),
-    header: "Task Schema",
+  columnHelper.accessor((row) => row, {
+    cell: (info) => {
+      const currentUser = useCurrentUser()
+      const projectId = useParam("projectId", "number")
+      const [currentContributor] = useQuery(getContributor, {
+        where: { projectId: projectId, userId: currentUser!.id },
+      })
+      console.log(info.getValue())
+
+      return (
+        <CompleteSchemaPM
+          currentAssignment={info.getValue()}
+          completedBy={currentContributor.id}
+          completedAs={CompletedAs.INDIVIDUAL}
+          schema={info.getValue().task.schema}
+          ui={info.getValue().task.ui}
+        />
+      )
+    },
+    header: "Form Data",
   }),
 ]

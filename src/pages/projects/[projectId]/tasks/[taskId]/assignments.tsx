@@ -18,11 +18,13 @@ import {
 
 import Table from "src/core/components/Table"
 import Link from "next/link"
+import getTask from "src/tasks/queries/getTask"
 
 export const AssignmentsPage = () => {
   // Get values
   const taskId = useParam("taskId", "number")
   const projectId = useParam("projectId", "number")
+  const [task] = useQuery(getTask, { where: { id: taskId } })
 
   // Get assignments
   const [assignments] = useQuery(getAssignments, {
@@ -77,6 +79,8 @@ export const AssignmentsPage = () => {
     teamColumns = teamAssignmentTableColumns
   }
 
+  console.log(task)
+
   return (
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
@@ -86,8 +90,33 @@ export const AssignmentsPage = () => {
           <div className="flex flex-row justify-center">
             <div className="card bg-base-300 w-full">
               <div className="card-body overflow-x-auto">
-                <div className="card-title">TASK NAME</div>
-                TASK INFORMATION BUTTONS
+                <div className="card-title">{task.name}</div>
+                {task.description}
+                <div className="card-actions justify-end">
+                  <Link
+                    className="btn btn-primary"
+                    href={Routes.EditTaskPage({
+                      projectId: projectId,
+                      taskId: taskId,
+                    })}
+                  >
+                    Edit Task
+                  </Link>
+
+                  {assignments[0].task.schema ? (
+                    <Link
+                      className="btn btn-secondary mx-2"
+                      href={Routes.ShowFormPage({
+                        projectId: projectId,
+                        taskId: taskId,
+                      })}
+                    >
+                      Download Form Data
+                    </Link>
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
             </div>
           </div>
