@@ -74,13 +74,63 @@ export const assignmentTableColumns: ColumnDef<AssignmentWithRelations>[] = [
     ),
     header: "Contributor Name",
   }),
-  columnHelper.accessor((row) => row.statusLogs[0]?.createdAt.toISOString(), {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Last update",
-    id: "updatedAt",
+  columnHelper.accessor(
+    (row) =>
+      row.statusLogs[0]?.createdAt.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      }),
+    {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "Last Update",
+      id: "updatedAt",
+    }
+  ),
+  columnHelper.accessor((row) => row.statusLogs[0]?.status, {
+    cell: (info) => <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>,
+    header: "Status",
+    id: "status",
   }),
   columnHelper.accessor((row) => row.statusLogs[0]?.status, {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => "Cheese",
+    //<CompleteToggle />,
+    header: "Change status",
+    id: "updateStatus",
+  }),
+]
+
+export const assignmentTableColumnsSchema: ColumnDef<AssignmentWithRelations>[] = [
+  columnHelper.accessor("contributor.user", {
+    cell: (info) => (
+      // <span>{`${info.row.original.contributor.user.firstName} ${info.row.original.contributor.user.lastName}`}</span>
+      <span>{`${getName(info.row.original)}`}</span>
+    ),
+    header: "Contributor Name",
+  }),
+  columnHelper.accessor(
+    (row) =>
+      row.statusLogs[0]?.createdAt.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      }),
+    {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "Last Update",
+      id: "updatedAt",
+    }
+  ),
+  columnHelper.accessor((row) => row.statusLogs[0]?.status, {
+    cell: (info) => <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>,
     header: "Status",
     id: "status",
   }),
@@ -95,11 +145,5 @@ export const assignmentTableColumns: ColumnDef<AssignmentWithRelations>[] = [
       </>
     ),
     header: "Task Schema",
-  }),
-  columnHelper.accessor((row) => row.statusLogs[0]?.status, {
-    cell: (info) => "Cheese",
-    //<CompleteToggle />,
-    header: "Change status",
-    id: "updateStatus",
   }),
 ]

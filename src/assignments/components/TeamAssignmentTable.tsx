@@ -119,34 +119,59 @@ function getName(info) {
 // ColumnDefs
 export const teamAssignmentTableColumns: ColumnDef<TeamAssignmentWithRelations>[] = [
   columnHelper.accessor("team.name", {
-    cell: (info) => (
-      // <span>{`${info.row.original.contributor.user.firstName} ${info.row.original.contributor.user.lastName}`}</span>
-      <div>
-        {<TeamModal rowInfo={info.row.original}></TeamModal>}
-        {/* <button>
-          <span onClick={() => expandRow(info.row.original)}>{`${getName(
-            info.row.original
-          )}`}</span>
-        </button>
-        <Modal open={openTeamModal} size="w-11/12 max-w-5xl">
-          <div className="font-sans">Tst</div>
-          <div className="modal-action">
-            <button className="btn btn-primary" onClick={setOpenModal((prev) => !prev)}>
-              Save
-            </button>
-          </div>
-        </Modal> */}
-      </div>
-    ),
+    cell: (info) => <div>{<TeamModal rowInfo={info.row.original}></TeamModal>}</div>,
     header: "Team Name",
   }),
-  columnHelper.accessor((row) => row.statusLogs[0]?.createdAt.toISOString(), {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Last update",
-    id: "updatedAt",
-  }),
+  columnHelper.accessor(
+    (row) =>
+      row.statusLogs[0]?.createdAt.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      }),
+    {
+      cell: (info) => (
+        <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>
+      ),
+      header: "Last Update",
+      id: "updatedAt",
+    }
+  ),
   columnHelper.accessor((row) => row.statusLogs[0]?.status, {
     cell: (info) => <span>{info.getValue()}</span>,
+    header: "Status",
+    id: "status",
+  }),
+]
+
+export const teamAssignmentTableColumnsSchema: ColumnDef<TeamAssignmentWithRelations>[] = [
+  columnHelper.accessor("team.name", {
+    cell: (info) => <div>{<TeamModal rowInfo={info.row.original}></TeamModal>}</div>,
+    header: "Team Name",
+  }),
+  columnHelper.accessor(
+    (row) =>
+      row.statusLogs[0]?.createdAt.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      }),
+    {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "Last Update",
+      id: "updatedAt",
+    }
+  ),
+  columnHelper.accessor((row) => row.statusLogs[0]?.status, {
+    cell: (info) => <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>,
     header: "Status",
     id: "status",
   }),

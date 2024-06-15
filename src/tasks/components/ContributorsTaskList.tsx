@@ -113,8 +113,6 @@ export const ContributorTaskListDone = ({ usersId, projectId, teamId, columns })
     }))
     .filter((task) => task.assignees.length > 0)
 
-  console.log(completedTasks)
-
   return (
     <div>
       <Table columns={columns} data={completedTasks} />
