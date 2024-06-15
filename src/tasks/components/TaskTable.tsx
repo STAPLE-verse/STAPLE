@@ -112,9 +112,16 @@ export const taskFinishedTableColumns = [
 ]
 
 export const taskFinishedTableColumnsTeam = [
+  columnHelper.accessor("assignees", {
+    cell: (info) => {
+      const temp = info.getValue()[0].statusLogs[0].completedBy
+      return <span>{temp}</span>
+    },
+    header: "Completed",
+  }),
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Name",
+    header: "Task Name",
   }),
   columnHelper.accessor("labels", {
     cell: (info) => {
@@ -126,7 +133,6 @@ export const taskFinishedTableColumnsTeam = [
   }),
   columnHelper.accessor("assignees", {
     cell: (info) => {
-      const varName = "statusLogs"
       const temp = info.getValue()[0].statusLogs[0].changedAt?.toLocaleDateString(undefined, {
         year: "numeric",
         month: "long",

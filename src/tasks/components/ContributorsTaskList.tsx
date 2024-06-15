@@ -1,4 +1,4 @@
-import { useQuery } from "@blitzjs/rpc"
+import { useQuery, usePaginatedQuery } from "@blitzjs/rpc"
 import Table from "src/core/components/Table"
 import { taskFinishedTableColumns, taskTableColumns } from "src/tasks/components/TaskTable"
 import { useRouter } from "next/router"
@@ -58,7 +58,6 @@ export const ContributorTaskList = ({ usersId }) => {
 export const ContributorTaskListDone = ({ usersId, projectId, teamId, columns }) => {
   const router = useRouter()
 
-  console.log(teamId)
   let tasks = []
   if (teamId) {
     ;[{ tasks }] = useQuery(getTasks, {
@@ -113,6 +112,8 @@ export const ContributorTaskListDone = ({ usersId, projectId, teamId, columns })
       ),
     }))
     .filter((task) => task.assignees.length > 0)
+
+  console.log(completedTasks)
 
   return (
     <div>

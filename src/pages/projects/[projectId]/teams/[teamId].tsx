@@ -61,7 +61,7 @@ export const ShowTeamPage = () => {
                 className="btn btn-primary"
                 href={Routes.EditTeamPage({ projectId: projectId!, teamId: team.id })}
               >
-                Update Team
+                Edit Team
               </Link>
             </div>
           </div>
