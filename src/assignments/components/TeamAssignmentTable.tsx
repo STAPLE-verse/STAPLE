@@ -195,7 +195,7 @@ export const teamAssignmentTableColumnsSchema: ColumnDef<TeamAssignmentWithRelat
       const [currentContributor] = useQuery(getContributor, {
         where: { projectId: projectId, userId: currentUser!.id },
       })
-      console.log(info.getValue())
+      //console.log(info.getValue())
 
       return (
         <CompleteSchemaPM

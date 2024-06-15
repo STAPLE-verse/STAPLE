@@ -99,7 +99,7 @@ const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, 
                 Close
               </button>
               <button className="btn btn-secondary ml-2" onClick={handleResetMetadata}>
-                Reset form data
+                Reset Form Data
               </button>
             </div>
           </Modal>

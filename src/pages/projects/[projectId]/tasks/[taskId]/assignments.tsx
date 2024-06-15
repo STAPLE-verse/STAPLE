@@ -79,7 +79,7 @@ export const AssignmentsPage = () => {
     teamColumns = teamAssignmentTableColumns
   }
 
-  console.log(task)
+  //console.log(task)
 
   return (
     <Layout>

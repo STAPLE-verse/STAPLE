@@ -53,7 +53,7 @@ const ShowAssignmentProgress = () => {
           className="btn btn-primary"
           href={Routes.AssignmentsPage({ projectId: task.projectId, taskId: task.id })}
         >
-          Review
+          Edit Responses
         </Link>
       </div>
     </div>

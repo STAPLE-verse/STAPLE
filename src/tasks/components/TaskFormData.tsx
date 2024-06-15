@@ -4,6 +4,9 @@ import JsonForm from "src/assignments/components/JsonForm"
 import Modal from "src/core/components/Modal"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import { TaskContext } from "./TaskContext"
+import Link from "next/link"
+import { Routes } from "@blitzjs/next"
+import { useParam } from "@blitzjs/next"
 
 export const TaskFormData = () => {
   const [openMetadataInspectModal, setOpenMetadataInspectModal] = useState(false)
@@ -19,6 +22,9 @@ export const TaskFormData = () => {
   const handleMetadataInspectToggle = () => {
     setOpenMetadataInspectModal((prev) => !prev)
   }
+
+  const taskId = useParam("taskId", "number")
+  const projectId = useParam("projectId", "number")
 
   const uiSchema = task["ui"] || {}
   let extendedUiSchema = {}
@@ -46,10 +52,12 @@ export const TaskFormData = () => {
       />
       <div>
         {task["schema"] ? (
-          <div>
-            <button className="btn btn-primary" onClick={() => handleMetadataInspectToggle()}>
-              Review
-            </button>
+          <div className="flex-row w-full justify-center">
+            <center>
+              <button className="btn btn-primary" onClick={() => handleMetadataInspectToggle()}>
+                Required Form
+              </button>
+            </center>
             <Modal open={openMetadataInspectModal} size="w-11/12 max-w-5xl">
               <div className="font-sans">
                 {<JsonForm schema={getJsonSchema(task["schema"])} uiSchema={extendedUiSchema} />}
@@ -60,6 +68,17 @@ export const TaskFormData = () => {
                 </button>
               </div>
             </Modal>
+            <div className="flex-row w-full justify-center">
+              <Link
+                className="btn btn-info mt-2"
+                href={Routes.ShowFormPage({
+                  projectId: projectId,
+                  taskId: taskId,
+                })}
+              >
+                Download Form Data
+              </Link>
+            </div>
           </div>
         ) : (
           "No Form Data Required"
