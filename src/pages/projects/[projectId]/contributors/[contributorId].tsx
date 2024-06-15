@@ -15,6 +15,8 @@ import getTeams from "src/teams/queries/getTeams"
 
 import { ContributorTaskListDone } from "src/tasks/components/ContributorsTaskList"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
+import { labelTableColumnsSimple } from "src/labels/components/LabelTable"
+import { taskFinishedTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
 import { ContributorPrivileges } from "db"
 
@@ -97,6 +99,7 @@ export const ContributorPage = () => {
             <ContributorLabelsList
               usersId={[user?.id]}
               projectId={projectId}
+              columns={labelTableColumnsSimple}
             ></ContributorLabelsList>
             <div className="card-actions justify-end">
               <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId })}>
@@ -112,6 +115,7 @@ export const ContributorPage = () => {
             <ContributorTaskListDone
               usersId={[user?.id]}
               projectId={projectId}
+              columns={taskFinishedTableColumns}
             ></ContributorTaskListDone>
             <div className="card-actions justify-end">
               <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId })}>

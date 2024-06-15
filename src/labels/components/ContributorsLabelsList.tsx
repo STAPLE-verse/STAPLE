@@ -1,26 +1,31 @@
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import getLabels from "../queries/getLabels"
 import { LabelInformation, labelTableColumnsSimple } from "./LabelTable"
 import Table from "src/core/components/Table"
 
-export const ContributorLabelsList = ({ usersId, projectId }) => {
+export const ContributorLabelsList = ({ usersId, projectId, columns }) => {
   const router = useRouter()
-  const [{ labels }, { refetch }] = usePaginatedQuery(getLabels, {
+  const [{ labels }, { refetch }] = useQuery(getLabels, {
     where: {
       user: { id: { in: usersId } },
       projects: { some: { id: projectId } },
     },
-    include: { projects: true },
+    include: {
+      projects: true,
+      user: true,
+    },
     orderBy: { id: "asc" },
   })
 
-  //console.log(labels)
-
-  const contributorLabelnformation = labels.map((label) => {
+  const contributorLabelInformation = labels.map((label) => {
     const name = label.name
     const description = label.description || ""
     const taxonomy = label.taxonomy || ""
+
+    const userName = label.user.firstName
+      ? `${label.user.firstName} ${label.user.lastName}`
+      : label.user.username
 
     let t: LabelInformation = {
       name: name,
@@ -30,15 +35,18 @@ export const ContributorLabelsList = ({ usersId, projectId }) => {
       userId: label.userId,
       onChangeCallback: undefined,
       taxonomyList: [],
+      userName: userName,
     }
     return t
   })
+
+  //console.log(labels)
 
   return (
     <div>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
-        <Table columns={labelTableColumnsSimple} data={contributorLabelnformation} />
+        <Table columns={columns} data={contributorLabelInformation} />
       </main>
     </div>
   )

@@ -55,34 +55,54 @@ export const ContributorTaskList = ({ usersId }) => {
   )
 }
 
-export const ContributorTaskListDone = ({ usersId, projectId }) => {
+export const ContributorTaskListDone = ({ usersId, projectId, teamId, columns }) => {
   const router = useRouter()
-  const page = Number(router.query.page) || 0
 
-  const [{ tasks, hasMore }] = useQuery(getTasks, {
-    where: {
-      projectId: projectId,
-      OR: [
-        { assignees: { some: { contributor: { user: { id: { in: usersId } } }, teamId: null } } },
-        {
-          assignees: {
-            some: {
-              team: { contributors: { some: { id: { in: usersId } } } },
-              contributorId: null,
+  console.log(teamId)
+  let tasks = []
+  if (teamId) {
+    ;[{ tasks }] = useQuery(getTasks, {
+      where: {
+        projectId: projectId,
+        assignees: { some: { teamId: teamId } },
+      },
+
+      include: {
+        assignees: {
+          include: { statusLogs: { orderBy: { changedAt: "desc" } } },
+        },
+        project: true,
+        labels: true,
+      },
+      orderBy: { id: "asc" },
+    })
+  } else {
+    ;[{ tasks }] = useQuery(getTasks, {
+      where: {
+        projectId: projectId,
+        OR: [
+          { assignees: { some: { contributor: { user: { id: { in: usersId } } }, teamId: null } } },
+          {
+            assignees: {
+              some: {
+                team: { contributors: { some: { id: { in: usersId } } } },
+                contributorId: null,
+              },
             },
           },
+        ],
+      },
+      include: {
+        assignees: {
+          include: { statusLogs: { orderBy: { changedAt: "desc" } } },
         },
-      ],
-    },
-    include: {
-      assignees: { include: { statusLogs: { orderBy: { changedAt: "desc" } } } },
-      project: true,
-      labels: true,
-    },
-    orderBy: { id: "asc" },
-  })
+        project: true,
+        labels: true,
+      },
+      orderBy: { id: "asc" },
+    })
+  }
 
-  const teamId = useParam("teamId", "number")
   const contributorId = useParam("contributorId", "number")
   const completedTasks = tasks
     .map((task) => ({
@@ -94,11 +114,9 @@ export const ContributorTaskListDone = ({ usersId, projectId }) => {
     }))
     .filter((task) => task.assignees.length > 0)
 
-  //console.log(completedTasks)
-
   return (
     <div>
-      <Table columns={taskFinishedTableColumns} data={completedTasks} />
+      <Table columns={columns} data={completedTasks} />
     </div>
   )
 }
