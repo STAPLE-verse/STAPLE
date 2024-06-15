@@ -67,7 +67,8 @@ export function ContributorFormEdit<S extends z.ZodType<any, any>>(props: Contri
         label="Select Privilege:"
         options={ContributorPrivilegesOptions}
         optionText="label"
-        optionValue="id"
+        optionValue="value"
+        type="string"
       />
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
