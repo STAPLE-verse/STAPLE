@@ -67,8 +67,6 @@ export const AssignmentsPage = () => {
     // TODO: replace this with actual type def
   }) as unknown as [TeamAssignmentWithRelations[], { refetch: () => void }]
 
-  console.log(assignments[0].task.schema)
-
   let individualColumns
   let teamColumns
   if (assignments[0].task.schema) {

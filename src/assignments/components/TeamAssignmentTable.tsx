@@ -6,6 +6,7 @@ import Table from "src/core/components/Table"
 import Modal from "src/core/components/Modal"
 import TeamMembersTable, { TeamOption } from "src/teams/components/TeamMembersTable"
 import AssignTeamMembers from "src/teams/components/TeamMembersTable"
+import { AssignmentToggleModal } from "src/assignments/components/AssignmentTable"
 
 export type TeamAssignmentWithRelations = Prisma.AssignmentGetPayload<{
   include: {
@@ -37,8 +38,8 @@ const AssignmentMetadataModal = ({ metadata }) => {
   return (
     <>
       <div className="mt-4">
-        <button type="button" className="btn" onClick={handleToggle}>
-          Show metadata
+        <button type="button" className="btn btn-primary" onClick={handleToggle}>
+          Edit Form Data
         </button>
 
         <Modal open={openModal} size="w-11/12 max-w-3xl">
@@ -112,10 +113,6 @@ function getName(info) {
   return "null"
 }
 
-// const expandRow = (row) => {
-//   console.log(row)
-// }
-
 // ColumnDefs
 export const teamAssignmentTableColumns: ColumnDef<TeamAssignmentWithRelations>[] = [
   columnHelper.accessor("team.name", {
@@ -134,17 +131,26 @@ export const teamAssignmentTableColumns: ColumnDef<TeamAssignmentWithRelations>[
         hour12: false, // Use 24-hour format
       }),
     {
-      cell: (info) => (
-        <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>
-      ),
+      cell: (info) => <span>{info.getValue()}</span>,
       header: "Last Update",
       id: "updatedAt",
     }
   ),
   columnHelper.accessor((row) => row.statusLogs[0]?.status, {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>,
     header: "Status",
     id: "status",
+  }),
+  columnHelper.accessor((row) => row, {
+    cell: (info) => {
+      return (
+        <div>
+          <AssignmentToggleModal assignment={info.getValue()} />
+        </div>
+      )
+    },
+    header: "Change status",
+    id: "updateStatus",
   }),
 ]
 
