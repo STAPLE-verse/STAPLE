@@ -21,12 +21,13 @@ import { ContributorPrivileges } from "db"
 import toast from "react-hot-toast"
 
 export const ContributorPage = () => {
-  const currentUser = useCurrentUser()
   const router = useRouter()
+  const [deleteContributorMutation] = useMutation(deleteContributor)
 
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
-  const [deleteContributorMutation] = useMutation(deleteContributor)
+
+  const currentUser = useCurrentUser()
   const contributor = useQuery(getContributor, {
     where: { id: contributorId },
     include: { user: true },
@@ -96,8 +97,8 @@ export const ContributorPage = () => {
                 <Link
                   className="btn btn-primary"
                   href={Routes.EditContributorPage({
-                    projectId: projectId,
-                    contributorId: contributorId,
+                    projectId: projectId!,
+                    contributorId: contributorId!,
                   })}
                 >
                   Edit Contributor
@@ -118,7 +119,7 @@ export const ContributorPage = () => {
               columns={labelTableColumnsSimple}
             ></ContributorLabelsList>
             <div className="card-actions justify-end">
-              <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId })}>
+              <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId! })}>
                 Edit Labels
               </Link>
             </div>
@@ -129,12 +130,11 @@ export const ContributorPage = () => {
           <div className="card-body">
             <div className="card-title">Contribution Tasks</div>
             <ContributorTaskListDone
-              usersId={[user?.id]}
-              projectId={projectId}
+              contributor={currentContributor}
               columns={taskFinishedTableColumns}
             ></ContributorTaskListDone>
             <div className="card-actions justify-end">
-              <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId })}>
+              <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId! })}>
                 Edit Labels
               </Link>
             </div>

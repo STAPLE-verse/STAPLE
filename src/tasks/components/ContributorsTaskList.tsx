@@ -1,9 +1,8 @@
 import { useQuery, usePaginatedQuery } from "@blitzjs/rpc"
 import Table from "src/core/components/Table"
-import { taskFinishedTableColumns, taskTableColumns } from "src/tasks/components/TaskTable"
+import { taskTableColumns } from "src/tasks/components/TaskTable"
 import { useRouter } from "next/router"
 import getTasks from "src/tasks/queries/getTasks"
-import { useParam } from "@blitzjs/next"
 
 const ITEMS_PER_PAGE = 10
 
@@ -55,54 +54,24 @@ export const ContributorTaskList = ({ usersId }) => {
   )
 }
 
-export const ContributorTaskListDone = ({ usersId, projectId, teamId, columns }) => {
-  const router = useRouter()
+export const ContributorTaskListDone = ({ contributor, columns }) => {
+  const [{ tasks }] = useQuery(getTasks, {
+    where: {
+      OR: [
+        { assignees: { some: { contributorId: contributor.id } } },
+        { assignees: { some: { team: { contributors: { some: { id: contributor.id } } } } } },
+      ],
+    },
+    include: {
+      assignees: {
+        include: { statusLogs: { orderBy: { changedAt: "desc" } } },
+      },
+      project: true,
+      labels: true,
+    },
+    orderBy: { id: "asc" },
+  })
 
-  let tasks = []
-  if (teamId) {
-    ;[{ tasks }] = useQuery(getTasks, {
-      where: {
-        projectId: projectId,
-        assignees: { some: { teamId: teamId } },
-      },
-
-      include: {
-        assignees: {
-          include: { statusLogs: { orderBy: { changedAt: "desc" } } },
-        },
-        project: true,
-        labels: true,
-      },
-      orderBy: { id: "asc" },
-    })
-  } else {
-    ;[{ tasks }] = useQuery(getTasks, {
-      where: {
-        projectId: projectId,
-        OR: [
-          { assignees: { some: { contributor: { user: { id: { in: usersId } } }, teamId: null } } },
-          {
-            assignees: {
-              some: {
-                team: { contributors: { some: { id: { in: usersId } } } },
-                contributorId: null,
-              },
-            },
-          },
-        ],
-      },
-      include: {
-        assignees: {
-          include: { statusLogs: { orderBy: { changedAt: "desc" } } },
-        },
-        project: true,
-        labels: true,
-      },
-      orderBy: { id: "asc" },
-    })
-  }
-
-  const contributorId = useParam("contributorId", "number")
   const completedTasks = tasks
     .map((task) => ({
       ...task,
