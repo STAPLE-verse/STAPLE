@@ -11,7 +11,6 @@ import deleteContributor from "src/contributors/mutations/deleteContributor"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { Contributor, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
-import getTeams from "src/teams/queries/getTeams"
 
 import { ContributorTaskListDone } from "src/tasks/components/ContributorsTaskList"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
@@ -19,10 +18,9 @@ import { labelTableColumnsSimple } from "src/labels/components/LabelTable"
 import { taskFinishedTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
 import { ContributorPrivileges } from "db"
+import toast from "react-hot-toast"
 
 export const ContributorPage = () => {
-  const ITEMS_PER_PAGE = 7
-
   const currentUser = useCurrentUser()
   const router = useRouter()
 
@@ -43,6 +41,24 @@ export const ContributorPage = () => {
 
   const user = contributor[0].user
   const teams = currentContributor.teams.map((team) => team.name)
+
+  const handleDelete = async () => {
+    if (
+      window.confirm("This contributor will be removed from the project. Are you sure to continue?")
+    ) {
+      try {
+        await deleteContributorMutation({ id: contributor[0].id })
+        // Check if User removed themselves and return to main page
+        if (user.id === currentUser?.id) {
+          await router.push(Routes.ProjectsPage())
+        } else {
+          await router.push(Routes.ContributorsPage({ projectId: projectId! }))
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+    }
+  }
 
   return (
     <Layout>
@@ -129,22 +145,7 @@ export const ContributorPage = () => {
           <button
             className="btn btn-secondary"
             type="button"
-            onClick={async () => {
-              if (
-                window.confirm(
-                  "This contributor will be removed from the project. Are you sure to continue?"
-                )
-              ) {
-                await deleteContributorMutation({ id: contributor[0].id })
-                // Check if User removed themselves and return to main page
-                // TODO: This my lead to an error if contributorspage is loaded too soon
-                if (user.id === currentUser?.id) {
-                  await router.push(Routes.ProjectsPage())
-                } else {
-                  await router.push(Routes.ContributorsPage({ projectId: projectId! }))
-                }
-              }
-            }}
+            onClick={handleDelete}
             style={{ marginLeft: "0.5rem" }}
           >
             Delete Contributor

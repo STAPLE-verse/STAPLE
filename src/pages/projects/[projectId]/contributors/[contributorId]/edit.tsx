@@ -13,11 +13,7 @@ import Layout from "src/core/layouts/Layout"
 import { UpdateContributorSchema } from "src/contributors/schemas"
 import getContributor from "src/contributors/queries/getContributor"
 import updateContributor from "src/contributors/mutations/updateContributor"
-import {
-  ContributorFormEdit,
-  mapPrivilageToOption,
-  FORM_ERROR,
-} from "src/contributors/components/ContributorForm"
+import { ContributorFormEdit, FORM_ERROR } from "src/contributors/components/ContributorForm"
 
 export const EditContributor = () => {
   const router = useRouter()
@@ -40,15 +36,23 @@ export const EditContributor = () => {
       </Head>
 
       <div>
-        <h1 className="text-3xl">
+        <h1 className="text-3xl mb-2">
           Edit Contributor{" "}
           {user[0].firstName || user[0].lastName
             ? `${user[0].firstName} ${user[0].lastName}`
             : user[0].username}
         </h1>
-        <pre>{JSON.stringify(contributor, null, 2)}</pre>
         <Suspense fallback={<div>Loading...</div>}>
           <ContributorFormEdit
+            cancelText="Cancel"
+            onCancel={() =>
+              router.push(
+                Routes.ShowContributorPage({
+                  projectId: projectId!,
+                  contributorId: contributorId,
+                })
+              )
+            }
             submitText="Update Contributor"
             schema={UpdateContributorSchema}
             initialValues={contributor}
