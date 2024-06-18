@@ -18,8 +18,8 @@ function TextFilter({ column, table }: { column: Column<any, unknown>; table: Ta
   return (
     <>
       <datalist id={column.id + "list"}>
-        {sortedUniqueValues.slice(0, 5000).map((value: any) => {
-          return <option value={value} key={value} />
+        {sortedUniqueValues.slice(0, 5000).map((value: any, index: number) => {
+          return <option value={value} key={`${value}-${index}`} />
         })}
       </datalist>
       <DebouncedInput

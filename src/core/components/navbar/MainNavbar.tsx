@@ -69,7 +69,6 @@ const Navbar = () => {
       "sunset",
     ].includes(theme)
   ) {
-    //console.log(theme)
     logo = <img src="/stapler_white.png" width={25} />
   } else {
     logo = <img src="/stapler_black.png" width={25} />
@@ -103,7 +102,7 @@ const Navbar = () => {
           </div>
         </label>
         {/* Notifications tab */}
-        <NotificationsMenu userId={currentUser!.id} />
+        <NotificationsMenu />
         {/* Profile tab */}
         <div className="dropdown dropdown-end">
           {/* TODO: Change to avatar if image is uploaded */}

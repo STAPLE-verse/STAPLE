@@ -1,30 +1,15 @@
 import { Routes } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
 import { BellIcon } from "@heroicons/react/24/outline"
 import Link from "next/link"
-import getNotifications from "src/messages/queries/getNotifications"
 import DOMPurify from "dompurify"
+import { useNotification } from "src/messages/components/NotificationContext"
 
-const NotificationsMenu = ({ userId }) => {
-  const [notifications] = useQuery(getNotifications, {
-    where: {
-      read: false,
-      recipients: {
-        some: { id: userId },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-    take: 250,
-    include: {
-      recipients: true,
-    },
-  })
-
-  // Count unread notifications
-  const unreadCount = notifications.notifications.length
+const NotificationsMenu = () => {
+  // Get notification counts
+  const { notifications, count } = useNotification()
 
   // Display the first three notifications
-  const snipetOfNotifications = notifications.notifications.slice(0, 3).map((notification) => {
+  const snipetOfNotifications = notifications.slice(0, 3).map((notification) => {
     const cleanMessage = DOMPurify.sanitize(notification.message)
     return (
       <div
@@ -40,7 +25,7 @@ const NotificationsMenu = ({ userId }) => {
       <label tabIndex={0} className="btn btn-ghost btn-circle">
         <div className="indicator">
           <BellIcon className="w-5 h-5" />
-          <span className="badge badge-sm indicator-item">{unreadCount}</span>
+          <span className="badge badge-sm indicator-item">{count.unread}</span>
         </div>
       </label>
       <div
@@ -48,7 +33,7 @@ const NotificationsMenu = ({ userId }) => {
         className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow"
       >
         <div className="card-body">
-          <span className="font-bold text-lg">{unreadCount} Notifications</span>
+          <span className="font-bold text-lg">{count.unread} Notifications</span>
           {snipetOfNotifications.length > 0 ? (
             snipetOfNotifications
           ) : (
