@@ -13,7 +13,6 @@ import getContributors from "src/contributors/queries/getContributors"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
 import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
 import { labelTableColumnsTeam } from "src/labels/components/LabelTable"
-import { taskFinishedTableColumnsTeam } from "src/tasks/components/TaskTable"
 
 export const ShowTeamPage = () => {
   const router = useRouter()
