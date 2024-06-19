@@ -12,7 +12,7 @@ const ByDate = ({ tasks, contributors, teams }) => {
     if (statusLogs.length > 0) {
       logs = statusLogs.map((log) => {
         return {
-          changedAt: log.changedAt,
+          createdAt: log.createdAt,
           id: log.id,
           belongsTo: belongsTo,
           elementId: element.id,
@@ -22,7 +22,7 @@ const ByDate = ({ tasks, contributors, teams }) => {
     } else {
       let temp = {
         elementId: element.id,
-        changedAt: element.createdAt,
+        createdAt: element.createdAt,
         id: element.createdAt.getTime(),
         belongsTo: belongsTo,
         fromLog: false,
@@ -35,7 +35,7 @@ const ByDate = ({ tasks, contributors, teams }) => {
 
   const printHeader = (log, index, sortedLogs) => {
     if (index == 0) return true
-    return !compareDateSeconds(log.changedAt, sortedLogs[index - 1].changedAt)
+    return !compareDateSeconds(log.createdAt, sortedLogs[index - 1].createdAt)
   }
 
   const getTasksStatusLogs = (tasks) => {
@@ -79,12 +79,9 @@ const ByDate = ({ tasks, contributors, teams }) => {
 
   logs = logs.concat(contributorLogs)
   logs = logs.concat(teamLogs)
-  // const uniqueDates = logs.filter((value, index, self) => {
-  //   return index == self.findIndex((el) => compareDateSeconds(el.changedAt, value.changedAt))
-  // })
 
   const sortedLogs = logs.sort((d1, d2) => {
-    return d1.changedAt > d2.changedAt ? -1 : d1.changedAt < d2.changedAt ? 1 : 0
+    return d1.createdAt > d2.createdAt ? -1 : d1.createdAt < d2.createdAt ? 1 : 0
   })
 
   return (

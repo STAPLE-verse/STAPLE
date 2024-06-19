@@ -13,7 +13,7 @@ export default function useAssignmentProgress(task: ExtendedTask) {
     if (assignment.statusLogs && assignment.statusLogs.length > 0) {
       // Take the latest status log only
       const latestStatus = assignment.statusLogs.reduce((latest, current) => {
-        return latest.changedAt > current.changedAt ? latest : current
+        return latest.createdAt > current.createdAt ? latest : current
       })
 
       if (latestStatus.status === "NOT_COMPLETED") {

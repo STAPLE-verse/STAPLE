@@ -13,7 +13,7 @@ export default resolver.pipe(
         assignmentId: assignmentId,
       },
       orderBy: {
-        changedAt: "desc",
+        createdAt: "desc",
       },
     })
 

@@ -12,7 +12,7 @@ export const ContributorTaskListDone = ({ contributor, columns }) => {
     },
     include: {
       assignees: {
-        include: { statusLogs: { orderBy: { changedAt: "desc" } } },
+        include: { statusLogs: { orderBy: { createdAt: "desc" } } },
       },
       project: true,
       labels: true,

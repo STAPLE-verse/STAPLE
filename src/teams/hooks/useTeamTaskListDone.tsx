@@ -20,7 +20,7 @@ export const useTeamTaskListDone = (teamId) => {
     include: {
       assignees: {
         include: {
-          statusLogs: { orderBy: { changedAt: "desc" } },
+          statusLogs: { orderBy: { createdAt: "desc" } },
         },
       },
       project: true,
@@ -108,7 +108,7 @@ export const useTeamTaskListDone = (teamId) => {
     }),
     columnHelper.accessor("assignees", {
       cell: (info) => {
-        const temp = info.getValue()[0].statusLogs[0].changedAt?.toLocaleDateString(undefined, {
+        const temp = info.getValue()[0].statusLogs[0].createdAt?.toLocaleDateString(undefined, {
           year: "numeric",
           month: "long",
           day: "numeric",

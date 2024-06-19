@@ -22,7 +22,7 @@ const CompleteTogglePM = ({ currentAssignment, completedLabel, completedBy, comp
   }
 
   const latestStatusLog = currentAssignment.statusLogs.reduce((latest, current) => {
-    return latest.changedAt > current.changedAt ? latest : current
+    return latest.createdAt > current.createdAt ? latest : current
   }, currentAssignment.statusLogs[0])
 
   // console.log(currentAssignment)

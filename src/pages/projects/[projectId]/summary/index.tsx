@@ -51,7 +51,7 @@ const SummaryPage = () => {
         include: {
           statusLogs: {
             orderBy: {
-              changedAt: "desc",
+              createdAt: "desc",
             },
           },
           team: {
@@ -93,7 +93,7 @@ const SummaryPage = () => {
         include: {
           statusLogs: {
             orderBy: {
-              changedAt: "desc",
+              createdAt: "desc",
             },
           },
         },

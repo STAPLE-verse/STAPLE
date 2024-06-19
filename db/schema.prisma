@@ -186,7 +186,6 @@ model AssignmentStatusLog {
   id           Int              @id @default(autoincrement())
   createdAt    DateTime         @default(now())
   assignmentId Int
-  changedAt    DateTime         @default(now()) // When the status was changed
   assignment   Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   status       AssignmentStatus @default(NOT_COMPLETED)
   metadata     Json?
@@ -194,7 +193,7 @@ model AssignmentStatusLog {
   completedAs  CompletedAs      @default(INDIVIDUAL)
   contributor  Contributor?     @relation(fields: [completedBy], references: [id], onDelete: SetNull)
 
-  @@unique([assignmentId, changedAt])
+  @@unique([assignmentId, createdAt])
 }
 
 model Assignment {
