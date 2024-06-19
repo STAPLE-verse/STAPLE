@@ -31,9 +31,7 @@ const TaskContent = () => {
   if (!task) {
     return <div>Loading...</div>
   }
-  // return (
-  //   {!!task && <></>}
-  // )
+
   return (
     <>
       <Head>

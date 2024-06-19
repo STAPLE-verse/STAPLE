@@ -36,7 +36,7 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
   const whereClause = {
     recipients: {
       some: {
-        id: currentUser!.id,
+        id: currentUser?.id,
       },
     },
     ...(projectId ? { projectId } : {}),
