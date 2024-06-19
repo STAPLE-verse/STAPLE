@@ -114,8 +114,8 @@ export const taskFinishedTableColumns = [
 export const taskFinishedTableColumnsTeam = [
   columnHelper.accessor("assignees", {
     cell: (info) => {
-      const temp = info.getValue()[0].statusLogs[0].completedBy
-      return <span>{temp}</span>
+      const contributorId = info.getValue()[0].statusLogs[0].completedBy
+      return <span>{contributorId}</span>
     },
     header: "Completed by",
     id: "completedBy",

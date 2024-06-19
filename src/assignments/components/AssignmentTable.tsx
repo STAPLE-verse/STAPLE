@@ -113,7 +113,7 @@ export function getName(info) {
 
 // ColumnDefs
 export const assignmentTableColumns: ColumnDef<AssignmentWithRelations>[] = [
-  columnHelper.accessor("contributor.user", {
+  columnHelper.accessor("contributor", {
     cell: (info) => (
       // <span>{`${info.row.original.contributor.user.firstName} ${info.row.original.contributor.user.lastName}`}</span>
       <span>{`${getName(info.row.original)}`}</span>
