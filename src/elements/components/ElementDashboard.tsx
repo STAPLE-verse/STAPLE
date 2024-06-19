@@ -5,7 +5,6 @@ import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import getElement from "src/elements/queries/getElement"
 import deleteElement from "src/elements/mutations/deleteElement"
-import getProject from "src/projects/queries/getProject"
 import getTasks from "src/tasks/queries/getTasks"
 import { taskElementColumns } from "src/tasks/components/TaskTable"
 import Table from "src/core/components/Table"
@@ -17,7 +16,6 @@ export const OverallElement = () => {
   const router = useRouter()
   const elementId = useParam("elementId", "number")
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
   const [element] = useQuery(getElement, { id: elementId })
 
   const ITEMS_PER_PAGE = 5

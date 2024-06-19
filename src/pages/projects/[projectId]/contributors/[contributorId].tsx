@@ -12,7 +12,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { Contributor, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 
-import { ContributorTaskListDone } from "src/tasks/components/ContributorsTaskList"
+import { ContributorTaskListDone } from "src/tasks/components/ContributorsTaskListDone"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
 import { labelTableColumnsSimple } from "src/labels/components/LabelTable"
 import { taskFinishedTableColumns } from "src/tasks/components/TaskTable"

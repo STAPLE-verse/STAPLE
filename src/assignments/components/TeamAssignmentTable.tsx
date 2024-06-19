@@ -1,10 +1,9 @@
 import React, { useState } from "react"
-import { Assignment, Prisma } from "db"
+import { Prisma } from "db"
 
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import Table from "src/core/components/Table"
 import Modal from "src/core/components/Modal"
-import TeamMembersTable, { TeamOption } from "src/teams/components/TeamMembersTable"
+import { TeamOption } from "src/teams/components/TeamMembersTable"
 import AssignTeamMembers from "src/teams/components/TeamMembersTable"
 import { AssignmentToggleModal } from "src/assignments/components/AssignmentTable"
 

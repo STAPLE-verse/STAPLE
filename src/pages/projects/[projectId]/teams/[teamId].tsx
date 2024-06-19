@@ -10,9 +10,8 @@ import Layout from "src/core/layouts/Layout"
 import getTeam from "src/teams/queries/getTeam"
 import deleteTeam from "src/teams/mutations/deleteTeam"
 import getContributors from "src/contributors/queries/getContributors"
-import { getInitials } from "src/services/getInitials"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
-import { ContributorTaskListDone } from "src/tasks/components/ContributorsTaskList"
+import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
 import { labelTableColumnsTeam } from "src/labels/components/LabelTable"
 import { taskFinishedTableColumnsTeam } from "src/tasks/components/TaskTable"
 
@@ -48,7 +47,7 @@ export const ShowTeamPage = () => {
               <div className="card-title">Team: {team.name} </div>
               {contributors.map((contributor) => {
                 return (
-                  <p>
+                  <p key={contributor.id}>
                     {contributor["user"].firstName || contributor["user"].lastName
                       ? `${contributor["user"].firstName} ${contributor["user"].lastName}`
                       : contributor["user"].username}
@@ -80,12 +79,10 @@ export const ShowTeamPage = () => {
           <div className="card bg-base-300 w-full mt-2">
             <div className="card-body">
               <div className="card-title">Team Task Contribution Labels</div>
-              <ContributorTaskListDone
-                usersId={membersId}
-                projectId={projectId}
-                teamId={teamId}
+              <TeamTaskListDone
+                team={team}
                 columns={taskFinishedTableColumnsTeam}
-              ></ContributorTaskListDone>
+              ></TeamTaskListDone>
             </div>
           </div>
 

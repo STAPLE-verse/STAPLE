@@ -117,19 +117,26 @@ export const taskFinishedTableColumnsTeam = [
       const temp = info.getValue()[0].statusLogs[0].completedBy
       return <span>{temp}</span>
     },
-    header: "Completed",
+    header: "Completed by",
+    id: "completedBy",
   }),
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Task Name",
+    id: "taskName",
   }),
   columnHelper.accessor("labels", {
     cell: (info) => {
-      let temp
-      temp = info.getValue().map((i) => i.name)
-      return <span>{temp.join(", ")}</span>
+      if (info.getValue().length > 0) {
+        let temp
+        temp = info.getValue().map((i) => i.name)
+        return <span>{temp.join(", ")}</span>
+      } else {
+        return "No labels assigned to the task"
+      }
     },
     header: "Labels",
+    id: "label",
   }),
   columnHelper.accessor("assignees", {
     cell: (info) => {
@@ -144,7 +151,8 @@ export const taskFinishedTableColumnsTeam = [
       })
       return <span>{temp}</span>
     },
-    header: "Completed",
+    header: "Completed at",
+    id: "completedAt",
   }),
   columnHelper.accessor("id", {
     id: "view",
