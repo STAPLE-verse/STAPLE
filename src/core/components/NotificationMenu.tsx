@@ -6,7 +6,7 @@ import { useNotification } from "src/messages/components/NotificationContext"
 
 const NotificationsMenu = () => {
   // Get notification counts
-  const { notifications, count } = useNotification()
+  const { notifications, notificationCount } = useNotification()
 
   // Display the first three notifications
   const snipetOfNotifications = notifications.slice(0, 3).map((notification) => {
@@ -25,7 +25,7 @@ const NotificationsMenu = () => {
       <label tabIndex={0} className="btn btn-ghost btn-circle">
         <div className="indicator">
           <BellIcon className="w-5 h-5" />
-          <span className="badge badge-sm indicator-item">{count.unread}</span>
+          <span className="badge badge-sm indicator-item">{notificationCount.unread}</span>
         </div>
       </label>
       <div
@@ -33,7 +33,7 @@ const NotificationsMenu = () => {
         className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow"
       >
         <div className="card-body">
-          <span className="font-bold text-lg">{count.unread} Notifications</span>
+          <span className="font-bold text-lg">{notificationCount.unread} Notifications</span>
           {snipetOfNotifications.length > 0 ? (
             snipetOfNotifications
           ) : (

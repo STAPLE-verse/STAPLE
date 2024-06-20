@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { NotificationProvider, useNotification } from "src/messages/components/NotificationContext"
+import { useNotification } from "src/messages/components/NotificationContext"
 import Table from "src/core/components/Table"
 import { useProjectNotificationTableColumns } from "src/messages/hooks/useNotificationTable"
 
@@ -45,9 +45,7 @@ const ProjectNotificationsPage = () => {
   return (
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
-        <NotificationProvider>
-          <NotificationContent />
-        </NotificationProvider>
+        <NotificationContent />
       </Suspense>
     </Layout>
   )
