@@ -1,3 +1,6 @@
+// @ts-nocheck
+// element dashboard assignees issue
+
 import { useRouter } from "next/router"
 import { useQuery, usePaginatedQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"

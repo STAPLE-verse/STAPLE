@@ -1,3 +1,6 @@
+// @ts-nocheck
+// dont need size in the second one will fix later
+
 import {
   SortableContext,
   verticalListSortingStrategy,

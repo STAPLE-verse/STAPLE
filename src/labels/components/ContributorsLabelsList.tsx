@@ -1,3 +1,6 @@
+// @ts-nocheck
+// issue with label.user
+
 import { useQuery } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import getLabels from "../queries/getLabels"

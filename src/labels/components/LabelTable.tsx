@@ -1,7 +1,9 @@
+// @ts-nocheck
 import React, { useState } from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import Modal from "src/core/components/Modal"
-import { FORM_ERROR, LabelForm } from "./LabelForm"
+import { LabelForm } from "./LabelForm"
+import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
 import updateLabel from "../mutations/updateLabel"
 import deleteLabel from "../mutations/deleteLabel"

@@ -4,7 +4,7 @@ import { useQuery } from "@blitzjs/rpc"
 
 import { z } from "zod"
 
-export { FORM_ERROR } from "src/core/components/fields/Form"
+import { FORM_ERROR } from "final-form"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import getLabels from "../queries/getLabels"
 

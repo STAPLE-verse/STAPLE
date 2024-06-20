@@ -5,7 +5,7 @@ import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
 import getUsers from "src/users/queries/getUsers"
 import { ContributorPrivileges } from "@prisma/client"
-export { FORM_ERROR } from "src/core/components/fields/Form"
+import { FORM_ERROR } from "final-form"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number

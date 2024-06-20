@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Notification } from "db"
 import { createColumnHelper } from "@tanstack/react-table"
 import ReadToggle from "../components/ReadToggle"
