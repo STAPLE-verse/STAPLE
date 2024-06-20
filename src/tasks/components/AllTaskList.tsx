@@ -33,7 +33,7 @@ export const AllTasksList = () => {
     },
     include: {
       project: true,
-      assignees: { include: { statusLogs: { orderBy: { changedAt: "desc" } } } },
+      assignees: { include: { statusLogs: { orderBy: { createdAt: "desc" } } } },
     },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,

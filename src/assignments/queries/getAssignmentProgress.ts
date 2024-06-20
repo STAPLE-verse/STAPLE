@@ -21,7 +21,7 @@ export default resolver.pipe(
       include: {
         statusLogs: {
           orderBy: {
-            changedAt: "desc",
+            createdAt: "desc",
           },
           take: 1, // Take the latest status log only
         },

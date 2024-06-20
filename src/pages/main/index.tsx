@@ -25,7 +25,7 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import updateWidget from "src/widgets/mutations/updateWidget"
 import setWidgets from "src/widgets/mutations/setWidgets"
 import toast from "react-hot-toast"
-import PrimaryButton from "../../core/components/PrimaryButton"
+import PrimaryLink from "../../core/components/PrimaryLink"
 import {
   GetProjectDisplay,
   GetUpcomingTaskDisplay,
@@ -63,7 +63,7 @@ const MainPage = () => {
               id: widget.id,
               title: "Last Updated Projects",
               display: <GetProjectDisplay projects={projects} />,
-              link: <PrimaryButton route={Routes.ProjectsPage()} text="All Projects" />,
+              link: <PrimaryLink route={Routes.ProjectsPage()} text="All Projects" />,
               position: widget.position,
               size: "col-span-6",
               tooltipId: "tool-last-project",
@@ -74,7 +74,7 @@ const MainPage = () => {
               id: widget.id,
               title: "Notifications",
               display: <GetNotificationDisplay notifications={notifications} />,
-              link: <PrimaryButton route={Routes.NotificationsPage()} text="All Tasks" />,
+              link: <PrimaryLink route={Routes.NotificationsPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
               tooltipId: "tool-notifications",
@@ -85,7 +85,7 @@ const MainPage = () => {
               id: widget.id,
               title: "Overdue Tasks",
               display: <GetOverdueTaskDisplay pastDueTasks={pastDueTasks} />,
-              link: <PrimaryButton route={Routes.AllTasksPage()} text="All Notifications" />,
+              link: <PrimaryLink route={Routes.AllTasksPage()} text="All Notifications" />,
               position: widget.position,
               size: "col-span-6",
               tooltipId: "tool-overdue",
@@ -96,7 +96,7 @@ const MainPage = () => {
               id: widget.id,
               title: "Upcoming Tasks",
               display: <GetUpcomingTaskDisplay upcomingTasks={upcomingTasks} />,
-              link: <PrimaryButton route={Routes.AllTasksPage()} text="All Tasks" />,
+              link: <PrimaryLink route={Routes.AllTasksPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
               tooltipId: "tool-upcoming",

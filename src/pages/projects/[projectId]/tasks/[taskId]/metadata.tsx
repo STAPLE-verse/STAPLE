@@ -58,7 +58,7 @@ const TaskContent = () => {
     return {
       userId: assignment.contributor.userId,
       teamId: "...",
-      changedAt: meta.changedAt,
+      createdAt: meta.createdAt,
       ...meta.metadata,
     }
   })
@@ -75,8 +75,8 @@ const TaskContent = () => {
       },
       {
         header: "Changed At",
-        accessorKey: "changedAt",
-        id: "changedAt",
+        accessorKey: "createdAt",
+        id: "createdAt",
       },
     ]
 
