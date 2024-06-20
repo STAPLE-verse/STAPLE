@@ -8,7 +8,7 @@ import { useNotificationTableColumns } from "src/messages/hooks/useNotificationT
 const NotificationContent = () => {
   // Get notifications
   const { notifications, page, hasMore, goToPreviousPage, goToNextPage } = useNotification()
-
+  console.log(notifications)
   // Get columns and pass refetch
   const columns = useNotificationTableColumns()
 
