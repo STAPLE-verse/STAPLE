@@ -11,7 +11,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getInitials } from "src/services/getInitials"
 import { HomeIcon } from "@heroicons/react/24/outline"
 import NotificationsMenu from "src/core/components/NotificationMenu"
-import { Image } from "next/image"
+import Image from "next/image"
 
 // MainNavbar
 // Always present on the top of the page
@@ -73,9 +73,9 @@ const Navbar = () => {
       "sunset",
     ].includes(theme)
   ) {
-    logo = <Image src="/stapler_white.png" width={25} alt="Staple Logo" />
+    logo = <Image src="/stapler_white.png" width={25} height={25} alt="Staple Logo" />
   } else {
-    logo = <Image src="/stapler_black.png" width={25} alt="Staple Logo" />
+    logo = <Image src="/stapler_black.png" width={25} height={25} alt="Staple Logo" />
   }
 
   // return pages
