@@ -16,6 +16,7 @@ const ReadToggle = ({ notification, refetch }) => {
         read: newReadStatus,
       })
       setIsRead(newReadStatus)
+
       await refetch()
     } catch (error) {
       console.error("Failed to update notification:", error)

@@ -7,7 +7,7 @@ import Modal from "src/core/components/Modal"
 import JsonForm from "./JsonForm"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 
-const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, schema, ui }) => {
+const CompleteSchemaPM = ({ currentAssignment, completedBy, completedAs, schema, ui }) => {
   // Setup
   const [updateAssignmentMutation] = useMutation(updateAssignment)
   // Get the latest assignment status from the AssignmentStatusLog
@@ -35,8 +35,7 @@ const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, 
 
     // Close modal
     setOpenAssignmentModal(false)
-
-    await refetch()
+    window.location.reload()
   }
 
   const handleJsonFormError = (errors) => {
@@ -58,9 +57,7 @@ const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, 
 
     // Close modal
     setOpenAssignmentModal(false)
-
-    // Refetch the data
-    await refetch()
+    window.location.reload()
   }
 
   return (
@@ -99,7 +96,7 @@ const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, 
                 Close
               </button>
               <button className="btn btn-secondary ml-2" onClick={handleResetMetadata}>
-                Reset Form Data
+                Reset Form Data and Refresh
               </button>
             </div>
           </Modal>
@@ -111,4 +108,4 @@ const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, 
   )
 }
 
-export default CompleteSchema
+export default CompleteSchemaPM

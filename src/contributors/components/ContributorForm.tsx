@@ -1,6 +1,5 @@
 import React, { Suspense } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
-
 import { z } from "zod"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
@@ -51,6 +50,25 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         options={ContributorPrivilegesOptions}
         optionText="label"
         optionValue="id"
+      />
+      {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
+    </Form>
+  )
+}
+
+export function ContributorFormEdit<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
+  const { projectId, ...formProps } = props
+
+  return (
+    <Form<S> {...formProps}>
+      <LabelSelectField
+        className="select text-primary select-bordered w-1/2 mt-4"
+        name="privilege"
+        label="Select Privilege:"
+        options={ContributorPrivilegesOptions}
+        optionText="label"
+        optionValue="value"
+        type="string"
       />
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>

@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { ProjectTasksList } from "src/tasks/components/ProjectTasksList"
+import { ProjectTasksTabs } from "src/tasks/components/ProjectTasksTabs"
 
 const TasksPage = () => {
   return (

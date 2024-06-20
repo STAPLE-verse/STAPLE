@@ -6,38 +6,53 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
+import getUsers from "src/users/queries/getUsers"
+import toast from "react-hot-toast"
 
 import Layout from "src/core/layouts/Layout"
 import { UpdateContributorSchema } from "src/contributors/schemas"
 import getContributor from "src/contributors/queries/getContributor"
 import updateContributor from "src/contributors/mutations/updateContributor"
-import { ContributorForm, FORM_ERROR } from "src/contributors/components/ContributorForm"
+import { ContributorFormEdit, FORM_ERROR } from "src/contributors/components/ContributorForm"
 
 export const EditContributor = () => {
   const router = useRouter()
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
-  const [contributor, { setQueryData }] = useQuery(
-    getContributor,
-    { id: contributorId },
-    {
-      // This ensures the query never refreshes and overwrites the form data while the user is editing.
-      staleTime: Infinity,
-    }
-  )
+  const [contributor, { setQueryData }] = useQuery(getContributor, {
+    where: { id: contributorId, project: { id: projectId! } },
+  })
   const [updateContributorMutation] = useMutation(updateContributor)
+
+  const [user] = useQuery(getUsers, {
+    where: { id: contributor.userId },
+    take: 1,
+  })
 
   return (
     <Layout>
       <Head>
-        <title>Edit Contributor {contributor.id}</title>
+        <title>Edit Contributor {user[0].username} </title>
       </Head>
 
       <div>
-        <h1>Edit Contributor {contributor.id}</h1>
-        <pre>{JSON.stringify(contributor, null, 2)}</pre>
+        <h1 className="text-3xl mb-2">
+          Edit Contributor{" "}
+          {user[0].firstName || user[0].lastName
+            ? `${user[0].firstName} ${user[0].lastName}`
+            : user[0].username}
+        </h1>
         <Suspense fallback={<div>Loading...</div>}>
-          <ContributorForm
+          <ContributorFormEdit
+            cancelText="Cancel"
+            onCancel={() =>
+              router.push(
+                Routes.ShowContributorPage({
+                  projectId: projectId!,
+                  contributorId: contributorId,
+                })
+              )
+            }
             submitText="Update Contributor"
             schema={UpdateContributorSchema}
             initialValues={contributor}
@@ -45,6 +60,7 @@ export const EditContributor = () => {
               try {
                 const updated = await updateContributorMutation({
                   id: contributor.id,
+                  projectId: projectId,
                   ...values,
                 })
                 await toast.promise(Promise.resolve(updated), {

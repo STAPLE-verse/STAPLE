@@ -15,12 +15,18 @@ export const TosForm = (props: TosFormProps) => {
       <h1 className="text-center">Terms of Use and Privacy Policy</h1>
       <div className="flex flex-col gap-4">
         <p>
-          You are viewing this page either for the first time while signing into STAPLE through your
-          institution or due to recent updates to the terms that require your review.
+          You are viewing this page either for the first time while signing into STAPLE or due to
+          recent updates to the terms that require your review.
         </p>
         <p>
           To complete the login process, it is imperative that you agree to our Terms of Use and
           Privacy Policy. Please take the time to read them thoroughly.
+        </p>
+        <p>
+          <a href="https://staple.science/terms_conditions.html">Terms and Conditions</a>
+        </p>
+        <p>
+          <a href="https://staple.science/privacy_policy.html">Privacy Policy</a>
         </p>
         <p>If you have any questions, feel free to reach out to STAPLE Support for assistance.</p>
       </div>

@@ -40,4 +40,24 @@ export const contributorTableColumns = [
       </div>
     ),
   }),
+
+  columnHelper.accessor("id", {
+    id: "edit",
+    header: "Edit",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <div className="">
+        <Link
+          className="btn btn-primary"
+          href={Routes.EditContributorPage({
+            projectId: info.row.original.projectId!,
+            contributorId: info.getValue(),
+          })}
+        >
+          Edit Contributor
+        </Link>
+      </div>
+    ),
+  }),
 ]

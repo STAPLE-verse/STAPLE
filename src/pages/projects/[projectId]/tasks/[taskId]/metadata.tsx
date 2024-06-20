@@ -1,9 +1,8 @@
 // imports
-import { TaskProvider, TaskContext } from "src/Tasks/components/TaskContext"
-import { Suspense, useContext } from "react"
+import { TaskProvider, TaskContext } from "src/tasks/components/TaskContext"
+import { Suspense, useContext, useState } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { ProjectSidebarItems } from "src/core/layouts/SidebarItems"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import getProject from "src/projects/queries/getProject"
@@ -12,6 +11,9 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DownloadJSON from "src/forms/components/DownloadJSON"
 import DownloadXLSX from "src/forms/components/DownloadXLSX"
+import Modal from "src/core/components/Modal"
+import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
+import JsonForm from "src/assignments/components/JsonForm"
 
 const TaskContent = () => {
   const taskContext = useContext(TaskContext)
@@ -20,6 +22,25 @@ const TaskContent = () => {
   const taskId = useParam("taskId", "number")
   if (!task) {
     return <div>Loading...</div>
+  }
+
+  // modal for review
+  const [openMetadataInspectModal, setOpenMetadataInspectModal] = useState(false)
+  const handleMetadataInspectToggle = () => {
+    setOpenMetadataInspectModal((prev) => !prev)
+  }
+  const uiSchema = task["ui"] || {}
+  let extendedUiSchema = {}
+  // TODO: This assumes uiSchema is always an object, although the type def allows for string, number(?) as well
+  // I am not sure where would we encounter those
+  if (uiSchema && typeof uiSchema === "object" && !Array.isArray(uiSchema)) {
+    // We do not want to show the submit button
+    extendedUiSchema = {
+      ...uiSchema,
+      "ui:submitButtonOptions": {
+        norender: true,
+      },
+    }
   }
 
   const statusLogs = task.assignees.flatMap((people) => people.statusLogs)
@@ -42,7 +63,7 @@ const TaskContent = () => {
     }
   })
 
-  console.log(dataForm)
+  //console.log(dataForm)
 
   const makeTableColumns = () => {
     const schemaProps = task.schema.properties
@@ -82,9 +103,24 @@ const TaskContent = () => {
           <div className="card bg-base-300 mb-2 w-full">
             <div className="card-body">
               <div className="flex justify-center">
-                <Link className="btn btn-primary mx-2" href={Routes.ForgotPasswordPage()}>
+                <button className="btn btn-primary" onClick={() => handleMetadataInspectToggle()}>
                   Form Requirements
-                </Link>
+                </button>
+                <Modal open={openMetadataInspectModal} size="w-11/12 max-w-5xl">
+                  <div className="font-sans">
+                    {
+                      <JsonForm
+                        schema={getJsonSchema(task["schema"])}
+                        uiSchema={extendedUiSchema}
+                      />
+                    }
+                  </div>
+                  <div className="modal-action">
+                    <button className="btn btn-primary" onClick={handleMetadataInspectToggle}>
+                      Close
+                    </button>
+                  </div>
+                </Modal>
 
                 <Link
                   className="btn btn-secondary mx-2"
@@ -96,7 +132,7 @@ const TaskContent = () => {
                   Review and Edit Form Tasks
                 </Link>
 
-                <DownloadJSON data={dataForm} fileName={task.name} className="btn btn-info mx-2" />
+                <DownloadJSON data={dataForm} fileName={task.name} className="btn btn-info" />
 
                 <DownloadXLSX
                   data={dataForm}
@@ -124,12 +160,11 @@ const TaskContent = () => {
 export const ShowFormPage = () => {
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
   const taskId = useParam("taskId", "number")
 
   // return the page
   return (
-    <Layout sidebarItems={sidebarItems} sidebarTitle={project.name}>
+    <Layout>
       <Suspense fallback={<div>Loading...</div>}>
         <TaskProvider taskId={taskId}>
           <TaskContent />

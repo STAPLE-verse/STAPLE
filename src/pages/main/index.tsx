@@ -7,16 +7,6 @@ import Head from "next/head"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getTasks from "src/tasks/queries/getTasks"
-import moment from "moment"
-import Table from "src/core/components/Table"
-import { TaskStatus } from "db"
-import getNotifications from "src/messages/queries/getNotifications"
-import {
-  tasksColumns,
-  projectColumns,
-  notificationColumns,
-} from "src/widgets/components/ColumnHelpers"
 import getUserWidgets from "src/widgets/queries/getUserWidgets"
 
 // make things draggable
@@ -45,6 +35,7 @@ import {
 import getDashboardTasks from "../../tasks/queries/getDashboardTasks"
 import getDashboardProjects from "src/projects/queries/getDashboardProjects"
 import getDashboardNotifications from "src/messages/queries/getDashboardNotifications"
+import { NotificationProvider } from "src/messages/components/NotificationContext"
 
 const MainPage = () => {
   const currentUser = useCurrentUser()
@@ -83,7 +74,7 @@ const MainPage = () => {
               id: widget.id,
               title: "Notifications",
               display: <GetNotificationDisplay notifications={notifications} />,
-              link: <PrimaryButton route={Routes.AllTasksPage()} text="All Tasks" />,
+              link: <PrimaryButton route={Routes.NotificationsPage()} text="All Tasks" />,
               position: widget.position,
               size: "col-span-6",
               tooltipId: "tool-notifications",
@@ -94,7 +85,7 @@ const MainPage = () => {
               id: widget.id,
               title: "Overdue Tasks",
               display: <GetOverdueTaskDisplay pastDueTasks={pastDueTasks} />,
-              link: <PrimaryButton route={Routes.NotificationsPage()} text="All Notifications" />,
+              link: <PrimaryButton route={Routes.AllTasksPage()} text="All Notifications" />,
               position: widget.position,
               size: "col-span-6",
               tooltipId: "tool-overdue",

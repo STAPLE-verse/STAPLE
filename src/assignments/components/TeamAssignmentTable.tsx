@@ -1,11 +1,18 @@
 import React, { useState } from "react"
-import { Assignment, Prisma } from "db"
+import { Prisma } from "db"
 
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import Table from "src/core/components/Table"
 import Modal from "src/core/components/Modal"
-import TeamMembersTable, { TeamOption } from "src/teams/components/TeamMembersTable"
+import { TeamOption } from "src/teams/components/TeamMembersTable"
 import AssignTeamMembers from "src/teams/components/TeamMembersTable"
+import { AssignmentToggleModal } from "src/assignments/components/AssignmentTable"
+
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { CompletedAs } from "db"
+import getContributor from "src/contributors/queries/getContributor"
+import { useQuery } from "@blitzjs/rpc"
+import { useParam } from "@blitzjs/next"
+import CompleteSchemaPM from "src/assignments/components/CompleteSchemaPM"
 
 export type TeamAssignmentWithRelations = Prisma.AssignmentGetPayload<{
   include: {
@@ -37,8 +44,8 @@ const AssignmentMetadataModal = ({ metadata }) => {
   return (
     <>
       <div className="mt-4">
-        <button type="button" className="btn" onClick={handleToggle}>
-          Show metadata
+        <button type="button" className="btn btn-primary" onClick={handleToggle}>
+          Edit Form Data
         </button>
 
         <Modal open={openModal} size="w-11/12 max-w-3xl">
@@ -112,54 +119,93 @@ function getName(info) {
   return "null"
 }
 
-// const expandRow = (row) => {
-//   console.log(row)
-// }
-
 // ColumnDefs
 export const teamAssignmentTableColumns: ColumnDef<TeamAssignmentWithRelations>[] = [
   columnHelper.accessor("team.name", {
-    cell: (info) => (
-      // <span>{`${info.row.original.contributor.user.firstName} ${info.row.original.contributor.user.lastName}`}</span>
-      <div>
-        {<TeamModal rowInfo={info.row.original}></TeamModal>}
-        {/* <button>
-          <span onClick={() => expandRow(info.row.original)}>{`${getName(
-            info.row.original
-          )}`}</span>
-        </button>
-        <Modal open={openTeamModal} size="w-11/12 max-w-5xl">
-          <div className="font-sans">Tst</div>
-          <div className="modal-action">
-            <button className="btn btn-primary" onClick={setOpenModal((prev) => !prev)}>
-              Save
-            </button>
-          </div>
-        </Modal> */}
-      </div>
-    ),
+    cell: (info) => <div>{<TeamModal rowInfo={info.row.original}></TeamModal>}</div>,
     header: "Team Name",
   }),
-  columnHelper.accessor((row) => row.statusLogs[0]?.createdAt.toISOString(), {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Last update",
-    id: "updatedAt",
-  }),
+  columnHelper.accessor(
+    (row) =>
+      row.statusLogs[0]?.createdAt.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      }),
+    {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "Last Update",
+      id: "updatedAt",
+    }
+  ),
   columnHelper.accessor((row) => row.statusLogs[0]?.status, {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>,
     header: "Status",
     id: "status",
   }),
-  columnHelper.accessor("task.schema", {
-    cell: (info) => (
-      <>
-        {info.row.original.task.schema ? (
-          <AssignmentMetadataModal metadata={info.row.original.statusLogs[0]?.metadata} />
-        ) : (
-          <span>No schema provided</span>
-        )}
-      </>
-    ),
-    header: "Task Schema",
+  columnHelper.accessor((row) => row, {
+    cell: (info) => {
+      return (
+        <div>
+          <AssignmentToggleModal assignment={info.getValue()} />
+        </div>
+      )
+    },
+    header: "Change status",
+    id: "updateStatus",
+  }),
+]
+
+export const teamAssignmentTableColumnsSchema: ColumnDef<TeamAssignmentWithRelations>[] = [
+  columnHelper.accessor("team.name", {
+    cell: (info) => <div>{<TeamModal rowInfo={info.row.original}></TeamModal>}</div>,
+    header: "Team Name",
+  }),
+  columnHelper.accessor(
+    (row) =>
+      row.statusLogs[0]?.createdAt.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      }),
+    {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "Last Update",
+      id: "updatedAt",
+    }
+  ),
+  columnHelper.accessor((row) => row.statusLogs[0]?.status, {
+    cell: (info) => <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>,
+    header: "Status",
+    id: "status",
+  }),
+  columnHelper.accessor((row) => row, {
+    cell: (info) => {
+      const currentUser = useCurrentUser()
+      const projectId = useParam("projectId", "number")
+      const [currentContributor] = useQuery(getContributor, {
+        where: { projectId: projectId, userId: currentUser!.id },
+      })
+      //console.log(info.getValue())
+
+      return (
+        <CompleteSchemaPM
+          currentAssignment={info.getValue()}
+          completedBy={currentContributor.id}
+          completedAs={CompletedAs.TEAM}
+          schema={info.getValue().task.schema}
+          ui={info.getValue().task.ui}
+        />
+      )
+    },
+    header: "Form Data",
   }),
 ]
