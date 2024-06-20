@@ -33,7 +33,27 @@ export const teamTableColumns = [
             teamId: info.getValue(),
           })}
         >
-          See Team
+          See Contributions
+        </Link>
+      </div>
+    ),
+  }),
+
+  columnHelper.accessor("id", {
+    id: "edit",
+    header: "Edit",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <div className="">
+        <Link
+          className="btn btn-primary"
+          href={Routes.EditTeamPage({
+            projectId: info.row.original.projectId!,
+            teamId: info.getValue(),
+          })}
+        >
+          Edit Team
         </Link>
       </div>
     ),

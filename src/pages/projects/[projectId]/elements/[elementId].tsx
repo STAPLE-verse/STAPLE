@@ -4,11 +4,11 @@ import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import getElement from "src/elements/queries/getElement"
 import deleteElement from "src/elements/mutations/deleteElement"
+import { useQuery } from "@blitzjs/rpc"
+import { useParam } from "@blitzjs/next"
 
 const ShowElementPage = () => {
   const elementId = useParam("elementId", "number")
-  const projectId = useParam("projectId", "number")
-  const [deleteElementMutation] = useMutation(deleteElement)
   const [element] = useQuery(getElement, { id: elementId })
 
   return (

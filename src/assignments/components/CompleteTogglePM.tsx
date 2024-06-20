@@ -3,13 +3,7 @@ import { AssignmentStatus, CompletedAs } from "db"
 import { useState } from "react"
 import updateAssignment from "src/assignments/mutations/updateAssignment"
 
-const CompleteToggle = ({
-  currentAssignment,
-  refetch,
-  completedLabel,
-  completedBy,
-  completedAs,
-}) => {
+const CompleteTogglePM = ({ currentAssignment, completedLabel, completedBy, completedAs }) => {
   const [updateAssignmentMutation] = useMutation(updateAssignment)
 
   // Handle assignment status
@@ -25,7 +19,6 @@ const CompleteToggle = ({
     })
 
     setIsChecked(newChecked)
-    await refetch()
   }
 
   const latestStatusLog = currentAssignment.statusLogs.reduce((latest, current) => {
@@ -64,4 +57,4 @@ const CompleteToggle = ({
   )
 }
 
-export default CompleteToggle
+export default CompleteTogglePM

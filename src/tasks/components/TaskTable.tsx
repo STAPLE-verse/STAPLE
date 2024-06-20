@@ -63,6 +63,116 @@ export const taskTableColumns = [
   }),
 ]
 
+export const taskFinishedTableColumns = [
+  columnHelper.accessor("name", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Name",
+  }),
+  columnHelper.accessor("labels", {
+    cell: (info) => {
+      let temp
+      temp = info.getValue().map((i) => i.name)
+      return <span>{temp.join(", ")}</span>
+    },
+    header: "Labels",
+  }),
+  columnHelper.accessor("assignees", {
+    cell: (info) => {
+      const varName = "statusLogs"
+      const temp = info.getValue()[0].statusLogs[0].createdAt?.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      })
+      return <span>{temp}</span>
+    },
+    header: "Completed",
+  }),
+  columnHelper.accessor("id", {
+    id: "view",
+    header: "View",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <Link
+        className="btn btn-primary"
+        href={Routes.ShowTaskPage({
+          projectId: info.row.original.projectId,
+          taskId: info.getValue(),
+        })}
+      >
+        View
+      </Link>
+    ),
+  }),
+]
+
+export const taskFinishedTableColumnsTeam = [
+  columnHelper.accessor("assignees", {
+    cell: (info) => {
+      const contributorId = info.getValue()[0].statusLogs[0].completedBy
+      return <span>{contributorId}</span>
+    },
+    header: "Completed by",
+    id: "completedBy",
+  }),
+  columnHelper.accessor("name", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Task Name",
+    id: "taskName",
+  }),
+  columnHelper.accessor("labels", {
+    cell: (info) => {
+      if (info.getValue().length > 0) {
+        let temp
+        temp = info.getValue().map((i) => i.name)
+        return <span>{temp.join(", ")}</span>
+      } else {
+        return "No labels assigned to the task"
+      }
+    },
+    header: "Labels",
+    id: "label",
+  }),
+  columnHelper.accessor("assignees", {
+    cell: (info) => {
+      const temp = info.getValue()[0].statusLogs[0].createdAt?.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      })
+      return <span>{temp}</span>
+    },
+    header: "Completed at",
+    id: "completedAt",
+  }),
+  columnHelper.accessor("id", {
+    id: "view",
+    header: "View",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <Link
+        className="btn btn-primary"
+        href={Routes.ShowTaskPage({
+          projectId: info.row.original.projectId,
+          taskId: info.getValue(),
+        })}
+      >
+        View
+      </Link>
+    ),
+  }),
+]
+
 export const taskProjectTableColumnsContrib = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,

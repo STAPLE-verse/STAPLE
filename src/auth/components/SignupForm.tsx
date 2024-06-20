@@ -78,7 +78,7 @@ export const SignupForm = (props: SignupFormProps) => {
       </Form>
 
       <div className="flex flex-row justify-end mb-4 mt-4">
-        <Link className="btn btn-primary" href={Routes.LoginPage()}>
+        <Link className="btn btn-info" href={Routes.LoginPage()}>
           I have an Account
         </Link>
       </div>

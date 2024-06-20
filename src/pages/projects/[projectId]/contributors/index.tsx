@@ -35,24 +35,17 @@ export const AllContributorsList = () => {
   const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
   const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
 
-  let contributorInformation: ContributorInformation[] = contributors.map(
-    (contributor) => {
-      const firstName = contributor["user"].firstName
-      const lastName = contributor["user"].lastName
-      const username = contributor["user"].username
-      let t: ContributorInformation = {
-        name: firstName || lastName ? `${firstName} ${lastName}` : username,
-        id: contributor.id,
-        projectId: projectId,
-      }
-      return t
+  let contributorInformation: ContributorInformation[] = contributors.map((contributor) => {
+    const firstName = contributor["user"].firstName
+    const lastName = contributor["user"].lastName
+    const username = contributor["user"].username
+    let t: ContributorInformation = {
+      name: firstName || lastName ? `${firstName} ${lastName}` : username,
+      id: contributor.id,
+      projectId: projectId,
     }
-
-    // name: contributor["user"].firstName
-    // const lastName = contributor["user"].lastName
-    // const username = contributor["user"].username
-    // const initial = getInitials(firstName, lastName)
-  )
+    return t
+  })
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">

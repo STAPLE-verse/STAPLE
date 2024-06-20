@@ -7,12 +7,9 @@ import { TaskSummary } from "src/tasks/components/TaskSummary"
 import { Suspense, useContext } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import getTask from "src/tasks/queries/getTask"
-import deleteTask from "src/tasks/mutations/deleteTask"
-import JsonForm from "src/assignments/components/JsonForm"
-
-import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
-import Modal from "src/core/components/Modal"
+import { useParam } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
+import getProject from "src/projects/queries/getProject"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getContributor from "src/contributors/queries/getContributor"
 import { ContributorPrivileges } from "@prisma/client"
@@ -20,18 +17,13 @@ import { TaskInformation } from "src/tasks/components/TaskInformation"
 import { AssignmentCompletion } from "src/assignments/components/AssignmentCompletion"
 import { TaskProvider, TaskContext } from "src/tasks/components/TaskContext"
 
-export const ShowTaskPage = () => {
-  // Setup
-  const router = useRouter()
-  const [deleteTaskMutation] = useMutation(deleteTask)
-  const [updateAssignmentMutation] = useMutation(updateAssignment)
-  const [updateTaskStatusMutation] = useMutation(updateTaskStatus)
-  // Get values
-  const currentUser = useCurrentUser()
-  const taskId = useParam("taskId", "number")
-  const [task] = useQuery(getTask, { id: taskId, include: { element: true, column: true } })
+const TaskContent = () => {
   const projectId = useParam("projectId", "number")
 
+  const taskContext = useContext(TaskContext)
+  const { task } = taskContext
+  // TODO: replace by hook
+  const currentUser = useCurrentUser()
   const [currentContributor] = useQuery(getContributor, {
     where: { projectId: projectId, userId: currentUser!.id },
   })
@@ -39,9 +31,7 @@ export const ShowTaskPage = () => {
   if (!task) {
     return <div>Loading...</div>
   }
-  // return (
-  //   {!!task && <></>}
-  // )
+
   return (
     <>
       <Head>
@@ -60,12 +50,7 @@ export const ShowTaskPage = () => {
 
 // show the task page
 export const ShowTaskPage = () => {
-  const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
-  const sidebarItems = ProjectSidebarItems(projectId!, null)
-
   const taskId = useParam("taskId", "number")
-
   // return the page
   return (
     <Layout>

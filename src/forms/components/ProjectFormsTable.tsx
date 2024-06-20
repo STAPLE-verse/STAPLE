@@ -39,13 +39,6 @@ export const projectFormTableColumns = [
     ),
     header: "View",
   }),
-  columnHelper.accessor("id", {
-    id: "edit",
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => "Download",
-    header: "Download",
-  }),
 ]
 
 export const ProjectFormTable = () => {
@@ -70,7 +63,7 @@ export const ProjectFormTable = () => {
     take: ITEMS_PER_PAGE,
   })
 
-  console.log(tasks)
+  //console.log(tasks)
 
   return (
     <div>

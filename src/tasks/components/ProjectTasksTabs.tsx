@@ -3,11 +3,10 @@ import { Routes } from "@blitzjs/next"
 import { useParam } from "@blitzjs/next"
 import TaskBoard from "src/tasks/components/TaskBoard"
 import Link from "next/link"
-import { useQuery } from "@blitzjs/rpc"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getContributor from "src/contributors/queries/getContributor"
 import { ContributorPrivileges } from "@prisma/client"
 import { ProjectTasksList } from "src/tasks/components/ProjectTasksList"
+import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import { useState } from "react"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -15,21 +14,20 @@ function classNames(...classes) {
 
 export const ProjectTasksTabs = () => {
   const projectId = useParam("projectId", "number")
-  const currentUser = useCurrentUser()
-  const [currentContributor] = useQuery(getContributor, {
-    where: { projectId: projectId, userId: currentUser!.id },
-  })
+  const { contributor: currentContributor } = useCurrentContributor(projectId)
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
   return (
     <div>
-      <Tab.Group defaultIndex={0}>
+      <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
         <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
           {/* Tablink for board view */}
-          {currentContributor.privilege === ContributorPrivileges.PROJECT_MANAGER && (
+          {currentContributor?.privilege === ContributorPrivileges.PROJECT_MANAGER && (
             <Tab
               className={({ selected }) =>
                 classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
               }
+              onClick={() => console.log("Board tab clicked")}
             >
               Board
             </Tab>
@@ -39,6 +37,7 @@ export const ProjectTasksTabs = () => {
             className={({ selected }) =>
               classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
             }
+            onClick={() => console.log("Table tab clicked")}
           >
             Table
           </Tab>
@@ -47,7 +46,7 @@ export const ProjectTasksTabs = () => {
 
         <Tab.Panels>
           {/* Tabpanel for kanban board */}
-          {currentContributor.privilege === ContributorPrivileges.PROJECT_MANAGER && (
+          {currentContributor?.privilege === ContributorPrivileges.PROJECT_MANAGER && (
             <Tab.Panel>
               <TaskBoard projectId={projectId!} />
             </Tab.Panel>
@@ -60,7 +59,7 @@ export const ProjectTasksTabs = () => {
       </Tab.Group>
 
       {/* Create new task btn */}
-      {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && (
+      {currentContributor?.privilege == ContributorPrivileges.PROJECT_MANAGER && (
         <p>
           <Link
             className="btn mt-4 btn-primary"

@@ -32,10 +32,10 @@ model User {
   contributions    Contributor[]
   forms            Forms[]
   notifications    Notification[] @relation("UserNotifications")
-  ContributorLabel Label[]
+  contributorLabel Label[]
 
   widgets       Widget[]
-  ProjectWidget ProjectWidget[]
+  projectWidget ProjectWidget[]
 }
 
 model Session {
@@ -101,7 +101,7 @@ model Contributor {
   tasks               Task[]
   invitationStatus    InvitationStatus      @default(INVITED)
   deleted             Boolean               @default(false)
-  AssignmentStatusLog AssignmentStatusLog[]
+  assignmentStatusLog AssignmentStatusLog[]
   // allow them to have multiple contributor labels, I think like the task array?
   // add contributor label link here
   labels              Label[]
@@ -138,7 +138,7 @@ model Project {
   contributors  Contributor[]
   teams         Team[]
   labels        Label[]
-  projectwidget ProjectWidget[]
+  projectWidget ProjectWidget[]
   notifications Notification[]
 }
 
@@ -186,7 +186,6 @@ model AssignmentStatusLog {
   id           Int              @id @default(autoincrement())
   createdAt    DateTime         @default(now())
   assignmentId Int
-  changedAt    DateTime         @default(now()) // When the status was changed
   assignment   Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   status       AssignmentStatus @default(NOT_COMPLETED)
   metadata     Json?
@@ -194,7 +193,7 @@ model AssignmentStatusLog {
   completedAs  CompletedAs      @default(INDIVIDUAL)
   contributor  Contributor?     @relation(fields: [completedBy], references: [id], onDelete: SetNull)
 
-  @@unique([assignmentId, changedAt])
+  @@unique([assignmentId, createdAt])
 }
 
 model Assignment {
@@ -240,7 +239,7 @@ model Element {
   project     Project   @relation(fields: [projectId], references: [id])
   name        String
   description String?
-  Task        Task[]
+  task        Task[]
   parents     Element[] @relation("ElementToElement")
   children    Element[] @relation("ElementToElement")
 }
@@ -254,11 +253,6 @@ model Forms {
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   // shareable option so you can see if it you are PM-ing with someone else
-}
-
-enum templateType {
-  email
-  notification
 }
 
 model Notification {

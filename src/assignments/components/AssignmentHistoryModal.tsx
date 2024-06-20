@@ -16,7 +16,7 @@ const assignmentHistoryTableColumns: ColumnDef<AssignmentStatusLog>[] = [
   }),
   columnHelper.accessor(
     (row) =>
-      row.changedAt.toLocaleDateString(undefined, {
+      row.createdAt.toLocaleDateString(undefined, {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -28,7 +28,7 @@ const assignmentHistoryTableColumns: ColumnDef<AssignmentStatusLog>[] = [
     {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Last Update",
-      id: "changedAt",
+      id: "createdAt",
     }
   ),
   columnHelper.accessor((row) => row.status, {
@@ -56,7 +56,7 @@ const assignmentHistoryTableColumnsNoMeta: ColumnDef<AssignmentStatusLog>[] = [
   }),
   columnHelper.accessor(
     (row) =>
-      row.changedAt.toLocaleDateString(undefined, {
+      row.createdAt.toLocaleDateString(undefined, {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -68,7 +68,7 @@ const assignmentHistoryTableColumnsNoMeta: ColumnDef<AssignmentStatusLog>[] = [
     {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Last Update",
-      id: "changedAt",
+      id: "createdAt",
     }
   ),
   columnHelper.accessor((row) => row.status, {

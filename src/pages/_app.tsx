@@ -5,6 +5,7 @@ import { withBlitz } from "src/blitz-client"
 import "src/styles/globals.css"
 import "src/core/styles/index.css"
 import { SidebarProvider } from "src/core/components/sidebar/sidebarContext"
+import { NotificationProvider } from "src/messages/components/NotificationContext"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {

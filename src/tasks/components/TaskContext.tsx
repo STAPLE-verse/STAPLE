@@ -1,13 +1,10 @@
-import React, { createContext, useState, useEffect, ReactNode } from "react"
-import { useQuery, useMutation } from "@blitzjs/rpc"
+import React, { createContext, ReactNode } from "react"
+import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
-import getAssignmentProgress from "src/assignments/queries/getAssignmentProgress"
 import useAssignmentData from "src/assignments/hooks/useAssignmentData"
-import { Task, Column, Element, Assignment, AssignmentStatusLog } from "db"
+import { Task, Column, Element } from "db"
 import { AssignmentProgressType } from "src/assignments/queries/getAssignmentProgress"
 import useAssignmentProgress from "src/assignments/hooks/useAssignmentProgress"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getContributor from "src/contributors/queries/getContributor"
 import { ExtendedAssignment } from "src/assignments/hooks/useAssignmentData"
 
 // Creating custom types

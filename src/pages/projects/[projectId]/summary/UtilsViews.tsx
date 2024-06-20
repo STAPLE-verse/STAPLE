@@ -49,7 +49,7 @@ export const TaskView = ({
       <br />
       Created At: {formatDate(task.createdAt)}
       <br />
-      Updated At: {formatDate(lastChangedLog.changedAt)}
+      Updated At: {formatDate(lastChangedLog.createdAt)}
       <br />
       Created By: {user.firstName} {user.lastName}
       {printAssignees && (
@@ -269,8 +269,8 @@ export const DateLogView = ({ tasks, contributors, log, teams, printHeader }) =>
   const getTasksForDate = (tasks, log) => {
     const t = tasks.filter(
       (task) => log.belongsTo == "task" && task.id == log.elementId
-      // compareDateSeconds(task.updatedAt, log.changedAt) ||
-      // compareDateSeconds(task.createdAt, log.changedAt)
+      // compareDateSeconds(task.updatedAt, log.createdAt) ||
+      // compareDateSeconds(task.createdAt, log.createdAt)
     )
     return t
   }
@@ -290,7 +290,7 @@ export const DateLogView = ({ tasks, contributors, log, teams, printHeader }) =>
     // }
     else {
       t = contributors.filter((contributor) =>
-        compareDateSeconds(contributor.createdAt, log.changedAt)
+        compareDateSeconds(contributor.createdAt, log.createdAt)
       )
     }
 
@@ -303,7 +303,7 @@ export const DateLogView = ({ tasks, contributors, log, teams, printHeader }) =>
 
   return (
     <div>
-      {printHeader && <h3> Date: {formatDate(log.changedAt)}</h3>}
+      {printHeader && <h3> Date: {formatDate(log.createdAt)}</h3>}
       {/* {filteredContributors.length < 1 && <h4>Not activity for contributors</h4>} */}
       {filteredContributors.length > 0 && (
         <div className="my-1">
