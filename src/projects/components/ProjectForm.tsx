@@ -4,7 +4,7 @@ import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
 
 import { z } from "zod"
-export { FORM_ERROR } from "src/core/components/fields/Form"
+import { FORM_ERROR } from "final-form"
 
 export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (

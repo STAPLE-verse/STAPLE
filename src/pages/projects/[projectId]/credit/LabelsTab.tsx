@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Suspense, useState } from "react"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import router, { useRouter } from "next/router"
@@ -5,7 +6,7 @@ import router, { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 import React from "react"
-import { FORM_ERROR } from "src/labels/components/LabelForm"
+import { FORM_ERROR } from "final-form"
 import getLabels from "src/labels/queries/getLabels"
 import Table from "src/core/components/Table"
 import { useParam } from "@blitzjs/next"

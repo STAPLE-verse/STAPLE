@@ -13,7 +13,8 @@ import Layout from "src/core/layouts/Layout"
 import { UpdateContributorSchema } from "src/contributors/schemas"
 import getContributor from "src/contributors/queries/getContributor"
 import updateContributor from "src/contributors/mutations/updateContributor"
-import { ContributorFormEdit, FORM_ERROR } from "src/contributors/components/ContributorForm"
+import { ContributorFormEdit } from "src/contributors/components/ContributorForm"
+import { FORM_ERROR } from "final-form"
 
 export const EditContributor = () => {
   const router = useRouter()

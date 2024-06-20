@@ -10,7 +10,8 @@ import deleteProject from "src/projects/mutations/deleteProject"
 import { FormProjectSchema } from "src/projects/schemas"
 import getProject from "src/projects/queries/getProject"
 import updateProject from "src/projects/mutations/updateProject"
-import { ProjectForm, FORM_ERROR } from "src/projects/components/ProjectForm"
+import { ProjectForm } from "src/projects/components/ProjectForm"
+import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
 
 export const EditProject = () => {

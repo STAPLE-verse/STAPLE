@@ -4,7 +4,7 @@ import router, { useRouter } from "next/router"
 
 import React from "react"
 import Modal from "src/core/components/Modal"
-import { FORM_ERROR } from "src/core/components/fields/Form"
+import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
 import Table from "src/core/components/Table"
 import { TaskLabelInformation, labelTaskTableColumns } from "src/labels/components/LabelTaskTable"

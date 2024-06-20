@@ -6,7 +6,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 import React from "react"
 import Modal from "src/core/components/Modal"
-import { FORM_ERROR } from "src/labels/components/LabelForm"
+import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
 import createLabel from "src/labels/mutations/createLabel"
 import Table from "src/core/components/Table"
@@ -22,6 +22,7 @@ import { LabelIdsFormSchema } from "src/labels/schemas"
 import updateContributorLabel from "src/contributors/mutations/updateContributorLabel"
 
 export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange }) => {
+  const projectId = useParam("projectId", "number")
   const router = useRouter()
   const [updateContributorLabelMutation] = useMutation(updateContributorLabel)
 

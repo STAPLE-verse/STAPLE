@@ -7,7 +7,7 @@ import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import getContributors from "src/contributors/queries/getContributors"
 import AssignTeamMembers, { TeamOption } from "./TeamMembersTable"
 import { Field } from "react-final-form"
-export { FORM_ERROR } from "src/core/components/fields/Form"
+import { FORM_ERROR } from "final-form"
 
 interface TeamFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number

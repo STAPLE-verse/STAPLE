@@ -1,6 +1,7 @@
 import Layout from "src/core/layouts/Layout"
 import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
-import { Form, FORM_ERROR } from "src/core/components/fields/Form"
+import { Form } from "src/core/components/fields/Form"
+import { FORM_ERROR } from "final-form"
 import { ResetPassword } from "src/auth/schemas"
 import resetPassword from "src/auth/mutations/resetPassword"
 import { BlitzPage, Routes } from "@blitzjs/next"
