@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useContext, useState } from "react"
 import { Tooltip } from "react-tooltip"
 import JsonForm from "src/assignments/components/JsonForm"

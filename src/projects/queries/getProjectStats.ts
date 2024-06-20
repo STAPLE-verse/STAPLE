@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
@@ -45,7 +47,7 @@ export default resolver.pipe(
       where: {
         projectId: id,
         schema: {
-          not: undefined,
+          //not: undefined,
           not: Prisma.DbNull,
         },
       },

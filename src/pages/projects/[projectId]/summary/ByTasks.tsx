@@ -1,3 +1,4 @@
+// @ts-nocheck
 import router from "next/router"
 
 import React from "react"

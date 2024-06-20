@@ -10,7 +10,9 @@ import Layout from "src/core/layouts/Layout"
 import { UpdateElementSchema } from "src/elements/schemas"
 import getElement from "src/elements/queries/getElement"
 import updateElement from "src/elements/mutations/updateElement"
-import { ElementForm, FORM_ERROR } from "src/elements/components/ElementForm"
+import { ElementForm } from "src/elements/components/ElementForm"
+import { FORM_ERROR } from "final-form"
+
 import toast from "react-hot-toast"
 
 export const EditElement = () => {

@@ -54,7 +54,7 @@ export const ProjectFormTable = () => {
     where: {
       project: { id: projectId! },
       schema: {
-        not: undefined,
+        //not: undefined,
         not: Prisma.DbNull,
       }, // schema must be defined and not empty DB
     },

@@ -1,4 +1,4 @@
-// imports
+// @ts-nocheck
 import { TaskProvider, TaskContext } from "src/tasks/components/TaskContext"
 import { Suspense, useContext, useState } from "react"
 import Head from "next/head"

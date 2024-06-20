@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Suspense } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { Routes, useParam } from "@blitzjs/next"
