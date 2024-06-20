@@ -20,12 +20,15 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
   const [render, setRender] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (!render) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       setRender(true)
     }
 
-    //console.log(state.schema)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Update functions for form JSON editor

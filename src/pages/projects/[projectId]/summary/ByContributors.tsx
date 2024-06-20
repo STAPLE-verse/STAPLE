@@ -2,7 +2,7 @@ import router from "next/router"
 
 import React from "react"
 import flattenTasksInformation from "./flattenTasksInformation"
-import { ContributorsView, TeamView } from "./UtilsViews"
+import { ContributorsView, TeamView } from "src/projects/components/UtilsViews"
 import { AssignmentStatus, CompletedAs } from "@prisma/client"
 
 const ByContributors = ({ contributors, teams, tasks }) => {

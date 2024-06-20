@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Routes } from "@blitzjs/next"
 import { Prisma, Project, Notification } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"

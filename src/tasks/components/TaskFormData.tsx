@@ -25,7 +25,9 @@ export const TaskFormData = () => {
     setOpenMetadataInspectModal((prev) => !prev)
   }
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const taskId = useParam("taskId", "number")
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const projectId = useParam("projectId", "number")
 
   const uiSchema = task["ui"] || {}

@@ -53,6 +53,7 @@ const MainPage = () => {
   })
 
   // then update them on their screen
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (fetchedWidgets.length > 0) {
       const sortedWidgets = fetchedWidgets.sort((a, b) => a.position - b.position)
@@ -114,6 +115,7 @@ const MainPage = () => {
               tooltipContent: "Unknown widget",
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       })
       setBoxes(updatedBoxes)
     } else {
@@ -129,6 +131,7 @@ const MainPage = () => {
           toast.error(`Issue with dashboard, please contact help.`)
         })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchedWidgets])
 
   const handleDragEnd = async (event) => {

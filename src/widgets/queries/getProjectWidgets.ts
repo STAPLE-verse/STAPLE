@@ -20,7 +20,7 @@ export default resolver.pipe(
     }
 
     try {
-      const widgets = await db.ProjectWidget.findMany({
+      const widgets = await db.projectWidget.findMany({
         where: {
           userId: userId,
           show: true,

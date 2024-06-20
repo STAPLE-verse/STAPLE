@@ -33,7 +33,7 @@ export default resolver.pipe(
       position: index + 1,
     }))
 
-    await db.ProjectWidget.createMany({
+    await db.projectWidget.createMany({
       data: widgets,
     })
 

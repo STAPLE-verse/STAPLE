@@ -1,5 +1,8 @@
 import { formatDate } from "src/services/formatDate"
-import { ContributorInformation, TeamInformation } from "./flattenTasksInformation"
+import {
+  ContributorInformation,
+  TeamInformation,
+} from "src/pages/projects/[projectId]/summary/flattenTasksInformation"
 import { teamAssignmentTableColumns } from "src/assignments/components/TeamAssignmentTable"
 import { AssignmentStatus, CompletedAs } from "db"
 import { useState } from "react"

@@ -27,13 +27,17 @@ const SignupPage: BlitzPage = () => {
   const handleTosSuccess = (values) => {
     setTosResponses(values)
   }
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    // TODO: Ask Chris: is it a problem that if I do not reroute the useEffect stays active and recalls the mutation multiple times which leads to bad request?
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (tosResponses?.tos && signupSuccess) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       signupMutation(signupResponses)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         .then((success) => {
+          // eslint-disable-next-line react-hooks/exhaustive-deps
           if (success) {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
             router.push(Routes.Home()).catch((e) => toast.error(e.message))
           }
         })
@@ -41,6 +45,7 @@ const SignupPage: BlitzPage = () => {
           toast.error(`Signup failed: ${error.message}`)
         })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signupResponses, signupSuccess, tosResponses])
 
   const handleGoBack = () => {

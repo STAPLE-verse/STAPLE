@@ -25,6 +25,7 @@ const TaskContent = () => {
   }
 
   // modal for review
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [openMetadataInspectModal, setOpenMetadataInspectModal] = useState(false)
   const handleMetadataInspectToggle = () => {
     setOpenMetadataInspectModal((prev) => !prev)

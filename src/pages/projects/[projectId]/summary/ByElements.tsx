@@ -4,7 +4,7 @@ import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import router, { useRouter } from "next/router"
 
 import React, { useRef } from "react"
-import { ContributorsView, ElementView, TeamView } from "./UtilsViews"
+import { ContributorsView, ElementView, TeamView } from "src/projects/components/UtilsViews"
 
 const ByElements = ({ elements, teams, contributors, tasks }) => {
   const getElementTask = (elementId, tasks) => {

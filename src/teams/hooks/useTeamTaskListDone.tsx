@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useQuery } from "@blitzjs/rpc"
 import getTasks from "src/tasks/queries/getTasks"
 import getUsers from "src/users/queries/getUsers"

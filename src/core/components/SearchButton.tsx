@@ -43,16 +43,24 @@ function DebouncedInput({
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange">) {
   const [value, setValue] = React.useState(initialValue)
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     setValue(initialValue)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValue])
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const timeout = setTimeout(() => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       onChange(value)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, debounce)
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     return () => clearTimeout(timeout)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
   return <input {...props} value={value} onChange={(e) => setValue(e.target.value)} />

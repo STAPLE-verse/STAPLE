@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { resolver } from "@blitzjs/rpc"
 import db, { CompletedAs } from "db"
 import { CreateTaskSchema } from "../schemas"

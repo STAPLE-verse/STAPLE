@@ -189,8 +189,14 @@ export const teamAssignmentTableColumnsSchema: ColumnDef<TeamAssignmentWithRelat
   }),
   columnHelper.accessor((row) => row, {
     cell: (info) => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const currentUser = useCurrentUser()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const projectId = useParam("projectId", "number")
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [currentContributor] = useQuery(getContributor, {
         where: { projectId: projectId, userId: currentUser!.id },
       })

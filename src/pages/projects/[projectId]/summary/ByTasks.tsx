@@ -2,7 +2,7 @@
 import router from "next/router"
 
 import React from "react"
-import { ContributorsView, TaskView, TeamView } from "./UtilsViews"
+import { ContributorsView, TaskView, TeamView } from "src/projects/components/UtilsViews"
 
 const ByTasks = ({ tasks, contributors, teams }) => {
   return (

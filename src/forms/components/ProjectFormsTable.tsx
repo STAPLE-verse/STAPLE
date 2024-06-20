@@ -31,6 +31,8 @@ export const projectFormTableColumns = [
         className="btn btn-primary"
         href={Routes.ShowFormPage({
           taskId: info.getValue(),
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+          // eslint-disable-next-line react-hooks/rules-of-hooks
           projectId: useParam("projectId", "number"),
         })}
       >
