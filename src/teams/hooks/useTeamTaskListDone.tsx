@@ -29,7 +29,7 @@ export const useTeamTaskListDone = (teamId: number) => {
     include: {
       assignees: {
         include: {
-          statusLogs: { orderBy: { changedAt: "desc" } },
+          statusLogs: { orderBy: { createdAt: "desc" } },
         },
       },
       project: true,
@@ -98,7 +98,7 @@ export const useTeamTaskListDone = (teamId: number) => {
             : "No labels assigned",
         // Date
         completedAt:
-          assignee.statusLogs[0].changedAt?.toLocaleDateString(undefined, {
+          assignee.statusLogs[0].createdAt?.toLocaleDateString(undefined, {
             year: "numeric",
             month: "long",
             day: "numeric",

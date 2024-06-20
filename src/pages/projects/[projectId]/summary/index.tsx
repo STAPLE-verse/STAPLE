@@ -78,10 +78,10 @@ const SummaryPage = () => {
     // include: {},
   })
 
-  const [elements] = useQuery(getElements, {
+  const [{ elements }] = useQuery(getElements, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
-    // include: { Task: true },
+    // include: { task: true },
   })
 
   // Teams
@@ -112,7 +112,7 @@ const SummaryPage = () => {
     include: {
       user: true,
       labels: true,
-      AssignmentStatusLog: true,
+      assignmentStatusLog: true,
     },
   })
 
@@ -187,7 +187,7 @@ const SummaryPage = () => {
           <div className="flex flex-row justify-center m-2">
             <div className="card bg-base-300 mx-2 w-full">
               <div className="card-body">
-                <div className="card-title">Organized Metadata</div>
+                <div className="card-title">Organized Metadata (under construction)</div>
                 {selectedOrganization === "contributor" && (
                   <ByContributors
                     tasks={tasks}
@@ -213,7 +213,7 @@ const SummaryPage = () => {
                   ></ByElements>
                 )}
                 {selectedOrganization === "none" && (
-                  <span>Needs to select an organization or should we have a default?</span>
+                  <span>Please select an output organization.</span>
                 )}
                 {/* <br />
                 Here we will print out the database basically by organization they pick at the top

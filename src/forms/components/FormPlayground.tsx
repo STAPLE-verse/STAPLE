@@ -18,6 +18,7 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
     formData: {},
   })
   const [render, setRender] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
   useEffect(() => {
     if (!render) {
@@ -30,7 +31,8 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
   // Update functions for form JSON editor
   const updateSchema = (newSchema) => {
     try {
-      const parsedSchema = JSON.stringify(newSchema, null, 2)
+      //const parsedSchema = JSON.stringify(newSchema, null, 2)
+      const parsedSchema = newSchema
       setState((prevState) => ({
         ...prevState,
         schema: parsedSchema,
@@ -42,7 +44,8 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
 
   const updateUiSchema = (newUiSchema) => {
     try {
-      const parsedUiSchema = JSON.stringify(newUiSchema, null, 2)
+      //const parsedSchema = JSON.stringify(newSchema, null, 2)
+      const parsedUiSchema = newUiSchema
       setState((prevState) => ({
         ...prevState,
         uischema: parsedUiSchema,
@@ -53,7 +56,7 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
   }
 
   return render ? (
-    <Tab.Group defaultIndex={0}>
+    <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
         {/* Tablink for board view */}
         <Tab
@@ -141,8 +144,12 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
                 }
                 locale={locale}
                 height="550px"
-                onChange={(data) => updateSchema(data.jsObject)}
+                onChange={
+                  (data) => updateSchema(data.json)
+                  //console.log(data.json)
+                }
               />
+              You may see some errors on this page: we are working on it!
             </div>
             <div>
               <h4>UI Schema</h4>
@@ -151,7 +158,7 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
                 placeholder={state.uischema ? JSON.parse(state.uischema) : {}}
                 locale={locale}
                 height="550px"
-                onChange={(data) => updateUiSchema(data.jsObject)}
+                onChange={(data) => updateUiSchema(data.json)}
               />
             </div>
           </div>

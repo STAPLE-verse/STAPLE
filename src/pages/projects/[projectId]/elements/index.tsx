@@ -14,7 +14,7 @@ const ElementsPage = () => {
   const [elements] = useQuery(getElements, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
-    include: { Task: true },
+    include: { task: true },
   })
 
   return (

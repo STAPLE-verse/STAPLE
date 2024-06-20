@@ -22,7 +22,7 @@ const AddContainer = ({ projectId, refetch }) => {
   return (
     <>
       <TaskModal showModal={showAddContainerModal} setShowModal={setShowAddContainerModal}>
-        <div className="flex flex-col w-full items-start gap-y-4">
+        <div className="flex flex-col w-full items-start gap-y-4 bg-base-300">
           <h1 className="text-3xl font-bold">Add Container</h1>
           <TaskInput
             type="text"

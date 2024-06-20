@@ -6,7 +6,7 @@ export type TeamOption = {
   name: string
   id: number
   checked: boolean
-  assigmentId?: number
+  assignmentId?: number
 }
 
 const columnHelper = createColumnHelper<TeamOption>()

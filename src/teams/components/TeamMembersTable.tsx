@@ -17,7 +17,7 @@ type Props = {
   showCheckbox: boolean
 }
 
-//TODO refactor this table to core components since is very similar to assigment and others
+//TODO refactor this table to core components since is very similar to assignment and others
 const AssignTeamMembers = ({ onChange, teamOptions, showCheckbox }: Props) => {
   const [contributorChecked, setcontributorChecked] = useState(teamOptions)
   const handleOnChange = (element) => {

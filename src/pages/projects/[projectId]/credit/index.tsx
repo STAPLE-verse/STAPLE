@@ -6,14 +6,17 @@ import Layout from "src/core/layouts/Layout"
 import LabelsTab from "./LabelsTab"
 import TasksTab from "./TasksTab"
 import ContributorsTab from "./ContributorsTab"
+import { useEffect, useState } from "react"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
 }
 
 export const CreditsTabs = () => {
+  const [selectedIndex, setSelectedIndex] = useState(0)
+
   return (
-    <Tab.Group defaultIndex={0}>
+    <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
         {/* Tablink for board view */}
         <Tab

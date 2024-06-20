@@ -23,7 +23,7 @@ export const ElementsList: React.FC = ({}) => {
   const queryResult = usePaginatedQuery(getElements, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
-    include: { Task: true },
+    include: { task: true },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })

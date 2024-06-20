@@ -12,7 +12,7 @@ const ByContributors = ({ contributors, teams, tasks }) => {
   // let sortedContributors = flattenTasks.contributorsInformation
   //console.log(tasks)
 
-  const assigmentCompletedBy = (statusLog, completedAs, completedBy) => {
+  const assignmentCompletedBy = (statusLog, completedAs, completedBy) => {
     let index = statusLog.findIndex(
       (log) =>
         log.status == AssignmentStatus.COMPLETED &&
@@ -25,8 +25,8 @@ const ByContributors = ({ contributors, teams, tasks }) => {
   const getCompletedTask = (tasks, completedAs, completedBy) => {
     let temp: any[] = []
     tasks.forEach((task) => {
-      task.assignees.forEach((assigment) => {
-        let i = assigmentCompletedBy(assigment.statusLogs, completedAs, completedBy)
+      task.assignees.forEach((assignment) => {
+        let i = assignmentCompletedBy(assignment.statusLogs, completedAs, completedBy)
         if (i >= 0) {
           temp.push(task)
         }

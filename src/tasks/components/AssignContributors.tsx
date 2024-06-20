@@ -8,7 +8,7 @@ export type ContributorOption = {
   lastName: string
   id: number
   checked: boolean
-  assigmentId?: number
+  assignmentId?: number
 }
 
 const columnHelper = createColumnHelper<ContributorOption>()

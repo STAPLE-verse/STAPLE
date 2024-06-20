@@ -19,8 +19,8 @@ function flattenTasksInformation(tasks): FlattenTasks {
   let teams: TeamInformation[] = []
   let contributors: ContributorInformation[] = []
 
-  const updateTeamData = (task, assigment, team) => {
-    // console.log(team, task, assigment)
+  const updateTeamData = (task, assignment, team) => {
+    // console.log(team, task, assignment)
     let index = teams.findIndex((x) => x.team.id == team.id)
     if (index < 0) {
       let newTeam = {
@@ -35,8 +35,8 @@ function flattenTasksInformation(tasks): FlattenTasks {
     }
   }
 
-  const updateContributorData = (task, assigment, contributor) => {
-    // console.log(contributor, task, assigment)
+  const updateContributorData = (task, assignment, contributor) => {
+    // console.log(contributor, task, assignment)
     let index = contributors.findIndex((x) => x.contributor.id == contributor.id)
     if (index < 0) {
       let newContributor = {
@@ -55,14 +55,14 @@ function flattenTasksInformation(tasks): FlattenTasks {
 
   tasks.forEach((task) => {
     if (task.assignees != undefined) {
-      task.assignees.forEach((assigment) => {
-        let team = assigment.team
+      task.assignees.forEach((assignment) => {
+        let team = assignment.team
         if (team != null) {
-          updateTeamData(task, assigment, team)
+          updateTeamData(task, assignment, team)
         }
-        let contributor = assigment.contributor
+        let contributor = assignment.contributor
         if (contributor != null) {
-          updateContributorData(task, assigment, contributor)
+          updateContributorData(task, assignment, contributor)
         }
       })
     }

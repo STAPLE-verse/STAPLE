@@ -32,15 +32,15 @@ export const TaskView = ({
     return last
   }
 
-  const getAssigmentCompletedBy = (task, lastChanged) => {
-    const changedAssigment = task.assignees.find(
+  const getAssignmentCompletedBy = (task, lastChanged) => {
+    const changedAssignment = task.assignees.find(
       (element) => lastChanged.assignmentId == element.id
     )
-    return changedAssigment
+    return changedAssignment
   }
 
   const lastChangedLog = getLastUpdated(task.assignees)
-  const lastChangedByAssigment = getAssigmentCompletedBy(task, lastChangedLog)
+  const lastChangedByAssignment = getAssignmentCompletedBy(task, lastChangedLog)
 
   return (
     <div className="my-1 ">
@@ -56,13 +56,13 @@ export const TaskView = ({
         <div>
           {task.assignees.length < 0 && <h6>The task does have assignees</h6>}
           {task.assignees.length > 0 && <h6>Assigned to:</h6>}
-          {task.assignees.map((assigment) => (
-            <div key={assigment.id} className="">
-              {assigment.team != null && <span>Team Name: {assigment.team.name} </span>}
-              {assigment.contributor != null && (
+          {task.assignees.map((assignment) => (
+            <div key={assignment.id} className="">
+              {assignment.team != null && <span>Team Name: {assignment.team.name} </span>}
+              {assignment.contributor != null && (
                 <span>
-                  Contributor Name: {assigment.contributor.user.firstName}{" "}
-                  {assigment.contributor.user.lastName}{" "}
+                  Contributor Name: {assignment.contributor.user.firstName}{" "}
+                  {assignment.contributor.user.lastName}{" "}
                 </span>
               )}
             </div>
@@ -81,8 +81,8 @@ export const TaskView = ({
                 Completed as an individual by:{" "}
                 <span>
                   {" "}
-                  {lastChangedByAssigment.contributor.user.firstName}{" "}
-                  {lastChangedByAssigment.contributor.user.lastName}
+                  {lastChangedByAssignment.contributor.user.firstName}{" "}
+                  {lastChangedByAssignment.contributor.user.lastName}
                 </span>
               </div>
             )}
@@ -90,7 +90,7 @@ export const TaskView = ({
           <div>
             {lastChangedLog.completedAs == CompletedAs.TEAM && (
               <div>
-                Completed as a team by: <span>{lastChangedByAssigment.team.name}</span>
+                Completed as a team by: <span>{lastChangedByAssignment.team.name}</span>
               </div>
             )}
           </div>
@@ -141,9 +141,9 @@ export const TeamView = ({ team, tasks, printTask = false }) => {
       </div>
       {printTask && (
         <div className="my-2 ">
-          {tasks.length < 1 && <h5>This team does not have completed assigments</h5>}
+          {tasks.length < 1 && <h5>This team does not have completed assignments</h5>}
           <div>
-            {tasks.length > 0 && <h5>Tasks with completed assigments</h5>}
+            {tasks.length > 0 && <h5>Tasks with completed assignments</h5>}
             {tasks.map((task) => (
               <TaskView key={task.id} task={task}></TaskView>
             ))}
@@ -186,8 +186,8 @@ export const ContributorsView = ({
       )}
       {printTask && (
         <div className="my-2 ">
-          {newTasks.length < 1 && <h5>This contributor does not have completed assigments</h5>}
-          {newTasks.length > 0 && <h5>Tasks with completed assigments</h5>}
+          {newTasks.length < 1 && <h5>This contributor does not have completed assignments</h5>}
+          {newTasks.length > 0 && <h5>Tasks with completed assignments</h5>}
           {newTasks.map((task) => (
             <TaskView key={task.id} task={task}></TaskView>
           ))}

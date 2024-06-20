@@ -42,8 +42,8 @@ const ByDate = ({ tasks, contributors, teams }) => {
     let logs: any[] = []
 
     tasks.forEach((task) => {
-      task.assignees.forEach((assigment) => {
-        let t = mapStatusLogs(assigment.statusLogs, task, "task")
+      task.assignees.forEach((assignment) => {
+        let t = mapStatusLogs(assignment.statusLogs, task, "task")
         logs = logs.concat(t)
       })
     })
@@ -55,8 +55,8 @@ const ByDate = ({ tasks, contributors, teams }) => {
     let logs: any[] = []
 
     teams.forEach((team) => {
-      team.assignments.forEach((assigment) => {
-        let t = mapStatusLogs(assigment.statusLogs, team, "team")
+      team.assignments.forEach((assignment) => {
+        let t = mapStatusLogs(assignment.statusLogs, team, "team")
         logs = logs.concat(t)
       })
     })
@@ -67,7 +67,7 @@ const ByDate = ({ tasks, contributors, teams }) => {
   const getContributorStatusLogs = (contributors) => {
     let logs: any[] = []
     contributors.forEach((contributor) => {
-      let t = mapStatusLogs(contributor.AssignmentStatusLog, contributor, "contributor")
+      let t = mapStatusLogs(contributor.assignmentStatusLog, contributor, "contributor")
       logs = logs.concat(t)
     })
     return logs
