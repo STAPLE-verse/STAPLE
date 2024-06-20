@@ -4,13 +4,22 @@ import getUsers from "src/users/queries/getUsers"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { createColumnHelper } from "@tanstack/react-table"
-import { Task } from "db"
+
+// Define the type for the table data
+type TaskTableData = {
+  id: number
+  completedBy: string
+  taskName: string
+  labels: string | JSX.Element
+  completedAt: string
+  taskId: number
+  projectId: number
+}
 
 // Custom Hook
-export const useTeamTaskListDone = (teamId) => {
-  // TODO: reformat the whole code to only provide well formatted data to the table! no unnecessary things!
+export const useTeamTaskListDone = (teamId: number) => {
   // Get table data
-  // Get tasks
+  // Fetch tasks
   const [{ tasks }] = useQuery(getTasks, {
     where: {
       assignees: {
@@ -20,7 +29,7 @@ export const useTeamTaskListDone = (teamId) => {
     include: {
       assignees: {
         include: {
-          statusLogs: { orderBy: { createdAt: "desc" } },
+          statusLogs: { orderBy: { changedAt: "desc" } },
         },
       },
       project: true,
@@ -28,33 +37,6 @@ export const useTeamTaskListDone = (teamId) => {
     },
     orderBy: { id: "asc" },
   })
-
-  // Get usernames
-  // Collect all unique contributor IDs from tasks
-  const contributorIds = tasks.flatMap((task) =>
-    task.assignees.flatMap((assignee) =>
-      assignee.statusLogs.map((statusLog) => statusLog.completedBy)
-    )
-  )
-
-  // Use reduce to get unique contributor IDs and filter out null values
-  const uniqueContributorIds = contributorIds.reduce((acc, id) => {
-    if (id !== null && !acc.includes(id)) {
-      acc.push(id)
-    }
-    return acc
-  }, [])
-
-  // Fetch all users based on contributor IDs
-  const [users] = useQuery(getUsers, { where: { id: { in: uniqueContributorIds } } })
-
-  // Create a user map for quick lookup and format the name
-  const userMap = users.reduce((acc, user) => {
-    const { firstName, lastName, username } = user
-    const fullName = firstName && lastName ? `${firstName} ${lastName}` : username
-    acc[user.id] = fullName
-    return acc
-  }, {})
 
   // Filter completed tasks
   const completedTasks = tasks
@@ -66,63 +48,98 @@ export const useTeamTaskListDone = (teamId) => {
       ),
     }))
     .filter((task) => task.assignees.length > 0)
-    // Add username to completed tasks
-    .map((task) => ({
-      ...task,
-      assignees: task.assignees.map((assignee) => ({
-        ...assignee,
-        completedByUser: userMap[assignee.statusLogs[0].completedBy],
-      })),
-    }))
+
+  // Get usernames
+  // Collect all unique contributor IDs from tasks
+  const contributorIds = completedTasks.flatMap((task) =>
+    task.assignees.flatMap((assignee) =>
+      // Only use the latest change in statusLogs
+      assignee.statusLogs[0].completedBy !== null ? assignee.statusLogs[0].completedBy : []
+    )
+  )
+
+  // Fetch all users based on contributor IDs
+  const [users] = useQuery(getUsers, {
+    where: {
+      contributions: {
+        some: {
+          id: { in: contributorIds },
+        },
+      },
+    },
+    include: {
+      contributions: true,
+    },
+  })
+
+  // Create a user map for quick lookup and format the name
+  const userMap: { [key: number]: string } = {}
+  users.forEach((user) => {
+    user.contributions.forEach((contribution) => {
+      const { firstName, lastName, username } = user
+      const fullName = firstName && lastName ? `${firstName} ${lastName}` : username
+      userMap[contribution.id] = fullName
+    })
+  })
+
+  // Transform tasks into the desired table format
+  const tableData: TaskTableData[] = completedTasks.flatMap((task) =>
+    task.assignees.map((assignee) => {
+      return {
+        id: task.id,
+        // Completed by username
+        completedBy: userMap[assignee.statusLogs[0].completedBy] || "Unknown",
+        // Task name
+        taskName: task.name,
+        // Labels
+        labels:
+          task.labels.length > 0
+            ? task.labels.map((label) => label.name).join(", ")
+            : "No labels assigned",
+        // Date
+        completedAt:
+          assignee.statusLogs[0].changedAt?.toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,
+          }) || "Unknown",
+        // View
+        taskId: task.id,
+        projectId: task.projectId,
+      }
+    })
+  )
 
   // Define columns
   // TODO: Define proper type for completedTasks
-  const columnHelper = createColumnHelper<Task>()
+  const columnHelper = createColumnHelper<TaskTableData>()
 
   const columns = [
-    columnHelper.accessor("assignees", {
-      cell: (info) => {
-        const assignee = info.getValue()[0]
-        const username = assignee.completedByUser
-        return <span>{username}</span>
-      },
+    columnHelper.accessor("completedBy", {
+      cell: (info) => <span>{info.getValue()}</span>,
       header: "Completed by",
       id: "completedBy",
     }),
-    columnHelper.accessor("name", {
+    columnHelper.accessor("taskName", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Task Name",
       id: "taskName",
     }),
     columnHelper.accessor("labels", {
-      cell: (info) => {
-        if (info.getValue().length > 0) {
-          const temp = info.getValue().map((i) => i.name)
-          return <span>{temp.join(", ")}</span>
-        } else {
-          return "No labels assigned to the task"
-        }
-      },
+      cell: (info) => <span>{info.getValue()}</span>,
       header: "Labels",
-      id: "label",
+      id: "labels",
     }),
-    columnHelper.accessor("assignees", {
-      cell: (info) => {
-        const temp = info.getValue()[0].statusLogs[0].createdAt?.toLocaleDateString(undefined, {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false, // Use 24-hour format
-        })
-        return <span>{temp}</span>
-      },
+    columnHelper.accessor("completedAt", {
+      cell: (info) => <span>{info.getValue()}</span>,
       header: "Completed at",
       id: "completedAt",
     }),
-    columnHelper.accessor("id", {
+    columnHelper.accessor("taskId", {
       id: "view",
       header: "View",
       enableColumnFilter: false,
@@ -141,5 +158,5 @@ export const useTeamTaskListDone = (teamId) => {
     }),
   ]
 
-  return { data: completedTasks, columns }
+  return { data: tableData, columns }
 }

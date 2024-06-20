@@ -33,9 +33,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
       {/* TODO: Is it a good solution to add a big general suspnese? */}
       <Suspense fallback="Loading...">
-        <SidebarProvider>
-          <NotificationProvider>{getLayout(<Component {...pageProps} />)}</NotificationProvider>
-        </SidebarProvider>
+        <SidebarProvider>{getLayout(<Component {...pageProps} />)}</SidebarProvider>
       </Suspense>
     </ErrorBoundary>
   )

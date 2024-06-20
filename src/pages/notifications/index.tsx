@@ -1,11 +1,11 @@
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { useNotification } from "src/messages/components/NotificationContext"
+import { NotificationProvider, useNotification } from "src/messages/components/NotificationContext"
 import Table from "src/core/components/Table"
 import { useNotificationTableColumns } from "src/messages/hooks/useNotificationTable"
 
-const NotificationsPage = () => {
+const NotificationContent = () => {
   // Get notifications
   const { notifications, page, hasMore, goToPreviousPage, goToNextPage } = useNotification()
 
@@ -13,33 +13,41 @@ const NotificationsPage = () => {
   const columns = useNotificationTableColumns()
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>All Notifications</title>
       </Head>
-
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <Suspense fallback={<div>Loading...</div>}>
-          <h1 className="flex justify-center mb-2 text-3xl">All Notifications</h1>
-          <Table columns={columns} data={notifications} />
-          <div className="join grid grid-cols-2 my-6">
-            <button
-              className="join-item btn btn-secondary"
-              disabled={page === 0}
-              onClick={goToPreviousPage}
-            >
-              Previous
-            </button>
-            <button
-              className="join-item btn btn-secondary"
-              disabled={!hasMore}
-              onClick={goToNextPage}
-            >
-              Next
-            </button>
-          </div>
-        </Suspense>
+        <h1 className="flex justify-center mb-2 text-3xl">All Notifications</h1>
+        <Table columns={columns} data={notifications} />
+        <div className="join grid grid-cols-2 my-6">
+          <button
+            className="join-item btn btn-secondary"
+            disabled={page === 0}
+            onClick={goToPreviousPage}
+          >
+            Previous
+          </button>
+          <button
+            className="join-item btn btn-secondary"
+            disabled={!hasMore}
+            onClick={goToNextPage}
+          >
+            Next
+          </button>
+        </div>
       </main>
+    </>
+  )
+}
+const NotificationsPage = () => {
+  return (
+    <Layout>
+      <Suspense fallback={<div>Loading...</div>}>
+        <NotificationProvider>
+          <NotificationContent />
+        </NotificationProvider>
+      </Suspense>
     </Layout>
   )
 }
