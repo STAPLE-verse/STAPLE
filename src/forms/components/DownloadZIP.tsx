@@ -6,7 +6,6 @@ const DownloadZIP = ({ data, fileName, className }) => {
   const downloadZip = () => {
     const zip = new JSZip()
     data.forEach((formData) => {
-      console.log(formData)
       const outputFile = `${formData.givenName.toLowerCase()}_${formData.familyName.toLowerCase()}_${
         formData.userId
       }.json`
