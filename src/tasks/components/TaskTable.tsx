@@ -6,7 +6,6 @@ import { Task } from "db"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { zipJsonsDownload, testData } from "src/services/jsonDownLoad"
 
 // TODO: Is it better to call the database for column name every time or just one time and pass the value to child components?
 // Column helper
@@ -231,22 +230,6 @@ export const taskProjectTableColumnsContrib = [
   }),
 ]
 
-export const DownloadButton = ({ row }) => {
-  const downloadName = `${row.name}_${row.id}`
-  const handleDownload = () => {
-    zipJsonsDownload(downloadName, testData)
-  }
-  return (
-    <div className="">
-      <div>
-        <button type="button" className="btn btn-primary" onClick={handleDownload}>
-          Download
-        </button>
-      </div>
-    </div>
-  )
-}
-
 export const taskProjectTableColumnsPM = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
@@ -295,13 +278,6 @@ export const taskProjectTableColumnsPM = [
         View
       </Link>
     ),
-  }),
-  columnHelper.accessor("id", {
-    id: "download",
-    header: "Download",
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => <DownloadButton row={info.row.original}></DownloadButton>,
   }),
 ]
 

@@ -11,6 +11,7 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DownloadJSON from "src/forms/components/DownloadJSON"
 import DownloadXLSX from "src/forms/components/DownloadXLSX"
+import DownloadZIP from "src/forms/components/DownloadZIP"
 import Modal from "src/core/components/Modal"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import JsonForm from "src/assignments/components/JsonForm"
@@ -140,6 +141,7 @@ const TaskContent = () => {
                   fileName={task.name}
                   className="btn btn-accent mx-2"
                 />
+                <DownloadZIP data={dataForm} fileName={task.name} className="btn btn-info mx-2" />
               </div>
             </div>
           </div>
