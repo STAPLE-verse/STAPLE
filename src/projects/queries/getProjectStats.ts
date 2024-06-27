@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
@@ -59,7 +57,7 @@ export default resolver.pipe(
 
     // not completed assignments with schema
     const completedAssignments = allAssignments.filter(
-      (assignment) => assignment.statusLogs[0].status === AssignmentStatus.COMPLETED
+      (assignment) => assignment.statusLogs[0]?.status === AssignmentStatus.COMPLETED
     )
 
     // no labels for contributors
