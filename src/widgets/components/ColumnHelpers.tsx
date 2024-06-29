@@ -1,7 +1,5 @@
-// @ts-nocheck
-
 import { Routes } from "@blitzjs/next"
-import { Prisma, Project, Notification } from "@prisma/client"
+import { Prisma, Project, Notification, Task } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 
@@ -169,8 +167,8 @@ export const projectManagersColumns: ColumnDef<ContributorWithUser>[] = [
 ]
 
 //past due project Tasks
-const projectTaskColumnHelper = createColumnHelper<Tasks>()
-export const projectTaskColumns: ColumnDef<Tasks>[] = [
+const projectTaskColumnHelper = createColumnHelper<Task>()
+export const projectTaskColumns: ColumnDef<Task>[] = [
   projectTaskColumnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
