@@ -1,9 +1,5 @@
-// @ts-nocheck
-// issue with !.title
-
 import React from "react"
 import { Forms } from "db"
-
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
@@ -13,10 +9,14 @@ import { JsonFormModal } from "src/core/components/JsonFormModal"
 // Column helper
 const columnHelper = createColumnHelper<Forms>()
 
+const getTitle = (jsonSchema): string => {
+  return jsonSchema != null && jsonSchema.hasOwnProperty("title") ? jsonSchema["title"] : ""
+}
+
 // ColumnDefs
 export const formsTableColumns = [
   columnHelper.accessor("schema", {
-    cell: (info) => <span>{info.getValue()!.title}</span>,
+    cell: (info) => <span>{getTitle(info.getValue())}</span>,
     header: "Name",
   }),
   columnHelper.accessor("updatedAt", {
