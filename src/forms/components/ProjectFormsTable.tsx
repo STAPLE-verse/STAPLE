@@ -1,9 +1,8 @@
-// @ts-nocheck
 // issue with !.title
 
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { Prisma } from "@prisma/client"
+import { Prisma, Task } from "@prisma/client"
 import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
 import { createColumnHelper } from "@tanstack/react-table"
@@ -11,15 +10,16 @@ import { useRouter } from "next/router"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useState, useEffect } from "react"
+import { getSchemaTitle } from "src/services/getSchemaTitle"
 
-const columnHelper = createColumnHelper<Forms>()
+const columnHelper = createColumnHelper<Task>()
 export const projectFormTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Task",
   }),
   columnHelper.accessor("schema", {
-    cell: (info) => <span> {info.getValue() ? info.getValue()!.title : ""}</span>,
+    cell: (info) => <span> {info.getValue() ? getSchemaTitle(info.getValue()) : ""}</span>,
     header: "Form Required",
   }),
   columnHelper.accessor("id", {
@@ -31,9 +31,7 @@ export const projectFormTableColumns = [
         className="btn btn-primary"
         href={Routes.ShowFormPage({
           taskId: info.getValue(),
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          // eslint-disable-next-line react-hooks/rules-of-hooks
-          projectId: useParam("projectId", "number"),
+          projectId: info.row.original.projectId,
         })}
       >
         View

@@ -4,19 +4,16 @@ import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
+import { getSchemaTitle } from "src/services/getSchemaTitle"
 
 // TODO: Is it better to call the database for column name every time or just one time and pass the value to child components?
 // Column helper
 const columnHelper = createColumnHelper<Forms>()
 
-const getTitle = (jsonSchema): string => {
-  return jsonSchema != null && jsonSchema.hasOwnProperty("title") ? jsonSchema["title"] : ""
-}
-
 // ColumnDefs
 export const formsTableColumns = [
   columnHelper.accessor("schema", {
-    cell: (info) => <span>{getTitle(info.getValue())}</span>,
+    cell: (info) => <span>{getSchemaTitle(info.getValue())}</span>,
     header: "Name",
   }),
   columnHelper.accessor("updatedAt", {
