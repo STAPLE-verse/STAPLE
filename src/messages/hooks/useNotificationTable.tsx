@@ -7,7 +7,7 @@ import { Project } from "db"
 const columnHelper = createColumnHelper<ExtendedNotification>()
 
 const getProjectName = (project: Project) => {
-  return project ? project.name : "N/A"
+  return project ? project.name.substring(0, 20) : "N/A"
 }
 
 // ColumnDefs
