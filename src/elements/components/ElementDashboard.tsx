@@ -1,4 +1,3 @@
-// @ts-nocheck
 // element dashboard assignees issue
 
 import { useRouter } from "next/router"
@@ -130,7 +129,7 @@ export const PMElement = () => {
       return task.schema !== null
     })
     if (allAssignments.length > 0) {
-      const allForms = allAssignments.flatMap((assignment) => assignment.assignees)
+      const allForms = allAssignments.flatMap((assignment) => assignment["assignees"])
       const completedAssignments = allForms.filter(
         (assignment) => assignment.statusLogs[0].status === "COMPLETED"
       )
@@ -140,7 +139,8 @@ export const PMElement = () => {
     }
 
     const completedLabels = tasks.filter((task) => {
-      return task.labels.length > 0
+      const l = task.hasOwnProperty("labels") ? task["labels"].length : 0
+      return l > 0
     })
     labelPercent = completedLabels.length / tasks.length
   } else {
@@ -171,7 +171,7 @@ export const PMElement = () => {
                   text={`${Math.round(taskPercent * 100)}%`}
                   styles={buildStyles({
                     textSize: "16px",
-                    pathTransitionDuration: "none",
+                    pathTransitionDuration: 0,
                     pathColor: "oklch(var(--p))",
                     textColor: "oklch(var(--s))",
                     trailColor: "oklch(var(--pc))",
@@ -196,7 +196,7 @@ export const PMElement = () => {
                   text={`${Math.round(formPercent * 100)}%`}
                   styles={buildStyles({
                     textSize: "16px",
-                    pathTransitionDuration: "none",
+                    pathTransitionDuration: 0,
                     pathColor: "oklch(var(--p))",
                     textColor: "oklch(var(--s))",
                     trailColor: "oklch(var(--pc))",
@@ -221,7 +221,7 @@ export const PMElement = () => {
                   text={`${Math.round(labelPercent * 100)}%`}
                   styles={buildStyles({
                     textSize: "16px",
-                    pathTransitionDuration: "none",
+                    pathTransitionDuration: 0,
                     pathColor: "oklch(var(--p))",
                     textColor: "oklch(var(--s))",
                     trailColor: "oklch(var(--pc))",
