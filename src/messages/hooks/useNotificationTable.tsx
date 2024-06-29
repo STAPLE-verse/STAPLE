@@ -1,11 +1,14 @@
-// @ts-nocheck
-import { Notification } from "db"
 import { createColumnHelper } from "@tanstack/react-table"
 import ReadToggle from "../components/ReadToggle"
-import { useNotification } from "../components/NotificationContext"
+import { useNotification, ExtendedNotification } from "../components/NotificationContext"
+import { Project } from "db"
 
 // Column helper
-const columnHelper = createColumnHelper<Notification>()
+const columnHelper = createColumnHelper<ExtendedNotification>()
+
+const getProjectName = (project: Project) => {
+  return project ? project.name : "N/A"
+}
 
 // ColumnDefs
 export const useNotificationTableColumns = () => {
@@ -29,13 +32,16 @@ export const useNotificationTableColumns = () => {
       header: "Date",
     }),
     // TODO: Define Notification with extended project because of include
-    columnHelper.accessor("project.name", {
+    //"project.name"
+    columnHelper.accessor("project", {
       id: "projectTitle",
       header: "Project",
       //enableColumnFilter: false,
       //enableSorting: false,
-      cell: (info) => <span>{info.getValue().substring(0, 20)}</span>,
+      cell: (info) => <span>{getProjectName(info.getValue())}</span>,
     }),
+
+    //info.getValue().substring(0, 20)
 
     columnHelper.accessor("message", {
       id: "message",
