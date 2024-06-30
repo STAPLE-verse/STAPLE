@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import {
   JsonContributor,
   JsonContributorUI,
@@ -12,7 +10,9 @@ export function getDefaultSchemaLists() {
 
   const restructured = schemas.map((schema, index) => {
     const parsed = JSON.parse(schema)
-    const uiparse = JSON.parse(uis[index])
+    const newUi =
+      uis[index] != null && uis[index] != undefined ? (uis[index] as string) : String("{}")
+    const uiparse = JSON.parse(newUi)
     return {
       name: parsed.title,
       id: -(index + 1),
