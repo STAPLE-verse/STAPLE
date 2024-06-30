@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { useQuery } from "@blitzjs/rpc"
 import getTasks from "src/tasks/queries/getTasks"
 import getUsers from "src/users/queries/getUsers"
@@ -44,7 +42,7 @@ export const useTeamTaskListDone = (teamId: number) => {
   const completedTasks = tasks
     .map((task) => ({
       ...task,
-      assignees: task.assignees.filter(
+      assignees: task["assignees"].filter(
         (assignee) =>
           assignee.statusLogs.length > 0 && assignee.statusLogs[0].status === "COMPLETED"
       ),
@@ -77,7 +75,7 @@ export const useTeamTaskListDone = (teamId: number) => {
   // Create a user map for quick lookup and format the name
   const userMap: { [key: number]: string } = {}
   users.forEach((user) => {
-    user.contributions.forEach((contribution) => {
+    user["contributions"].forEach((contribution) => {
       const { firstName, lastName, username } = user
       const fullName = firstName && lastName ? `${firstName} ${lastName}` : username
       userMap[contribution.id] = fullName
@@ -95,8 +93,8 @@ export const useTeamTaskListDone = (teamId: number) => {
         taskName: task.name,
         // Labels
         labels:
-          task.labels.length > 0
-            ? task.labels.map((label) => label.name).join(", ")
+          task["labels"].length > 0
+            ? task["labels"].map((label) => label.name).join(", ")
             : "No labels assigned",
         // Date
         completedAt:
