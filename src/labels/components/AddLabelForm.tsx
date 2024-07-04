@@ -18,10 +18,11 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
   const { projectId, type, tasksId, ...formProps } = props
 
   const [{ labels }] = useQuery(getLabels, {
-    // where: { project: { id: projectId! } },
-    // include: {
-    //   user: true,
-    // },
+    where: { projects: { some: { id: projectId! } } },
+    include: {
+      user: true,
+      tasks: true,
+    },
   })
 
   const labelOptions = labels.map((labels) => {
@@ -30,6 +31,8 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
       id: labels["id"],
     }
   })
+
+  //console.log(labelOptions)
 
   return (
     <Form<S> {...formProps} encType="multipart/form-data">

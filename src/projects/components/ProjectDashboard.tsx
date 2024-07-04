@@ -362,6 +362,7 @@ const ProjectDashboard = () => {
     where: {
       assignees: { some: { contributor: { user: { id: currentUser?.id } } } },
       status: TaskStatus.NOT_COMPLETED,
+      projectId: projectId,
     },
     orderBy: { id: "desc" },
   })
