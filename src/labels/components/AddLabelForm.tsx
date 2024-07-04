@@ -1,6 +1,7 @@
 // import React, { Suspense } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { useQuery } from "@blitzjs/rpc"
+import { useParam } from "@blitzjs/next"
 
 import { z } from "zod"
 
@@ -15,10 +16,13 @@ interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> 
 }
 
 export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormProps<S>) {
-  const { projectId, type, tasksId, ...formProps } = props
+  const { type, tasksId, ...formProps } = props
+  const projectId = useParam("projectId", "number")
 
   const [{ labels }] = useQuery(getLabels, {
-    where: { projects: { some: { id: projectId! } } },
+    where: {
+      projects: { some: { id: { in: projectId! } } },
+    },
     include: {
       user: true,
       tasks: true,
@@ -32,7 +36,7 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
     }
   })
 
-  //console.log(labelOptions)
+  //console.log(projectId)
 
   return (
     <Form<S> {...formProps} encType="multipart/form-data">
