@@ -58,11 +58,19 @@ export const SignupForm = (props: SignupFormProps) => {
         }}
       >
         <LabeledTextField
+          name="username"
+          label="Username:"
+          placeholder="Username"
+          className="w-full text-primary border-primary border-2 mb-4 bg-base-300"
+        />
+
+        <LabeledTextField
           name="email"
           label="Email:"
           placeholder="Email"
           className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
         />
+
         <LabeledTextField
           name="password"
           label="Password:"
@@ -70,11 +78,13 @@ export const SignupForm = (props: SignupFormProps) => {
           type="password"
           className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
         />
+
         <LabeledTextField
-          name="username"
-          label="Username:"
-          placeholder="Username"
-          className="w-full text-primary border-primary border-2 mb-4 bg-base-300"
+          name="password_confirm"
+          label="Confirm Password:"
+          placeholder="Password"
+          type="password"
+          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
         />
       </Form>
 
