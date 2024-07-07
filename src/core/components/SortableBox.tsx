@@ -1,5 +1,4 @@
-// @ts-nocheck
-// dont need size in the second one will fix later
+// dont need size in the second one will fix later: set to null to avoid the warning
 
 import {
   SortableContext,
@@ -36,6 +35,7 @@ export const SortableProjectBox = ({ boxes }) => {
       <SortableContext items={boxes} strategy={rectSwappingStrategy}>
         {boxes.map((boxes) => (
           <Boxes
+            size={null}
             key={boxes.id}
             id={boxes.id}
             title={boxes.title}
