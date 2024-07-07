@@ -1,5 +1,5 @@
-// @ts-nocheck
-
+//@ts-nocheck
+//The center component is depricate , needs to refactor the layout of required button and download button
 import { useContext, useState } from "react"
 import { Tooltip } from "react-tooltip"
 import JsonForm from "src/assignments/components/JsonForm"
@@ -26,9 +26,9 @@ export const TaskFormData = () => {
   }
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const taskId = useParam("taskId", "number")
+  const taskId = useParam("taskId", "number") as number
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const projectId = useParam("projectId", "number")
+  const projectId = useParam("projectId", "number") as number
 
   const uiSchema = task["ui"] || {}
   let extendedUiSchema = {}
