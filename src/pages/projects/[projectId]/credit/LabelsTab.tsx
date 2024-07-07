@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Suspense, useState } from "react"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import router, { useRouter } from "next/router"
