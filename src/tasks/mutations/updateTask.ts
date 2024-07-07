@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { UpdateTaskSchema } from "../schemas"
