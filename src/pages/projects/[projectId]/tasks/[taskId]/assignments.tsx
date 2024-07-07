@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Suspense } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { Routes, useParam } from "@blitzjs/next"
@@ -72,7 +71,7 @@ export const AssignmentsPage = () => {
 
   let individualColumns
   let teamColumns
-  if (assignments[0].task.schema) {
+  if (assignments[0]?.task.schema) {
     individualColumns = assignmentTableColumnsSchema
     teamColumns = teamAssignmentTableColumnsSchema
   } else {
@@ -97,19 +96,19 @@ export const AssignmentsPage = () => {
                   <Link
                     className="btn btn-primary"
                     href={Routes.EditTaskPage({
-                      projectId: projectId,
-                      taskId: taskId,
+                      projectId: projectId as number,
+                      taskId: taskId as number,
                     })}
                   >
                     Edit Task
                   </Link>
 
-                  {assignments[0].task.schema ? (
+                  {assignments[0]?.task.schema ? (
                     <Link
                       className="btn btn-secondary mx-2"
                       href={Routes.ShowFormPage({
-                        projectId: projectId,
-                        taskId: taskId,
+                        projectId: projectId as number,
+                        taskId: taskId as number,
                       })}
                     >
                       Download Form Data
