@@ -163,7 +163,10 @@ export const CreateTaskSchema = z.object({
       },
       { message: "Invalid JSON format" }
     )
-    .transform((data) => data as Prisma.NullableJsonNullValueInput),
+    .transform((data) => {
+      if (data === null) return Prisma.JsonNull
+      else return data as Prisma.JsonNullValueInput
+    }),
 })
 
 export const UpdateTaskSchema = z.object({
