@@ -1,4 +1,3 @@
-// @ts-nocheck
 import router from "next/router"
 
 import React from "react"
@@ -15,7 +14,7 @@ const ByTasks = ({ tasks, contributors, teams }) => {
           <TeamView
             team={teamInfo}
             tasks={[]}
-            id={teamInfo.id}
+            // id={teamInfo.id}
             key={teamInfo.id}
             printTask={false}
           ></TeamView>
@@ -28,7 +27,7 @@ const ByTasks = ({ tasks, contributors, teams }) => {
             contributor={conInfo}
             tasks={[]}
             printTask={false}
-            id={conInfo.id}
+            // id={conInfo.id}
             key={conInfo.id}
             printLabels={true}
           ></ContributorsView>
