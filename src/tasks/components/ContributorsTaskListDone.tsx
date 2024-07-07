@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { useQuery } from "@blitzjs/rpc"
 import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
@@ -25,7 +23,7 @@ export const ContributorTaskListDone = ({ contributor, columns }) => {
   const completedTasks = tasks
     .map((task) => ({
       ...task,
-      assignees: task.assignees.filter(
+      assignees: task["assignees"].filter(
         (assignee) =>
           assignee.statusLogs.length > 0 && assignee.statusLogs[0].status === "COMPLETED"
       ),
