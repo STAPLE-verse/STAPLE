@@ -60,6 +60,34 @@ const HelpPage = () => {
               </div>
             </div>
           </div>
+
+          <div className="text-lg flex flex-row mt-2">
+            <div className="card bg-base-300 w-1/2 mr-2">
+              <div className="card-body">
+                <div className="card-title">Slack</div>
+                Join our slack to get updates as soon as they happen!{" "}
+                <a
+                  className="link-primary"
+                  href="https://join.slack.com/t/staple-talk/shared_invite/zt-25c08jrdt-f66do2kbIZExpAou5ZQYew"
+                >
+                  Slack Invite
+                </a>
+              </div>
+            </div>
+
+            <div className="card bg-base-300 w-1/2 mr-2">
+              <div className="card-body">
+                <div className="card-title">STAPLE Presentations</div>
+                In a workshop? Use our google doc to leave notes.{" "}
+                <a
+                  className="link-primary"
+                  href="https://docs.google.com/document/d/1y7QxO4BhTygyLUpiOtp735nUnAer_rfzhi0HUcckDVU/edit?usp=sharing"
+                >
+                  Leave notes here.
+                </a>{" "}
+              </div>
+            </div>
+          </div>
         </Suspense>
       </main>
     </Layout>
