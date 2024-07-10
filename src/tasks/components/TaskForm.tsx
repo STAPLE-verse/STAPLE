@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
@@ -14,7 +12,6 @@ import Modal from "src/core/components/Modal"
 import { useEffect, useState } from "react"
 import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 import getTeams from "src/teams/queries/getTeams"
-import { FORM_ERROR } from "final-form"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import moment from "moment"
 import { ContributorPrivileges } from "db"
@@ -98,10 +95,10 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
   const pmSchemas = pmForms.forms
     // Dropping forms that do not have a title added by the user
-    .filter((form) => form.schema && form.schema.title)
+    .filter((form) => form.schema && form.schema["title"])
     .map((form) => ({
       id: form.id,
-      name: form.schema?.title,
+      name: form.schema != null ? form.schema["title"] : null,
       schema: form.schema,
       ui: form.uiSchema,
     }))

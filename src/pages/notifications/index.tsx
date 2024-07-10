@@ -8,7 +8,7 @@ import { useNotificationTableColumns } from "src/messages/hooks/useNotificationT
 const NotificationContent = () => {
   // Get notifications
   const { notifications, page, hasMore, goToPreviousPage, goToNextPage } = useNotification()
-  console.log(notifications)
+  // console.log(notifications)
   // Get columns and pass refetch
   const columns = useNotificationTableColumns()
 
@@ -19,7 +19,7 @@ const NotificationContent = () => {
       </Head>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">All Notifications</h1>
-        <Table columns={columns} data={notifications} />
+        <Table columns={columns} data={extendeNotifications} />
         <div className="join grid grid-cols-2 my-6">
           <button
             className="join-item btn btn-secondary"

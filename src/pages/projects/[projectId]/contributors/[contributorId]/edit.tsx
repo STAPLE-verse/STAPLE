@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
@@ -33,24 +32,25 @@ export const EditContributor = () => {
   return (
     <Layout>
       <Head>
-        <title>Edit Contributor {user[0].username} </title>
+        <title>Edit Contributor {user[0]?.username} </title>
       </Head>
 
       <div>
         <h1 className="text-3xl mb-2">
           Edit Contributor{" "}
-          {user[0].firstName || user[0].lastName
+          {user[0]?.firstName || user[0]?.lastName
             ? `${user[0].firstName} ${user[0].lastName}`
-            : user[0].username}
+            : user[0]?.username}
         </h1>
         <Suspense fallback={<div>Loading...</div>}>
           <ContributorFormEdit
+            projectId={projectId as number}
             cancelText="Cancel"
             onCancel={() =>
               router.push(
                 Routes.ShowContributorPage({
                   projectId: projectId!,
-                  contributorId: contributorId,
+                  contributorId: contributorId as number,
                 })
               )
             }
@@ -60,8 +60,8 @@ export const EditContributor = () => {
             onSubmit={async (values) => {
               try {
                 const updated = await updateContributorMutation({
-                  id: contributor.id,
-                  projectId: projectId,
+                  // id: contributor.id,
+                  // projectId: projectId,
                   ...values,
                 })
                 await toast.promise(Promise.resolve(updated), {

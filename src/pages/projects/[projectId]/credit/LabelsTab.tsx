@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Suspense, useState } from "react"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import router, { useRouter } from "next/router"
@@ -146,9 +145,9 @@ const LabelsTab = () => {
     return s != -1
   }
 
-  let checkedIds = []
+  let checkedIds: number[] = []
   labels.forEach((label) => {
-    let s = projectInLabel(label.projects, projectId)
+    let s = projectInLabel(label["projects"], projectId)
     if (s) checkedIds.push(label.id)
   })
 

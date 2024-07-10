@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Suspense, useState } from "react"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import router, { useRouter } from "next/router"
@@ -22,7 +21,7 @@ const ByElements = ({ elements, teams, contributors, tasks }) => {
             <ContributorsView
               contributor={contributor}
               tasks={[]}
-              id={contributor.id}
+              // id={contributor.id}
               key={contributor.id}
               printTask={false}
             ></ContributorsView>
@@ -34,7 +33,7 @@ const ByElements = ({ elements, teams, contributors, tasks }) => {
             <TeamView
               team={teamInfo}
               tasks={[]}
-              id={teamInfo.id}
+              // id={teamInfo.id}
               key={teamInfo.id}
               printTask={false}
             ></TeamView>

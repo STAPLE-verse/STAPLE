@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
@@ -42,7 +41,9 @@ export const ContributorPage = () => {
   })
 
   const user = contributor[0].user
-  const teams = currentContributor.teams.map((team) => team.name)
+  const teams = currentContributor.hasOwnProperty("teams")
+    ? currentContributor["teams"].map((team) => team.name)
+    : ""
 
   const handleDelete = async () => {
     if (

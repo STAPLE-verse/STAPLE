@@ -1,4 +1,4 @@
-// @ts-nocheck
+//
 // issue with element versus string
 
 import Link from "next/link"
@@ -12,6 +12,30 @@ import { getInitials } from "src/services/getInitials"
 import { HomeIcon } from "@heroicons/react/24/outline"
 import NotificationsMenu from "src/core/components/NotificationMenu"
 import Image from "next/image"
+
+type LogoProps = {
+  theme: string
+}
+const StapleLogo = ({ theme }: LogoProps) => {
+  const Themes = [
+    "dark",
+    "dracula",
+    "halloween",
+    "forest",
+    "luxury",
+    "business",
+    "night",
+    "coffee",
+    "dim",
+    "sunset",
+  ]
+
+  return Themes.includes(theme) ? (
+    <Image src="/stapler_white.png" width={25} height={25} alt="Staple Logo" />
+  ) : (
+    <Image src="/stapler_black.png" width={25} height={25} alt="Staple Logo" />
+  )
+}
 
 // MainNavbar
 // Always present on the top of the page
@@ -57,33 +81,12 @@ const Navbar = () => {
     }
   }, [theme])
 
-  var logo = ""
-
-  if (
-    [
-      "dark",
-      "dracula",
-      "halloween",
-      "forest",
-      "luxury",
-      "business",
-      "night",
-      "coffee",
-      "dim",
-      "sunset",
-    ].includes(theme)
-  ) {
-    logo = <Image src="/stapler_white.png" width={25} height={25} alt="Staple Logo" />
-  } else {
-    logo = <Image src="/stapler_black.png" width={25} height={25} alt="Staple Logo" />
-  }
-
   // return pages
   return (
     <div className="flex-0 navbar bg-base-100 sticky z-[1099] top-0 border-b border-gray-300 sm:px-4 md:px-6 lg:px-8 xl:px-10">
       {/* Tabs */}
       {/* On the left */}
-      <div className="flex-1">{logo}</div>
+      <div className="flex-1">{StapleLogo({ theme })}</div>
       {/* On the right */}
       <div className="flex space-x-5">
         {/* Templated tabs tab */}

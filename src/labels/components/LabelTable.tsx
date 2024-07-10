@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import Modal from "src/core/components/Modal"
@@ -19,6 +18,7 @@ export type LabelInformation = {
   userId: number
   onChangeCallback?: () => void
   taxonomyList: string[]
+  userName?: string
 }
 
 const EditColumn = ({ row }) => {
