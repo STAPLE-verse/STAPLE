@@ -11,7 +11,6 @@ interface GetNotificationsInput
 export default resolver.pipe(
   resolver.authorize(),
   async ({ where, orderBy, include, skip = 0, take = 100 }: GetNotificationsInput) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
       items: notifications,
       hasMore,

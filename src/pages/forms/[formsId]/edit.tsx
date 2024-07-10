@@ -6,7 +6,7 @@ import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 
 import React from "react"
-import { FormPlayground } from "src/forms/components/FormPlayground"
+import FormPlayground from "src/forms/components/FormPlayground"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import router from "next/router"
 import { Routes, useParam } from "@blitzjs/next"

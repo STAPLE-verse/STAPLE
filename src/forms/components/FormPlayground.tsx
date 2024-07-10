@@ -1,67 +1,70 @@
-import JSONInput from "react-json-editor-ajrm"
-import locale from "react-json-editor-ajrm/locale/en"
-
-import { FormBuilder } from "@ginkgo-bioworks/react-json-schema-form-builder"
-import JsonForm from "src/assignments/components/JsonForm"
-import validator from "@rjsf/validator-ajv8"
+import React, { useEffect, useState } from "react"
 import { Tab } from "@headlessui/react"
-import { useEffect, useState } from "react"
+import classNames from "classnames"
+import PreviewTab from "./PreviewTab"
+import VisualBuilderTab from "./VisualBuilderTab"
+import JSONBuilderTab from "./JSONBuilderTab"
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ")
+interface FormPlaygroundProps {
+  initialSchema?: string
+  initialUiSchema?: string
+  saveForm: (formState: { schema: object; uischema: object; formData: object }) => void
 }
 
-export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", saveForm }) => {
-  const [state, setState] = useState({
-    schema: initialSchema,
-    uischema: initialUiSchema,
+interface FormState {
+  schema: object
+  uischema: object
+  formData: object
+}
+
+const FormPlayground: React.FC<FormPlaygroundProps> = ({
+  initialSchema = "{}",
+  initialUiSchema = "{}",
+  saveForm,
+}) => {
+  const [state, setState] = useState<FormState>({
+    schema: JSON.parse(initialSchema),
+    uischema: JSON.parse(initialUiSchema),
     formData: {},
   })
   const [render, setRender] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (!render) {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       setRender(true)
     }
+  }, [render])
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // Update functions for form JSON editor
-  const updateSchema = (newSchema) => {
-    try {
-      //const parsedSchema = JSON.stringify(newSchema, null, 2)
-      const parsedSchema = newSchema
-      setState((prevState) => ({
-        ...prevState,
-        schema: parsedSchema,
-      }))
-    } catch (error) {
-      console.error("Failed to parse schema:", error)
-    }
+  const updateSchema = (newSchema: object) => {
+    setState((prevState) => ({
+      ...prevState,
+      schema: newSchema,
+    }))
   }
 
-  const updateUiSchema = (newUiSchema) => {
-    try {
-      //const parsedSchema = JSON.stringify(newSchema, null, 2)
-      const parsedUiSchema = newUiSchema
-      setState((prevState) => ({
-        ...prevState,
-        uischema: parsedUiSchema,
-      }))
-    } catch (error) {
-      console.error("Failed to parse UI schema:", error)
-    }
+  const updateUiSchema = (newUiSchema: object) => {
+    setState((prevState) => ({
+      ...prevState,
+      uischema: newUiSchema,
+    }))
+  }
+
+  const handleSave = () => {
+    saveForm(state)
+  }
+
+  const handleChange = (newSchema: object, newUiSchema: object) => {
+    setState({
+      schema: newSchema,
+      uischema: newUiSchema,
+      formData: state.formData,
+    })
   }
 
   return render ? (
     <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
-        {/* Tablink for board view */}
         <Tab
           className={({ selected }) =>
             classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
@@ -69,7 +72,6 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
         >
           Preview
         </Tab>
-        {/* TabLink for table view */}
         <Tab
           className={({ selected }) =>
             classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
@@ -77,7 +79,6 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
         >
           Visual Builder
         </Tab>
-
         <Tab
           className={({ selected }) =>
             classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
@@ -85,88 +86,33 @@ export const FormPlayground = ({ initialSchema = "{}", initialUiSchema = "{}", s
         >
           JSON Builder
         </Tab>
-        {/* TODO: First click on board does not change it after init */}
       </Tab.List>
 
       <Tab.Panels>
-        {/* Tab for Preview */}
         <Tab.Panel>
-          <JsonForm
-            schema={JSON.parse(state.schema)}
-            uiSchema={JSON.parse(state.uischema)}
-            //onChange={(newFormData) => setState({formData: newFormData.formData})}
-            formData={state.formData}
-            validator={validator}
-            //submitButtonMessage={"Submit"}
+          <PreviewTab schema={state.schema} uiSchema={state.uischema} formData={state.formData} />
+        </Tab.Panel>
+
+        <Tab.Panel>
+          <VisualBuilderTab
+            schema={state.schema}
+            uiSchema={state.uischema}
+            onSave={handleSave}
+            onChange={handleChange}
           />
         </Tab.Panel>
 
-        {/* Tabpanel for Visual Builder */}
         <Tab.Panel>
-          <div className="formHead-wrapper">
-            <div className="w-full flex justify-end">
-              <button type="button" className="btn btn-primary" onClick={() => saveForm(state)}>
-                Save Form
-              </button>
-            </div>
-
-            <br />
-            <FormBuilder
-              schema={state.schema}
-              uischema={state.uischema}
-              mods={{}}
-              onChange={(newSchema, newUiSchema) => {
-                setState({
-                  schema: newSchema,
-                  uischema: newUiSchema,
-                  formData: state.formData,
-                })
-              }}
-            />
-          </div>
-        </Tab.Panel>
-
-        {/* Tabpanel for JSON Builder */}
-        <Tab.Panel>
-          <div className="flex flex-row justify-between">
-            <div>
-              <h4>Data Schema</h4>
-              <JSONInput
-                id="data_schema"
-                placeholder={
-                  state.schema
-                    ? (() => {
-                        try {
-                          return JSON.parse(state.schema)
-                        } catch (e) {
-                          console.error(e)
-                          return {}
-                        }
-                      })()
-                    : {}
-                }
-                locale={locale}
-                height="550px"
-                onChange={
-                  (data) => updateSchema(data.json)
-                  //console.log(data.json)
-                }
-              />
-              You may see some errors on this page: we are working on it!
-            </div>
-            <div>
-              <h4>UI Schema</h4>
-              <JSONInput
-                id="ui_schema"
-                placeholder={state.uischema ? JSON.parse(state.uischema) : {}}
-                locale={locale}
-                height="550px"
-                onChange={(data) => updateUiSchema(data.json)}
-              />
-            </div>
-          </div>
+          <JSONBuilderTab
+            schema={state.schema}
+            uiSchema={state.uischema}
+            updateSchemaChange={updateSchema}
+            updateUiSchemaChange={updateUiSchema}
+          />
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>
   ) : null
 }
+
+export default FormPlayground
