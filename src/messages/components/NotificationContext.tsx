@@ -1,18 +1,30 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from "react"
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+  useCallback,
+} from "react"
 import { Notification, Project } from "db"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import getNotifications from "../queries/getNotifications"
-import useCountNotifications, { NotificationCounts } from "../hooks/useCountNotifications"
 import { useParam } from "@blitzjs/next"
+import getUnreadNotificationsCount from "../queries/getUnreadNotificationsCount"
 
 export type ExtendedNotification = Notification & {
   project: Project
 }
 
+export interface NotificationCounts {
+  all: number
+  unread: number
+}
+
 interface NotificationContextType {
   notifications: Notification[]
-  count: NotificationCounts
+  notificationCount: NotificationCounts
   refetch: () => void
   page: number
   hasMore: boolean
@@ -42,18 +54,40 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
     ...(projectId ? { projectId } : {}),
   }
 
-  const [{ notifications, hasMore }, { refetch }] = usePaginatedQuery(getNotifications, {
-    where: whereClause,
-    include: { project: true },
-    orderBy: [
-      { read: "asc" }, // Show unread notifications first
-      { id: "asc" }, // Then sort by id
-    ],
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
+  const [{ notifications = [], hasMore = false } = {}, { refetch: refetchNotifications }] =
+    usePaginatedQuery(
+      getNotifications,
+      {
+        where: whereClause,
+        include: { project: true },
+        orderBy: [
+          { read: "asc" }, // Show unread notifications first
+          { id: "asc" }, // Then sort by id
+        ],
+        skip: ITEMS_PER_PAGE * page,
+        take: ITEMS_PER_PAGE,
+      },
+      {
+        enabled: !!currentUser,
+      }
+    )
 
-  const count = useCountNotifications(notifications)
+  // Fetch unread notifications count
+  const [{ totalCount = 0, unreadCount = 0 } = {}, { refetch: refetchUnreadCount }] = useQuery(
+    getUnreadNotificationsCount,
+    {
+      where: {
+        recipients: {
+          some: {
+            id: currentUser?.id,
+          },
+        },
+      },
+    },
+    { enabled: !!currentUser }
+  )
+
+  const notificationCount = { all: totalCount, unread: unreadCount }
 
   const goToPreviousPage = () => setPage((prevPage) => Math.max(prevPage - 1, 0))
   const goToNextPage = () => setPage((prevPage) => (hasMore ? prevPage + 1 : prevPage))
@@ -62,9 +96,26 @@ export const NotificationProvider = ({ children }: NotificationProviderProps) =>
     setPage(0)
   }, [projectId])
 
+  const refetchAll = useCallback(async () => {
+    await refetchNotifications()
+    await refetchUnreadCount()
+  }, [refetchNotifications, refetchUnreadCount])
+
+  if (!currentUser) {
+    return <>{children}</>
+  }
+
   return (
     <NotificationContext.Provider
-      value={{ notifications, count, refetch, page, hasMore, goToPreviousPage, goToNextPage }}
+      value={{
+        notifications,
+        notificationCount,
+        refetch: refetchAll,
+        page,
+        hasMore,
+        goToPreviousPage,
+        goToNextPage,
+      }}
     >
       {children}
     </NotificationContext.Provider>

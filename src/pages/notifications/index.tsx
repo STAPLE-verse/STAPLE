@@ -1,20 +1,14 @@
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import {
-  ExtendedNotification,
-  NotificationProvider,
-  useNotification,
-} from "src/messages/components/NotificationContext"
+import { useNotification } from "src/messages/components/NotificationContext"
 import Table from "src/core/components/Table"
 import { useNotificationTableColumns } from "src/messages/hooks/useNotificationTable"
 
 const NotificationContent = () => {
   // Get notifications
   const { notifications, page, hasMore, goToPreviousPage, goToNextPage } = useNotification()
-
-  //TODO refactor this casting to get extended notifications query
-  const extendeNotifications = notifications.map((not) => not) as ExtendedNotification[]
+  // console.log(notifications)
   // Get columns and pass refetch
   const columns = useNotificationTableColumns()
 
@@ -50,9 +44,7 @@ const NotificationsPage = () => {
   return (
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
-        <NotificationProvider>
-          <NotificationContent />
-        </NotificationProvider>
+        <NotificationContent />
       </Suspense>
     </Layout>
   )

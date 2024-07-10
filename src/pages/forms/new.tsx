@@ -7,7 +7,7 @@ import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 import React from "react"
-import { FormPlayground } from "src/forms/components/FormPlayground"
+import FormPlayground from "src/forms/components/FormPlayground"
 import { useMutation } from "@blitzjs/rpc"
 import createForm from "src/forms/mutations/createForm"
 import router from "next/router"

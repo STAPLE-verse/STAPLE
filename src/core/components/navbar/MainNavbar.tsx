@@ -157,7 +157,7 @@ const Navbar = () => {
           <option value="light">☼ Light</option>
           <option value="dark">☾ Dark</option>
           <option value="retro">🪩 Retro</option>
-          <option value="dracula">🧛🏽 Dracula‍♂️</option>
+          <option value="dracula">🧛🏽 Dracula</option>
           <option value="cyberpunk">🤖 Cyberpunk</option>
           <option value="cupcake">🧁 Cupcake</option>
           <option value="bumblebee">🐝 Bumblebee</option>
