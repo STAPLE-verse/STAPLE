@@ -29,14 +29,19 @@ export const useNotificationTableColumns = () => {
       header: "Date",
     }),
     // TODO: Define Notification with extended project because of include
-    columnHelper.accessor("project.name", {
+    columnHelper.accessor("projectId", {
       id: "projectTitle",
       header: "Project",
       //enableColumnFilter: false,
       //enableSorting: false,
-      cell: (info) => <span>{info.getValue().substring(0, 20)}</span>,
+      cell: (info) => {
+        if (info.getValue()) {
+          return <span>{info.row.original.project.name.substring(0, 20)}</span>
+        } else {
+          return ""
+        }
+      },
     }),
-
     columnHelper.accessor("message", {
       id: "message",
       header: "Notification Message",
