@@ -2,19 +2,18 @@ import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 
 import Layout from "src/core/layouts/Layout"
 import getContributors from "src/contributors/queries/getContributors"
-import { getInitials } from "src/services/getInitials"
-import getProject from "src/projects/queries/getProject"
 import {
   ContributorInformation,
   contributorTableColumns,
 } from "src/contributors/components/ContributorTable"
 import Table from "src/core/components/Table"
+import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
 
 const ITEMS_PER_PAGE = 7
 
@@ -71,27 +70,29 @@ const ContributorsPage = () => {
   const projectId = useParam("projectId", "number")
 
   return (
-    <Layout>
-      <Head>
-        <title>All Contributors</title>
-      </Head>
+    <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
+      <Layout>
+        <Head>
+          <title>All Contributors</title>
+        </Head>
 
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2 text-3xl">Contributors</h1>
+        <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+          <h1 className="flex justify-center mb-2 text-3xl">Contributors</h1>
 
-        <Suspense fallback={<div>Loading...</div>}>
-          <AllContributorsList />
-        </Suspense>
-        <div>
-          <Link
-            className="btn btn-secondary mb-4"
-            href={Routes.NewContributorPage({ projectId: projectId! })}
-          >
-            Add Contributor
-          </Link>
-        </div>
-      </main>
-    </Layout>
+          <Suspense fallback={<div>Loading...</div>}>
+            <AllContributorsList />
+          </Suspense>
+          <div>
+            <Link
+              className="btn btn-secondary mb-4"
+              href={Routes.NewContributorPage({ projectId: projectId! })}
+            >
+              Add Contributor
+            </Link>
+          </div>
+        </main>
+      </Layout>
+    </ContributorAuthorization>
   )
 }
 

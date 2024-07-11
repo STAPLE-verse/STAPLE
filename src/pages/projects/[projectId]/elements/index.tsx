@@ -2,20 +2,14 @@ import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useParam } from "@blitzjs/next"
 import React from "react"
 import { ElementsList } from "src/elements/components/ElementList"
-import getElements from "src/elements/queries/getElements"
+import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
 
-const ElementsPage = () => {
+const Elements = () => {
   const projectId = useParam("projectId", "number")
-  const [elements] = useQuery(getElements, {
-    where: { project: { id: projectId! } },
-    orderBy: { id: "asc" },
-    include: { task: true },
-  })
 
   return (
     <Layout>
@@ -41,5 +35,19 @@ const ElementsPage = () => {
     </Layout>
   )
 }
+
+const ElementsPage = () => {
+  return (
+    <div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
+          <Elements />
+        </ContributorAuthorization>
+      </Suspense>
+    </div>
+  )
+}
+
+ElementsPage.authenticate = true
 
 export default ElementsPage

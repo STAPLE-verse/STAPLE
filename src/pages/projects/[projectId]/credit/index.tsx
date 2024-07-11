@@ -1,12 +1,11 @@
 import { Suspense } from "react"
 import Head from "next/head"
 import { Tab } from "@headlessui/react"
-
 import Layout from "src/core/layouts/Layout"
 import LabelsTab from "./LabelsTab"
 import TasksTab from "./TasksTab"
 import ContributorsTab from "./ContributorsTab"
-import { useEffect, useState } from "react"
+import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -67,19 +66,21 @@ export const CreditsTabs = () => {
 
 const CreditPage = () => {
   return (
-    <Layout>
-      <Head>
-        <title>Assign Labels to Contributions</title>
-      </Head>
+    <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
+      <Layout>
+        <Head>
+          <title>Assign Labels to Contributions</title>
+        </Head>
 
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        {
-          <Suspense fallback={<div>Loading...</div>}>
-            <CreditsTabs />
-          </Suspense>
-        }
-      </main>
-    </Layout>
+        <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+          {
+            <Suspense fallback={<div>Loading...</div>}>
+              <CreditsTabs />
+            </Suspense>
+          }
+        </main>
+      </Layout>
+    </ContributorAuthorization>
   )
 }
 

@@ -14,6 +14,7 @@ import getContributor from "src/contributors/queries/getContributor"
 import updateContributor from "src/contributors/mutations/updateContributor"
 import { ContributorFormEdit } from "src/contributors/components/ContributorForm"
 import { FORM_ERROR } from "final-form"
+import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
 
 export const EditContributor = () => {
   const router = useRouter()
@@ -94,7 +95,7 @@ const EditContributorPage = () => {
   const projectId = useParam("projectId", "number")
 
   return (
-    <div>
+    <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
       <Suspense fallback={<div>Loading...</div>}>
         <EditContributor />
       </Suspense>
@@ -102,7 +103,7 @@ const EditContributorPage = () => {
       <p>
         <Link href={Routes.ContributorsPage({ projectId: projectId! })}>Contributors</Link>
       </p>
-    </div>
+    </ContributorAuthorization>
   )
 }
 

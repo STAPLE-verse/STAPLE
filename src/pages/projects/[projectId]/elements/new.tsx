@@ -10,6 +10,7 @@ import { FORM_ERROR } from "final-form"
 import { Suspense } from "react"
 import { useParam } from "@blitzjs/next"
 import toast from "react-hot-toast"
+import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
 
 const NewElementPage = () => {
   const router = useRouter()
@@ -17,39 +18,41 @@ const NewElementPage = () => {
   const [createElementMutation] = useMutation(createElement)
 
   return (
-    <Layout>
-      <Head>
-        <title>Create New Element</title>
-      </Head>
-      <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">Create New Element</h1>
-        <Suspense fallback={<div>Loading...</div>}>
-          <ElementForm
-            submitText="Create Element"
-            schema={FormElementSchema}
-            // initialValues={{}}
-            onSubmit={async (values) => {
-              try {
-                const element = await createElementMutation({ ...values, projectId: projectId! })
-                await toast.promise(Promise.resolve(element), {
-                  loading: "Creating element...",
-                  success: "Element created!",
-                  error: "Failed to create the element...",
-                })
-                await router.push(
-                  Routes.ShowElementPage({ projectId: projectId!, elementId: element.id })
-                )
-              } catch (error: any) {
-                console.error(error)
-                return {
-                  [FORM_ERROR]: error.toString(),
+    <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
+      <Layout>
+        <Head>
+          <title>Create New Element</title>
+        </Head>
+        <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
+          <h1 className="text-3xl">Create New Element</h1>
+          <Suspense fallback={<div>Loading...</div>}>
+            <ElementForm
+              submitText="Create Element"
+              schema={FormElementSchema}
+              // initialValues={{}}
+              onSubmit={async (values) => {
+                try {
+                  const element = await createElementMutation({ ...values, projectId: projectId! })
+                  await toast.promise(Promise.resolve(element), {
+                    loading: "Creating element...",
+                    success: "Element created!",
+                    error: "Failed to create the element...",
+                  })
+                  await router.push(
+                    Routes.ShowElementPage({ projectId: projectId!, elementId: element.id })
+                  )
+                } catch (error: any) {
+                  console.error(error)
+                  return {
+                    [FORM_ERROR]: error.toString(),
+                  }
                 }
-              }
-            }}
-          />
-        </Suspense>
-      </main>
-    </Layout>
+              }}
+            />
+          </Suspense>
+        </main>
+      </Layout>
+    </ContributorAuthorization>
   )
 }
 

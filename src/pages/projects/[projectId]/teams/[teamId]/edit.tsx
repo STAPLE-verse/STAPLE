@@ -13,6 +13,7 @@ import { TeamForm } from "src/teams/components/TeamForm"
 import { FORM_ERROR } from "final-form"
 import { TeamFormSchema } from "src/teams/schemas"
 import updateTeam from "src/teams/mutations/updateTeam"
+import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
 
 export const EditTeam = () => {
   const router = useRouter()
@@ -100,11 +101,11 @@ export const EditTeam = () => {
 
 const EditTeamPage = () => {
   return (
-    <div>
+    <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
       <Suspense fallback={<div>Loading...</div>}>
         <EditTeam />
       </Suspense>
-    </div>
+    </ContributorAuthorization>
   )
 }
 

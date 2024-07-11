@@ -17,6 +17,7 @@ import getLabels from "src/labels/queries/getLabels"
 import getElements from "src/elements/queries/getElements"
 import getTeams from "src/teams/queries/getTeams"
 import getContributors from "src/contributors/queries/getContributors"
+import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
 
 //could refactor other places and move this to utils
 const formatDate = (myDate) =>
@@ -30,7 +31,7 @@ const formatDate = (myDate) =>
     hour12: false, // Use 24-hour format
   })
 
-const SummaryPage = () => {
+const Summary = () => {
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
   const [selectedOrganization, setSelectedOrganization] = useState("none")
@@ -228,6 +229,18 @@ const SummaryPage = () => {
         </main>
       </Suspense>
     </Layout>
+  )
+}
+
+const SummaryPage = () => {
+  return (
+    <div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
+          <Summary />
+        </ContributorAuthorization>
+      </Suspense>
+    </div>
   )
 }
 

@@ -14,6 +14,7 @@ import { ElementForm } from "src/elements/components/ElementForm"
 import { FORM_ERROR } from "final-form"
 
 import toast from "react-hot-toast"
+import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
 
 export const EditElement = () => {
   const router = useRouter()
@@ -79,12 +80,12 @@ export const EditElement = () => {
 }
 
 const EditElementPage = () => {
-  const projectId = useParam("projectId", "number")
-
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
-        <EditElement />
+        <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
+          <EditElement />
+        </ContributorAuthorization>
       </Suspense>
     </div>
   )
