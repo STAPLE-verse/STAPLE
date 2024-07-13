@@ -8,25 +8,16 @@ import { Suspense, useContext } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import { useParam } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
-import getProject from "src/projects/queries/getProject"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getContributor from "src/contributors/queries/getContributor"
 import { ContributorPrivileges } from "@prisma/client"
 import { TaskInformation } from "src/tasks/components/TaskInformation"
 import { AssignmentCompletion } from "src/assignments/components/AssignmentCompletion"
 import { TaskProvider, TaskContext } from "src/tasks/components/TaskContext"
+import { useContributorPrivilege } from "src/contributors/components/ContributorPrivilegeContext"
 
 const TaskContent = () => {
-  const projectId = useParam("projectId", "number")
-
   const taskContext = useContext(TaskContext)
   const { task } = taskContext
-  // TODO: replace by hook
-  const currentUser = useCurrentUser()
-  const [currentContributor] = useQuery(getContributor, {
-    where: { projectId: projectId, userId: currentUser!.id },
-  })
+  const { privilege } = useContributorPrivilege()
 
   if (!task) {
     return <div>Loading...</div>
@@ -42,7 +33,7 @@ const TaskContent = () => {
           <TaskInformation />
           <AssignmentCompletion />
         </div>
-        {currentContributor.privilege == ContributorPrivileges.PROJECT_MANAGER && <TaskSummary />}
+        {privilege == ContributorPrivileges.PROJECT_MANAGER && <TaskSummary />}
       </main>
     </>
   )

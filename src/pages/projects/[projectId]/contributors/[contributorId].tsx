@@ -19,7 +19,6 @@ import { taskFinishedTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
 import { ContributorPrivileges } from "db"
 import toast from "react-hot-toast"
-import ContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 
 export const ContributorPage = () => {

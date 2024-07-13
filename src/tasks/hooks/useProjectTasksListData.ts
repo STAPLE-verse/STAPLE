@@ -2,17 +2,14 @@ import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTasks, { GetTasksInput } from "../queries/getTasks"
 import { ContributorPrivileges } from "@prisma/client"
-import getContributor from "src/contributors/queries/getContributor"
+import { useContributorPrivilege } from "src/contributors/components/ContributorPrivilegeContext"
 
 const ITEMS_PER_PAGE = 10
 
 export default function useProjecTasksListData(projectId: number | undefined, page: number) {
   const currentUser = useCurrentUser()
 
-  // TODO: In another branch this is replaced by a hook once merged this needs to be updated
-  const [currentContributor] = useQuery(getContributor, {
-    where: { projectId: projectId, userId: currentUser!.id },
-  })
+  const { privilege } = useContributorPrivilege()
 
   let queryParams: GetTasksInput = {
     where: { project: { id: projectId } },
@@ -21,8 +18,8 @@ export default function useProjecTasksListData(projectId: number | undefined, pa
     take: ITEMS_PER_PAGE,
   }
 
-  if (currentContributor && currentUser) {
-    if (currentContributor.privilege === ContributorPrivileges.CONTRIBUTOR) {
+  if (privilege && currentUser) {
+    if (privilege === ContributorPrivileges.CONTRIBUTOR) {
       queryParams.where = {
         ...queryParams.where,
         OR: [
