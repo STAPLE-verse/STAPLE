@@ -5,7 +5,8 @@ import Layout from "src/core/layouts/Layout"
 import LabelsTab from "./LabelsTab"
 import TasksTab from "./TasksTab"
 import ContributorsTab from "./ContributorsTab"
-import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "db"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -65,22 +66,22 @@ export const CreditsTabs = () => {
 }
 
 const CreditPage = () => {
-  return (
-    <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
-      <Layout>
-        <Head>
-          <title>Assign Labels to Contributions</title>
-        </Head>
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
 
-        <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-          {
-            <Suspense fallback={<div>Loading...</div>}>
-              <CreditsTabs />
-            </Suspense>
-          }
-        </main>
-      </Layout>
-    </ContributorAuthorization>
+  return (
+    <Layout>
+      <Head>
+        <title>Assign Labels to Contributions</title>
+      </Head>
+
+      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+        {
+          <Suspense fallback={<div>Loading...</div>}>
+            <CreditsTabs />
+          </Suspense>
+        }
+      </main>
+    </Layout>
   )
 }
 

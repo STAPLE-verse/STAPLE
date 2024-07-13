@@ -13,7 +13,9 @@ import {
   contributorTableColumns,
 } from "src/contributors/components/ContributorTable"
 import Table from "src/core/components/Table"
-import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
+import ContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "@prisma/client"
 
 const ITEMS_PER_PAGE = 7
 
@@ -68,31 +70,30 @@ export const AllContributorsList = () => {
 // issue 37
 const ContributorsPage = () => {
   const projectId = useParam("projectId", "number")
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
 
   return (
-    <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
-      <Layout>
-        <Head>
-          <title>All Contributors</title>
-        </Head>
+    <Layout>
+      <Head>
+        <title>All Contributors</title>
+      </Head>
 
-        <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-          <h1 className="flex justify-center mb-2 text-3xl">Contributors</h1>
+      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+        <h1 className="flex justify-center mb-2 text-3xl">Contributors</h1>
 
-          <Suspense fallback={<div>Loading...</div>}>
-            <AllContributorsList />
-          </Suspense>
-          <div>
-            <Link
-              className="btn btn-secondary mb-4"
-              href={Routes.NewContributorPage({ projectId: projectId! })}
-            >
-              Add Contributor
-            </Link>
-          </div>
-        </main>
-      </Layout>
-    </ContributorAuthorization>
+        <Suspense fallback={<div>Loading...</div>}>
+          <AllContributorsList />
+        </Suspense>
+        <div>
+          <Link
+            className="btn btn-secondary mb-4"
+            href={Routes.NewContributorPage({ projectId: projectId! })}
+          >
+            Add Contributor
+          </Link>
+        </div>
+      </main>
+    </Layout>
   )
 }
 

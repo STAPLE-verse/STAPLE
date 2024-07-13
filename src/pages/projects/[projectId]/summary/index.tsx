@@ -17,7 +17,8 @@ import getLabels from "src/labels/queries/getLabels"
 import getElements from "src/elements/queries/getElements"
 import getTeams from "src/teams/queries/getTeams"
 import getContributors from "src/contributors/queries/getContributors"
-import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "db"
 
 //could refactor other places and move this to utils
 const formatDate = (myDate) =>
@@ -233,14 +234,12 @@ const Summary = () => {
 }
 
 const SummaryPage = () => {
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+
   return (
-    <div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
-          <Summary />
-        </ContributorAuthorization>
-      </Suspense>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Summary />
+    </Suspense>
   )
 }
 

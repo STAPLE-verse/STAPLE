@@ -19,7 +19,8 @@ import { taskFinishedTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
 import { ContributorPrivileges } from "db"
 import toast from "react-hot-toast"
-import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
+import ContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 
 export const ContributorPage = () => {
   const router = useRouter()
@@ -160,12 +161,11 @@ export const ContributorPage = () => {
 }
 
 const ShowContributorPage = () => {
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
   return (
-    <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ContributorPage />
-      </Suspense>
-    </ContributorAuthorization>
+    <Suspense fallback={<div>Loading...</div>}>
+      <ContributorPage />
+    </Suspense>
   )
 }
 

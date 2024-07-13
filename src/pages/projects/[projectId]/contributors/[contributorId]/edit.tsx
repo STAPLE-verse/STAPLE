@@ -14,7 +14,8 @@ import getContributor from "src/contributors/queries/getContributor"
 import updateContributor from "src/contributors/mutations/updateContributor"
 import { ContributorFormEdit } from "src/contributors/components/ContributorForm"
 import { FORM_ERROR } from "final-form"
-import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "@prisma/client"
 
 export const EditContributor = () => {
   const router = useRouter()
@@ -93,9 +94,10 @@ export const EditContributor = () => {
 
 const EditContributorPage = () => {
   const projectId = useParam("projectId", "number")
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
 
   return (
-    <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
+    <>
       <Suspense fallback={<div>Loading...</div>}>
         <EditContributor />
       </Suspense>
@@ -103,7 +105,7 @@ const EditContributorPage = () => {
       <p>
         <Link href={Routes.ContributorsPage({ projectId: projectId! })}>Contributors</Link>
       </p>
-    </ContributorAuthorization>
+    </>
   )
 }
 

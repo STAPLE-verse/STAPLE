@@ -6,7 +6,8 @@ import Layout from "src/core/layouts/Layout"
 import { useParam } from "@blitzjs/next"
 import React from "react"
 import { ElementsList } from "src/elements/components/ElementList"
-import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "db"
 
 const Elements = () => {
   const projectId = useParam("projectId", "number")
@@ -37,14 +38,12 @@ const Elements = () => {
 }
 
 const ElementsPage = () => {
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+
   return (
-    <div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
-          <Elements />
-        </ContributorAuthorization>
-      </Suspense>
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Elements />
+    </Suspense>
   )
 }
 

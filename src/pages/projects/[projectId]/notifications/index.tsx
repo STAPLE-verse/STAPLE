@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { useNotification } from "src/messages/components/NotificationContext"
+import { ExtendedNotification, useNotification } from "src/messages/components/NotificationContext"
 import Table from "src/core/components/Table"
 import { useProjectNotificationTableColumns } from "src/messages/hooks/useNotificationTable"
 

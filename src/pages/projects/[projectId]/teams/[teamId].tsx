@@ -13,9 +13,12 @@ import getContributors from "src/contributors/queries/getContributors"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
 import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
 import { labelTableColumnsTeam } from "src/labels/components/LabelTable"
-import ContributorAuthorization from "src/contributors/components/ContributorAuthorization"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "db"
 
 export const ShowTeamPage = () => {
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+
   const router = useRouter()
   const [deleteTeamMutation] = useMutation(deleteTeam)
 
@@ -35,77 +38,73 @@ export const ShowTeamPage = () => {
   const membersId = contributors.map((contributor) => contributor.userId)
 
   return (
-    <ContributorAuthorization requiredPrivileges={["PROJECT_MANAGER"]}>
-      <Layout>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Head>
-            <title>Team {team.name}</title>
-          </Head>
+    <Layout>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Head>
+          <title>Team {team.name}</title>
+        </Head>
 
-          <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-            <div className="card bg-base-300 w-full">
-              <div className="card-body">
-                <div className="card-title">Team: {team.name} </div>
-                {contributors.map((contributor) => {
-                  return (
-                    <p key={contributor.id}>
-                      {contributor["user"].firstName || contributor["user"].lastName
-                        ? `${contributor["user"].firstName} ${contributor["user"].lastName}`
-                        : contributor["user"].username}
-                    </p>
-                  )
-                })}
-              </div>
-              <div className="card-actions justify-end m-2">
-                <Link
-                  className="btn btn-primary"
-                  href={Routes.EditTeamPage({ projectId: projectId!, teamId: team.id })}
-                >
-                  Edit Team
-                </Link>
-              </div>
+        <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+          <div className="card bg-base-300 w-full">
+            <div className="card-body">
+              <div className="card-title">Team: {team.name} </div>
+              {contributors.map((contributor) => {
+                return (
+                  <p key={contributor.id}>
+                    {contributor["user"].firstName || contributor["user"].lastName
+                      ? `${contributor["user"].firstName} ${contributor["user"].lastName}`
+                      : contributor["user"].username}
+                  </p>
+                )
+              })}
             </div>
-
-            <div className="card bg-base-300 w-full mt-2">
-              <div className="card-body">
-                <div className="card-title">Team Member Contribution Labels</div>
-                <ContributorLabelsList
-                  usersId={membersId}
-                  projectId={projectId}
-                  columns={labelTableColumnsTeam}
-                ></ContributorLabelsList>
-              </div>
-            </div>
-
-            <div className="card bg-base-300 w-full mt-2">
-              <div className="card-body">
-                <div className="card-title">Team Task Contribution Labels</div>
-                <TeamTaskListDone teamId={teamId}></TeamTaskListDone>
-              </div>
-            </div>
-
-            <div className="flex justify-end mt-4">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={async () => {
-                  if (
-                    window.confirm(
-                      "The team will be permanently deleted. Are you sure to continue?"
-                    )
-                  ) {
-                    await deleteTeamMutation({ id: team.id })
-                    await router.push(Routes.TeamsPage({ projectId: projectId! }))
-                  }
-                }}
+            <div className="card-actions justify-end m-2">
+              <Link
+                className="btn btn-primary"
+                href={Routes.EditTeamPage({ projectId: projectId!, teamId: team.id })}
               >
-                Delete Team
-              </button>
+                Edit Team
+              </Link>
             </div>
-          </main>
-        </Suspense>
-      </Layout>
-    </ContributorAuthorization>
+          </div>
+
+          <div className="card bg-base-300 w-full mt-2">
+            <div className="card-body">
+              <div className="card-title">Team Member Contribution Labels</div>
+              <ContributorLabelsList
+                usersId={membersId}
+                projectId={projectId}
+                columns={labelTableColumnsTeam}
+              ></ContributorLabelsList>
+            </div>
+          </div>
+
+          <div className="card bg-base-300 w-full mt-2">
+            <div className="card-body">
+              <div className="card-title">Team Task Contribution Labels</div>
+              <TeamTaskListDone teamId={teamId}></TeamTaskListDone>
+            </div>
+          </div>
+
+          <div className="flex justify-end mt-4">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={async () => {
+                if (
+                  window.confirm("The team will be permanently deleted. Are you sure to continue?")
+                ) {
+                  await deleteTeamMutation({ id: team.id })
+                  await router.push(Routes.TeamsPage({ projectId: projectId! }))
+                }
+              }}
+            >
+              Delete Team
+            </button>
+          </div>
+        </main>
+      </Suspense>
+    </Layout>
   )
 }
 
