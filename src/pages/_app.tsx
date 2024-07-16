@@ -4,7 +4,6 @@ import React, { Suspense } from "react"
 import { withBlitz } from "src/blitz-client"
 import "src/styles/globals.css"
 import "src/core/styles/index.css"
-import { SidebarProvider } from "src/core/components/sidebar/sidebarContext"
 import { NotificationProvider } from "src/messages/components/NotificationContext"
 import { ContributorPrivilegeProvider } from "src/contributors/components/ContributorPrivilegeContext"
 
@@ -35,9 +34,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       {/* TODO: Is it a good solution to add a big general suspnese? */}
       <Suspense fallback="Loading...">
         <ContributorPrivilegeProvider>
-          <SidebarProvider>
-            <NotificationProvider>{getLayout(<Component {...pageProps} />)}</NotificationProvider>
-          </SidebarProvider>
+          <NotificationProvider>{getLayout(<Component {...pageProps} />)}</NotificationProvider>
         </ContributorPrivilegeProvider>
       </Suspense>
     </ErrorBoundary>
