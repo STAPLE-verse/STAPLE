@@ -154,7 +154,6 @@ const TasksTab = () => {
 
   const ITEMS_PER_PAGE = 7
 
-  //TODO fix query to only completed tasks
   const [{ tasks, hasMore }, { refetch }] = usePaginatedQuery(getTasks, {
     where: { project: { id: projectId! }, status: TaskStatus.COMPLETED },
     include: { labels: true },

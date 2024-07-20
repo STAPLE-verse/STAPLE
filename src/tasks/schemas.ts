@@ -9,6 +9,7 @@ export const FormTaskSchema = z
     elementId: z.number().optional().nullable(),
     contributorsId: z.array(z.number()).optional().nullable(),
     teamsId: z.array(z.number()).optional().nullable(),
+    labelsId: z.array(z.number()).optional().nullable(),
     deadline: z.date().optional().nullable(),
     // template: __fieldName__: z.__zodType__(),
     // schema: z
@@ -125,6 +126,7 @@ export const CreateTaskSchema = z.object({
   createdById: z.number(),
   contributorsId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.number()).optional().nullable(),
+  labelsId: z.array(z.number()).optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
   schema: z
     .unknown()

@@ -36,27 +36,6 @@ export default resolver.pipe(
     tasksId.forEach(async (taskId) => {
       task1 = await updateTask(taskId, labelsId, disconnect)
     })
-    // await db.$transaction(async (prisma) => {
-    //   const task = await db.task.update({
-    //     where: { id: taskId },
-    //     data: {
-    //       labels: {
-    //         set: [],
-    //       },
-    //     },
-    //   })
-
-    //   task1 = db.task.update({
-    //     where: { id: taskId },
-    //     data: {
-    //       labels: {
-    //         connect: labelsId?.map((c) => ({ id: c })) || [],
-    //       },
-    //     },
-    //   })
-    // })
-
-    // return task
     return task1
   }
 )
