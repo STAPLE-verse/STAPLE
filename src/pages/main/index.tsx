@@ -34,8 +34,8 @@ import {
 } from "../../core/components/GetDashboardDisplay"
 import getDashboardTasks from "../../tasks/queries/getDashboardTasks"
 import getDashboardProjects from "src/projects/queries/getDashboardProjects"
-import getDashboardNotifications from "src/messages/queries/getDashboardNotifications"
-import { NotificationProvider } from "src/messages/components/NotificationContext"
+import getDashboardNotifications from "src/notifications/queries/getDashboardNotifications"
+import { NotificationProvider } from "src/notifications/components/NotificationContext"
 
 const MainPage = () => {
   const currentUser = useCurrentUser()

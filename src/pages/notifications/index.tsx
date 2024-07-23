@@ -1,9 +1,9 @@
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { useNotification } from "src/messages/components/NotificationContext"
+import { useNotification } from "src/notifications/components/NotificationContext"
 import Table from "src/core/components/Table"
-import { useNotificationTableColumns } from "src/messages/hooks/useNotificationTable"
+import { useNotificationTableColumns } from "src/notifications/hooks/useNotificationTable"
 
 const NotificationContent = () => {
   // Get notifications

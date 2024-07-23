@@ -2,7 +2,7 @@ import { Routes } from "@blitzjs/next"
 import { BellIcon } from "@heroicons/react/24/outline"
 import Link from "next/link"
 import DOMPurify from "dompurify"
-import { useNotification } from "src/messages/components/NotificationContext"
+import { useNotification } from "src/notifications/components/NotificationContext"
 
 const NotificationsMenu = () => {
   // Get notification counts

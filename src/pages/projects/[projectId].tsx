@@ -7,7 +7,7 @@ import Layout from "src/core/layouts/Layout"
 import getProject from "src/projects/queries/getProject"
 import ProjectDashboard from "src/projects/components/ProjectDashboard"
 import Modal from "src/core/components/Modal"
-import createAnnouncement from "src/messages/mutations/createAnnouncement"
+import createAnnouncement from "src/notifications/mutations/createAnnouncement"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 import { ContributorPrivileges } from "db"
 
