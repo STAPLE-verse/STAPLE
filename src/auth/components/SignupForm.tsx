@@ -39,6 +39,7 @@ export const SignupForm = (props: SignupFormProps) => {
           email: props.signupResponses?.email,
           password: props.signupResponses?.password,
           username: props.signupResponses?.username,
+          password_confirm: props.signupResponses?.password,
         }}
         onSubmit={async (values) => {
           try {
