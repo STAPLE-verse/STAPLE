@@ -3,7 +3,7 @@ import fs from "fs"
 
 export async function getTemplateContent(templateId: string): Promise<string> {
   const sourceDir = process.cwd()
-  const folderPath = "src/messages/templates/"
+  const folderPath = "src/notifications/templates/"
   const fullPath = path.join(sourceDir, folderPath, `${templateId}.hbs`)
   try {
     const templateString = await fs.promises.readFile(fullPath, "utf8")

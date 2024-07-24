@@ -10,7 +10,7 @@ import { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getInitials } from "src/services/getInitials"
 import { HomeIcon } from "@heroicons/react/24/outline"
-import NotificationsMenu from "src/core/components/NotificationMenu"
+import NotificationsMenu from "src/notifications/components/NotificationMenu"
 import Image from "next/image"
 
 type LogoProps = {
