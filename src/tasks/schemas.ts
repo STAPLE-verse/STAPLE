@@ -258,3 +258,8 @@ export const CreateColumnSchema = z.object({
 export const UpdateColumnOrderSchema = z.object({
   columnIds: z.array(z.number()),
 })
+
+export const UpdateTasksForElementSchema = z.object({
+  elementId: z.number(),
+  taskIds: z.array(z.number()),
+})
