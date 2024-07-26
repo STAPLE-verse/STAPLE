@@ -5,7 +5,7 @@ import { useState } from "react"
 import UpdateTasks from "./UpdateTasks"
 
 interface ElementItemProps {
-  element: Element & { task?: Task[] }
+  element: Element
   projectId: number
   tasks: Task[]
   onTasksUpdated: () => void
@@ -41,6 +41,7 @@ const ElementItem: React.FC<ElementItemProps> = ({ element, projectId, tasks, on
             hour12: false, // Use 24-hour format
           })}
         </p>
+
         {/* Tasks in the element */}
         <div className="divider font-medium">Tasks</div>
         <div className="flex flex-row overflow-x-auto space-x-4 pb-6">
