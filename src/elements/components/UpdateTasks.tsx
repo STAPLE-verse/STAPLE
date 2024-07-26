@@ -1,15 +1,11 @@
 import React from "react"
 import Modal from "src/core/components/Modal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
-import { z } from "zod"
 import Form from "src/core/components/fields/Form"
 import { Task } from "db"
 import { useMutation } from "@blitzjs/rpc"
 import updateTasksForElement from "src/tasks/mutations/updateTasksForElement"
-
-const UpdateTasksSchema = z.object({
-  selectedTasks: z.array(z.number()),
-})
+import { UpdateTasksForElementFormSchema } from "src/tasks/schemas"
 
 type UpdateTasksProps = {
   elementId: number
@@ -54,7 +50,7 @@ const UpdateTasks: React.FC<UpdateTasksProps> = ({
         <>
           {taskOptions.length > 0 ? (
             <Form
-              schema={UpdateTasksSchema}
+              schema={UpdateTasksForElementFormSchema}
               onSubmit={handleSubmit}
               initialValues={{ selectedTasks: currentTasks.map((task) => task.id) }}
               submitText="Save"

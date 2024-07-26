@@ -263,3 +263,7 @@ export const UpdateTasksForElementSchema = z.object({
   elementId: z.number(),
   taskIds: z.array(z.number()),
 })
+
+export const UpdateTasksForElementFormSchema = z.object({
+  selectedTasks: z.array(z.number()),
+})

@@ -26,7 +26,14 @@ export const ElementsList: React.FC = ({}) => {
   // Fetch all tasks for the project
   const [{ tasks }, { refetch }] = useQuery(getTasks, {
     where: { projectId: projectId! },
-    orderBy: { id: "asc" },
+    orderBy: [
+      {
+        deadline: {
+          sort: "asc",
+          nulls: "last",
+        },
+      },
+    ],
   })
 
   return (
