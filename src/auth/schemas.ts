@@ -29,6 +29,11 @@ export const Signup = z
     message: "Passwords does not match",
   })
 
+export const UsernameExist = z.object({
+  email,
+  username: z.string().min(3),
+})
+
 export const Tos = z.object({
   tos: z.boolean().refine((value) => value === true, {
     message: "The terms of service must be accepted to continue.",
