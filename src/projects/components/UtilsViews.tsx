@@ -1,11 +1,5 @@
 import { formatDate } from "src/services/formatDate"
-import {
-  ContributorInformation,
-  TeamInformation,
-} from "src/pages/projects/[projectId]/summary/flattenTasksInformation"
-import { teamAssignmentTableColumns } from "src/assignments/components/TeamAssignmentTable"
 import { AssignmentStatus, CompletedAs } from "db"
-import { useState } from "react"
 
 export const TaskView = ({
   task,
@@ -13,10 +7,7 @@ export const TaskView = ({
   printAssignees = false,
   printElement = true,
 }) => {
-  // console.log(task)
   let user = task.createdBy.user
-
-  // console.log(task)
 
   const getLatest = (statusLog) => {
     const max = statusLog.reduce(function (prev, current) {
