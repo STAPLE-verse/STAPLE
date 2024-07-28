@@ -180,6 +180,7 @@ export const UpdateTaskSchema = z.object({
   contributorsId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.any()).optional().nullable(),
   labelsId: z.array(z.number()).optional().nullable(),
+  deadline: z.date().optional().nullable(),
   schema: z
     .unknown()
     .nullable()

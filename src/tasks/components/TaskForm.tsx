@@ -32,14 +32,14 @@ interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
   const { projectId, type, taskId, ...formProps } = props
 
-  // Handle date input as a state
-  const [dateInputValue, setDateInputValue] = useState("")
+  const today = moment().format("YYYY-MM-DDTHH:mm")
+  let deadline =
+    formProps.initialValues?.deadline != undefined
+      ? moment(formProps.initialValues?.deadline).format("YYYY-MM-DDTHH:mm")
+      : today
 
-  useEffect(() => {
-    // Initialize the input with today's date when the component mounts
-    const today = moment().format("YYYY-MM-DDTHH:mm")
-    setDateInputValue(today)
-  }, [])
+  // Handle date input as a state
+  const [dateInputValue, setDateInputValue] = useState(deadline)
 
   // Columns
   const [columns] = useQuery(getColumns, {
