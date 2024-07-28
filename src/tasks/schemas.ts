@@ -179,6 +179,7 @@ export const UpdateTaskSchema = z.object({
   elementId: z.number().optional().nullable(),
   contributorsId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.any()).optional().nullable(),
+  labelsId: z.array(z.number()).optional().nullable(),
   schema: z
     .unknown()
     .nullable()
