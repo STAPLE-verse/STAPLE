@@ -49,9 +49,8 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
             },
           },
           statusLogs: {
-            orderBy: {
-              createdAt: "desc",
-            },
+            orderBy: { createdAt: "desc" },
+            include: { contributor: { include: { user: { select: { username: true } } } } },
           },
         },
       },

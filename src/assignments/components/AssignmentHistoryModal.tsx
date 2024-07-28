@@ -1,18 +1,19 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { AssignmentStatusLog } from "db"
 import { useState } from "react"
 import Modal from "src/core/components/Modal"
 import { AssignmentMetadataModal } from "./AssignmentTable"
 import Table from "src/core/components/Table"
+import { ExtendedAssignmentStatusLog } from "../hooks/useAssignmentData"
 
 // Column helper
-const columnHelper = createColumnHelper<AssignmentStatusLog>()
+const columnHelper = createColumnHelper<ExtendedAssignmentStatusLog>()
 
 // ColumnDefs
-const assignmentHistoryTableColumns: ColumnDef<AssignmentStatusLog>[] = [
-  columnHelper.accessor("completedBy", {
+const assignmentHistoryTableColumns: ColumnDef<ExtendedAssignmentStatusLog>[] = [
+  columnHelper.accessor((row) => row.contributor?.user.username || "Task created", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Changed By",
+    id: "changedBy",
   }),
   columnHelper.accessor(
     (row) =>
@@ -49,10 +50,11 @@ const assignmentHistoryTableColumns: ColumnDef<AssignmentStatusLog>[] = [
     header: "Form Data",
   }),
 ]
-const assignmentHistoryTableColumnsNoMeta: ColumnDef<AssignmentStatusLog>[] = [
-  columnHelper.accessor("completedBy", {
+const assignmentHistoryTableColumnsNoMeta: ColumnDef<ExtendedAssignmentStatusLog>[] = [
+  columnHelper.accessor((row) => row.contributor?.user.username || "Task created", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Changed By",
+    id: "changedBy",
   }),
   columnHelper.accessor(
     (row) =>
