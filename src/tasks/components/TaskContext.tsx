@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode } from "react"
+import React, { createContext, ReactNode, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
 import useAssignmentData from "src/assignments/hooks/useAssignmentData"
@@ -15,8 +15,8 @@ export type ExtendedTask = Task & {
 }
 
 interface TaskContextType {
-  task: ExtendedTask | null
-  assignmentProgress: AssignmentProgressType | null
+  task: ExtendedTask
+  assignmentProgress: AssignmentProgressType
   individualAssignments: ExtendedAssignment[]
   teamAssignments: ExtendedAssignment[]
   refetchTaskData: () => void
@@ -25,7 +25,6 @@ interface TaskContextType {
 // Creating props interface
 interface TaskProviderProps {
   taskId: number
-  projectId: number
   children: ReactNode
 }
 
@@ -61,10 +60,6 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
   const assignmentProgress = useAssignmentProgress(task)
   const { individualAssignments, teamAssignments } = useAssignmentData(task)
 
-  if (!task) {
-    return <div>Loading...</div>
-  }
-
   // Set context value
   const contextValue = {
     task,
@@ -75,4 +70,12 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
   }
 
   return <TaskContext.Provider value={contextValue}>{children}</TaskContext.Provider>
+}
+
+export const useTaskContext = () => {
+  const context = useContext(TaskContext)
+  if (!context) {
+    throw new Error("useTaskContext must be used within a TaskProvider")
+  }
+  return context
 }

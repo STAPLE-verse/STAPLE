@@ -7,22 +7,25 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { CompleteTaskToggle } from "./CompleteTaskToggle"
 import { TaskFormData } from "./TaskFormData"
-import { useContext } from "react"
-import { TaskContext } from "src/tasks/components/TaskContext"
+
+// Interface
+interface TaskSummaryProps {
+  taskId: number
+  projectId: number
+}
 
 // Create task summary for the PM
-export const TaskSummary = () => {
+export const TaskSummary = ({ taskId, projectId }: TaskSummaryProps) => {
   // Setup
   const router = useRouter()
   const [deleteTaskMutation] = useMutation(deleteTask)
-
-  const taskContext = useContext(TaskContext)
-
-  if (!taskContext || !taskContext.task) {
-    return <div>Loading...</div>
+  // Handle events
+  const handleDelete = async () => {
+    if (window.confirm("The task will be permanently deleted. Are you sure to continue?")) {
+      await deleteTaskMutation({ id: taskId })
+      await router.push(Routes.TasksPage({ projectId: projectId }))
+    }
   }
-
-  const { task } = taskContext
 
   return (
     <div className="flex flex-row justify-center m-2">
@@ -43,26 +46,13 @@ export const TaskSummary = () => {
               <div className="stat-title text-2xl text-inherit">
                 <Link
                   className="btn btn-primary"
-                  href={Routes.EditTaskPage({ projectId: task.projectId, taskId: task.id })}
+                  href={Routes.EditTaskPage({ projectId: projectId, taskId: taskId })}
                 >
                   Update task
                 </Link>
               </div>
               <div className="stat-value">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={async () => {
-                    if (
-                      window.confirm(
-                        "The task will be permanently deleted. Are you sure to continue?"
-                      )
-                    ) {
-                      await deleteTaskMutation({ id: task.id })
-                      await router.push(Routes.TasksPage({ projectId: task.projectId }))
-                    }
-                  }}
-                >
+                <button type="button" className="btn btn-secondary" onClick={handleDelete}>
                   Delete task
                 </button>
               </div>

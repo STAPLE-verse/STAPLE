@@ -20,7 +20,7 @@ import Table from "src/core/components/Table"
 import Link from "next/link"
 import getTask from "src/tasks/queries/getTask"
 
-export const AssignmentsPage = () => {
+const AssignmentsContent = () => {
   // Get values
   const taskId = useParam("taskId", "number")
   const projectId = useParam("projectId", "number")
@@ -79,81 +79,85 @@ export const AssignmentsPage = () => {
     teamColumns = teamAssignmentTableColumns
   }
 
-  //console.log(task)
+  return (
+    <main className="flex flex-col mb-2 currentContributormt-2 mx-auto w-full max-w-7xl">
+      <h1 className="flex justify-center mb-2 text-3xl">Review and Complete Tasks</h1>
 
+      <div className="flex flex-row justify-center">
+        <div className="card bg-base-300 w-full">
+          <div className="card-body overflow-x-auto">
+            <div className="card-title">{task.name}</div>
+            {task.description}
+            <div className="card-actions justify-end">
+              <Link
+                className="btn btn-primary"
+                href={Routes.EditTaskPage({
+                  projectId: projectId as number,
+                  taskId: taskId as number,
+                })}
+              >
+                Edit Task
+              </Link>
+
+              {assignments[0]?.task.schema ? (
+                <Link
+                  className="btn btn-secondary mx-2"
+                  href={Routes.ShowFormPage({
+                    projectId: projectId as number,
+                    taskId: taskId as number,
+                  })}
+                >
+                  Download Form Data
+                </Link>
+              ) : (
+                ""
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-row justify-center mt-2">
+        <div className="card bg-base-300 w-full">
+          <div className="card-body overflow-x-auto">
+            <div className="card-title">Individual Contributors</div>
+            {assignments.length > 0 ? (
+              <Table columns={individualColumns} data={assignments} />
+            ) : (
+              <span>This task does not have individual contributors </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-row justify-center mt-2">
+        <div className="card bg-base-300 w-full">
+          <div className="card-body overflow-x-auto">
+            <div className="card-title">Team Contributors</div>
+            {teamAssignments.length > 0 ? (
+              <Table columns={teamColumns} data={teamAssignments} />
+            ) : (
+              <span>This task does not have teams of contributors</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <Link
+        className="btn self-end mt-4"
+        href={Routes.ShowTaskPage({ projectId: projectId!, taskId: taskId! })}
+      >
+        Go back
+      </Link>
+    </main>
+  )
+}
+
+export const AssignmentsPage = () => {
   return (
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
-        <main className="flex flex-col mb-2 currentContributormt-2 mx-auto w-full max-w-7xl">
-          <h1 className="flex justify-center mb-2 text-3xl">Review and Complete Tasks</h1>
-
-          <div className="flex flex-row justify-center">
-            <div className="card bg-base-300 w-full">
-              <div className="card-body overflow-x-auto">
-                <div className="card-title">{task.name}</div>
-                {task.description}
-                <div className="card-actions justify-end">
-                  <Link
-                    className="btn btn-primary"
-                    href={Routes.EditTaskPage({
-                      projectId: projectId as number,
-                      taskId: taskId as number,
-                    })}
-                  >
-                    Edit Task
-                  </Link>
-
-                  {assignments[0]?.task.schema ? (
-                    <Link
-                      className="btn btn-secondary mx-2"
-                      href={Routes.ShowFormPage({
-                        projectId: projectId as number,
-                        taskId: taskId as number,
-                      })}
-                    >
-                      Download Form Data
-                    </Link>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-row justify-center mt-2">
-            <div className="card bg-base-300 w-full">
-              <div className="card-body overflow-x-auto">
-                <div className="card-title">Individual Contributors</div>
-                {assignments.length > 0 ? (
-                  <Table columns={individualColumns} data={assignments} />
-                ) : (
-                  <span>This task does not have individual contributors </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-row justify-center mt-2">
-            <div className="card bg-base-300 w-full">
-              <div className="card-body overflow-x-auto">
-                <div className="card-title">Team Contributors</div>
-                {teamAssignments.length > 0 ? (
-                  <Table columns={teamColumns} data={teamAssignments} />
-                ) : (
-                  <span>This task does not have teams of contributors</span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <Link
-            className="btn self-end mt-4"
-            href={Routes.ShowTaskPage({ projectId: projectId!, taskId: taskId! })}
-          >
-            Go back
-          </Link>
-        </main>
+        <AssignmentsContent />
       </Suspense>
     </Layout>
   )
