@@ -1,6 +1,6 @@
 import { Suspense } from "react"
 import { useQuery } from "@blitzjs/rpc"
-import { Routes, useParam } from "@blitzjs/next"
+import { Routes } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
 import getAssignments from "src/assignments/queries/getAssignments"
@@ -18,17 +18,16 @@ import {
 
 import Table from "src/core/components/Table"
 import Link from "next/link"
-import getTask from "src/tasks/queries/getTask"
+import TaskLayout from "src/core/layouts/TaskLayout"
+import { useTaskContext } from "src/tasks/components/TaskContext"
 
 const AssignmentsContent = () => {
   // Get values
-  const taskId = useParam("taskId", "number")
-  const projectId = useParam("projectId", "number")
-  const [task] = useQuery(getTask, { where: { id: taskId } })
+  const { task } = useTaskContext()
 
   // Get assignments
   const [assignments] = useQuery(getAssignments, {
-    where: { taskId: taskId, teamId: null },
+    where: { taskId: task.id, teamId: null },
     include: {
       task: true,
       contributor: {
@@ -47,7 +46,7 @@ const AssignmentsContent = () => {
   }) as unknown as [AssignmentWithRelations[], { refetch: () => void }]
 
   const [teamAssignments] = useQuery(getAssignments, {
-    where: { taskId: taskId, contributorId: null },
+    where: { taskId: task.id, contributorId: null },
     include: {
       task: true,
       team: {
@@ -92,8 +91,8 @@ const AssignmentsContent = () => {
               <Link
                 className="btn btn-primary"
                 href={Routes.EditTaskPage({
-                  projectId: projectId as number,
-                  taskId: taskId as number,
+                  projectId: task.projectId as number,
+                  taskId: task.id as number,
                 })}
               >
                 Edit Task
@@ -103,8 +102,8 @@ const AssignmentsContent = () => {
                 <Link
                   className="btn btn-secondary mx-2"
                   href={Routes.ShowFormPage({
-                    projectId: projectId as number,
-                    taskId: taskId as number,
+                    projectId: task.projectId as number,
+                    taskId: task.id as number,
                   })}
                 >
                   Download Form Data
@@ -145,7 +144,7 @@ const AssignmentsContent = () => {
 
       <Link
         className="btn self-end mt-4"
-        href={Routes.ShowTaskPage({ projectId: projectId!, taskId: taskId! })}
+        href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
       >
         Go back
       </Link>
@@ -156,9 +155,11 @@ const AssignmentsContent = () => {
 export const AssignmentsPage = () => {
   return (
     <Layout>
-      <Suspense fallback={<div>Loading...</div>}>
-        <AssignmentsContent />
-      </Suspense>
+      <TaskLayout>
+        <Suspense fallback={<div>Loading...</div>}>
+          <AssignmentsContent />
+        </Suspense>
+      </TaskLayout>
     </Layout>
   )
 }

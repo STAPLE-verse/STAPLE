@@ -3,12 +3,12 @@ import { TaskSummary } from "src/tasks/components/TaskSummary"
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { useParam } from "@blitzjs/next"
 import { ContributorPrivileges } from "@prisma/client"
 import { TaskInformation } from "src/tasks/components/TaskInformation"
 import { AssignmentCompletion } from "src/assignments/components/AssignmentCompletion"
-import { TaskProvider, useTaskContext } from "src/tasks/components/TaskContext"
+import { useTaskContext } from "src/tasks/components/TaskContext"
 import { useContributorPrivilege } from "src/contributors/components/ContributorPrivilegeContext"
+import TaskLayout from "src/core/layouts/TaskLayout"
 
 const TaskContent = () => {
   const { task } = useTaskContext()
@@ -33,19 +33,15 @@ const TaskContent = () => {
 }
 
 // Show the task page
-export const ShowTaskPage = () => {
-  const taskId = useParam("taskId", "number")
-
-  return (
-    <Layout>
+export const ShowTaskPage = () => (
+  <Layout>
+    <TaskLayout>
       <Suspense fallback={<div>Loading...</div>}>
-        <TaskProvider taskId={taskId!}>
-          <TaskContent />
-        </TaskProvider>
+        <TaskContent />
       </Suspense>
-    </Layout>
-  )
-}
+    </TaskLayout>
+  </Layout>
+)
 
 ShowTaskPage.authenticate = true
 
