@@ -6,7 +6,7 @@ import { usePaginatedQuery } from "@blitzjs/rpc"
 import getElements from "../queries/getElements"
 
 interface ElementsWithTasks extends Element {
-  Task?: Task[]
+  task?: Task[]
 }
 
 export const ElementsList: React.FC = ({}) => {
@@ -36,7 +36,7 @@ export const ElementsList: React.FC = ({}) => {
     <div>
       {elements.map((element) => {
         // Get tasks for the element
-        const tasks = element.Task
+        const tasks = element.task
 
         return (
           <div className="collapse collapse-arrow bg-base-300 mb-2" key={element.id}>
