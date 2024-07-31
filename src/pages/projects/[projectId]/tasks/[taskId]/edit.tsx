@@ -26,7 +26,11 @@ export const EditTask = () => {
 
   const [task, { setQueryData }] = useQuery(
     getTask,
-    { where: { id: taskId } },
+    {
+      where: { id: taskId },
+      include: { labels: true },
+    },
+
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -48,6 +52,8 @@ export const EditTask = () => {
     // assignment.contributorId is nullable thus we filter for initialValues
     .filter((id): id is number => id !== null)
 
+  const labelsId = task.labels != undefined ? task.labels.map((label) => label.id) : []
+
   const initialValues = {
     name: task.name,
     description: task.description!,
@@ -55,6 +61,7 @@ export const EditTask = () => {
     deadline: task.deadline,
     contributorsId: contributorsId,
     teamsId: teamsId,
+    labelsId: labelsId,
     schema: task.schema ? task.schema.title : undefined,
     elementId: task.elementId,
   }

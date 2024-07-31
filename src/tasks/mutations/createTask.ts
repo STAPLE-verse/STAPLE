@@ -17,6 +17,7 @@ export default resolver.pipe(
       createdById,
       contributorsId,
       teamsId,
+      labelsId,
       schema,
       ui,
     },
@@ -59,6 +60,16 @@ export default resolver.pipe(
           include: {
             user: true,
           },
+        },
+      },
+    })
+
+    //Connect to labels
+    let task1 = await db.task.update({
+      where: { id: task.id },
+      data: {
+        labels: {
+          connect: labelsId?.map((c) => ({ id: c })) || [],
         },
       },
     })

@@ -11,9 +11,26 @@ export const password = z
   .max(100)
   .transform((str) => str.trim())
 
-export const Signup = z.object({
+export const password_confirm = z
+  .string()
+  .min(10)
+  .max(100)
+  .transform((str) => str.trim())
+
+export const Signup = z
+  .object({
+    email,
+    password,
+    username: z.string().min(3),
+    password_confirm,
+  })
+  .refine((data) => data.password === data.password_confirm, {
+    path: ["password_confirm"],
+    message: "Passwords does not match",
+  })
+
+export const UsernameExist = z.object({
   email,
-  password,
   username: z.string().min(3),
 })
 
