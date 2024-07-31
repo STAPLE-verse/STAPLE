@@ -10,12 +10,17 @@ export type ExtendedContributor = Contributor & {
   user: Pick<User, "username">
 }
 
+export type ExtendedTeam = Team & {
+  contributors: ExtendedContributor[]
+}
+
 export type ExtendedAssignmentStatusLog = AssignmentStatusLog & {
   contributor?: ExtendedContributor | null
 }
+
 export type ExtendedAssignment = Assignment & {
-  contributor?: Contributor | null
-  team?: (Team & { contributors: Contributor[] }) | null
+  contributor?: ExtendedContributor | null
+  team?: ExtendedTeam | null
   statusLogs?: ExtendedAssignmentStatusLog[]
 }
 
@@ -24,6 +29,7 @@ type useAssignmentDataType = {
   teamAssignments: ExtendedAssignment[]
 }
 
+// Hook to get assignment data from task returned by taskContext
 export default function useAssignmentData(task: ExtendedTask): useAssignmentDataType {
   // Get assignments
   const assignments = task.assignees

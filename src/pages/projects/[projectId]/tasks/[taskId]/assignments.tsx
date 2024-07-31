@@ -1,82 +1,34 @@
 import { Suspense } from "react"
-import { useQuery } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
-
 import Layout from "src/core/layouts/Layout"
-import getAssignments from "src/assignments/queries/getAssignments"
 import {
-  AssignmentWithRelations,
   assignmentTableColumns,
   assignmentTableColumnsSchema,
 } from "src/assignments/components/AssignmentTable"
-
 import {
-  TeamAssignmentWithRelations,
   teamAssignmentTableColumns,
   teamAssignmentTableColumnsSchema,
 } from "src/assignments/components/TeamAssignmentTable"
-
 import Table from "src/core/components/Table"
 import Link from "next/link"
 import TaskLayout from "src/core/layouts/TaskLayout"
 import { useTaskContext } from "src/tasks/components/TaskContext"
+import {
+  processIndividualAssignments,
+  processTeamAssignments,
+} from "src/assignments/utils/processAssignments"
 
 const AssignmentsContent = () => {
   // Get values
-  const { task } = useTaskContext()
+  const { task, individualAssignments, teamAssignments } = useTaskContext()
 
-  // Get assignments
-  const [assignments] = useQuery(getAssignments, {
-    where: { taskId: task.id, teamId: null },
-    include: {
-      task: true,
-      contributor: {
-        include: {
-          user: true,
-        },
-      },
-      statusLogs: {
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: 1, // TODO: Make new queries that are specified to these tasks once MVP is nearly ready
-      },
-    },
-    // TODO: replace this with actual type def
-  }) as unknown as [AssignmentWithRelations[], { refetch: () => void }]
+  // Preprocess assignments to include only the latest log
+  const processedIndividualAssignments = processIndividualAssignments(individualAssignments)
+  const processedTeamAssignments = processTeamAssignments(teamAssignments)
 
-  const [teamAssignments] = useQuery(getAssignments, {
-    where: { taskId: task.id, contributorId: null },
-    include: {
-      task: true,
-      team: {
-        include: {
-          contributors: {
-            include: {
-              user: true,
-            },
-          },
-        },
-      },
-      statusLogs: {
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: 1, // TODO: Make new queries that are specified to these tasks once MVP is nearly ready
-      },
-    },
-    // TODO: replace this with actual type def
-  }) as unknown as [TeamAssignmentWithRelations[], { refetch: () => void }]
-
-  let individualColumns
-  let teamColumns
-  if (assignments[0]?.task.schema) {
-    individualColumns = assignmentTableColumnsSchema
-    teamColumns = teamAssignmentTableColumnsSchema
-  } else {
-    individualColumns = assignmentTableColumns
-    teamColumns = teamAssignmentTableColumns
-  }
+  // Get columns definitions for tables
+  const individualColumns = task.schema ? assignmentTableColumnsSchema : assignmentTableColumns
+  const teamColumns = task.schema ? teamAssignmentTableColumnsSchema : teamAssignmentTableColumns
 
   return (
     <main className="flex flex-col mb-2 currentContributormt-2 mx-auto w-full max-w-7xl">
@@ -98,7 +50,7 @@ const AssignmentsContent = () => {
                 Edit Task
               </Link>
 
-              {assignments[0]?.task.schema ? (
+              {task.schema && (
                 <Link
                   className="btn btn-secondary mx-2"
                   href={Routes.ShowFormPage({
@@ -108,8 +60,6 @@ const AssignmentsContent = () => {
                 >
                   Download Form Data
                 </Link>
-              ) : (
-                ""
               )}
             </div>
           </div>
@@ -120,8 +70,8 @@ const AssignmentsContent = () => {
         <div className="card bg-base-300 w-full">
           <div className="card-body overflow-x-auto">
             <div className="card-title">Individual Contributors</div>
-            {assignments.length > 0 ? (
-              <Table columns={individualColumns} data={assignments} />
+            {processedIndividualAssignments.length > 0 ? (
+              <Table columns={individualColumns} data={processedIndividualAssignments} />
             ) : (
               <span>This task does not have individual contributors </span>
             )}
@@ -133,8 +83,8 @@ const AssignmentsContent = () => {
         <div className="card bg-base-300 w-full">
           <div className="card-body overflow-x-auto">
             <div className="card-title">Team Contributors</div>
-            {teamAssignments.length > 0 ? (
-              <Table columns={teamColumns} data={teamAssignments} />
+            {processedTeamAssignments.length > 0 ? (
+              <Table columns={teamColumns} data={processedTeamAssignments} />
             ) : (
               <span>This task does not have teams of contributors</span>
             )}

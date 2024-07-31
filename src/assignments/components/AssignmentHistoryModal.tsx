@@ -1,9 +1,9 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { useState } from "react"
 import Modal from "src/core/components/Modal"
-import { AssignmentMetadataModal } from "./AssignmentTable"
 import Table from "src/core/components/Table"
 import { ExtendedAssignmentStatusLog } from "../hooks/useAssignmentData"
+import { AssignmentMetadataModal } from "./AssignmentMetadataModal"
 
 // Column helper
 const columnHelper = createColumnHelper<ExtendedAssignmentStatusLog>()

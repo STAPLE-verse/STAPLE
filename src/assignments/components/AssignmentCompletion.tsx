@@ -49,7 +49,7 @@ export const AssignmentCompletion = () => {
           <div className="flex grid-col-2">
             <CompleteToggle
               currentAssignment={individualAssignments[0]}
-              refetch={refetchTaskData}
+              // refetch={refetchTaskData}
               completedLabel="Completed"
               completedBy={currentContributor.id}
               completedAs={CompletedAs.INDIVIDUAL}
@@ -67,7 +67,7 @@ export const AssignmentCompletion = () => {
               <div key={teamAssignment.id} className="flex flex-col gap-2">
                 <CompleteToggle
                   currentAssignment={teamAssignment}
-                  refetch={refetchTaskData}
+                  // refetch={refetchTaskData}
                   completedLabel="Completed"
                   completedBy={currentContributor.id}
                   completedAs={CompletedAs.TEAM}
@@ -85,7 +85,7 @@ export const AssignmentCompletion = () => {
           <div className="flex grid-col-2">
             <CompleteSchema
               currentAssignment={individualAssignments[0]}
-              refetch={refetchTaskData}
+              // refetch={refetchTaskData}
               completedBy={currentContributor.id}
               completedAs={CompletedAs.INDIVIDUAL}
               schema={task["schema"]}
@@ -104,7 +104,7 @@ export const AssignmentCompletion = () => {
               <div key={teamAssignment.id} className="mb-2 flex grid-col-2">
                 <CompleteSchema
                   currentAssignment={teamAssignment}
-                  refetch={refetchTaskData}
+                  // refetch={refetchTaskData}
                   completedBy={currentContributor.id}
                   completedAs={CompletedAs.TEAM}
                   schema={task["schema"]}

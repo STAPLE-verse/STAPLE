@@ -3,8 +3,6 @@ import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
 import useAssignmentData from "src/assignments/hooks/useAssignmentData"
 import { Task, Column, Element } from "db"
-import { AssignmentProgressType } from "src/assignments/queries/getAssignmentProgress"
-import useAssignmentProgress from "src/assignments/hooks/useAssignmentProgress"
 import { ExtendedAssignment } from "src/assignments/hooks/useAssignmentData"
 
 // Creating custom types
@@ -16,7 +14,6 @@ export type ExtendedTask = Task & {
 
 interface TaskContextType {
   task: ExtendedTask
-  assignmentProgress: AssignmentProgressType
   individualAssignments: ExtendedAssignment[]
   teamAssignments: ExtendedAssignment[]
   refetchTaskData: () => void
@@ -41,10 +38,14 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
       column: true,
       assignees: {
         include: {
-          contributor: true,
+          contributor: { include: { user: { select: { username: true } } } },
           team: {
             include: {
-              contributors: true,
+              contributors: {
+                include: {
+                  user: { select: { username: true } },
+                },
+              },
             },
           },
           statusLogs: {
@@ -57,13 +58,11 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
   }) as [ExtendedTask, any]
 
   // Filter data
-  const assignmentProgress = useAssignmentProgress(task)
   const { individualAssignments, teamAssignments } = useAssignmentData(task)
 
   // Set context value
   const contextValue = {
     task,
-    assignmentProgress,
     individualAssignments,
     teamAssignments,
     refetchTaskData,
