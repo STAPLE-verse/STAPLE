@@ -1,7 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { CompletedAs } from "db"
 import { CreateTaskSchema } from "../schemas"
-import sendNotification from "src/messages/mutations/sendNotification"
+import sendNotification from "src/notifications/mutations/sendNotification"
 
 export default resolver.pipe(
   resolver.zod(CreateTaskSchema),

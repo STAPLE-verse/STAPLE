@@ -19,6 +19,7 @@ import { taskFinishedTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
 import { ContributorPrivileges } from "db"
 import toast from "react-hot-toast"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 
 export const ContributorPage = () => {
   const router = useRouter()
@@ -159,6 +160,7 @@ export const ContributorPage = () => {
 }
 
 const ShowContributorPage = () => {
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <ContributorPage />

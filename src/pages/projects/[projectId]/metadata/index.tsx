@@ -1,10 +1,13 @@
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-
-import { ProjectFormTable, projectFormTableColumns } from "src/forms/components/ProjectFormsTable"
+import { ProjectFormTable } from "src/forms/components/ProjectFormsTable"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "db"
 
 const MetadataPage = () => {
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+
   return (
     <Layout>
       <Head>

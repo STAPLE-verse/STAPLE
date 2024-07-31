@@ -10,6 +10,8 @@ import Layout from "src/core/layouts/Layout"
 import getTeams from "src/teams/queries/getTeams"
 import { TeamInformation, teamTableColumns } from "src/teams/components/TeamTable"
 import Table from "src/core/components/Table"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "db"
 
 const ITEMS_PER_PAGE = 7
 
@@ -59,6 +61,8 @@ export const AllTeamList = () => {
 
 // Issue 37
 const TeamsPage = () => {
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+
   const projectId = useParam("projectId", "number")
 
   return (

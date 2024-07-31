@@ -38,18 +38,18 @@ export const ProjectSidebarItems = (projectId: number): SidebarItemProps[] => {
       privilege: [ContributorPrivileges.CONTRIBUTOR, ContributorPrivileges.PROJECT_MANAGER],
     },
     {
-      icon: ClipboardDocumentListIcon,
-      text: "Tasks",
-      route: Routes.TasksPage({ projectId: projectId }),
-      tooltipId: "project-tasks-tooltip",
-      privilege: [ContributorPrivileges.CONTRIBUTOR, ContributorPrivileges.PROJECT_MANAGER],
-    },
-    {
       icon: RectangleStackIcon,
       text: "Elements",
       route: Routes.ElementsPage({ projectId: projectId }),
       tooltipId: "project-elements-tooltip",
       privilege: [ContributorPrivileges.PROJECT_MANAGER],
+    },
+    {
+      icon: ClipboardDocumentListIcon,
+      text: "Tasks",
+      route: Routes.TasksPage({ projectId: projectId }),
+      tooltipId: "project-tasks-tooltip",
+      privilege: [ContributorPrivileges.CONTRIBUTOR, ContributorPrivileges.PROJECT_MANAGER],
     },
     {
       icon: UsersIcon,

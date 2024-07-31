@@ -1,14 +1,20 @@
-import Head from "next/head"
 import React from "react"
+import Head from "next/head"
 import { BlitzLayout } from "@blitzjs/next"
 import MainNavbar from "../components/navbar/MainNavbar"
 import Sidebar from "../components/sidebar/Sidebar"
 import { Toaster } from "react-hot-toast"
+import useSidebar from "src/core/hooks/useSidebar"
+import useExpanded from "src/core/hooks/useExpanded"
 
 const Layout: BlitzLayout<{
   title?: string
   children?: React.ReactNode
 }> = ({ title, children }) => {
+  // States for sidebar
+  const sidebarState = useSidebar()
+  const { expanded, toggleExpand } = useExpanded()
+
   return (
     <>
       <Toaster position="bottom-center" reverseOrder={false} />
@@ -19,7 +25,7 @@ const Layout: BlitzLayout<{
       <div className="flex flex-col min-h-screen">
         <MainNavbar />
         <div className="flex flex-grow">
-          <Sidebar />
+          <Sidebar sidebarState={sidebarState} expanded={expanded} toggleExpand={toggleExpand} />
           <div className="flex-1 overflow-scroll p-4">{children}</div>
         </div>
       </div>

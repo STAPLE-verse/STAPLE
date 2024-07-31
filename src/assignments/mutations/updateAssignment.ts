@@ -1,7 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { UpdateAssignmentSchema } from "../schemas"
-import sendNotification from "src/messages/mutations/sendNotification"
+import sendNotification from "src/notifications/mutations/sendNotification"
 import { getAssignmentStatusText } from "src/services/getAssignmentStatusText"
 
 export default resolver.pipe(
