@@ -13,9 +13,7 @@ const ProfilePage = () => {
 
     return (
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl flex justify-center mb-2">
-          {currentUser.username}`&apos;`s profile
-        </h1>
+        <h1 className="text-3xl flex justify-center mb-2">{currentUser.username}&apos;s profile</h1>
         <div className="text-lg">
           <div className="card bg-base-300 w-full">
             <div className="card-body">
