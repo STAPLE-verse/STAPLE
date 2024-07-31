@@ -36,7 +36,7 @@ const ProfilePage = () => {
               )}
               <br />
               <span className="font-semibold">Institution:</span>{" "}
-              {!!currentUser.institution ? (
+              {currentUser.institution ? (
                 currentUser.institution
               ) : (
                 <span className="italic">
