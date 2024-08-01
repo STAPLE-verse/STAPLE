@@ -1,6 +1,11 @@
 import { getContributorName } from "src/services/getName"
-import { ExtendedAssignment, ExtendedTeam } from "../hooks/useAssignmentData"
+import {
+  ExtendedAssignment,
+  ExtendedAssignmentStatusLog,
+  ExtendedTeam,
+} from "../hooks/useAssignmentData"
 import { getLatestStatusLog } from "./getLatestStatusLog"
+import { Prisma } from "@prisma/client"
 
 export type ProcessedIndividualAssignment = {
   contributorName: string
@@ -74,5 +79,50 @@ export function processTeamAssignments(
         : "Unknown",
       assignment,
     }
+  })
+}
+
+export type ProcessedAssignmentHistory = {
+  contributorName: string
+  lastUpdate: string
+  status: string
+  formData?: {
+    metadata: Prisma.JsonValue
+    schema: Prisma.JsonValue
+    ui: Prisma.JsonValue
+  }
+}
+
+export function processAssignmentHistory(
+  assignmentStatusLog: ExtendedAssignmentStatusLog[],
+  schema?: any,
+  ui?: any
+): ProcessedAssignmentHistory[] {
+  return assignmentStatusLog.map((statusLog) => {
+    const processedData: ProcessedAssignmentHistory = {
+      contributorName: statusLog.contributor
+        ? getContributorName(statusLog.contributor)
+        : "Task created",
+      lastUpdate: statusLog.createdAt.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }),
+      status: statusLog.status === "COMPLETED" ? "Completed" : "Not Completed",
+    }
+
+    if (schema && ui) {
+      processedData.formData = {
+        metadata: statusLog.metadata,
+        schema: schema,
+        ui: ui,
+      }
+    }
+
+    return processedData
   })
 }

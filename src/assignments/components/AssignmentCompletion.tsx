@@ -3,33 +3,13 @@ import AssignmentHistoryModal from "./AssignmentHistoryModal"
 import CompleteSchema from "./CompleteSchema"
 import CompleteToggle from "./CompleteToggle"
 import { CompletedAs } from "db"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getContributor from "src/contributors/queries/getContributor"
-import { useQuery } from "@blitzjs/rpc"
-import { useContext } from "react"
-import { TaskContext } from "src/tasks/components/TaskContext"
-import { useParam } from "@blitzjs/next"
+import { useTaskContext } from "src/tasks/components/TaskContext"
+import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
 export const AssignmentCompletion = () => {
-  const projectId = useParam("projectId", "number")
-  // TODO: Replace by hook
-  const currentUser = useCurrentUser()
-  const [currentContributor] = useQuery(getContributor, {
-    where: { projectId: projectId, userId: currentUser!.id },
-  })
+  const { task, individualAssignments, teamAssignments } = useTaskContext()
 
-  const taskContext = useContext(TaskContext)
-
-  if (
-    !taskContext ||
-    !taskContext.individualAssignments ||
-    !taskContext.teamAssignments ||
-    !taskContext.task
-  ) {
-    return <div>Loading...</div>
-  }
-
-  const { task, individualAssignments, teamAssignments, refetchTaskData } = taskContext
+  const { contributor: currentContributor } = useCurrentContributor(task.projectId)
 
   return (
     <div className="card bg-base-300 mx-2 w-1/2">
@@ -49,13 +29,12 @@ export const AssignmentCompletion = () => {
           <div className="flex grid-col-2">
             <CompleteToggle
               currentAssignment={individualAssignments[0]}
-              // refetch={refetchTaskData}
               completedLabel="Completed"
-              completedBy={currentContributor.id}
+              completedBy={currentContributor?.id}
               completedAs={CompletedAs.INDIVIDUAL}
             />
             <span className="mx-2">
-              <AssignmentHistoryModal assignmentStatusLog={individualAssignments[0]!.statusLogs} />
+              <AssignmentHistoryModal assignmentStatusLog={individualAssignments[0]!.statusLogs!} />
             </span>
           </div>
         )}
@@ -67,13 +46,12 @@ export const AssignmentCompletion = () => {
               <div key={teamAssignment.id} className="flex flex-col gap-2">
                 <CompleteToggle
                   currentAssignment={teamAssignment}
-                  // refetch={refetchTaskData}
                   completedLabel="Completed"
-                  completedBy={currentContributor.id}
+                  completedBy={currentContributor?.id}
                   completedAs={CompletedAs.TEAM}
                 />
                 <span className="mx-2">
-                  <AssignmentHistoryModal assignmentStatusLog={teamAssignment.statusLogs} />
+                  <AssignmentHistoryModal assignmentStatusLog={teamAssignment.statusLogs!} />
                 </span>
               </div>
             ))}
@@ -85,14 +63,17 @@ export const AssignmentCompletion = () => {
           <div className="flex grid-col-2">
             <CompleteSchema
               currentAssignment={individualAssignments[0]}
-              // refetch={refetchTaskData}
-              completedBy={currentContributor.id}
+              completedBy={currentContributor?.id}
               completedAs={CompletedAs.INDIVIDUAL}
               schema={task["schema"]}
               ui={task["ui"]}
             />
             <span className="mx-2">
-              <AssignmentHistoryModal assignmentStatusLog={individualAssignments[0]!.statusLogs} />
+              <AssignmentHistoryModal
+                assignmentStatusLog={individualAssignments[0]!.statusLogs!}
+                schema={task.schema}
+                ui={task.ui}
+              />
             </span>
           </div>
         )}
@@ -104,15 +85,18 @@ export const AssignmentCompletion = () => {
               <div key={teamAssignment.id} className="mb-2 flex grid-col-2">
                 <CompleteSchema
                   currentAssignment={teamAssignment}
-                  // refetch={refetchTaskData}
-                  completedBy={currentContributor.id}
+                  completedBy={currentContributor?.id}
                   completedAs={CompletedAs.TEAM}
                   schema={task["schema"]}
                   ui={task["ui"]}
                 />
 
                 <span className="mx-2">
-                  <AssignmentHistoryModal assignmentStatusLog={teamAssignment.statusLogs} />
+                  <AssignmentHistoryModal
+                    assignmentStatusLog={teamAssignment.statusLogs!}
+                    schema={task.schema}
+                    ui={task.ui}
+                  />
                 </span>
               </div>
             ))}
