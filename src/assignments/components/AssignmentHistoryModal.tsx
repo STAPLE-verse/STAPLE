@@ -47,9 +47,11 @@ export const AssignmentHistoryModal = ({
               }}
             />
             {/* Closes the modal */}
-            <button type="button" className="btn btn-primary" onClick={handleToggle}>
-              Close
-            </button>
+            <div className="flex justify-end">
+              <button type="button" className="btn btn-secondary" onClick={handleToggle}>
+                Close
+              </button>
+            </div>
           </div>
         </Modal>
       </div>
