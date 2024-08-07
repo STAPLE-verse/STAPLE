@@ -98,7 +98,7 @@ export const useTeamTaskListDone = (teamId: number) => {
             : "No labels assigned",
         // Date
         completedAt:
-          assignee.statusLogs[0].createdAt?.toLocaleDateString(undefined, {
+          assignee.statusLogs[0].createdAt?.toLocaleDateString("en-us", {
             year: "numeric",
             month: "long",
             day: "numeric",

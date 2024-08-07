@@ -25,7 +25,7 @@ export const taskTableColumns = [
   columnHelper.accessor("deadline", {
     cell: (info) => (
       <span>
-        {info.getValue()?.toLocaleDateString(undefined, {
+        {info.getValue()?.toLocaleDateString("en-us", {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -81,7 +81,7 @@ export const taskFinishedTableColumns = [
   columnHelper.accessor("assignees", {
     cell: (info) => {
       const varName = "statusLogs"
-      const temp = info.getValue()[0].statusLogs[0].createdAt?.toLocaleDateString(undefined, {
+      const temp = info.getValue()[0].statusLogs[0].createdAt?.toLocaleDateString("en-us", {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -142,7 +142,7 @@ export const taskFinishedTableColumnsTeam = [
   }),
   columnHelper.accessor("assignees", {
     cell: (info) => {
-      const temp = info.getValue()[0].statusLogs[0].createdAt?.toLocaleDateString(undefined, {
+      const temp = info.getValue()[0].statusLogs[0].createdAt?.toLocaleDateString("en-us", {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -190,7 +190,7 @@ export const taskProjectTableColumnsContrib = [
   columnHelper.accessor("deadline", {
     cell: (info) => (
       <span>
-        {info.getValue()?.toLocaleDateString(undefined, {
+        {info.getValue()?.toLocaleDateString("en-us", {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -245,7 +245,7 @@ export const taskProjectTableColumnsPM = [
   columnHelper.accessor("deadline", {
     cell: (info) => (
       <span>
-        {info.getValue()?.toLocaleDateString(undefined, {
+        {info.getValue()?.toLocaleDateString("en-us", {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -291,7 +291,7 @@ export const taskElementColumns = [
   columnHelper.accessor("deadline", {
     cell: (info) => (
       <span>
-        {info.getValue()?.toLocaleDateString(undefined, {
+        {info.getValue()?.toLocaleDateString("en-us", {
           year: "numeric",
           month: "long",
           day: "numeric",

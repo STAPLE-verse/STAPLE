@@ -127,7 +127,7 @@ export const teamAssignmentTableColumns: ColumnDef<TeamAssignmentWithRelations>[
   }),
   columnHelper.accessor(
     (row) =>
-      row.statusLogs[0]?.createdAt.toLocaleDateString(undefined, {
+      row.statusLogs[0]?.createdAt.toLocaleDateString("en-us", {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -167,7 +167,7 @@ export const teamAssignmentTableColumnsSchema: ColumnDef<TeamAssignmentWithRelat
   }),
   columnHelper.accessor(
     (row) =>
-      row.statusLogs[0]?.createdAt.toLocaleDateString(undefined, {
+      row.statusLogs[0]?.createdAt.toLocaleDateString("en-us", {
         year: "numeric",
         month: "long",
         day: "numeric",

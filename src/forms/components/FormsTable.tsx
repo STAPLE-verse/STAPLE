@@ -19,7 +19,7 @@ export const formsTableColumns = [
   columnHelper.accessor("updatedAt", {
     cell: (info) => (
       <span>
-        {info.getValue()?.toLocaleDateString(undefined, {
+        {info.getValue()?.toLocaleDateString("en-us", {
           year: "numeric",
           month: "long",
           day: "numeric",
