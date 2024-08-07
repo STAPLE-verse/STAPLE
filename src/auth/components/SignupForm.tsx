@@ -52,10 +52,10 @@ export const SignupForm = (props: SignupFormProps) => {
             let e = error as UserEmailExistErr
             if (e?.code === "email_exist") {
               // This error comes from Prisma
-              return { email: "This email is already being used" }
+              return { email: "You already have an account" }
             } else if (error.code === "user_exist") {
               // This error comes from Prisma
-              return { username: "This username is already being used" }
+              return { username: "Username already taken" }
             } else {
               return { [FORM_ERROR]: error.toString() }
             }
