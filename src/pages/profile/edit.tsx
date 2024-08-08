@@ -58,6 +58,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
+      {/* labeled select field for language */}
     </Form>
   )
 }

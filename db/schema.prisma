@@ -23,6 +23,7 @@ model User {
   hashedPassword String?
   role           String   @default("USER")
   institution    String?
+  language       String   @default("en-us")
   tos            Boolean?
   orcid          String?
 
