@@ -14,6 +14,7 @@ import TaskLayout from "src/core/layouts/TaskLayout"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 import { ContributorPrivileges } from "db"
 import { useTaskContext } from "src/tasks/components/TaskContext"
+import { responseSubmitted } from "src/assignments/utils/responseSubmitted"
 
 export const EditTask = () => {
   // Ensure that only PM can edit a task
@@ -47,6 +48,9 @@ export const EditTask = () => {
     elementId: task.elementId,
   }
 
+  // Check if any assignment is COMPLETED
+  const formResponseSupplied = responseSubmitted(task)
+
   return (
     <>
       <Head>
@@ -60,7 +64,7 @@ export const EditTask = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
             projectId={task.projectId}
-            formResponseSupplied={true}
+            formResponseSupplied={formResponseSupplied}
             submitText="Update Task"
             schema={FormTaskSchema}
             initialValues={initialValues}
