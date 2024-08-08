@@ -15,8 +15,6 @@ const FormBuilderPage = () => {
 
   const saveForm = async (state) => {
     await CreateFormMutation({
-      // schema: JSON.parse(state.schema),
-      // uiSchema: JSON.parse(state.uischema),
       schema: state.schema,
       uiSchema: state.uischema,
       userId: currentUser!.id,

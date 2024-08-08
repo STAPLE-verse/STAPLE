@@ -15,17 +15,13 @@ import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import moment from "moment"
 import TaskSchemaInput from "./TaskSchemaInput"
 
-// TODO: Check whether this is a good method to go
-// Other methods could be: passing the columns directly
-// Adding projectId directly to Form props as an optional value
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
-  type?: string
-  taskId?: number
+  formResponseSupplied?: boolean
 }
 
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
-  const { projectId, type, taskId, ...formProps } = props
+  const { projectId, formResponseSupplied = true, ...formProps } = props
 
   // Handle date input as a state
   const [dateInputValue, setDateInputValue] = useState("")
@@ -243,8 +239,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           </div>
         </Modal>
       </div>
-
-      <TaskSchemaInput contributors={contributors} />
+      {formResponseSupplied && <TaskSchemaInput contributors={contributors} />}
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )

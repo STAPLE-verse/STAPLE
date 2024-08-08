@@ -48,7 +48,7 @@ export const EditTask = () => {
   }
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>Edit {task.name}</title>
       </Head>
@@ -59,8 +59,8 @@ export const EditTask = () => {
         {/* <pre>{JSON.stringify(task, null, 2)}</pre> */}
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
-            taskId={task.id}
             projectId={task.projectId}
+            formResponseSupplied={true}
             submitText="Update Task"
             schema={FormTaskSchema}
             initialValues={initialValues}
@@ -104,7 +104,7 @@ export const EditTask = () => {
           </Link>
         </Suspense>
       </main>
-    </Layout>
+    </>
   )
 }
 
