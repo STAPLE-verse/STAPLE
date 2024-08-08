@@ -2,6 +2,28 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { UpdateTaskSchema } from "../schemas"
 
+async function manageLabels(taskId, labelsId) {
+  await db.$transaction(async (prisma) => {
+    await db.task.update({
+      where: { id: taskId },
+      data: {
+        labels: {
+          set: [],
+        },
+      },
+    })
+
+    await db.task.update({
+      where: { id: taskId },
+      data: {
+        labels: {
+          connect: labelsId?.map((c) => ({ id: c })) || [],
+        },
+      },
+    })
+  })
+}
+
 // Helper function to manage assignments
 async function manageAssignments(
   taskId: number,
@@ -35,7 +57,7 @@ async function manageAssignments(
 export default resolver.pipe(
   resolver.zod(UpdateTaskSchema),
   resolver.authorize(),
-  async ({ id, contributorsId = [], teamsId = [], ...data }) => {
+  async ({ id, contributorsId = [], teamsId = [], labelsId = [], ...data }) => {
     // Update task data
     const task = await db.task.update({ where: { id }, data })
 
@@ -60,6 +82,7 @@ export default resolver.pipe(
     // Manage contributor and team assignments
     await manageAssignments(id, existingContributorIds, safeContributorsId)
     await manageAssignments(id, existingTeamIds, safeTeamsId, true)
+    await manageLabels(id, labelsId)
 
     return task
   }

@@ -5,18 +5,15 @@
 import { useEffect } from "react"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { Contributor, ContributorPrivileges, Prisma, Task, TaskStatus, User, Assignment } from "db"
+import { TaskStatus } from "db"
 import moment from "moment"
 import Link from "next/link"
-import getContributor from "src/contributors/queries/getContributor"
 import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProjectStats from "../queries/getProjectStats"
 import getContributors from "src/contributors/queries/getContributors"
-import { HeartIcon, UserIcon, GlobeAltIcon, ArchiveBoxIcon } from "@heroicons/react/24/outline"
-import getProlificContributors from "src/contributors/queries/getProlificContributors"
+import { UserIcon, GlobeAltIcon, ArchiveBoxIcon } from "@heroicons/react/24/outline"
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import "react-circular-progressbar/dist/styles.css"
 
@@ -37,12 +34,9 @@ import updateProjectWidgets from "src/widgets/mutations/updateProjectWidgets"
 import setProjectWidgets from "src/widgets/mutations/setProjectWidgets"
 import getProjectWidgets from "src/widgets/queries/getProjectWidgets"
 import toast from "react-hot-toast"
-import getProjects from "src/projects/queries/getProjects" // remove
 import getProject from "src/projects/queries/getProject"
-import getNotifications from "src/messages/queries/getNotifications"
+import getNotifications from "src/notifications/queries/getNotifications"
 import {
-  tasksColumns,
-  projectColumns,
   notificationColumns,
   projectManagersColumns,
   projectTaskColumns,
@@ -53,9 +47,6 @@ const ProjectDashboard = () => {
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
   const today = moment().startOf("minute")
-  const [currentContributor] = useQuery(getContributor, {
-    where: { userId: currentUser!.id, projectId: projectId },
-  })
   const [project] = useQuery(getProject, { id: projectId })
 
   // dragging information

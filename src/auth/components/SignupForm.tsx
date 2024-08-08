@@ -4,6 +4,9 @@ import { FORM_ERROR } from "final-form"
 import { Signup } from "src/auth/schemas"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
+import { FormSpy } from "react-final-form"
+import { useMutation } from "@blitzjs/rpc"
+import usernameExist, { UserEmailExistErr } from "../mutations/usernameExist"
 
 type SignupFormProps = {
   onSuccess?: (values) => void
@@ -15,7 +18,7 @@ type SignupFormProps = {
 }
 
 export const SignupForm = (props: SignupFormProps) => {
-  // const [signupMutation] = useMutation(signup)
+  const [usernameEmailExistQuery] = useMutation(usernameExist)
   return (
     <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
       <div className="flex justify-center items-center w-full">
@@ -39,16 +42,18 @@ export const SignupForm = (props: SignupFormProps) => {
           email: props.signupResponses?.email,
           password: props.signupResponses?.password,
           username: props.signupResponses?.username,
+          password_confirm: props.signupResponses?.password,
         }}
         onSubmit={async (values) => {
           try {
-            // await signupMutation(values)
+            await usernameEmailExistQuery(values)
             props.onSuccess?.(values)
           } catch (error: any) {
-            if (error.code === "P2002" && error.meta?.target?.includes("email")) {
+            let e = error as UserEmailExistErr
+            if (e?.code === "email_exist") {
               // This error comes from Prisma
               return { email: "This email is already being used" }
-            } else if (error.code === "P2002" && error.meta?.target?.includes("username")) {
+            } else if (error.code === "user_exist") {
               // This error comes from Prisma
               return { username: "This username is already being used" }
             } else {
@@ -63,7 +68,6 @@ export const SignupForm = (props: SignupFormProps) => {
           placeholder="Username"
           className="w-full text-primary border-primary border-2 mb-4 bg-base-300"
         />
-
         <LabeledTextField
           name="email"
           label="Email:"

@@ -1,12 +1,12 @@
 import { Suspense } from "react"
 import Head from "next/head"
 import { Tab } from "@headlessui/react"
-
 import Layout from "src/core/layouts/Layout"
 import LabelsTab from "./LabelsTab"
 import TasksTab from "./TasksTab"
 import ContributorsTab from "./ContributorsTab"
-import { useEffect, useState } from "react"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "db"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -66,6 +66,8 @@ export const CreditsTabs = () => {
 }
 
 const CreditPage = () => {
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+
   return (
     <Layout>
       <Head>

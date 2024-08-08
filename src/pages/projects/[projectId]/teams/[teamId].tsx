@@ -13,8 +13,12 @@ import getContributors from "src/contributors/queries/getContributors"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
 import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
 import { labelTableColumnsTeam } from "src/labels/components/LabelTable"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "db"
 
 export const ShowTeamPage = () => {
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+
   const router = useRouter()
   const [deleteTeamMutation] = useMutation(deleteTeam)
 

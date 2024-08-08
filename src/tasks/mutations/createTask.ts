@@ -1,7 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { CompletedAs } from "db"
 import { CreateTaskSchema } from "../schemas"
-import sendNotification from "src/messages/mutations/sendNotification"
+import sendNotification from "src/notifications/mutations/sendNotification"
 
 export default resolver.pipe(
   resolver.zod(CreateTaskSchema),
@@ -17,6 +17,7 @@ export default resolver.pipe(
       createdById,
       contributorsId,
       teamsId,
+      labelsId,
       schema,
       ui,
     },
@@ -59,6 +60,16 @@ export default resolver.pipe(
           include: {
             user: true,
           },
+        },
+      },
+    })
+
+    //Connect to labels
+    let task1 = await db.task.update({
+      where: { id: task.id },
+      data: {
+        labels: {
+          connect: labelsId?.map((c) => ({ id: c })) || [],
         },
       },
     })

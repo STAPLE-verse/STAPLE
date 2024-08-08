@@ -34,8 +34,7 @@ import {
 } from "../../core/components/GetDashboardDisplay"
 import getDashboardTasks from "../../tasks/queries/getDashboardTasks"
 import getDashboardProjects from "src/projects/queries/getDashboardProjects"
-import getDashboardNotifications from "src/messages/queries/getDashboardNotifications"
-import { NotificationProvider } from "src/messages/components/NotificationContext"
+import getLatestUnreadNotifications from "src/notifications/queries/getLatestUnreadNotifications"
 
 const MainPage = () => {
   const currentUser = useCurrentUser()
@@ -43,7 +42,7 @@ const MainPage = () => {
   const [setWidgetMutation] = useMutation(setWidgets)
   const [{ upcomingTasks, pastDueTasks }] = useQuery(getDashboardTasks, undefined)
   const [{ projects }] = useQuery(getDashboardProjects, undefined)
-  const [{ notifications }] = useQuery(getDashboardNotifications, undefined)
+  const [{ notifications }] = useQuery(getLatestUnreadNotifications, {})
 
   // Get the widgets for the user
   const [boxes, setBoxes] = useState([])

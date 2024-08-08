@@ -4,8 +4,7 @@ import React, { Suspense } from "react"
 import { withBlitz } from "src/blitz-client"
 import "src/styles/globals.css"
 import "src/core/styles/index.css"
-import { SidebarProvider } from "src/core/components/sidebar/sidebarContext"
-import { NotificationProvider } from "src/messages/components/NotificationContext"
+import { ContributorPrivilegeProvider } from "src/contributors/components/ContributorPrivilegeContext"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -33,9 +32,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
       {/* TODO: Is it a good solution to add a big general suspnese? */}
       <Suspense fallback="Loading...">
-        <SidebarProvider>
-          <NotificationProvider>{getLayout(<Component {...pageProps} />)}</NotificationProvider>
-        </SidebarProvider>
+        <ContributorPrivilegeProvider>
+          {getLayout(<Component {...pageProps} />)}
+        </ContributorPrivilegeProvider>
       </Suspense>
     </ErrorBoundary>
   )

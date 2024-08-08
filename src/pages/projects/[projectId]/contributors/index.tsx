@@ -2,19 +2,20 @@ import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 
 import Layout from "src/core/layouts/Layout"
 import getContributors from "src/contributors/queries/getContributors"
-import { getInitials } from "src/services/getInitials"
-import getProject from "src/projects/queries/getProject"
 import {
   ContributorInformation,
   contributorTableColumns,
 } from "src/contributors/components/ContributorTable"
 import Table from "src/core/components/Table"
+import ContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "@prisma/client"
 
 const ITEMS_PER_PAGE = 7
 
@@ -69,6 +70,7 @@ export const AllContributorsList = () => {
 // issue 37
 const ContributorsPage = () => {
   const projectId = useParam("projectId", "number")
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>

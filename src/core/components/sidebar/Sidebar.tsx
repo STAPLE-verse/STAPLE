@@ -1,21 +1,24 @@
-import React, { useContext } from "react"
+import React from "react"
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
-import SidebarContext from "./sidebarContext"
 import { useRouter } from "next/router"
 import { SidebarItemProps } from "./SidebarItems"
+import { SidebarState } from "src/core/hooks/useSidebar"
+import SidebarTooltips from "./SidebarTooltips"
 
-export default function Sidebar() {
-  const context = useContext(SidebarContext)
+export default function Sidebar({
+  sidebarState,
+  expanded,
+  toggleExpand,
+}: {
+  sidebarState: SidebarState
+  expanded: boolean
+  toggleExpand: () => void
+}) {
+  const { sidebarTitle, sidebarItems } = sidebarState
 
-  if (!context || context.sidebarTitle === "Loading Project...") {
+  if (!sidebarTitle) {
     return <div className="loading">Loading...</div>
-  }
-
-  const { sidebarTitle, expanded, setSidebarState, sidebarItems } = context
-
-  const toggleExpand = () => {
-    setSidebarState({ expanded: !expanded })
   }
 
   return (
@@ -23,7 +26,6 @@ export default function Sidebar() {
       <aside className="h-[calc(100vh-60px)] sticky top-[60px] overflow-y-auto">
         <nav className="h-full flex flex-col border-r shadow-sm">
           <div className="p-4 pb-2 flex justify-between items-center">
-            {/* Add your logo component here */}
             <h2
               className={`text-2xl overflow-hidden transition-all ${
                 expanded ? "w-46" : "w-0"
@@ -44,7 +46,7 @@ export default function Sidebar() {
           <ul className="flex-1 px-3">
             {" "}
             {sidebarItems.map((item, index) => (
-              <SidebarItem key={index} {...item} />
+              <SidebarItem key={index} {...item} expanded={expanded} />
             ))}
           </ul>
         </nav>
@@ -53,15 +55,15 @@ export default function Sidebar() {
   )
 }
 
-export function SidebarItem(item: SidebarItemProps) {
-  const contextValue = useContext(SidebarContext)
+export function SidebarItem({
+  icon: Icon,
+  text,
+  route,
+  alert,
+  tooltipId,
+  expanded,
+}: SidebarItemProps & { expanded: boolean }) {
   const router = useRouter()
-
-  if (!contextValue) {
-    return null
-  }
-  const { icon: Icon, text, route, alert, tooltipId } = item
-  const { expanded } = contextValue
 
   const handleClick = async () => {
     try {
@@ -81,84 +83,7 @@ export function SidebarItem(item: SidebarItemProps) {
       }`}
       onClick={handleClick}
     >
-      <Tooltip
-        id="project-dashboard-tooltip"
-        content="See overall project information dashboard"
-        className="z-[1099]"
-      />
-      <Tooltip
-        id="project-tasks-tooltip"
-        content="View, add, edit, and complete project specific tasks"
-        className="z-[1099]"
-      />
-      <Tooltip
-        id="project-elements-tooltip"
-        content="Elements help you organize tasks into buckets"
-        className="z-[1099]"
-      />
-      <Tooltip
-        id="project-contributors-tooltip"
-        content="Add, edit, and view all people on the project"
-        className="z-[1099]"
-      />
-      <Tooltip
-        id="project-teams-tooltip"
-        content="Add, edit, and view project teams"
-        className="z-[1099]"
-      />
-      <Tooltip
-        id="project-credit-tooltip"
-        content="Add, edit, and view contribution explanations with labels"
-        className="z-[1099]"
-      />
-      <Tooltip
-        id="project-form-tooltip"
-        content="Review and download project form data (metadata)"
-        className="z-[1099]"
-      />
-      <Tooltip
-        id="project-summary-tooltip"
-        content="Review and download project summary (metadata)"
-        className="z-[1099]"
-      />
-      <Tooltip
-        id="project-settings-tooltip"
-        content="Add, edit, and view project overview information (metadata)"
-        className="z-[1099]"
-      />
-      <Tooltip
-        id="dashboard-tooltip"
-        content="View the home page dashboard for all projects"
-        className="z-[1099]"
-      />
-      <Tooltip
-        id="projects-tooltip"
-        content="View all projects and open a specific one"
-        className="z-[1099]"
-      />
-      <Tooltip id="tasks-tooltip" content="View all tasks for all projects" className="z-[1099]" />
-      <Tooltip
-        id="forms-tooltip"
-        content="Build your own forms to collect data in a task (metadata)"
-        className="z-[1099]"
-      />
-      <Tooltip
-        id="notifications-tooltip"
-        content="View all notifications for projects"
-        className="z-[1099]"
-      />
-      <Tooltip
-        id="labels-tooltip"
-        content="View, add, and edit contribution categories with labels"
-        className="z-[1099]"
-      />
-      <Tooltip id="help-tooltip" content="Get help with STAPLE" className="z-[1099]" />
-      <Tooltip
-        id="project-notification-tooltip"
-        content="View notifications for this project"
-        className="z-[1099]"
-      />
-
+      <SidebarTooltips />
       <Icon className="w-6 h-6" />
       <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
         {text}

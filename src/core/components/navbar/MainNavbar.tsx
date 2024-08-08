@@ -10,7 +10,7 @@ import { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getInitials } from "src/services/getInitials"
 import { HomeIcon } from "@heroicons/react/24/outline"
-import NotificationsMenu from "src/core/components/NotificationMenu"
+import NotificationsMenu from "src/notifications/components/NotificationMenu"
 import Image from "next/image"
 
 type LogoProps = {
@@ -44,7 +44,7 @@ const Navbar = () => {
   // Get current user data
   const currentUser = useCurrentUser()
   // Get initials for avatar
-  const initial = getInitials(currentUser!.firstName, currentUser!.lastName)
+  const initial = getInitials(currentUser!.firstName || "", currentUser!.lastName || "")
   // Defining tabs
   // with names and routes
   // let tabs = []

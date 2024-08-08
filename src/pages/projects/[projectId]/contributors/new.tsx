@@ -1,7 +1,7 @@
 import { Routes } from "@blitzjs/next"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import createContributor from "src/contributors/mutations/createContributor"
 import { ContributorForm } from "src/contributors/components/ContributorForm"
@@ -12,6 +12,8 @@ import { z } from "zod"
 import { ContributorPrivilegesOptions } from "src/contributors/components/ContributorForm"
 import toast from "react-hot-toast"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "db"
 
 // TODO: if not all parameters that are present in the schema are in the returned values of the form the onsubmit fails without error
 // TODO: Thus we create a separate schema for the form and the create mutation
@@ -22,6 +24,7 @@ export const ContributorFormSchema = z.object({
 })
 
 const NewContributorPage = () => {
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
   const router = useRouter()
   const projectId = useParam("projectId", "number")
   const [createContributorMutation] = useMutation(createContributor)

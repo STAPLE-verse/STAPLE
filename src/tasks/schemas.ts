@@ -9,6 +9,7 @@ export const FormTaskSchema = z
     elementId: z.number().optional().nullable(),
     contributorsId: z.array(z.number()).optional().nullable(),
     teamsId: z.array(z.number()).optional().nullable(),
+    labelsId: z.array(z.number()).optional().nullable(),
     deadline: z.date().optional().nullable(),
     // template: __fieldName__: z.__zodType__(),
     // schema: z
@@ -125,6 +126,7 @@ export const CreateTaskSchema = z.object({
   createdById: z.number(),
   contributorsId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.number()).optional().nullable(),
+  labelsId: z.array(z.number()).optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
   schema: z
     .unknown()
@@ -177,6 +179,8 @@ export const UpdateTaskSchema = z.object({
   elementId: z.number().optional().nullable(),
   contributorsId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.any()).optional().nullable(),
+  labelsId: z.array(z.number()).optional().nullable(),
+  deadline: z.date().optional().nullable(),
   schema: z
     .unknown()
     .nullable()
@@ -257,4 +261,13 @@ export const CreateColumnSchema = z.object({
 
 export const UpdateColumnOrderSchema = z.object({
   columnIds: z.array(z.number()),
+})
+
+export const UpdateTasksForElementSchema = z.object({
+  elementId: z.number(),
+  taskIds: z.array(z.number()),
+})
+
+export const UpdateTasksForElementFormSchema = z.object({
+  selectedTasks: z.array(z.number()),
 })

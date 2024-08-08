@@ -16,6 +16,9 @@ import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import moment from "moment"
 import { ContributorPrivileges } from "db"
 import getForms from "src/forms/queries/getForms"
+import { AddLabelForm } from "src/labels/components/AddLabelForm"
+import { LabelIdsFormSchema } from "src/labels/schemas"
+import getLabels from "src/labels/queries/getLabels"
 
 // TODO: Check whether this is a good method to go
 // Other methods could be: passing the columns directly
@@ -29,14 +32,14 @@ interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
   const { projectId, type, taskId, ...formProps } = props
 
-  // Handle date input as a state
-  const [dateInputValue, setDateInputValue] = useState("")
+  const today = moment().format("YYYY-MM-DDTHH:mm")
+  let deadline =
+    formProps.initialValues?.deadline != undefined
+      ? moment(formProps.initialValues?.deadline).format("YYYY-MM-DDTHH:mm")
+      : today
 
-  useEffect(() => {
-    // Initialize the input with today's date when the component mounts
-    const today = moment().format("YYYY-MM-DDTHH:mm")
-    setDateInputValue(today)
-  }, [])
+  // Handle date input as a state
+  const [dateInputValue, setDateInputValue] = useState(deadline)
 
   // Columns
   const [columns] = useQuery(getColumns, {
@@ -56,6 +59,18 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     include: {
       user: true,
     },
+  })
+  const [{ labels }] = useQuery(getLabels, {
+    where: {
+      projects: { some: { id: { in: projectId! } } },
+    },
+  })
+
+  const labelOptions = labels.map((labels) => {
+    return {
+      label: labels["name"],
+      id: labels["id"],
+    }
   })
 
   const contributorOptions = contributors.map((contributor) => {
@@ -119,6 +134,11 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   const [openTeamsModal, setTeamsModal] = useState(false)
   const handleToggleTeamsModal = () => {
     setTeamsModal((prev) => !prev)
+  }
+
+  const [openLabelsModal, setlabelsModal] = useState(false)
+  const handleToggleLabelsModal = () => {
+    setlabelsModal((prev) => !prev)
   }
 
   return (
@@ -330,6 +350,29 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
               </button>
             </div>
             {/* closes the modal */}
+          </div>
+        </Modal>
+      </div>
+
+      <div className="mt-4">
+        <button
+          type="button"
+          className="btn btn-primary w-1/2"
+          onClick={() => handleToggleLabelsModal()}
+        >
+          Add Label
+        </button>
+        <Modal open={openLabelsModal} size="w-7/8 max-w-xl">
+          <div className="">
+            <div className="flex justify-start mt-4">
+              <CheckboxFieldTable name="labelsId" options={labelOptions} />
+            </div>
+            {/* closes the modal */}
+            <div className="modal-action flex justify-end mt-4">
+              <button type="button" className="btn btn-primary" onClick={handleToggleLabelsModal}>
+                Close
+              </button>
+            </div>
           </div>
         </Modal>
       </div>
