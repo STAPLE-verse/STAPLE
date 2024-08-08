@@ -22,7 +22,7 @@ import { ContributorPrivileges } from "db"
 
 //could refactor other places and move this to utils
 const formatDate = (myDate) =>
-  myDate.toLocaleDateString(undefined, {
+  myDate.toLocaleDateString("en-us", {
     year: "numeric",
     month: "long",
     day: "numeric",

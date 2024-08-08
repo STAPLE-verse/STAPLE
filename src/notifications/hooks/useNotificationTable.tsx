@@ -18,7 +18,7 @@ export const useNotificationTableColumns = (refetch: () => void) => {
       columnHelper.accessor("createdAt", {
         cell: (info) => (
           <span>
-            {info.getValue()?.toLocaleDateString(undefined, {
+            {info.getValue()?.toLocaleDateString("en-us", {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -68,7 +68,7 @@ export const useProjectNotificationTableColumns = (refetch: () => void) => {
       columnHelper.accessor("createdAt", {
         cell: (info) => (
           <span>
-            {info.getValue()?.toLocaleDateString(undefined, {
+            {info.getValue()?.toLocaleDateString("en-us", {
               year: "numeric",
               month: "long",
               day: "numeric",

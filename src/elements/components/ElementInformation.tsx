@@ -51,7 +51,7 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({ element,
           {/* Element last update */}
           <p className="italic">
             Last update:{" "}
-            {element.updatedAt.toLocaleDateString(undefined, {
+            {element.updatedAt.toLocaleDateString("en-us", {
               year: "numeric",
               month: "long",
               day: "numeric",
