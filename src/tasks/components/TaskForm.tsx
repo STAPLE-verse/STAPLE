@@ -10,12 +10,10 @@ import { z } from "zod"
 import getContributors from "src/contributors/queries/getContributors"
 import Modal from "src/core/components/Modal"
 import { useEffect, useState } from "react"
-import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
 import getTeams from "src/teams/queries/getTeams"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import moment from "moment"
-import { ContributorPrivileges } from "db"
-import getForms from "src/forms/queries/getForms"
+import TaskSchemaInput from "./TaskSchemaInput"
 
 // TODO: Check whether this is a good method to go
 // Other methods could be: passing the columns directly
@@ -77,40 +75,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     }
   })
 
-  // Schema
-  const defaultSchemas = getDefaultSchemaLists()
-  // Get the schemas of the PMs on the project
-  // Get PM userids
-  const pmList = contributors
-    .filter((contributor) => contributor.privilege === ContributorPrivileges.PROJECT_MANAGER)
-    .map((pm) => pm.userId)
-
-  const [pmForms] = useQuery(getForms, {
-    where: {
-      userId: {
-        in: pmList,
-      },
-    },
-  })
-
-  const pmSchemas = pmForms.forms
-    // Dropping forms that do not have a title added by the user
-    .filter((form) => form.schema && form.schema["title"])
-    .map((form) => ({
-      id: form.id,
-      name: form.schema != null ? form.schema["title"] : null,
-      schema: form.schema,
-      ui: form.uiSchema,
-    }))
-  // Merge schema
-  const schemas = [...defaultSchemas, ...pmSchemas]
-
   // Modal open logics
-  const [openSchemaModal, setopenSchemaModal] = useState(false)
-  const handleToggleSchemaUpload = () => {
-    setopenSchemaModal((prev) => !prev)
-  }
-
   const [openContributorsModal, setContributorsModal] = useState(false)
   const handleToggleContributorsModal = () => {
     setContributorsModal((prev) => !prev)
@@ -279,60 +244,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         </Modal>
       </div>
 
-      <div className="mt-4">
-        <button
-          type="button"
-          className="btn btn-primary w-1/2"
-          onClick={() => handleToggleSchemaUpload()}
-        >
-          Assign Required Information
-        </button>
-
-        {/* Schema */}
-        <Modal open={openSchemaModal} size="w-11/12 max-w-1xl">
-          <div className="">
-            <div>
-              <label className="text-lg font-bold">Choose a Form Template: </label>
-              <br className="mb-2" />
-              <Field name="schema">
-                {({ input, meta }) => (
-                  <div>
-                    <select
-                      className="select select-primary border-2 w-full max-w-xs"
-                      {...input}
-                      value={input.value ? input.value.id : ""}
-                      onChange={(event) => {
-                        const selectedId = event.target.value
-                        const selectedSchema = schemas.find(
-                          (schema) => schema.id.toString() === selectedId
-                        )
-                        input.onChange(selectedSchema ? selectedSchema : null)
-                      }}
-                    >
-                      <option value="" disabled>
-                        -- select an option --
-                      </option>
-                      {schemas.map((schema) => (
-                        <option key={schema.id} value={schema.id}>
-                          {schema.name}
-                        </option>
-                      ))}
-                    </select>
-                    {meta.touched && meta.error && <span>{meta.error}</span>}
-                  </div>
-                )}
-              </Field>
-            </div>
-
-            <div className="modal-action">
-              <button type="button" className="btn btn-primary" onClick={handleToggleSchemaUpload}>
-                Close
-              </button>
-            </div>
-            {/* closes the modal */}
-          </div>
-        </Modal>
-      </div>
+      <TaskSchemaInput contributors={contributors} />
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )

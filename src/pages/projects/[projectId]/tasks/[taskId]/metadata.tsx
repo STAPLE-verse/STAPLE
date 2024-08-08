@@ -1,11 +1,7 @@
-// @ts-nocheck
-import { TaskProvider, TaskContext } from "src/tasks/components/TaskContext"
-import { Suspense, useContext, useState } from "react"
+import { useTaskContext } from "src/tasks/components/TaskContext"
+import { Suspense, useState } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { useParam } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
-import getProject from "src/projects/queries/getProject"
 import Table from "src/core/components/Table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
@@ -15,23 +11,24 @@ import DownloadZIP from "src/forms/components/DownloadZIP"
 import Modal from "src/core/components/Modal"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import JsonForm from "src/assignments/components/JsonForm"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "db"
+import TaskLayout from "src/core/layouts/TaskLayout"
 
-const TaskContent = () => {
-  const taskContext = useContext(TaskContext)
-  const { task } = taskContext
-  const projectId = useParam("projectId", "number")
-  const taskId = useParam("taskId", "number")
-  if (!task) {
-    return <div>Loading...</div>
-  }
+const FormContent = () => {
+  // Ensure that only PM can edit a task
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
 
-  // modal for review
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  // Get tasks and assignments
+  const { task } = useTaskContext()
+
+  // Modal for review
   const [openMetadataInspectModal, setOpenMetadataInspectModal] = useState(false)
   const handleMetadataInspectToggle = () => {
     setOpenMetadataInspectModal((prev) => !prev)
   }
-  const uiSchema = task["ui"] || {}
+
+  const uiSchema = task.formVersion?.uiSchema || {}
   let extendedUiSchema = {}
   // TODO: This assumes uiSchema is always an object, although the type def allows for string, number(?) as well
   // I am not sure where would we encounter those
@@ -47,10 +44,10 @@ const TaskContent = () => {
 
   const statusLogs = task.assignees.flatMap((people) => people.statusLogs)
   const printForm = statusLogs.filter((complete) => {
-    return complete.status == "COMPLETED"
+    return complete!.status == "COMPLETED"
   })
-  const dataForm = printForm.flatMap((meta, idx, arr) => {
-    const contributorId = meta.completedBy // always returns who did it
+  const dataForm = printForm.flatMap((meta) => {
+    const contributorId = meta!.completedBy // always returns who did it
     const assignment = task.assignees.find((contributor) => {
       return contributor.contributorId === contributorId
       // this should return null when team because contributor.contributorId is null when team
@@ -60,7 +57,7 @@ const TaskContent = () => {
     return {
       userId: assignment.contributor.userId,
       teamId: "...",
-      createdAt: meta.createdAt,
+      createdAt: meta!.createdAt,
       ...meta.metadata,
     }
   })
@@ -68,7 +65,7 @@ const TaskContent = () => {
   //console.log(dataForm)
 
   const makeTableColumns = () => {
-    const schemaProps = task.schema.properties
+    const schemaProps = task.formVersion?.schema?.properties
     let columns = [
       {
         header: "Completed By",
@@ -112,7 +109,7 @@ const TaskContent = () => {
                   <div className="font-sans">
                     {
                       <JsonForm
-                        schema={getJsonSchema(task["schema"])}
+                        schema={getJsonSchema(task.formVersion?.schema)}
                         uiSchema={extendedUiSchema}
                       />
                     }
@@ -127,8 +124,8 @@ const TaskContent = () => {
                 <Link
                   className="btn btn-secondary mx-2"
                   href={Routes.AssignmentsPage({
-                    projectId: projectId,
-                    taskId: taskId,
+                    projectId: task.projectId,
+                    taskId: task.id,
                   })}
                 >
                   Review and Edit Form Tasks
@@ -159,19 +156,13 @@ const TaskContent = () => {
   )
 }
 
-// show the Task page
 export const ShowFormPage = () => {
-  const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
-  const taskId = useParam("taskId", "number")
-
-  // return the page
   return (
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
-        <TaskProvider taskId={taskId}>
-          <TaskContent />
-        </TaskProvider>
+        <TaskLayout>
+          <FormContent />
+        </TaskLayout>
       </Suspense>
     </Layout>
   )

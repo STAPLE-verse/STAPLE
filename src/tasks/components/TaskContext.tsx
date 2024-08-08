@@ -2,13 +2,14 @@ import React, { createContext, ReactNode, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
 import useAssignmentData from "src/assignments/hooks/useAssignmentData"
-import { Task, Column, Element } from "db"
+import { Task, Column, Element, FormVersion } from "db"
 import { ExtendedAssignment } from "src/assignments/hooks/useAssignmentData"
 
 // Creating custom types
 export type ExtendedTask = Task & {
   column: Column
   element: Element | null
+  formVersion: FormVersion | null
   assignees: ExtendedAssignment[]
 }
 
@@ -36,6 +37,7 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
     include: {
       element: true,
       column: true,
+      formVersion: true,
       assignees: {
         include: {
           contributor: { include: { user: { select: { username: true } } } },

@@ -1,18 +1,21 @@
 import React from "react"
-import { Forms } from "db"
+import { FormVersion, Forms } from "db"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import { getSchemaTitle } from "src/services/getSchemaTitle"
 
-// TODO: Is it better to call the database for column name every time or just one time and pass the value to child components?
+export interface FormWithFormVersion extends Forms {
+  formVersion: FormVersion | null
+}
+
 // Column helper
-const columnHelper = createColumnHelper<Forms>()
+const columnHelper = createColumnHelper<FormWithFormVersion>()
 
 // ColumnDefs
 export const formsTableColumns = [
-  columnHelper.accessor("schema", {
+  columnHelper.accessor("formVersion.schema", {
     cell: (info) => <span>{getSchemaTitle(info.getValue())}</span>,
     header: "Name",
   }),
@@ -37,7 +40,7 @@ export const formsTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => {
-      const uiSchema = info.row.original.uiSchema || {}
+      const uiSchema = info.row.original.formVersion?.uiSchema || {}
       let extendedUiSchema = {}
       // TODO: This assumes uiSchema is always an object, although the type def allows for string, number(?) as well
       // I am not sure where would we encounter those
@@ -53,7 +56,7 @@ export const formsTableColumns = [
       return (
         <>
           <JsonFormModal
-            schema={info.row.original.schema}
+            schema={info.row.original.formVersion?.schema}
             uiSchema={extendedUiSchema}
             metadata={{}}
             label="View"

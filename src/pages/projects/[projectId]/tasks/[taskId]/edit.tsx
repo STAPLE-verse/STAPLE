@@ -1,49 +1,37 @@
-// @ts-nocheck
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useQuery, useMutation } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
-
+import { useMutation } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { FormTaskSchema } from "src/tasks/schemas"
-import getTask from "src/tasks/queries/getTask"
 import updateTask from "src/tasks/mutations/updateTask"
 import { TaskForm } from "src/tasks/components/TaskForm"
 import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
-import getAssignments from "src/assignments/queries/getAssignments"
-
-import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
-const defaultSchemas = getDefaultSchemaLists()
+import TaskLayout from "src/core/layouts/TaskLayout"
+import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import { ContributorPrivileges } from "db"
+import { useTaskContext } from "src/tasks/components/TaskContext"
 
 export const EditTask = () => {
+  // Ensure that only PM can edit a task
+  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  //Setup
   const router = useRouter()
-  const taskId = useParam("taskId", "number")
-  const projectId = useParam("projectId", "number")
-
-  const [task, { setQueryData }] = useQuery(
-    getTask,
-    { where: { id: taskId } },
-    {
-      // This ensures the query never refreshes and overwrites the form data while the user is editing.
-      staleTime: Infinity,
-    }
-  )
-
   const [updateTaskMutation] = useMutation(updateTask)
-  const [assignments] = useQuery(getAssignments, {
-    where: { taskId: taskId },
-  })
+  // Get tasks and assignments
+  const { task, individualAssignments, teamAssignments, refetchTaskData } = useTaskContext()
 
-  const contributorsId = assignments
+  // Calculate individual contributor ids
+  const contributorsId = individualAssignments
     .map((assignment) => assignment.contributorId)
     // assignment.contributorId is nullable thus we filter for initialValues
     .filter((id): id is number => id !== null)
 
-  const teamsId = assignments
+  // Calculate team member contributor ids
+  const teamsId = teamAssignments
     .map((assignment) => assignment.teamId)
     // assignment.contributorId is nullable thus we filter for initialValues
     .filter((id): id is number => id !== null)
@@ -55,7 +43,7 @@ export const EditTask = () => {
     deadline: task.deadline,
     contributorsId: contributorsId,
     teamsId: teamsId,
-    schema: task.schema ? task.schema.title : undefined,
+    formVersionId: task.formVersionId,
     elementId: task.elementId,
   }
 
@@ -71,38 +59,30 @@ export const EditTask = () => {
         {/* <pre>{JSON.stringify(task, null, 2)}</pre> */}
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
-            taskId={taskId}
-            projectId={projectId}
+            taskId={task.id}
+            projectId={task.projectId}
             submitText="Update Task"
             schema={FormTaskSchema}
             initialValues={initialValues}
             onSubmit={async (values) => {
-              let schema
-              let ui
-
-              schema = defaultSchemas.find((schema) => schema.name === values.schema)?.schema
-              ui = defaultSchemas.find((schema) => schema.name === values.schema)?.ui
-
               const toastId = "update-task-id"
               toast.dismiss(toastId)
 
               toast.loading("Updating task...", { id: toastId })
 
               try {
-                // if (true) return
-                const updated = await updateTaskMutation({
+                await updateTaskMutation({
                   ...values,
                   id: task.id,
-                  schema: schema,
-                  ui: ui,
                 })
+
+                await refetchTaskData()
 
                 toast.success("Task updated!", { id: toastId })
 
-                await setQueryData(updated)
                 await router.push(
                   Routes.ShowTaskPage({
-                    projectId: projectId!,
+                    projectId: task.projectId,
                     taskId: task.id,
                   })
                 )
@@ -118,7 +98,7 @@ export const EditTask = () => {
 
           <Link
             className="btn self-end mt-4 btn-error"
-            href={Routes.ShowTaskPage({ projectId: projectId!, taskId: taskId! })}
+            href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
           >
             Cancel
           </Link>
@@ -130,11 +110,13 @@ export const EditTask = () => {
 
 const EditTaskPage = () => {
   return (
-    <div>
-      <Suspense fallback={<div>Loading...</div>}>
-        <EditTask />
-      </Suspense>
-    </div>
+    <Layout>
+      <TaskLayout>
+        <Suspense fallback={<div>Loading...</div>}>
+          <EditTask />
+        </Suspense>
+      </TaskLayout>
+    </Layout>
   )
 }
 

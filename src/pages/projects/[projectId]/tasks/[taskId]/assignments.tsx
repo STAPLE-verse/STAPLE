@@ -27,8 +27,12 @@ const AssignmentsContent = () => {
   const processedTeamAssignments = processTeamAssignments(teamAssignments)
 
   // Get columns definitions for tables
-  const individualColumns = task.schema ? assignmentTableColumnsSchema : assignmentTableColumns
-  const teamColumns = task.schema ? teamAssignmentTableColumnsSchema : teamAssignmentTableColumns
+  const individualColumns = task.formVersionId
+    ? assignmentTableColumnsSchema
+    : assignmentTableColumns
+  const teamColumns = task.formVersionId
+    ? teamAssignmentTableColumnsSchema
+    : teamAssignmentTableColumns
 
   return (
     <main className="flex flex-col mb-2 currentContributormt-2 mx-auto w-full max-w-7xl">
@@ -50,7 +54,7 @@ const AssignmentsContent = () => {
                 Edit Task
               </Link>
 
-              {task.schema && (
+              {task.formVersionId && (
                 <Link
                   className="btn btn-secondary mx-2"
                   href={Routes.ShowFormPage({
