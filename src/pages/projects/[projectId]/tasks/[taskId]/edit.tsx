@@ -37,6 +37,7 @@ export const EditTask = () => {
     // assignment.contributorId is nullable thus we filter for initialValues
     .filter((id): id is number => id !== null)
 
+  // Prepopulate form with previous responses
   const initialValues = {
     name: task.name,
     description: task.description!,
@@ -51,6 +52,37 @@ export const EditTask = () => {
   // Check if any assignment is COMPLETED
   const formResponseSupplied = responseSubmitted(task)
 
+  // Handle form submit
+  const handleSubmit = async (values) => {
+    const toastId = "update-task-id"
+    toast.dismiss(toastId)
+    toast.loading("Updating task...", { id: toastId })
+
+    try {
+      await updateTaskMutation({
+        ...values,
+        id: task.id,
+      })
+
+      await refetchTaskData()
+
+      toast.success("Task updated!", { id: toastId })
+
+      await router.push(
+        Routes.ShowTaskPage({
+          projectId: task.projectId,
+          taskId: task.id,
+        })
+      )
+    } catch (error: any) {
+      console.error(error)
+      toast.error("Failed to update the task...", { id: toastId })
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
   return (
     <>
       <Head>
@@ -59,8 +91,6 @@ export const EditTask = () => {
 
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <h1 className="text-3xl">Edit {task.name}</h1>
-        {/* For debugging Task schema */}
-        {/* <pre>{JSON.stringify(task, null, 2)}</pre> */}
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
             projectId={task.projectId}
@@ -68,36 +98,7 @@ export const EditTask = () => {
             submitText="Update Task"
             schema={FormTaskSchema}
             initialValues={initialValues}
-            onSubmit={async (values) => {
-              const toastId = "update-task-id"
-              toast.dismiss(toastId)
-
-              toast.loading("Updating task...", { id: toastId })
-
-              try {
-                await updateTaskMutation({
-                  ...values,
-                  id: task.id,
-                })
-
-                await refetchTaskData()
-
-                toast.success("Task updated!", { id: toastId })
-
-                await router.push(
-                  Routes.ShowTaskPage({
-                    projectId: task.projectId,
-                    taskId: task.id,
-                  })
-                )
-              } catch (error: any) {
-                console.error(error)
-                toast.error("Failed to update the task...", { id: toastId })
-                return {
-                  [FORM_ERROR]: error.toString(),
-                }
-              }
-            }}
+            onSubmit={handleSubmit}
           />
 
           <Link

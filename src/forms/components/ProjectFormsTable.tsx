@@ -27,7 +27,7 @@ export const projectFormsTableColumns = [
     cell: (info) => (
       <Link
         className="btn btn-primary"
-        href={Routes.ShowFormPage({
+        href={Routes.ShowMetadataPage({
           taskId: info.getValue(),
           projectId: info.row.original.projectId,
         })}

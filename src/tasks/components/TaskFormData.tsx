@@ -66,7 +66,7 @@ export const TaskFormData = () => {
             <div className="flex justify-center mt-2">
               <Link
                 className="btn btn-info mt-2"
-                href={Routes.ShowFormPage({
+                href={Routes.ShowMetadataPage({
                   projectId: task.projectId,
                   taskId: task.id,
                 })}

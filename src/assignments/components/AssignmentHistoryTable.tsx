@@ -1,7 +1,7 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { ExtendedAssignmentStatusLog } from "../hooks/useAssignmentData"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import { ProcessedAssignmentHistory } from "../utils/processAssignments"
+import { noSubmitButton } from "src/forms/utils/extendSchema"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedAssignmentHistory>()
@@ -29,8 +29,8 @@ export const assignmentHistoryTableColumns: ColumnDef<ProcessedAssignmentHistory
         {info.row.original ? (
           <JsonFormModal
             metadata={info.getValue()?.metadata}
-            schema={info.getValue()?.schema}
-            uiSchema={info.getValue()?.ui}
+            schema={info.getValue()!.schema}
+            uiSchema={noSubmitButton(info.getValue()!.ui)}
             label="View Form Data"
           />
         ) : (

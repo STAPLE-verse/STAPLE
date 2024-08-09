@@ -57,7 +57,7 @@ const AssignmentsContent = () => {
               {task.formVersionId && (
                 <Link
                   className="btn btn-secondary mx-2"
-                  href={Routes.ShowFormPage({
+                  href={Routes.ShowMetadataPage({
                     projectId: task.projectId as number,
                     taskId: task.id as number,
                   })}
