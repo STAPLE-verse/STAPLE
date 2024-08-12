@@ -239,7 +239,14 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           </div>
         </Modal>
       </div>
-      {formResponseSupplied && <TaskSchemaInput contributors={contributors} />}
+      {formResponseSupplied ? (
+        <TaskSchemaInput contributors={contributors} />
+      ) : (
+        <p className="mt-4 w-1/2 text-red-500">
+          The task is already being completed by the contributors. Please, create a new task if you
+          would like to change the attached form.
+        </p>
+      )}
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )
