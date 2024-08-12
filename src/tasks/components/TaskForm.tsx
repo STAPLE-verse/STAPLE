@@ -5,15 +5,15 @@ import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import getColumns from "../queries/getColumns"
 import getElements from "src/elements/queries/getElements"
 import { useQuery } from "@blitzjs/rpc"
-import { Field, FormSpy } from "react-final-form"
+import { FormSpy } from "react-final-form"
 import { z } from "zod"
 import getContributors from "src/contributors/queries/getContributors"
 import Modal from "src/core/components/Modal"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import getTeams from "src/teams/queries/getTeams"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
-import moment from "moment"
 import TaskSchemaInput from "./TaskSchemaInput"
+import DateField from "src/core/components/fields/DateField"
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -22,15 +22,6 @@ interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
 
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
   const { projectId, formResponseSupplied = true, ...formProps } = props
-
-  // Handle date input as a state
-  const [dateInputValue, setDateInputValue] = useState("")
-
-  useEffect(() => {
-    // Initialize the input with today's date when the component mounts
-    const today = moment().format("YYYY-MM-DDTHH:mm")
-    setDateInputValue(today)
-  }, [])
 
   // Columns
   const [columns] = useQuery(getColumns, {
@@ -112,50 +103,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       />
 
       {/* Deadline */}
-      <Field name="deadline">
-        {({ input, meta }) => {
-          return (
-            <div className="form-control w-full max-w-xs">
-              <style jsx>{`
-                label {
-                  display: flex;
-                  flex-direction: column;
-                  align-items: start;
-                  font-size: 1.25rem;
-                }
-                input {
-                  font-size: 1rem;
-                  padding: 0.25rem 0.5rem;
-                  border-radius: 3px;
-                  appearance: none;
-                }
-              `}</style>
-              <label>Deadline:</label>
-              <input
-                {...input}
-                value={dateInputValue}
-                className="mb-4 text-lg border-2 border-primary rounded p-2 w-full"
-                type="datetime-local"
-                min={moment().format("YYYY-MM-DDTHH:mm")}
-                //placeholder={today}
-                max="2050-01-01T00:00"
-                onChange={(event) => {
-                  const value = event.target.value
-                  setDateInputValue(value)
-                  if (value === "") {
-                    // Handle cleared input by user
-                    input.onChange("")
-                  } else {
-                    // Convert to date if there's a valid value
-                    input.onChange(new Date(value))
-                  }
-                }}
-              />
-              {meta.touched && meta.error && <span className="text-error">{meta.error}</span>}
-            </div>
-          )
-        }}
-      </Field>
+      <DateField name="deadline" label="Deadline:" />
 
       {/* Elements */}
       <LabelSelectField
