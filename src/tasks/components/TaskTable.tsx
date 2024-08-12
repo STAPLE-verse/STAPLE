@@ -25,7 +25,7 @@ export const taskTableColumns = [
   columnHelper.accessor("deadline", {
     cell: (info) => (
       <span>
-        {info.getValue()?.toLocaleDateString("en-us", {
+        {info.getValue()?.toLocaleDateString("en-US", {
           year: "numeric",
           month: "long",
           day: "numeric",

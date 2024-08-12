@@ -15,6 +15,7 @@ export default async function getCurrentUser(_ = null, { session }: Ctx) {
       createdAt: true,
       username: true,
       institution: true,
+      language: true,
     },
   })
 
