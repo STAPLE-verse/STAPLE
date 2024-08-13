@@ -56,9 +56,9 @@ export const AlPmsLabelsList = ({
       })
       await labelChanged()
       await toast.promise(Promise.resolve(updated), {
-        loading: "Adding labels to projects...",
-        success: "Labels added!",
-        error: "Failed to add the labels...",
+        loading: "Adding roles to projects...",
+        success: "Roles added!",
+        error: "Failed to add the roles...",
       })
     } catch (error: any) {
       console.error(error)

@@ -524,7 +524,7 @@ const ProjectDashboard = () => {
           case "LabelsSummary":
             return {
               id: widget.id,
-              title: "Labels",
+              title: "Roles",
               display: getLabelsDisplay(projectStats),
               link: labelLink,
               position: widget.position,

@@ -76,7 +76,7 @@ export const taskFinishedTableColumns = [
       temp = info.getValue().map((i) => i.name)
       return <span>{temp.join(", ")}</span>
     },
-    header: "Labels",
+    header: "Roles",
   }),
   columnHelper.accessor("assignees", {
     cell: (info) => {
@@ -134,10 +134,10 @@ export const taskFinishedTableColumnsTeam = [
         temp = info.getValue().map((i) => i.name)
         return <span>{temp.join(", ")}</span>
       } else {
-        return "No labels assigned to the task"
+        return "No roles assigned to the task"
       }
     },
-    header: "Labels",
+    header: "Roles",
     id: "label",
   }),
   columnHelper.accessor("assignees", {

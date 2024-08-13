@@ -67,8 +67,8 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
             {/* Labels */}
             <CircularPercentageWidget
               data={labelPercent}
-              title={"Labels"}
-              tooltip={"Percent of tasks in this element with labels"}
+              title={"Roles"}
+              tooltip={"Percent of tasks in this element with roles added"}
             />
 
             {/* Delete element button */}

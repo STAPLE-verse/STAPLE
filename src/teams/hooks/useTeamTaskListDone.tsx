@@ -95,7 +95,7 @@ export const useTeamTaskListDone = (teamId: number) => {
         labels:
           task["labels"].length > 0
             ? task["labels"].map((label) => label.name).join(", ")
-            : "No labels assigned",
+            : "No roles assigned",
         // Date
         completedAt:
           assignee.statusLogs[0].createdAt?.toLocaleDateString(undefined, {
@@ -131,7 +131,7 @@ export const useTeamTaskListDone = (teamId: number) => {
     }),
     columnHelper.accessor("labels", {
       cell: (info) => <span>{info.getValue()}</span>,
-      header: "Labels",
+      header: "Roles",
       id: "labels",
     }),
     columnHelper.accessor("completedAt", {

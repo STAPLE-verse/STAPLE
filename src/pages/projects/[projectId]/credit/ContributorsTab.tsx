@@ -63,9 +63,9 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
       })
       await labelChanged()
       await toast.promise(Promise.resolve(updated), {
-        loading: "Adding labels to contributors...",
-        success: "Labels added!",
-        error: "Failed to add the labels...",
+        loading: "Adding roles to contributors...",
+        success: "Roles added!",
+        error: "Failed to add the roles...",
       })
       handleToggleEditLabelModal()
     } catch (error: any) {
@@ -132,7 +132,7 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
             <div className="flex justify-start mt-4">
               <AddLabelForm
                 schema={LabelIdsFormSchema}
-                submitText="Update Label"
+                submitText="Update Role"
                 className="flex flex-col"
                 onSubmit={handleAddLabel}
                 initialValues={initialValues}
