@@ -1,4 +1,4 @@
-import { Prisma, TaskStatus } from "@prisma/client"
+import { TaskStatus } from "@prisma/client"
 import { z } from "zod"
 
 export const FormTaskSchema = z.object({
@@ -34,6 +34,7 @@ export const UpdateTaskSchema = z.object({
   contributorsId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.any()).optional().nullable(),
   formVersionId: z.number().optional().nullable(),
+  deadline: z.date().optional().nullable(),
 })
 
 export const UpdateTaskStatusSchema = z.object({
@@ -54,11 +55,6 @@ export const UpdateTaskOrderSchema = z.object({
     })
   ),
 })
-
-// export const UpdateTaskLabelSchema = z.object({
-//   taskId: z.number(),
-//   labelsId: z.array(z.number()).optional().nullable(),
-// })
 
 export const UpdateTaskLabelSchema = z.object({
   tasksId: z.array(z.number()).nonempty(),
