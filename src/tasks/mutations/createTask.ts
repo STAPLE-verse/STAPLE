@@ -64,6 +64,16 @@ export default resolver.pipe(
       },
     })
 
+    //Connect to labels
+    let task1 = await db.task.update({
+      where: { id: task.id },
+      data: {
+        labels: {
+          connect: labelsId?.map((c) => ({ id: c })) || [],
+        },
+      },
+    })
+
     // Get username corresponding to the PM who created the task
     const createdByUsername = task.createdBy.user ? task.createdBy.user.username : null
 

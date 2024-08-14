@@ -42,6 +42,18 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       user: true,
     },
   })
+  const [{ labels }] = useQuery(getLabels, {
+    where: {
+      projects: { some: { id: { in: projectId! } } },
+    },
+  })
+
+  const labelOptions = labels.map((labels) => {
+    return {
+      label: labels["name"],
+      id: labels["id"],
+    }
+  })
 
   const contributorOptions = contributors.map((contributor) => {
     return {
@@ -71,6 +83,11 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   const [openTeamsModal, setTeamsModal] = useState(false)
   const handleToggleTeamsModal = () => {
     setTeamsModal((prev) => !prev)
+  }
+
+  const [openLabelsModal, setlabelsModal] = useState(false)
+  const handleToggleLabelsModal = () => {
+    setlabelsModal((prev) => !prev)
   }
 
   return (
@@ -187,6 +204,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           </div>
         </Modal>
       </div>
+
       {formResponseSupplied ? (
         <TaskSchemaInput contributors={contributors} />
       ) : (
