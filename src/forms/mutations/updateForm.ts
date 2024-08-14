@@ -5,16 +5,40 @@ import { EditFormSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(EditFormSchema),
   resolver.authorize(),
-  async ({ id, ...data }) => {
-    const newSchema = data.schema != null ? data.schema : Prisma.JsonNull
-    const forms = await db.forms.update({
+  async ({ id, schema, uiSchema }) => {
+    const newSchema = schema != null ? schema : Prisma.JsonNull
+    const schemaName =
+      typeof schema === "object" &&
+      schema !== null &&
+      "title" in schema &&
+      typeof schema.title === "string"
+        ? schema.title
+        : ""
+
+    // Fetch the current form to get the current version number
+    const currentForm = await db.forms.findUnique({
       where: { id },
+      include: { versions: { orderBy: { version: "desc" }, take: 1 } },
+    })
+
+    if (!currentForm) {
+      throw new Error("Form not found")
+    }
+
+    const currentVersion = currentForm.versions[0]?.version || 0
+    const newVersion = currentVersion + 1
+
+    // Create a new form version
+    const updatedForm = await db.formVersion.create({
       data: {
-        uiSchema: data.uiSchema,
+        formId: id,
+        version: newVersion,
         schema: newSchema,
+        uiSchema: uiSchema || Prisma.JsonNull,
+        name: schemaName,
       },
     })
 
-    return forms
+    return updatedForm
   }
 )

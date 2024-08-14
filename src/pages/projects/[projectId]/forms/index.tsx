@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { ProjectFormTable } from "src/forms/components/ProjectFormsTable"
+import { ProjectFormsList } from "src/forms/components/ProjectFormsList"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 import { ContributorPrivileges } from "db"
 
@@ -19,7 +19,7 @@ const MetadataPage = () => {
 
         {
           <Suspense fallback={<div>Loading...</div>}>
-            <ProjectFormTable />
+            <ProjectFormsList />
           </Suspense>
         }
       </main>
