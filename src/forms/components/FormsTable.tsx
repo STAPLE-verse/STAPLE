@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import { getSchemaTitle } from "src/services/getSchemaTitle"
+import DateFormat from "src/core/components/DateFormat"
 
 // TODO: Is it better to call the database for column name every time or just one time and pass the value to child components?
 // Column helper
@@ -17,19 +18,7 @@ export const formsTableColumns = [
     header: "Name",
   }),
   columnHelper.accessor("updatedAt", {
-    cell: (info) => (
-      <span>
-        {info.getValue()?.toLocaleDateString("en-us", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false, // Use 24-hour format
-        })}
-      </span>
-    ),
+    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Last Update",
   }),
   columnHelper.accessor((row) => "view", {

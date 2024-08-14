@@ -1,5 +1,5 @@
-import { formatDate } from "src/services/formatDate"
 import { AssignmentStatus, CompletedAs } from "db"
+import DateFormat from "src/core/components/DateFormat"
 
 export const TaskView = ({
   task,
@@ -41,9 +41,9 @@ export const TaskView = ({
       <h5>Name: {task.name} </h5>
       Description: {task.description}
       <br />
-      Created At: {formatDate(task.createdAt)}
+      Created At: <DateFormat date={task.createdAt}></DateFormat>
       <br />
-      Updated At: {formatDate(lastChangedLog.createdAt)}
+      Updated At: <DateFormat date={lastChangedLog.createdAt}></DateFormat>
       <br />
       Created By: {user.firstName} {user.lastName}
       {printAssignees && (
@@ -124,7 +124,7 @@ export const TeamView = ({ team, tasks, printTask = false }) => {
   return (
     <div className="my-2">
       <h5> Name: {team.name} </h5>
-      Created: {formatDate(team.createdAt)}
+      Created: <DateFormat date={team.createdAt}></DateFormat>
       <div>
         <h6>Members</h6>
         {team.contributors.map((element) => (
@@ -161,7 +161,7 @@ export const ContributorsView = ({
       <h6>
         name: {contributor.user.firstName} {contributor.user.lastName}
       </h6>
-      Added to Project: {formatDate(contributor.createdAt)}
+      Added to Project: <DateFormat date={contributor.createdAt}></DateFormat>
       <br />
       {printLabels && (
         <div className="">
@@ -297,7 +297,12 @@ export const DateLogView = ({ tasks, contributors, log, teams, printHeader }) =>
 
   return (
     <div>
-      {printHeader && <h3> Date: {formatDate(log.createdAt)}</h3>}
+      {printHeader && (
+        <h3>
+          {" "}
+          Date: <DateFormat date={log.createdAt}></DateFormat>
+        </h3>
+      )}
       {/* {filteredContributors.length < 1 && <h4>Not activity for contributors</h4>} */}
       {filteredContributors.length > 0 && (
         <div className="my-1">

@@ -7,6 +7,7 @@ import Table from "src/core/components/Table"
 import { taskElementColumns } from "src/tasks/components/TaskTable"
 import getTasks from "src/tasks/queries/getTasks"
 import { Element } from "@prisma/client"
+import DateFormat from "src/core/components/DateFormat"
 
 interface ElementInformationProps {
   element: Element
@@ -50,16 +51,7 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({ element,
           {element.description}
           {/* Element last update */}
           <p className="italic">
-            Last update:{" "}
-            {element.updatedAt.toLocaleDateString("en-us", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: false, // Use 24-hour format
-            })}
+            Last update: <DateFormat date={element.updatedAt}></DateFormat>
           </p>
           {/* Show update element page */}
           <div className="card-actions justify-end">

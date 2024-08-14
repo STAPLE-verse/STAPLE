@@ -3,6 +3,7 @@ import Link from "next/link"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import router from "next/router"
 import getProjects from "src/projects/queries/getProjects"
+import DateFormat from "src/core/components/DateFormat"
 
 const ITEMS_PER_PAGE = 7
 
@@ -55,16 +56,7 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
           <div className="collapse-content mb-4">
             <p className="mb-2">{project.description}</p>
             <p className="italic mb-2">
-              Last update:{" "}
-              {project.updatedAt.toLocaleDateString("en-us", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false, // Use 24-hour format
-              })}
+              Last update: <DateFormat date={project.updatedAt}></DateFormat>
             </p>
             {/* TODO: Change button position by other method then using absolute */}
             <div className="justify-end absolute bottom-2 right-6">

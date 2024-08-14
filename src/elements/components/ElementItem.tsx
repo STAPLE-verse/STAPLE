@@ -3,6 +3,7 @@ import { Task, Element } from "@prisma/client"
 import Link from "next/link"
 import { useState } from "react"
 import UpdateTasks from "./UpdateTasks"
+import DateFormat from "src/core/components/DateFormat"
 
 interface ElementItemProps {
   element: Element
@@ -30,16 +31,7 @@ const ElementItem: React.FC<ElementItemProps> = ({ element, projectId, tasks, on
         <p className="mb-2">{element.description}</p>
         {/* Element last update */}
         <p className="italic mb-2">
-          Last update:{" "}
-          {element.updatedAt.toLocaleDateString("en-us", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false, // Use 24-hour format
-          })}
+          Last update: <DateFormat date={element.updatedAt}></DateFormat>
         </p>
 
         {/* Tasks in the element */}
@@ -54,16 +46,7 @@ const ElementItem: React.FC<ElementItemProps> = ({ element, projectId, tasks, on
                   {task.description && <div>{task.description.substring(0, 50)}</div>}
                   {task.deadline ? (
                     <p className="italic mb-2">
-                      Deadline:{" "}
-                      {task.deadline.toLocaleDateString("en-us", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                        hour12: false, // Use 24-hour format
-                      })}
+                      Deadline: <DateFormat date={task.deadline}></DateFormat>
                     </p>
                   ) : (
                     <p className="italic mb-2">No deadline</p>

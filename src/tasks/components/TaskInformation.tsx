@@ -4,6 +4,7 @@ import { Tooltip } from "react-tooltip"
 import { TaskContext } from "./TaskContext"
 import getContributor from "src/contributors/queries/getContributor"
 import { Contributor } from "@prisma/client"
+import DateFormat from "src/core/components/DateFormat"
 
 interface ContributorWithUsername extends Contributor {
   user: {
@@ -43,17 +44,7 @@ export const TaskInformation = () => {
 
         <p>
           <span className="font-semibold">Deadline:</span>{" "}
-          {task.deadline
-            ? task.deadline.toLocaleDateString("en-us", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false, // Use 24-hour format
-              })
-            : "No Deadline"}
+          {task.deadline ? <DateFormat date={task.deadline}></DateFormat> : "No Deadline"}
         </p>
 
         <p>
@@ -74,16 +65,7 @@ export const TaskInformation = () => {
         </p>
 
         <p className="italic">
-          Last update:{" "}
-          {task.updatedAt.toLocaleDateString("en-us", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false, // Use 24-hour format
-          })}
+          Last update: <DateFormat date={task.updatedAt}></DateFormat>
         </p>
       </div>
     </div>
