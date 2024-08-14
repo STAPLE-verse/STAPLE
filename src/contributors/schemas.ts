@@ -9,6 +9,15 @@ export const CreateContributorSchema = z.object({
   // template: __fieldName__: z.__zodType__(),
 })
 
+export const CreateContributorFormSchema = z.object({
+  userId: z.number(),
+  privilege: z.nativeEnum(ContributorPrivileges),
+})
+
+export const UpdateContributorFormSchema = z.object({
+  privilege: z.nativeEnum(ContributorPrivileges),
+})
+
 export const UpdateContributorSchema = z.object({
   id: z.number(),
   projectId: z.number(),

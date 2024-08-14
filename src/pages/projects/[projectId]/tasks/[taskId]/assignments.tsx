@@ -53,7 +53,6 @@ const AssignmentsContent = () => {
               >
                 Edit Task
               </Link>
-
               {task.formVersionId && (
                 <Link
                   className="btn btn-secondary mx-2"
@@ -65,6 +64,12 @@ const AssignmentsContent = () => {
                   Download Form Data
                 </Link>
               )}
+              <Link
+                className="btn self-end"
+                href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
+              >
+                Go back
+              </Link>
             </div>
           </div>
         </div>
@@ -95,13 +100,6 @@ const AssignmentsContent = () => {
           </div>
         </div>
       </div>
-
-      <Link
-        className="btn self-end mt-4"
-        href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
-      >
-        Go back
-      </Link>
     </main>
   )
 }
