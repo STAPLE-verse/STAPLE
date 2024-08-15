@@ -17,7 +17,9 @@ export default resolver.pipe(
       createdById,
       contributorsId,
       teamsId,
-      formVersionId,
+      labelsId,
+      schema,
+      ui,
     },
     ctx
   ) => {
@@ -34,6 +36,8 @@ export default resolver.pipe(
         name,
         description,
         columnTaskIndex,
+        schema,
+        ui,
         deadline,
         project: {
           connect: { id: projectId },
@@ -44,11 +48,7 @@ export default resolver.pipe(
         createdBy: {
           connect: { id: createdById },
         },
-        formVersion: formVersionId
-          ? {
-              connect: { id: formVersionId },
-            }
-          : undefined,
+        // TODO: check if this is a good way to conditionally add relation
         element: elementId
           ? {
               connect: { id: elementId },

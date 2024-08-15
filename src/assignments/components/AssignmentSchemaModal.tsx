@@ -20,8 +20,8 @@ export const AssignmentSchemaModal = ({ assignment }) => {
         currentAssignment={assignment}
         completedBy={currentContributor.id}
         completedAs={assignment.teamId ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
-        schema={task.formVersion?.schema}
-        ui={task.formVersion?.uiSchema}
+        schema={task.schema}
+        ui={task.ui}
       />
     </>
   )

@@ -27,12 +27,8 @@ const AssignmentsContent = () => {
   const processedTeamAssignments = processTeamAssignments(teamAssignments)
 
   // Get columns definitions for tables
-  const individualColumns = task.formVersionId
-    ? assignmentTableColumnsSchema
-    : assignmentTableColumns
-  const teamColumns = task.formVersionId
-    ? teamAssignmentTableColumnsSchema
-    : teamAssignmentTableColumns
+  const individualColumns = task.schema ? assignmentTableColumnsSchema : assignmentTableColumns
+  const teamColumns = task.schema ? teamAssignmentTableColumnsSchema : teamAssignmentTableColumns
 
   return (
     <main className="flex flex-col mb-2 currentContributormt-2 mx-auto w-full max-w-7xl">
@@ -53,10 +49,11 @@ const AssignmentsContent = () => {
               >
                 Edit Task
               </Link>
-              {task.formVersionId && (
+
+              {task.schema && (
                 <Link
                   className="btn btn-secondary mx-2"
-                  href={Routes.ShowMetadataPage({
+                  href={Routes.ShowFormPage({
                     projectId: task.projectId as number,
                     taskId: task.id as number,
                   })}
@@ -64,12 +61,6 @@ const AssignmentsContent = () => {
                   Download Form Data
                 </Link>
               )}
-              <Link
-                className="btn self-end"
-                href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
-              >
-                Go back
-              </Link>
             </div>
           </div>
         </div>
@@ -100,6 +91,13 @@ const AssignmentsContent = () => {
           </div>
         </div>
       </div>
+
+      <Link
+        className="btn self-end mt-4"
+        href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
+      >
+        Go back
+      </Link>
     </main>
   )
 }

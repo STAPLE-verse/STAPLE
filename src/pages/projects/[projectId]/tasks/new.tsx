@@ -14,11 +14,9 @@ import getContributor from "src/contributors/queries/getContributor"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 const NewTaskPage = () => {
-  // Setup
   const router = useRouter()
-  const [createTaskMutation] = useMutation(createTask)
-
   const projectId = useParam("projectId", "number")
+  const [createTaskMutation] = useMutation(createTask)
   const currentUser = useCurrentUser()
   const [currentContributor] = useQuery(getContributor, {
     where: { projectId: projectId, userId: currentUser!.id },
@@ -47,6 +45,8 @@ const NewTaskPage = () => {
             onSubmit={async (values) => {
               // Create new task
               try {
+                // console.log(values)
+                // if (true) return
                 const task = await createTaskMutation({
                   name: values.name,
                   description: values.description,
@@ -57,7 +57,9 @@ const NewTaskPage = () => {
                   createdById: currentContributor.id,
                   contributorsId: values.contributorsId,
                   teamsId: values.teamsId,
-                  formVersionId: values.formVersionId,
+                  labelsId: values.labelsId,
+                  schema: values.schema?.schema,
+                  ui: values.schema?.ui,
                 })
 
                 await toast.promise(Promise.resolve(task), {

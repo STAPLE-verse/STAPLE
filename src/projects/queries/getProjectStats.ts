@@ -1,8 +1,10 @@
+import { NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { TaskStatus } from "db"
 import { z } from "zod"
 import { AssignmentStatus } from "db"
+import { Prisma } from "@prisma/client"
 
 const GetProjectStatsSchema = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -42,7 +44,10 @@ export default resolver.pipe(
     const assignmentForms = await db.task.findMany({
       where: {
         projectId: id,
-        formVersionId: { not: null },
+        schema: {
+          //not: undefined,
+          not: Prisma.DbNull,
+        },
       },
       include: { assignees: { include: { statusLogs: true } } },
     })

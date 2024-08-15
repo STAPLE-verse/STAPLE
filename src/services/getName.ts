@@ -11,7 +11,6 @@ export function getContributorName(contributor) {
   return null
 }
 
-// This function receives a Team object
 export function getTeamName(team) {
   if (team.id != null) {
     if (team.hasOwnProperty("name")) {

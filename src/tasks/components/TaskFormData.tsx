@@ -1,22 +1,36 @@
-import { useState } from "react"
+//@ts-nocheck
+//The center component is depricate , needs to refactor the layout of required button and download button
+import { useContext, useState } from "react"
 import { Tooltip } from "react-tooltip"
 import JsonForm from "src/assignments/components/JsonForm"
 import Modal from "src/core/components/Modal"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
+import { TaskContext } from "./TaskContext"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { useTaskContext } from "./TaskContext"
+import { useParam } from "@blitzjs/next"
 
 export const TaskFormData = () => {
   const [openMetadataInspectModal, setOpenMetadataInspectModal] = useState(false)
 
-  const { task } = useTaskContext()
+  const taskContext = useContext(TaskContext)
+
+  if (!taskContext || !taskContext.task) {
+    return <div>Loading...</div>
+  }
+
+  const { task } = taskContext
 
   const handleMetadataInspectToggle = () => {
     setOpenMetadataInspectModal((prev) => !prev)
   }
 
-  const uiSchema = task.formVersion?.uiSchema || {}
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const taskId = useParam("taskId", "number") as number
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const projectId = useParam("projectId", "number") as number
+
+  const uiSchema = task["ui"] || {}
   let extendedUiSchema = {}
   // TODO: This assumes uiSchema is always an object, although the type def allows for string, number(?) as well
   // I am not sure where would we encounter those
@@ -41,21 +55,16 @@ export const TaskFormData = () => {
         className="z-[1099]"
       />
       <div>
-        {task.formVersion ? (
-          <div className="flex flex-col items-center w-full">
-            <div className="flex justify-center mb-4">
+        {task["schema"] ? (
+          <div className="flex-row w-full justify-center">
+            <center>
               <button className="btn btn-primary" onClick={() => handleMetadataInspectToggle()}>
                 Required Form
               </button>
-            </div>
+            </center>
             <Modal open={openMetadataInspectModal} size="w-11/12 max-w-5xl">
               <div className="font-sans">
-                {
-                  <JsonForm
-                    schema={getJsonSchema(task.formVersion.schema)}
-                    uiSchema={extendedUiSchema}
-                  />
-                }
+                {<JsonForm schema={getJsonSchema(task["schema"])} uiSchema={extendedUiSchema} />}
               </div>
               <div className="modal-action">
                 <button className="btn btn-primary" onClick={handleMetadataInspectToggle}>
@@ -63,12 +72,12 @@ export const TaskFormData = () => {
                 </button>
               </div>
             </Modal>
-            <div className="flex justify-center mt-2">
+            <div className="flex-row w-full justify-center">
               <Link
                 className="btn btn-info mt-2"
-                href={Routes.ShowMetadataPage({
-                  projectId: task.projectId,
-                  taskId: task.id,
+                href={Routes.ShowFormPage({
+                  projectId: projectId,
+                  taskId: taskId,
                 })}
               >
                 Download Form Data

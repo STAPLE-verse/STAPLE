@@ -25,7 +25,7 @@ export const AssignmentCompletion = () => {
         />
 
         {/* if no schema complete task as a Individual*/}
-        {!task.formVersion && individualAssignments && individualAssignments.length > 0 && (
+        {!task["schema"] && individualAssignments && individualAssignments.length > 0 && (
           <div className="flex grid-col-2">
             <CompleteToggle
               currentAssignment={individualAssignments[0]}
@@ -40,7 +40,7 @@ export const AssignmentCompletion = () => {
         )}
 
         {/* if no schema complete task as a Team*/}
-        {!task.formVersion && teamAssignments && teamAssignments.length > 0 && (
+        {!task["schema"] && teamAssignments && teamAssignments.length > 0 && (
           <div>
             {teamAssignments.map((teamAssignment) => (
               <div key={teamAssignment.id} className="flex flex-col gap-2">
@@ -59,27 +59,27 @@ export const AssignmentCompletion = () => {
         )}
 
         {/* if schema and individual*/}
-        {task.formVersion && individualAssignments && individualAssignments.length > 0 && (
+        {task["schema"] && individualAssignments && individualAssignments.length > 0 && (
           <div className="flex grid-col-2">
             <CompleteSchema
               currentAssignment={individualAssignments[0]}
               completedBy={currentContributor?.id}
               completedAs={CompletedAs.INDIVIDUAL}
-              schema={task.formVersion.schema}
-              ui={task.formVersion.uiSchema}
+              schema={task["schema"]}
+              ui={task["ui"]}
             />
             <span className="mx-2">
               <AssignmentHistoryModal
                 assignmentStatusLog={individualAssignments[0]!.statusLogs!}
-                schema={task.formVersion.schema}
-                ui={task.formVersion.uiSchema}
+                schema={task.schema}
+                ui={task.ui}
               />
             </span>
           </div>
         )}
 
         {/* if schema and team*/}
-        {task.formVersion && teamAssignments && teamAssignments.length > 0 && (
+        {task["schema"] && teamAssignments && teamAssignments.length > 0 && (
           <div className="">
             {teamAssignments.map((teamAssignment) => (
               <div key={teamAssignment.id} className="mb-2 flex grid-col-2">
@@ -87,15 +87,15 @@ export const AssignmentCompletion = () => {
                   currentAssignment={teamAssignment}
                   completedBy={currentContributor?.id}
                   completedAs={CompletedAs.TEAM}
-                  schema={task.formVersion?.schema}
-                  ui={task.formVersion?.uiSchema}
+                  schema={task["schema"]}
+                  ui={task["ui"]}
                 />
 
                 <span className="mx-2">
                   <AssignmentHistoryModal
                     assignmentStatusLog={teamAssignment.statusLogs!}
-                    schema={task.formVersion?.schema}
-                    ui={task.formVersion?.uiSchema}
+                    schema={task.schema}
+                    ui={task.ui}
                   />
                 </span>
               </div>

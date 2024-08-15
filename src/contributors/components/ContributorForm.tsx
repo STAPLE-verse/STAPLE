@@ -1,14 +1,14 @@
-import React from "react"
+import React, { Suspense } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
 import getUsers from "src/users/queries/getUsers"
 import { ContributorPrivileges } from "@prisma/client"
+import { FORM_ERROR } from "final-form"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
-  isEdit?: boolean
 }
 
 export const ContributorPrivilegesOptions = [
@@ -17,39 +17,50 @@ export const ContributorPrivilegesOptions = [
 ]
 
 export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
-  const { projectId, isEdit = false, ...formProps } = props
+  const { projectId, ...formProps } = props
 
-  const [users] = useQuery(
-    getUsers,
-    {
-      where: {
-        NOT: {
-          contributions: {
-            some: {
-              project: {
-                id: projectId,
-              },
+  const [users] = useQuery(getUsers, {
+    where: {
+      NOT: {
+        contributions: {
+          some: {
+            project: {
+              id: projectId,
             },
           },
         },
       },
     },
-    // Only run query if useers are needed for the field
-    { enabled: !isEdit }
-  )
+  })
 
   return (
     <Form<S> {...formProps}>
-      {!isEdit && (
-        <LabelSelectField
-          className="select text-primary select-bordered w-1/2 mt-4 mb-4"
-          name="userId"
-          label="Select User:"
-          options={users}
-          optionText="username"
-          optionValue="id"
-        />
-      )}
+      <LabelSelectField
+        className="select text-primary select-bordered w-1/2 mt-4 mb-4"
+        name="userId"
+        label="Select User:"
+        options={users}
+        optionText="username"
+        optionValue="id"
+      />
+      <LabelSelectField
+        className="select text-primary select-bordered w-1/2 mt-4"
+        name="privilege"
+        label="Select Privilege:"
+        options={ContributorPrivilegesOptions}
+        optionText="label"
+        optionValue="id"
+      />
+      {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
+    </Form>
+  )
+}
+
+export function ContributorFormEdit<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
+  const { projectId, ...formProps } = props
+
+  return (
+    <Form<S> {...formProps}>
       <LabelSelectField
         className="select text-primary select-bordered w-1/2 mt-4"
         name="privilege"
@@ -59,6 +70,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         optionValue="value"
         type="string"
       />
+      {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )
 }

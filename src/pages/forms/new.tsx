@@ -1,7 +1,11 @@
+"use client"
+
 import { Suspense } from "react"
 import Head from "next/head"
+
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+
 import React from "react"
 import FormPlayground from "src/forms/components/FormPlayground"
 import { useMutation } from "@blitzjs/rpc"
@@ -14,9 +18,9 @@ const FormBuilderPage = () => {
   const currentUser = useCurrentUser()
 
   const saveForm = async (state) => {
-    await CreateFormMutation({
-      schema: state.schema,
-      uiSchema: state.uischema,
+    const form = await CreateFormMutation({
+      schema: JSON.parse(state.schema),
+      uiSchema: JSON.parse(state.uischema),
       userId: currentUser!.id,
     })
     await router.push(Routes.AllFormsPage())

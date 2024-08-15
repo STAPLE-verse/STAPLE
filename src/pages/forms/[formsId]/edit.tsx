@@ -19,7 +19,7 @@ const FormEditPage = () => {
   const [currentForm, { refetch: refetchGetForm }] = useQuery(getForm, { id: formsId! })
 
   const saveForm = async (state) => {
-    await UpdateFormMutation({
+    const form = await UpdateFormMutation({
       id: formsId!,
       schema: JSON.parse(state.schema),
       uiSchema: JSON.parse(state.uischema),
@@ -39,8 +39,8 @@ const FormEditPage = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <FormPlayground
             saveForm={saveForm}
-            initialSchema={JSON.stringify(currentForm.formVersion?.schema || {})}
-            initialUiSchema={JSON.stringify(currentForm.formVersion?.uiSchema || {})}
+            initialSchema={JSON.stringify(currentForm?.schema || {})}
+            initialUiSchema={JSON.stringify(currentForm?.uiSchema || {})}
           />
         </Suspense>
       </main>

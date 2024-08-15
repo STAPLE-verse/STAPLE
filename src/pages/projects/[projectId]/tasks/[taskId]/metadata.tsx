@@ -1,44 +1,99 @@
-import { useTaskContext } from "src/tasks/components/TaskContext"
-import { Suspense } from "react"
+// @ts-nocheck
+import { TaskProvider, TaskContext } from "src/tasks/components/TaskContext"
+import { Suspense, useContext, useState } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
+import { useParam } from "@blitzjs/next"
+import { useQuery } from "@blitzjs/rpc"
+import getProject from "src/projects/queries/getProject"
 import Table from "src/core/components/Table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DownloadJSON from "src/forms/components/DownloadJSON"
 import DownloadXLSX from "src/forms/components/DownloadXLSX"
 import DownloadZIP from "src/forms/components/DownloadZIP"
+import Modal from "src/core/components/Modal"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
-import TaskLayout from "src/core/layouts/TaskLayout"
-import { extendSchema } from "src/forms/utils/extendSchema"
-import { processMetadata } from "src/forms/utils/processMetadata"
-import { metadataTable } from "src/forms/utils/metadataTable"
-import { JsonFormModal } from "src/core/components/JsonFormModal"
+import JsonForm from "src/assignments/components/JsonForm"
 
-const MetadataContent = () => {
-  // Ensure that only PM can edit a task
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+const TaskContent = () => {
+  const taskContext = useContext(TaskContext)
+  const { task } = taskContext
+  const projectId = useParam("projectId", "number")
+  const taskId = useParam("taskId", "number")
+  if (!task) {
+    return <div>Loading...</div>
+  }
 
-  // Get tasks and assignments
-  const { task } = useTaskContext()
-
-  // Extend uiSchema so submit button is not shown
-  const extendedUiSchema = extendSchema({
-    schema: task.formVersion?.uiSchema || {},
-    extension: {
+  // modal for review
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const [openMetadataInspectModal, setOpenMetadataInspectModal] = useState(false)
+  const handleMetadataInspectToggle = () => {
+    setOpenMetadataInspectModal((prev) => !prev)
+  }
+  const uiSchema = task["ui"] || {}
+  let extendedUiSchema = {}
+  // TODO: This assumes uiSchema is always an object, although the type def allows for string, number(?) as well
+  // I am not sure where would we encounter those
+  if (uiSchema && typeof uiSchema === "object" && !Array.isArray(uiSchema)) {
+    // We do not want to show the submit button
+    extendedUiSchema = {
+      ...uiSchema,
       "ui:submitButtonOptions": {
         norender: true,
       },
-    },
+    }
+  }
+
+  const statusLogs = task.assignees.flatMap((people) => people.statusLogs)
+  const printForm = statusLogs.filter((complete) => {
+    return complete.status == "COMPLETED"
+  })
+  const dataForm = printForm.flatMap((meta, idx, arr) => {
+    const contributorId = meta.completedBy // always returns who did it
+    const assignment = task.assignees.find((contributor) => {
+      return contributor.contributorId === contributorId
+      // this should return null when team because contributor.contributorId is null when team
+      // but it will always find something, since this isn't technically a filtered loop
+      // return contributorId and teamId
+    })
+    return {
+      userId: assignment.contributor.userId,
+      teamId: "...",
+      createdAt: meta.createdAt,
+      ...meta.metadata,
+    }
   })
 
-  // Prepare data for the metadatatable
-  const processedMetadata = processMetadata(task)
+  //console.log(dataForm)
 
-  // Create table definitions based on the schema
-  const metadataTableColumns = metadataTable(task.formVersion?.schema)
+  const makeTableColumns = () => {
+    const schemaProps = task.schema.properties
+    let columns = [
+      {
+        header: "Completed By",
+        accessorKey: "userId",
+        id: "userId",
+      },
+      {
+        header: "Changed At",
+        accessorKey: "createdAt",
+        id: "createdAt",
+      },
+    ]
+
+    for (const [key, value] of Object.entries(schemaProps)) {
+      if (typeof value === "object" && value !== null) {
+        const columnObject = {
+          header: value.title,
+          accessorKey: key,
+          id: key,
+        }
+        columns.push(columnObject)
+      }
+    }
+    return columns
+  }
 
   return (
     <>
@@ -46,51 +101,56 @@ const MetadataContent = () => {
         <title>Form Data for {task.name}</title>
       </Head>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        {/* Header */}
         <div className="flex flex-row justify-center">
           <div className="card bg-base-300 mb-2 w-full">
             <div className="card-body">
               <div className="flex justify-center">
-                <JsonFormModal
-                  schema={getJsonSchema(task.formVersion?.schema)}
-                  uiSchema={extendedUiSchema}
-                  label="Form Requirements"
-                />
+                <button className="btn btn-primary" onClick={() => handleMetadataInspectToggle()}>
+                  Form Requirements
+                </button>
+                <Modal open={openMetadataInspectModal} size="w-11/12 max-w-5xl">
+                  <div className="font-sans">
+                    {
+                      <JsonForm
+                        schema={getJsonSchema(task["schema"])}
+                        uiSchema={extendedUiSchema}
+                      />
+                    }
+                  </div>
+                  <div className="modal-action">
+                    <button className="btn btn-primary" onClick={handleMetadataInspectToggle}>
+                      Close
+                    </button>
+                  </div>
+                </Modal>
 
                 <Link
                   className="btn btn-secondary mx-2"
                   href={Routes.AssignmentsPage({
-                    projectId: task.projectId,
-                    taskId: task.id,
+                    projectId: projectId,
+                    taskId: taskId,
                   })}
                 >
                   Review and Edit Form Tasks
                 </Link>
-                <DownloadJSON
-                  data={processedMetadata}
-                  fileName={task.name}
-                  className="btn btn-info"
-                />
+
+                <DownloadJSON data={dataForm} fileName={task.name} className="btn btn-info" />
+
                 <DownloadXLSX
-                  data={processedMetadata}
+                  data={dataForm}
                   fileName={task.name}
                   className="btn btn-accent mx-2"
                 />
-                <DownloadZIP
-                  data={processedMetadata}
-                  fileName={task.name}
-                  className="btn btn-info mx-2"
-                />
+                <DownloadZIP data={dataForm} fileName={task.name} className="btn btn-info mx-2" />
               </div>
             </div>
           </div>
         </div>
-        {/* List of form responses */}
         <div className="flex flex-row justify-center">
           <div className="card bg-base-300 w-full">
             <div className="card-body overflow-x-auto">
               <div className="card-title">Form Data for {task.name}</div>
-              <Table columns={metadataTableColumns} data={processedMetadata} />
+              <Table columns={makeTableColumns()} data={dataForm} />
             </div>
           </div>
         </div>
@@ -99,18 +159,24 @@ const MetadataContent = () => {
   )
 }
 
-export const ShowMetadataPage = () => {
+// show the Task page
+export const ShowFormPage = () => {
+  const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
+  const taskId = useParam("taskId", "number")
+
+  // return the page
   return (
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
-        <TaskLayout>
-          <MetadataContent />
-        </TaskLayout>
+        <TaskProvider taskId={taskId}>
+          <TaskContent />
+        </TaskProvider>
       </Suspense>
     </Layout>
   )
 }
 
-ShowMetadataPage.authenticate = true
+ShowFormPage.authenticate = true
 
-export default ShowMetadataPage
+export default ShowFormPage
