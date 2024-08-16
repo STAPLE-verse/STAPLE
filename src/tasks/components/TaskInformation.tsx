@@ -1,15 +1,25 @@
 import { useQuery } from "@blitzjs/rpc"
 import { useContext } from "react"
 import { Tooltip } from "react-tooltip"
-import getUsers from "src/users/queries/getUsers"
 import { TaskContext } from "./TaskContext"
+import getContributor from "src/contributors/queries/getContributor"
+import { Contributor } from "@prisma/client"
+
+interface ContributorWithUsername extends Contributor {
+  user: {
+    username: string
+  }
+}
 
 export const TaskInformation = () => {
   const taskContext = useContext(TaskContext)
   const task = taskContext?.task
-  const [pm] = useQuery(getUsers, {
+  const [pmData] = useQuery(getContributor, {
     where: { id: task?.createdById },
+    include: { user: { select: { username: true } } },
   })
+
+  const pm = pmData as ContributorWithUsername
 
   if (!taskContext || !task) {
     return <div>Loading...</div>
@@ -60,7 +70,7 @@ export const TaskInformation = () => {
         </p>
 
         <p>
-          <span className="font-semibold">Created by:</span> {pm[0]?.username}
+          <span className="font-semibold">Created by:</span> {pm?.user?.username}
         </p>
 
         <p className="italic">

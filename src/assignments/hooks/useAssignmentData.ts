@@ -1,14 +1,27 @@
-import { useEffect, useState } from "react"
-import { Assignment, AssignmentStatusLog, Contributor, Task, Team } from "db"
+import { Assignment, AssignmentStatusLog, Contributor, Team, User } from "db"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getContributor from "src/contributors/queries/getContributor"
 import { useQuery } from "@blitzjs/rpc"
 import { ExtendedTask } from "src/tasks/components/TaskContext"
 
+// Creating custom types
+// Extend Contributor to include User with only username
+export type ExtendedContributor = Contributor & {
+  user: Pick<User, "username">
+}
+
+export type ExtendedTeam = Team & {
+  contributors: ExtendedContributor[]
+}
+
+export type ExtendedAssignmentStatusLog = AssignmentStatusLog & {
+  contributor?: ExtendedContributor | null
+}
+
 export type ExtendedAssignment = Assignment & {
-  contributor?: Contributor | null
-  team?: (Team & { contributors: Contributor[] }) | null
-  statusLogs?: AssignmentStatusLog[]
+  contributor?: ExtendedContributor | null
+  team?: ExtendedTeam | null
+  statusLogs?: ExtendedAssignmentStatusLog[]
 }
 
 type useAssignmentDataType = {
@@ -16,6 +29,7 @@ type useAssignmentDataType = {
   teamAssignments: ExtendedAssignment[]
 }
 
+// Hook to get assignment data from task returned by taskContext
 export default function useAssignmentData(task: ExtendedTask): useAssignmentDataType {
   // Get assignments
   const assignments = task.assignees
