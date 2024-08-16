@@ -5,42 +5,27 @@ import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import getColumns from "../queries/getColumns"
 import getElements from "src/elements/queries/getElements"
 import { useQuery } from "@blitzjs/rpc"
-import { Field, FormSpy } from "react-final-form"
+import { FormSpy } from "react-final-form"
 import { z } from "zod"
 import getContributors from "src/contributors/queries/getContributors"
 import Modal from "src/core/components/Modal"
-import { useEffect, useState } from "react"
-import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
+import { useState } from "react"
 import getTeams from "src/teams/queries/getTeams"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
-import moment from "moment"
-import { ContributorPrivileges } from "db"
-import getForms from "src/forms/queries/getForms"
+import TaskSchemaInput from "./TaskSchemaInput"
+import DateField from "src/core/components/fields/DateField"
+
 import { AddLabelForm } from "src/labels/components/AddLabelForm"
 import { LabelIdsFormSchema } from "src/labels/schemas"
 import getLabels from "src/labels/queries/getLabels"
 
-// TODO: Check whether this is a good method to go
-// Other methods could be: passing the columns directly
-// Adding projectId directly to Form props as an optional value
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
-  type?: string
-  taskId?: number
+  formResponseSupplied?: boolean
 }
 
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
-  const { projectId, type, taskId, ...formProps } = props
-
-  const today = moment().format("YYYY-MM-DDTHH:mm")
-  let deadline =
-    formProps.initialValues?.deadline != undefined
-      ? moment(formProps.initialValues?.deadline).format("YYYY-MM-DDTHH:mm")
-      : today
-
-  // Handle date input as a state
-  const [dateInputValue, setDateInputValue] = useState(deadline)
-
+  const { projectId, formResponseSupplied = true, ...formProps } = props
   // Columns
   const [columns] = useQuery(getColumns, {
     orderBy: { id: "asc" },
@@ -92,40 +77,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     }
   })
 
-  // Schema
-  const defaultSchemas = getDefaultSchemaLists()
-  // Get the schemas of the PMs on the project
-  // Get PM userids
-  const pmList = contributors
-    .filter((contributor) => contributor.privilege === ContributorPrivileges.PROJECT_MANAGER)
-    .map((pm) => pm.userId)
-
-  const [pmForms] = useQuery(getForms, {
-    where: {
-      userId: {
-        in: pmList,
-      },
-    },
-  })
-
-  const pmSchemas = pmForms.forms
-    // Dropping forms that do not have a title added by the user
-    .filter((form) => form.schema && form.schema["title"])
-    .map((form) => ({
-      id: form.id,
-      name: form.schema != null ? form.schema["title"] : null,
-      schema: form.schema,
-      ui: form.uiSchema,
-    }))
-  // Merge schema
-  const schemas = [...defaultSchemas, ...pmSchemas]
-
   // Modal open logics
-  const [openSchemaModal, setopenSchemaModal] = useState(false)
-  const handleToggleSchemaUpload = () => {
-    setopenSchemaModal((prev) => !prev)
-  }
-
   const [openContributorsModal, setContributorsModal] = useState(false)
   const handleToggleContributorsModal = () => {
     setContributorsModal((prev) => !prev)
@@ -171,50 +123,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       />
 
       {/* Deadline */}
-      <Field name="deadline">
-        {({ input, meta }) => {
-          return (
-            <div className="form-control w-full max-w-xs">
-              <style jsx>{`
-                label {
-                  display: flex;
-                  flex-direction: column;
-                  align-items: start;
-                  font-size: 1.25rem;
-                }
-                input {
-                  font-size: 1rem;
-                  padding: 0.25rem 0.5rem;
-                  border-radius: 3px;
-                  appearance: none;
-                }
-              `}</style>
-              <label>Deadline:</label>
-              <input
-                {...input}
-                value={dateInputValue}
-                className="mb-4 text-lg border-2 border-primary rounded p-2 w-full"
-                type="datetime-local"
-                min={moment().format("YYYY-MM-DDTHH:mm")}
-                //placeholder={today}
-                max="2050-01-01T00:00"
-                onChange={(event) => {
-                  const value = event.target.value
-                  setDateInputValue(value)
-                  if (value === "") {
-                    // Handle cleared input by user
-                    input.onChange("")
-                  } else {
-                    // Convert to date if there's a valid value
-                    input.onChange(new Date(value))
-                  }
-                }}
-              />
-              {meta.touched && meta.error && <span className="text-error">{meta.error}</span>}
-            </div>
-          )
-        }}
-      </Field>
+      <DateField name="deadline" label="Deadline:" />
 
       {/* Elements */}
       <LabelSelectField
@@ -298,62 +207,14 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           </div>
         </Modal>
       </div>
-
-      <div className="mt-4">
-        <button
-          type="button"
-          className="btn btn-primary w-1/2"
-          onClick={() => handleToggleSchemaUpload()}
-        >
-          Assign Required Information
-        </button>
-
-        {/* Schema */}
-        <Modal open={openSchemaModal} size="w-11/12 max-w-1xl">
-          <div className="">
-            <div>
-              <label className="text-lg font-bold">Choose a Form Template: </label>
-              <br className="mb-2" />
-              <Field name="schema">
-                {({ input, meta }) => (
-                  <div>
-                    <select
-                      className="select select-primary border-2 w-full max-w-xs"
-                      {...input}
-                      value={input.value ? input.value.id : ""}
-                      onChange={(event) => {
-                        const selectedId = event.target.value
-                        const selectedSchema = schemas.find(
-                          (schema) => schema.id.toString() === selectedId
-                        )
-                        input.onChange(selectedSchema ? selectedSchema : null)
-                      }}
-                    >
-                      <option value="" disabled>
-                        -- select an option --
-                      </option>
-                      {schemas.map((schema) => (
-                        <option key={schema.id} value={schema.id}>
-                          {schema.name}
-                        </option>
-                      ))}
-                    </select>
-                    {meta.touched && meta.error && <span>{meta.error}</span>}
-                  </div>
-                )}
-              </Field>
-            </div>
-
-            <div className="modal-action">
-              <button type="button" className="btn btn-primary" onClick={handleToggleSchemaUpload}>
-                Close
-              </button>
-            </div>
-            {/* closes the modal */}
-          </div>
-        </Modal>
-      </div>
-
+      {formResponseSupplied ? (
+        <TaskSchemaInput contributors={contributors} />
+      ) : (
+        <p className="mt-4 w-1/2 text-red-500">
+          The task is already being completed by the contributors. Please, create a new task if you
+          would like to change the attached form.
+        </p>
+      )}
       <div className="mt-4">
         <button
           type="button"

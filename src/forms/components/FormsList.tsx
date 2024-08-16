@@ -1,14 +1,13 @@
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import Table from "src/core/components/Table"
-import { Routes } from "@blitzjs/next"
-import router, { useRouter } from "next/router"
+import { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getForms from "src/forms/queries/getForms"
 import { formsTableColumns } from "src/forms/components/FormsTable"
 
 const ITEMS_PER_PAGE = 10
 
-export const AllFormsList = () => {
+export const FormsList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const currentUser = useCurrentUser()

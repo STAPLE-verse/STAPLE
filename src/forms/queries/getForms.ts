@@ -18,11 +18,30 @@ export default resolver.pipe(
       skip,
       take,
       count: () => db.forms.count({ where }),
-      query: (paginateArgs) => db.forms.findMany({ ...paginateArgs, include, where, orderBy }),
+      query: (paginateArgs) =>
+        db.forms.findMany({
+          ...paginateArgs,
+          where,
+          orderBy,
+          include: {
+            ...include,
+            versions: {
+              orderBy: { version: "desc" },
+              take: 1,
+            },
+          },
+        }),
+    })
+
+    const formattedForms = forms.map((form) => {
+      return {
+        ...form,
+        formVersion: form.versions[0] || null,
+      }
     })
 
     return {
-      forms,
+      forms: formattedForms,
       nextPage,
       hasMore,
       count,

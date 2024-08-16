@@ -6,7 +6,7 @@ export const completedFormPercentage = (tasks: Task[]): number => {
   }
 
   const allFormAssignments = tasks.filter((task) => {
-    return task.schema !== null
+    return task.formVersionId !== null
   })
 
   if (allFormAssignments.length > 0) {

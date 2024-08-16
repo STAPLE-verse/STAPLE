@@ -164,8 +164,8 @@ model Task {
   elementId       Int?
   element         Element?     @relation(fields: [elementId], references: [id])
   assignees       Assignment[]
-  schema          Json?
-  ui              Json         @default("{}")
+  formVersionId   Int?
+  formVersion     FormVersion? @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
   status          TaskStatus   @default(NOT_COMPLETED)
   tags            String?
 
@@ -245,14 +245,27 @@ model Element {
 }
 
 model Forms {
+  id        Int           @id @default(autoincrement())
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  userId    Int
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  versions  FormVersion[]
+  archived  Boolean       @default(false)
+}
+
+model FormVersion {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  name      String
+  formId    Int
+  version   Int
   schema    Json
   uiSchema  Json?
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  // shareable option so you can see if it you are PM-ing with someone else
+  createdAt DateTime @default(now())
+  Form      Forms    @relation(fields: [formId], references: [id], onDelete: Cascade)
+  Task      Task[]
+
+  @@index([formId, version], name: "formVersionIndex")
 }
 
 model Notification {
