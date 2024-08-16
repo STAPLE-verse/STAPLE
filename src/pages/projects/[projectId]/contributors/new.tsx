@@ -24,13 +24,13 @@ const NewContributor = () => {
 
   // Handle events
   const handleSubmit = async (values) => {
-    console.log(values)
     try {
       const contributor = await createContributorMutation({
         userId: values.userId,
         projectId: projectId!,
         privilege: values.privilege,
         addedBy: currentUser!.username,
+        labelsId: values.labelsId,
       })
       await toast.promise(Promise.resolve(contributor), {
         loading: "Adding contributor...",

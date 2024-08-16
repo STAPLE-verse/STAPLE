@@ -17,6 +17,16 @@ export default resolver.pipe(
       },
     })
 
+    //connect to labels
+    let c1 = await db.contributor.update({
+      where: { id: contributor.id },
+      data: {
+        labels: {
+          connect: input.labelsId?.map((c) => ({ id: c })) || [],
+        },
+      },
+    })
+
     // Send notification
     // Get information for the notification
     const project = await db.project.findFirst({ where: { id: input.projectId } })

@@ -25,6 +25,12 @@ export const EditContributor = () => {
   const [contributor, { setQueryData }] = useQuery(getContributor, {
     where: { id: contributorId, project: { id: projectId! } },
     include: {
+      labels: {
+        select: {
+          name: true,
+          id: true,
+        },
+      },
       user: {
         select: {
           firstName: true,
@@ -35,9 +41,12 @@ export const EditContributor = () => {
     },
   })
 
+  const labelsId =
+    contributor["labels"] != undefined ? contributor["labels"].map((label) => label.id) : []
   // Set initial values
   const initialValues = {
     privilege: contributor.privilege,
+    labelsId: labelsId,
   }
 
   // Handle events
@@ -56,6 +65,7 @@ export const EditContributor = () => {
         id: contributor.id,
         projectId: projectId!,
         privilege: values.privilege,
+        labelsId: values.labelsId,
       })
       await toast.promise(Promise.resolve(updated), {
         loading: "Updating contributor information...",
