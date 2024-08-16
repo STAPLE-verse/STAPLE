@@ -43,6 +43,7 @@ export const TosForm = (props: TosFormProps) => {
         }}
         cancelText="Go Back"
         onCancel={props.onCancel}
+        summitOnRight={true}
       >
         <LabeledCheckboxField
           name="tos"
