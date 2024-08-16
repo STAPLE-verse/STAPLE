@@ -13,7 +13,12 @@ function TextFilter({ column, table }: { column: Column<any, unknown>; table: Ta
         ? []
         : Array.from(column.getFacetedUniqueValues().keys()).sort(),
     [column, firstValue]
+    // [column.getFacetedUniqueValues()]
   )
+
+  const onChangeCallback = React.useMemo(() => {
+    return (value) => column.setFilterValue(value)
+  }, [column])
 
   return (
     <>
@@ -25,7 +30,7 @@ function TextFilter({ column, table }: { column: Column<any, unknown>; table: Ta
       <DebouncedInput
         type="text"
         value={(columnFilterValue ?? "") as string}
-        onChange={(value) => column.setFilterValue(value)}
+        onChange={onChangeCallback}
         //placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
         placeholder={"Search"}
         className="w-36 border input-sm shadow rounded input-primary bg-base-300"
@@ -58,7 +63,7 @@ function DebouncedInput({
     }, debounce)
 
     return () => clearTimeout(timeout)
-  }, [debounce, onChange, value])
+  }, [value, debounce, onChange])
 
   return <input {...props} value={value} onChange={(e) => setValue(e.target.value)} />
 }

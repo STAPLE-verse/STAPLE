@@ -43,7 +43,7 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
       <div className="flex justify-start mt-4">
         <CheckboxFieldTable name="labelsId" options={labelOptions} />
       </div>
-      Note: this page has the hiccups!
+      {/* Note: this page has the hiccups! */}
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )

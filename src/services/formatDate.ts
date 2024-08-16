@@ -1,5 +1,5 @@
 export function formatDate(myDate) {
-  return myDate.toLocaleDateString(undefined, {
+  return myDate.toLocaleDateString("en-us", {
     year: "numeric",
     month: "long",
     day: "numeric",

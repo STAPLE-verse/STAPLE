@@ -8,6 +8,7 @@ export const FormTaskSchema = z.object({
   elementId: z.number().optional().nullable(),
   contributorsId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.number()).optional().nullable(),
+  labelsId: z.array(z.number()).optional().nullable(),
   deadline: z.date().optional().nullable(),
   formVersionId: z.number().optional().nullable(),
 })
@@ -23,6 +24,7 @@ export const CreateTaskSchema = z.object({
   createdById: z.number(),
   contributorsId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.number()).optional().nullable(),
+  labelsId: z.array(z.number()).optional().nullable(),
 })
 
 export const UpdateTaskSchema = z.object({
@@ -35,6 +37,7 @@ export const UpdateTaskSchema = z.object({
   teamsId: z.array(z.any()).optional().nullable(),
   formVersionId: z.number().optional().nullable(),
   deadline: z.date().optional().nullable(),
+  labelsId: z.array(z.number()).optional().nullable(),
 })
 
 export const UpdateTaskStatusSchema = z.object({

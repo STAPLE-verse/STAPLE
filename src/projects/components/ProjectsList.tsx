@@ -56,7 +56,7 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
             <p className="mb-2">{project.description}</p>
             <p className="italic mb-2">
               Last update:{" "}
-              {project.updatedAt.toLocaleDateString(undefined, {
+              {project.updatedAt.toLocaleDateString("en-us", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",

@@ -44,7 +44,7 @@ export const TaskInformation = () => {
         <p>
           <span className="font-semibold">Deadline:</span>{" "}
           {task.deadline
-            ? task.deadline.toLocaleDateString(undefined, {
+            ? task.deadline.toLocaleDateString("en-us", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -75,7 +75,7 @@ export const TaskInformation = () => {
 
         <p className="italic">
           Last update:{" "}
-          {task.updatedAt.toLocaleDateString(undefined, {
+          {task.updatedAt.toLocaleDateString("en-us", {
             year: "numeric",
             month: "long",
             day: "numeric",

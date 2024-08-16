@@ -181,7 +181,7 @@ const ProjectDashboard = () => {
         {project.description}
         <p className="italic">
           Last update:{" "}
-          {project.updatedAt.toLocaleDateString(undefined, {
+          {project.updatedAt.toLocaleDateString("en-us", {
             year: "numeric",
             month: "long",
             day: "numeric",

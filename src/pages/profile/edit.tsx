@@ -27,6 +27,14 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       />
       <br />
       <LabeledTextField
+        name="username"
+        label="Username:"
+        placeholder="Username"
+        type="text"
+        className="mb-4 text-primary border-primary border-2 bg-base-300"
+      />
+      <br />
+      <LabeledTextField
         name="firstName"
         label="First Name:"
         placeholder="First name"
@@ -70,6 +78,8 @@ export const EditProfile = () => {
     firstName: user!.firstName,
     lastName: user!.lastName,
     email: user!.email,
+    institution: user!.institution,
+    username: user!.username,
   }
 
   return (
