@@ -79,11 +79,11 @@ const LabelBuilderPage = () => {
   return (
     <Layout>
       <Head>
-        <title>Contribution Labels</title>
+        <title>Contribution Roles</title>
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2 text-3xl">All Labels</h1>
+        <h1 className="flex justify-center mb-2 text-3xl">All Roles</h1>
         <div>
           <Suspense fallback={<div>Loading...</div>}>
             <AllLabelsList
@@ -101,17 +101,17 @@ const LabelBuilderPage = () => {
             className="btn btn-primary"
             onClick={() => handleToggleNewLabelModal()}
           >
-            New Label
+            New Role
           </button>
         </div>
 
         <Modal open={openNewLabelModal} size="w-7/8 max-w-xl">
           <div className="">
-            <h1 className="flex justify-center mb-2 text-3xl">Create New Label</h1>
+            <h1 className="flex justify-center mb-2 text-3xl">Create New Role</h1>
             <div className="flex justify-start mt-4">
               <LabelForm
                 schema={LabelFormSchema}
-                submitText="Create Label"
+                submitText="Create Role"
                 className="flex flex-col"
                 onSubmit={handleCreateLabel}
                 initialValues={initialValues}

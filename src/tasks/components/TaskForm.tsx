@@ -360,7 +360,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           className="btn btn-primary w-1/2"
           onClick={() => handleToggleLabelsModal()}
         >
-          Add Label
+          Add Role
         </button>
         <Modal open={openLabelsModal} size="w-7/8 max-w-xl">
           <div className="">

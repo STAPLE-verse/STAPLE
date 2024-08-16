@@ -131,7 +131,7 @@ export const useTeamTaskListDone = (teamId: number) => {
     }),
     columnHelper.accessor("labels", {
       cell: (info) => <span>{info.getValue()}</span>,
-      header: "Labels",
+      header: "Roles",
       id: "labels",
     }),
     columnHelper.accessor("completedAt", {

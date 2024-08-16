@@ -24,7 +24,7 @@ export const CreditsTabs = () => {
             classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
           }
         >
-          Add Labels
+          Add Roles
         </Tab>
         {/* TabLink for table view */}
         <Tab
@@ -46,7 +46,7 @@ export const CreditsTabs = () => {
       </Tab.List>
 
       <Tab.Panels>
-        {/* Tab for Add Labels */}
+        {/* Tab for Add Roles */}
         <Tab.Panel>
           <LabelsTab></LabelsTab>
         </Tab.Panel>
@@ -71,7 +71,7 @@ const CreditPage = () => {
   return (
     <Layout>
       <Head>
-        <title>Assign Labels to Contributions</title>
+        <title>Assign Roles to Contributions</title>
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
