@@ -44,7 +44,7 @@ const Navbar = () => {
   // Get current user data
   const currentUser = useCurrentUser()
   // Get initials for avatar
-  const initial = getInitials(currentUser!.firstName, currentUser!.lastName)
+  const initial = getInitials(currentUser!.firstName || "", currentUser!.lastName || "")
   // Defining tabs
   // with names and routes
   // let tabs = []

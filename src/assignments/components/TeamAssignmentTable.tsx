@@ -49,6 +49,7 @@ export const teamAssignmentTableColumnsSchema: ColumnDef<ProcessedTeamAssignment
   }),
   columnHelper.accessor("status", {
     cell: (info) => <span>{info.getValue()}</span>,
+
     header: "Status",
     id: "status",
   }),

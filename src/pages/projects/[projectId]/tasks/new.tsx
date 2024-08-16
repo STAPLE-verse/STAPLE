@@ -45,6 +45,7 @@ const NewTaskPage = () => {
             onSubmit={async (values) => {
               // Create new task
               try {
+                // console.log(values)
                 // if (true) return
                 const task = await createTaskMutation({
                   name: values.name,
@@ -56,6 +57,7 @@ const NewTaskPage = () => {
                   createdById: currentContributor.id,
                   contributorsId: values.contributorsId,
                   teamsId: values.teamsId,
+                  labelsId: values.labelsId,
                   schema: values.schema?.schema,
                   ui: values.schema?.ui,
                 })

@@ -45,7 +45,7 @@ const ProfilePage = () => {
               )}
               <br />
               <span className="font-semibold">Signup Date:</span>{" "}
-              {currentUser.createdAt.toLocaleDateString(undefined, {
+              {currentUser.createdAt.toLocaleDateString("en-us", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",

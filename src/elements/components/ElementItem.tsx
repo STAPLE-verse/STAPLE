@@ -31,7 +31,7 @@ const ElementItem: React.FC<ElementItemProps> = ({ element, projectId, tasks, on
         {/* Element last update */}
         <p className="italic mb-2">
           Last update:{" "}
-          {element.updatedAt.toLocaleDateString(undefined, {
+          {element.updatedAt.toLocaleDateString("en-us", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -55,7 +55,7 @@ const ElementItem: React.FC<ElementItemProps> = ({ element, projectId, tasks, on
                   {task.deadline ? (
                     <p className="italic mb-2">
                       Deadline:{" "}
-                      {task.deadline.toLocaleDateString(undefined, {
+                      {task.deadline.toLocaleDateString("en-us", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",

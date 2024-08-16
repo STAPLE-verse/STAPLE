@@ -24,7 +24,7 @@ export const tasksColumns: ColumnDef<TaskWithProjectName>[] = [
       <span>
         {" "}
         {info.getValue()
-          ? info.getValue()?.toLocaleDateString(undefined, {
+          ? info.getValue()?.toLocaleDateString("en-us", {
               year: "numeric",
               month: "long",
               day: "numeric",
@@ -68,7 +68,7 @@ export const projectColumns: ColumnDef<Project>[] = [
   projectColumnHelper.accessor("updatedAt", {
     cell: (info) => (
       <span>
-        {info.getValue()?.toLocaleDateString(undefined, {
+        {info.getValue()?.toLocaleDateString("en-us", {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -112,7 +112,7 @@ export const notificationColumns: ColumnDef<Notification>[] = [
   notificationColumnHelper.accessor("createdAt", {
     cell: (info) => (
       <span>
-        {info.getValue()?.toLocaleDateString(undefined, {
+        {info.getValue()?.toLocaleDateString("en-us", {
           year: "numeric",
           month: "long",
           day: "numeric",
@@ -180,7 +180,7 @@ export const projectTaskColumns: ColumnDef<Task>[] = [
       <span>
         {" "}
         {info.getValue()
-          ? info.getValue()?.toLocaleDateString(undefined, {
+          ? info.getValue()?.toLocaleDateString("en-us", {
               year: "numeric",
               month: "long",
               day: "numeric",
