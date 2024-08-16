@@ -1,21 +1,15 @@
-import { useQuery } from "@blitzjs/rpc"
-import getAssignmentProgress from "src/assignments/queries/getAssignmentProgress"
 import { Tooltip } from "react-tooltip"
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import "react-circular-progressbar/dist/styles.css"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { useContext } from "react"
-import { TaskContext } from "./TaskContext"
+import { useTaskContext } from "./TaskContext"
+import useAssignmentProgress from "src/assignments/hooks/useAssignmentProgress"
 
 const ShowAssignmentProgress = () => {
-  const taskContext = useContext(TaskContext)
+  const { task } = useTaskContext()
 
-  if (!taskContext || !taskContext.assignmentProgress || !taskContext.task) {
-    return <div>Loading...</div>
-  }
-
-  const { task, assignmentProgress } = taskContext
+  const assignmentProgress = useAssignmentProgress(task)
 
   const assignmentPercent = assignmentProgress.completed / assignmentProgress.all
 

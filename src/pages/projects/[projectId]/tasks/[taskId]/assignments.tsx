@@ -1,160 +1,117 @@
 import { Suspense } from "react"
-import { useQuery } from "@blitzjs/rpc"
-import { Routes, useParam } from "@blitzjs/next"
-
+import { Routes } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
-import getAssignments from "src/assignments/queries/getAssignments"
 import {
-  AssignmentWithRelations,
   assignmentTableColumns,
   assignmentTableColumnsSchema,
 } from "src/assignments/components/AssignmentTable"
-
 import {
-  TeamAssignmentWithRelations,
   teamAssignmentTableColumns,
   teamAssignmentTableColumnsSchema,
 } from "src/assignments/components/TeamAssignmentTable"
-
 import Table from "src/core/components/Table"
 import Link from "next/link"
-import getTask from "src/tasks/queries/getTask"
+import TaskLayout from "src/core/layouts/TaskLayout"
+import { useTaskContext } from "src/tasks/components/TaskContext"
+import {
+  processIndividualAssignments,
+  processTeamAssignments,
+} from "src/assignments/utils/processAssignments"
 
-export const AssignmentsPage = () => {
+const AssignmentsContent = () => {
   // Get values
-  const taskId = useParam("taskId", "number")
-  const projectId = useParam("projectId", "number")
-  const [task] = useQuery(getTask, { where: { id: taskId } })
+  const { task, individualAssignments, teamAssignments } = useTaskContext()
 
-  // Get assignments
-  const [assignments] = useQuery(getAssignments, {
-    where: { taskId: taskId, teamId: null },
-    include: {
-      task: true,
-      contributor: {
-        include: {
-          user: true,
-        },
-      },
-      statusLogs: {
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: 1, // TODO: Make new queries that are specified to these tasks once MVP is nearly ready
-      },
-    },
-    // TODO: replace this with actual type def
-  }) as unknown as [AssignmentWithRelations[], { refetch: () => void }]
+  // Preprocess assignments to include only the latest log
+  const processedIndividualAssignments = processIndividualAssignments(individualAssignments)
+  const processedTeamAssignments = processTeamAssignments(teamAssignments)
 
-  const [teamAssignments] = useQuery(getAssignments, {
-    where: { taskId: taskId, contributorId: null },
-    include: {
-      task: true,
-      team: {
-        include: {
-          contributors: {
-            include: {
-              user: true,
-            },
-          },
-        },
-      },
-      statusLogs: {
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: 1, // TODO: Make new queries that are specified to these tasks once MVP is nearly ready
-      },
-    },
-    // TODO: replace this with actual type def
-  }) as unknown as [TeamAssignmentWithRelations[], { refetch: () => void }]
-
-  let individualColumns
-  let teamColumns
-  if (assignments[0]?.task.schema) {
-    individualColumns = assignmentTableColumnsSchema
-    teamColumns = teamAssignmentTableColumnsSchema
-  } else {
-    individualColumns = assignmentTableColumns
-    teamColumns = teamAssignmentTableColumns
-  }
-
-  //console.log(task)
+  // Get columns definitions for tables
+  const individualColumns = task.formVersionId
+    ? assignmentTableColumnsSchema
+    : assignmentTableColumns
+  const teamColumns = task.formVersionId
+    ? teamAssignmentTableColumnsSchema
+    : teamAssignmentTableColumns
 
   return (
+    <main className="flex flex-col mb-2 currentContributormt-2 mx-auto w-full max-w-7xl">
+      <h1 className="flex justify-center mb-2 text-3xl">Review and Complete Tasks</h1>
+
+      <div className="flex flex-row justify-center">
+        <div className="card bg-base-300 w-full">
+          <div className="card-body overflow-x-auto">
+            <div className="card-title">{task.name}</div>
+            {task.description}
+            <div className="card-actions justify-end">
+              <Link
+                className="btn btn-primary"
+                href={Routes.EditTaskPage({
+                  projectId: task.projectId as number,
+                  taskId: task.id as number,
+                })}
+              >
+                Edit Task
+              </Link>
+              {task.formVersionId && (
+                <Link
+                  className="btn btn-secondary mx-2"
+                  href={Routes.ShowMetadataPage({
+                    projectId: task.projectId as number,
+                    taskId: task.id as number,
+                  })}
+                >
+                  Download Form Data
+                </Link>
+              )}
+              <Link
+                className="btn self-end"
+                href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
+              >
+                Go back
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-row justify-center mt-2">
+        <div className="card bg-base-300 w-full">
+          <div className="card-body overflow-x-auto">
+            <div className="card-title">Individual Contributors</div>
+            {processedIndividualAssignments.length > 0 ? (
+              <Table columns={individualColumns} data={processedIndividualAssignments} />
+            ) : (
+              <span>This task does not have individual contributors </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-row justify-center mt-2">
+        <div className="card bg-base-300 w-full">
+          <div className="card-body overflow-x-auto">
+            <div className="card-title">Team Contributors</div>
+            {processedTeamAssignments.length > 0 ? (
+              <Table columns={teamColumns} data={processedTeamAssignments} />
+            ) : (
+              <span>This task does not have teams of contributors</span>
+            )}
+          </div>
+        </div>
+      </div>
+    </main>
+  )
+}
+
+export const AssignmentsPage = () => {
+  return (
     <Layout>
-      <Suspense fallback={<div>Loading...</div>}>
-        <main className="flex flex-col mb-2 currentContributormt-2 mx-auto w-full max-w-7xl">
-          <h1 className="flex justify-center mb-2 text-3xl">Review and Complete Tasks</h1>
-
-          <div className="flex flex-row justify-center">
-            <div className="card bg-base-300 w-full">
-              <div className="card-body overflow-x-auto">
-                <div className="card-title">{task.name}</div>
-                {task.description}
-                <div className="card-actions justify-end">
-                  <Link
-                    className="btn btn-primary"
-                    href={Routes.EditTaskPage({
-                      projectId: projectId as number,
-                      taskId: taskId as number,
-                    })}
-                  >
-                    Edit Task
-                  </Link>
-
-                  {assignments[0]?.task.schema ? (
-                    <Link
-                      className="btn btn-secondary mx-2"
-                      href={Routes.ShowFormPage({
-                        projectId: projectId as number,
-                        taskId: taskId as number,
-                      })}
-                    >
-                      Download Form Data
-                    </Link>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-row justify-center mt-2">
-            <div className="card bg-base-300 w-full">
-              <div className="card-body overflow-x-auto">
-                <div className="card-title">Individual Contributors</div>
-                {assignments.length > 0 ? (
-                  <Table columns={individualColumns} data={assignments} />
-                ) : (
-                  <span>This task does not have individual contributors </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-row justify-center mt-2">
-            <div className="card bg-base-300 w-full">
-              <div className="card-body overflow-x-auto">
-                <div className="card-title">Team Contributors</div>
-                {teamAssignments.length > 0 ? (
-                  <Table columns={teamColumns} data={teamAssignments} />
-                ) : (
-                  <span>This task does not have teams of contributors</span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <Link
-            className="btn self-end mt-4"
-            href={Routes.ShowTaskPage({ projectId: projectId!, taskId: taskId! })}
-          >
-            Go back
-          </Link>
-        </main>
-      </Suspense>
+      <TaskLayout>
+        <Suspense fallback={<div>Loading...</div>}>
+          <AssignmentsContent />
+        </Suspense>
+      </TaskLayout>
     </Layout>
   )
 }

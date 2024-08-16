@@ -3,7 +3,7 @@ import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { AllFormsList } from "src/forms/components/AllFormsList"
+import { FormsList } from "src/forms/components/FormsList"
 
 const AllFormsPage = () => {
   return (
@@ -14,7 +14,7 @@ const AllFormsPage = () => {
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <Suspense fallback={<div>Loading...</div>}>
-          <AllFormsList />
+          <FormsList />
         </Suspense>
         <div className="flex justify-start">
           <Link className="btn btn-primary" href={Routes.FormBuilderPage()}>

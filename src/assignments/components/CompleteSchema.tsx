@@ -6,14 +6,17 @@ import updateAssignment from "src/assignments/mutations/updateAssignment"
 import Modal from "src/core/components/Modal"
 import JsonForm from "./JsonForm"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
+import { useTaskContext } from "src/tasks/components/TaskContext"
 
-const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, schema, ui }) => {
+const CompleteSchema = ({ currentAssignment, completedBy, completedAs, schema, ui }) => {
   // Setup
   const [updateAssignmentMutation] = useMutation(updateAssignment)
   // Get the latest assignment status from the AssignmentStatusLog
   const latestAssignmentStatus = currentAssignment.statusLogs[0]
   // State to store metadata
   const [assignmentMetadata, setAssignmentMetadata] = useState(latestAssignmentStatus!.metadata)
+  // Get refecth from taskContext
+  const { refetchTaskData } = useTaskContext()
 
   // Handle metadata form open toggle
   const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
@@ -36,7 +39,7 @@ const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, 
     // Close modal
     setOpenAssignmentModal(false)
 
-    await refetch()
+    await refetchTaskData()
   }
 
   const handleJsonFormError = (errors) => {
@@ -60,7 +63,7 @@ const CompleteSchema = ({ currentAssignment, refetch, completedBy, completedAs, 
     setOpenAssignmentModal(false)
 
     // Refetch the data
-    await refetch()
+    await refetchTaskData()
   }
 
   return (

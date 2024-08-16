@@ -1,25 +1,22 @@
 import { useMutation } from "@blitzjs/rpc"
 import { TaskStatus } from "db"
-import { useContext, useState } from "react"
+import { useState } from "react"
 import updateTaskStatus from "../mutations/updateTaskStatus"
 import toast from "react-hot-toast"
 import { Tooltip } from "react-tooltip"
 import Modal from "src/core/components/Modal"
-import { TaskContext } from "./TaskContext"
+import { useTaskContext } from "./TaskContext"
+import useAssignmentProgress from "src/assignments/hooks/useAssignmentProgress"
 
 export const CompleteTaskToggle = () => {
   const [updateTaskStatusMutation] = useMutation(updateTaskStatus)
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
 
-  const taskContext = useContext(TaskContext)
-  const task = taskContext?.task
-  const assignmentProgress = taskContext?.assignmentProgress
+  const { task } = useTaskContext()
+
+  const assignmentProgress = useAssignmentProgress(task)
 
   const [taskStatus, setTaskStatus] = useState(task?.status || TaskStatus.NOT_COMPLETED)
-
-  if (!taskContext || !assignmentProgress || !task) {
-    return <div>Loading...</div>
-  }
 
   const handleTaskStatus = async () => {
     if (

@@ -17,6 +17,7 @@ export interface FormProps<S extends z.ZodType<any, any>>
   /** TODO: I have no clue how to check for this properly */
   cancelText?: string
   onCancel?: () => void
+  summitOnRight?: boolean
 }
 
 export function Form<S extends z.ZodType<any, any>>({
@@ -27,6 +28,7 @@ export function Form<S extends z.ZodType<any, any>>({
   onSubmit,
   onCancel,
   cancelText,
+  summitOnRight = false,
   ...props
 }: FormProps<S>) {
   return (
@@ -45,19 +47,37 @@ export function Form<S extends z.ZodType<any, any>>({
             </div>
           )}
 
-          <div className="flex flex-row justify-end mt-auto space-x-4">
-            {submitText && (
-              <button className="btn btn-primary mt-4" type="submit" disabled={submitting}>
-                {submitText}
-              </button>
-            )}
+          {!summitOnRight && (
+            <div className="flex flex-row justify-end mt-auto space-x-4">
+              {submitText && (
+                <button className="btn btn-primary mt-4" type="submit" disabled={submitting}>
+                  {submitText}
+                </button>
+              )}
 
-            {cancelText && (
-              <button className="btn btn-secondary mt-4" onClick={onCancel}>
-                {cancelText}
-              </button>
-            )}
-          </div>
+              {cancelText && (
+                <button className="btn btn-secondary mt-4" onClick={onCancel}>
+                  {cancelText}
+                </button>
+              )}
+            </div>
+          )}
+
+          {summitOnRight && (
+            <div className="flex flex-row justify-end mt-auto space-x-4">
+              {cancelText && (
+                <button className="btn btn-secondary mt-4" onClick={onCancel}>
+                  {cancelText}
+                </button>
+              )}
+
+              {submitText && (
+                <button className="btn btn-primary mt-4" type="submit" disabled={submitting}>
+                  {submitText}
+                </button>
+              )}
+            </div>
+          )}
 
           {/* <style global jsx>{`
             .form > * + * {

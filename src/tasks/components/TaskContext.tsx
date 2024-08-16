@@ -1,22 +1,20 @@
-import React, { createContext, ReactNode } from "react"
+import React, { createContext, ReactNode, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
 import useAssignmentData from "src/assignments/hooks/useAssignmentData"
-import { Task, Column, Element } from "db"
-import { AssignmentProgressType } from "src/assignments/queries/getAssignmentProgress"
-import useAssignmentProgress from "src/assignments/hooks/useAssignmentProgress"
+import { Task, Column, Element, FormVersion } from "db"
 import { ExtendedAssignment } from "src/assignments/hooks/useAssignmentData"
 
 // Creating custom types
 export type ExtendedTask = Task & {
   column: Column
   element: Element | null
+  formVersion: FormVersion | null
   assignees: ExtendedAssignment[]
 }
 
 interface TaskContextType {
-  task: ExtendedTask | null
-  assignmentProgress: AssignmentProgressType | null
+  task: ExtendedTask
   individualAssignments: ExtendedAssignment[]
   teamAssignments: ExtendedAssignment[]
   refetchTaskData: () => void
@@ -25,7 +23,6 @@ interface TaskContextType {
 // Creating props interface
 interface TaskProviderProps {
   taskId: number
-  projectId: number
   children: ReactNode
 }
 
@@ -40,18 +37,22 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
     include: {
       element: true,
       column: true,
+      formVersion: true,
       assignees: {
         include: {
-          contributor: true,
+          contributor: { include: { user: { select: { username: true } } } },
           team: {
             include: {
-              contributors: true,
+              contributors: {
+                include: {
+                  user: { select: { username: true } },
+                },
+              },
             },
           },
           statusLogs: {
-            orderBy: {
-              createdAt: "desc",
-            },
+            orderBy: { createdAt: "desc" },
+            include: { contributor: { include: { user: { select: { username: true } } } } },
           },
         },
       },
@@ -59,21 +60,23 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
   }) as [ExtendedTask, any]
 
   // Filter data
-  const assignmentProgress = useAssignmentProgress(task)
   const { individualAssignments, teamAssignments } = useAssignmentData(task)
-
-  if (!task) {
-    return <div>Loading...</div>
-  }
 
   // Set context value
   const contextValue = {
     task,
-    assignmentProgress,
     individualAssignments,
     teamAssignments,
     refetchTaskData,
   }
 
   return <TaskContext.Provider value={contextValue}>{children}</TaskContext.Provider>
+}
+
+export const useTaskContext = () => {
+  const context = useContext(TaskContext)
+  if (!context) {
+    throw new Error("useTaskContext must be used within a TaskProvider")
+  }
+  return context
 }

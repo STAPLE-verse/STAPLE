@@ -2,16 +2,18 @@ import { useMutation } from "@blitzjs/rpc"
 import { AssignmentStatus, CompletedAs } from "db"
 import { useState } from "react"
 import updateAssignment from "src/assignments/mutations/updateAssignment"
+import { useTaskContext } from "src/tasks/components/TaskContext"
 
 const CompleteToggle = ({
   currentAssignment,
-  refetch,
+  // refetch,
   completedLabel,
   completedBy,
   completedAs,
 }) => {
   const [updateAssignmentMutation] = useMutation(updateAssignment)
-
+  // Get refecth from taskContext
+  const { refetchTaskData } = useTaskContext()
   // Handle assignment status
   const handleAssignmentStatusToggle = async () => {
     const newChecked = isChecked ? false : true
@@ -25,7 +27,8 @@ const CompleteToggle = ({
     })
 
     setIsChecked(newChecked)
-    await refetch()
+    // await refetch()
+    await refetchTaskData()
   }
 
   const latestStatusLog = currentAssignment.statusLogs.reduce((latest, current) => {
