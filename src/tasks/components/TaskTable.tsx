@@ -1,4 +1,4 @@
-// @ts-nocheck
+//@ts-nocheck
 
 import React from "react"
 import { Task } from "db"
@@ -182,7 +182,7 @@ export const taskProjectTableColumnsContrib = [
   }),
   columnHelper.accessor("description", {
     cell: (info) => (
-      <span>{info.getValue() === null ? "No Description" : info.getValue().substring(0, 50)}</span>
+      <span>{info.getValue() === null ? "No Description" : info.getValue()?.substring(0, 50)}</span>
     ),
     header: "Description",
   }),
@@ -237,7 +237,7 @@ export const taskProjectTableColumnsPM = [
   }),
   columnHelper.accessor("description", {
     cell: (info) => (
-      <span>{info.getValue() === null ? "No Description" : info.getValue().substring(0, 50)}</span>
+      <span>{info.getValue() === null ? "No Description" : info.getValue()?.substring(0, 50)}</span>
     ),
     header: "Description",
   }),
