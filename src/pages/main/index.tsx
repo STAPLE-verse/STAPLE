@@ -182,7 +182,7 @@ const MainPage = () => {
           </div>
 
           <DndContext
-            collisionDectection={closestCorners}
+            collisionDetection={closestCorners}
             onDragEnd={handleDragEnd}
             sensors={sensors}
           >
