@@ -90,7 +90,13 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
               {activeId && activeId.toString().includes("container") && (
                 <TaskContainer id={activeId} title={findContainerTitle(activeId, containers)}>
                   {findContainerItems(activeId, containers).map((i) => (
-                    <TaskItems key={i.id} title={i.title} id={i.id} completed={i.completed} />
+                    <TaskItems
+                      key={i.id}
+                      title={i.title}
+                      id={i.id}
+                      completed={i.completed}
+                      projectId={projectId}
+                    />
                   ))}
                 </TaskContainer>
               )}
