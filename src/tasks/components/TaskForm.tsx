@@ -14,7 +14,6 @@ import getTeams from "src/teams/queries/getTeams"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
 import DateField from "src/core/components/fields/DateField"
-
 import { AddLabelForm } from "src/labels/components/AddLabelForm"
 import { LabelIdsFormSchema } from "src/labels/schemas"
 import getLabels from "src/labels/queries/getLabels"
@@ -26,6 +25,7 @@ interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
 
 export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>) {
   const { projectId, formResponseSupplied = true, ...formProps } = props
+
   // Columns
   const [columns] = useQuery(getColumns, {
     orderBy: { id: "asc" },
@@ -207,6 +207,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           </div>
         </Modal>
       </div>
+
       {formResponseSupplied ? (
         <TaskSchemaInput contributors={contributors} />
       ) : (
@@ -215,6 +216,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           would like to change the attached form.
         </p>
       )}
+
       <div className="mt-4">
         <button
           type="button"

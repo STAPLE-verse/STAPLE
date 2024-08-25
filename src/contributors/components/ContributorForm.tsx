@@ -1,10 +1,15 @@
-import React from "react"
+
+import React, { useState } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
 import getUsers from "src/users/queries/getUsers"
 import { ContributorPrivileges } from "@prisma/client"
+import getLabels from "src/labels/queries/getLabels"
+import Modal from "src/core/components/Modal"
+import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
+
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
@@ -38,6 +43,24 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
     { enabled: !isEdit }
   )
 
+  const [{ labels }] = useQuery(getLabels, {
+    where: {
+      projects: { some: { id: { in: projectId! } } },
+    },
+  })
+
+  const labelOptions = labels.map((labels) => {
+    return {
+      label: labels["name"],
+      id: labels["id"],
+    }
+  })
+
+  const [openLabelsModal, setlabelsModal] = useState(false)
+  const handleToggleLabelsModal = () => {
+    setlabelsModal((prev) => !prev)
+  }
+
   return (
     <Form<S> {...formProps}>
       {!isEdit && (
@@ -59,6 +82,29 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         optionValue="value"
         type="string"
       />
+
+      <div className="mt-4">
+        <button
+          type="button"
+          className="btn btn-primary w-1/2"
+          onClick={() => handleToggleLabelsModal()}
+        >
+          Add Label
+        </button>
+        <Modal open={openLabelsModal} size="w-7/8 max-w-xl">
+          <div className="">
+            <div className="flex justify-start mt-4">
+              <CheckboxFieldTable name="labelsId" options={labelOptions} />
+            </div>
+            {/* closes the modal */}
+            <div className="modal-action flex justify-end mt-4">
+              <button type="button" className="btn btn-primary" onClick={handleToggleLabelsModal}>
+                Close
+              </button>
+            </div>
+          </div>
+        </Modal>
+      </div>
     </Form>
   )
 }
