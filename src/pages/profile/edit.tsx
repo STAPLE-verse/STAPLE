@@ -14,8 +14,12 @@ import { FormProfileSchema } from "src/users/schemas"
 import { Routes } from "@blitzjs/next"
 import logout from "src/auth/mutations/logout"
 import Link from "next/link"
+import LabelSelectField from "src/core/components/fields/LabelSelectField"
+import { getDateLanguageLocales, getDateLocale } from "src/services/getDateLanguageLocales"
 
 export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+  const languagesOptions = getDateLanguageLocales()
+
   return (
     <Form<S> {...props}>
       <LabeledTextField
@@ -58,6 +62,16 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         className="mb-4 text-primary border-primary border-2 bg-base-300"
       />
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
+      {/* labeled select field for language */}
+      <LabelSelectField
+        className="select text-primary select-bordered w-1/2 mt-4"
+        name="language"
+        label="Select language:"
+        options={languagesOptions}
+        optionText="name"
+        optionValue="id"
+        type="string"
+      />
     </Form>
   )
 }
@@ -74,12 +88,15 @@ export const EditProfile = () => {
   const [updateUserMutation] = useMutation(updateUser)
   const [deleteUserMutation] = useMutation(deleteUser)
 
+  const initialLanguageOption = getDateLocale(user!.language) || { name: "", id: "" }
+
   const initialValues = {
     firstName: user!.firstName,
     lastName: user!.lastName,
     email: user!.email,
     institution: user!.institution,
     username: user!.username,
+    language: initialLanguageOption["id"] as string,
   }
 
   return (

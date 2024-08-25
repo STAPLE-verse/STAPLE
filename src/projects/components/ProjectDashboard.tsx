@@ -41,6 +41,7 @@ import {
   projectManagersColumns,
   projectTaskColumns,
 } from "src/widgets/components/ColumnHelpers"
+import DateFormat from "src/core/components/DateFormat"
 
 const ProjectDashboard = () => {
   //default information
@@ -180,16 +181,7 @@ const ProjectDashboard = () => {
       <div>
         {project.description}
         <p className="italic">
-          Last update:{" "}
-          {project.updatedAt.toLocaleDateString("en-us", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false, // Use 24-hour format
-          })}
+          Last update: <DateFormat date={project.updatedAt}></DateFormat>
         </p>
 
         <p className="font-bold mt-4">Contacts for the Project: </p>

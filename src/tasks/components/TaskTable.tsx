@@ -6,6 +6,7 @@ import { Task } from "db"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
+import DateFormat from "src/core/components/DateFormat"
 
 // TODO: Is it better to call the database for column name every time or just one time and pass the value to child components?
 // Column helper
@@ -23,19 +24,7 @@ export const taskTableColumns = [
   }),
   // TODO: Check how to use anonym function in accessor to get column name
   columnHelper.accessor("deadline", {
-    cell: (info) => (
-      <span>
-        {info.getValue()?.toLocaleDateString("en-us", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false, // Use 24-hour format
-        })}
-      </span>
-    ),
+    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Due Date",
   }),
   columnHelper.accessor("assignees", {
@@ -81,16 +70,8 @@ export const taskFinishedTableColumns = [
   columnHelper.accessor("assignees", {
     cell: (info) => {
       const varName = "statusLogs"
-      const temp = info.getValue()[0].statusLogs[0].createdAt?.toLocaleDateString("en-us", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false, // Use 24-hour format
-      })
-      return <span>{temp}</span>
+      const temp = info.getValue()[0].statusLogs[0].createdAt
+      return <DateFormat date={temp}></DateFormat>
     },
     header: "Completed",
   }),
@@ -142,16 +123,8 @@ export const taskFinishedTableColumnsTeam = [
   }),
   columnHelper.accessor("assignees", {
     cell: (info) => {
-      const temp = info.getValue()[0].statusLogs[0].createdAt?.toLocaleDateString("en-us", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false, // Use 24-hour format
-      })
-      return <span>{temp}</span>
+      const temp = info.getValue()[0].statusLogs[0].createdAt
+      return <DateFormat date={temp}></DateFormat>
     },
     header: "Completed at",
     id: "completedAt",
@@ -188,19 +161,7 @@ export const taskProjectTableColumnsContrib = [
   }),
   // TODO: Check how to use anonym function in accessor to get column name
   columnHelper.accessor("deadline", {
-    cell: (info) => (
-      <span>
-        {info.getValue()?.toLocaleDateString("en-us", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false, // Use 24-hour format
-        })}
-      </span>
-    ),
+    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Due Date",
   }),
   columnHelper.accessor("assignees", {
@@ -243,19 +204,7 @@ export const taskProjectTableColumnsPM = [
   }),
   // TODO: Check how to use anonym function in accessor to get column name
   columnHelper.accessor("deadline", {
-    cell: (info) => (
-      <span>
-        {info.getValue()?.toLocaleDateString("en-us", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false, // Use 24-hour format
-        })}
-      </span>
-    ),
+    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Due Date",
   }),
   columnHelper.accessor("status", {
@@ -289,19 +238,7 @@ export const taskElementColumns = [
     enableColumnFilter: false,
   }),
   columnHelper.accessor("deadline", {
-    cell: (info) => (
-      <span>
-        {info.getValue()?.toLocaleDateString("en-us", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false, // Use 24-hour format
-        })}
-      </span>
-    ),
+    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Due Date",
     enableSorting: false,
     enableColumnFilter: false,

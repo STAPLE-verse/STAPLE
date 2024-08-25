@@ -2,6 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import ReadToggle from "../components/ReadToggle"
 import { Notification, Project } from "db"
 import { useMemo } from "react"
+import DateFormat from "src/core/components/DateFormat"
 
 // Type for notifications with project included
 export type ExtendedNotification = Notification & {
@@ -16,19 +17,7 @@ export const useNotificationTableColumns = (refetch: () => void) => {
   return useMemo(
     () => [
       columnHelper.accessor("createdAt", {
-        cell: (info) => (
-          <span>
-            {info.getValue()?.toLocaleDateString("en-us", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: false, // Use 24-hour format
-            })}
-          </span>
-        ),
+        cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
         header: "Date",
       }),
       columnHelper.accessor("projectId", {
@@ -66,19 +55,7 @@ export const useProjectNotificationTableColumns = (refetch: () => void) => {
   return useMemo(
     () => [
       columnHelper.accessor("createdAt", {
-        cell: (info) => (
-          <span>
-            {info.getValue()?.toLocaleDateString("en-us", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: false, // Use 24-hour format
-            })}
-          </span>
-        ),
+        cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
         header: "Date",
       }),
       columnHelper.accessor("message", {
