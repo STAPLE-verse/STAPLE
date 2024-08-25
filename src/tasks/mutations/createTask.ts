@@ -18,6 +18,7 @@ export default resolver.pipe(
       contributorsId,
       teamsId,
       formVersionId,
+      labelsId,
     },
     ctx
   ) => {

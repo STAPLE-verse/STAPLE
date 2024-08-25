@@ -14,6 +14,8 @@ import getTeams from "src/teams/queries/getTeams"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
 import DateField from "src/core/components/fields/DateField"
+import { AddLabelForm } from "src/labels/components/AddLabelForm"
+import { LabelIdsFormSchema } from "src/labels/schemas"
 import getLabels from "src/labels/queries/getLabels"
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
@@ -214,6 +216,29 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           would like to change the attached form.
         </p>
       )}
+
+      <div className="mt-4">
+        <button
+          type="button"
+          className="btn btn-primary w-1/2"
+          onClick={() => handleToggleLabelsModal()}
+        >
+          Add Role
+        </button>
+        <Modal open={openLabelsModal} size="w-7/8 max-w-xl">
+          <div className="">
+            <div className="flex justify-start mt-4">
+              <CheckboxFieldTable name="labelsId" options={labelOptions} />
+            </div>
+            {/* closes the modal */}
+            <div className="modal-action flex justify-end mt-4">
+              <button type="button" className="btn btn-primary" onClick={handleToggleLabelsModal}>
+                Close
+              </button>
+            </div>
+          </div>
+        </Modal>
+      </div>
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
@@ -8,6 +9,7 @@ import { ContributorPrivileges } from "@prisma/client"
 import getLabels from "src/labels/queries/getLabels"
 import Modal from "src/core/components/Modal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
+
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number

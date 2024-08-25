@@ -123,7 +123,7 @@ export const ContributorPage = () => {
             ></ContributorLabelsList>
             <div className="card-actions justify-end">
               <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId! })}>
-                Edit Labels
+                Edit Roles
               </Link>
             </div>
           </div>
@@ -138,7 +138,7 @@ export const ContributorPage = () => {
             ></ContributorTaskListDone>
             <div className="card-actions justify-end">
               <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId! })}>
-                Edit Labels
+                Edit Roles
               </Link>
             </div>
           </div>

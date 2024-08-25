@@ -39,9 +39,9 @@ const TaskTableModal = ({ labels, tasksId, onChangeCallback, buttonName }) => {
         onChangeCallback()
       }
       await toast.promise(Promise.resolve(updated), {
-        loading: "Adding labels to tasks...",
-        success: "Labels added!",
-        error: "Failed to add the labels...",
+        loading: "Adding roles to tasks...",
+        success: "Roles added!",
+        error: "Failed to add the roles...",
       })
     } catch (error: any) {
       console.error(error)
@@ -63,11 +63,11 @@ const TaskTableModal = ({ labels, tasksId, onChangeCallback, buttonName }) => {
       </button>
       <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
         <div className="">
-          <h1 className="flex justify-center mb-2 text-3xl">Add Labels</h1>
+          <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
           <div className="flex justify-start mt-4">
             <AddLabelForm
               schema={LabelIdsFormSchema}
-              submitText="Update Label"
+              submitText="Update Role"
               className="flex flex-col"
               onSubmit={handleAddLabel}
               initialValues={initialValues}

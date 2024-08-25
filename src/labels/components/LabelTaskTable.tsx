@@ -59,9 +59,9 @@ const AddLabelsColumn = ({ row }) => {
         onChangeCallback()
       }
       await toast.promise(Promise.resolve(updated), {
-        loading: "Adding labels to tasks...",
-        success: "Labels added!",
-        error: "Failed to add the labels...",
+        loading: "Adding Roles to tasks...",
+        success: "Roles added!",
+        error: "Failed to add the roles...",
       })
     } catch (error: any) {
       console.error(error)
@@ -79,15 +79,15 @@ const AddLabelsColumn = ({ row }) => {
         className="btn btn-primary"
         onClick={handleToggleEditLabelModal}
       >
-        Add Label
+        Add Role
       </button>
       <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
         <div className="">
-          <h1 className="flex justify-center mb-2 text-3xl">Add Labels</h1>
+          <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
           <div className="flex justify-start mt-4">
             <AddLabelForm
               schema={LabelIdsFormSchema}
-              submitText="Update Label"
+              submitText="Update Role"
               className="flex flex-col"
               onSubmit={handleAddLabel}
               initialValues={initialValues}
@@ -173,18 +173,18 @@ export const labelTaskTableColumns = [
   columnHelper.accessor("labels", {
     id: "labels",
     cell: (info) => <LabelsColunm row={info.row.original}></LabelsColunm>,
-    header: "Labels",
+    header: "Roles",
   }),
 
   columnHelper.accessor("id", {
     id: "open",
-    header: "Add Label",
+    header: "Add Role",
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <AddLabelsColumn row={info.row.original}></AddLabelsColumn>,
     // cell: (info) => (
     //   <TaskTableModal
-    //     buttonName={"Add label"}
+    //     buttonName={"Add Role"}
     //     labels={info.row.original.labels}
     //     tasksId={[info.row.original.id]}
     //     onChangeCallback={info.row.original.onChangeCallback || null}

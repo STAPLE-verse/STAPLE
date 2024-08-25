@@ -19,18 +19,7 @@ import getTeams from "src/teams/queries/getTeams"
 import getContributors from "src/contributors/queries/getContributors"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 import { ContributorPrivileges } from "db"
-
-//could refactor other places and move this to utils
-const formatDate = (myDate) =>
-  myDate.toLocaleDateString("en-us", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false, // Use 24-hour format
-  })
+import DateFormat from "src/core/components/DateFormat"
 
 const Summary = () => {
   const projectId = useParam("projectId", "number")
@@ -159,9 +148,9 @@ const Summary = () => {
                 <br />
                 Name: {project.name}
                 <br />
-                Created: {formatDate(project.createdAt)}
+                Created: <DateFormat date={project.createdAt}></DateFormat>
                 <br />
-                Update: {formatDate(project.updatedAt)}
+                Update: <DateFormat date={project.updatedAt}></DateFormat>
                 <br />
                 Description: {project.description}
                 <br />

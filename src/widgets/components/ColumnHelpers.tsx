@@ -2,6 +2,7 @@ import { Routes } from "@blitzjs/next"
 import { Prisma, Project, Notification, Task } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
+import DateFormat from "src/core/components/DateFormat"
 
 // Tasks table
 type TaskWithProjectName = Prisma.TaskGetPayload<{
@@ -23,17 +24,11 @@ export const tasksColumns: ColumnDef<TaskWithProjectName>[] = [
     cell: (info) => (
       <span>
         {" "}
-        {info.getValue()
-          ? info.getValue()?.toLocaleDateString("en-us", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: false, // Use 24-hour format
-            })
-          : "No Deadline"}
+        {info.getValue() ? (
+          <DateFormat date={info.getValue() || undefined}></DateFormat>
+        ) : (
+          "No Deadline"
+        )}
       </span>
     ),
     header: "Deadline",
@@ -66,19 +61,7 @@ export const projectColumns: ColumnDef<Project>[] = [
     enableColumnFilter: false,
   }),
   projectColumnHelper.accessor("updatedAt", {
-    cell: (info) => (
-      <span>
-        {info.getValue()?.toLocaleDateString("en-us", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false, // Use 24-hour format
-        })}
-      </span>
-    ),
+    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Updated",
     enableColumnFilter: false,
   }),
@@ -110,19 +93,7 @@ export const notificationColumns: ColumnDef<Notification>[] = [
     enableSorting: false,
   }),
   notificationColumnHelper.accessor("createdAt", {
-    cell: (info) => (
-      <span>
-        {info.getValue()?.toLocaleDateString("en-us", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false, // Use 24-hour format
-        })}
-      </span>
-    ),
+    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Date",
     enableColumnFilter: false,
     enableSorting: false,
@@ -179,17 +150,11 @@ export const projectTaskColumns: ColumnDef<Task>[] = [
     cell: (info) => (
       <span>
         {" "}
-        {info.getValue()
-          ? info.getValue()?.toLocaleDateString("en-us", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: false, // Use 24-hour format
-            })
-          : "No Deadline"}
+        {info.getValue() ? (
+          <DateFormat date={info.getValue() || undefined}></DateFormat>
+        ) : (
+          "No Deadline"
+        )}
       </span>
     ),
     header: "Deadline",

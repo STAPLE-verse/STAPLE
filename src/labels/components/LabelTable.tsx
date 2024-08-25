@@ -81,11 +81,11 @@ const EditColumn = ({ row }) => {
       </button>
       <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
         <div className="">
-          <h1 className="flex justify-center mb-2 text-3xl">Edit Label</h1>
+          <h1 className="flex justify-center mb-2 text-3xl">Edit Role</h1>
           <div className="flex justify-start mt-4">
             <LabelForm
               schema={LabelFormSchema}
-              submitText="Update Label"
+              submitText="Update Role"
               className="flex flex-col"
               onSubmit={handleEditLabel}
               initialValues={initialValues}
@@ -119,7 +119,7 @@ const DeleteColumn = ({ row }) => {
 
   const handleDeleteLabel = async (values) => {
     // console.log(values)
-    if (window.confirm("This label will be permanently deleted. Are you sure to continue?")) {
+    if (window.confirm("This role will be permanently deleted. Are you sure to continue?")) {
       try {
         const updated = await deleteLabelMutation({
           id: id,

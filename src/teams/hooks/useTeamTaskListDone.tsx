@@ -4,6 +4,7 @@ import getUsers from "src/users/queries/getUsers"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { createColumnHelper } from "@tanstack/react-table"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 // Define the type for the table data
 type TaskTableData = {
@@ -82,6 +83,9 @@ export const useTeamTaskListDone = (teamId: number) => {
     })
   })
 
+  const currentUser = useCurrentUser()
+  const locale = currentUser ? currentUser.language : "en-US"
+
   // Transform tasks into the desired table format
   const tableData: TaskTableData[] = completedTasks.flatMap((task) =>
     task.assignees.map((assignee) => {
@@ -98,7 +102,7 @@ export const useTeamTaskListDone = (teamId: number) => {
             : "No labels assigned",
         // Date
         completedAt:
-          assignee.statusLogs[0].createdAt?.toLocaleDateString("en-us", {
+          assignee.statusLogs[0].createdAt?.toLocaleDateString(locale, {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -131,7 +135,7 @@ export const useTeamTaskListDone = (teamId: number) => {
     }),
     columnHelper.accessor("labels", {
       cell: (info) => <span>{info.getValue()}</span>,
-      header: "Labels",
+      header: "Roles",
       id: "labels",
     }),
     columnHelper.accessor("completedAt", {

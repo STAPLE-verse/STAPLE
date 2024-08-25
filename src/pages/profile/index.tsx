@@ -3,6 +3,7 @@ import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
+import DateFormat from "src/core/components/DateFormat"
 
 const ProfilePage = () => {
   const currentUser = useCurrentUser()
@@ -43,15 +44,7 @@ const ProfilePage = () => {
               )}
               <br />
               <span className="font-semibold">Signup Date:</span>{" "}
-              {currentUser.createdAt.toLocaleDateString("en-us", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false,
-              })}
+              <DateFormat date={currentUser.createdAt}></DateFormat>
               <div className="card-actions justify-end">
                 <Link className="btn btn-primary" href={Routes.EditProfilePage()}>
                   Edit Profile
