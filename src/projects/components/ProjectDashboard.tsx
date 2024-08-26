@@ -373,11 +373,8 @@ const ProjectDashboard = () => {
   // get all notifications
   const [{ notifications }] = useQuery(getNotifications, {
     where: {
-      recipients: {
-        some: {
-          id: currentUser!.id,
-        },
-      },
+      recipients: { some: { id: currentUser!.id } },
+      projectId: projectId,
       read: false,
     },
     orderBy: { id: "desc" },
