@@ -115,7 +115,7 @@ export const ContributorPage = () => {
 
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
-            <div className="card-title">Contribution Labels</div>
+            <div className="card-title">Contribution Roles</div>
             <ContributorLabelsList
               usersId={[user?.id]}
               projectId={projectId}

@@ -81,7 +81,7 @@ export const ShowTeamPage = () => {
 
           <div className="card bg-base-300 w-full mt-2">
             <div className="card-body">
-              <div className="card-title">Team Task Contribution Labels</div>
+              <div className="card-title">Team Task Contribution Roles</div>
               <TeamTaskListDone teamId={teamId}></TeamTaskListDone>
             </div>
           </div>
