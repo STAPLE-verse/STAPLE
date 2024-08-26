@@ -384,8 +384,22 @@ const ProjectDashboard = () => {
   const [projectStats] = useQuery(getProjectStats, { id: projectId! })
   //console.log(projectStats.contribLabels)
   //console.log(projectStats.completedContribLabels)
-  const formPercent = projectStats.completedAssignments / projectStats.allAssignments
-  const taskPercent = projectStats.completedTask / projectStats.allTask
+
+  // deal with zeroes
+  var formPercent
+  if (projectStats.allAssignments == 0) {
+    formPercent = 0
+  } else {
+    formPercent = projectStats.completedAssignments / projectStats.allAssignments
+  }
+  // deal with zeroes
+  var taskPercent
+  if (projectStats.allTask == 0) {
+    taskPercent = 0
+  } else {
+    taskPercent = projectStats.completedTask / projectStats.allTask
+  }
+  // this one ok because never zeroes out
   const labelPercent =
     (projectStats.completedContribLabels + projectStats.completedTaskLabels) /
     (projectStats.allContributor + projectStats.allTask)
