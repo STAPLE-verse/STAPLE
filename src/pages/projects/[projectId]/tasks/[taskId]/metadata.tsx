@@ -79,7 +79,7 @@ const MetadataContent = () => {
                 <DownloadZIP
                   data={processedMetadata}
                   fileName={task.name}
-                  className="btn btn-info mx-2"
+                  className="btn btn-info"
                 />
               </div>
             </div>
