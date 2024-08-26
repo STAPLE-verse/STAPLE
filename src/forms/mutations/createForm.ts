@@ -14,7 +14,7 @@ export default resolver.pipe(
       "title" in schema &&
       typeof schema.title === "string"
         ? schema.title
-        : ""
+        : "No Title"
 
     // Create Form entry
     const form = await db.forms.create({
