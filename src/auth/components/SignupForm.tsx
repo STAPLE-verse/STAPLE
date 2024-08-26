@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { FormSpy } from "react-final-form"
 import { useMutation } from "@blitzjs/rpc"
-import db from "db"
+import usernameExist, { UserEmailExistErr } from "../mutations/usernameExist"
 
 type SignupFormProps = {
   onSuccess?: (values) => void
@@ -18,6 +18,7 @@ type SignupFormProps = {
 }
 
 export const SignupForm = (props: SignupFormProps) => {
+  const [usernameEmailExistQuery] = useMutation(usernameExist)
   return (
     <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
       <div className="flex justify-center items-center w-full">
@@ -45,21 +46,20 @@ export const SignupForm = (props: SignupFormProps) => {
         }}
         onSubmit={async (values) => {
           try {
-            console.log(values.username)
-            const userExist = await db.user.findUnique({
-              where: {
-                username: values.username,
-              },
-              return: {
-                user: true,
-              },
-            })
-            if (userExist) {
-              console.log("username exists")
-            }
-
+            await usernameEmailExistQuery(values)
             props.onSuccess?.(values)
-          } catch (error: any) {}
+          } catch (error: any) {
+            let e = error as UserEmailExistErr
+            if (e?.code === "email_exist") {
+              // This error comes from Prisma
+              return { email: "You already have an account" }
+            } else if (error.code === "user_exist") {
+              // This error comes from Prisma
+              return { username: "Username already taken" }
+            } else {
+              return { [FORM_ERROR]: error.toString() }
+            }
+          }
         }}
       >
         <LabeledTextField
