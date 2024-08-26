@@ -53,11 +53,11 @@ export const ShowProjectPage = () => {
                     id="announcement"
                     value={announcementText}
                     onChange={(e) => setAnnouncementText(e.target.value)}
-                    placeholder="Enter your announcement here"
+                    placeholder="Type your announcement here."
                   ></textarea>
                   {/* Submit button */}
                   <button type="button" className="btn btn-primary" onClick={handleSubmit}>
-                    Submit
+                    Send Announcement
                   </button>
 
                   {/* Closes the modal */}
