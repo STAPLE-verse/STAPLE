@@ -21,7 +21,7 @@ export function getDateLanguageLocales() {
     {
       id: "ar-SA",
       iso_639_2: "ara",
-      name: "Arabic locale (Sauid Arabic)",
+      name: "Arabic locale (Saudi Arabic)",
       language: "Arabic",
     },
     {
