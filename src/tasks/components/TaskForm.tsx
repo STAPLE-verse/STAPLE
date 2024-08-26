@@ -99,7 +99,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       <LabeledTextField
         className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"
         name="name"
-        label="Task Name:"
+        label="Task Name: (Required)"
         placeholder="Add Task Name"
         type="text"
       />
@@ -108,7 +108,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       <LabelSelectField
         className="mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="columnId"
-        label="Current Status:"
+        label="Current Status: (Required)"
         options={columns}
         optionText="name"
         optionValue="id"
@@ -129,7 +129,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       <LabelSelectField
         className="mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="elementId"
-        label="Assign to Element:"
+        label="Assign Element:"
         options={elements}
         optionText="name"
         optionValue="id"
@@ -144,7 +144,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           className="btn btn-primary w-1/2"
           onClick={() => handleToggleContributorsModal()}
         >
-          Assign Contributors
+          Assign Contributor(s)
         </button>
         <FormSpy subscription={{ errors: true }}>
           {({ form }) => {
@@ -157,6 +157,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         {/* Modal */}
         <Modal open={openContributorsModal} size="w-7/8 max-w-xl">
           <div className="">
+            <h1 className="flex justify-center mb2 text-3xl">Select Contributors</h1>
             <div className="flex justify-start mt-4">
               <CheckboxFieldTable name="contributorsId" options={contributorOptions} />
             </div>
@@ -183,7 +184,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           className="btn btn-primary w-1/2"
           onClick={() => handleToggleTeamsModal()}
         >
-          Assign Team
+          Assign Team(s)
         </button>
         <FormSpy subscription={{ errors: true }}>
           {({ form }) => {
@@ -195,6 +196,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         </FormSpy>
         <Modal open={openTeamsModal} size="w-7/8 max-w-xl">
           <div className="">
+            <h1 className="flex justify-center mb2 text-3xl">Select Teams</h1>
             <div className="flex justify-start mt-4">
               <CheckboxFieldTable name="teamsId" options={teamOptions} />
             </div>
@@ -223,10 +225,11 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           className="btn btn-primary w-1/2"
           onClick={() => handleToggleLabelsModal()}
         >
-          Add Role
+          Assign Role(s)
         </button>
         <Modal open={openLabelsModal} size="w-7/8 max-w-xl">
           <div className="">
+            <h1 className="flex justify-center mb2 text-3xl">Select Roles</h1>
             <div className="flex justify-start mt-4">
               <CheckboxFieldTable name="labelsId" options={labelOptions} />
             </div>

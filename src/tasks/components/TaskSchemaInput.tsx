@@ -39,10 +39,11 @@ export const TaskSchemaInput = ({ contributors }) => {
   return (
     <div className="mt-4">
       <button type="button" className="btn btn-primary w-1/2" onClick={handleToggleSchemaUpload}>
-        Assign Required Information
+        Assign Form
       </button>
       <Modal open={openSchemaModal} size="w-11/12 max-w-1xl">
         <div>
+          <h1 className="flex justify-center mb2 text-3xl">Select Form</h1>
           <RadioFieldTable
             name="formVersionId"
             options={options}

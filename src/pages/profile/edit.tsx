@@ -24,7 +24,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
     <Form<S> {...props}>
       <LabeledTextField
         name="email"
-        label="Email:"
+        label="Email: (Required)"
         placeholder="Email"
         type="text"
         className="mb-4 text-primary border-primary border-2 bg-base-300"
@@ -32,7 +32,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <br />
       <LabeledTextField
         name="username"
-        label="Username:"
+        label="Username: (Required)"
         placeholder="Username"
         type="text"
         className="mb-4 text-primary border-primary border-2 bg-base-300"
@@ -64,7 +64,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
       {/* labeled select field for language */}
       <LabelSelectField
-        className="select text-primary select-bordered w-1/2 mt-4"
+        className="select text-primary select-bordered border-primary w-1/2 mt-4"
         name="language"
         label="Select language:"
         options={languagesOptions}
@@ -102,11 +102,11 @@ export const EditProfile = () => {
   return (
     <>
       <Head>
-        <title>Edit profile</title>
+        <title>Edit Profile</title>
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl flex mb-2">Edit profile</h1>
+        <h1 className="text-3xl flex mb-2">Edit Profile</h1>
         <Suspense fallback={<div>Loading...</div>}>
           <ProfileForm
             submitText="Update Profile"
