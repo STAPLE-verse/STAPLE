@@ -63,14 +63,21 @@ const JSONBuilderTab: React.FC<JSONBuilderTabProps> = ({
           />
         </div>
       </div>
-      <button onClick={toggleEditable} className="btn btn-secondary self-end mb-4">
-        {restrictEdit ? "Disable Editing" : "Enable Editing"}
-      </button>
-      {restrictEdit && (
-        <button onClick={handleSave} className="btn btn-primary self-end">
-          Save Form
-        </button>
-      )}
+
+      <div className="flex self-end">
+        <div>
+          <button onClick={toggleEditable} className="btn btn-secondary mx-2">
+            {restrictEdit ? "Disable Editing" : "Enable Editing"}
+          </button>
+        </div>
+        <div>
+          {restrictEdit && (
+            <button onClick={handleSave} className="btn btn-primary">
+              Save Form
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

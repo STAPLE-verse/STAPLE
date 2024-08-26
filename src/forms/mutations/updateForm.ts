@@ -7,13 +7,14 @@ export default resolver.pipe(
   resolver.authorize(),
   async ({ id, schema, uiSchema }) => {
     const newSchema = schema != null ? schema : Prisma.JsonNull
+    const newUi = uiSchema != null ? uiSchema : Prisma.JsonNull
     const schemaName =
       typeof schema === "object" &&
       schema !== null &&
       "title" in schema &&
       typeof schema.title === "string"
         ? schema.title
-        : ""
+        : "No Title"
 
     // Fetch the current form to get the current version number
     const currentForm = await db.forms.findUnique({
@@ -34,7 +35,7 @@ export default resolver.pipe(
         formId: id,
         version: newVersion,
         schema: newSchema,
-        uiSchema: uiSchema || Prisma.JsonNull,
+        uiSchema: newUi || Prisma.JsonNull,
         name: schemaName,
       },
     })
