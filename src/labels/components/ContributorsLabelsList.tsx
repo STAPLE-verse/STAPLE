@@ -8,11 +8,15 @@ export const ContributorLabelsList = ({ usersId, projectId, columns }) => {
   const router = useRouter()
   const [{ labels }, { refetch }] = useQuery(getLabels, {
     where: {
-      user: { id: { in: usersId } },
-      projects: { some: { id: projectId } },
+      contributors: {
+        some: {
+          userId: { in: usersId },
+          projectId: { in: projectId },
+        },
+      },
     },
     include: {
-      projects: true,
+      contributors: true,
       user: true,
     },
     orderBy: { id: "asc" },

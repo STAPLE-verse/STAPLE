@@ -36,8 +36,10 @@ export const ContributorPage = () => {
     user: User
   }
 
+  console.log(contributor)
+
   const [currentContributor] = useQuery(getContributor, {
-    where: { projectId: projectId, userId: currentUser!.id },
+    where: { projectId: projectId, id: contributorId },
     include: { teams: true },
   })
 
@@ -115,7 +117,7 @@ export const ContributorPage = () => {
 
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
-            <div className="card-title">Contribution Labels</div>
+            <div className="card-title">Contribution Roles</div>
             <ContributorLabelsList
               usersId={[user?.id]}
               projectId={projectId}
