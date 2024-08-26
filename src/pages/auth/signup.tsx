@@ -1,77 +1,110 @@
-import { useRouter } from "next/router"
-import Head from "next/head"
-import { SignupForm } from "src/auth/components/SignupForm"
-import { BlitzPage, Routes } from "@blitzjs/next"
-import TosForm from "src/auth/components/TosForm"
-import { useEffect, useState } from "react"
+import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
+import { Form } from "src/core/components/fields/Form"
+import { FORM_ERROR } from "final-form"
+import { Signup } from "src/auth/schemas"
+import Link from "next/link"
+import { Routes } from "@blitzjs/next"
+import { FormSpy } from "react-final-form"
 import { useMutation } from "@blitzjs/rpc"
-import signup from "src/auth/mutations/signup"
-import toast from "react-hot-toast"
-import { password_confirm } from "src/auth/schemas"
+import usernameExist, { UserEmailExistErr } from "../mutations/usernameExist"
 
-type TosResponses = {
-  tos: boolean
+type SignupFormProps = {
+  onSuccess?: (values) => void
+  signupResponses?: {
+    email: string
+    password: string
+    username: string
+  }
 }
 
-const SignupPage: BlitzPage = () => {
-  const router = useRouter()
-  const [signupMutation] = useMutation(signup)
-  const [signupSuccess, setSignupSuccess] = useState(false)
-  const [signupResponses, setSignupResponses] = useState({
-    email: "",
-    password: "",
-    username: "",
-    password_confirm: "",
-  })
-  const [tosResponses, setTosResponses] = useState<TosResponses | null>(null)
-
-  const handleSignupSuccess = (values) => {
-    setSignupSuccess(true)
-    setSignupResponses(values)
-  }
-
-  const handleTosSuccess = (values) => {
-    setTosResponses(values)
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    if (tosResponses?.tos && signupSuccess) {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      signupMutation(signupResponses)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        .then((success) => {
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          if (success) {
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            router.push(Routes.Home()).catch((e) => toast.error(e.message))
-          }
-        })
-        .catch((error) => {
-          toast.error(`Signup failed: ${error.message}`)
-        })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signupResponses, signupSuccess, tosResponses])
-
-  const handleGoBack = () => {
-    setSignupSuccess(false)
-  }
-
+export const SignupForm = (props: SignupFormProps) => {
+  const [usernameEmailExistQuery] = useMutation(usernameExist)
   return (
-    <>
-      <Head>
-        <title>{"Sign Up"}</title>
-      </Head>
-      <main className="flex flex-col h-screen">
-        {signupSuccess ? (
-          <TosForm onSuccess={handleTosSuccess} onCancel={handleGoBack} />
-        ) : (
-          <SignupForm onSuccess={handleSignupSuccess} signupResponses={signupResponses} />
-        )}
-      </main>
-    </>
+    <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
+      <div className="flex justify-center items-center w-full">
+        <picture>
+          <source
+            srcSet="/logo_white_big.png"
+            media="(prefers-color-scheme: dark)"
+            //alt="STAPLE Logo"
+            width={200}
+          />
+          <img src="/logo_black_big.png" alt="STAPLE Logo" width={200} />
+        </picture>
+      </div>
+
+      <h1 className="text-center text-3xl mt-2">Sign Up</h1>
+      <Form
+        className=""
+        submitText="Create Account"
+        schema={Signup}
+        initialValues={{
+          email: props.signupResponses?.email,
+          password: props.signupResponses?.password,
+          username: props.signupResponses?.username,
+          password_confirm: props.signupResponses?.password,
+        }}
+        onSubmit={async (values) => {
+          try {
+            await usernameEmailExistQuery(values)
+            props.onSuccess?.(values)
+          } catch (error: any) {
+            let e = error as UserEmailExistErr
+            if (e?.code === "email_exist") {
+              // This error comes from Prisma
+              return { email: "You already have an account" }
+            } else if (error.code === "user_exist") {
+              // This error comes from Prisma
+              return { username: "Username already taken" }
+            } else {
+              return { [FORM_ERROR]: error.toString() }
+            }
+          }
+        }}
+      >
+        <LabeledTextField
+          name="username"
+          label="Username:"
+          placeholder="Username"
+          className="w-full text-primary border-primary border-2 mb-4 bg-base-300"
+        />
+        <LabeledTextField
+          name="email"
+          label="Email:"
+          placeholder="Email"
+          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
+        />
+
+        <LabeledTextField
+          name="password"
+          label="Password:"
+          placeholder="Password"
+          type="password"
+          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
+        />
+
+        <LabeledTextField
+          name="password_confirm"
+          label="Confirm Password:"
+          placeholder="Password"
+          type="password"
+          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
+        />
+      </Form>
+
+      <div className="flex flex-row justify-end mb-4 mt-4">
+        <Link className="btn btn-info" href={Routes.LoginPage()}>
+          I have an Account
+        </Link>
+      </div>
+
+      <div className="flex flex-row justify-end mb-4">
+        <Link className="btn btn-secondary" href={Routes.Home()}>
+          Go Back Home
+        </Link>
+      </div>
+    </div>
   )
 }
 
-export default SignupPage
+export default SignupForm
