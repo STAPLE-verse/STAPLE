@@ -56,8 +56,8 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       />
       <br />
       <LabeledTextField
-        name="identifier:"
-        label="Identifier"
+        name="identifier"
+        label="Identifier:"
         placeholder="Identifier: DOI, ISBN, etc."
         type="text"
         className="mb-4 text-primary w-1/2 border-primary border-2 bg-base-300"
