@@ -22,8 +22,6 @@ export const ContributorLabelsList = ({ usersId, projectId, columns }) => {
     orderBy: { id: "asc" },
   })
 
-  console.log(labels)
-
   const contributorLabelInformation = labels.map((label) => {
     const name = label.name
     const description = label.description || ""
