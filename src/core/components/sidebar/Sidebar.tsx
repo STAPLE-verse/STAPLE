@@ -21,7 +21,7 @@ export default function Sidebar({
   }
 
   return (
-    <aside className="flex flex-col bg-white border-r shadow-sm">
+    <aside className="flex flex-col border-r shadow-sm">
       <div className="p-4 pb-2 flex justify-between items-center">
         <h2
           className={`text-2xl overflow-hidden transition-all ${
