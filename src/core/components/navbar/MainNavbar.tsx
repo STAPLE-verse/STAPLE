@@ -83,7 +83,7 @@ const Navbar = () => {
 
   // return pages
   return (
-    <div className="flex-0 navbar bg-base-100 sticky z-[1099] top-0 border-b border-gray-300 sm:px-4 md:px-6 lg:px-8 xl:px-10">
+    <div className="navbar bg-base-100 sticky z-[1099] top-0 left-0 right-0 w-full border-b border-gray-300 sm:px-4 md:px-6 lg:px-8 xl:px-10">
       {/* Tabs */}
       {/* On the left */}
       <div className="flex-1">{StapleLogo({ theme })}</div>

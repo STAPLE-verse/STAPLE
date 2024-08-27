@@ -375,6 +375,7 @@ span.arrow.tooltip-arrow {
 }
 
 .our-tooltip {
+  z-index: 9999;
   padding: 10px;
   border-radius: 10px;
   color: oklch(var(--bc));
