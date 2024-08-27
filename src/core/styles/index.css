@@ -366,16 +366,15 @@
   margin: 8px;
 }
 
-div.tooltip.show {
+/* div.tooltip.show {
   z-index: 9999 !important;
-}
+} */
 
 span.arrow.tooltip-arrow {
   display: none;
 }
 
 .our-tooltip {
-  z-index: 9999;
   padding: 10px;
   border-radius: 10px;
   color: oklch(var(--bc));
