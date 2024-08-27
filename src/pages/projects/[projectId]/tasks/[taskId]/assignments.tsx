@@ -65,7 +65,7 @@ const AssignmentsContent = () => {
                 </Link>
               )}
               <Link
-                className="btn self-end"
+                className="btn btn-secondary self-end"
                 href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
               >
                 Go back
