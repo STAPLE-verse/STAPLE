@@ -36,20 +36,6 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
     }
   }, [render])
 
-  const updateSchema = (newSchema: object) => {
-    setState((prevState) => ({
-      ...prevState,
-      schema: newSchema,
-    }))
-  }
-
-  const updateUiSchema = (newUiSchema: object) => {
-    setState((prevState) => ({
-      ...prevState,
-      uischema: newUiSchema,
-    }))
-  }
-
   const handleSave = () => {
     saveForm(state)
   }
@@ -106,8 +92,8 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
           <JSONBuilderTab
             schema={state.schema}
             uiSchema={state.uischema}
-            updateSchemaChange={updateSchema}
-            updateUiSchemaChange={updateUiSchema}
+            onSave={handleSave}
+            onChange={handleChange}
           />
         </Tab.Panel>
       </Tab.Panels>

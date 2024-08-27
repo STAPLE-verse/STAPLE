@@ -4,31 +4,19 @@ import { JsonEditor } from "json-edit-react"
 interface JSONBuilderTabProps {
   schema: object
   uiSchema: object
-  updateSchemaChange: (newSchema: object) => void
-  updateUiSchemaChange: (newUiSchema: object) => void
+  onSave: () => void
+  onChange: (newSchema: object, newUiSchema: object) => void
 }
 
-const JSONBuilderTab: React.FC<JSONBuilderTabProps> = ({
-  schema,
-  uiSchema,
-  updateSchemaChange,
-  updateUiSchemaChange,
-}) => {
-  const [currentSchema, setCurrentSchema] = useState(schema)
-  const [currentUiSchema, setCurrentUiSchema] = useState(uiSchema)
+const JSONBuilderTab: React.FC<JSONBuilderTabProps> = ({ schema, uiSchema, onSave, onChange }) => {
   const [restrictEdit, setRestrictEdit] = useState(true)
 
   const handleSchemaChange = (data: any) => {
-    setCurrentSchema(data.newData)
+    onChange(data.newData, uiSchema) // Notify parent of schema change
   }
 
   const handleUiSchemaChange = (data: any) => {
-    setCurrentUiSchema(data.newData)
-  }
-
-  const handleSave = () => {
-    updateSchemaChange(currentSchema)
-    updateUiSchemaChange(currentUiSchema)
+    onChange(schema, data.newData) // Notify parent of uiSchema change
   }
 
   const toggleEditable = () => {
@@ -41,7 +29,7 @@ const JSONBuilderTab: React.FC<JSONBuilderTabProps> = ({
         <div style={{ width: "48%" }}>
           <h4>Data Schema</h4>
           <JsonEditor
-            data={currentSchema}
+            data={schema}
             onUpdate={handleSchemaChange}
             restrictEdit={!restrictEdit}
             restrictDelete={!restrictEdit}
@@ -53,7 +41,7 @@ const JSONBuilderTab: React.FC<JSONBuilderTabProps> = ({
         <div style={{ width: "48%" }}>
           <h4>UI Schema</h4>
           <JsonEditor
-            data={currentUiSchema}
+            data={uiSchema}
             onUpdate={handleUiSchemaChange}
             restrictEdit={!restrictEdit}
             restrictDelete={!restrictEdit}
@@ -72,7 +60,7 @@ const JSONBuilderTab: React.FC<JSONBuilderTabProps> = ({
         </div>
         <div>
           {restrictEdit && (
-            <button onClick={handleSave} className="btn btn-primary">
+            <button onClick={onSave} className="btn btn-primary">
               Save Form
             </button>
           )}

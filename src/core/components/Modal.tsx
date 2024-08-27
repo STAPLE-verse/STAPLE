@@ -13,9 +13,9 @@ const Modal = ({ children, open, size = "max-w-lg" }: Props) => {
     <OverlayModal
       show={open}
       renderBackdrop={(props) => (
-        <div {...props} className="fixed inset-0 bg-black opacity-50 z-40" />
+        <div {...props} className="fixed inset-0 bg-black opacity-50 z-[1040]" />
       )}
-      className="fixed inset-0 flex items-center justify-center z-50"
+      className="fixed inset-0 flex items-center justify-center z-[1050]"
     >
       <div className={cn("modal-box p-6 rounded-lg shadow-lg relative", size)}>
         <div>{children}</div>

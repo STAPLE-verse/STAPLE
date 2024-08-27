@@ -1,11 +1,11 @@
-import React, { Suspense, useState } from "react"
+import React, { useState } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { useQuery } from "@blitzjs/rpc"
 import { ContributorPrivileges } from "@prisma/client"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import getContributors from "src/contributors/queries/getContributors"
-import AssignTeamMembers, { TeamOption } from "./TeamMembersTable"
+import AssignTeamMembers, { TeamOption } from "./AssignTeamMembers"
 import { Field } from "react-final-form"
 import { FORM_ERROR } from "final-form"
 
@@ -56,7 +56,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
     <Form<S> {...formProps}>
       <LabeledTextField
         name="name"
-        label="Team Name:"
+        label="Team Name: (Required)"
         placeholder="Team Name"
         type="text"
         className="mb-4 text-primary border-primary border-2 bg-base-300"

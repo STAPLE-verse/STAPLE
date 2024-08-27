@@ -1,17 +1,30 @@
 import { TaskStatus } from "@prisma/client"
 import { z } from "zod"
 
-export const FormTaskSchema = z.object({
-  name: z.string(),
-  columnId: z.number(),
-  description: z.string().optional().nullable(),
-  elementId: z.number().optional().nullable(),
-  contributorsId: z.array(z.number()).optional().nullable(),
-  teamsId: z.array(z.number()).optional().nullable(),
-  labelsId: z.array(z.number()).optional().nullable(),
-  deadline: z.date().optional().nullable(),
-  formVersionId: z.number().optional().nullable(),
-})
+export const FormTaskSchema = z
+  .object({
+    name: z.string(),
+    columnId: z.number(),
+    description: z.string().optional().nullable(),
+    elementId: z.number().optional().nullable(),
+    contributorsId: z.array(z.number()).optional().nullable(),
+    teamsId: z.array(z.number()).optional().nullable(),
+    labelsId: z.array(z.number()).optional().nullable(),
+    deadline: z.date().optional().nullable(),
+    formVersionId: z.number().optional().nullable(),
+  })
+  .refine(
+    (data) => {
+      // Safely access the length or use 0 if contributorsId is null or undefined
+      const hasContributors = (data.contributorsId?.length ?? 0) > 0
+      const hasTeams = (data.teamsId?.length ?? 0) > 0
+      return hasContributors || hasTeams
+    },
+    {
+      message: "At least one contributor or team should be selected.",
+      path: ["contributorsId"],
+    }
+  )
 
 export const CreateTaskSchema = z.object({
   name: z.string(),

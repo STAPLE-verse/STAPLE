@@ -11,7 +11,7 @@ export function ElementForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
     <Form<S> {...props}>
       <LabeledTextField
         name="name"
-        label="Name:"
+        label="Name: (Required)"
         placeholder="Name"
         type="text"
         className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"

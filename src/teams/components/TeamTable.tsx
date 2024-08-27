@@ -8,7 +8,6 @@ export type TeamInformation = {
   id: number
   projectId?: number
 }
-// TODO: Is it better to call the database for column name every time or just one time and pass the value to child components?
 // Column helper
 const columnHelper = createColumnHelper<TeamInformation>()
 

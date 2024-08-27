@@ -366,9 +366,9 @@
   margin: 8px;
 }
 
-div.tooltip.show {
+/* div.tooltip.show {
   z-index: 9999 !important;
-}
+} */
 
 span.arrow.tooltip-arrow {
   display: none;
