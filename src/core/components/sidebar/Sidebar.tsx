@@ -1,6 +1,5 @@
 import React from "react"
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
-import { Tooltip } from "react-tooltip"
 import { useRouter } from "next/router"
 import { SidebarItemProps } from "./SidebarItems"
 import { SidebarState } from "src/core/hooks/useSidebar"
@@ -40,7 +39,7 @@ export default function Sidebar({
           )}
         </button>
       </div>
-      <nav className="flex-1 overflow-y-auto">
+      <nav className="flex-1">
         <ul className="px-3">
           {" "}
           {sidebarItems.map((item, index) => (
