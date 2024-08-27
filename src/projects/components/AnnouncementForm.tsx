@@ -10,7 +10,7 @@ export function AnnouncementForm<S extends z.ZodType<any, any>>(props: FormProps
     <Form<S> {...props}>
       <LabeledTextAreaField
         className="textarea text-primary textarea-bordered textarea-primary textarea-lg bg-base-300 border-2 w-full"
-        name="announcement"
+        name="announcementText"
         label="Create Announcement:"
         placeholder="Type your announcement here."
       />

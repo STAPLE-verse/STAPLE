@@ -46,7 +46,6 @@ export const UpdateProjectLabelSchema = z.object({
 })
 
 export const FormAnnouncementSchema = z.object({
-  projectId: z.number(),
   announcementText: z.string(),
   // template: __fieldName__: z.__zodType__(),
 })

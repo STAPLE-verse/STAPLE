@@ -27,13 +27,13 @@ export const ShowProjectPage = () => {
   const [createAnnouncementMutation] = useMutation(createAnnouncement)
 
   const handleSubmit = async (values) => {
-    console.log("Form submitted with values:", values)
+    //console.log("Form submitted with values:", values)
     try {
       await createAnnouncementMutation({
         projectId: projectId!,
-        announcementText: values.announcement,
+        announcementText: values.announcementText,
       })
-      console.log("Announcement created successfully")
+      //console.log("Announcement created successfully")
       setAnnouncementText("")
       setOpenModal(false)
     } catch (error) {
