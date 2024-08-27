@@ -10,6 +10,8 @@ import Modal from "src/core/components/Modal"
 import createAnnouncement from "src/notifications/mutations/createAnnouncement"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 import { ContributorPrivileges } from "db"
+import { AnnouncementForm } from "src/projects/components/AnnouncementForm"
+import { FormAnnouncementSchema } from "src/projects/schemas"
 
 export const ShowProjectPage = () => {
   const projectId = useParam("projectId", "number")
@@ -24,13 +26,19 @@ export const ShowProjectPage = () => {
 
   const [createAnnouncementMutation] = useMutation(createAnnouncement)
 
-  const handleSubmit = async () => {
-    // Call the mutation with the announcement text
-    await createAnnouncementMutation({ projectId: projectId!, announcementText: announcementText })
-    // Clear the textarea
-    setAnnouncementText("")
-    // Close the modal
-    setOpenModal(false)
+  const handleSubmit = async (values) => {
+    console.log("Form submitted with values:", values)
+    try {
+      await createAnnouncementMutation({
+        projectId: projectId!,
+        announcementText: values.announcement,
+      })
+      console.log("Announcement created successfully")
+      setAnnouncementText("")
+      setOpenModal(false)
+    } catch (error) {
+      console.error("Error creating announcement:", error)
+    }
   }
 
   return (
@@ -44,27 +52,17 @@ export const ShowProjectPage = () => {
           {currentContributor!.privilege == ContributorPrivileges.PROJECT_MANAGER && (
             <>
               <button type="button" className="btn btn-primary" onClick={handleToggle}>
-                Send Announcement
+                Create Announcement
               </button>
-              <Modal open={openModal} size="w-11/12 max-w-3xl">
-                <div className="modal-action">
-                  {/* Modal content */}
-                  <textarea
-                    id="announcement"
-                    value={announcementText}
-                    onChange={(e) => setAnnouncementText(e.target.value)}
-                    placeholder="Type your announcement here."
-                  ></textarea>
-                  {/* Submit button */}
-                  <button type="button" className="btn btn-primary" onClick={handleSubmit}>
-                    Send Announcement
-                  </button>
-
-                  {/* Closes the modal */}
-                  <button type="button" className="btn btn-secondary" onClick={handleToggle}>
-                    Close
-                  </button>
-                </div>
+              <Modal open={openModal} size="w-full">
+                {/* Modal content */}
+                <AnnouncementForm
+                  submitText="Send Announcement"
+                  schema={FormAnnouncementSchema}
+                  cancelText="Cancel"
+                  onSubmit={handleSubmit}
+                  onCancel={handleToggle}
+                ></AnnouncementForm>
               </Modal>
             </>
           )}

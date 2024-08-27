@@ -17,7 +17,7 @@ const Modal = ({ children, open, size = "max-w-lg" }: Props) => {
       )}
       className="fixed inset-0 flex items-center justify-center z-50"
     >
-      <div className={cn("modal-box bg-white p-6 rounded-lg shadow-lg relative", size)}>
+      <div className={cn("modal-box p-6 rounded-lg shadow-lg relative", size)}>
         <div>{children}</div>
       </div>
     </OverlayModal>
