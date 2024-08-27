@@ -43,7 +43,7 @@ export const ShowProjectPage = () => {
         <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
           {currentContributor!.privilege == ContributorPrivileges.PROJECT_MANAGER && (
             <>
-              <button type="button" className="btn" onClick={handleToggle}>
+              <button type="button" className="btn btn-primary" onClick={handleToggle}>
                 Send Announcement
               </button>
               <Modal open={openModal} size="w-11/12 max-w-3xl">
