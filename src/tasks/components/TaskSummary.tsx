@@ -32,7 +32,7 @@ export const TaskSummary = ({ taskId, projectId }: TaskSummaryProps) => {
       {/* overall project information */}
       <div className="card bg-base-300 mx-2 w-full">
         <div className="card-body">
-          <div className="card-title">PM Information</div>
+          <div className="card-title">Project Manager Information</div>
 
           <div className="stats bg-base-300 text-lg font-bold">
             {/* Complete task widget */}
