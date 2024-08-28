@@ -37,8 +37,6 @@ model User {
 
   widgets       Widget[]
   projectWidget ProjectWidget[]
-
-  invitations Invitation[]
 }
 
 model Session {
@@ -111,15 +109,16 @@ model Contributor {
 
 // Invites
 model Invitation {
-  createdAt        DateTime         @default(now())
-  id               Int              @id @default(autoincrement())
-  userId           Int
+  createdAt        DateTime              @default(now())
+  id               Int                   @id @default(autoincrement())
   projectId        Int
-  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project          Project          @relation(fields: [projectId], references: [id])
-  invitationStatus InvitationStatus @default(INVITED)
+  project          Project               @relation(fields: [projectId], references: [id])
+  invitationStatus InvitationStatus      @default(INVITED)
   invitationCode   String
   labels           Label[]
+  email            String
+  privilege        ContributorPrivileges @default(CONTRIBUTOR)
+  addedBy          Int
 }
 
 // Contribution type

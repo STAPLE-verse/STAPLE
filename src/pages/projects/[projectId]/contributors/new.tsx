@@ -26,21 +26,21 @@ const NewContributor = () => {
   const handleSubmit = async (values) => {
     try {
       const contributor = await createContributorMutation({
-        userId: values.userId,
         projectId: projectId!,
         privilege: values.privilege,
         addedBy: currentUser!.username,
+        email: values.email,
         labelsId: values.labelsId,
       })
+
       await toast.promise(Promise.resolve(contributor), {
-        loading: "Adding contributor...",
-        success: "Contributor added to the project!",
+        loading: "Inviting contributor...",
+        success: "Contributor invited to the project!",
         error: "Failed to add the contributor...",
       })
       await router.push(
-        Routes.ShowContributorPage({
+        Routes.ProjectsPage({
           projectId: projectId!,
-          contributorId: contributor.id,
         })
       )
     } catch (error: any) {
@@ -53,7 +53,7 @@ const NewContributor = () => {
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="text-3xl">Add New Contributor</h1>
+      <h1 className="text-3xl">Invite New Contributor</h1>
       <Suspense fallback={<div>Loading...</div>}>
         <p className="mt-2 mb-2 text-lg">
           Enter the email of the contributor you would like to add to the project. They will receive
@@ -78,7 +78,7 @@ const NewContributorPage = () => {
   return (
     <Layout>
       <Head>
-        <title>Add New Contributor</title>
+        <title>Invite New Contributor</title>
       </Head>
       <Suspense fallback={<div>Loading...</div>}>
         <NewContributor />

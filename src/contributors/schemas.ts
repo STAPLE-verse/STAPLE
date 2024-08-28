@@ -3,10 +3,11 @@ import { z } from "zod"
 
 export const CreateContributorSchema = z.object({
   projectId: z.number(),
-  userId: z.number(),
   privilege: z.nativeEnum(ContributorPrivileges),
   addedBy: z.string(),
+  email: z.string(),
   labelsId: z.array(z.number()).optional().nullable(),
+
   // template: __fieldName__: z.__zodType__(),
 })
 

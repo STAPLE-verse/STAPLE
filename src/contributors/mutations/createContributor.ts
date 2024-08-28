@@ -3,46 +3,35 @@ import db from "db"
 import { CreateContributorSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
+import { vi } from "vitest"
+import { hash256 } from "@blitzjs/auth"
+
+const generatedToken = "plain-token"
+vi.mock("@blitzjs/auth", async () => {
+  const auth = await vi.importActual<Record<string, unknown>>("@blitzjs/auth")!
+  return {
+    ...auth,
+    generateToken: () => hash256(generatedToken),
+  }
+})
 
 export default resolver.pipe(
   resolver.zod(CreateContributorSchema),
   resolver.authorize(),
   async (input, ctx) => {
     // Create contributor
-    const contributor = await db.contributor.create({
+    const contributor = await db.invitation.create({
       data: {
-        userId: input.userId,
         projectId: input.projectId,
         privilege: input.privilege,
-      },
-    })
-
-    //connect to labels
-    let c1 = await db.contributor.update({
-      where: { id: contributor.id },
-      data: {
+        email: input.email,
+        invitationCode: generatedToken,
+        addedBy: input.addedBy,
         labels: {
           connect: input.labelsId?.map((c) => ({ id: c })) || [],
         },
       },
     })
-
-    // Send notification
-    // Get information for the notification
-    const project = await db.project.findFirst({ where: { id: input.projectId } })
-    await sendNotification(
-      {
-        templateId: "addedToProject",
-        recipients: [input.userId],
-        data: {
-          projectName: project!.name,
-          addedBy: input.addedBy,
-          privilege: getPrivilegeText(input.privilege),
-        },
-        projectId: input.projectId,
-      },
-      ctx
-    )
 
     return contributor
   }
