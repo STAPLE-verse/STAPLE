@@ -83,12 +83,6 @@ enum ContributorPrivileges {
   CONTRIBUTOR
 }
 
-enum InvitationStatus {
-  INVITED
-  ACCEPTED
-  DECLINED
-}
-
 model Contributor {
   createdAt           DateTime              @default(now())
   id                  Int                   @id @default(autoincrement())
@@ -109,16 +103,15 @@ model Contributor {
 
 // Invites
 model Invitation {
-  createdAt        DateTime              @default(now())
-  id               Int                   @id @default(autoincrement())
-  projectId        Int
-  project          Project               @relation(fields: [projectId], references: [id])
-  invitationStatus InvitationStatus      @default(INVITED)
-  invitationCode   String
-  labels           Label[]
-  email            String
-  privilege        ContributorPrivileges @default(CONTRIBUTOR)
-  addedBy          Int
+  createdAt      DateTime              @default(now())
+  id             Int                   @id @default(autoincrement())
+  projectId      Int
+  project        Project               @relation(fields: [projectId], references: [id])
+  invitationCode String
+  labels         Label[]
+  email          String?
+  privilege      ContributorPrivileges @default(CONTRIBUTOR)
+  addedBy        String
 }
 
 // Contribution type
@@ -132,8 +125,7 @@ model Label {
   projects     Project[]
   tasks        Task[]
   contributors Contributor[]
-  Invitation   Invitation?   @relation(fields: [invitationId], references: [id])
-  invitationId Int?
+  invitation   Invitation[]
 }
 
 model Project {
