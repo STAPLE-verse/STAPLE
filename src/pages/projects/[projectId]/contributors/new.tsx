@@ -55,6 +55,11 @@ const NewContributor = () => {
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
       <h1 className="text-3xl">Add New Contributor</h1>
       <Suspense fallback={<div>Loading...</div>}>
+        <p className="mt-2 mb-2 text-lg">
+          Enter the email of the contributor you would like to add to the project. They will receive
+          an email inviting them to join the project. You will not be able to add them to tasks or
+          teams until they accept their invitation.
+        </p>
         <ContributorForm
           projectId={projectId!}
           className="flex flex-col"
