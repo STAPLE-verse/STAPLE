@@ -45,7 +45,7 @@ export const formsTableColumns = [
       return (
         <>
           <JsonFormModal
-            schema={info.row.original.formVersion?.schema}
+            schema={info.row.original.formVersion?.schema!}
             uiSchema={extendedUiSchema}
             metadata={{}}
             label="View"
