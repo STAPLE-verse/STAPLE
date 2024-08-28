@@ -16,12 +16,24 @@ const ResetPasswordPage: BlitzPage = () => {
   const [resetPasswordMutation, { isSuccess }] = useMutation(resetPassword)
 
   return (
-    <div>
-      <h1>Set a New Password</h1>
+    <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
+      <div className="flex justify-center items-center w-full">
+        <picture>
+          <source
+            srcSet="/logo_white_big.png"
+            media="(prefers-color-scheme: dark)"
+            //alt="STAPLE Logo"
+            width={200}
+          />
+          <img src="/logo_black_big.png" alt="STAPLE Logo" width={200} />
+        </picture>
+      </div>
+
+      <h1 className="text-center text-3xl mt-2">Set a New Password</h1>
 
       {isSuccess ? (
         <div>
-          <h2>Password Reset Successfully</h2>
+          <h2 className="text-center text-2xl mt-2">Password Reset Successfully</h2>
           <p>
             Go to the <Link href={Routes.Home()}>homepage</Link>
           </p>
@@ -71,6 +83,6 @@ const ResetPasswordPage: BlitzPage = () => {
 }
 
 ResetPasswordPage.redirectAuthenticatedTo = "/"
-ResetPasswordPage.getLayout = (page) => <Layout title="Reset Your Password">{page}</Layout>
+//ResetPasswordPage.getLayout = (page) => <Layout title="Reset Your Password">{page}</Layout>
 
 export default ResetPasswordPage
