@@ -5,6 +5,8 @@
  * and use it straight away.
  */
 
+import { Mailer } from "integrations/mailer"
+
 type ResetPasswordMailer = {
   to: string
   token: string
@@ -16,30 +18,22 @@ export function forgotPasswordMailer({ to, token }: ResetPasswordMailer) {
   const resetUrl = `${origin}/auth/reset-password?token=${token}`
 
   const msg = {
-    from: "TODO@example.com",
+    from: "staple.helpdesk@gmail.com",
     to,
     subject: "Your Password Reset Instructions",
     html: `
-      <h1>Reset Your Password</h1>
-      <h3>NOTE: You must set up a production email integration in mailers/forgotPasswordMailer.ts</h3>
+      <h3>Reset Your Password</h3>
 
-      <a href="${resetUrl}">
-        Click here to set a new password
-      </a>
+      You requested a new password for your STAPLE account. <a href="${resetUrl}">Click here to set a new password.</a>
+      <p>
+      If you need more help, you can reply to this email to create a ticket.
+      <p>
+      Thanks,
+      <br>
+      STAPLE HelpDesk
     `,
   }
 
-  return {
-    async send() {
-      if (process.env.NODE_ENV === "production") {
-        // TODO - send the production email, like this:
-        // await postmark.sendEmail(msg)
-        throw new Error("No production email implementation in mailers/forgotPasswordMailer")
-      } else {
-        // Preview email in the browser
-        const previewEmail = (await import("preview-email")).default
-        await previewEmail(msg)
-      }
-    },
-  }
+  //send the email
+  Mailer(msg)
 }
