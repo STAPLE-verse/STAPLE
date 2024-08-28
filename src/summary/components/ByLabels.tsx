@@ -1,9 +1,5 @@
-import { Suspense, useState } from "react"
-import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
-import router, { useRouter } from "next/router"
-
-import React, { useRef } from "react"
-import { LabelView } from "src/projects/components/UtilsViews"
+import React from "react"
+import { LabelView } from "src/summary/components/UtilsViews"
 
 const ByLabels = ({ labels, tasks, contributors }) => {
   const getLabelContributors = (labelId, contributors) => {
