@@ -37,6 +37,8 @@ model User {
 
   widgets       Widget[]
   projectWidget ProjectWidget[]
+
+  invitations Invitation[]
 }
 
 model Session {
@@ -100,7 +102,6 @@ model Contributor {
   privilege           ContributorPrivileges @default(PROJECT_MANAGER)
   teams               Team[]
   tasks               Task[]
-  invitationStatus    InvitationStatus      @default(INVITED)
   deleted             Boolean               @default(false)
   assignmentStatusLog AssignmentStatusLog[]
   // allow them to have multiple contributor labels, I think like the task array?
@@ -108,8 +109,19 @@ model Contributor {
   labels              Label[]
 }
 
-// Contribution type
+// Invites
+model Invitation {
+  createdAt        DateTime         @default(now())
+  id               Int              @id @default(autoincrement())
+  userId           Int
+  projectId        Int
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project          Project          @relation(fields: [projectId], references: [id])
+  invitationStatus InvitationStatus @default(INVITED)
+  invitationCode   String
+}
 
+// Contribution type
 model Label {
   id           Int           @id @default(autoincrement())
   userId       Int
@@ -141,6 +153,8 @@ model Project {
   labels        Label[]
   projectWidget ProjectWidget[]
   notifications Notification[]
+
+  invitations Invitation[]
 }
 
 enum TaskStatus {
