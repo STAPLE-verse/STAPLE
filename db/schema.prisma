@@ -119,6 +119,7 @@ model Invitation {
   project          Project          @relation(fields: [projectId], references: [id])
   invitationStatus InvitationStatus @default(INVITED)
   invitationCode   String
+  labels           Label[]
 }
 
 // Contribution type
@@ -132,6 +133,8 @@ model Label {
   projects     Project[]
   tasks        Task[]
   contributors Contributor[]
+  Invitation   Invitation?   @relation(fields: [invitationId], references: [id])
+  invitationId Int?
 }
 
 model Project {
