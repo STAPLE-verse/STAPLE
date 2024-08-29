@@ -49,14 +49,14 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
       all parts of a project, while contributors can only complete
       tasks assigned to them."
         className="z-[1099]"
-        place="right-end"
+        place="right"
         opacity={1}
       />
       <Tooltip
         id="role-tooltip"
         content="Add role labels to individual contributors (like administration)"
         className="z-[1099]"
-        place="right-end"
+        place="right"
         opacity={1}
       />
       {!isEdit && (
@@ -65,7 +65,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
           label="Email: (Required)"
           placeholder="Email"
           type="text"
-          className="mb-4 text-primary border-primary border-2 bg-base-300"
+          className="mb-4 text-primary border-primary border-2 bg-base-300 w-1/2 "
         />
       )}
       <LabelSelectField

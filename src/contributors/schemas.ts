@@ -12,7 +12,7 @@ export const CreateContributorSchema = z.object({
 })
 
 export const CreateContributorFormSchema = z.object({
-  userId: z.number(),
+  email: z.string(),
   privilege: z.nativeEnum(ContributorPrivileges),
   labelsId: z.array(z.number()).optional().nullable(),
 })

@@ -36,7 +36,7 @@ export const ContributorPage = () => {
     user: User
   }
 
-  console.log(contributor)
+  //console.log(contributor)
 
   const [currentContributor] = useQuery(getContributor, {
     where: { projectId: projectId, id: contributorId },

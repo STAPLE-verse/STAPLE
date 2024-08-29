@@ -11,7 +11,7 @@ export const InvitesList = ({ currentUser }) => {
     include: { project: true },
   })
 
-  console.log(invites)
+  //console.log(invites)
 
   return (
     <div>

@@ -1,33 +1,28 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateContributorSchema } from "../schemas"
-import sendNotification from "src/notifications/mutations/sendNotification"
-import { getPrivilegeText } from "src/services/getPrivilegeText"
-import { vi } from "vitest"
-import { hash256 } from "@blitzjs/auth"
 
-const generatedToken = "plain-token"
-vi.mock("@blitzjs/auth", async () => {
-  const auth = await vi.importActual<Record<string, unknown>>("@blitzjs/auth")!
-  return {
-    ...auth,
-    generateToken: () => hash256(generatedToken),
+function generateToken(n) {
+  var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  var token = ""
+  for (var i = 0; i < n; i++) {
+    token += chars[Math.floor(Math.random() * chars.length)]
   }
-})
-
-//added by is the username of the PM who is adding
+  return token
+}
 
 export default resolver.pipe(
   resolver.zod(CreateContributorSchema),
   resolver.authorize(),
   async (input, ctx) => {
+    console.log(input)
     // Create contributor
     const contributor = await db.invitation.create({
       data: {
         projectId: input.projectId,
         privilege: input.privilege,
         email: input.email,
-        invitationCode: generatedToken,
+        invitationCode: generateToken(20),
         addedBy: input.addedBy,
         labels: {
           connect: input.labelsId?.map((c) => ({ id: c })) || [],

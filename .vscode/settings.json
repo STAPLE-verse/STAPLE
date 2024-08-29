@@ -7,5 +7,6 @@
   "jest.autoRun": "off",
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
+  },
+  "search.useIgnoreFiles": true
 }

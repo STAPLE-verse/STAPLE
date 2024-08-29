@@ -8,7 +8,7 @@ import { InvitesList } from "src/invites/components/InvitesList"
 const InvitesPage = () => {
   const router = useRouter()
   const currentUser = useCurrentUser()
-  console.log(currentUser)
+  //console.log(currentUser)
 
   return (
     <Layout>

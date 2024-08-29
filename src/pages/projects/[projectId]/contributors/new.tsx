@@ -17,9 +17,7 @@ import { CreateContributorFormSchema } from "src/contributors/schemas"
 const NewContributor = () => {
   const [createContributorMutation] = useMutation(createContributor)
   const router = useRouter()
-
   const projectId = useParam("projectId", "number")
-
   const currentUser = useCurrentUser()
 
   // Handle events
@@ -61,7 +59,7 @@ const NewContributor = () => {
           teams until they accept their invitation.
         </p>
         <ContributorForm
-          projectId={projectId!}
+          projectId={projectId as number}
           className="flex flex-col"
           submitText="Add Contributor"
           schema={CreateContributorFormSchema}
