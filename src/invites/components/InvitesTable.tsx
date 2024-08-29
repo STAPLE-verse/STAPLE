@@ -1,7 +1,6 @@
 import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import DateFormat from "src/core/components/DateFormat"
-import { EnumValues } from "zod"
 
 // Define return type for the columns
 export type Invite = {
@@ -9,6 +8,7 @@ export type Invite = {
   project?: { name: string }
   invitationCode: string
   id: number
+  email: string
 }
 
 const columnHelper = createColumnHelper<Invite>()
@@ -40,5 +40,28 @@ export const inviteTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <button>Decline</button>,
+  }),
+]
+
+// ColumnDefs
+export const inviteTableColumnsPM = [
+  columnHelper.accessor("createdAt", {
+    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
+    header: "Date",
+  }),
+  columnHelper.accessor("email", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Email",
+  }),
+  columnHelper.accessor("invitationCode", {
+    header: "Invitation Code",
+    cell: (info) => <span>{info.getValue()}</span>,
+  }),
+  columnHelper.accessor("id", {
+    id: "decline",
+    header: "Delete",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => <button>Delete</button>,
   }),
 ]
