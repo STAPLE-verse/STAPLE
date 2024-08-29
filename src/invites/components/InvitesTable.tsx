@@ -6,9 +6,8 @@ import { EnumValues } from "zod"
 // Define return type for the columns
 export type Invite = {
   createdAt: Date
-  project: { name: String }
-  invitationStatus: EnumValues
-  invitationCode: String
+  project?: { name: string }
+  invitationCode: string
   id: number
 }
 
@@ -23,10 +22,6 @@ export const inviteTableColumns = [
   columnHelper.accessor("project.name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Project",
-  }),
-  columnHelper.accessor("invitationStatus", {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Status",
   }),
   columnHelper.accessor("invitationCode", {
     header: "Invitation Code",

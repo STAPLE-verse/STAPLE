@@ -6,7 +6,7 @@ import { inviteTableColumns } from "./InvitesTable"
 export const InvitesList = ({ currentUser }) => {
   // Get invitations
   const [invites] = useQuery(getInvites, {
-    where: { userId: currentUser!.id },
+    where: { email: currentUser!.email },
     orderBy: { id: "asc" },
     include: { project: true },
   })

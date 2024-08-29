@@ -109,7 +109,7 @@ model Invitation {
   project        Project               @relation(fields: [projectId], references: [id])
   invitationCode String
   labels         Label[]
-  email          String?
+  email          String
   privilege      ContributorPrivileges @default(CONTRIBUTOR)
   addedBy        String
 }
