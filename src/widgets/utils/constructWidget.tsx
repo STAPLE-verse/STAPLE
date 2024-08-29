@@ -6,19 +6,8 @@ import {
   GetNotificationDisplay,
 } from "src/core/components/GetDashboardDisplay"
 import { Routes } from "@blitzjs/next"
-import { Project, Widget } from "db"
-import { ReactNode } from "react"
-
-export type WidgetObject = {
-  id: number
-  title: string
-  display: ReactNode
-  link: ReactNode
-  position: number
-  size: string | null
-  tooltipId: string
-  tooltipContent: string
-}
+import { Widget } from "db"
+import { WidgetObject } from "../hooks/useMainDashboardData"
 
 type WidgetComponentProps = {
   widget: Widget

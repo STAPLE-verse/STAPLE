@@ -1,10 +1,8 @@
-import { Suspense, useEffect } from "react"
+import { Suspense } from "react"
 import Head from "next/head"
-import { useMutation, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getUserWidgets from "src/widgets/queries/getUserWidgets"
-import React, { useState } from "react"
+import React from "react"
 import {
   DndContext,
   KeyboardSensor,
@@ -15,78 +13,17 @@ import {
   closestCorners,
 } from "@dnd-kit/core"
 import { SortableBox } from "src/core/components/SortableBox"
-import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
-import updateWidget from "src/widgets/mutations/updateWidget"
-import setWidgets from "src/widgets/mutations/setWidgets"
-import toast from "react-hot-toast"
-import getDashboardTasks from "../../tasks/queries/getDashboardTasks"
-import getDashboardProjects from "src/projects/queries/getDashboardProjects"
-import getLatestUnreadNotifications from "src/notifications/queries/getLatestUnreadNotifications"
-import { WidgetObject, constructWidget } from "src/widgets/utils/constructWidget"
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+import useMainDashboardDragHandlers from "src/widgets/hooks/useMainDashboardDragHandlers"
+import useMainDashboardData from "src/widgets/hooks/useMainDashboardData"
 
 const MainPage = () => {
-  // Setup
-  const [updateWidgetMutation] = useMutation(updateWidget)
-  const [setWidgetMutation] = useMutation(setWidgets)
-
-  const [boxes, setBoxes] = useState<WidgetObject[]>([])
-
-  // Get data
-  // User data
   const currentUser = useCurrentUser()
-  //Widget content
-  const [{ upcomingTasks, pastDueTasks }] = useQuery(getDashboardTasks, undefined)
-  const [{ projects }] = useQuery(getDashboardProjects, undefined)
-  const [{ notifications }] = useQuery(getLatestUnreadNotifications, {})
-  // Widgets for the user
-  const [fetchedWidgets] = useQuery(getUserWidgets, {
-    userId: currentUser?.id,
-  })
 
-  // Construct widgets based on user data
-  useEffect(() => {
-    if (fetchedWidgets.length > 0) {
-      const sortedWidgets = fetchedWidgets.sort((a, b) => a.position - b.position)
-      const updatedBoxes = sortedWidgets.map((widget) => {
-        return constructWidget({ widget, projects, notifications, pastDueTasks, upcomingTasks })
-      })
-      setBoxes(updatedBoxes)
-    } else {
-      // Call the mutation
-      setWidgetMutation({ id: currentUser?.id })
-        .then(() => {
-          toast.success(`Added dashboard, please refresh!`)
-        })
-        .catch(() => {
-          toast.error(`Issue with dashboard, please contact help.`)
-        })
-    }
-  }, [fetchedWidgets])
+  const { boxes, setBoxes } = useMainDashboardData(currentUser?.id!)
+  const { handleDragEnd } = useMainDashboardDragHandlers({ setBoxes })
 
-  const handleDragEnd = async (event) => {
-    const { active, over } = event
-    if (over && active.id !== over.id) {
-      setBoxes((currentBoxes) => {
-        const oldIndex = currentBoxes.findIndex((box) => box.id === active.id)
-        const newIndex = currentBoxes.findIndex((box) => box.id === over.id)
-        const newBoxes = arrayMove(currentBoxes, oldIndex, newIndex)
-
-        // Update positions based on new order in the state
-        const updatedPositions = newBoxes.map((box, index) => ({
-          id: box.id,
-          position: index + 1,
-        }))
-
-        // Call the mutation
-        updateWidgetMutation({ positions: updatedPositions })
-          .then(() => {})
-          .catch((error) => {})
-
-        return newBoxes
-      })
-    }
-  }
-
+  // DND Handlers
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(TouchSensor),
