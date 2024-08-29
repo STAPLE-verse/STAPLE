@@ -22,6 +22,9 @@ const InvitesPage = () => {
         <div>
           <Suspense fallback={<div>Loading...</div>}>
             <InvitesList currentUser={currentUser} />
+            <div>
+              <button>Accept by Code</button>
+            </div>
           </Suspense>
         </div>
       </main>
