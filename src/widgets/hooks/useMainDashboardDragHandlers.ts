@@ -3,7 +3,7 @@ import { DragEndEvent } from "@dnd-kit/core"
 import { useMutation } from "@blitzjs/rpc"
 import { arrayMove } from "@dnd-kit/sortable"
 import updateWidget from "../mutations/updateWidget"
-import { WidgetObject } from "../utils/constructWidget"
+import { WidgetObject } from "./useMainDashboardData"
 
 interface DragHandlersProps {
   setBoxes: React.Dispatch<React.SetStateAction<WidgetObject[]>>
