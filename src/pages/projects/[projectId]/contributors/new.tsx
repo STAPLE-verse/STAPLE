@@ -13,7 +13,6 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 import { ContributorPrivileges } from "db"
 import { CreateContributorFormSchema } from "src/contributors/schemas"
-import { Mailer } from "integrations/mailer"
 
 const NewContributor = () => {
   const [createContributorMutation] = useMutation(createContributor)
@@ -37,10 +36,10 @@ const NewContributor = () => {
         to: values.email,
         subject: "STAPLE Project Invitation",
         html: `
-          <h3>STAPLE Project Invitation/h3>
+          <h3>STAPLE Project Invitation</h3>
 
           You've been invited to collaborate on a STAPLE project by
-          "${currentUser!.username}". STAPLE is project management software that
+          ${currentUser!.username}. STAPLE is project management software that
           allows you to document your research project to improve transparency. If you
           wish to join the project, please log in at: https://app.staple.science/. You
           can join the project by clicking on Invitations on the sidebar menu and click "Accept"
@@ -59,7 +58,19 @@ const NewContributor = () => {
         `,
       }
 
-      //await Mailer(msg)
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(msg),
+      })
+
+      if (response.ok) {
+        console.log("Email sent successfully")
+      } else {
+        console.error("Failed to send email")
+      }
 
       await toast.promise(Promise.resolve(contributor), {
         loading: "Inviting contributor...",
