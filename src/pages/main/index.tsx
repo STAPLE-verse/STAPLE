@@ -14,16 +14,22 @@ import {
 } from "@dnd-kit/core"
 import { SortableBox } from "src/core/components/SortableBox"
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable"
-import useMainDashboardDragHandlers from "src/widgets/hooks/useMainDashboardDragHandlers"
+import useDashboardDragHandlers from "src/widgets/hooks/useDashboardDragHandlers"
 import useMainDashboardData from "src/widgets/hooks/useMainDashboardData"
+import { useMutation } from "@blitzjs/rpc"
+import updateWidget from "src/widgets/mutations/updateWidget"
 
 const MainPage = () => {
+  const [updateWidgetMutation] = useMutation(updateWidget)
+
   const currentUser = useCurrentUser()
 
   const { boxes, setBoxes } = useMainDashboardData(currentUser?.id!)
-  const { handleDragEnd } = useMainDashboardDragHandlers({ setBoxes })
+  const { handleDragEnd } = useDashboardDragHandlers({
+    setBoxes,
+    updateWidgetMutation,
+  })
 
-  // DND Handlers
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(TouchSensor),

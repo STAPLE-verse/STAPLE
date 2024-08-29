@@ -1,7 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-// react tanstack error
-
 import { useEffect } from "react"
 import { Routes, useParam } from "@blitzjs/next"
 import { useMutation, useQuery } from "@blitzjs/rpc"
@@ -16,8 +12,6 @@ import getContributors from "src/contributors/queries/getContributors"
 import { UserIcon, GlobeAltIcon, ArchiveBoxIcon } from "@heroicons/react/24/outline"
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import "react-circular-progressbar/dist/styles.css"
-
-// make things draggable
 import React, { useState } from "react"
 import {
   DndContext,
@@ -382,8 +376,6 @@ const ProjectDashboard = () => {
   })
   // get project stats
   const [projectStats] = useQuery(getProjectStats, { id: projectId! })
-  //console.log(projectStats.contribLabels)
-  //console.log(projectStats.completedContribLabels)
 
   // deal with zeroes
   var formPercent
@@ -407,7 +399,6 @@ const ProjectDashboard = () => {
   // if the length is 0, then create widgets
   useEffect(() => {
     if (fetchedWidgets.length === 0) {
-      //console.log("no widgets")
       var setUpProjectDashboard = setWidgetMutation({
         userId: currentUser?.id,
         projectId: projectId,

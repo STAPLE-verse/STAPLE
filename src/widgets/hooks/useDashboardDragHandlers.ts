@@ -1,18 +1,15 @@
 import { useCallback } from "react"
 import { DragEndEvent } from "@dnd-kit/core"
-import { useMutation } from "@blitzjs/rpc"
 import { arrayMove } from "@dnd-kit/sortable"
-import updateWidget from "../mutations/updateWidget"
+import { UpdateWidgetPositionInput } from "../mutations/updateWidget"
 import { WidgetObject } from "./useMainDashboardData"
 
 interface DragHandlersProps {
   setBoxes: React.Dispatch<React.SetStateAction<WidgetObject[]>>
+  updateWidgetMutation: (input: { positions: UpdateWidgetPositionInput }) => Promise<any>
 }
 
-const useMainDashboardDragHandlers = ({ setBoxes }: DragHandlersProps) => {
-  // Setup
-  const [updateWidgetMutation] = useMutation(updateWidget)
-
+const useMainDashboardDragHandlers = ({ setBoxes, updateWidgetMutation }: DragHandlersProps) => {
   const handleDragEnd = useCallback(
     async (event: DragEndEvent) => {
       const { active, over } = event
