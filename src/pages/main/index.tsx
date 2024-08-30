@@ -16,15 +16,26 @@ import { SortableBox } from "src/core/components/SortableBox"
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import useDashboardDragHandlers from "src/widgets/hooks/useDashboardDragHandlers"
 import useMainDashboardData from "src/widgets/hooks/useMainDashboardData"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import updateWidget from "src/widgets/mutations/updateWidget"
+import getUserWidgets from "src/widgets/queries/getUserWidgets"
+import useWidgetConstruction from "src/widgets/hooks/useConstructWidgets"
 
 const MainPage = () => {
   const [updateWidgetMutation] = useMutation(updateWidget)
 
   const currentUser = useCurrentUser()
 
-  const { boxes, setBoxes } = useMainDashboardData(currentUser?.id!)
+  const dashboardData = useMainDashboardData()
+
+  const [widgets] = useQuery(getUserWidgets, { userId: currentUser?.id! })
+
+  const { boxes, setBoxes } = useWidgetConstruction({
+    userId: currentUser?.id!,
+    widgets,
+    additionalData: dashboardData,
+  })
+
   const { handleDragEnd } = useDashboardDragHandlers({
     setBoxes,
     updateWidgetMutation,
