@@ -1,4 +1,7 @@
-import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
+import {
+  LabeledTextField,
+  LabeledTextFieldProps,
+} from "src/core/components/fields/LabeledTextField"
 import { Form } from "src/core/components/fields/Form"
 import { FORM_ERROR } from "final-form"
 import { Signup } from "src/auth/schemas"
@@ -7,6 +10,8 @@ import { Routes } from "@blitzjs/next"
 import { FormSpy } from "react-final-form"
 import { useMutation } from "@blitzjs/rpc"
 import usernameExist, { UserEmailExistErr } from "../mutations/usernameExist"
+import { EyeIcon } from "@heroicons/react/24/outline"
+import { useState } from "react"
 
 type SignupFormProps = {
   onSuccess?: (values) => void
@@ -19,6 +24,19 @@ type SignupFormProps = {
 
 export const SignupForm = (props: SignupFormProps) => {
   const [usernameEmailExistQuery] = useMutation(usernameExist)
+
+  const [currType, setType] = useState("password")
+  const handleToggle = () => {
+    if (currType === "password") {
+      //  setIcon(eye);
+      setType("text")
+    } else {
+      //  setIcon(eyeOff)
+      setType("password")
+    }
+    console.log("setting type")
+  }
+
   return (
     <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
       <div className="flex justify-center items-center w-full">
@@ -79,15 +97,22 @@ export const SignupForm = (props: SignupFormProps) => {
           name="password"
           label="Password:"
           placeholder="Password"
-          type="password"
+          type={currType as LabeledTextFieldProps["type"]}
           className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
         />
+        <div className="flex flex-col my-4 py-4 mb-4 mt-4">
+          <button className="btn btn-circle " onClick={handleToggle}>
+            <span className="">
+              <EyeIcon className="w-5 h-5 absolute ml-3 pointer-events-none"></EyeIcon>
+            </span>
+          </button>
+        </div>
 
         <LabeledTextField
           name="password_confirm"
           label="Confirm Password:"
           placeholder="Password"
-          type="password"
+          type={currType as LabeledTextFieldProps["type"]}
           className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
         />
       </Form>
