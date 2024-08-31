@@ -12,20 +12,20 @@ import {
   useSensors,
   closestCorners,
 } from "@dnd-kit/core"
-import { SortableBox } from "src/core/components/SortableBox"
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import useDashboardDragHandlers from "src/widgets/hooks/useDashboardDragHandlers"
 import { useMutation } from "@blitzjs/rpc"
 import updateWidget from "src/widgets/mutations/updateWidget"
 import useWidgets from "src/widgets/hooks/useWidgets"
 import { useWidgetConstruction } from "src/widgets/hooks/useWidgetConstruction"
+import { WidgetContainer } from "src/widgets/components/WidgetContainer"
 
 const MainPage = () => {
   const [updateWidgetMutation] = useMutation(updateWidget)
 
   const currentUser = useCurrentUser()
 
-  const { widgets, setWidgetsState: setWidgets } = useWidgets(currentUser?.id!)
+  const { widgets, setWidgets } = useWidgets(currentUser?.id!)
   const constructedWidgets = useWidgetConstruction(widgets)
   const { handleDragEnd } = useDashboardDragHandlers({ setWidgets, updateWidgetMutation })
 
@@ -54,7 +54,7 @@ const MainPage = () => {
             onDragEnd={handleDragEnd}
             sensors={sensors}
           >
-            <SortableBox boxes={constructedWidgets} />
+            <WidgetContainer widgets={constructedWidgets} />
           </DndContext>
         </main>
       </Suspense>

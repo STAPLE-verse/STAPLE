@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 
-export const Boxes = ({ id, children }) => {
+export const SortableWidget = ({ id, children }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id })
 
   const style = {

@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react"
 import { sortWidgets } from "../utils/sortWidgets"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import setWidgets from "src/widgets/mutations/setWidgets"
 import toast from "react-hot-toast"
 import { Widget } from "db"
 import getUserWidgets from "../queries/getUserWidgets"
+import initializeWidgets from "../mutations/initializeWidgets"
 
 export default function useWidgets(userId: number): {
   widgets: Widget[]
-  setWidgetsState: React.Dispatch<React.SetStateAction<Widget[]>>
+  setWidgets: React.Dispatch<React.SetStateAction<Widget[]>>
 } {
-  const [widgets, setWidgetsState] = useState<Widget[]>([])
+  const [widgets, setWidgets] = useState<Widget[]>([])
   const [fetchedWidgets] = useQuery(getUserWidgets, { userId: userId })
-  const [setWidgetMutation] = useMutation(setWidgets)
+  const [setWidgetMutation] = useMutation(initializeWidgets)
 
   useEffect(() => {
     if (fetchedWidgets.length > 0) {
       const sortedWidgets = sortWidgets(fetchedWidgets)
-      setWidgetsState(sortedWidgets)
+      setWidgets(sortedWidgets)
     } else {
       setWidgetMutation(userId)
         .then((createdWidgets) => {
-          setWidgetsState(createdWidgets)
+          setWidgets(createdWidgets)
           toast.success(`Dashboard added successfully!`)
         })
         .catch(() => {
@@ -30,5 +30,5 @@ export default function useWidgets(userId: number): {
     }
   }, [fetchedWidgets, setWidgetMutation, userId])
 
-  return { widgets, setWidgetsState }
+  return { widgets, setWidgets }
 }
