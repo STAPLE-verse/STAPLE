@@ -2,26 +2,26 @@ import { useCallback } from "react"
 import { DragEndEvent } from "@dnd-kit/core"
 import { arrayMove } from "@dnd-kit/sortable"
 import { UpdateWidgetPositionInput } from "../mutations/updateWidget"
-import { WidgetObject } from "./useConstructWidgets"
+import { Widget } from "db"
 
 interface DragHandlersProps {
-  setBoxes: React.Dispatch<React.SetStateAction<WidgetObject[]>>
+  setWidgets: React.Dispatch<React.SetStateAction<Widget[]>>
   updateWidgetMutation: (input: { positions: UpdateWidgetPositionInput }) => Promise<any>
 }
 
-const useMainDashboardDragHandlers = ({ setBoxes, updateWidgetMutation }: DragHandlersProps) => {
+const useMainDashboardDragHandlers = ({ setWidgets, updateWidgetMutation }: DragHandlersProps) => {
   const handleDragEnd = useCallback(
     async (event: DragEndEvent) => {
       const { active, over } = event
       if (over && active.id !== over.id) {
-        setBoxes((boxes) => {
-          const oldIndex = boxes.findIndex((box) => box.id === active.id)
-          const newIndex = boxes.findIndex((box) => box.id === over.id)
-          const newBoxes = arrayMove(boxes, oldIndex, newIndex)
+        setWidgets((widgets) => {
+          const oldIndex = widgets.findIndex((widget) => widget.id === active.id)
+          const newIndex = widgets.findIndex((widget) => widget.id === over.id)
+          const newWidgets = arrayMove(widgets, oldIndex, newIndex)
 
           // Update positions based on new order in the state
-          const updatedPositions = newBoxes.map((box, index) => ({
-            id: box.id,
+          const updatedPositions = newWidgets.map((widget, index) => ({
+            id: widget.id,
             position: index + 1,
           }))
 
@@ -30,11 +30,11 @@ const useMainDashboardDragHandlers = ({ setBoxes, updateWidgetMutation }: DragHa
             console.error("Failed to update widget positions:", error)
           })
 
-          return newBoxes
+          return newWidgets
         })
       }
     },
-    [setBoxes, updateWidgetMutation]
+    [setWidgets, updateWidgetMutation]
   )
 
   return {

@@ -15,30 +15,19 @@ import {
 import { SortableBox } from "src/core/components/SortableBox"
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import useDashboardDragHandlers from "src/widgets/hooks/useDashboardDragHandlers"
-import useMainDashboardData from "src/widgets/hooks/useMainDashboardData"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import updateWidget from "src/widgets/mutations/updateWidget"
-import getUserWidgets from "src/widgets/queries/getUserWidgets"
-import useWidgetConstruction from "src/widgets/hooks/useConstructWidgets"
+import useWidgets from "src/widgets/hooks/useWidgets"
+import { useWidgetConstruction } from "src/widgets/hooks/useWidgetConstruction"
 
 const MainPage = () => {
   const [updateWidgetMutation] = useMutation(updateWidget)
 
   const currentUser = useCurrentUser()
 
-  const dashboardData = useMainDashboardData()
-
-  const [widgets] = useQuery(getUserWidgets, { userId: currentUser?.id! })
-
-  const { boxes, setBoxes } = useWidgetConstruction({
-    userId: currentUser?.id!,
-    widgets,
-  })
-
-  const { handleDragEnd } = useDashboardDragHandlers({
-    setBoxes,
-    updateWidgetMutation,
-  })
+  const { widgets, setWidgetsState: setWidgets } = useWidgets(currentUser?.id!)
+  const constructedWidgets = useWidgetConstruction(widgets)
+  const { handleDragEnd } = useDashboardDragHandlers({ setWidgets, updateWidgetMutation })
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -65,7 +54,7 @@ const MainPage = () => {
             onDragEnd={handleDragEnd}
             sensors={sensors}
           >
-            <SortableBox boxes={boxes} />
+            <SortableBox boxes={constructedWidgets} />
           </DndContext>
         </main>
       </Suspense>
