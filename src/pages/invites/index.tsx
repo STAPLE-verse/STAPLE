@@ -4,23 +4,25 @@ import { useRouter } from "next/router"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { InvitesList } from "src/invites/components/InvitesList"
-import { Modal } from "react-overlays"
+import Modal from "src/core/components/Modal"
 import { InviteForm } from "src/invites/components/InviteForm"
 import { InviteFormSchema } from "src/invites/schemas"
 import toast from "react-hot-toast"
 import { FORM_ERROR } from "final-form"
 import createContributor from "src/contributors/mutations/createContributor"
 import { useMutation } from "@blitzjs/rpc"
+import { Routes } from "@blitzjs/next"
 
 const InvitesPage = () => {
-  const router = useRouter()
   const currentUser = useCurrentUser()
+  const router = useRouter()
 
   const [openNewInviteModal, setOpenNewInviteModal] = useState(false)
   const handleToggleNewInviteModal = () => {
     setOpenNewInviteModal((prev) => !prev)
   }
   const [createContributorMutation] = useMutation(createContributor)
+  const [formError, setFormError] = useState<string | null>(null)
 
   const handleInviteCode = async (values) => {
     try {
@@ -29,16 +31,20 @@ const InvitesPage = () => {
         userId: values.userId,
       })
 
-      await toast.promise(Promise.resolve(invite), {
-        loading: "Adding project...",
-        success: "Project added!",
-        error: "Failed add project...",
-      })
+      if (invite.code == "no_code") {
+        setFormError("No matching invitation code found.")
+      } else {
+        await toast.promise(Promise.resolve(invite), {
+          loading: "Adding project...",
+          success: "Project added!",
+          error: "Failed add project...",
+        })
+        setFormError(null)
+        await router.push(Routes.ShowProjectPage({ projectId: invite.projectId }))
+      }
     } catch (error: any) {
       console.error(error)
-      return {
-        [FORM_ERROR]: error.toString(),
-      }
+      setFormError("An error occurred during the submission. Please try again.")
     }
   }
 
@@ -55,24 +61,32 @@ const InvitesPage = () => {
           <Suspense fallback={<div>Loading...</div>}>
             <InvitesList currentUser={currentUser} />
             <div>
-              <button>Accept by Code</button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleToggleNewInviteModal}
+              >
+                Accept by Code
+              </button>
               <Modal open={openNewInviteModal} size="w-7/8 max-w-xl">
                 <div className="">
                   <h1 className="flex justify-center mb-2 text-3xl">Enter Invite Code</h1>
                   <div className="flex justify-start mt-4">
                     <InviteForm
                       schema={InviteFormSchema}
-                      submitText="Create Role"
+                      submitText="Add Project"
                       className="flex flex-col"
-                      onSubmit={handleInviteCode}
-                      userId={currentUser?.id}
+                      onSubmit={(data) => handleInviteCode({ ...data, userId: currentUser?.id })}
+                      userId={currentUser!.id}
                     ></InviteForm>
                   </div>
+                  {formError && (
+                    <div className="error-message text-red-600 mt-2 font-bold">{formError}</div>
+                  )}
 
                   <div className="modal-action flex justify-end mt-4">
                     <button
                       type="button"
-                      /* button for popups */
                       className="btn btn-secondary"
                       onClick={handleToggleNewInviteModal}
                     >
