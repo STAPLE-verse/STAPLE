@@ -34,9 +34,9 @@ export default resolver.pipe(
       },
     })
 
-    // Send notification
     // Get information for the notification
     const project = await db.project.findFirst({ where: { id: projectInvite!.projectId } })
+    // Send notification
     await sendNotification(
       {
         templateId: "addedToProject",
@@ -50,6 +50,14 @@ export default resolver.pipe(
       },
       ctx
     )
+
+    // delete invitation(s) for that email and project Id
+    await db.invitation.deleteMany({
+      where: {
+        email: projectInvite!.email,
+        projectId: projectInvite!.projectId,
+      },
+    })
 
     return contributor
   }
