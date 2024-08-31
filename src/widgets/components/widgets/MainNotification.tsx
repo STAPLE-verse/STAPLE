@@ -6,9 +6,9 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetNotificationDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
-const MainNotification = () => {
+const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const [{ notifications }] = useQuery(getLatestUnreadNotifications, {})
-
+  console.log(size)
   return (
     <Widget
       title="Notifications"
@@ -16,6 +16,7 @@ const MainNotification = () => {
       link={<PrimaryLink route={Routes.NotificationsPage()} text="All Tasks" />}
       tooltipId="tool-notifications"
       tooltipContent="Three recent notifications for all projects"
+      size={size}
     />
   )
 }

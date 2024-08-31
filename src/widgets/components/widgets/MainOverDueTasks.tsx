@@ -6,7 +6,7 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetOverdueTaskDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
-const MainOverdueTasks = () => {
+const MainOverdueTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const [{ pastDueTasks }] = useQuery(getDashboardTasks, undefined)
 
   return (
@@ -16,6 +16,7 @@ const MainOverdueTasks = () => {
       link={<PrimaryLink route={Routes.AllTasksPage()} text="All Tasks" />}
       tooltipId="tool-overdue"
       tooltipContent="Three overdue tasks for all projects"
+      size={size}
     />
   )
 }

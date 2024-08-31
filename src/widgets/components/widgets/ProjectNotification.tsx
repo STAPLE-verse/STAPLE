@@ -8,7 +8,7 @@ import { GetNotificationDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
-const ProjectNotification = () => {
+const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
@@ -36,6 +36,7 @@ const ProjectNotification = () => {
       }
       tooltipId="tool-notification"
       tooltipContent="Three notifications for this project"
+      size={size}
     />
   )
 }

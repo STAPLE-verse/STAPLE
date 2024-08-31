@@ -6,7 +6,7 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetUpcomingTaskDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
-const MainUpcomingTasks = () => {
+const MainUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const [{ upcomingTasks }] = useQuery(getDashboardTasks, undefined)
 
   return (
@@ -16,6 +16,7 @@ const MainUpcomingTasks = () => {
       link={<PrimaryLink route={Routes.AllTasksPage()} text="All Tasks" />}
       tooltipId="tool-upcoming"
       tooltipContent="Three upcoming tasks for all projects"
+      size={size}
     />
   )
 }

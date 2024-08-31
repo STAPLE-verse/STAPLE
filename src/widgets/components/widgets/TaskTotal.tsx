@@ -7,7 +7,7 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetTotalTaskDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
-const TaskTotal = () => {
+const TaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
 
@@ -25,6 +25,7 @@ const TaskTotal = () => {
       link={<PrimaryLink route={Routes.TasksPage({ projectId: projectId! })} text="View" />}
       tooltipId="tool-tasks"
       tooltipContent="Percent of tasks completed"
+      size={size}
     />
   )
 }

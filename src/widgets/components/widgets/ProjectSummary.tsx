@@ -8,7 +8,7 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetProjectSummaryDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
-const ProjectSummary = () => {
+const ProjectSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const projectId = useParam("projectId", "number")
 
   const [project] = useQuery(getProject, { id: projectId })
@@ -35,6 +35,7 @@ const ProjectSummary = () => {
       }
       tooltipId="tool-project"
       tooltipContent="Overall project information"
+      size={size}
     />
   )
 }

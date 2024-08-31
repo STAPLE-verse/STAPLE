@@ -7,7 +7,7 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetLabelsDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
-const LabelsSummary = () => {
+const LabelsSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
 
@@ -26,6 +26,7 @@ const LabelsSummary = () => {
       link={<PrimaryLink route={Routes.CreditPage({ projectId: projectId! })} text="View" />}
       tooltipId="tool-labels"
       tooltipContent="Percent of contributors or tasks labeled"
+      size={size}
     />
   )
 }

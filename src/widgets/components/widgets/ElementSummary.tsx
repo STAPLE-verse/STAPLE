@@ -7,7 +7,7 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetElementDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
-const ElementSummary = () => {
+const ElementSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
 
@@ -21,6 +21,7 @@ const ElementSummary = () => {
       link={<PrimaryLink route={Routes.ElementsPage({ projectId: projectId! })} text="View" />}
       tooltipId="tool-element"
       tooltipContent="Number of elements for this project"
+      size={size}
     />
   )
 }

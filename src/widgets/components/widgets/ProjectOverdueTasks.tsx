@@ -10,7 +10,7 @@ import Widget from "../Widget"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import moment from "moment"
 
-const ProjectOverdueTasks = () => {
+const ProjectOverdueTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
@@ -50,6 +50,7 @@ const ProjectOverdueTasks = () => {
       }
       tooltipId="tool-overdue"
       tooltipContent="Three overdue tasks for this project"
+      size={size}
     />
   )
 }

@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useEffect, useState } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
@@ -14,19 +14,44 @@ import {
 } from "@dnd-kit/core"
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import useDashboardDragHandlers from "src/widgets/hooks/useDashboardDragHandlers"
-import { useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import updateWidget from "src/widgets/mutations/updateWidget"
-import useWidgets from "src/widgets/hooks/useWidgets"
 import { useWidgetConstruction } from "src/widgets/hooks/useWidgetConstruction"
 import { WidgetContainer } from "src/widgets/components/WidgetContainer"
+import { Widget } from "db"
+import getUserWidgets from "src/widgets/queries/getUserWidgets"
+import initializeWidgets from "src/widgets/mutations/initializeWidgets"
+import toast from "react-hot-toast"
+import { sortWidgets } from "src/widgets/utils/sortWidgets"
 
 const MainPage = () => {
   const [updateWidgetMutation] = useMutation(updateWidget)
+  const [initializeWidgetsMutation] = useMutation(initializeWidgets)
 
   const currentUser = useCurrentUser()
+  const userId = currentUser?.id!
 
-  const { widgets, setWidgets } = useWidgets(currentUser?.id!)
-  const constructedWidgets = useWidgetConstruction(widgets)
+  const [widgets, setWidgets] = useState<Widget[]>([])
+
+  const [fetchedWidgets] = useQuery(getUserWidgets, { userId })
+
+  useEffect(() => {
+    if (fetchedWidgets.length > 0) {
+      const sortedWidgets = sortWidgets(fetchedWidgets)
+      setWidgets(sortedWidgets)
+    } else {
+      initializeWidgetsMutation(userId)
+        .then((createdWidgets) => {
+          setWidgets(createdWidgets)
+          toast.success(`Dashboard added successfully!`)
+        })
+        .catch(() => {
+          toast.error(`Issue with dashboard, please contact help.`)
+        })
+    }
+  }, [fetchedWidgets, initializeWidgetsMutation, userId])
+
+  const constructedWidgets = useWidgetConstruction({ widgets, registryType: "main" })
   const { handleDragEnd } = useDashboardDragHandlers({ setWidgets, updateWidgetMutation })
 
   const sensors = useSensors(

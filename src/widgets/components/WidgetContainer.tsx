@@ -1,5 +1,3 @@
-// dont need size in the second one will fix later: set to null to avoid the warning
-
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -7,13 +5,18 @@ import {
 } from "@dnd-kit/sortable"
 
 import { SortableWidget } from "./SortableWidget"
+import { ConstructedWidget } from "../hooks/useWidgetConstruction"
 
-export const WidgetContainer = ({ widgets }) => {
+interface WidgetContainerProps {
+  widgets: ConstructedWidget[]
+}
+
+export const WidgetContainer = ({ widgets }: WidgetContainerProps) => {
   return (
-    <div className="grid grid-cols-12 justify-center">
+    <div className="grid gap-4 w-full grid-cols-2 sm:grid-cols-2 lg:grid-cols-8 auto-rows-auto">
       <SortableContext items={widgets} strategy={rectSwappingStrategy}>
         {widgets.map((widget) => (
-          <SortableWidget key={widget.id} id={widget.id}>
+          <SortableWidget key={widget.id} id={widget.id} size={widget.size}>
             {widget.component}
           </SortableWidget>
         ))}
@@ -21,24 +24,3 @@ export const WidgetContainer = ({ widgets }) => {
     </div>
   )
 }
-
-// export const SortableProjectBox = ({ boxes }) => {
-//   return (
-//     <div className="justify-center">
-//       <SortableContext items={boxes} strategy={rectSwappingStrategy}>
-//         {boxes.map((boxes) => (
-//           <Boxes
-//             size={null}
-//             key={boxes.id}
-//             id={boxes.id}
-//             title={boxes.title}
-//             display={boxes.display}
-//             link={boxes.link}
-//             tooltipId={boxes.tooltipId}
-//             tooltipContent={boxes.tooltipContent}
-//           />
-//         ))}
-//       </SortableContext>
-//     </div>
-//   )
-// }

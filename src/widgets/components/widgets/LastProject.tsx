@@ -6,7 +6,7 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import Widget from "../Widget"
 import { GetProjectDisplay } from "src/core/components/GetWidgetDisplay"
 
-const LastProject = () => {
+const LastProject: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const [{ projects }] = useQuery(getDashboardProjects, undefined)
 
   return (
@@ -16,6 +16,7 @@ const LastProject = () => {
       link={<PrimaryLink route={Routes.ProjectsPage()} text="All Projects" />}
       tooltipId="tool-last-project"
       tooltipContent="Three recently updated projects"
+      size={size}
     />
   )
 }

@@ -7,7 +7,7 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetContributorDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
-const ContributorNumber = () => {
+const ContributorNumber: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
 
@@ -21,7 +21,7 @@ const ContributorNumber = () => {
       link={<PrimaryLink route={Routes.ContributorsPage({ projectId: projectId! })} text="View" />}
       tooltipId="tool-contributors"
       tooltipContent="Total number of contributors"
-      // size="col-span-2"
+      size={size}
     />
   )
 }

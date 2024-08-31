@@ -7,7 +7,7 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetFormDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
-const FormNumber = () => {
+const FormNumber: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
 
@@ -27,6 +27,7 @@ const FormNumber = () => {
       link={<PrimaryLink route={Routes.MetadataPage({ projectId: projectId! })} text="View" />}
       tooltipId="tool-forms"
       tooltipContent="Percent of forms completed"
+      size={size}
     />
   )
 }

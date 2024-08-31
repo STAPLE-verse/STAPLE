@@ -7,7 +7,7 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetTeamDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
-const TeamNumber = () => {
+const TeamNumber: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
 
@@ -21,6 +21,7 @@ const TeamNumber = () => {
       link={<PrimaryLink route={Routes.TeamsPage({ projectId: projectId! })} text="View" />}
       tooltipId="tool-teams"
       tooltipContent="Total number of teams"
+      size={size}
     />
   )
 }

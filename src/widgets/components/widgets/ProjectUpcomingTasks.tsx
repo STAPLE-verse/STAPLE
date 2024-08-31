@@ -10,7 +10,7 @@ import Widget from "../Widget"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import moment from "moment"
 
-const ProjectUpcomingTasks = () => {
+const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
@@ -51,6 +51,7 @@ const ProjectUpcomingTasks = () => {
       }
       tooltipId="tool-upcoming"
       tooltipContent="Three upcoming tasks for this project"
+      size={size}
     />
   )
 }

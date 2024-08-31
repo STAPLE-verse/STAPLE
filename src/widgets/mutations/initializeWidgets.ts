@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
+import db, { WidgetSize } from "db"
 
 export default resolver.pipe(resolver.authorize(), async (userId: number) => {
   // Adding main dashboard default widgets
@@ -10,6 +10,7 @@ export default resolver.pipe(resolver.authorize(), async (userId: number) => {
     type: type,
     show: true,
     position: index + 1,
+    size: WidgetSize.LARGE,
   }))
 
   // Create the widgets
