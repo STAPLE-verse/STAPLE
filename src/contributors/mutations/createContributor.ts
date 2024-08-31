@@ -1,34 +1,55 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateContributorSchema } from "../schemas"
-
-function generateToken(n) {
-  var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-  var token = ""
-  for (var i = 0; i < n; i++) {
-    token += chars[Math.floor(Math.random() * chars.length)]
-  }
-  return token
-}
+import sendNotification from "src/notifications/mutations/sendNotification"
+import { getPrivilegeText } from "src/services/getPrivilegeText"
 
 export default resolver.pipe(
   resolver.zod(CreateContributorSchema),
   resolver.authorize(),
-  async (input, ctx) => {
-    console.log(input)
+  async ({ invitationCode, userId }, ctx) => {
+    // get the invitation information
+    const projectInvite = await db.invitation.findFirst({
+      where: {
+        invitationCode: invitationCode,
+      },
+    })
+
     // Create contributor
-    const contributor = await db.invitation.create({
+    const contributor = await db.contributor.create({
       data: {
-        projectId: input.projectId,
-        privilege: input.privilege,
-        email: input.email,
-        invitationCode: generateToken(20),
-        addedBy: input.addedBy,
+        userId: userId,
+        projectId: projectInvite!.projectId,
+        privilege: projectInvite!.privilege,
+      },
+    })
+
+    //connect to labels
+    let c1 = await db.contributor.update({
+      where: { id: contributor.id },
+      data: {
         labels: {
-          connect: input.labelsId?.map((c) => ({ id: c })) || [],
+          connect: projectInvite!.labelsId?.map((c) => ({ id: c })) || [],
         },
       },
     })
+
+    // Send notification
+    // Get information for the notification
+    const project = await db.project.findFirst({ where: { id: projectInvite!.projectId } })
+    await sendNotification(
+      {
+        templateId: "addedToProject",
+        recipients: [contributor.userId],
+        data: {
+          projectName: project!.name,
+          addedBy: projectInvite!.addedBy,
+          privilege: getPrivilegeText(contributor.privilege),
+        },
+        projectId: contributor.projectId,
+      },
+      ctx
+    )
 
     return contributor
   }

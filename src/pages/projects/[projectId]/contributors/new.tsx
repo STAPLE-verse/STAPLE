@@ -3,7 +3,7 @@ import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
-import createContributor from "src/contributors/mutations/createContributor"
+import createInvite from "src/contributors/mutations/createInvite"
 import { ContributorForm } from "src/contributors/components/ContributorForm"
 import { FORM_ERROR } from "final-form"
 import { Suspense } from "react"
@@ -12,10 +12,10 @@ import toast from "react-hot-toast"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 import { ContributorPrivileges } from "db"
-import { CreateContributorFormSchema } from "src/contributors/schemas"
+import { createInviteFormSchema } from "src/contributors/schemas"
 
 const NewContributor = () => {
-  const [createContributorMutation] = useMutation(createContributor)
+  const [createInviteMutation] = useMutation(createInvite)
   const router = useRouter()
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
@@ -23,7 +23,7 @@ const NewContributor = () => {
   // Handle events
   const handleSubmit = async (values) => {
     try {
-      const contributor = await createContributorMutation({
+      const contributor = await createInviteMutation({
         projectId: projectId!,
         privilege: values.privilege,
         addedBy: currentUser!.username,
@@ -103,7 +103,7 @@ const NewContributor = () => {
           projectId={projectId as number}
           className="flex flex-col"
           submitText="Add Contributor"
-          schema={CreateContributorFormSchema}
+          schema={createInviteFormSchema}
           onSubmit={handleSubmit}
         />
       </Suspense>

@@ -1,6 +1,7 @@
 import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import DateFormat from "src/core/components/DateFormat"
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline"
 
 // Define return type for the columns
 export type Invite = {
@@ -32,14 +33,14 @@ export const inviteTableColumns = [
     header: "Accept",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <button>Accept</button>,
+    cell: (info) => <CheckCircleIcon width={50}>Accept</CheckCircleIcon>,
   }),
   columnHelper.accessor("id", {
     id: "decline",
     header: "Decline",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <button>Decline</button>,
+    cell: (info) => <XCircleIcon width={50}>Decline</XCircleIcon>,
   }),
 ]
 
@@ -62,6 +63,6 @@ export const inviteTableColumnsPM = [
     header: "Delete",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <button>Delete</button>,
+    cell: (info) => <XCircleIcon width={50}>Decline</XCircleIcon>,
   }),
 ]
