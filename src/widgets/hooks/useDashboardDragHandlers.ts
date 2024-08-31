@@ -2,7 +2,7 @@ import { useCallback } from "react"
 import { DragEndEvent } from "@dnd-kit/core"
 import { arrayMove } from "@dnd-kit/sortable"
 import { UpdateWidgetPositionInput } from "../mutations/updateWidget"
-import { WidgetObject } from "./useMainDashboardData"
+import { WidgetObject } from "./useConstructWidgets"
 
 interface DragHandlersProps {
   setBoxes: React.Dispatch<React.SetStateAction<WidgetObject[]>>
@@ -27,7 +27,7 @@ const useMainDashboardDragHandlers = ({ setBoxes, updateWidgetMutation }: DragHa
 
           // Call the mutation
           updateWidgetMutation({ positions: updatedPositions }).catch((error) => {
-            console.log(error)
+            console.error("Failed to update widget positions:", error)
           })
 
           return newBoxes

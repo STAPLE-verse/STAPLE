@@ -11,7 +11,6 @@ export default resolver.pipe(
   resolver.zod(SetProjectWidgets),
   resolver.authorize(),
   async ({ userId, projectId }) => {
-    // Adding main dashboard default widgets
     const widgetTypes = [
       "ProjectSummary", //overall project information and announcements
       "OverdueTask", //overdue

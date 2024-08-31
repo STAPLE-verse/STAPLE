@@ -33,7 +33,6 @@ const MainPage = () => {
   const { boxes, setBoxes } = useWidgetConstruction({
     userId: currentUser?.id!,
     widgets,
-    additionalData: dashboardData,
   })
 
   const { handleDragEnd } = useDashboardDragHandlers({

@@ -164,7 +164,7 @@ export function GetFormDisplay({ formPercent }) {
         text={`${Math.round(formPercent * 100)}%`}
         styles={buildStyles({
           textSize: "16px",
-          pathTransitionDuration: "none",
+          pathTransitionDuration: 0,
           pathColor: "oklch(var(--p))",
           textColor: "oklch(var(--s))",
           trailColor: "oklch(var(--pc))",
@@ -183,7 +183,7 @@ export function GetTotalTaskDisplay({ taskPercent }) {
         text={`${Math.round(taskPercent * 100)}%`}
         styles={buildStyles({
           textSize: "16px",
-          pathTransitionDuration: "none",
+          pathTransitionDuration: 0,
           pathColor: "oklch(var(--p))",
           textColor: "oklch(var(--s))",
           trailColor: "oklch(var(--pc))",
@@ -211,7 +211,7 @@ export function GetLabelsDisplay({ labelPercent }) {
         text={`${Math.round(labelPercent * 100)}%`}
         styles={buildStyles({
           textSize: "16px",
-          pathTransitionDuration: "none",
+          pathTransitionDuration: 0,
           pathColor: "oklch(var(--p))",
           textColor: "oklch(var(--s))",
           trailColor: "oklch(var(--pc))",

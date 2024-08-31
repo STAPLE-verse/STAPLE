@@ -12,17 +12,10 @@ export const SortableBox = ({ boxes }) => {
   return (
     <div className="grid grid-cols-12 justify-center">
       <SortableContext items={boxes} strategy={rectSwappingStrategy}>
-        {boxes.map((boxes) => (
-          <Boxes
-            key={boxes.id}
-            id={boxes.id}
-            title={boxes.title}
-            display={boxes.display}
-            link={boxes.link}
-            size={boxes.size}
-            tooltipId={boxes.tooltipId}
-            tooltipContent={boxes.tooltipContent}
-          />
+        {boxes.map((box) => (
+          <Boxes key={box.id} id={box.id}>
+            {box.component}
+          </Boxes>
         ))}
       </SortableContext>
     </div>

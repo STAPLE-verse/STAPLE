@@ -1,32 +1,22 @@
 import { ReactNode, useEffect, useState } from "react"
-import { constructWidget } from "../utils/widgetRegistry"
 import { sortWidgets } from "../utils/sortWidgets"
 import { useMutation } from "@blitzjs/rpc"
 import setWidgets from "src/widgets/mutations/setWidgets"
 import toast from "react-hot-toast"
+import { widgetRegistry } from "../utils/widgetRegistry"
 
 export type WidgetObject = {
   id: number
-  title: string
-  display: ReactNode
-  link: ReactNode
+  component: ReactNode
   position: number
-  size: string | null
-  tooltipId: string
-  tooltipContent: string
 }
 
 type UseWidgetConstructionProps = {
   userId: number
   widgets: any[]
-  additionalData: any
 }
 
-export default function useWidgetConstruction({
-  userId,
-  widgets,
-  additionalData,
-}: UseWidgetConstructionProps): {
+export default function useWidgetConstruction({ userId, widgets }: UseWidgetConstructionProps): {
   boxes: WidgetObject[]
   setBoxes: React.Dispatch<React.SetStateAction<WidgetObject[]>>
 } {
@@ -36,16 +26,33 @@ export default function useWidgetConstruction({
   useEffect(() => {
     if (widgets.length > 0) {
       const sortedWidgets = sortWidgets(widgets)
-      const updatedBoxes = sortedWidgets.map((widget) =>
-        constructWidget({ widget, ...additionalData })
-      )
+      const updatedBoxes = sortedWidgets.map((widget) => {
+        const WidgetComponent = widgetRegistry.main[widget.type]
+        if (!WidgetComponent) {
+          return {
+            id: widget.id,
+            component: <div>Unknown Widget Configuration</div>,
+            position: widget.position,
+          }
+        }
+        return {
+          id: widget.id,
+          component: <WidgetComponent key={widget.id} />,
+          position: widget.position,
+        }
+      })
       setBoxes(updatedBoxes)
     } else {
       setWidgetMutation(userId)
         .then((createdWidgets) => {
-          const updatedBoxes = createdWidgets.map((widget) =>
-            constructWidget({ widget, ...additionalData })
-          )
+          const updatedBoxes = createdWidgets.map((widget) => {
+            const WidgetComponent = widgetRegistry.main[widget.type]
+            return {
+              id: widget.id,
+              component: <WidgetComponent key={widget.id} />,
+              position: widget.position,
+            }
+          })
           setBoxes(updatedBoxes)
           toast.success(`Dashboard added successfully!`)
         })
@@ -53,7 +60,7 @@ export default function useWidgetConstruction({
           toast.error(`Issue with dashboard, please contact help.`)
         })
     }
-  }, [widgets, additionalData, setWidgetMutation, userId])
+  }, [widgets, setWidgetMutation, userId])
 
   return { boxes, setBoxes }
 }
