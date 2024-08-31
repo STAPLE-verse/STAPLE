@@ -14,21 +14,40 @@ function generateToken(n) {
 export default resolver.pipe(
   resolver.zod(CreateInviteSchema),
   resolver.authorize(),
-  async (input, ctx) => {
-    // Create contributor
-    const contributor = await db.invitation.create({
-      data: {
+  async (input) => {
+    let textResult
+    // check to make sure email not already there
+    const findcontributor = await db.contributor.findFirst({
+      where: {
         projectId: input.projectId,
-        privilege: input.privilege,
-        email: input.email,
-        invitationCode: generateToken(20),
-        addedBy: input.addedBy,
-        labels: {
-          connect: input.labelsId?.map((c) => ({ id: c })) || [],
-        },
+        user: { email: input.email },
       },
     })
 
-    return contributor
+    if (findcontributor) {
+      textResult = {
+        code: "already_added",
+      }
+    } else {
+      // Create contributor
+      const contributor = await db.invitation.create({
+        data: {
+          projectId: input.projectId,
+          privilege: input.privilege,
+          email: input.email,
+          invitationCode: generateToken(20),
+          addedBy: input.addedBy,
+          labels: {
+            connect: input.labelsId?.map((c) => ({ id: c })) || [],
+          },
+        },
+      })
+
+      textResult = {
+        code: "invite_sent",
+      }
+    }
+
+    return textResult
   }
 )
