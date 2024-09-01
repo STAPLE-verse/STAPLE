@@ -4,7 +4,6 @@ import Head from "next/head"
 import Link from "next/link"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import { useRouter } from "next/router"
 
 import Layout from "src/core/layouts/Layout"
 import Table from "src/core/components/Table"
@@ -14,7 +13,6 @@ import getInvites from "src/invites/queries/getInvites"
 import { inviteTableColumnsPM } from "src/invites/components/InvitesTable"
 
 export const AllInvitesList = () => {
-  const router = useRouter()
   const projectId = useParam("projectId", "number")
   const [invites] = useQuery(getInvites, {
     where: { project: { id: projectId! } },

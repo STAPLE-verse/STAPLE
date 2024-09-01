@@ -2,13 +2,10 @@ import { Suspense, useState } from "react"
 import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
 import router, { useRouter } from "next/router"
 
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-
 import React from "react"
 import Modal from "src/core/components/Modal"
 import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
-import createLabel from "src/labels/mutations/createLabel"
 import Table from "src/core/components/Table"
 import { useParam } from "@blitzjs/next"
 import {

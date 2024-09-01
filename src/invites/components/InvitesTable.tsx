@@ -2,6 +2,10 @@ import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import DateFormat from "src/core/components/DateFormat"
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline"
+import declineInvite from "../mutations/declineInvite"
+import toast from "react-hot-toast"
+import { useMutation } from "@blitzjs/rpc"
+import { FORM_ERROR } from "final-form"
 
 // Define return type for the columns
 export type Invite = {
@@ -10,9 +14,55 @@ export type Invite = {
   invitationCode: string
   id: number
   email: string
+  onChangeCallback?: () => void
 }
 
+// use column helper
 const columnHelper = createColumnHelper<Invite>()
+
+// functions for accept/delete
+const DeleteInvite = ({ row }) => {
+  const [declineInviteMutation] = useMutation(declineInvite)
+  const { id = null, onChangeCallback = null, ...rest } = { ...row }
+
+  const handleDeleteInvite = async (values) => {
+    if (window.confirm("This invitation will be permanently deleted. Are you sure to continue?")) {
+      try {
+        const updated = await declineInviteMutation({
+          id: id,
+        })
+        if (onChangeCallback != undefined) {
+          onChangeCallback()
+        }
+        await toast.promise(Promise.resolve(updated), {
+          loading: "Deleting invitation...",
+          success: "Invitation deleted!",
+          error: "Failed to delete the invitation...",
+        })
+      } catch (error: any) {
+        console.error(error)
+        return {
+          [FORM_ERROR]: error.toString(),
+        }
+      }
+    }
+  }
+
+  return (
+    <div>
+      <button
+        type="button"
+        /* button for popups */
+        className="btn btn-ghost"
+        onClick={handleDeleteInvite}
+      >
+        <XCircleIcon width={50} className="stroke-primary">
+          Decline
+        </XCircleIcon>
+      </button>
+    </div>
+  )
+}
 
 // ColumnDefs
 export const inviteTableColumns = [
@@ -40,7 +90,7 @@ export const inviteTableColumns = [
     header: "Decline",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <XCircleIcon width={50}>Decline</XCircleIcon>,
+    cell: (info) => <DeleteInvite row={info.row.original}></DeleteInvite>,
   }),
 ]
 
@@ -63,6 +113,6 @@ export const inviteTableColumnsPM = [
     header: "Delete",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <XCircleIcon width={50}>Decline</XCircleIcon>,
+    cell: (info) => <DeleteInvite row={info.row.original}></DeleteInvite>,
   }),
 ]

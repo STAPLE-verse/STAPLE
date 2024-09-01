@@ -3,7 +3,6 @@ import { HTMLAttributes, ClassAttributes } from "react"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { useDraggable } from "@dnd-kit/core"
-import { CSS } from "@dnd-kit/utilities"
 import { Bars3Icon } from "@heroicons/react/24/outline"
 
 interface TaskCardProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {

@@ -15,3 +15,7 @@ export const CreateInviteSchema = z.object({
 
   // template: __fieldName__: z.__zodType__(),
 })
+
+export const DeleteInviteSchema = z.object({
+  id: z.number(),
+})
