@@ -52,6 +52,7 @@ export const TosForm = (props: TosFormProps) => {
         <LabeledCheckboxField
           name="tos"
           label="I have read and agree to these terms."
+          className="checkbox checkbox-primary border-2"
         ></LabeledCheckboxField>
       </Form>
       <div className="divider pt-4 pb-4"></div>

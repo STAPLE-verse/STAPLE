@@ -14,8 +14,6 @@ import getTeams from "src/teams/queries/getTeams"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
 import DateField from "src/core/components/fields/DateField"
-import { AddLabelForm } from "src/labels/components/AddLabelForm"
-import { LabelIdsFormSchema } from "src/labels/schemas"
 import getLabels from "src/labels/queries/getLabels"
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {

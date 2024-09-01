@@ -28,6 +28,7 @@ const CheckboxFieldTable = ({ name, options }) => {
         cell: ({ row }) => (
           <input
             type="checkbox"
+            className="checkbox checkbox-primary border-2"
             checked={selectedIds.includes(row.original.id)}
             onChange={() => toggleSelection(row.original.id)}
           />
