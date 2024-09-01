@@ -97,7 +97,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     <Form<S> {...formProps} encType="multipart/form-data">
       {/* Name */}
       <LabeledTextField
-        className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"
+        className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
         name="name"
         label="Task Name: (Required)"
         placeholder="Add Task Name"

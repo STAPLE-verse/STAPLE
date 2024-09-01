@@ -65,7 +65,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
           label="Email: (Required)"
           placeholder="Email"
           type="text"
-          className="mb-4 text-primary border-primary border-2 bg-base-300 w-1/2 "
+          className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
         />
       )}
       <LabelSelectField

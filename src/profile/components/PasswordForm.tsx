@@ -11,7 +11,7 @@ export function PasswordForm<S extends z.ZodType<any, any>>(props: FormProps<S>)
         label="Old Password:"
         placeholder=""
         type="password"
-        className="mb-4 text-primary border-primary border-2 bg-base-300"
+        className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
       />
       <br />
       <LabeledTextField
@@ -19,7 +19,7 @@ export function PasswordForm<S extends z.ZodType<any, any>>(props: FormProps<S>)
         label="New Password:"
         placeholder=""
         type="password"
-        className="mb-4 text-primary border-primary border-2 bg-base-300"
+        className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
       />
       <br />
       <LabeledTextField
@@ -27,7 +27,7 @@ export function PasswordForm<S extends z.ZodType<any, any>>(props: FormProps<S>)
         label="Repeat New Password:"
         placeholder=""
         type="password"
-        className="mb-4 text-primary border-primary border-2 bg-base-300"
+        className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
       />
     </Form>
   )

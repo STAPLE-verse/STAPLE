@@ -65,13 +65,13 @@ export const SignupForm = (props: SignupFormProps) => {
           name="username"
           label="Username:"
           placeholder="Username"
-          className="w-full text-primary border-primary border-2 mb-4 bg-base-300"
+          className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
         <LabeledTextField
           name="email"
           label="Email:"
           placeholder="Email"
-          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
+          className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
 
         <LabeledTextField
@@ -79,7 +79,7 @@ export const SignupForm = (props: SignupFormProps) => {
           label="Password:"
           placeholder="Password"
           type="password"
-          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
+          className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
 
         <LabeledTextField
@@ -87,7 +87,7 @@ export const SignupForm = (props: SignupFormProps) => {
           label="Confirm Password:"
           placeholder="Password"
           type="password"
-          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
+          className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
       </Form>
 

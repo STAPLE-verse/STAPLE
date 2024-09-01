@@ -54,7 +54,7 @@ export const LoginForm = (props: LoginFormProps) => {
           name="email"
           label="Email:"
           placeholder="Email"
-          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
+          className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
 
         <LabeledTextField
@@ -62,7 +62,7 @@ export const LoginForm = (props: LoginFormProps) => {
           label="Password:"
           placeholder="Password"
           type="password"
-          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
+          className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
       </Form>
 
