@@ -33,7 +33,10 @@ function TextFilter({ column, table }: { column: Column<any, unknown>; table: Ta
         onChange={onChangeCallback}
         //placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
         placeholder={"Search"}
-        className="w-36 border input-sm shadow rounded input-primary bg-base-300"
+        className="input w-36 text-primary input-primary
+          input-bordered border-2 bg-base-300 rounded input-sm
+          focus:outline-secondary focus:outline-offset-0
+          focus:outline-width-3"
         list={column.id + "list"}
       />
       <div className="h-1" />
