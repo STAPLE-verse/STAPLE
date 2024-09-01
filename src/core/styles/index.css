@@ -380,3 +380,28 @@ span.arrow.tooltip-arrow {
   color: oklch(var(--bc));
   background-color: oklch(var(--b1));
 }
+
+*:focus {
+  outline-color: oklch(var(--s)) !important;
+  outline-offset: 0;
+  outline-width: 20px !important;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  font-size: 1.25rem;
+}
+input {
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 35px;
+  appearance: none;
+}
+
+input[type="text"]:focus {
+  outline-color: oklch(var(--s)) !important;
+  outline-offset: 0;
+  outline-width: 20px !important;
+}
