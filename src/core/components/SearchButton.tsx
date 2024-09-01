@@ -24,12 +24,24 @@ const SearchButton = ({ onChange, debounceTime = 500 }: Props) => {
           value={currentSearchTerm}
           onChange={handleSearch}
           placeholder="Search Projects"
-          className="bg-base-300 pr-3 pl-10 py-2 w-full h-10 w-full pr-3 pl-10 font-semibold placeholder-base-500 text-black rounded-2xl border-none ring-2 ring-base-300 focus:ring-base-500 focus:ring-2"
+          className="pr-3 pl-10 py-2 h-10 w-full pr-3 pl-10 font-semibold
+          rounded-2xl input text-primary input-primary
+          nput-bordered border-2 bg-base-300 rounded
+          focus:outline-secondary focus:outline-offset-0
+          focus:outline-width-3"
         />
       </div>
     </div>
   )
 }
+
+;<style jsx>{`
+  input:focus {
+    outline-color: oklch(var(--s)) !important;
+    outline-offset: 0;
+    outline-width: 3px !important;
+  }
+`}</style>
 
 function DebouncedInput({
   value: initialValue,
