@@ -3,9 +3,13 @@ import { createColumnHelper } from "@tanstack/react-table"
 import DateFormat from "src/core/components/DateFormat"
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline"
 import declineInvite from "../mutations/declineInvite"
+import acceptInvite from "../mutations/acceptInvite"
 import toast from "react-hot-toast"
 import { useMutation } from "@blitzjs/rpc"
 import { FORM_ERROR } from "final-form"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { Routes } from "@blitzjs/next"
+import { useRouter } from "next/router"
 
 // Define return type for the columns
 export type Invite = {
@@ -64,6 +68,54 @@ const DeleteInvite = ({ row }) => {
   )
 }
 
+const AcceptInvite = ({ row }) => {
+  const [acceptInviteMutation] = useMutation(acceptInvite)
+  const router = useRouter()
+  const currentUser = useCurrentUser()
+  const { id = null, onChangeCallback = null, ...rest } = { ...row }
+
+  const handleAcceptInvite = async (values) => {
+    try {
+      const updated = await acceptInviteMutation({
+        id: id,
+        userId: currentUser!.id,
+      })
+
+      if (onChangeCallback != undefined) {
+        onChangeCallback()
+      }
+
+      await toast.promise(Promise.resolve(updated), {
+        loading: "Accepting invitation...",
+        success: "Invitation accepted!",
+        error: "Failed to accept the invitation...",
+      })
+
+      await router.push(Routes.ShowProjectPage({ projectId: updated!.id }))
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
+  return (
+    <div>
+      <button
+        type="button"
+        /* button for popups */
+        className="btn btn-ghost"
+        onClick={handleAcceptInvite}
+      >
+        <CheckCircleIcon width={50} className="stroke-primary">
+          Accept
+        </CheckCircleIcon>
+      </button>
+    </div>
+  )
+}
+
 // ColumnDefs
 export const inviteTableColumns = [
   columnHelper.accessor("createdAt", {
@@ -83,7 +135,7 @@ export const inviteTableColumns = [
     header: "Accept",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <CheckCircleIcon width={50}>Accept</CheckCircleIcon>,
+    cell: (info) => <AcceptInvite row={info.row.original}></AcceptInvite>,
   }),
   columnHelper.accessor("id", {
     id: "decline",

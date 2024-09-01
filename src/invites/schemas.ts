@@ -19,3 +19,8 @@ export const CreateInviteSchema = z.object({
 export const DeleteInviteSchema = z.object({
   id: z.number(),
 })
+
+export const AcceptInviteSchema = z.object({
+  id: z.number(),
+  userId: z.number(),
+})

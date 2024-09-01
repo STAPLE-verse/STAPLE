@@ -39,7 +39,7 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
 
   const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
     where: where,
-    orderBy: { id: "asc" },
+    orderBy: { id: "desc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })

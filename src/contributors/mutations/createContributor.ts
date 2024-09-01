@@ -14,6 +14,9 @@ export default resolver.pipe(
       where: {
         invitationCode: invitationCode,
       },
+      include: {
+        labels: true,
+      },
     })
 
     if (projectInvite) {
@@ -31,7 +34,7 @@ export default resolver.pipe(
         where: { id: contributor.id },
         data: {
           labels: {
-            connect: projectInvite!.labelsId?.map((c) => ({ id: c })) || [],
+            connect: projectInvite!.labels.map((label) => ({ id: label.id })) || [],
           },
         },
       })
