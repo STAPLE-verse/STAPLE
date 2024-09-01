@@ -69,7 +69,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         />
       )}
       <LabelSelectField
-        className="select text-primary select-bordered border-primary border-2 w-1/2 mt-4"
+        className="select text-primary select-bordered border-primary border-2 w-1/2 mt-4 bg-base-300"
         name="privilege"
         label="Select Privilege: (Required)"
         options={ContributorPrivilegesOptions}

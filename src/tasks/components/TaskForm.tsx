@@ -106,7 +106,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Column */}
       <LabelSelectField
-        className="mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
+        className="select mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="columnId"
         label="Current Status: (Required)"
         options={columns}
@@ -127,7 +127,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Elements */}
       <LabelSelectField
-        className="mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
+        className="select mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="elementId"
         label="Assign Element:"
         options={elements}
