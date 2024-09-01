@@ -31,6 +31,7 @@ export const EditPassword = () => {
             cancelText="Cancel"
             onCancel={() => router.push(Routes.ProfilePage())}
             onSubmit={async (values) => {
+              // console.log(values)
               try {
                 const updated = await changePasswordMutation({
                   ...values,

@@ -4,7 +4,6 @@ import { FORM_ERROR } from "final-form"
 import { Signup } from "src/auth/schemas"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { FormSpy } from "react-final-form"
 import { useMutation } from "@blitzjs/rpc"
 import usernameExist, { UserEmailExistErr } from "../mutations/usernameExist"
 
@@ -93,7 +92,7 @@ export const SignupForm = (props: SignupFormProps) => {
       </Form>
 
       <div className="flex flex-row justify-end mb-4 mt-4">
-        <Link className="btn btn-info" href={Routes.LoginPage()}>
+        <Link className="btn btn-warning" href={Routes.LoginPage()}>
           I have an Account
         </Link>
       </div>
