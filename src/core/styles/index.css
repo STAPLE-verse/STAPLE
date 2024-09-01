@@ -74,6 +74,17 @@
   font-family: inherit;
 }
 
+.form-title:focus {
+  outline-color: oklch(var(--s)) !important;
+  outline-offset: 0;
+  outline-width: 30px !important;
+}
+
+.jer-collection-text-area,
+.jer-input-text {
+  background-color: white;
+}
+
 .modal.show {
   --tw-border-opacity: 1;
   z-index: 1055;
