@@ -45,6 +45,7 @@
   }
 }
 
+/* form builder overall wrapper */
 .formHead-wrapper [class^="formHead"] {
   width: 100%;
   border: none;
@@ -57,6 +58,7 @@
   font-size: 16px;
 }
 
+/* form overall header */
 .formHead-wrapper [class^="formHead"] h5 {
   font-size: 18px;
   color: oklch(var(--bc));
@@ -64,22 +66,73 @@
   font-family: inherit;
 }
 
+/* form title block */
 .formHead-wrapper .form-title,
-.form-description {
+.form-description,
+.input-bordered {
   --tw-border-opacity: 1;
-  background-color: oklch(var(--b1));
+  background-color: oklch(var(--b3));
   border-radius: 3px;
   border-color: oklch(var(--p) / var(--tw-border-opacity));
-  border-width: 1px;
+  border-width: 2px;
   font-family: inherit;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  margin-top: 0.5rem;
 }
 
-.form-title:focus {
+/* form add new pieces inputs */
+.card-text,
+.card-textarea,
+.card-select [class$="-control"] {
+  --tw-border-opacity: 1;
+  color: oklch(var(--bc));
+  background-color: oklch(var(--b1));
+  padding: 3px;
+  border-color: oklch(var(--p) / var(--tw-border-opacity)) !important;
+  border-width: 2px !important;
+  width: 100%;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  margin-top: 0.5rem;
+}
+
+/* form focus for inputs */
+.formHead-wrapper input:focus,
+textarea:focus,
+select:focus {
+  outline-width: 3px !important;
+  outline-style: solid; /* Ensure that the outline style is set */
   outline-color: oklch(var(--s)) !important;
   outline-offset: 0;
-  outline-width: 30px !important;
 }
 
+/* select inputs */
+
+.card-select {
+  border: none !important;
+  padding: 0px;
+  outline-width: 3px !important;
+  outline-style: solid; /* Ensure that the outline style is set */
+  outline-color: oklch(var(--s)) !important;
+  outline-offset: 0;
+}
+
+[id^="react-select"] {
+  color: oklch(var(--bc)) !important;
+  background-color: oklch(var(--b1)) !important;
+}
+
+/* json builder focus block */
+.rjsf input:focus {
+  outline-width: 3px !important;
+  outline-style: solid; /* Ensure that the outline style is set */
+  outline-color: oklch(var(--s)) !important;
+  outline-offset: 0;
+}
+
+/* json builder background color block */
 .jer-collection-text-area,
 .jer-input-text {
   background-color: white;
@@ -100,6 +153,7 @@
   display: none;
   transform: none;
 }
+
 .modal {
   background-color: none;
 }
@@ -174,17 +228,6 @@
   color: oklch(var(--bc));
 }
 
-.card-textarea {
-  --tw-border-opacity: 1;
-  background-color: oklch(var(--b1));
-  border-radius: 3px;
-  border-color: oklch(var(--p) / var(--tw-border-opacity));
-  border-width: 1px;
-  font-family: inherit;
-  color: oklch(var(--bc));
-  width: 100%;
-}
-
 .card-modal-number,
 .card-modal-text {
   padding: 10px;
@@ -218,38 +261,10 @@
   color: oklch(var(--bc)) !important;
 }
 
-.card-select [class$="-control"] {
-  --tw-border-opacity: 1;
-  background-color: oklch(var(--b1)) !important;
-  border-color: oklch(var(--p) / var(--tw-border-opacity)) !important;
-  border-width: 1px !important;
-  color: oklch(var(--bc)) !important;
-  border-radius: 4px;
-}
-
 .card-entry [class$="singleValue"] {
   background-color: oklch(var(--b1)) !important;
   border: none !important;
   color: oklch(var(--bc)) !important;
-}
-
-.card-select {
-  border: none !important;
-}
-
-[id^="react-select"] {
-  color: oklch(var(--bc)) !important;
-  background-color: oklch(var(--b1)) !important;
-}
-
-.card-text {
-  --tw-border-opacity: 1;
-  color: oklch(var(--bc));
-  background-color: oklch(var(--b1));
-  padding: 3px;
-  border-color: oklch(var(--p) / var(--tw-border-opacity)) !important;
-  border-width: 1px !important;
-  width: 100%;
 }
 
 .formHead-wrapper [class^="cardEntries"],

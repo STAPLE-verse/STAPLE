@@ -42,7 +42,9 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
           <input
             {...input}
             value={dateInputValue}
-            className="input input-bordered text-lg mb-4 border-primary rounded w-1/2 border-2 bg-base-300"
+            className="input input-bordered text-lg
+            mb-4 border-primary rounded w-1/2 border-2
+            bg-base-600 text-primary"
             type="datetime-local"
             min={moment().format("YYYY-MM-DDTHH:mm")}
             max="2050-01-01T00:00"
