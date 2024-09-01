@@ -72,6 +72,12 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
             appearance: none;
             margin-top: 0.5rem;
           }
+
+          input:focus {
+            outline-color: oklch(var(--s)) !important;
+            outline-offset: 0;
+            outline-width: 3px !important;
+          }
         `}</style>
       </div>
     )
