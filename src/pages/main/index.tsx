@@ -22,7 +22,6 @@ import { Widget } from "db"
 import getUserWidgets from "src/widgets/queries/getUserWidgets"
 import initializeWidgets from "src/widgets/mutations/initializeWidgets"
 import toast from "react-hot-toast"
-import { sortWidgets } from "src/widgets/utils/sortWidgets"
 
 const MainPage = () => {
   const [updateWidgetMutation] = useMutation(updateWidget)
@@ -37,8 +36,7 @@ const MainPage = () => {
 
   useEffect(() => {
     if (fetchedWidgets.length > 0) {
-      const sortedWidgets = sortWidgets(fetchedWidgets)
-      setWidgets(sortedWidgets)
+      setWidgets(fetchedWidgets)
     } else {
       initializeWidgetsMutation(userId)
         .then((createdWidgets) => {

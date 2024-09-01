@@ -8,7 +8,7 @@ import Widget from "../Widget"
 
 const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const [{ notifications }] = useQuery(getLatestUnreadNotifications, {})
-  console.log(size)
+
   return (
     <Widget
       title="Notifications"
