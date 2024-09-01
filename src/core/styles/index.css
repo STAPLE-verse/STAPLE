@@ -68,8 +68,10 @@
 
 /* form title block */
 .formHead-wrapper .form-title,
-.form-description,
-.input-bordered {
+.formHead-wrapper .form-description,
+.formHead-wrapper .input-bordered,
+.formHead-wrapper input[type="number"],
+.formHead-wrapper input[type="text"] {
   --tw-border-opacity: 1;
   background-color: oklch(var(--b3));
   border-radius: 3px;
@@ -79,6 +81,7 @@
   font-size: 1rem;
   padding: 0.25rem 0.5rem;
   margin-top: 0.5rem;
+  color: oklch(var(--p));
 }
 
 /* form add new pieces inputs */
@@ -86,7 +89,7 @@
 .card-textarea,
 .card-select [class$="-control"] {
   --tw-border-opacity: 1;
-  color: oklch(var(--bc));
+  color: oklch(var(--p));
   background-color: oklch(var(--b1));
   padding: 3px;
   border-color: oklch(var(--p) / var(--tw-border-opacity)) !important;
@@ -101,7 +104,8 @@
 /* form focus for inputs */
 .formHead-wrapper input:focus,
 textarea:focus,
-select:focus {
+select:focus,
+input[type="number"]:focus {
   outline-width: 3px !important;
   outline-style: solid; /* Ensure that the outline style is set */
   outline-color: oklch(var(--s)) !important;
@@ -109,7 +113,6 @@ select:focus {
 }
 
 /* select inputs */
-
 .card-select {
   border: none !important;
   padding: 0px;
@@ -122,6 +125,54 @@ select:focus {
 [id^="react-select"] {
   color: oklch(var(--bc)) !important;
   background-color: oklch(var(--b1)) !important;
+}
+
+/* formbuilder checkboxes */
+.fb-checkbox,
+.fb-radio-button {
+  color: oklch(var(--p));
+}
+
+.fb-checkbox input[type="checkbox"],
+.rjsf input[type="checkbox"] {
+  appearance: none; /* Remove default styling */
+  width: 20px;
+  height: 20px;
+  border: 2px solid oklch(var(--p));
+  border-radius: 4px; /* Optional: Add some rounding */
+  background-color: oklch(var(--b3)); /* Background color */
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.fb-checkbox input[type="checkbox"]:checked,
+.rjsf input[type="checkbox"]:checked {
+  background-color: oklch(var(--p)); /* Background color when checked */
+  border-color: oklch(var(--p)); /* Change border color when checked */
+}
+
+.fb-checkbox input[type="checkbox"]:checked::before,
+.rjsf input[type="checkbox"]:checked::before {
+  content: "✔";
+  color: oklch(var(--pc));
+  display: block;
+  text-align: center;
+  line-height: 20px; /* Center the checkmark */
+}
+
+.rjsf .checkbox {
+  display: flex;
+  align-items: center;
+  width: 100%; /* Ensures the container takes up the full width */
+}
+
+.rjsf .checkbox label {
+  flex: 1; /* Allows the label to expand to fit the content */
+}
+
+.rjsf .checkbox span {
+  flex: 1; /* Allows the span to take up more space */
+  white-space: normal; /* Allows text to wrap if needed */
 }
 
 /* json builder focus block */
@@ -320,11 +371,6 @@ select:focus {
 
 .formHead-wrapper .collapse:not(.show) {
   display: none;
-}
-
-.formHead-wrapper [id$="info"],
-[id$="required"] {
-  color: oklch(var(--bc));
 }
 
 .formHead-wrapper [id$="moveupbiginfo"],
