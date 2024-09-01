@@ -35,14 +35,6 @@ const SearchButton = ({ onChange, debounceTime = 500 }: Props) => {
   )
 }
 
-;<style jsx>{`
-  input:focus {
-    outline-color: oklch(var(--s)) !important;
-    outline-offset: 0;
-    outline-width: 3px !important;
-  }
-`}</style>
-
 function DebouncedInput({
   value: initialValue,
   onChange,
