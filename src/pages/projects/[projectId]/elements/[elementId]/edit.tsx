@@ -7,7 +7,7 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
-import { UpdateElementSchema } from "src/elements/schemas"
+import { FormElementSchema } from "src/elements/schemas"
 import getElement from "src/elements/queries/getElement"
 import updateElement from "src/elements/mutations/updateElement"
 import { ElementForm } from "src/elements/components/ElementForm"
@@ -18,6 +18,7 @@ import useContributorAuthorization from "src/contributors/hooks/UseContributorAu
 import { ContributorPrivileges } from "db"
 
 export const EditElement = () => {
+  const [updateElementMutation] = useMutation(updateElement)
   const router = useRouter()
   const elementId = useParam("elementId", "number")
   const projectId = useParam("projectId", "number")
@@ -29,7 +30,11 @@ export const EditElement = () => {
       staleTime: Infinity,
     }
   )
-  const [updateElementMutation] = useMutation(updateElement)
+
+  const initialValues = {
+    name: element.name,
+    description: element.description,
+  }
 
   return (
     <Layout>
@@ -43,12 +48,12 @@ export const EditElement = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <ElementForm
             submitText="Update Element"
-            schema={UpdateElementSchema}
-            initialValues={element}
+            schema={FormElementSchema}
+            initialValues={initialValues}
             onSubmit={async (values) => {
               try {
                 const updated = await updateElementMutation({
-                  // id: element.id,
+                  id: element.id,
                   ...values,
                 })
                 await toast.promise(Promise.resolve(updated), {

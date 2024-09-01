@@ -19,8 +19,8 @@ export function ElementForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <LabeledTextAreaField
         name="description"
         label="Description:"
-        placeholder="Description"
-        type="text"
+        placeholder="Add Description"
+        type="textarea"
         className="mb-4 w-1/2 textarea text-primary textarea-bordered textarea-primary textarea-lg bg-base-300 border-2"
       />
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}

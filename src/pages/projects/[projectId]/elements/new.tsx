@@ -30,7 +30,6 @@ const NewElementPage = () => {
           <ElementForm
             submitText="Create Element"
             schema={FormElementSchema}
-            // initialValues={{}}
             onSubmit={async (values) => {
               try {
                 const element = await createElementMutation({ ...values, projectId: projectId! })
