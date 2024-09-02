@@ -1,8 +1,9 @@
 import Link from "next/link"
 import { Route } from "next"
+import { RouteUrlObject } from "blitz"
 
 interface PrimaryLinkArgs {
-  route: Route
+  route: Route | RouteUrlObject
   text: string
 }
 

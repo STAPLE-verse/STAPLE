@@ -1,12 +1,12 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 
-type UpdateWidgetPositionInput = {
+export type UpdateWidgetPositionInput = {
   id: number
   position: number
 }[]
 
-interface UpdatePositionsInput {
+export interface UpdatePositionsInput {
   positions: UpdateWidgetPositionInput
 }
 
