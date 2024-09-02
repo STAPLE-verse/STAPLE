@@ -49,6 +49,10 @@ const ProfilePage = () => {
                 <Link className="btn btn-primary" href={Routes.EditProfilePage()}>
                   Edit Profile
                 </Link>
+
+                <Link className="btn btn-secondary" href={Routes.EditPasswordPage()}>
+                  Edit Password
+                </Link>
               </div>
             </div>
           </div>
