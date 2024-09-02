@@ -22,6 +22,9 @@ function Filter({ column }: { column: Column<any, unknown> }) {
 
   const isHtml = filterVariant === "html"
 
+  const sharedInputStyles =
+    "input w-36 text-primary input-primary input-bordered border-2 bg-base-300 rounded input-sm focus:outline-secondary focus:outline-offset-0 focus:outline-width-3"
+
   return filterVariant === "range" ? (
     <div>
       <div className="flex space-x-2">
@@ -56,7 +59,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
     <select
       onChange={(e) => column.setFilterValue(e.target.value)}
       value={columnFilterValue?.toString()}
-      className="border shadow rounded"
+      className={sharedInputStyles}
     >
       <option value="">All</option>
       {sortedUniqueValues.map((value, index) => (
@@ -84,10 +87,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
         onChange={(value) => column.setFilterValue(value)}
         // placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
         placeholder="Search..."
-        className="input w-36 text-primary input-primary
-          input-bordered border-2 bg-base-300 rounded input-sm
-          focus:outline-secondary focus:outline-offset-0
-          focus:outline-width-3"
+        className={sharedInputStyles}
         list={column.id + "list"}
       />
       <div className="h-1" />
