@@ -54,7 +54,7 @@ export default resolver.pipe(resolver.zod(Signup), async ({ email, password, use
     `,
   }
 
-  Mailer(msg)
+  await Mailer(msg)
 
   return user
 })
