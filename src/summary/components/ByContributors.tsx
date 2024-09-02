@@ -1,17 +1,9 @@
-import router from "next/router"
-
 import React from "react"
-import flattenTasksInformation from "./flattenTasksInformation"
-import { ContributorsView, TeamView } from "src/projects/components/UtilsViews"
+import { ContributorsView, TeamView } from "src/summary/components/UtilsViews"
 import { AssignmentStatus, CompletedAs } from "@prisma/client"
 
 const ByContributors = ({ contributors, teams, tasks }) => {
-  const page = Number(router.query.page) || 0
-
-  // let flattenTasks = flattenTasksInformation(tasks)
-  // let sortedContributors = flattenTasks.contributorsInformation
-  //console.log(tasks)
-
+  // Filter functions
   const assignmentCompletedBy = (statusLog, completedAs, completedBy) => {
     let index = statusLog.findIndex(
       (log) =>

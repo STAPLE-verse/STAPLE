@@ -10,6 +10,10 @@ export const TaskView = ({
   let user = task.createdBy.user
 
   const getLatest = (statusLog) => {
+    if (statusLog.length === 0) {
+      return {}
+    }
+
     const max = statusLog.reduce(function (prev, current) {
       return prev && prev.createdAt > current.createdAt ? prev : current
     })

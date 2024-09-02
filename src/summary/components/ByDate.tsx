@@ -1,12 +1,8 @@
-import { Suspense, useState } from "react"
-import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
-import router, { useRouter } from "next/router"
-
-import React, { useRef } from "react"
-import { DateLogView, compareDateSeconds } from "src/projects/components/UtilsViews"
-import { A } from "@blitzjs/rpc/dist/index-b834415a"
+import React from "react"
+import { DateLogView, compareDateSeconds } from "src/summary/components/UtilsViews"
 
 const ByDate = ({ tasks, contributors, teams }) => {
+  // Filter functions
   const mapStatusLogs = (statusLogs, element, belongsTo) => {
     let logs: any[] = []
     if (statusLogs.length > 0) {
