@@ -44,7 +44,7 @@ const SignupPage: BlitzPage = () => {
           // eslint-disable-next-line react-hooks/exhaustive-deps
           if (success) {
             // eslint-disable-next-line react-hooks/exhaustive-deps
-            router.push(Routes.Home()).catch((e) => toast.error(e.message))
+            router.push(Routes.Thanks()).catch((e) => toast.error(e.message))
           }
         })
         .catch((error) => {

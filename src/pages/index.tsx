@@ -3,7 +3,6 @@ import Link from "next/link"
 import { Routes, BlitzPage } from "@blitzjs/next"
 // import styles from "src/styles/Home.module.css"
 import Head from "next/head"
-import Image from "next/image"
 
 /*
  * This file is just for a pleasant getting started page for your new app.
