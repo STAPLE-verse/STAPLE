@@ -51,6 +51,7 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
     <div>
       {projects.map((project) => (
         <div className="collapse collapse-arrow bg-base-300 mb-2" key={project.id}>
+          {/* Don't change this one it's not a check box */}
           <input type="checkbox" />
           <div className="collapse-title text-xl font-medium">{project.name}</div>
           <div className="collapse-content mb-4">

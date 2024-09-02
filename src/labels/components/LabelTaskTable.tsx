@@ -133,7 +133,7 @@ export const MultipleCheckboxColumn = ({ row }) => {
             <label className="label cursor-pointer">
               <input
                 type="checkbox"
-                className="checkbox checkbox-primary"
+                className="checkbox checkbox-primary border-2"
                 checked={row.selectedIds.includes(row.id)}
                 onChange={() => {
                   handleOnChange(row.id)
@@ -191,30 +191,4 @@ export const labelTaskTableColumns = [
     cell: (info) => <MultipleCheckboxColumn row={info.row.original}></MultipleCheckboxColumn>,
     header: "Add Multiple",
   }),
-
-  // columnHelper.accessor("id", {
-  //   id: "multiple",
-  //   enableColumnFilter: false,
-  //   enableSorting: false,
-  //   cell: (info) => (
-  //     <span>
-  //       {
-  //         <div>
-  //           <label className="label cursor-pointer">
-  //             <input
-  //               type="checkbox"
-  //               className="checkbox checkbox-primary"
-  //               checked={false}
-  //               onChange={() => {
-  //                 // console.log("Add multiple")
-  //                 // handleOnChange(info.row.original)
-  //               }}
-  //             />
-  //           </label>
-  //         </div>
-  //       }
-  //     </span>
-  //   ),
-  //   header: "Add Multiple",
-  // }),
 ]

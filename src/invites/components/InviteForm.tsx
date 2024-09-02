@@ -15,7 +15,7 @@ export function InviteForm<S extends z.ZodType<any, any>>(props: InviteFormProps
     <Form<S> {...formProps}>
       {/* Name */}
       <LabeledTextField
-        className="mb-4 text-primary border-primary border-2 bg-base-300"
+        className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         name="invitationCode"
         label="Invite Code:"
         placeholder="Enter your code"

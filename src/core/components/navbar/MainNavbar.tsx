@@ -1,6 +1,3 @@
-//
-// issue with element versus string
-
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import React, { Suspense } from "react"
@@ -12,6 +9,7 @@ import { getInitials } from "src/services/getInitials"
 import { HomeIcon } from "@heroicons/react/24/outline"
 import NotificationsMenu from "src/notifications/components/NotificationMenu"
 import Image from "next/image"
+import { Tooltip } from "react-tooltip"
 
 type LogoProps = {
   theme: string
@@ -110,6 +108,7 @@ const Navbar = () => {
         </label>
         {/* Notifications tab */}
         <NotificationsMenu />
+
         {/* Profile tab */}
         <div className="dropdown dropdown-end">
           {/* TODO: Change to avatar if image is uploaded */}
@@ -117,9 +116,15 @@ const Navbar = () => {
             <div
               // TODO: DaisyUI tooltip is not working because css cannot deal with element edge
               // https://github.com/saadeghi/daisyui/discussions/1695
-              className="w-10 rounded-full our-tooltip"
-              data-tip={initial ? "" : "Go to Profile to add your name."}
+              className="w-10 rounded-full"
+              data-tooltip-id="profile-tooltip"
             >
+              <Tooltip
+                id="profile-tooltip"
+                content="Go to Profile update your information."
+                className="z-[1099]"
+                place="left"
+              />
               <span className="text-1xl">{initial ? initial : "?"}</span>
             </div>
           </label>

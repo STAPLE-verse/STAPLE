@@ -59,7 +59,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
         label="Team Name: (Required)"
         placeholder="Team Name"
         type="text"
-        className="mb-4 text-primary border-primary border-2 bg-base-300"
+        className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
       />
       <div className="flex justify-start mt-4">
         <Field

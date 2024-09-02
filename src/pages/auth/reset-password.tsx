@@ -68,13 +68,13 @@ const ResetPasswordPage: BlitzPage = () => {
             name="password"
             label="New Password"
             type="password"
-            className="mb-4 text-primary border-primary border-2 bg-base-300"
+            className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
           />
           <LabeledTextField
             name="passwordConfirmation"
             label="Confirm New Password"
             type="password"
-            className="mb-4 text-primary border-primary border-2 bg-base-300"
+            className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
           />
         </Form>
       )}

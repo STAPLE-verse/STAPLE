@@ -14,8 +14,6 @@ import getTeams from "src/teams/queries/getTeams"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
 import DateField from "src/core/components/fields/DateField"
-import { AddLabelForm } from "src/labels/components/AddLabelForm"
-import { LabelIdsFormSchema } from "src/labels/schemas"
 import getLabels from "src/labels/queries/getLabels"
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
@@ -97,7 +95,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     <Form<S> {...formProps} encType="multipart/form-data">
       {/* Name */}
       <LabeledTextField
-        className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"
+        className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
         name="name"
         label="Task Name: (Required)"
         placeholder="Add Task Name"
@@ -106,7 +104,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Column */}
       <LabelSelectField
-        className="mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
+        className="select mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="columnId"
         label="Current Status: (Required)"
         options={columns}
@@ -127,7 +125,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Elements */}
       <LabelSelectField
-        className="mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
+        className="select mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="elementId"
         label="Assign Element:"
         options={elements}
