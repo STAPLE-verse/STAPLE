@@ -197,6 +197,12 @@
   display: none;
 }
 
+.formHead-wrapper .collapse.show {
+  overflow: visible; /* or scroll */
+  height: auto; /* ensures the element can grow as needed */
+  transition: height 0.3s ease-out; /* animate height change */
+}
+
 /* form builder icons */
 .fa-circle-question,
 .fa-pencil,
