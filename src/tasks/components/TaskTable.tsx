@@ -8,7 +8,6 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
 
-// TODO: Is it better to call the database for column name every time or just one time and pass the value to child components?
 // Column helper
 const columnHelper = createColumnHelper<Task>()
 
@@ -30,10 +29,17 @@ export const taskTableColumns = [
   columnHelper.accessor("assignees", {
     header: "Completed",
     cell: (info) => {
-      const value = info.getValue() as String[]
-      const answer = value.map((v) => v.statusLogs[0].status)
-      return <>{answer[0] === "COMPLETED" ? "Complete" : "Not Complete"}</>
+      const assignees = info.getValue()
+      const status = assignees.map((assignee) => (
+        <span key={assignee.id}>
+          {assignee.statusLogs[0].status === "COMPLETED" ? "Complete" : "Not Complete"}
+        </span>
+      ))
+      return <>{status}</>
     },
+    // meta: {
+    //   filterVariant: "select",
+    // },
   }),
   columnHelper.accessor("id", {
     id: "view",

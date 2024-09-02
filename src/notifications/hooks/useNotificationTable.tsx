@@ -23,8 +23,8 @@ export const useNotificationTableColumns = (refetch: () => void) => {
       columnHelper.accessor("projectId", {
         id: "projectTitle",
         header: "Project",
-        //enableColumnFilter: false,
-        //enableSorting: false,
+        enableColumnFilter: true,
+        enableSorting: true,
         cell: (info) => {
           if (info.getValue()) {
             return <span>{info.row.original.project.name.substring(0, 20)}</span>
@@ -36,8 +36,8 @@ export const useNotificationTableColumns = (refetch: () => void) => {
       columnHelper.accessor("message", {
         id: "message",
         header: "Notification Message",
-        //enableColumnFilter: false,
-        //enableSorting: false,
+        enableColumnFilter: true,
+        enableSorting: false,
         cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
       }),
       columnHelper.accessor("read", {

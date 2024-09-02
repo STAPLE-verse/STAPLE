@@ -11,7 +11,7 @@ import React from "react"
 
 import { ChevronUpIcon, ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline"
 
-import TextFilter from "src/core/components/TextFilter"
+import Filter from "src/core/components/Filter"
 
 type TableProps<TData> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -89,7 +89,7 @@ const Table = <TData,>({
                       {header.column.getCanFilter() ? (
                         <div>
                           {/* get filter based on colunm id or type */}
-                          <TextFilter column={header.column} table={table} />
+                          <Filter column={header.column} />
                         </div>
                       ) : null}
                     </>
