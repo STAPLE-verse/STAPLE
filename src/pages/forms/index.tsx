@@ -58,7 +58,7 @@ const AllFormsPage = () => {
           <Link className="btn btn-primary" href={Routes.FormBuilderPage()}>
             Create New Form
           </Link>
-          <button className="btn btn-primary" onClick={openModal}>
+          <button className="btn btn-secondary" onClick={openModal}>
             Add Form Templates
           </button>
           <AddFormTemplates
