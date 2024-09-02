@@ -15,6 +15,8 @@ export const CreateElementSchema = z.object({
 
 export const UpdateElementSchema = z.object({
   id: z.number(),
+  name: z.string(),
+  description: z.string().optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
 })
 

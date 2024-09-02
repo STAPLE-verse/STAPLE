@@ -22,11 +22,14 @@ const Layout: BlitzLayout<{
         <title>{title || "STAPLE"}</title>
       </Head>
 
-      <div className="flex flex-col min-h-screen">
+      <div className="min-h-screen flex flex-col">
+        {/* Navbar */}
         <MainNavbar />
         <div className="flex flex-grow">
+          {/* Sidebar */}
           <Sidebar sidebarState={sidebarState} expanded={expanded} toggleExpand={toggleExpand} />
-          <div className="flex-1 overflow-scroll p-4">{children}</div>
+          {/* Main Content */}
+          <div className="flex-1 overflow-auto p-4">{children}</div>
         </div>
       </div>
     </>

@@ -1,11 +1,11 @@
-import React, { Suspense, useState } from "react"
+import React, { useState } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { useQuery } from "@blitzjs/rpc"
 import { ContributorPrivileges } from "@prisma/client"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import getContributors from "src/contributors/queries/getContributors"
-import AssignTeamMembers, { TeamOption } from "./TeamMembersTable"
+import AssignTeamMembers, { TeamOption } from "./AssignTeamMembers"
 import { Field } from "react-final-form"
 import { FORM_ERROR } from "final-form"
 

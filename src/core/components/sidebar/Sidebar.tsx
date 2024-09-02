@@ -1,6 +1,5 @@
 import React from "react"
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
-import { Tooltip } from "react-tooltip"
 import { useRouter } from "next/router"
 import { SidebarItemProps } from "./SidebarItems"
 import { SidebarState } from "src/core/hooks/useSidebar"
@@ -22,36 +21,33 @@ export default function Sidebar({
   }
 
   return (
-    <>
-      <aside className="h-[calc(100vh-60px)] sticky top-[60px] overflow-y-auto">
-        <nav className="h-full flex flex-col border-r shadow-sm">
-          <div className="p-4 pb-2 flex justify-between items-center">
-            <h2
-              className={`text-2xl overflow-hidden transition-all ${
-                expanded ? "w-46" : "w-0"
-              } max-w-[15ch] whitespace-nowrap overflow-ellipsis`}
-              title={sidebarTitle}
-            >
-              {sidebarTitle ? sidebarTitle : "Home"}
-            </h2>
-            <button onClick={toggleExpand} className="p-1.5 rounded-lg hover:bg-indigo-50">
-              {expanded ? (
-                <ChevronLeftIcon className="w-6 h-6" />
-              ) : (
-                <ChevronRightIcon className="w-6 h-6" />
-              )}
-            </button>
-          </div>
-
-          <ul className="flex-1 px-3">
-            {" "}
-            {sidebarItems.map((item, index) => (
-              <SidebarItem key={index} {...item} expanded={expanded} />
-            ))}
-          </ul>
-        </nav>
-      </aside>
-    </>
+    <aside className="flex flex-col border-r shadow-sm">
+      <div className="p-4 pb-2 flex justify-between items-center">
+        <h2
+          className={`text-2xl overflow-hidden transition-all ${
+            expanded ? "w-46" : "w-0"
+          } max-w-[15ch] whitespace-nowrap overflow-ellipsis`}
+          title={sidebarTitle}
+        >
+          {sidebarTitle ? sidebarTitle : "Home"}
+        </h2>
+        <button onClick={toggleExpand} className="p-1.5 rounded-lg hover:bg-indigo-50">
+          {expanded ? (
+            <ChevronLeftIcon className="w-6 h-6" />
+          ) : (
+            <ChevronRightIcon className="w-6 h-6" />
+          )}
+        </button>
+      </div>
+      <nav className="flex-1">
+        <ul className="px-3">
+          {" "}
+          {sidebarItems.map((item, index) => (
+            <SidebarItem key={index} {...item} expanded={expanded} />
+          ))}
+        </ul>
+      </nav>
+    </aside>
   )
 }
 

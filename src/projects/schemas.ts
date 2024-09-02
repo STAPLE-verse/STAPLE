@@ -44,3 +44,8 @@ export const UpdateProjectLabelSchema = z.object({
   labelsId: z.array(z.number()).optional().nullable(),
   disconnect: z.boolean(),
 })
+
+export const FormAnnouncementSchema = z.object({
+  announcementText: z.string(),
+  // template: __fieldName__: z.__zodType__(),
+})
