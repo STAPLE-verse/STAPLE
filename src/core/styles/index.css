@@ -221,7 +221,7 @@
   padding: 10px;
   border-radius: 10px;
   color: oklch(var(--bc));
-  background-color: oklch(var(--b1));
+  background-color: oklch(var(--pc));
   /* position: absolute; */
   margin: 8px;
 }
@@ -570,5 +570,6 @@ span.arrow.tooltip-arrow {
   margin-left: 30px;
 }
 
-.field-number {
+.tooltip {
+  z-index: 9999; /* A higher value than the modal */
 }
