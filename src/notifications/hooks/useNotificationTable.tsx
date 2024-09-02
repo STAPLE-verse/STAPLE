@@ -39,6 +39,9 @@ export const useNotificationTableColumns = (refetch: () => void) => {
         enableColumnFilter: true,
         enableSorting: false,
         cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
+        meta: {
+          filterVariant: "html",
+        },
       }),
       columnHelper.accessor("read", {
         enableColumnFilter: false,

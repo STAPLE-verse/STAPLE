@@ -20,6 +20,8 @@ function Filter({ column }: { column: Column<any, unknown> }) {
 
   const getUniqueKey = (value: any, index: number) => `${value}-${index}`
 
+  const isHtml = filterVariant === "html"
+
   return filterVariant === "range" ? (
     <div>
       <div className="flex space-x-2">
@@ -50,16 +52,21 @@ function Filter({ column }: { column: Column<any, unknown> }) {
       </div>
       <div className="h-1" />
     </div>
-  ) : filterVariant === "select" ? (
+  ) : filterVariant === "select" || filterVariant === "html" ? (
     <select
       onChange={(e) => column.setFilterValue(e.target.value)}
       value={columnFilterValue?.toString()}
+      className="border shadow rounded"
     >
       <option value="">All</option>
       {sortedUniqueValues.map((value, index) => (
         //dynamically generated select options from faceted values feature
-        <option value={value} key={getUniqueKey(value, index)}>
-          {value}
+        <option
+          value={value}
+          key={getUniqueKey(value, index)}
+          dangerouslySetInnerHTML={isHtml ? { __html: value } : undefined}
+        >
+          {!isHtml ? value : undefined}
         </option>
       ))}
     </select>
@@ -67,16 +74,20 @@ function Filter({ column }: { column: Column<any, unknown> }) {
     <>
       {/* Autocomplete suggestions from faceted values feature */}
       <datalist id={column.id + "list"}>
-        {sortedUniqueValues.map((value: any) => (
-          <option value={value} key={value} />
+        {sortedUniqueValues.map((value: any, index: number) => (
+          <option value={value} key={getUniqueKey(value, index)} />
         ))}
       </datalist>
       <DebouncedInput
         type="text"
         value={(columnFilterValue ?? "") as string}
         onChange={(value) => column.setFilterValue(value)}
-        placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
-        className="w-36 border shadow rounded"
+        // placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
+        placeholder="Search..."
+        className="input w-36 text-primary input-primary
+          input-bordered border-2 bg-base-300 rounded input-sm
+          focus:outline-secondary focus:outline-offset-0
+          focus:outline-width-3"
         list={column.id + "list"}
       />
       <div className="h-1" />
