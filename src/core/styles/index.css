@@ -77,7 +77,8 @@
 .formHead-wrapper .card-text,
 .formHead-wrapper .card-textarea,
 .formHead-wrapper .card-select [class$="-control"],
-.modal-content input {
+.modal-content input,
+.card-modal-select [class$="-control"] {
   --tw-border-opacity: 1;
   color: oklch(var(--p)) !important;
   background-color: oklch(var(--pc));
@@ -91,6 +92,10 @@
   margin-top: 0.5rem;
 }
 
+.formHead-wrapper .card-modal-select {
+  background-color: oklch(var(--pc)) !important;
+}
+
 /* form focus for inputs */
 .formHead-wrapper input:focus,
 .formHead-wrapper textarea:focus,
@@ -99,7 +104,8 @@
 .formHead-wrapper input[type="select"]:focus,
 .formHead-wrapper [class^="card-select"]:focus-within,
 .modal-content input:focus,
-.rjsf .field textarea:focus {
+.rjsf .field textarea:focus,
+.card-modal-select [class$="Input"]:focus {
   outline-width: 3px !important;
   outline-style: solid; /* Ensure that the outline style is set */
   outline-color: oklch(var(--s)) !important;
@@ -378,7 +384,8 @@ item type box */
 }
 
 /* form builder indicator separator */
-.formHead-wrapper [class$="indicatorSeparator"] {
+.formHead-wrapper [class$="indicatorSeparator"],
+.card-modal-select [class$="indicatorSeparator"] {
   --tw-border-opacity: 1;
   background-color: oklch(var(--p) / var(--tw-border-opacity)) !important;
 }
@@ -386,7 +393,9 @@ item type box */
 /* form builder
 controls the way the select box looks */
 .formHead-wrapper [class$="indicatorContainer"],
-.formHead-wrapper [class$="singleValue"] {
+.card-modal-select [class$="indicatorContainer"],
+.formHead-wrapper [class$="singleValue"],
+.card-modal-select [class$="singleValue"] {
   color: oklch(var(--p));
 }
 

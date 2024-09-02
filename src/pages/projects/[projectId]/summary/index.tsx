@@ -132,7 +132,7 @@ const Summary = () => {
           <option value="date">Organize project by Date</option>
           <option value="task">Organize project by Task</option>
           <option value="contributor">Organize project by Contributor </option>
-          <option value="label">Organize project by Label</option>
+          <option value="label">Organize project by Role</option>
           <option value="element">Organize project by Element</option>
         </select>
       </div>
