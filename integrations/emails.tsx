@@ -6,8 +6,9 @@ export function createForgotPasswordMsg(to, resetUrl) {
     html: `
     <html>
     <body>
-    <img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
-alt="STAPLE Logo">
+    <center><img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+alt="STAPLE Logo" height="200"></center>
+
 <h3>Your Password Reset Instructions</h3>
 
 You requested a new password for your STAPLE account. <a href="${resetUrl}">Click here to set a new password.</a>
@@ -54,8 +55,8 @@ export function createSignUpMsg(email) {
     html: `
       <html>
     <body>
-    <img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
-alt="STAPLE Logo">
+    <center><img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+alt="STAPLE Logo" height="200"></center>
 
       <h3>Welcome to STAPLE</h3>
 
@@ -105,8 +106,8 @@ export function createNewInvitation(values, currentUser, contributor) {
     html: `
     <html>
     <body>
-    <img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
-alt="STAPLE Logo">
+    <center><img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+alt="STAPLE Logo" height="200"></center>
 
     <h3>STAPLE Project Invitation</h3>
 
@@ -164,8 +165,8 @@ export function createEditPasswordMsg(currentUser) {
     html: `
     <html>
     <body>
-    <img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
-alt="STAPLE Logo">
+    <center><img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+alt="STAPLE Logo" height="200"></center>
 
       <h3>STAPLE Password Change</h3>
 
@@ -215,8 +216,8 @@ export function createEditProfileMsg(user) {
     html: `
     <html>
     <body>
-    <img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
-alt="STAPLE Logo">
+    <center><img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+alt="STAPLE Logo" height="200"></center>
 
 
       <h3>STAPLE Profile Change</h3>

@@ -33,7 +33,7 @@ function NewContributor() {
         labelsId: values.labelsId,
       })
 
-      console.log(contributor)
+      //console.log(contributor)
 
       if (contributor.code == "already_added") {
         setFormError("User is already a contributor on the project.")
@@ -45,7 +45,7 @@ function NewContributor() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(createNewInvitation(values, currentUser, contributor)),
+          body: JSON.stringify(createNewInvitation(values, currentUser, contributor.contributor)),
         })
 
         if (response.ok) {
