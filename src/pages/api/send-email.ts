@@ -1,9 +1,10 @@
-import { Mailer } from "../../../integrations/mailer"
+//import { Mailer } from "../../../integrations/mailer" // for simple gmail type
+import { Amazon } from "../../../integrations/mailer" // for amazon ses
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
-      await Mailer(req.body)
+      await Amazon(req.body)
       res.status(200).json({ message: "Email sent successfully" })
     } catch (error) {
       res.status(500).json({ error: "Failed to send email" })
