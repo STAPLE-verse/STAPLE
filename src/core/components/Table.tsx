@@ -6,6 +6,8 @@ import {
   getFacetedUniqueValues,
   getFilteredRowModel,
   useReactTable,
+  getPaginationRowModel,
+  getFacetedMinMaxValues,
 } from "@tanstack/react-table"
 import React from "react"
 
@@ -14,12 +16,12 @@ import { ChevronUpIcon, ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/re
 import Filter from "src/core/components/Filter"
 
 type TableProps<TData> = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<TData, any>[]
   data: TData[]
   filters?: {} //pass object with the type of  filter for a given colunm based on colunm id
   enableSorting?: boolean
   enableFilters?: boolean
+  addPagination?: boolean
   classNames?: {
     table?: string
     thead?: string
@@ -30,15 +32,13 @@ type TableProps<TData> = {
   }
 }
 
-// asc: " 🔼",
-// desc: " 🔽",
-
 const Table = <TData,>({
   columns,
   data,
   classNames,
   enableSorting = true,
   enableFilters = true,
+  addPagination = false,
 }: TableProps<TData>) => {
   const [sorting, setSorting] = React.useState([])
 
@@ -51,12 +51,17 @@ const Table = <TData,>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-
+    getPaginationRowModel: getPaginationRowModel(),
+    getFacetedMinMaxValues: getFacetedMinMaxValues(),
     state: {
       sorting: sorting,
     },
     onSortingChange: setSorting,
+    autoResetPageIndex: false,
   })
+
+  const currentPage = table.getState().pagination.pageIndex + 1
+  const pageCount = table.getPageCount()
 
   return (
     <>
@@ -77,7 +82,6 @@ const Table = <TData,>({
                         onClick={header.column.getToggleSortingHandler()}
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
-                        {/* TODO change this icon */}
                         {{
                           asc: <ChevronUpIcon className="w-5 h-5" />,
                           desc: <ChevronDownIcon className="w-5 h-5" />,
@@ -88,7 +92,6 @@ const Table = <TData,>({
                       </div>
                       {header.column.getCanFilter() ? (
                         <div>
-                          {/* get filter based on colunm id or type */}
                           <Filter column={header.column} />
                         </div>
                       ) : null}
@@ -124,6 +127,73 @@ const Table = <TData,>({
           ))}
         </tfoot>
       </table>
+      {addPagination && (
+        <>
+          <div className="flex items-center gap-2">
+            <button
+              className="btn btn-secondary"
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+            >
+              {"<<"}
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              {"<"}
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              {">"}
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              disabled={!table.getCanNextPage()}
+            >
+              {">>"}
+            </button>
+            <span className="flex items-center gap-1">
+              <div>Page</div>
+              <strong>
+                {currentPage} of {pageCount}
+              </strong>
+            </span>
+            <span className="flex items-center gap-1">
+              | Go to page:
+              <input
+                type="number"
+                defaultValue={table.getState().pagination.pageIndex + 1}
+                onChange={(e) => {
+                  const page = e.target.value ? Number(e.target.value) - 1 : 0
+                  table.setPageIndex(page)
+                }}
+                className="text-secondary input-secondary input-bordered border-2 bg-base-300 rounded input-sm"
+                min={1}
+                max={table.getPageCount()}
+              />
+            </span>
+            <select
+              value={table.getState().pagination.pageSize}
+              onChange={(e) => {
+                table.setPageSize(Number(e.target.value))
+              }}
+              className="text-secondary input-secondary input-bordered border-2 bg-base-300 rounded input-sm"
+            >
+              {[1, 10, 20, 30, 40, 50].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </option>
+              ))}
+            </select>
+          </div>
+        </>
+      )}
     </>
   )
 }
