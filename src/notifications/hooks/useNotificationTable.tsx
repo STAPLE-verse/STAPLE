@@ -40,7 +40,8 @@ export const useNotificationTableColumns = (refetch: () => void) => {
         enableSorting: false,
         cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
         meta: {
-          filterVariant: "html",
+          filterVariant: "select",
+          isHtml: true,
         },
       }),
       columnHelper.accessor("read", {
@@ -64,13 +65,17 @@ export const useProjectNotificationTableColumns = (refetch: () => void) => {
       columnHelper.accessor("message", {
         id: "message",
         header: "Notification Message",
-        //enableColumnFilter: false,
-        //enableSorting: false,
+        enableColumnFilter: true,
+        enableSorting: false,
         cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
+        meta: {
+          filterVariant: "select",
+          isHtml: true,
+        },
       }),
       columnHelper.accessor("read", {
         enableColumnFilter: false,
-        //enableSorting: false,
+        enableSorting: false,
         cell: (info) => <ReadToggle notification={info.row.original} refetch={refetch} />,
         header: "Read",
       }),

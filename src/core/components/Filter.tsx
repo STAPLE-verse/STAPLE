@@ -4,6 +4,7 @@ import React from "react"
 
 function Filter({ column }: { column: Column<any, unknown> }) {
   const { filterVariant } = column.columnDef.meta ?? {}
+  const isHtml = column.columnDef.meta?.isHtml || false
   const columnFilterValue = column.getFilterValue()
   const facetedUniqueValues = column.getFacetedUniqueValues()
 
@@ -19,8 +20,6 @@ function Filter({ column }: { column: Column<any, unknown> }) {
   )
 
   const getUniqueKey = (value: any, index: number) => `${value}-${index}`
-
-  const isHtml = filterVariant === "html"
 
   const sharedInputStyles =
     "input w-36 text-primary input-primary input-bordered border-2 bg-base-300 rounded input-sm focus:outline-secondary focus:outline-offset-0 focus:outline-width-3"
@@ -55,7 +54,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
       </div>
       <div className="h-1" />
     </div>
-  ) : filterVariant === "select" || filterVariant === "html" ? (
+  ) : filterVariant === "select" ? (
     <select
       onChange={(e) => column.setFilterValue(e.target.value)}
       value={columnFilterValue?.toString()}
