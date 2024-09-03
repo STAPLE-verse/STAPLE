@@ -13,6 +13,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 import { ContributorPrivileges } from "db"
 import { CreateContributorFormSchema } from "src/contributors/schemas"
+import { createNewInvitation } from "integrations/emails"
 
 function NewContributor() {
   const [createInviteMutation] = useMutation(createInvite)
@@ -39,39 +40,12 @@ function NewContributor() {
       } else {
         setFormError(null)
 
-        const msg = {
-          from: "staple.helpdesk@gmail.com",
-          to: values.email,
-          subject: "STAPLE Project Invitation",
-          html: `
-            <h3>STAPLE Project Invitation</h3>
-
-            You've been invited to collaborate on a STAPLE project by
-            ${currentUser!.username}. STAPLE is project management software that
-            allows you to document your research project to improve transparency. If you
-            wish to join the project, please log in at: https://app.staple.science/. You
-            can join the project by clicking on Invitations on the sidebar menu and click "Accept"
-            or decline the project invitation by clicking "Decline".
-            <p>
-            If you want to join the project, but have an account under a different
-            email, you can log in or create an account with your desired email. Then
-            click Invitations on the sidebar menu and click "Accept by Code". You would
-            use code: "${contributor.invitationCode}" to add this project.
-            <p>
-            If you need more help, you can reply to this email to create a ticket.
-            <p>
-            Thanks,
-            <br>
-            STAPLE HelpDesk
-          `,
-        }
-
         const response = await fetch("/api/send-email", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(msg),
+          body: JSON.stringify(createNewInvitation(values, currentUser, contributor)),
         })
 
         if (response.ok) {

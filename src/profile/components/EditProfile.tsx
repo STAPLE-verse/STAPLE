@@ -12,6 +12,7 @@ import logout from "src/auth/mutations/logout"
 import Link from "next/link"
 import { getDateLocale } from "src/services/getDateLanguageLocales"
 import { ProfileForm } from "./ProfileForm"
+import { createEditProfileMsg } from "integrations/emails"
 
 export const EditProfile = () => {
   const router = useRouter()
@@ -58,31 +59,12 @@ export const EditProfile = () => {
                 })
                 await setQueryData(updated)
 
-                const msg = {
-                  from: "staple.helpdesk@gmail.com",
-                  to: user!.email,
-                  subject: "STAPLE Profile Change",
-                  html: `
-                    <h3>STAPLE Profile Change</h3>
-
-                    This email is to notify you that you recently updated your
-                    profile information. If you did not make this change, please
-                    contact us immediately.
-                    <p>
-                    If you need more help, you can reply to this email to create a ticket.
-                    <p>
-                    Thanks,
-                    <br>
-                    STAPLE HelpDesk
-                  `,
-                }
-
                 const response = await fetch("/api/send-email", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify(msg),
+                  body: JSON.stringify(createEditProfileMsg(user)),
                 })
 
                 if (response.ok) {
