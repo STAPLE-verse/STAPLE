@@ -4,15 +4,44 @@ export function createForgotPasswordMsg(to, resetUrl) {
     to,
     subject: "Your Password Reset Instructions",
     html: `
-      <h3>Reset Your Password</h3>
+    <html>
+    <body>
+    <img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+alt="STAPLE Logo">
+<h3>Your Password Reset Instructions</h3>
 
-      You requested a new password for your STAPLE account. <a href="${resetUrl}">Click here to set a new password.</a>
-      <p>
-      If you need more help, you can reply to this email to create a ticket.
-      <p>
-      Thanks,
-      <br>
-      STAPLE HelpDesk
+You requested a new password for your STAPLE account. <a href="${resetUrl}">Click here to set a new password.</a>
+<p>
+If you need more help, you can reply to this email to create a ticket.
+<p>
+Thanks,
+<br>
+STAPLE Help Desk
+
+<div style='mso-element:para-border-div;border:none;border-bottom:solid #BFC3C8 1.0pt;
+mso-border-bottom-alt:solid #BFC3C8 .75pt;padding:0in 0in 0in 0in'>
+
+<p class=MsoNormal style='margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
+margin-left:0in;line-height:0%;border:none;mso-border-bottom-alt:solid #BFC3C8 .75pt;
+padding:0in;mso-padding-alt:0in 0in 0in 0in'><o:p>&nbsp;</o:p></p>
+
+</div>
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+STAPLE: Science Tracking Across Project Lifespans
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+https://staple.science
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+staple.helpdesk@gmail.com
+
+</div>
+</body>
+</html>
     `,
   }
 }
@@ -23,6 +52,11 @@ export function createSignUpMsg(email) {
     to: email.toLowerCase().trim(),
     subject: "STAPLE Account Created",
     html: `
+      <html>
+    <body>
+    <img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+alt="STAPLE Logo">
+
       <h3>Welcome to STAPLE</h3>
 
       You requested a STAPLE account at https://app.staple.science.
@@ -34,6 +68,31 @@ export function createSignUpMsg(email) {
       Thanks,
       <br>
       STAPLE HelpDesk
+
+      <div style='mso-element:para-border-div;border:none;border-bottom:solid #BFC3C8 1.0pt;
+mso-border-bottom-alt:solid #BFC3C8 .75pt;padding:0in 0in 0in 0in'>
+
+<p class=MsoNormal style='margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
+margin-left:0in;line-height:0%;border:none;mso-border-bottom-alt:solid #BFC3C8 .75pt;
+padding:0in;mso-padding-alt:0in 0in 0in 0in'><o:p>&nbsp;</o:p></p>
+
+</div>
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+STAPLE: Science Tracking Across Project Lifespans
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+https://staple.science
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+staple.helpdesk@gmail.com
+
+</div>
+</body>
+</html>
     `,
   }
 }
@@ -44,7 +103,12 @@ export function createNewInvitation(values, currentUser, contributor) {
     to: values.email,
     subject: "STAPLE Project Invitation",
     html: `
-        <h3>STAPLE Project Invitation</h3>
+    <html>
+    <body>
+    <img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+alt="STAPLE Logo">
+
+    <h3>STAPLE Project Invitation</h3>
 
         You've been invited to collaborate on a STAPLE project by
         ${currentUser!.username}. STAPLE is project management software that
@@ -63,6 +127,31 @@ export function createNewInvitation(values, currentUser, contributor) {
         Thanks,
         <br>
         STAPLE HelpDesk
+
+        <div style='mso-element:para-border-div;border:none;border-bottom:solid #BFC3C8 1.0pt;
+mso-border-bottom-alt:solid #BFC3C8 .75pt;padding:0in 0in 0in 0in'>
+
+<p class=MsoNormal style='margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
+margin-left:0in;line-height:0%;border:none;mso-border-bottom-alt:solid #BFC3C8 .75pt;
+padding:0in;mso-padding-alt:0in 0in 0in 0in'><o:p>&nbsp;</o:p></p>
+
+</div>
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+STAPLE: Science Tracking Across Project Lifespans
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+https://staple.science
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+staple.helpdesk@gmail.com
+
+</div>
+</body>
+</html>
       `,
   }
 }
@@ -73,6 +162,11 @@ export function createEditPasswordMsg(currentUser) {
     to: currentUser!.email,
     subject: "STAPLE Password Change",
     html: `
+    <html>
+    <body>
+    <img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+alt="STAPLE Logo">
+
       <h3>STAPLE Password Change</h3>
 
       This email is to notify you that you recently updated your
@@ -84,6 +178,31 @@ export function createEditPasswordMsg(currentUser) {
       Thanks,
       <br>
       STAPLE HelpDesk
+
+      <div style='mso-element:para-border-div;border:none;border-bottom:solid #BFC3C8 1.0pt;
+mso-border-bottom-alt:solid #BFC3C8 .75pt;padding:0in 0in 0in 0in'>
+
+<p class=MsoNormal style='margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
+margin-left:0in;line-height:0%;border:none;mso-border-bottom-alt:solid #BFC3C8 .75pt;
+padding:0in;mso-padding-alt:0in 0in 0in 0in'><o:p>&nbsp;</o:p></p>
+
+</div>
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+STAPLE: Science Tracking Across Project Lifespans
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+https://staple.science
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+staple.helpdesk@gmail.com
+
+</div>
+</body>
+</html>
     `,
   }
 }
@@ -94,6 +213,12 @@ export function createEditProfileMsg(user) {
     to: user!.email,
     subject: "STAPLE Profile Change",
     html: `
+    <html>
+    <body>
+    <img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+alt="STAPLE Logo">
+
+
       <h3>STAPLE Profile Change</h3>
 
       This email is to notify you that you recently updated your
@@ -105,6 +230,31 @@ export function createEditProfileMsg(user) {
       Thanks,
       <br>
       STAPLE HelpDesk
+
+      <div style='mso-element:para-border-div;border:none;border-bottom:solid #BFC3C8 1.0pt;
+mso-border-bottom-alt:solid #BFC3C8 .75pt;padding:0in 0in 0in 0in'>
+
+<p class=MsoNormal style='margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
+margin-left:0in;line-height:0%;border:none;mso-border-bottom-alt:solid #BFC3C8 .75pt;
+padding:0in;mso-padding-alt:0in 0in 0in 0in'><o:p>&nbsp;</o:p></p>
+
+</div>
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+STAPLE: Science Tracking Across Project Lifespans
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+https://staple.science
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+staple.helpdesk@gmail.com
+
+</div>
+</body>
+</html>
     `,
   }
 }
