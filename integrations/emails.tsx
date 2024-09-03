@@ -1,8 +1,9 @@
 export function createForgotPasswordMsg(to, resetUrl) {
   return {
-    from: "staple.helpdesk@gmail.com",
+    from: "STAPLE <app@staple.science>",
     to,
     subject: "Your Password Reset Instructions",
+    replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
     html: `
     <html>
     <body>
@@ -49,9 +50,10 @@ staple.helpdesk@gmail.com
 
 export function createSignUpMsg(email) {
   return {
-    from: "staple.helpdesk@gmail.com",
+    from: "STAPLE <app@staple.science>",
     to: email.toLowerCase().trim(),
     subject: "STAPLE Account Created",
+    replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
     html: `
       <html>
     <body>
@@ -100,9 +102,10 @@ staple.helpdesk@gmail.com
 
 export function createNewInvitation(values, currentUser, contributor) {
   return {
-    from: "staple.helpdesk@gmail.com",
+    from: "STAPLE <app@staple.science>",
     to: values.email,
     subject: "STAPLE Project Invitation",
+    replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
     html: `
     <html>
     <body>
@@ -159,9 +162,10 @@ staple.helpdesk@gmail.com
 
 export function createEditPasswordMsg(currentUser) {
   return {
-    from: "staple.helpdesk@gmail.com",
+    from: "STAPLE <app@staple.science>",
     to: currentUser!.email,
     subject: "STAPLE Password Change",
+    replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
     html: `
     <html>
     <body>
@@ -210,9 +214,10 @@ staple.helpdesk@gmail.com
 
 export function createEditProfileMsg(user) {
   return {
-    from: "staple.helpdesk@gmail.com",
+    from: "STAPLE <app@staple.science>",
     to: user!.email,
     subject: "STAPLE Profile Change",
+    replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
     html: `
     <html>
     <body>

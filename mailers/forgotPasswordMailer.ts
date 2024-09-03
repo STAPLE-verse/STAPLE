@@ -7,7 +7,8 @@
 
 // import { Mailer } from "integrations/mailer"
 import { createForgotPasswordMsg } from "integrations/emails"
-import { Amazon } from "integrations/mailer"
+// import { Amazon } from "integrations/mailer"
+import { ResendMsg } from "integrations/mailer"
 
 type ResetPasswordMailer = {
   to: string
@@ -20,5 +21,5 @@ export function forgotPasswordMailer({ to, token }: ResetPasswordMailer) {
   const resetUrl = `${origin}/auth/reset-password?token=${token}`
 
   //send the email
-  Amazon(createForgotPasswordMsg(to, resetUrl))
+  ResendMsg(createForgotPasswordMsg(to, resetUrl))
 }

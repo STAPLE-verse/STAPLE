@@ -4,7 +4,8 @@ import db, { WidgetSize } from "db"
 import { Role } from "types"
 import { Signup } from "../schemas"
 // import { Mailer } from "integrations/mailer"
-import { Amazon } from "integrations/mailer"
+// import { Amazon } from "integrations/mailer"
+import { ResendMsg } from "integrations/mailer"
 import { createSignUpMsg } from "integrations/emails"
 
 export default resolver.pipe(resolver.zod(Signup), async ({ email, password, username }, ctx) => {
@@ -38,7 +39,9 @@ export default resolver.pipe(resolver.zod(Signup), async ({ email, password, use
     data: widgets,
   })
 
-  await Amazon(createSignUpMsg(email))
+  const temp = await ResendMsg(createSignUpMsg(email))
+  console.log(temp)
+  console.log(createSignUpMsg(email))
 
   return user
 })

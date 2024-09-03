@@ -1,6 +1,7 @@
 //msg will have from, to, subject, and html
 import nodemailer from "nodemailer"
 import * as aws from "@aws-sdk/client-ses"
+import { Resend } from "resend"
 
 export async function Mailer(msg) {
   const pass = process.env.EMAIL_PASS
@@ -38,5 +39,24 @@ export async function Amazon(msg) {
     console.log("Email sent:", info)
   } catch (err) {
     console.error("Error sending email:", err)
+  }
+}
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+export async function ResendMsg(msg) {
+  try {
+    const response = await resend.emails.send(msg)
+    //console.log("Response:", response)
+
+    if (response.error) {
+      //console.error("Error:", response.error)
+      return { success: false, error: response.error }
+    }
+
+    return { success: true, data: response }
+  } catch (error) {
+    //console.error("Catch Error:", error)
+    return { success: false, error }
   }
 }
