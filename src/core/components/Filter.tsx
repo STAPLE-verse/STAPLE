@@ -1,6 +1,5 @@
-import { Column } from "@tanstack/react-table"
-
 import React from "react"
+import { Column } from "@tanstack/react-table"
 
 function Filter({ column }: { column: Column<any, unknown> }) {
   const { filterVariant } = column.columnDef.meta ?? {}
@@ -62,7 +61,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
     >
       <option value="">All</option>
       {sortedUniqueValues.map((value, index) => (
-        //dynamically generated select options from faceted values feature
+        // dynamically generated select options from faceted values feature
         <option
           value={value}
           key={getUniqueKey(value, index)}
@@ -72,6 +71,43 @@ function Filter({ column }: { column: Column<any, unknown> }) {
         </option>
       ))}
     </select>
+  ) : filterVariant === "multiselect" ? (
+    <div className="dropdown">
+      <label tabIndex={0} className="btn btn-primary">
+        Filter
+      </label>
+      <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-300 rounded-box w-52">
+        {sortedUniqueValues.map((value, index) => (
+          <li key={getUniqueKey(value, index)}>
+            <label className="cursor-pointer flex items-center space-x-2">
+              <input
+                type="checkbox"
+                className="checkbox checkbox-primary"
+                value={value}
+                checked={
+                  Array.isArray(columnFilterValue) ? columnFilterValue.includes(value) : false
+                }
+                onChange={(e) => {
+                  const checked = e.target.checked
+                  let newFilterValue = Array.isArray(columnFilterValue)
+                    ? [...columnFilterValue]
+                    : []
+                  if (checked) {
+                    newFilterValue.push(value)
+                  } else {
+                    newFilterValue = newFilterValue.filter((v) => v !== value)
+                  }
+                  column.setFilterValue(newFilterValue.length > 0 ? newFilterValue : undefined)
+                }}
+              />
+              <span dangerouslySetInnerHTML={isHtml ? { __html: value } : undefined}>
+                {!isHtml ? value : undefined}
+              </span>
+            </label>
+          </li>
+        ))}
+      </ul>
+    </div>
   ) : (
     <>
       {/* Autocomplete suggestions from faceted values feature */}

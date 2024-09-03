@@ -36,11 +36,11 @@ export const useNotificationTableColumns = (refetch: () => void) => {
       columnHelper.accessor("message", {
         id: "message",
         header: "Notification Message",
-        enableColumnFilter: true,
+        enableColumnFilter: false,
         enableSorting: false,
         cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
         meta: {
-          filterVariant: "select",
+          filterVariant: "multiselect",
           isHtml: true,
         },
       }),
