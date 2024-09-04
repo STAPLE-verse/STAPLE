@@ -18,7 +18,7 @@ import Filter from "src/core/components/Filter"
 type TableProps<TData> = {
   columns: ColumnDef<TData, any>[]
   data: TData[]
-  filters?: {} //pass object with the type of  filter for a given colunm based on colunm id
+  filters?: {} //pass object with the type of filter for a given colunm based on colunm id
   enableSorting?: boolean
   enableFilters?: boolean
   addPagination?: boolean
@@ -29,6 +29,10 @@ type TableProps<TData> = {
     tfoot?: string
     th?: string
     td?: string
+    paginationButton?: string
+    pageInfo?: string
+    goToPageInput?: string
+    pageSizeSelect?: string
   }
 }
 
@@ -55,6 +59,11 @@ const Table = <TData,>({
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
     state: {
       sorting: sorting,
+    },
+    initialState: {
+      pagination: {
+        pageSize: 5,
+      },
     },
     onSortingChange: setSorting,
     autoResetPageIndex: false,
@@ -103,15 +112,23 @@ const Table = <TData,>({
           ))}
         </thead>
         <tbody className={classNames?.tbody || "text-lg"}>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className={classNames?.td}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
+          {table.getRowModel().rows.length === 0 ? (
+            <tr>
+              <td colSpan={columns.length} className="text-center p-3">
+                No data found
+              </td>
             </tr>
-          ))}
+          ) : (
+            table.getRowModel().rows.map((row) => (
+              <tr key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} className={classNames?.td}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))
+          )}
         </tbody>
         <tfoot className={classNames?.tfoot}>
           {table.getFooterGroups().map((footerGroup) => (
@@ -129,43 +146,46 @@ const Table = <TData,>({
       </table>
       {addPagination && (
         <>
+          {/* Pagination buttons */}
           <div className="flex items-center gap-2">
             <button
-              className="btn btn-secondary"
+              className={`btn btn-secondary ${classNames?.paginationButton || ""}`}
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
               {"<<"}
             </button>
             <button
-              className="btn btn-secondary"
+              className={`btn btn-secondary ${classNames?.paginationButton || ""}`}
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
               {"<"}
             </button>
             <button
-              className="btn btn-secondary"
+              className={`btn btn-secondary ${classNames?.paginationButton || ""}`}
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
               {">"}
             </button>
             <button
-              className="btn btn-secondary"
+              className={`btn btn-secondary ${classNames?.paginationButton || ""}`}
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >
               {">>"}
             </button>
-            <span className="flex items-center gap-1">
+            {/* Curent page info */}
+            <span className={`flex items-center gap-1 ${classNames?.pageInfo || ""}`}>
               <div>Page</div>
               <strong>
                 {currentPage} of {pageCount}
               </strong>
             </span>
-            <span className="flex items-center gap-1">
-              | Go to page:
+            {/* Go to page input */}
+            <span className={`flex items-center gap-1 ${classNames?.goToPageInput || ""}`}>
+              | Go to:
               <input
                 type="number"
                 defaultValue={table.getState().pagination.pageIndex + 1}
@@ -173,19 +193,22 @@ const Table = <TData,>({
                   const page = e.target.value ? Number(e.target.value) - 1 : 0
                   table.setPageIndex(page)
                 }}
-                className="text-secondary input-secondary input-bordered border-2 bg-base-300 rounded input-sm"
+                className="text-secondary input-secondary input-bordered border-2 bg-base-300 rounded input-sm w-20"
                 min={1}
                 max={table.getPageCount()}
               />
             </span>
+            {/* Select page size input */}
             <select
               value={table.getState().pagination.pageSize}
               onChange={(e) => {
                 table.setPageSize(Number(e.target.value))
               }}
-              className="text-secondary input-secondary input-bordered border-2 bg-base-300 rounded input-sm"
+              className={`text-secondary input-secondary input-bordered border-2 bg-base-300 rounded input-sm ${
+                classNames?.pageSizeSelect || ""
+              }`}
             >
-              {[1, 10, 20, 30, 40, 50].map((pageSize) => (
+              {[5, 10, 20, 30, 40, 50].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>

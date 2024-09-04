@@ -15,7 +15,7 @@ import { getPrivilegeText } from "src/services/getPrivilegeText"
 import { ContributorTaskListDone } from "src/tasks/components/ContributorsTaskListDone"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
 import { labelTableColumnsSimple } from "src/labels/components/LabelTable"
-import { taskFinishedTableColumns } from "src/tasks/components/TaskTable"
+import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
 import { ContributorPrivileges } from "db"
 import toast from "react-hot-toast"
@@ -35,8 +35,6 @@ export const ContributorPage = () => {
   }) as unknown as Contributor & {
     user: User
   }
-
-  console.log(contributor)
 
   const [currentContributor] = useQuery(getContributor, {
     where: { projectId: projectId, id: contributorId },
@@ -136,7 +134,7 @@ export const ContributorPage = () => {
             <div className="card-title">Contribution Tasks</div>
             <ContributorTaskListDone
               contributor={currentContributor}
-              columns={taskFinishedTableColumns}
+              columns={finishedTasksTableColumns}
             ></ContributorTaskListDone>
             <div className="card-actions justify-end">
               <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId! })}>

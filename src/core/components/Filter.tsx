@@ -37,7 +37,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
               ? `(${column.getFacetedMinMaxValues()?.[0]})`
               : ""
           }`}
-          className="w-24 border shadow rounded"
+          className={sharedInputStyles}
         />
         <DebouncedInput
           type="number"
@@ -48,7 +48,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
           placeholder={`Max ${
             column.getFacetedMinMaxValues()?.[1] ? `(${column.getFacetedMinMaxValues()?.[1]})` : ""
           }`}
-          className="w-24 border shadow rounded"
+          className={sharedInputStyles}
         />
       </div>
       <div className="h-1" />
