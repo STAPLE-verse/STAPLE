@@ -13,7 +13,7 @@ interface WidgetContainerProps {
 
 export const WidgetContainer = ({ widgets }: WidgetContainerProps) => {
   return (
-    <div className="grid gap-4 w-full grid-cols-2 sm:grid-cols-2 lg:grid-cols-8 auto-rows-auto">
+    <div className="grid gap-4 w-full grid-cols-12 lg:grid-cols-12 auto-rows-auto">
       <SortableContext items={widgets} strategy={rectSwappingStrategy}>
         {widgets.map((widget) => (
           <SortableWidget key={widget.id} id={widget.id} size={widget.size}>
