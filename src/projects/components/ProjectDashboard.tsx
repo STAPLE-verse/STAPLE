@@ -23,6 +23,7 @@ import initializeProjectWidgets from "src/widgets/mutations/initializeProjectWid
 import { useWidgetConstruction } from "src/widgets/hooks/useWidgetConstruction"
 import { sortWidgets } from "src/widgets/utils/sortWidgets"
 import { WidgetContainer } from "src/widgets/components/WidgetContainer"
+import { useContributorPrivilege } from "src/contributors/components/ContributorPrivilegeContext"
 
 const ProjectDashboard = () => {
   const [updateWidgetMutation] = useMutation(updateProjectWidgets)
@@ -31,6 +32,7 @@ const ProjectDashboard = () => {
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
   const userId = currentUser?.id!
+  const { privilege } = useContributorPrivilege()
 
   // TODO: tried to define projectwidget type but there was a type mismatch in useeffect
   const [widgets, setWidgets] = useState<any[]>([])
@@ -45,7 +47,7 @@ const ProjectDashboard = () => {
       const sortedWidgets = sortWidgets(fetchedWidgets)
       setWidgets(sortedWidgets)
     } else {
-      initializeWidgetsMutation({ userId: userId, projectId: projectId! })
+      initializeWidgetsMutation({ userId: userId, projectId: projectId!, privilege: privilege! })
         .then((createdWidgets) => {
           setWidgets(createdWidgets)
           toast.success(`Dashboard added successfully!`)
@@ -54,9 +56,10 @@ const ProjectDashboard = () => {
           toast.error(`Issue with dashboard, please contact help.`)
         })
     }
-  }, [fetchedWidgets, initializeWidgetsMutation, projectId, userId])
+  }, [fetchedWidgets, initializeWidgetsMutation, privilege, projectId, userId])
 
   const constructedWidgets = useWidgetConstruction({ widgets, registryType: "project" })
+
   const { handleDragEnd } = useDashboardDragHandlers({
     setWidgets,
     updateWidgetMutation,
