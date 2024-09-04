@@ -13,7 +13,6 @@ import {
   contributorTableColumns,
 } from "src/contributors/components/ContributorTable"
 import Table from "src/core/components/Table"
-import ContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 import { ContributorPrivileges } from "@prisma/client"
 
@@ -86,10 +85,17 @@ const ContributorsPage = () => {
         </Suspense>
         <div>
           <Link
-            className="btn btn-secondary mb-4"
+            className="btn btn-primary mb-4"
             href={Routes.NewContributorPage({ projectId: projectId! })}
           >
-            Add Contributor
+            Invite Contributor
+          </Link>
+
+          <Link
+            className="btn btn-secondary mx-2 mb-4"
+            href={Routes.InvitesPagePM({ projectId: projectId! })}
+          >
+            View Invitations
           </Link>
         </div>
       </main>

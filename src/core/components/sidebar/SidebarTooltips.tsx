@@ -25,6 +25,7 @@ const tooltipContents = [
   { id: "labels-tooltip", content: "View, add, and edit contribution categories with labels" },
   { id: "help-tooltip", content: "Get help with STAPLE" },
   { id: "project-notification-tooltip", content: "View notifications for this project" },
+  { id: "invite-tooltip", content: "View and accept project invitations" },
 ]
 
 const SidebarTooltips = () => {

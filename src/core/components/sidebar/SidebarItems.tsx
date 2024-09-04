@@ -13,6 +13,7 @@ import {
   TagIcon,
   CheckCircleIcon,
   QuestionMarkCircleIcon,
+  EnvelopeIcon,
 } from "@heroicons/react/24/outline"
 import { Routes } from "@blitzjs/next"
 import { ContributorPrivileges } from "db"
@@ -117,6 +118,12 @@ export const HomeSidebarItems = (): SidebarItemProps[] => {
       text: "Projects",
       route: Routes.ProjectsPage(),
       tooltipId: "projects-tooltip",
+    },
+    {
+      icon: EnvelopeIcon,
+      text: "Invitations",
+      route: Routes.InvitesPage(),
+      tooltipId: "invite-tooltip",
     },
     {
       icon: ClipboardDocumentListIcon,

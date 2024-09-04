@@ -52,7 +52,7 @@ const CompleteToggle = ({
           <label className="flex items-center cursor-pointer">
             <input
               type="checkbox"
-              className="toggle"
+              className="toggle toggle-success"
               checked={isChecked}
               onChange={handleAssignmentStatusToggle}
             />

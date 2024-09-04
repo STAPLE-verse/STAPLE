@@ -1,22 +1,14 @@
 import React, { useState } from "react"
-import { Task } from "db"
 
-import { RowSelection, createColumnHelper } from "@tanstack/react-table"
-import Link from "next/link"
-import { Routes } from "@blitzjs/next"
+import { createColumnHelper } from "@tanstack/react-table"
 import Modal from "src/core/components/Modal"
-import { LabelForm } from "./LabelForm"
 import { FORM_ERROR } from "final-form"
 
 import toast from "react-hot-toast"
-import updateLabel from "../mutations/updateLabel"
-import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
 import { LabelIdsFormSchema } from "../schemas"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
-import { labelTableColumns } from "./LabelTable"
-import TaskTableModal from "./LabelAddTableModal"
 
 export type TaskLabelInformation = {
   name: string
@@ -141,7 +133,7 @@ export const MultipleCheckboxColumn = ({ row }) => {
             <label className="label cursor-pointer">
               <input
                 type="checkbox"
-                className="checkbox checkbox-primary"
+                className="checkbox checkbox-primary border-2"
                 checked={row.selectedIds.includes(row.id)}
                 onChange={() => {
                   handleOnChange(row.id)
@@ -199,30 +191,4 @@ export const labelTaskTableColumns = [
     cell: (info) => <MultipleCheckboxColumn row={info.row.original}></MultipleCheckboxColumn>,
     header: "Add Multiple",
   }),
-
-  // columnHelper.accessor("id", {
-  //   id: "multiple",
-  //   enableColumnFilter: false,
-  //   enableSorting: false,
-  //   cell: (info) => (
-  //     <span>
-  //       {
-  //         <div>
-  //           <label className="label cursor-pointer">
-  //             <input
-  //               type="checkbox"
-  //               className="checkbox checkbox-primary"
-  //               checked={false}
-  //               onChange={() => {
-  //                 // console.log("Add multiple")
-  //                 // handleOnChange(info.row.original)
-  //               }}
-  //             />
-  //           </label>
-  //         </div>
-  //       }
-  //     </span>
-  //   ),
-  //   header: "Add Multiple",
-  // }),
 ]

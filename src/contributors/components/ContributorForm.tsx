@@ -1,15 +1,14 @@
-
 import React, { useState } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
-import getUsers from "src/users/queries/getUsers"
 import { ContributorPrivileges } from "@prisma/client"
 import getLabels from "src/labels/queries/getLabels"
 import Modal from "src/core/components/Modal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
-
+import LabeledTextField from "src/core/components/fields/LabeledTextField"
+import { Tooltip } from "react-tooltip"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
@@ -23,25 +22,6 @@ export const ContributorPrivilegesOptions = [
 
 export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
   const { projectId, isEdit = false, ...formProps } = props
-
-  const [users] = useQuery(
-    getUsers,
-    {
-      where: {
-        NOT: {
-          contributions: {
-            some: {
-              project: {
-                id: projectId,
-              },
-            },
-          },
-        },
-      },
-    },
-    // Only run query if useers are needed for the field
-    { enabled: !isEdit }
-  )
 
   const [{ labels }] = useQuery(getLabels, {
     where: {
@@ -63,33 +43,49 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
 
   return (
     <Form<S> {...formProps}>
+      <Tooltip
+        id="priv-tooltip"
+        content="Project Managers can see and edit
+      all parts of a project, while contributors can only complete
+      tasks assigned to them."
+        className="z-[1099]"
+        place="right"
+        opacity={1}
+      />
+      <Tooltip
+        id="role-tooltip"
+        content="Add role labels to individual contributors (like administration)"
+        className="z-[1099]"
+        place="right"
+        opacity={1}
+      />
       {!isEdit && (
-        <LabelSelectField
-          className="select text-primary select-bordered w-1/2 mt-4 mb-4"
-          name="userId"
-          label="Select User:"
-          options={users}
-          optionText="username"
-          optionValue="id"
+        <LabeledTextField
+          name="email"
+          label="Email: (Required)"
+          placeholder="Email"
+          type="text"
+          className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
         />
       )}
       <LabelSelectField
-        className="select text-primary select-bordered w-1/2 mt-4"
+        className="select text-primary select-bordered border-primary border-2 w-1/2 mt-4 bg-base-300"
         name="privilege"
-        label="Select Privilege:"
+        label="Select Privilege: (Required)"
         options={ContributorPrivilegesOptions}
         optionText="label"
         optionValue="value"
         type="string"
+        data-tooltip-id="priv-tooltip"
       />
-
       <div className="mt-4">
         <button
           type="button"
           className="btn btn-primary w-1/2"
+          data-tooltip-id="role-tooltip"
           onClick={() => handleToggleLabelsModal()}
         >
-          Add Label
+          Add Role
         </button>
         <Modal open={openLabelsModal} size="w-7/8 max-w-xl">
           <div className="">

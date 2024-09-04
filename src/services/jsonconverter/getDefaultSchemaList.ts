@@ -14,10 +14,10 @@ export function getDefaultSchemaLists() {
       uis[index] != null && uis[index] != undefined ? (uis[index] as string) : String("{}")
     const uiparse = JSON.parse(newUi)
     return {
-      name: parsed.title,
-      id: -(index + 1),
+      label: parsed.title,
+      id: index + 1,
       schema: parsed,
-      ui: uiparse,
+      uiSchema: uiparse,
     }
   })
 

@@ -2,16 +2,12 @@ import { ContributorPrivileges } from "@prisma/client"
 import { z } from "zod"
 
 export const CreateContributorSchema = z.object({
-  projectId: z.number(),
+  invitationCode: z.string(),
   userId: z.number(),
-  privilege: z.nativeEnum(ContributorPrivileges),
-  addedBy: z.string(),
-  labelsId: z.array(z.number()).optional().nullable(),
-  // template: __fieldName__: z.__zodType__(),
 })
 
 export const CreateContributorFormSchema = z.object({
-  userId: z.number(),
+  email: z.string(),
   privilege: z.nativeEnum(ContributorPrivileges),
   labelsId: z.array(z.number()).optional().nullable(),
 })

@@ -22,7 +22,7 @@ export const ShowTeamModal = ({ team }) => {
   }
 
   return (
-    <div className="mt-4">
+    <div className="">
       <button
         type="button"
         className="btn btn-primary"

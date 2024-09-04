@@ -58,6 +58,12 @@ export const LabeledTextAreaField = forwardRef<HTMLTextAreaElement, LabeledTextA
             appearance: none;
             margin-top: 0.5rem;
           }
+
+          textarea:focus {
+            outline-color: oklch(var(--s)) !important;
+            outline-offset: 0;
+            outline-width: 3px !important;
+          }
         `}</style>
       </div>
     )

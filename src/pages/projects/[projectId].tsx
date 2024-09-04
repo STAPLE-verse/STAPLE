@@ -16,7 +16,6 @@ import { FormAnnouncementSchema } from "src/projects/schemas"
 export const ShowProjectPage = () => {
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
-  const [announcementText, setAnnouncementText] = useState("")
   const { contributor: currentContributor } = useCurrentContributor(projectId)
   const [openModal, setOpenModal] = useState(false)
 
@@ -27,14 +26,11 @@ export const ShowProjectPage = () => {
   const [createAnnouncementMutation] = useMutation(createAnnouncement)
 
   const handleSubmit = async (values) => {
-    //console.log("Form submitted with values:", values)
     try {
       await createAnnouncementMutation({
         projectId: projectId!,
         announcementText: values.announcementText,
       })
-      //console.log("Announcement created successfully")
-      setAnnouncementText("")
       setOpenModal(false)
     } catch (error) {
       console.error("Error creating announcement:", error)
@@ -51,7 +47,7 @@ export const ShowProjectPage = () => {
         <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
           {currentContributor!.privilege == ContributorPrivileges.PROJECT_MANAGER && (
             <>
-              <button type="button" className="btn btn-primary" onClick={handleToggle}>
+              <button type="button" className="btn btn-primary mb-4" onClick={handleToggle}>
                 Create Announcement
               </button>
               <Modal open={openModal} size="w-full">

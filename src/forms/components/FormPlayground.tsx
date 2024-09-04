@@ -56,13 +56,6 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
             classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
           }
         >
-          Preview
-        </Tab>
-        <Tab
-          className={({ selected }) =>
-            classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
-          }
-        >
           Visual Builder
         </Tab>
         <Tab
@@ -72,13 +65,16 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
         >
           JSON Builder
         </Tab>
+        <Tab
+          className={({ selected }) =>
+            classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
+          }
+        >
+          Preview
+        </Tab>
       </Tab.List>
 
       <Tab.Panels>
-        <Tab.Panel>
-          <PreviewTab schema={state.schema} uiSchema={state.uischema} formData={state.formData} />
-        </Tab.Panel>
-
         <Tab.Panel>
           <VisualBuilderTab
             schema={state.schema}
@@ -95,6 +91,10 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
             onSave={handleSave}
             onChange={handleChange}
           />
+        </Tab.Panel>
+
+        <Tab.Panel>
+          <PreviewTab schema={state.schema} uiSchema={state.uischema} formData={state.formData} />
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>

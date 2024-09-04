@@ -28,7 +28,7 @@ export const MultipleCheckboxColumn = ({ row }) => {
             <label className="label cursor-pointer">
               <input
                 type="checkbox"
-                className="checkbox checkbox-primary"
+                className="checkbox checkbox-primary border-2"
                 checked={row.selectedIds.includes(row.id)}
                 onChange={() => {
                   handleOnChange(row.id)

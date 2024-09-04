@@ -23,10 +23,14 @@ export const TosForm = (props: TosFormProps) => {
           Privacy Policy. Please take the time to read them thoroughly.
         </p>
         <p>
-          <a href="https://staple.science/terms_conditions.html">Terms and Conditions</a>
+          <b>
+            <a href="https://staple.science/terms_conditions.html">Terms and Conditions</a>
+          </b>
         </p>
         <p>
-          <a href="https://staple.science/privacy_policy.html">Privacy Policy</a>
+          <b>
+            <a href="https://staple.science/privacy_policy.html">Privacy Policy</a>
+          </b>
         </p>
         <p>If you have any questions, feel free to reach out to STAPLE Support for assistance.</p>
       </div>
@@ -48,6 +52,7 @@ export const TosForm = (props: TosFormProps) => {
         <LabeledCheckboxField
           name="tos"
           label="I have read and agree to these terms."
+          className="checkbox checkbox-primary border-2"
         ></LabeledCheckboxField>
       </Form>
       <div className="divider pt-4 pb-4"></div>

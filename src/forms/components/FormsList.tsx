@@ -1,29 +1,21 @@
-import { usePaginatedQuery } from "@blitzjs/rpc"
 import Table from "src/core/components/Table"
-import { useRouter } from "next/router"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getForms from "src/forms/queries/getForms"
-import { formsTableColumns } from "src/forms/components/FormsTable"
+import { FormWithFormVersion, formsTableColumns } from "src/forms/components/FormsTable"
 
-const ITEMS_PER_PAGE = 10
+type FormsListProps = {
+  forms: FormWithFormVersion[]
+  page: number
+  goToPreviousPage: () => void
+  goToNextPage: () => void
+  hasMore: boolean
+}
 
-export const FormsList = () => {
-  const router = useRouter()
-  const page = Number(router.query.page) || 0
-  const currentUser = useCurrentUser()
-
-  const [{ forms, hasMore }] = usePaginatedQuery(getForms, {
-    where: {
-      user: { id: currentUser?.id },
-    },
-    orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
-  })
-
-  const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { page: page + 1 } })
-
+export const FormsList = ({
+  forms,
+  page,
+  goToPreviousPage,
+  goToNextPage,
+  hasMore,
+}: FormsListProps) => {
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center mb-2 text-3xl">All Forms</h1>

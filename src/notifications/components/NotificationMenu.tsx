@@ -3,6 +3,7 @@ import { BellIcon } from "@heroicons/react/24/outline"
 import Link from "next/link"
 import DOMPurify from "dompurify"
 import { useNotificationMenuData } from "../hooks/useNotificationMenuData"
+import { Tooltip } from "react-tooltip"
 
 const NotificationsMenu = () => {
   // Get notification counts and the latest notifications
@@ -25,7 +26,14 @@ const NotificationsMenu = () => {
     <div className="dropdown dropdown-end">
       <label tabIndex={0} className="btn btn-ghost btn-circle">
         <div className="indicator">
-          <BellIcon className="w-5 h-5" />
+          <BellIcon className="w-5 h-5" data-tooltip-id="notifications-top-tooltip" />
+          <Tooltip
+            id="notifications-top-tooltip"
+            content="View all notifications across projects."
+            className="z-[1099]"
+            place="left"
+          />
+
           <span className="badge badge-sm indicator-item">{unreadCount}</span>
         </div>
       </label>

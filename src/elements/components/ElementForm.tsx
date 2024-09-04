@@ -4,7 +4,6 @@ import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
 
 import { z } from "zod"
-import { FORM_ERROR } from "final-form"
 
 export function ElementForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
@@ -14,7 +13,7 @@ export function ElementForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         label="Name: (Required)"
         placeholder="Name"
         type="text"
-        className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"
+        className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
       />
       <LabeledTextAreaField
         name="description"

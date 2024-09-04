@@ -83,12 +83,6 @@ enum ContributorPrivileges {
   CONTRIBUTOR
 }
 
-enum InvitationStatus {
-  INVITED
-  ACCEPTED
-  DECLINED
-}
-
 model Contributor {
   createdAt           DateTime              @default(now())
   id                  Int                   @id @default(autoincrement())
@@ -100,7 +94,6 @@ model Contributor {
   privilege           ContributorPrivileges @default(PROJECT_MANAGER)
   teams               Team[]
   tasks               Task[]
-  invitationStatus    InvitationStatus      @default(INVITED)
   deleted             Boolean               @default(false)
   assignmentStatusLog AssignmentStatusLog[]
   // allow them to have multiple contributor labels, I think like the task array?
@@ -108,8 +101,20 @@ model Contributor {
   labels              Label[]
 }
 
-// Contribution type
+// Invites
+model Invitation {
+  createdAt      DateTime              @default(now())
+  id             Int                   @id @default(autoincrement())
+  projectId      Int
+  project        Project               @relation(fields: [projectId], references: [id])
+  invitationCode String
+  labels         Label[]
+  email          String
+  privilege      ContributorPrivileges @default(CONTRIBUTOR)
+  addedBy        String
+}
 
+// Contribution type
 model Label {
   id           Int           @id @default(autoincrement())
   userId       Int
@@ -120,6 +125,7 @@ model Label {
   projects     Project[]
   tasks        Task[]
   contributors Contributor[]
+  invitation   Invitation[]
 }
 
 model Project {
@@ -141,6 +147,8 @@ model Project {
   labels        Label[]
   projectWidget ProjectWidget[]
   notifications Notification[]
+
+  invitations Invitation[]
 }
 
 enum TaskStatus {
@@ -280,26 +288,34 @@ model Notification {
   project      Project? @relation(fields: [projectId], references: [id])
 }
 
+enum WidgetSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
 model Widget {
-  id       Int     @id @default(autoincrement())
+  id       Int        @id @default(autoincrement())
   userId   Int
-  user     User    @relation(fields: [userId], references: [id])
+  user     User       @relation(fields: [userId], references: [id])
   type     String // "LastProject", "Notifications", "OverdueTask", "UpcomingTask"
-  show     Boolean @default(true)
+  show     Boolean    @default(true)
   position Int
+  size     WidgetSize @default(MEDIUM)
 
   @@unique([userId, type])
 }
 
 model ProjectWidget {
-  id        Int     @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   userId    Int
-  user      User    @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id])
   projectId Int
-  project   Project @relation(fields: [projectId], references: [id])
+  project   Project    @relation(fields: [projectId], references: [id])
   type      String
-  show      Boolean @default(true)
+  show      Boolean    @default(true)
   position  Int
+  size      WidgetSize @default(MEDIUM)
 
   @@unique([userId, projectId, type])
 }

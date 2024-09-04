@@ -1,8 +1,9 @@
 import { SecurePassword } from "@blitzjs/auth/secure-password"
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
+import db, { WidgetSize } from "db"
 import { Role } from "types"
 import { Signup } from "../schemas"
+import { Mailer } from "integrations/mailer"
 
 export default resolver.pipe(resolver.zod(Signup), async ({ email, password, username }, ctx) => {
   const hashedPassword = await SecurePassword.hash(password.trim())
@@ -26,6 +27,7 @@ export default resolver.pipe(resolver.zod(Signup), async ({ email, password, use
     type: type,
     show: true,
     position: index + 1,
+    size: WidgetSize.LARGE,
   }))
 
   await ctx.session.$create({ userId: user.id, role: user.role as Role })
@@ -33,6 +35,27 @@ export default resolver.pipe(resolver.zod(Signup), async ({ email, password, use
   await db.widget.createMany({
     data: widgets,
   })
+
+  const msg = {
+    from: "staple.helpdesk@gmail.com",
+    to: email.toLowerCase().trim(),
+    subject: "STAPLE Account Created",
+    html: `
+      <h3>Welcome to STAPLE</h3>
+
+      You requested a STAPLE account at https://app.staple.science.
+      You may now log in to your account.
+      <p>
+      If you need more help or did not request an account,
+      you can reply to this email to create a ticket.
+      <p>
+      Thanks,
+      <br>
+      STAPLE HelpDesk
+    `,
+  }
+
+  await Mailer(msg)
 
   return user
 })

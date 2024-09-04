@@ -35,6 +35,7 @@ const RadioFieldTable = <T,>({
         cell: ({ row }) => (
           <input
             type="radio"
+            className="radio radio-primary"
             checked={selectedId === row.original.id}
             onChange={() => handleSelection(row.original.id)}
           />

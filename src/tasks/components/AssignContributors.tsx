@@ -44,7 +44,7 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
               <label className="label cursor-pointer">
                 <input
                   type="checkbox"
-                  className="checkbox checkbox-primary"
+                  className="checkbox checkbox-primary border-2"
                   checked={info.row.original.checked}
                   onChange={() => {
                     handleOnChange(info.row.original)
