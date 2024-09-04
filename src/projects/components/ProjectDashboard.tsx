@@ -58,7 +58,11 @@ const ProjectDashboard = () => {
     }
   }, [fetchedWidgets, initializeWidgetsMutation, privilege, projectId, userId])
 
-  const constructedWidgets = useWidgetConstruction({ widgets, registryType: "project" })
+  const constructedWidgets = useWidgetConstruction({
+    widgets,
+    registryType: "project",
+    privilege: privilege!,
+  })
 
   const { handleDragEnd } = useDashboardDragHandlers({
     setWidgets,
