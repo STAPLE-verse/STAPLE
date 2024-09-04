@@ -13,14 +13,14 @@ import getContributors from "src/contributors/queries/getContributors"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
 import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
 import { labelTableColumnsTeam } from "src/labels/components/LabelTable"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 import { ContributorPrivileges } from "db"
+import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
 export const ShowTeamPage = () => {
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
-
   const router = useRouter()
   const [deleteTeamMutation] = useMutation(deleteTeam)
+
+  const projectId = useParam("projectId", "number")
 
   const teamId = useParam("teamId", "number")
   const [team] = useQuery(getTeam, { id: teamId })
@@ -33,9 +33,16 @@ export const ShowTeamPage = () => {
     },
   })
 
-  const projectId = useParam("projectId", "number")
+  const { contributor: currentContributor } = useCurrentContributor(projectId)
 
   const membersId = contributors.map((contributor) => contributor.userId)
+
+  const handleDelete = async () => {
+    if (window.confirm("The team will be permanently deleted. Are you sure to continue?")) {
+      await deleteTeamMutation({ id: team.id })
+      await router.push(Routes.TeamsPage({ projectId: projectId! }))
+    }
+  }
 
   return (
     <Layout>
@@ -59,12 +66,14 @@ export const ShowTeamPage = () => {
               })}
             </div>
             <div className="card-actions justify-end m-2">
-              <Link
-                className="btn btn-primary"
-                href={Routes.EditTeamPage({ projectId: projectId!, teamId: team.id })}
-              >
-                Edit Team
-              </Link>
+              {currentContributor!.privilege === ContributorPrivileges.PROJECT_MANAGER && (
+                <Link
+                  className="btn btn-primary"
+                  href={Routes.EditTeamPage({ projectId: projectId!, teamId: team.id })}
+                >
+                  Edit Team
+                </Link>
+              )}
             </div>
           </div>
 
@@ -75,33 +84,23 @@ export const ShowTeamPage = () => {
                 usersId={membersId}
                 projectId={projectId}
                 columns={labelTableColumnsTeam}
-              ></ContributorLabelsList>
+              />
             </div>
           </div>
 
           <div className="card bg-base-300 w-full mt-2">
             <div className="card-body">
               <div className="card-title">Team Task Contribution Roles</div>
-              <TeamTaskListDone teamId={teamId}></TeamTaskListDone>
+              <TeamTaskListDone teamId={teamId} />
             </div>
           </div>
-
-          <div className="flex justify-end mt-4">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={async () => {
-                if (
-                  window.confirm("The team will be permanently deleted. Are you sure to continue?")
-                ) {
-                  await deleteTeamMutation({ id: team.id })
-                  await router.push(Routes.TeamsPage({ projectId: projectId! }))
-                }
-              }}
-            >
-              Delete Team
-            </button>
-          </div>
+          {currentContributor!.privilege === ContributorPrivileges.PROJECT_MANAGER && (
+            <div className="flex justify-end mt-4">
+              <button type="button" className="btn btn-secondary" onClick={handleDelete}>
+                Delete Team
+              </button>
+            </div>
+          )}
         </main>
       </Suspense>
     </Layout>
