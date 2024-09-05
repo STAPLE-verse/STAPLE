@@ -9,7 +9,7 @@ interface PrimaryLinkArgs {
 
 export default function PrimaryLink({ route, text }: PrimaryLinkArgs) {
   return (
-    <Link className="btn btn-primary self-end m-4" href={route}>
+    <Link className="btn btn-primary self-end" href={route}>
       {text}
     </Link>
   )

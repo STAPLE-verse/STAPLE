@@ -579,3 +579,8 @@ span.arrow.tooltip-arrow {
 .tooltip {
   z-index: 9999; /* A higher value than the modal */
 }
+
+.size-circle .CircularProgressbar {
+  width: 115px;
+  height: 115px;
+}
