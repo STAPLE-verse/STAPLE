@@ -23,8 +23,8 @@ export const useNotificationTableColumns = (refetch: () => void) => {
       columnHelper.accessor("projectId", {
         id: "projectTitle",
         header: "Project",
-        //enableColumnFilter: false,
-        //enableSorting: false,
+        enableColumnFilter: true,
+        enableSorting: true,
         cell: (info) => {
           if (info.getValue()) {
             return <span>{info.row.original.project.name.substring(0, 20)}</span>
@@ -36,9 +36,13 @@ export const useNotificationTableColumns = (refetch: () => void) => {
       columnHelper.accessor("message", {
         id: "message",
         header: "Notification Message",
-        //enableColumnFilter: false,
-        //enableSorting: false,
+        enableColumnFilter: false,
+        enableSorting: false,
         cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
+        meta: {
+          filterVariant: "multiselect",
+          isHtml: true,
+        },
       }),
       columnHelper.accessor("read", {
         enableColumnFilter: false,
@@ -61,13 +65,17 @@ export const useProjectNotificationTableColumns = (refetch: () => void) => {
       columnHelper.accessor("message", {
         id: "message",
         header: "Notification Message",
-        //enableColumnFilter: false,
-        //enableSorting: false,
+        enableColumnFilter: true,
+        enableSorting: false,
         cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
+        meta: {
+          filterVariant: "select",
+          isHtml: true,
+        },
       }),
       columnHelper.accessor("read", {
         enableColumnFilter: false,
-        //enableSorting: false,
+        enableSorting: false,
         cell: (info) => <ReadToggle notification={info.row.original} refetch={refetch} />,
         header: "Read",
       }),

@@ -1,7 +1,7 @@
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 interface DateFormatProps {
-  date?: Date
+  date?: Date | null
 }
 
 export default function DateFormat({ date }: DateFormatProps) {

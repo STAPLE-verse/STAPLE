@@ -65,13 +65,11 @@ const Navbar = () => {
   }
 
   function toggleTheme(e) {
-    //console.log(e);
     localStorage.setItem("theme", e.target.value)
     setTheme(e.target.value)
   }
 
   React.useEffect(() => {
-    //console.log(localStorage.getItem("theme"));
     getThemeFromLocalStorage()
     const htmlElement = document.querySelector("html")
     if (htmlElement) {
