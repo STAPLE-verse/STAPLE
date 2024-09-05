@@ -36,8 +36,6 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
     }
   })
 
-  //console.log(projectId)
-
   return (
     <Form<S> {...formProps} encType="multipart/form-data">
       <div className="flex justify-start mt-4">

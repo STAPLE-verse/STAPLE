@@ -35,7 +35,6 @@ const CompleteToggle = ({
     return latest.createdAt > current.createdAt ? latest : current
   }, currentAssignment.statusLogs[0])
 
-  // console.log(currentAssignment)
   const [isChecked, setIsChecked] = useState(latestStatusLog.status === AssignmentStatus.COMPLETED)
 
   // Get team name if assignment is completed as a team

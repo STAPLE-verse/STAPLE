@@ -1,51 +1,67 @@
-// @ts-nocheck
-
 import React from "react"
-import { Task } from "db"
-
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
+import {
+  ProcessedAllTasks,
+  ProcessedFinishedTasks,
+  ProcessedProjectTasks,
+  ProcessedElementTasks,
+} from "../utils/processTasks"
 
-// TODO: Is it better to call the database for column name every time or just one time and pass the value to child components?
 // Column helper
-const columnHelper = createColumnHelper<Task>()
+const columnHelperAll = createColumnHelper<ProcessedAllTasks>()
 
 // ColumnDefs
-export const taskTableColumns = [
-  columnHelper.accessor("name", {
+export const allTasksTableColumns = [
+  columnHelperAll.accessor("name", {
+    enableColumnFilter: true,
+    enableSorting: true,
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
+    meta: {
+      filterVariant: "text",
+    },
   }),
-  columnHelper.accessor("project.name", {
+  columnHelperAll.accessor("projectName", {
+    enableColumnFilter: true,
+    enableSorting: true,
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Project",
-  }),
-  // TODO: Check how to use anonym function in accessor to get column name
-  columnHelper.accessor("deadline", {
-    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
-    header: "Due Date",
-  }),
-  columnHelper.accessor("assignees", {
-    header: "Completed",
-    cell: (info) => {
-      const value = info.getValue() as String[]
-      const answer = value.map((v) => v.statusLogs[0].status)
-      return <>{answer[0] === "COMPLETED" ? "Complete" : "Not Complete"}</>
+    meta: {
+      filterVariant: "select",
     },
   }),
-  columnHelper.accessor("id", {
-    id: "view",
+  columnHelperAll.accessor("deadline", {
+    enableColumnFilter: true,
+    enableSorting: true,
+    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
+    header: "Due Date",
+    meta: {
+      filterVariant: "text",
+    },
+  }),
+  columnHelperAll.accessor("completition", {
+    header: "Completition",
+    enableColumnFilter: true,
+    enableSorting: true,
+    cell: (info) => <span>{info.getValue()}%</span>,
+    meta: {
+      filterVariant: "range",
+    },
+  }),
+  columnHelperAll.accessor("view", {
     header: "View",
+    id: "view",
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
       <Link
         className="btn btn-primary"
         href={Routes.ShowTaskPage({
-          projectId: info.row.original.projectId,
-          taskId: info.getValue(),
+          projectId: info.getValue().projectId,
+          taskId: info.getValue().taskId,
         })}
       >
         View
@@ -54,28 +70,37 @@ export const taskTableColumns = [
   }),
 ]
 
-export const taskFinishedTableColumns = [
-  columnHelper.accessor("name", {
+const columnHelperFinished = createColumnHelper<ProcessedFinishedTasks>()
+
+export const finishedTasksTableColumns = [
+  columnHelperFinished.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
-  }),
-  columnHelper.accessor("labels", {
-    cell: (info) => {
-      let temp
-      temp = info.getValue().map((i) => i.name)
-      return <span>{temp.join(", ")}</span>
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "text",
     },
+  }),
+  columnHelperFinished.accessor("labels", {
+    cell: (info) => <span>{info.getValue()}</span>,
     header: "Roles",
-  }),
-  columnHelper.accessor("assignees", {
-    cell: (info) => {
-      const varName = "statusLogs"
-      const temp = info.getValue()[0].statusLogs[0].createdAt
-      return <DateFormat date={temp}></DateFormat>
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "text",
     },
+  }),
+  columnHelperFinished.accessor("completedOn", {
+    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Completed",
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "text",
+    },
   }),
-  columnHelper.accessor("id", {
+  columnHelperFinished.accessor("view", {
     id: "view",
     header: "View",
     enableColumnFilter: false,
@@ -84,8 +109,8 @@ export const taskFinishedTableColumns = [
       <Link
         className="btn btn-primary"
         href={Routes.ShowTaskPage({
-          projectId: info.row.original.projectId,
-          taskId: info.getValue(),
+          projectId: info.getValue().projectId,
+          taskId: info.getValue().taskId,
         })}
       >
         View
@@ -94,85 +119,46 @@ export const taskFinishedTableColumns = [
   }),
 ]
 
-export const taskFinishedTableColumnsTeam = [
-  columnHelper.accessor("assignees", {
-    cell: (info) => {
-      const contributorId = info.getValue()[0].statusLogs[0].completedBy
-      return <span>{contributorId}</span>
-    },
-    header: "Completed by",
-    id: "completedBy",
-  }),
-  columnHelper.accessor("name", {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Task Name",
-    id: "taskName",
-  }),
-  columnHelper.accessor("labels", {
-    cell: (info) => {
-      if (info.getValue().length > 0) {
-        let temp
-        temp = info.getValue().map((i) => i.name)
-        return <span>{temp.join(", ")}</span>
-      } else {
-        return "No roles assigned to the task"
-      }
-    },
-    header: "Roles",
-    id: "label",
-  }),
-  columnHelper.accessor("assignees", {
-    cell: (info) => {
-      const temp = info.getValue()[0].statusLogs[0].createdAt
-      return <DateFormat date={temp}></DateFormat>
-    },
-    header: "Completed at",
-    id: "completedAt",
-  }),
-  columnHelper.accessor("id", {
-    id: "view",
-    header: "View",
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => (
-      <Link
-        className="btn btn-primary"
-        href={Routes.ShowTaskPage({
-          projectId: info.row.original.projectId,
-          taskId: info.getValue(),
-        })}
-      >
-        View
-      </Link>
-    ),
-  }),
-]
+const columnHelperProject = createColumnHelper<ProcessedProjectTasks>()
 
-export const taskProjectTableColumnsContrib = [
-  columnHelper.accessor("name", {
+export const projectTasksTableColumns = [
+  columnHelperProject.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "text",
+    },
   }),
-  columnHelper.accessor("description", {
-    cell: (info) => (
-      <span>{info.getValue() === null ? "No Description" : info.getValue().substring(0, 50)}</span>
-    ),
+  columnHelperProject.accessor("description", {
+    cell: (info) => <span>{info.getValue()}</span>,
     header: "Description",
-  }),
-  // TODO: Check how to use anonym function in accessor to get column name
-  columnHelper.accessor("deadline", {
-    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
-    header: "Due Date",
-  }),
-  columnHelper.accessor("assignees", {
-    header: "Completed",
-    cell: (info) => {
-      const value = info.getValue() as String[]
-      const answer = value.map((v) => v.statusLogs[0].status)
-      return <>{answer[0] === "COMPLETED" ? "Complete" : "Not Complete"}</>
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "text",
     },
   }),
-  columnHelper.accessor("id", {
+  columnHelperProject.accessor("deadline", {
+    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
+    header: "Due Date",
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "text",
+    },
+  }),
+  columnHelperProject.accessor("status", {
+    header: "Completed",
+    cell: (info) => <span>{info.getValue()}</span>,
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "select",
+    },
+  }),
+  columnHelperProject.accessor("view", {
     id: "view",
     header: "View",
     enableColumnFilter: false,
@@ -181,8 +167,8 @@ export const taskProjectTableColumnsContrib = [
       <Link
         className="btn btn-primary"
         href={Routes.ShowTaskPage({
-          projectId: info.row.original.projectId,
-          taskId: info.getValue(),
+          projectId: info.getValue().projectId,
+          taskId: info.getValue().taskId,
         })}
       >
         View
@@ -191,65 +177,37 @@ export const taskProjectTableColumnsContrib = [
   }),
 ]
 
-export const taskProjectTableColumnsPM = [
-  columnHelper.accessor("name", {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Name",
-  }),
-  columnHelper.accessor("description", {
-    cell: (info) => (
-      <span>{info.getValue() === null ? "No Description" : info.getValue().substring(0, 50)}</span>
-    ),
-    header: "Description",
-  }),
-  // TODO: Check how to use anonym function in accessor to get column name
-  columnHelper.accessor("deadline", {
-    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
-    header: "Due Date",
-  }),
-  columnHelper.accessor("status", {
-    header: "Completed",
-    cell: (info) => <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>,
-  }),
-  columnHelper.accessor("id", {
-    id: "view",
-    header: "View",
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => (
-      <Link
-        className="btn btn-primary"
-        href={Routes.ShowTaskPage({
-          projectId: info.row.original.projectId,
-          taskId: info.getValue(),
-        })}
-      >
-        View
-      </Link>
-    ),
-  }),
-]
+const columnHelperElement = createColumnHelper<ProcessedElementTasks>()
 
-export const taskElementColumns = [
-  columnHelper.accessor("name", {
+export const elementTasksTableColumns = [
+  columnHelperElement.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
-    enableSorting: false,
-    enableColumnFilter: false,
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "text",
+    },
   }),
-  columnHelper.accessor("deadline", {
+  columnHelperElement.accessor("deadline", {
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Due Date",
-    enableSorting: false,
-    enableColumnFilter: false,
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "text",
+    },
   }),
-  columnHelper.accessor("status", {
+  columnHelperElement.accessor("status", {
     header: "Completed",
-    enableSorting: false,
-    enableColumnFilter: false,
-    cell: (info) => <span>{info.getValue() === "COMPLETED" ? "Completed" : "Not Completed"}</span>,
+    cell: (info) => <span>{info.getValue()}</span>,
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "select",
+    },
   }),
-  columnHelper.accessor("id", {
+  columnHelperElement.accessor("view", {
     id: "view",
     header: "View",
     enableColumnFilter: false,
@@ -258,8 +216,8 @@ export const taskElementColumns = [
       <Link
         className="btn btn-primary"
         href={Routes.ShowTaskPage({
-          projectId: info.row.original.projectId,
-          taskId: info.getValue(),
+          projectId: info.getValue().projectId,
+          taskId: info.getValue().taskId,
         })}
       >
         View

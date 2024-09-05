@@ -15,7 +15,7 @@ import { getPrivilegeText } from "src/services/getPrivilegeText"
 import { ContributorTaskListDone } from "src/tasks/components/ContributorsTaskListDone"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
 import { labelTableColumnsSimple } from "src/labels/components/LabelTable"
-import { taskFinishedTableColumns } from "src/tasks/components/TaskTable"
+import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
 import { ContributorPrivileges } from "db"
 import toast from "react-hot-toast"
@@ -140,6 +140,7 @@ export const ContributorPage = () => {
               contributor={currentContributor}
               columns={taskFinishedTableColumns}
             />
+
             <div className="card-actions justify-end">
               {currentContributor.privilege === ContributorPrivileges.PROJECT_MANAGER && (
                 <Link

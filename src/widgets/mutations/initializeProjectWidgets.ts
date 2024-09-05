@@ -112,5 +112,6 @@ export default resolver.pipe(
     })
 
     return filteredWidgets
+
   }
 )
