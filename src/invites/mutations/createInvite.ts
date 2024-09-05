@@ -27,6 +27,7 @@ export default resolver.pipe(
     if (findcontributor) {
       textResult = {
         code: "already_added",
+        findcontributor,
       }
     } else {
       // Create contributor
@@ -45,6 +46,7 @@ export default resolver.pipe(
 
       textResult = {
         code: "invite_sent",
+        contributor,
       }
     }
 

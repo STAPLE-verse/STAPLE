@@ -1,14 +1,14 @@
 import { useRouter } from "next/router"
 import React, { Suspense } from "react"
 import Head from "next/head"
-import getCurrentUser from "src/users/queries/getCurrentUser"
-import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import { FORM_ERROR } from "final-form"
 import changePassword from "src/auth/mutations/changePassword"
 import { ChangePassword } from "src/auth/schemas"
 import { Routes } from "@blitzjs/next"
 import { PasswordForm } from "./PasswordForm"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { createEditPasswordMsg } from "integrations/emails"
 
 export const EditPassword = () => {
   const router = useRouter()
@@ -37,31 +37,12 @@ export const EditPassword = () => {
                   ...values,
                 })
 
-                const msg = {
-                  from: "staple.helpdesk@gmail.com",
-                  to: currentUser!.email,
-                  subject: "STAPLE Password Change",
-                  html: `
-                    <h3>STAPLE Password Change</h3>
-
-                    This email is to notify you that you recently updated your
-                    password. If you did not make this change, please
-                    contact us immediately.
-                    <p>
-                    If you need more help, you can reply to this email to create a ticket.
-                    <p>
-                    Thanks,
-                    <br>
-                    STAPLE HelpDesk
-                  `,
-                }
-
                 const response = await fetch("/api/send-email", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
-                  body: JSON.stringify(msg),
+                  body: JSON.stringify(createEditPasswordMsg(currentUser)),
                 })
 
                 if (response.ok) {
