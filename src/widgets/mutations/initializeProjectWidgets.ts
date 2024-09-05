@@ -1,16 +1,17 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { WidgetSize } from "db"
+import db, { ContributorPrivileges, WidgetSize } from "db"
 import { z } from "zod"
 
 const SetProjectWidgets = z.object({
   userId: z.number(),
   projectId: z.number(),
+  privilege: z.nativeEnum(ContributorPrivileges),
 })
 
 export default resolver.pipe(
   resolver.zod(SetProjectWidgets),
   resolver.authorize(),
-  async ({ userId, projectId }) => {
+  async ({ userId, projectId, privilege }) => {
     const widgetData = [
       {
         userId,
@@ -19,6 +20,7 @@ export default resolver.pipe(
         show: true,
         position: 1,
         size: WidgetSize.LARGE,
+        privilege: [ContributorPrivileges.PROJECT_MANAGER, ContributorPrivileges.CONTRIBUTOR],
       },
       {
         userId,
@@ -27,6 +29,7 @@ export default resolver.pipe(
         show: true,
         position: 2,
         size: WidgetSize.LARGE,
+        privilege: [ContributorPrivileges.PROJECT_MANAGER, ContributorPrivileges.CONTRIBUTOR],
       },
       {
         userId,
@@ -35,6 +38,7 @@ export default resolver.pipe(
         show: true,
         position: 3,
         size: WidgetSize.LARGE,
+        privilege: [ContributorPrivileges.PROJECT_MANAGER, ContributorPrivileges.CONTRIBUTOR],
       },
       {
         userId,
@@ -43,6 +47,7 @@ export default resolver.pipe(
         show: true,
         position: 4,
         size: WidgetSize.LARGE,
+        privilege: [ContributorPrivileges.PROJECT_MANAGER, ContributorPrivileges.CONTRIBUTOR],
       },
       {
         userId,
@@ -51,6 +56,7 @@ export default resolver.pipe(
         show: true,
         position: 5,
         size: WidgetSize.SMALL,
+        privilege: [ContributorPrivileges.PROJECT_MANAGER, ContributorPrivileges.CONTRIBUTOR],
       },
       {
         userId,
@@ -59,6 +65,7 @@ export default resolver.pipe(
         show: true,
         position: 6,
         size: WidgetSize.SMALL,
+        privilege: [ContributorPrivileges.PROJECT_MANAGER, ContributorPrivileges.CONTRIBUTOR],
       },
       {
         userId,
@@ -67,6 +74,7 @@ export default resolver.pipe(
         show: true,
         position: 7,
         size: WidgetSize.SMALL,
+        privilege: [ContributorPrivileges.PROJECT_MANAGER],
       },
       {
         userId,
@@ -75,6 +83,7 @@ export default resolver.pipe(
         show: true,
         position: 8,
         size: WidgetSize.SMALL,
+        privilege: [ContributorPrivileges.PROJECT_MANAGER, ContributorPrivileges.CONTRIBUTOR],
       },
       {
         userId,
@@ -83,6 +92,7 @@ export default resolver.pipe(
         show: true,
         position: 9,
         size: WidgetSize.SMALL,
+        privilege: [ContributorPrivileges.PROJECT_MANAGER],
       },
       {
         userId,
@@ -91,13 +101,17 @@ export default resolver.pipe(
         show: true,
         position: 10,
         size: WidgetSize.SMALL,
+        privilege: [ContributorPrivileges.PROJECT_MANAGER],
       },
     ]
 
-    const createdWidgets = await Promise.all(
-      widgetData.map((widget) => db.projectWidget.create({ data: widget }))
-    )
+    const filteredWidgets = widgetData.filter((widget) => widget.privilege.includes(privilege))
 
-    return createdWidgets
+    await db.projectWidget.createMany({
+      data: filteredWidgets,
+    })
+
+    return filteredWidgets
+
   }
 )

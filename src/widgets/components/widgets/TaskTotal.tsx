@@ -1,22 +1,27 @@
-import React from "react"
+import React, { FC } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import getProjectStats from "src/projects/queries/getProjectStats"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetTotalTaskDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
+import { ContributorPrivileges } from "@prisma/client"
+import getTaskStats from "src/tasks/queries/getTaskStats"
 
-const TaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
+interface TaskTotalType
+  extends FC<{ size: "SMALL" | "MEDIUM" | "LARGE"; privilege: ContributorPrivileges }> {
+  requiresPrivilege?: boolean
+}
+
+const TaskTotal: TaskTotalType = ({ size, privilege }) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
 
   // Fetch project stats
-  const [projectStats] = useQuery(getProjectStats, { id: projectId! })
+  const [taskStats] = useQuery(getTaskStats, { projectId: projectId!, privilege: privilege })
 
   // Calculate task completion percentage
-  const taskPercent =
-    projectStats.allTask === 0 ? 0 : projectStats.completedTask / projectStats.allTask
+  const taskPercent = taskStats.allTask === 0 ? 0 : taskStats.completedTask / taskStats.allTask
 
   return (
     <Widget
@@ -29,5 +34,8 @@ const TaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) =
     />
   )
 }
+
+// TODO: Not an ideal solution, replace it with something more generalized
+TaskTotal.requiresPrivilege = true
 
 export default TaskTotal

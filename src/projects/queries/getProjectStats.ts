@@ -13,7 +13,6 @@ export default resolver.pipe(
   resolver.zod(GetProjectStatsSchema),
   resolver.authorize(),
   async ({ id }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const allTask = await db.task.count({
       where: { projectId: id },
     })
@@ -81,10 +80,8 @@ export default resolver.pipe(
       completedTask: completedTask,
       allTeams: allTeams,
       allElements: allElements,
-      //contribLabels: contribLabels,
       completedContribLabels: completedContribLabels.length,
       completedTaskLabels: completedTaskLabels.length,
-      //assignmentForms: assignmentForms,
       allAssignments: allAssignments.length,
       completedAssignments: completedAssignments.length,
     }
