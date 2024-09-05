@@ -11,7 +11,7 @@ export default resolver.pipe(
   resolver.zod(SetProjectWidgets),
   resolver.authorize(),
   async ({ userId, projectId }) => {
-    const widgets = [
+    const widgetData = [
       {
         userId,
         projectId,
@@ -94,10 +94,10 @@ export default resolver.pipe(
       },
     ]
 
-    await db.projectWidget.createMany({
-      data: widgets,
-    })
+    const createdWidgets = await Promise.all(
+      widgetData.map((widget) => db.projectWidget.create({ data: widget }))
+    )
 
-    return widgets
+    return createdWidgets
   }
 )
