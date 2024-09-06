@@ -5,7 +5,11 @@ import getElements from "../queries/getElements"
 import ElementItem from "./ElementItem"
 import getTasks from "src/tasks/queries/getTasks"
 
-export const ElementsList: React.FC = ({}) => {
+interface ElementsListProps {
+  searchTerm: string
+}
+
+export const ElementsList: React.FC<ElementsListProps> = ({ searchTerm }) => {
   // Setup
   const router = useRouter()
   const ITEMS_PER_PAGE = 7
@@ -17,7 +21,23 @@ export const ElementsList: React.FC = ({}) => {
 
   // Get elements data
   const [{ elements, hasMore }] = usePaginatedQuery(getElements, {
-    where: { project: { id: projectId! } },
+    where: {
+      project: { id: projectId! },
+      OR: [
+        {
+          name: {
+            contains: `${searchTerm}`,
+            mode: "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: `${searchTerm}`,
+            mode: "insensitive",
+          },
+        },
+      ],
+    },
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
