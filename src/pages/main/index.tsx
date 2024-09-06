@@ -23,7 +23,7 @@ import getUserWidgets from "src/widgets/queries/getUserWidgets"
 import initializeWidgets from "src/widgets/mutations/initializeWidgets"
 import toast from "react-hot-toast"
 
-const MainPage = () => {
+const MainContent = () => {
   const [updateWidgetMutation] = useMutation(updateWidget)
   const [initializeWidgetsMutation] = useMutation(initializeWidgets)
 
@@ -61,28 +61,29 @@ const MainPage = () => {
   )
 
   return (
-    <Layout>
-      <Head>
-        <title>Home</title>
-      </Head>
+    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl h-full space-y-4">
+      <div className="mb-4 justify-center flex">
+        <h3 className="text-3xl">Welcome, {currentUser!.username}!</h3>
+      </div>
 
-      <Suspense fallback={<div>Loading...</div>}>
-        <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl h-full space-y-4">
-          <div className="mb-4 justify-center flex">
-            <h3 className="text-3xl">Welcome, {currentUser!.username}!</h3>
-          </div>
-
-          <DndContext
-            collisionDetection={closestCorners}
-            onDragEnd={handleDragEnd}
-            sensors={sensors}
-          >
-            <WidgetContainer widgets={constructedWidgets} />
-          </DndContext>
-        </main>
-      </Suspense>
-    </Layout>
+      <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd} sensors={sensors}>
+        <WidgetContainer widgets={constructedWidgets} />
+      </DndContext>
+    </main>
   )
 }
+
+export const MainPage = () => (
+  <Layout>
+    <Head>
+      <title>Home</title>
+    </Head>
+    <Suspense fallback={<div>Loading...</div>}>
+      <MainContent />
+    </Suspense>
+  </Layout>
+)
+
+MainPage.authenticate = true
 
 export default MainPage

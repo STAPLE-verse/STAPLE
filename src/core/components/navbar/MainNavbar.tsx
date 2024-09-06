@@ -41,11 +41,11 @@ const StapleLogo = ({ theme }: LogoProps) => {
 const Navbar = () => {
   // Get current user data
   const currentUser = useCurrentUser()
+
   // Get initials for avatar
-  const initial = getInitials(currentUser!.firstName || "", currentUser!.lastName || "")
-  // Defining tabs
-  // with names and routes
-  // let tabs = []
+  const initial = currentUser
+    ? getInitials(currentUser!.firstName || "", currentUser!.lastName || "")
+    : ""
 
   // Logout
   const [logoutMutation] = useMutation(logout)
@@ -85,14 +85,6 @@ const Navbar = () => {
       <div className="flex-1">{StapleLogo({ theme })}</div>
       {/* On the right */}
       <div className="flex space-x-5">
-        {/* Templated tabs tab */}
-        {/* <ul className="menu menu-horizontal menu-lg">
-          {tabs.map((tab) => (
-            <li key={tab.name}>
-              <Link href={tab.href}>{tab.name}</Link>
-            </li>
-          ))}
-        </ul> */}
         {/* Home tab */}
         <label
           tabIndex={0}
@@ -133,7 +125,6 @@ const Navbar = () => {
             <li>
               <Link className="justify-between" key="Profile" href={Routes.ProfilePage()}>
                 Profile
-                {/* <span className="badge">New</span> */}
               </Link>
             </li>
             <li>
@@ -197,9 +188,10 @@ const Navbar = () => {
 // TODO: might have to add a general loading screens so that we wait for the body and the navbar to load together
 const MainNavbar = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Navbar />
-    </Suspense>
+    // TODO: is this necessary?
+    // <Suspense fallback={<div>Loading...</div>}>
+    <Navbar />
+    // </Suspense>
   )
 }
 

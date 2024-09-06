@@ -107,11 +107,10 @@ export default resolver.pipe(
 
     const filteredWidgets = widgetData.filter((widget) => widget.privilege.includes(privilege))
 
-    await db.projectWidget.createMany({
-      data: filteredWidgets,
-    })
+    const createdWidgets = await Promise.all(
+      filteredWidgets.map((widget) => db.projectWidget.create({ data: widget }))
+    )
 
-    return filteredWidgets
-
+    return createdWidgets
   }
 )
