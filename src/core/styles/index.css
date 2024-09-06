@@ -190,6 +190,7 @@
 .jer-input-text,
 .jer-input-number {
   background-color: white;
+  color: black;
 }
 
 /* controls the collapse of the boxes*/
