@@ -140,7 +140,7 @@ export function GetProjectOverdueTaskDisplay({ pastDueTasks }) {
 
 export function GetContributorDisplay({ projectStats }) {
   return (
-    <div className="flex justify-center font-bold text-3xl">
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
       {projectStats.allContributor}
       <UserIcon className="w-20" />
     </div>
@@ -149,7 +149,7 @@ export function GetContributorDisplay({ projectStats }) {
 
 export function GetTeamDisplay({ projectStats }) {
   return (
-    <div className="flex justify-center font-bold text-3xl">
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
       {projectStats.allTeams}
       <GlobeAltIcon className="w-20" />
     </div>
@@ -158,7 +158,7 @@ export function GetTeamDisplay({ projectStats }) {
 
 export function GetFormDisplay({ formPercent }) {
   return (
-    <div className="flex justify-center font-bold text-3xl">
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
       <CircularProgressbar
         value={formPercent * 100}
         text={`${Math.round(formPercent * 100)}%`}
@@ -177,7 +177,7 @@ export function GetFormDisplay({ formPercent }) {
 
 export function GetTotalTaskDisplay({ taskPercent }) {
   return (
-    <div className="flex justify-center font-bold text-3xl">
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
       <CircularProgressbar
         value={taskPercent * 100}
         text={`${Math.round(taskPercent * 100)}%`}
@@ -196,7 +196,7 @@ export function GetTotalTaskDisplay({ taskPercent }) {
 
 export function GetElementDisplay({ projectStats }) {
   return (
-    <div className="flex justify-center font-bold text-3xl">
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
       {projectStats.allElements}
       <ArchiveBoxIcon className="w-20" />
     </div>
@@ -205,7 +205,7 @@ export function GetElementDisplay({ projectStats }) {
 
 export function GetLabelsDisplay({ labelPercent }) {
   return (
-    <div className="flex justify-center font-bold text-3xl">
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
       <CircularProgressbar
         value={labelPercent * 100}
         text={`${Math.round(labelPercent * 100)}%`}

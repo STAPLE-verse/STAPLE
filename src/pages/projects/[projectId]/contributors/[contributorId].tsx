@@ -138,7 +138,7 @@ export const ContributorPage = () => {
             <div className="card-title">Contribution Tasks</div>
             <ContributorTaskListDone
               contributor={currentContributor}
-              columns={taskFinishedTableColumns}
+              columns={finishedTasksTableColumns}
             />
 
             <div className="card-actions justify-end">
