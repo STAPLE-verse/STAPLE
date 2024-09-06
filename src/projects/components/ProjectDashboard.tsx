@@ -33,11 +33,10 @@ const ProjectDashboard = () => {
   const userId = currentUser?.id!
   const { privilege } = useContributorPrivilege()
 
-  // TODO: tried to define projectwidget type but there was a type mismatch in useeffect
   const [widgets, setWidgets] = useState<any[]>([])
 
   const [fetchedWidgets] = useQuery(getProjectWidgets, {
-    userId: currentUser?.id!,
+    userId: userId,
     projectId: projectId!,
   })
 

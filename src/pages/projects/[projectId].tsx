@@ -13,9 +13,11 @@ import { ContributorPrivileges } from "db"
 import { AnnouncementForm } from "src/projects/components/AnnouncementForm"
 import { FormAnnouncementSchema } from "src/projects/schemas"
 
-export const ShowProjectPage = () => {
-  const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
+interface ShowProjectContentProps {
+  projectId: number
+}
+
+const ShowProjectContent = ({ projectId }: ShowProjectContentProps) => {
   const { contributor: currentContributor } = useCurrentContributor(projectId)
   const [openModal, setOpenModal] = useState(false)
 
@@ -38,32 +40,39 @@ export const ShowProjectPage = () => {
   }
 
   return (
+    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      {currentContributor!.privilege == ContributorPrivileges.PROJECT_MANAGER && (
+        <>
+          <button type="button" className="btn btn-primary mb-4" onClick={handleToggle}>
+            Create Announcement
+          </button>
+          <Modal open={openModal} size="w-full">
+            {/* Modal content */}
+            <AnnouncementForm
+              submitText="Send Announcement"
+              schema={FormAnnouncementSchema}
+              cancelText="Cancel"
+              onSubmit={handleSubmit}
+              onCancel={handleToggle}
+            ></AnnouncementForm>
+          </Modal>
+        </>
+      )}
+      <ProjectDashboard />
+    </main>
+  )
+}
+
+export const ShowProjectPage = () => {
+  const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
+  return (
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
         <Head>
           <title>Project {project.name}</title>
         </Head>
-
-        <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-          {currentContributor!.privilege == ContributorPrivileges.PROJECT_MANAGER && (
-            <>
-              <button type="button" className="btn btn-primary mb-4" onClick={handleToggle}>
-                Create Announcement
-              </button>
-              <Modal open={openModal} size="w-full">
-                {/* Modal content */}
-                <AnnouncementForm
-                  submitText="Send Announcement"
-                  schema={FormAnnouncementSchema}
-                  cancelText="Cancel"
-                  onSubmit={handleSubmit}
-                  onCancel={handleToggle}
-                ></AnnouncementForm>
-              </Modal>
-            </>
-          )}
-          <ProjectDashboard />
-        </main>
+        <ShowProjectContent projectId={projectId!} />
       </Suspense>
     </Layout>
   )

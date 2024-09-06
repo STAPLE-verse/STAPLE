@@ -12,7 +12,7 @@ export type ConstructedWidget = {
 type UseWidgetConstructionProps = {
   widgets: Widget[]
   registryType: "main" | "project"
-  privilege: ContributorPrivileges
+  privilege?: ContributorPrivileges
 }
 
 export const useWidgetConstruction = ({
@@ -32,11 +32,11 @@ export const useWidgetConstruction = ({
         }
       }
 
-      // Pass the privilege only if the component has requiresPrivilege property
+      // Pass the privilege only if the registryType is "project" and the component requires privilege
       const widgetProps = {
         key: widget.id,
         size: widget.size,
-        ...(WidgetComponent.requiresPrivilege && { privilege }),
+        ...(registryType === "project" && WidgetComponent.requiresPrivilege && { privilege }),
       }
 
       return {
