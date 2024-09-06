@@ -22,13 +22,13 @@ const Widget: React.FC<WidgetProps> = ({
   return (
     <div
       className={`card-body flex flex-col ${
-        size === WidgetSize.SMALL ? "p-2" : size === WidgetSize.LARGE ? "p-6" : "p-4"
+        size === WidgetSize.SMALL ? "p-4" : size === WidgetSize.LARGE ? "p-6" : "p-5"
       }`}
     >
-      <div className="card-title text-base-content mb-2" data-tooltip-id={tooltipId}>
+      <div className="card-title text-base-content p-2" data-tooltip-id={tooltipId}>
         {title}
       </div>
-      <div className="flex-grow overflow-auto">{display}</div>
+      <div className="flex-grow overflow-auto flex align-center">{display}</div>
       <Tooltip id={tooltipId} content={tooltipContent} className="z-[1099]" />
       <div className="card-actions mt-auto justify-end">{link}</div>
     </div>
