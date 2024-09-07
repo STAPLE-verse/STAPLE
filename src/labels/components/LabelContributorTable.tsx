@@ -8,13 +8,16 @@ import { AddLabelForm } from "./AddLabelForm"
 import { LabelIdsFormSchema } from "../schemas"
 import { MultipleCheckboxColumn } from "./LabelTaskTable"
 import updateContributorLabel from "src/contributors/mutations/updateContributorLabel"
-import { LabelsColumn } from "./LabelColumn"
+
+export type Label = {
+  name: string
+}
 
 export type ContributorLabelInformation = {
   username: string
   firstname?: string
   lastname?: string
-  labels?: []
+  labels?: Label[]
   id: number
   onChangeCallback?: () => void
   selectedIds: number[]
@@ -127,11 +130,18 @@ export const labelContributorTableColumns = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Last Name",
   }),
-  columnHelper.accessor("labels", {
-    id: "labels",
-    cell: (info) => <LabelsColumn row={info.row.original}></LabelsColumn>,
-    header: "Roles",
-  }),
+  columnHelper.accessor(
+    (row) => {
+      const labels = row.labels || []
+      return labels.map((label) => label.name).join(", ") // Combine all label names into a single string
+    },
+    {
+      id: "labels",
+      header: "Roles",
+      cell: (info) => <div>{info.getValue()}</div>,
+      enableColumnFilter: true,
+    }
+  ),
   columnHelper.accessor("id", {
     id: "open",
     header: "Add Role",

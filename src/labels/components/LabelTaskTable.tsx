@@ -7,7 +7,6 @@ import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
 import { LabelIdsFormSchema } from "../schemas"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
-import { LabelsColumn } from "./LabelColumn"
 
 export type Label = {
   name: string
@@ -150,11 +149,18 @@ export const labelTaskTableColumns = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Description",
   }),
-  columnHelper.accessor("labels", {
-    id: "labels",
-    cell: (info) => <LabelsColumn row={info.row.original}></LabelsColumn>,
-    header: "Roles",
-  }),
+  columnHelper.accessor(
+    (row) => {
+      const labels = row.labels || []
+      return labels.map((label) => label.name).join(", ") // Combine all label names into a single string
+    },
+    {
+      id: "labels",
+      header: "Roles",
+      cell: (info) => <div>{info.getValue()}</div>,
+      enableColumnFilter: true,
+    }
+  ),
   columnHelper.accessor("id", {
     id: "open",
     header: "Add Role",
