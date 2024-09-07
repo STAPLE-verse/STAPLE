@@ -1,19 +1,14 @@
 import React, { useState } from "react"
-import { Task } from "db"
-
-import { RowSelection, createColumnHelper } from "@tanstack/react-table"
-import Link from "next/link"
-import { Routes } from "@blitzjs/next"
+import { createColumnHelper } from "@tanstack/react-table"
 import Modal from "src/core/components/Modal"
-import { LabelForm } from "./LabelForm"
 import { FORM_ERROR } from "final-form"
-
 import toast from "react-hot-toast"
 import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
 import { LabelIdsFormSchema } from "../schemas"
 import { MultipleCheckboxColumn } from "./LabelTaskTable"
 import updateContributorLabel from "src/contributors/mutations/updateContributorLabel"
+import { LabelsColumn } from "./LabelColumn"
 
 export type ContributorLabelInformation = {
   username: string
@@ -112,22 +107,6 @@ const AddLabelsColumn = ({ row }) => {
   )
 }
 
-//TODO refactor with label task colunm
-const LabelsColunm = ({ row }) => {
-  const labels = row.labels || []
-  return (
-    <div className="modal-action flex justify-center mt-4">
-      {
-        <ul className="list-none">
-          {labels.map((label) => (
-            <li key={label.id}> {label.name}</li>
-          ))}
-        </ul>
-      }
-    </div>
-  )
-}
-
 const columnHelper = createColumnHelper<ContributorLabelInformation>()
 
 // ColumnDefs
@@ -150,10 +129,9 @@ export const labelContributorTableColumns = [
   }),
   columnHelper.accessor("labels", {
     id: "labels",
-    cell: (info) => <LabelsColunm row={info.row.original}></LabelsColunm>,
+    cell: (info) => <LabelsColumn row={info.row.original}></LabelsColumn>,
     header: "Roles",
   }),
-
   columnHelper.accessor("id", {
     id: "open",
     header: "Add Role",
