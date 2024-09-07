@@ -49,7 +49,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
     },
   })
 
-  const labelOptions = labels.map((labels) => {
+  const labelMerged = labels.map((labels) => {
     return {
       pm: labels["user"]["username"],
       label: labels["name"],
@@ -57,7 +57,23 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
     }
   })
 
-  console.log(labels)
+  const extraData = labelMerged.map((item) => ({
+    pm: item.pm,
+  }))
+
+  const labelOptions = labelMerged.map((item) => ({
+    label: item.label,
+    id: item.id,
+  }))
+
+  const extraColumns = [
+    {
+      id: "pm",
+      header: "Project Manager",
+      accessorKey: "pm",
+      cell: (info) => <span>{info.getValue()}</span>,
+    },
+  ]
 
   const [openLabelsModal, setlabelsModal] = useState(false)
   const handleToggleLabelsModal = () => {
@@ -113,7 +129,12 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         <Modal open={openLabelsModal} size="w-7/8 max-w-xl">
           <div className="">
             <div className="flex justify-start mt-4">
-              <CheckboxFieldTable name="labelsId" options={labelOptions} />
+              <CheckboxFieldTable
+                name="labelsId"
+                options={labelOptions}
+                extraColumns={extraColumns}
+                extraData={extraData}
+              />
             </div>
             {/* closes the modal */}
             <div className="modal-action flex justify-end mt-4">

@@ -2,7 +2,19 @@ import React, { useCallback } from "react"
 import Table from "src/core/components/Table"
 import { useField } from "react-final-form"
 
-const CheckboxFieldTable = ({ name, options }) => {
+interface CheckboxFieldTableProps<T> {
+  name: string
+  options: { id: number; label: string }[]
+  extraData?: T[]
+  extraColumns?: any[]
+}
+
+const CheckboxFieldTable = <T,>({
+  name,
+  options,
+  extraData = [],
+  extraColumns = [],
+}: CheckboxFieldTableProps<T>) => {
   // Access the form's field state and helpers for the field that will store the array of selected IDs
   const {
     input: { value: selectedIds, onChange: setSelectedIds },
@@ -35,22 +47,20 @@ const CheckboxFieldTable = ({ name, options }) => {
         ),
       },
       {
-        id: "pm",
-        accessorKey: "pm",
-        header: "Project Manager",
-        cell: (info) => info.getValue(),
-      },
-      {
         id: "name",
         accessorKey: "label",
         header: "Name",
         cell: (info) => info.getValue(),
       },
+      ...extraColumns,
     ],
-    [selectedIds, toggleSelection]
+    [selectedIds, toggleSelection, extraColumns]
   )
 
-  const data = React.useMemo(() => options, [options])
+  const data = React.useMemo(
+    () => options.map((item, index) => ({ ...item, ...extraData[index] })),
+    [options, extraData]
+  )
 
   return (
     <div>

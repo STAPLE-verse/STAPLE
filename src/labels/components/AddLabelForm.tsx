@@ -41,18 +41,43 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
     },
   })
 
-  const labelOptions = labels.map((labels) => {
+  // Assuming `labels` is an array of objects
+  const labelMerged = labels.map((label) => {
     return {
-      pm: labels["user"]["username"],
-      label: labels["name"],
-      id: labels["id"],
+      pm: label["user"]["username"], // Accessing the nested username
+      label: label.name,
+      id: label.id,
     }
   })
+
+  // Use the mapped array directly
+  const extraData = labelMerged.map((item) => ({
+    pm: item.pm,
+  }))
+
+  const labelOptions = labelMerged.map((item) => ({
+    label: item.label,
+    id: item.id,
+  }))
+
+  const extraColumns = [
+    {
+      id: "pm",
+      header: "Project Manager",
+      accessorKey: "pm",
+      cell: (info) => <span>{info.getValue()}</span>,
+    },
+  ]
 
   return (
     <Form<S> {...formProps} encType="multipart/form-data">
       <div className="flex justify-start mt-4">
-        <CheckboxFieldTable name="labelsId" options={labelOptions} />
+        <CheckboxFieldTable
+          name="labelsId"
+          options={labelOptions}
+          extraColumns={extraColumns}
+          extraData={extraData}
+        />
       </div>
     </Form>
   )
