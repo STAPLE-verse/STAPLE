@@ -37,11 +37,13 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
     include: {
       contributors: true, // Optional: include contributor data if needed
       tasks: true,
+      user: true,
     },
   })
 
   const labelOptions = labels.map((labels) => {
     return {
+      pm: labels["user"]["username"],
       label: labels["name"],
       id: labels["id"],
     }

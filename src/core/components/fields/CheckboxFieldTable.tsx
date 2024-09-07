@@ -35,6 +35,12 @@ const CheckboxFieldTable = ({ name, options }) => {
         ),
       },
       {
+        id: "pm",
+        accessorKey: "pm",
+        header: "Project Manager",
+        cell: (info) => info.getValue(),
+      },
+      {
         id: "name",
         accessorKey: "label",
         header: "Name",

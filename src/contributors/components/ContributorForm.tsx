@@ -45,15 +45,19 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
     },
     include: {
       contributors: true, // Optional: include contributor data if needed
+      user: true,
     },
   })
 
   const labelOptions = labels.map((labels) => {
     return {
+      pm: labels["user"]["username"],
       label: labels["name"],
       id: labels["id"],
     }
   })
+
+  console.log(labels)
 
   const [openLabelsModal, setlabelsModal] = useState(false)
   const handleToggleLabelsModal = () => {
