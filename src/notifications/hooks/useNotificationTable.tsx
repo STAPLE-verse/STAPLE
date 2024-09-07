@@ -3,6 +3,12 @@ import ReadToggle from "../components/ReadToggle"
 import { Notification, Project } from "db"
 import { useMemo } from "react"
 import DateFormat from "src/core/components/DateFormat"
+import HtmlFormat from "src/core/components/HtmlFormat"
+
+const stripHtmlTags = (htmlString: string) => {
+  const doc = new DOMParser().parseFromString(htmlString, "text/html")
+  return doc.body.textContent || ""
+}
 
 // Type for notifications with project included
 export type ExtendedNotification = Notification & {
@@ -20,27 +26,29 @@ export const useNotificationTableColumns = (refetch: () => void) => {
         cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
         header: "Date",
       }),
-      columnHelper.accessor("projectId", {
+      columnHelper.accessor("project.name", {
         id: "projectTitle",
         header: "Project",
         enableColumnFilter: true,
         enableSorting: true,
         cell: (info) => {
           if (info.getValue()) {
-            return <span>{info.row.original.project.name.substring(0, 20)}</span>
+            return <span>{info.getValue().substring(0, 20)}</span>
           } else {
             return ""
           }
         },
       }),
-      columnHelper.accessor("message", {
+      columnHelper.accessor((row) => stripHtmlTags(row.message || ""), {
         id: "message",
         header: "Notification Message",
-        enableColumnFilter: false,
-        enableSorting: false,
-        cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
+        enableColumnFilter: true,
+        enableSorting: true,
+        cell: (info) => (
+          <div dangerouslySetInnerHTML={{ __html: info.row.original.message || "" }} />
+        ),
         meta: {
-          filterVariant: "multiselect",
+          filterVariant: "text",
           isHtml: true,
         },
       }),
@@ -62,14 +70,14 @@ export const useProjectNotificationTableColumns = (refetch: () => void) => {
         cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
         header: "Date",
       }),
-      columnHelper.accessor("message", {
+      columnHelper.accessor((row) => stripHtmlTags(row.message || ""), {
         id: "message",
         header: "Notification Message",
         enableColumnFilter: true,
-        enableSorting: false,
-        cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
+        enableSorting: true,
+        cell: (info) => <HtmlFormat html={info.getValue()} />,
         meta: {
-          filterVariant: "select",
+          filterVariant: "text",
           isHtml: true,
         },
       }),

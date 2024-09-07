@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
@@ -8,9 +8,14 @@ import React from "react"
 import { ElementsList } from "src/elements/components/ElementList"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 import { ContributorPrivileges } from "db"
+import SearchButton from "src/core/components/SearchButton"
 
 const Elements = () => {
   const projectId = useParam("projectId", "number")
+  const [searchTerm, setSearchTerm] = useState("")
+  const handleSearch = (currentSearch) => {
+    setSearchTerm(currentSearch)
+  }
 
   return (
     <Layout>
@@ -20,9 +25,9 @@ const Elements = () => {
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Elements</h1>
-
+        <SearchButton onChange={handleSearch}></SearchButton>
         <Suspense fallback={<div>Loading...</div>}>
-          <ElementsList />
+          <ElementsList searchTerm={searchTerm} />
         </Suspense>
         <div>
           <Link

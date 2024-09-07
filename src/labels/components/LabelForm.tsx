@@ -18,7 +18,7 @@ export function LabelForm<S extends z.ZodType<any, any>>(props: LabelFormProps<S
       <LabeledTextField
         className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
         name="name"
-        label="Role Name:"
+        label="Role Name: (Required)"
         placeholder="Add Role Name"
         type="text"
       />

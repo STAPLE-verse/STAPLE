@@ -1,19 +1,21 @@
 import React, { useState } from "react"
-
 import { createColumnHelper } from "@tanstack/react-table"
 import Modal from "src/core/components/Modal"
 import { FORM_ERROR } from "final-form"
-
 import toast from "react-hot-toast"
 import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
 import { LabelIdsFormSchema } from "../schemas"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
 
-export type TaskLabelInformation = {
+export type Label = {
   name: string
+}
+
+export type TaskLabelInformation = {
+  name?: string
   description?: string
-  labels?: []
+  labels?: Label[]
   id: number
   selectedIds: number[]
   onChangeCallback?: () => void
@@ -103,21 +105,6 @@ const AddLabelsColumn = ({ row }) => {
   )
 }
 
-const LabelsColunm = ({ row }) => {
-  const labels = row.labels || []
-  return (
-    <div className="modal-action flex justify-center mt-4">
-      {
-        <ul className="list-none">
-          {labels.map((label) => (
-            <li key={label.id}> {label.name}</li>
-          ))}
-        </ul>
-      }
-    </div>
-  )
-}
-
 export const MultipleCheckboxColumn = ({ row }) => {
   const handleOnChange = (id) => {
     if (row.onMultipledAdded != undefined) {
@@ -162,26 +149,24 @@ export const labelTaskTableColumns = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Description",
   }),
-  columnHelper.accessor("labels", {
-    id: "labels",
-    cell: (info) => <LabelsColunm row={info.row.original}></LabelsColunm>,
-    header: "Roles",
-  }),
-
+  columnHelper.accessor(
+    (row) => {
+      const labels = row.labels || []
+      return labels.map((label) => label.name).join(", ") // Combine all label names into a single string
+    },
+    {
+      id: "labels",
+      header: "Roles",
+      cell: (info) => <div>{info.getValue()}</div>,
+      enableColumnFilter: true,
+    }
+  ),
   columnHelper.accessor("id", {
     id: "open",
     header: "Add Role",
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <AddLabelsColumn row={info.row.original}></AddLabelsColumn>,
-    // cell: (info) => (
-    //   <TaskTableModal
-    //     buttonName={"Add Role"}
-    //     labels={info.row.original.labels}
-    //     tasksId={[info.row.original.id]}
-    //     onChangeCallback={info.row.original.onChangeCallback || null}
-    //   ></TaskTableModal>
-    // ),
   }),
 
   columnHelper.accessor("id", {

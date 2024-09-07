@@ -2,9 +2,8 @@ import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import { useRouter } from "next/router"
 import Layout from "src/core/layouts/Layout"
 import getContributors from "src/contributors/queries/getContributors"
 import {
@@ -17,30 +16,21 @@ import { useContributorPrivilege } from "src/contributors/components/Contributor
 import { ContributorPrivileges } from "@prisma/client"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
-const ITEMS_PER_PAGE = 7
-
 interface AllContributorsListProps {
   privilege: ContributorPrivileges
 }
 
 export const AllContributorsList = ({ privilege }: AllContributorsListProps) => {
-  const router = useRouter()
-  const page = Number(router.query.page) || 0
   const projectId = useParam("projectId", "number")
   const { contributor: currentContributor } = useCurrentContributor(projectId)
 
-  const [{ contributors, hasMore }] = usePaginatedQuery(getContributors, {
+  const [{ contributors }] = useQuery(getContributors, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
     include: {
       user: true,
     },
   })
-
-  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
 
   const filteredContributors =
     privilege === ContributorPrivileges.CONTRIBUTOR
@@ -67,19 +57,7 @@ export const AllContributorsList = ({ privilege }: AllContributorsListProps) => 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
-      <Table columns={tableColumns} data={contributorInformation} />
-      <div className="join grid grid-cols-2 my-6">
-        <button
-          className="join-item btn btn-secondary"
-          disabled={page === 0}
-          onClick={goToPreviousPage}
-        >
-          Previous
-        </button>
-        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
-      </div>
+      <Table columns={tableColumns} data={contributorInformation} addPagination={true} />
     </main>
   )
 }
@@ -102,14 +80,14 @@ const ContributorsPage = () => {
         {privilege === ContributorPrivileges.PROJECT_MANAGER && (
           <div>
             <Link
-              className="btn btn-primary mb-4"
+              className="btn btn-primary mb-4 mt-4"
               href={Routes.NewContributorPage({ projectId: projectId! })}
             >
               Invite Contributor
             </Link>
 
             <Link
-              className="btn btn-secondary mx-2 mb-4"
+              className="btn btn-secondary mx-2 mb-4 mt-4"
               href={Routes.InvitesPagePM({ projectId: projectId! })}
             >
               View Invitations

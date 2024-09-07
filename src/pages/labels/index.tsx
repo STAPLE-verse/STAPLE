@@ -86,19 +86,13 @@ const LabelBuilderPage = () => {
         <h1 className="flex justify-center mb-2 text-3xl">All Roles</h1>
         <div>
           <Suspense fallback={<div>Loading...</div>}>
-            <AllLabelsList
-              page={page}
-              labels={labels}
-              hasMore={hasMore}
-              onChange={reloadTable}
-              taxonomyList={taxonomyList}
-            />
+            <AllLabelsList labels={labels} onChange={reloadTable} taxonomyList={taxonomyList} />
           </Suspense>
         </div>
         <div>
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn btn-primary mt-4"
             onClick={() => handleToggleNewLabelModal()}
           >
             New Role

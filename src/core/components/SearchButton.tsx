@@ -23,7 +23,7 @@ const SearchButton = ({ onChange, debounceTime = 500 }: Props) => {
           debounce={debounceTime}
           value={currentSearchTerm}
           onChange={handleSearch}
-          placeholder="Search Projects"
+          placeholder="Search"
           className="pr-3 pl-10 py-2 h-10 w-full pr-3 pl-10 font-semibold
           rounded-2xl input text-primary input-primary
           nput-bordered border-2 bg-base-300 rounded

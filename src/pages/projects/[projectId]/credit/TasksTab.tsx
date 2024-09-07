@@ -1,6 +1,5 @@
 import { Suspense, useState } from "react"
-import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
-import router, { useRouter } from "next/router"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 
 import React from "react"
 import Modal from "src/core/components/Modal"
@@ -16,10 +15,8 @@ import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
 import { LabelIdsFormSchema } from "src/labels/schemas"
 import { AddLabelForm } from "src/labels/components/AddLabelForm"
 
-export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
+export const AllTasksLabelsList = ({ tasks, onChange }) => {
   const [updateTaskLabelMutation] = useMutation(updateTaskLabel)
-  const router = useRouter()
-  const projectId = useParam("projectId", "number")
   const [selectedIds, setSelectedIds] = useState([] as number[])
 
   const labelChanged = async () => {
@@ -68,9 +65,6 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
     labelsId: [],
   }
 
-  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
-
   const taskInformation = tasks.map((task) => {
     const name = task.name
     const description = task.description || ""
@@ -91,19 +85,8 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
-      <Table columns={labelTaskTableColumns} data={taskInformation} />
-      <div className="join grid grid-cols-2 my-6">
-        <button
-          className="join-item btn btn-secondary"
-          disabled={page === 0}
-          onClick={goToPreviousPage}
-        >
-          Previous
-        </button>
-        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
-      </div>
+      <Table columns={labelTaskTableColumns} data={taskInformation} addPagination={true} />
+
       <div className="modal-action flex justify-end mt-4">
         <button
           type="button"
@@ -147,19 +130,12 @@ export const AllTasksLabelsList = ({ hasMore, page, tasks, onChange }) => {
 }
 
 const TasksTab = () => {
-  //const currentUser = useCurrentUser()
-
-  const page = Number(router.query.page) || 0
   const projectId = useParam("projectId", "number")
 
-  const ITEMS_PER_PAGE = 7
-
-  const [{ tasks, hasMore }, { refetch }] = usePaginatedQuery(getTasks, {
+  const [{ tasks }, { refetch }] = useQuery(getTasks, {
     where: { project: { id: projectId! }, status: TaskStatus.COMPLETED },
     include: { labels: true },
     orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
   })
 
   const reloadTable = async () => {
@@ -170,7 +146,7 @@ const TasksTab = () => {
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <div>
         <Suspense fallback={<div>Loading...</div>}>
-          <AllTasksLabelsList page={page} tasks={tasks} hasMore={hasMore} onChange={reloadTable} />
+          <AllTasksLabelsList tasks={tasks} onChange={reloadTable} />
         </Suspense>
       </div>
     </main>
