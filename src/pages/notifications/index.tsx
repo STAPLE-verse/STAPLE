@@ -29,7 +29,7 @@ const NotificationContent = () => {
   const extendedNotifications = notifications as unknown as ExtendedNotification[]
 
   // Get columns and pass refetch
-  const columns = useNotificationTableColumns(refetch))
+  const columns = useNotificationTableColumns(refetch)
 
   return (
     <>
