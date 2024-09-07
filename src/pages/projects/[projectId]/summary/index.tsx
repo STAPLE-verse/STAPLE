@@ -64,20 +64,6 @@ const Summary = () => {
       },
     },
   })
-  // Get labels
-  // get all possible labels from pms on project
-  const [{ labels }] = useQuery(getLabels, {
-    where: {
-      contributors: {
-        some: {
-          privilege: "PROJECT_MANAGER",
-          projectId: projectId, // ensure the contributor is linked to the specific project
-        },
-      },
-    },
-    orderBy: { name: "asc" },
-    // include: {},
-  })
   // Get elements
   const [{ elements }] = useQuery(getElements, {
     where: { project: { id: projectId! } },
@@ -112,6 +98,22 @@ const Summary = () => {
       user: true,
       labels: true,
       assignmentStatusLog: true,
+    },
+  })
+
+  // get all labels from all PMs
+  const projectManagers = contributors.filter(
+    (contributor) => contributor.privilege === "PROJECT_MANAGER"
+  )
+  const pmIds = projectManagers.map((pm) => pm.userId)
+  const [{ labels }] = useQuery(getLabels, {
+    where: {
+      userId: {
+        in: pmIds, // Filter labels where userId is in the list of PM IDs
+      },
+    },
+    include: {
+      contributors: true, // Optional: include contributor data if needed
     },
   })
 

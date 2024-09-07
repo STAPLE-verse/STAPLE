@@ -9,6 +9,7 @@ import { useParam } from "@blitzjs/next"
 import { PmLabelInformation, labelPmTableColumns } from "src/labels/components/LabelPmTable"
 import toast from "react-hot-toast"
 import updateProjectLabel from "src/projects/mutations/updateProjectLabel"
+import getContributors from "src/contributors/queries/getContributors"
 
 export const AlPmsLabelsList = ({ labels, onChange, projectId, labelsInProject }) => {
   const [updateProjectLabelMutation] = useMutation(updateProjectLabel)
@@ -95,18 +96,27 @@ export const AlPmsLabelsList = ({ labels, onChange, projectId, labelsInProject }
 const LabelsTab = () => {
   const projectId = useParam("projectId", "number")
 
-  //only get labels that belongs to pms of current project
-  const [{ labels }, { refetch }] = useQuery(getLabels, {
+  // Contributors
+  const [{ contributors }] = useQuery(getContributors, {
+    where: { project: { id: projectId! } },
+    include: {
+      user: true,
+    },
+  })
+  // get all labels from all PMs
+  const projectManagers = contributors.filter(
+    (contributor) => contributor.privilege === "PROJECT_MANAGER"
+  )
+  const pmIds = projectManagers.map((pm) => pm.userId)
+  const [{ labels }] = useQuery(getLabels, {
     where: {
-      contributors: {
-        some: {
-          privilege: "PROJECT_MANAGER", // Assuming `PROJECT_MANAGER` is an enum value
-          projectId: projectId,
-        },
+      userId: {
+        in: pmIds, // Filter labels where userId is in the list of PM IDs
       },
     },
-    include: { user: true },
-    orderBy: { id: "asc" },
+    include: {
+      contributors: true, // Optional: include contributor data if needed
+    },
   })
 
   const projectInLabel = (projects, projectId) => {

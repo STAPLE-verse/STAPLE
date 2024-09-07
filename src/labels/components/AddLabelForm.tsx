@@ -4,6 +4,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { z } from "zod"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import getLabels from "../queries/getLabels"
+import getContributors from "src/contributors/queries/getContributors"
 
 interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -14,18 +15,26 @@ interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> 
 export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormProps<S>) {
   const { projectId, type, tasksId, ...formProps } = props
 
-  // need to be able to add all labels from all PMs
+  // Contributors
+  const [{ contributors }] = useQuery(getContributors, {
+    where: { project: { id: projectId! } },
+    include: {
+      user: true,
+    },
+  })
+  // get all labels from all PMs
+  const projectManagers = contributors.filter(
+    (contributor) => contributor.privilege === "PROJECT_MANAGER"
+  )
+  const pmIds = projectManagers.map((pm) => pm.userId)
   const [{ labels }] = useQuery(getLabels, {
     where: {
-      contributors: {
-        some: {
-          privilege: "PROJECT_MANAGER", // Assuming `PROJECT_MANAGER` is an enum value
-          projectId: projectId,
-        },
+      userId: {
+        in: pmIds, // Filter labels where userId is in the list of PM IDs
       },
     },
     include: {
-      user: true,
+      contributors: true, // Optional: include contributor data if needed
       tasks: true,
     },
   })

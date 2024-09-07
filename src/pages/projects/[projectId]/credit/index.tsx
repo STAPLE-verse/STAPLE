@@ -1,8 +1,7 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import Head from "next/head"
 import { Tab } from "@headlessui/react"
 import Layout from "src/core/layouts/Layout"
-import LabelsTab from "./LabelsTab"
 import TasksTab from "./TasksTab"
 import ContributorsTab from "./ContributorsTab"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
@@ -13,10 +12,10 @@ function classNames(...classes) {
 }
 
 export const CreditsTabs = () => {
-  //const [selectedIndex, setSelectedIndex] = useState(0)
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
   return (
-    <Tab.Group defaultIndex={0}>
+    <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
         {/* TabLink for table view */}
         <Tab

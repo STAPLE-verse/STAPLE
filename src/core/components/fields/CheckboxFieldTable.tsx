@@ -47,14 +47,14 @@ const CheckboxFieldTable = ({ name, options }) => {
   const data = React.useMemo(() => options, [options])
 
   return (
-    <>
-      <Table columns={columns} data={data} />
+    <div>
+      <Table columns={columns} data={data} addPagination={true} />
       {meta.touched && meta.error && (
         <div role="alert" style={{ color: "red" }}>
           {meta.error}
         </div>
       )}
-    </>
+    </div>
   )
 }
 
