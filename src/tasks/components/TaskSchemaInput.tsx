@@ -16,6 +16,7 @@ export const TaskSchemaInput = ({ contributors }) => {
 
   const [pmForms] = useQuery(getForms, {
     where: { userId: { in: pmList } },
+    include: { user: true },
   })
 
   const schemas = pmForms.forms
@@ -25,13 +26,26 @@ export const TaskSchemaInput = ({ contributors }) => {
   const options = schemas.map((schema) => ({ id: schema.id, label: schema.name }))
 
   // Extra columns for the select table
-  const extraData = schemas.map((schema) => ({ version: schema.version }))
+  const versionNumber = schemas.map((schema) => schema.version)
+  const pmNames = pmForms.forms
+    .filter((form) => form.formVersion) // Keep only forms where formVersion is defined
+    .map((form) => form.user?.username) // Map to the username
 
+  const extraData = versionNumber.map((version, index) => ({
+    version: version,
+    username: pmNames[index], // Safely access pmNames[index]
+  }))
   const extraColumns = [
     {
       id: "version",
       header: "Version",
       accessorKey: "version",
+      cell: (info) => <span>{info.getValue()}</span>,
+    },
+    {
+      id: "pm",
+      header: "Project Manager",
+      accessorKey: "username",
       cell: (info) => <span>{info.getValue()}</span>,
     },
   ]
@@ -41,9 +55,9 @@ export const TaskSchemaInput = ({ contributors }) => {
       <button type="button" className="btn btn-primary w-1/2" onClick={handleToggleSchemaUpload}>
         Assign Form
       </button>
-      <Modal open={openSchemaModal} size="w-11/12 max-w-1xl">
+      <Modal open={openSchemaModal} size="w-1/2">
         <div>
-          <h1 className="flex justify-center mb2 text-3xl">Select Form</h1>
+          <h1 className="flex justify-center mb-2 text-3xl">Select Form</h1>
           <RadioFieldTable
             name="formVersionId"
             options={options}
@@ -51,7 +65,11 @@ export const TaskSchemaInput = ({ contributors }) => {
             extraData={extraData}
           />
           <div className="modal-action">
-            <button type="button" className="btn btn-primary" onClick={handleToggleSchemaUpload}>
+            <button
+              type="button"
+              className="btn btn-primary self-end"
+              onClick={handleToggleSchemaUpload}
+            >
               Close
             </button>
           </div>
