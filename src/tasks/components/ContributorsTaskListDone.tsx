@@ -35,7 +35,7 @@ export const ContributorTaskListDone = ({ contributor, columns }) => {
 
   return (
     <div>
-      <Table columns={columns} data={processedTasks} />
+      <Table columns={columns} data={processedTasks} addPagination={true} />
     </div>
   )
 }

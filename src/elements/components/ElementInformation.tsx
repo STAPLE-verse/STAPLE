@@ -68,7 +68,7 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({ element,
               classNames={{
                 table: "table-auto w-full text-sm",
                 thead: "text-sm text-base-content",
-                tbody: "text-lg",
+                tbody: "text-md",
                 tfoot: "text-sm",
                 th: "p-2",
                 td: "p-2",

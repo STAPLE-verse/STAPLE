@@ -87,7 +87,11 @@ const AssignTeamMembers = ({ onChange, teamOptions, showCheckbox }: Props) => {
         `}</style>
         <label>Add Team Members:</label>
       </div>
-      <Table columns={contributorTableColumns} data={contributorChecked}></Table>
+      <Table
+        columns={contributorTableColumns}
+        data={contributorChecked}
+        addPagination={true}
+      ></Table>
     </div>
   )
 }

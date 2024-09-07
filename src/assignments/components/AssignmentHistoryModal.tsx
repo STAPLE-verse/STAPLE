@@ -35,6 +35,7 @@ export const AssignmentHistoryModal = ({
         </button>
 
         <Modal open={openModal} size="w-11/12 max-w-3xl">
+          <h1 className="flex justify-center mb-2 text-3xl">Task History</h1>
           <div className="modal-action flex flex-col">
             <Table
               columns={
@@ -45,9 +46,10 @@ export const AssignmentHistoryModal = ({
                 thead: "text-base",
                 tbody: "text-base",
               }}
+              addPagination={true}
             />
             {/* Closes the modal */}
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-2">
               <button type="button" className="btn btn-secondary" onClick={handleToggle}>
                 Close
               </button>
