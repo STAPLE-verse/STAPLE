@@ -5,6 +5,11 @@ import { useMemo } from "react"
 import DateFormat from "src/core/components/DateFormat"
 import HtmlFormat from "src/core/components/HtmlFormat"
 
+const stripHtmlTags = (htmlString: string) => {
+  const doc = new DOMParser().parseFromString(htmlString, "text/html")
+  return doc.body.textContent || ""
+}
+
 // Type for notifications with project included
 export type ExtendedNotification = Notification & {
   project: Project
@@ -34,12 +39,14 @@ export const useNotificationTableColumns = (refetch: () => void) => {
           }
         },
       }),
-      columnHelper.accessor("message", {
+      columnHelper.accessor((row) => stripHtmlTags(row.message || ""), {
         id: "message",
         header: "Notification Message",
         enableColumnFilter: true,
         enableSorting: true,
-        cell: (info) => <HtmlFormat html={info.getValue()} />,
+        cell: (info) => (
+          <div dangerouslySetInnerHTML={{ __html: info.row.original.message || "" }} />
+        ),
         meta: {
           filterVariant: "text",
           isHtml: true,
@@ -63,7 +70,7 @@ export const useProjectNotificationTableColumns = (refetch: () => void) => {
         cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
         header: "Date",
       }),
-      columnHelper.accessor("message", {
+      columnHelper.accessor((row) => stripHtmlTags(row.message || ""), {
         id: "message",
         header: "Notification Message",
         enableColumnFilter: true,

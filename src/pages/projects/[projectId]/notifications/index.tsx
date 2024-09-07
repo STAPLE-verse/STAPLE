@@ -10,7 +10,6 @@ import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import getNotifications from "src/notifications/queries/getNotifications"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { processNotifications } from "src/notifications/utils/processNotifications"
 
 const NotificationContent = () => {
   const projectId = useParam("projectId", "number")
