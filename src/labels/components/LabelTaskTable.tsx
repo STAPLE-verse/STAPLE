@@ -7,6 +7,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
 import { LabelIdsFormSchema } from "../schemas"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
+import { useParam } from "@blitzjs/next"
 
 export type Label = {
   name: string
@@ -33,6 +34,7 @@ const AddLabelsColumn = ({ row }) => {
     ...rest
   } = { ...row }
 
+  const projectId = useParam("projectId", "number")
   const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
   const handleToggleEditLabelModal = () => {
     setOpenEditLabelModal((prev) => !prev)
@@ -80,6 +82,7 @@ const AddLabelsColumn = ({ row }) => {
           <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
           <div className="flex justify-start mt-4">
             <AddLabelForm
+              projectId={projectId}
               schema={LabelIdsFormSchema}
               submitText="Update Role"
               className="flex flex-col"

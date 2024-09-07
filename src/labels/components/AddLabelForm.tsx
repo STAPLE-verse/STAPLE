@@ -27,6 +27,7 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
     (contributor) => contributor.privilege === "PROJECT_MANAGER"
   )
   const pmIds = projectManagers.map((pm) => pm.userId)
+  console.log(pmIds)
   const [{ labels }] = useQuery(getLabels, {
     where: {
       userId: {

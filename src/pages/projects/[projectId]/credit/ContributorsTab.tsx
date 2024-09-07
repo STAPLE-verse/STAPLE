@@ -1,6 +1,5 @@
 import { Suspense, useState } from "react"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
 
 import React from "react"
 import Modal from "src/core/components/Modal"
@@ -20,6 +19,7 @@ import updateContributorLabel from "src/contributors/mutations/updateContributor
 
 export const AllContributorLabelsList = ({ contributors, onChange }) => {
   const [updateContributorLabelMutation] = useMutation(updateContributorLabel)
+  const projectId = useParam("projectId", "number")
 
   const labelChanged = async () => {
     if (onChange != undefined) {
@@ -108,6 +108,7 @@ export const AllContributorLabelsList = ({ contributors, onChange }) => {
             <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
             <div className="flex justify-start mt-4">
               <AddLabelForm
+                projectId={projectId}
                 schema={LabelIdsFormSchema}
                 submitText="Update Role"
                 className="flex flex-col"
