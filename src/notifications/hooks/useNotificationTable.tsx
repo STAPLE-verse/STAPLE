@@ -20,14 +20,14 @@ export const useNotificationTableColumns = (refetch: () => void) => {
         cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
         header: "Date",
       }),
-      columnHelper.accessor("projectId", {
+      columnHelper.accessor("project.name", {
         id: "projectTitle",
         header: "Project",
         enableColumnFilter: true,
         enableSorting: true,
         cell: (info) => {
           if (info.getValue()) {
-            return <span>{info.row.original.project.name.substring(0, 20)}</span>
+            return <span>{info.getValue().substring(0, 20)}</span>
           } else {
             return ""
           }
