@@ -18,14 +18,6 @@ export const CreditsTabs = () => {
   return (
     <Tab.Group defaultIndex={0}>
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
-        {/* Tablink for board view */}
-        <Tab
-          className={({ selected }) =>
-            classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
-          }
-        >
-          Add Roles
-        </Tab>
         {/* TabLink for table view */}
         <Tab
           className={({ selected }) =>
@@ -46,11 +38,6 @@ export const CreditsTabs = () => {
       </Tab.List>
 
       <Tab.Panels>
-        {/* Tab for Add Roles */}
-        <Tab.Panel>
-          <LabelsTab></LabelsTab>
-        </Tab.Panel>
-
         {/* Tabpanel for Assign tasks */}
         <Tab.Panel>
           <TasksTab></TasksTab>

@@ -1,6 +1,5 @@
 import { Suspense, useState } from "react"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-
 import React from "react"
 import Modal from "src/core/components/Modal"
 import { FORM_ERROR } from "final-form"
@@ -11,7 +10,6 @@ import getTasks from "src/tasks/queries/getTasks"
 import { useParam } from "@blitzjs/next"
 import { TaskStatus } from "db"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
-
 import { LabelIdsFormSchema } from "src/labels/schemas"
 import { AddLabelForm } from "src/labels/components/AddLabelForm"
 
@@ -26,7 +24,7 @@ export const AllTasksLabelsList = ({ tasks, onChange }) => {
   }
   const handleMultipleChanged = (selectedId: number) => {
     const isSelected = selectedIds.includes(selectedId)
-    // console.log("Id changed: ", selectedId, " is selected: ", isSelected)
+
     const newSelectedIds = isSelected
       ? selectedIds.filter((id) => id !== selectedId)
       : [...selectedIds, selectedId]
@@ -84,7 +82,6 @@ export const AllTasksLabelsList = ({ tasks, onChange }) => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
       <Table columns={labelTaskTableColumns} data={taskInformation} addPagination={true} />
 
       <div className="modal-action flex justify-end mt-4">
@@ -133,7 +130,7 @@ const TasksTab = () => {
   const projectId = useParam("projectId", "number")
 
   const [{ tasks }, { refetch }] = useQuery(getTasks, {
-    where: { project: { id: projectId! }, status: TaskStatus.COMPLETED },
+    where: { project: { id: projectId! } },
     include: { labels: true },
     orderBy: { id: "asc" },
   })

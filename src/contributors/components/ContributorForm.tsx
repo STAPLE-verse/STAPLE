@@ -23,11 +23,7 @@ export const ContributorPrivilegesOptions = [
 export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
   const { projectId, isEdit = false, ...formProps } = props
 
-  const [{ labels }] = useQuery(getLabels, {
-    where: {
-      projects: { some: { id: { in: projectId! } } },
-    },
-  })
+  const [{ labels }] = useQuery(getLabels, {})
 
   const labelOptions = labels.map((labels) => {
     return {
