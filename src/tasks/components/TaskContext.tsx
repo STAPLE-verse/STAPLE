@@ -11,6 +11,7 @@ export type ExtendedTask = Task & {
   element: Element | null
   formVersion: FormVersion | null
   assignees: ExtendedAssignment[]
+  labels: []
 }
 
 interface TaskContextType {
