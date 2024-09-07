@@ -3,6 +3,7 @@ import ReadToggle from "../components/ReadToggle"
 import { Notification, Project } from "db"
 import { useMemo } from "react"
 import DateFormat from "src/core/components/DateFormat"
+import HtmlFormat from "src/core/components/HtmlFormat"
 
 // Type for notifications with project included
 export type ExtendedNotification = Notification & {
@@ -36,11 +37,11 @@ export const useNotificationTableColumns = (refetch: () => void) => {
       columnHelper.accessor("message", {
         id: "message",
         header: "Notification Message",
-        enableColumnFilter: false,
-        enableSorting: false,
-        cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
+        enableColumnFilter: true,
+        enableSorting: true,
+        cell: (info) => <HtmlFormat html={info.getValue()} />,
         meta: {
-          filterVariant: "multiselect",
+          filterVariant: "text",
           isHtml: true,
         },
       }),
@@ -66,10 +67,10 @@ export const useProjectNotificationTableColumns = (refetch: () => void) => {
         id: "message",
         header: "Notification Message",
         enableColumnFilter: true,
-        enableSorting: false,
-        cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
+        enableSorting: true,
+        cell: (info) => <HtmlFormat html={info.getValue()} />,
         meta: {
-          filterVariant: "select",
+          filterVariant: "text",
           isHtml: true,
         },
       }),
