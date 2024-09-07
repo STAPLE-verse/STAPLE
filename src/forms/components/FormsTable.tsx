@@ -4,7 +4,6 @@ import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
-import { getSchemaTitle } from "src/services/getSchemaTitle"
 import DateFormat from "src/core/components/DateFormat"
 
 export interface FormWithFormVersion extends Forms {
@@ -16,8 +15,8 @@ const columnHelper = createColumnHelper<FormWithFormVersion>()
 
 // ColumnDefs
 export const formsTableColumns = [
-  columnHelper.accessor("formVersion.schema", {
-    cell: (info) => <span>{getSchemaTitle(info.getValue())}</span>,
+  columnHelper.accessor("formVersion.name", {
+    cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
   }),
   columnHelper.accessor("updatedAt", {
