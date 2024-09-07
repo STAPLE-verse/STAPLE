@@ -9,6 +9,7 @@ import Modal from "src/core/components/Modal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import { Tooltip } from "react-tooltip"
+import getContributors from "../queries/getContributors"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
@@ -24,14 +25,26 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
   const { projectId, isEdit = false, ...formProps } = props
 
   // need all labels from all PMs for this project
+  // Contributors
+  const [{ contributors }] = useQuery(getContributors, {
+    where: { project: { id: projectId! } },
+    include: {
+      user: true,
+    },
+  })
+  // get all labels from all PMs
+  const projectManagers = contributors.filter(
+    (contributor) => contributor.privilege === "PROJECT_MANAGER"
+  )
+  const pmIds = projectManagers.map((pm) => pm.userId)
   const [{ labels }] = useQuery(getLabels, {
     where: {
-      contributors: {
-        some: {
-          privilege: "PROJECT_MANAGER", // Assuming `PROJECT_MANAGER` is an enum value
-          projectId: projectId,
-        },
+      userId: {
+        in: pmIds, // Filter labels where userId is in the list of PM IDs
       },
+    },
+    include: {
+      contributors: true, // Optional: include contributor data if needed
     },
   })
 
