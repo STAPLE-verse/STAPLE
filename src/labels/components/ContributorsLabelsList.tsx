@@ -4,6 +4,7 @@ import { LabelInformation } from "./LabelTable"
 import Table from "src/core/components/Table"
 
 export const ContributorLabelsList = ({ usersId, projectId, columns }) => {
+  // this grabs labels for just this set of contributors in this project
   const [{ labels }, { refetch }] = useQuery(getLabels, {
     where: {
       contributors: {

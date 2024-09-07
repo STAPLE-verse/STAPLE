@@ -16,6 +16,7 @@ import { AddLabelForm } from "src/labels/components/AddLabelForm"
 export const AllTasksLabelsList = ({ tasks, onChange }) => {
   const [updateTaskLabelMutation] = useMutation(updateTaskLabel)
   const [selectedIds, setSelectedIds] = useState([] as number[])
+  const projectId = useParam("projectId", "number")
 
   const labelChanged = async () => {
     if (onChange != undefined) {
@@ -100,6 +101,7 @@ export const AllTasksLabelsList = ({ tasks, onChange }) => {
             <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
             <div className="flex justify-start mt-4">
               <AddLabelForm
+                projectId={projectId}
                 schema={LabelIdsFormSchema}
                 submitText="Update Role"
                 className="flex flex-col"

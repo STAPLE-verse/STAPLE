@@ -23,7 +23,17 @@ export const ContributorPrivilegesOptions = [
 export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
   const { projectId, isEdit = false, ...formProps } = props
 
-  const [{ labels }] = useQuery(getLabels, {})
+  // need all labels from all PMs for this project
+  const [{ labels }] = useQuery(getLabels, {
+    where: {
+      contributors: {
+        some: {
+          privilege: "PROJECT_MANAGER", // Assuming `PROJECT_MANAGER` is an enum value
+          projectId: projectId,
+        },
+      },
+    },
+  })
 
   const labelOptions = labels.map((labels) => {
     return {

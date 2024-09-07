@@ -97,7 +97,14 @@ const LabelsTab = () => {
 
   //only get labels that belongs to pms of current project
   const [{ labels }, { refetch }] = useQuery(getLabels, {
-    where: { user: { contributions: { some: { projectId: projectId } } } },
+    where: {
+      contributors: {
+        some: {
+          privilege: "PROJECT_MANAGER", // Assuming `PROJECT_MANAGER` is an enum value
+          projectId: projectId,
+        },
+      },
+    },
     include: { user: true },
     orderBy: { id: "asc" },
   })

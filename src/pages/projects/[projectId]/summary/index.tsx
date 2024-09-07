@@ -65,8 +65,16 @@ const Summary = () => {
     },
   })
   // Get labels
-  //needs some clause for project
+  // get all possible labels from pms on project
   const [{ labels }] = useQuery(getLabels, {
+    where: {
+      contributors: {
+        some: {
+          privilege: "PROJECT_MANAGER",
+          projectId: projectId, // ensure the contributor is linked to the specific project
+        },
+      },
+    },
     orderBy: { name: "asc" },
     // include: {},
   })

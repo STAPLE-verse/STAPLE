@@ -43,7 +43,17 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       user: true,
     },
   })
-  const [{ labels }] = useQuery(getLabels, {})
+  // get all labels from all PMs
+  const [{ labels }] = useQuery(getLabels, {
+    where: {
+      contributors: {
+        some: {
+          privilege: "PROJECT_MANAGER",
+          projectId: projectId, // ensure the contributor is linked to the specific project
+        },
+      },
+    },
+  })
 
   const labelOptions = labels.map((labels) => {
     return {
