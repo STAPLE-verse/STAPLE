@@ -44,7 +44,7 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
   // Assuming `labels` is an array of objects
   const labelMerged = labels.map((label) => {
     return {
-      pm: label.user.username, // Accessing the nested username
+      pm: label["user"]["username"], // Accessing the nested username
       label: label.name,
       id: label.id,
     }
