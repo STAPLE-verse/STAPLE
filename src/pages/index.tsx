@@ -29,10 +29,10 @@ const UserInfo = () => {
               Please note: This app is currently in active development, and you may encounter bugs
               or issues as we continue to improve the platform.
               <p>
-                We're working hard to make STAPLE better every day, and we really appreciate your
-                patience and support! If you run into any problems or have any feedback, please
-                don't hesitate to report it. Your input helps us fix issues quickly and improve the
-                experience for everyone.
+                We&apos;re working hard to make STAPLE better every day, and we really appreciate
+                your patience and support! If you run into any problems or have any feedback, please
+                don&apos;t hesitate to report it. Your input helps us fix issues quickly and improve
+                the experience for everyone.
               </p>
               <p>
                 You can report bugs or provide feedback via{" "}
@@ -42,8 +42,8 @@ const UserInfo = () => {
                 >
                   our ticketing system
                 </a>
-                . We're committed to resolving them as soon as possible. Thank you for helping us
-                make STAPLE great!
+                . We&apos;re committed to resolving them as soon as possible. Thank you for helping
+                us make STAPLE great!
               </p>
             </div>
           </div>
