@@ -36,7 +36,7 @@ export const ShowTeamModal = ({ team }) => {
       <Modal open={openModal} size="w-7/6 max-w-1xl">
         <div className="flex flex-col justify-start mt-4">
           <h3>Team members</h3>
-          <Table columns={teamMembersTableColumns} data={teamMembers} />
+          <Table columns={teamMembersTableColumns} data={teamMembers} addPagination={true} />
         </div>
         <div className="modal-action flex justify-end mt-4">
           <button type="button" className="btn btn-primary" onClick={handleToggle}>

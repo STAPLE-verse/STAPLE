@@ -1,13 +1,10 @@
 // import React, { Suspense } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { useQuery } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
-
 import { z } from "zod"
-
-import { FORM_ERROR } from "final-form"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import getLabels from "../queries/getLabels"
+import getContributors from "src/contributors/queries/getContributors"
 
 interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -16,33 +13,72 @@ interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> 
 }
 
 export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormProps<S>) {
-  const { type, tasksId, ...formProps } = props
-  const projectId = useParam("projectId", "number")
+  const { projectId, type, tasksId, ...formProps } = props
 
-  const [{ labels }] = useQuery(getLabels, {
-    where: {
-      projects: { some: { id: { in: projectId! } } },
-    },
+  // Contributors
+  const [{ contributors }] = useQuery(getContributors, {
+    where: { project: { id: projectId! } },
     include: {
       user: true,
+    },
+  })
+  // get all labels from all PMs
+  const projectManagers = contributors.filter(
+    (contributor) => contributor.privilege === "PROJECT_MANAGER"
+  )
+  const pmIds = projectManagers.map((pm) => pm.userId)
+  console.log(pmIds)
+  const [{ labels }] = useQuery(getLabels, {
+    where: {
+      userId: {
+        in: pmIds, // Filter labels where userId is in the list of PM IDs
+      },
+    },
+    include: {
+      contributors: true, // Optional: include contributor data if needed
       tasks: true,
+      user: true,
     },
   })
 
-  const labelOptions = labels.map((labels) => {
+  // Assuming `labels` is an array of objects
+  const labelMerged = labels.map((label) => {
     return {
-      label: labels["name"],
-      id: labels["id"],
+      pm: label["user"]["username"], // Accessing the nested username
+      label: label.name,
+      id: label.id,
     }
   })
+
+  // Use the mapped array directly
+  const extraData = labelMerged.map((item) => ({
+    pm: item.pm,
+  }))
+
+  const labelOptions = labelMerged.map((item) => ({
+    label: item.label,
+    id: item.id,
+  }))
+
+  const extraColumns = [
+    {
+      id: "pm",
+      header: "Project Manager",
+      accessorKey: "pm",
+      cell: (info) => <span>{info.getValue()}</span>,
+    },
+  ]
 
   return (
     <Form<S> {...formProps} encType="multipart/form-data">
       <div className="flex justify-start mt-4">
-        <CheckboxFieldTable name="labelsId" options={labelOptions} />
+        <CheckboxFieldTable
+          name="labelsId"
+          options={labelOptions}
+          extraColumns={extraColumns}
+          extraData={extraData}
+        />
       </div>
-      {/* Note: this page has the hiccups! */}
-      {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
   )
 }

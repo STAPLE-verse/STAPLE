@@ -58,7 +58,7 @@ const RadioFieldTable = <T,>({
 
   return (
     <>
-      <Table columns={columns} data={data} />
+      <Table columns={columns} data={data} addPagination={true} />
       {meta.touched && meta.error && (
         <div role="alert" style={{ color: "red" }}>
           {meta.error}
