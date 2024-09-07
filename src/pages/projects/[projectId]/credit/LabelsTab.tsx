@@ -1,9 +1,5 @@
 import { Suspense, useState } from "react"
-import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
-import router, { useRouter } from "next/router"
-
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import React from "react"
 import { FORM_ERROR } from "final-form"
 import getLabels from "src/labels/queries/getLabels"
@@ -14,16 +10,8 @@ import { PmLabelInformation, labelPmTableColumns } from "src/labels/components/L
 import toast from "react-hot-toast"
 import updateProjectLabel from "src/projects/mutations/updateProjectLabel"
 
-export const AlPmsLabelsList = ({
-  hasMore,
-  page,
-  labels,
-  onChange,
-  projectId,
-  labelsInProject,
-}) => {
+export const AlPmsLabelsList = ({ labels, onChange, projectId, labelsInProject }) => {
   const [updateProjectLabelMutation] = useMutation(updateProjectLabel)
-  const router = useRouter()
 
   const [selectedIds, setSelectedIds] = useState(labelsInProject)
 
@@ -68,13 +56,6 @@ export const AlPmsLabelsList = ({
     }
   }
 
-  const initialValues = {
-    labelsId: [],
-  }
-
-  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
-
   const labelInformation = labels.map((task) => {
     const name = task.name
     const description = task.description || ""
@@ -94,19 +75,8 @@ export const AlPmsLabelsList = ({
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
-      <Table columns={labelPmTableColumns} data={labelInformation} />
-      <div className="join grid grid-cols-2 my-6">
-        <button
-          className="join-item btn btn-secondary"
-          disabled={page === 0}
-          onClick={goToPreviousPage}
-        >
-          Previous
-        </button>
-        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
-      </div>
+      <Table columns={labelPmTableColumns} data={labelInformation} addPagination={true} />
+
       <div className="modal-action flex justify-end mt-4">
         <button
           type="button"
@@ -123,20 +93,13 @@ export const AlPmsLabelsList = ({
 }
 
 const LabelsTab = () => {
-  const currentUser = useCurrentUser()
-
-  const page = Number(router.query.page) || 0
   const projectId = useParam("projectId", "number")
 
-  const ITEMS_PER_PAGE = 7
-
   //only get labels that belongs to pms of current project
-  const [{ labels, hasMore }, { refetch }] = usePaginatedQuery(getLabels, {
+  const [{ labels }, { refetch }] = useQuery(getLabels, {
     where: { user: { contributions: { some: { projectId: projectId } } } },
     include: { user: true, projects: true },
     orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
   })
 
   const projectInLabel = (projects, projectId) => {
@@ -160,9 +123,7 @@ const LabelsTab = () => {
       <div>
         <Suspense fallback={<div>Loading...</div>}>
           <AlPmsLabelsList
-            page={page}
             labels={labels}
-            hasMore={hasMore}
             onChange={reloadTable}
             projectId={projectId}
             labelsInProject={checkedIds}
