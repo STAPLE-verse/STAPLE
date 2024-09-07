@@ -78,7 +78,7 @@ const ElementItem: React.FC<ElementItemProps> = ({ element, projectId, tasks, on
             View Element
           </Link>
           {/* Update tasks in the element */}
-          <button className="btn btn-primary" onClick={openModal}>
+          <button className="btn btn-secondary" onClick={openModal}>
             Update Tasks
           </button>
           <UpdateTasks
