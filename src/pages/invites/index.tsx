@@ -60,7 +60,7 @@ const InvitesPage = () => {
         <div>
           <Suspense fallback={<div>Loading...</div>}>
             <InvitesList currentUser={currentUser} />
-            <div>
+            <div className="mt-4">
               <button
                 type="button"
                 className="btn btn-primary"

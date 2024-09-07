@@ -15,7 +15,7 @@ export const InvitesList = ({ currentUser }) => {
 
   return (
     <div>
-      <Table columns={inviteTableColumns} data={invites} />
+      <Table columns={inviteTableColumns} data={invites} addPagination={true} />
     </div>
   )
 }
