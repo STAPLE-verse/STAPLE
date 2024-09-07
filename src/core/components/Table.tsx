@@ -152,6 +152,7 @@ const Table = <TData,>({
               className={`btn btn-secondary ${classNames?.paginationButton || ""}`}
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
+              type="button"
             >
               {"<<"}
             </button>
@@ -159,6 +160,7 @@ const Table = <TData,>({
               className={`btn btn-secondary ${classNames?.paginationButton || ""}`}
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
+              type="button"
             >
               {"<"}
             </button>
@@ -166,6 +168,7 @@ const Table = <TData,>({
               className={`btn btn-secondary ${classNames?.paginationButton || ""}`}
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
+              type="button"
             >
               {">"}
             </button>
@@ -173,6 +176,7 @@ const Table = <TData,>({
               className={`btn btn-secondary ${classNames?.paginationButton || ""}`}
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
+              type="button"
             >
               {">>"}
             </button>

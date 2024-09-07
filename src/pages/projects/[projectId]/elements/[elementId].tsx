@@ -18,7 +18,7 @@ const ShowElementPage = () => {
   // Get elements
   const projectId = useParam("projectId", "number")
   const elementId = useParam("elementId", "number")
-  const [element] = useQuery(getElement, { id: elementId })
+  const [element, { refetch }] = useQuery(getElement, { id: elementId })
 
   return (
     <Layout>
@@ -28,7 +28,7 @@ const ShowElementPage = () => {
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <div>
           <Suspense fallback={<div>Loading...</div>}>
-            <ElementInformation element={element} projectId={projectId} />
+            <ElementInformation element={element} projectId={projectId} onTasksUpdated={refetch} />
             {privilege == ContributorPrivileges.PROJECT_MANAGER && (
               <ElementSummary element={element} projectId={projectId} />
             )}

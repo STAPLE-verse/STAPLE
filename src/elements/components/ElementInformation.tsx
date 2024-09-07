@@ -8,23 +8,36 @@ import { Element } from "@prisma/client"
 import DateFormat from "src/core/components/DateFormat"
 import { elementTasksTableColumns } from "src/tasks/components/TaskTable"
 import { processElementTasks } from "src/tasks/utils/processTasks"
+import { useState } from "react"
+import UpdateTasks from "./UpdateTasks"
 
 interface ElementInformationProps {
   element: Element
   projectId: number | undefined
+  onTasksUpdated: () => void
 }
 
-export const ElementInformation: React.FC<ElementInformationProps> = ({ element, projectId }) => {
+export const ElementInformation: React.FC<ElementInformationProps> = ({
+  element,
+  projectId,
+  onTasksUpdated,
+}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const openModal = () => setIsModalOpen(true)
+  const closeModal = () => setIsModalOpen(false)
+
   // Get tasks
-  const [{ tasks }] = useQuery(getTasks, {
+  const [{ tasks }, { refetch }] = useQuery(getTasks, {
     where: {
       project: { id: projectId! },
-      elementId: element.id,
     },
     orderBy: { id: "asc" },
   })
 
-  const processedTasks = processElementTasks(tasks)
+  const elementTasks = tasks.filter((task) => task.elementId === element.id)
+
+  const processedTasks = processElementTasks(elementTasks)
 
   return (
     <div className="flex flex-row justify-center w-full">
@@ -49,6 +62,17 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({ element,
             >
               Update element
             </Link>
+
+            <button className="btn btn-secondary" onClick={openModal}>
+              Update Tasks
+            </button>
+            <UpdateTasks
+              elementId={element.id}
+              open={isModalOpen}
+              onClose={closeModal}
+              onTasksUpdated={refetch}
+              tasks={tasks}
+            />
           </div>
         </div>
       </div>
