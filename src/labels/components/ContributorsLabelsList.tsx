@@ -1,11 +1,9 @@
 import { useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
 import getLabels from "../queries/getLabels"
 import { LabelInformation } from "./LabelTable"
 import Table from "src/core/components/Table"
 
 export const ContributorLabelsList = ({ usersId, projectId, columns }) => {
-  const router = useRouter()
   const [{ labels }, { refetch }] = useQuery(getLabels, {
     where: {
       contributors: {

@@ -67,7 +67,6 @@ const Summary = () => {
   // Get labels
   //needs some clause for project
   const [{ labels }] = useQuery(getLabels, {
-    where: { projects: { some: { id: projectId! } } },
     orderBy: { name: "asc" },
     // include: {},
   })
