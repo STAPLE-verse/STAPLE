@@ -4,7 +4,6 @@ import Head from "next/head"
 import Link from "next/link"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import { useRouter } from "next/router"
 import Layout from "src/core/layouts/Layout"
 import getTeams from "src/teams/queries/getTeams"
 import {
