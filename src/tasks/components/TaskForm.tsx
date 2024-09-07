@@ -43,11 +43,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       user: true,
     },
   })
-  const [{ labels }] = useQuery(getLabels, {
-    where: {
-      projects: { some: { id: { in: projectId! } } },
-    },
-  })
+  const [{ labels }] = useQuery(getLabels, {})
 
   const labelOptions = labels.map((labels) => {
     return {
