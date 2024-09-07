@@ -47,7 +47,7 @@ export const ContributorLabelsList = ({ usersId, projectId, columns }) => {
   return (
     <div>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <Table columns={columns} data={contributorLabelInformation} />
+        <Table columns={columns} data={contributorLabelInformation} addPagination={true} />
       </main>
     </div>
   )
