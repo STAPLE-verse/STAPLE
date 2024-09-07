@@ -1,22 +1,17 @@
 import React, { useState } from "react"
-import { Task } from "db"
 
-import { RowSelection, createColumnHelper } from "@tanstack/react-table"
-import Link from "next/link"
-import { Routes } from "@blitzjs/next"
+import { useParam } from "@blitzjs/next"
 import Modal from "src/core/components/Modal"
-import { LabelForm } from "./LabelForm"
 import { FORM_ERROR } from "final-form"
 
 import toast from "react-hot-toast"
-import updateLabel from "../mutations/updateLabel"
-import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
 import { LabelIdsFormSchema } from "../schemas"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
 
 const TaskTableModal = ({ labels, tasksId, onChangeCallback, buttonName }) => {
+  const projectId = useParam("projectId", "number")
   const [updateTaskLabelMutation] = useMutation(updateTaskLabel)
 
   const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
@@ -66,6 +61,7 @@ const TaskTableModal = ({ labels, tasksId, onChangeCallback, buttonName }) => {
           <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
           <div className="flex justify-start mt-4">
             <AddLabelForm
+              projectId={projectId}
               schema={LabelIdsFormSchema}
               submitText="Update Role"
               className="flex flex-col"

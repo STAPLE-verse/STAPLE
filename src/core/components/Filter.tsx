@@ -7,6 +7,10 @@ function Filter({ column }: { column: Column<any, unknown> }) {
   const columnFilterValue = column.getFilterValue()
   const facetedUniqueValues = column.getFacetedUniqueValues()
 
+  const onChangeCallback = React.useMemo(() => {
+    return (value) => column.setFilterValue(value)
+  }, [column])
+
   const sortedUniqueValues = React.useMemo(
     () =>
       filterVariant === "range"
@@ -119,7 +123,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
       <DebouncedInput
         type="text"
         value={(columnFilterValue ?? "") as string}
-        onChange={(value) => column.setFilterValue(value)}
+        onChange={onChangeCallback}
         // placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
         placeholder="Search..."
         className={sharedInputStyles}

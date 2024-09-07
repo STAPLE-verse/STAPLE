@@ -122,7 +122,6 @@ model Label {
   name         String
   description  String?
   taxonomy     String?
-  projects     Project[]
   tasks        Task[]
   contributors Contributor[]
   invitation   Invitation[]
@@ -144,7 +143,6 @@ model Project {
   columns       Column[]
   contributors  Contributor[]
   teams         Team[]
-  labels        Label[]
   projectWidget ProjectWidget[]
   notifications Notification[]
 
