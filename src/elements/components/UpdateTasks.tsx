@@ -45,7 +45,7 @@ const UpdateTasks: React.FC<UpdateTasksProps> = ({
 
   return (
     <Modal open={open} size="large">
-      <h2>Update Tasks</h2>
+      <h1 className="flex justify-center mb-2 text-3xl">Update Tasks</h1>
       {open && (
         <>
           {taskOptions.length > 0 ? (

@@ -69,7 +69,7 @@ const AssignTeams = ({ onChange, teamOptions }: Props) => {
   return (
     <div>
       <div className="flex mt-2 font-bold">Assign Team to task</div>
-      <Table columns={contributorTableColumns} data={teamChecked}></Table>
+      <Table columns={contributorTableColumns} data={teamChecked} addPagination={true}></Table>
     </div>
   )
 }

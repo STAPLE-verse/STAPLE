@@ -1,11 +1,10 @@
 import { useQuery } from "@blitzjs/rpc"
-import { useRouter } from "next/router"
 import getLabels from "../queries/getLabels"
 import { LabelInformation } from "./LabelTable"
 import Table from "src/core/components/Table"
 
 export const ContributorLabelsList = ({ usersId, projectId, columns }) => {
-  const router = useRouter()
+  // this grabs labels for just this set of contributors in this project
   const [{ labels }, { refetch }] = useQuery(getLabels, {
     where: {
       contributors: {
@@ -48,7 +47,7 @@ export const ContributorLabelsList = ({ usersId, projectId, columns }) => {
   return (
     <div>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <Table columns={columns} data={contributorLabelInformation} />
+        <Table columns={columns} data={contributorLabelInformation} addPagination={true} />
       </main>
     </div>
   )

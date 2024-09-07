@@ -90,7 +90,7 @@ const MetadataContent = () => {
           <div className="card bg-base-300 w-full">
             <div className="card-body overflow-x-auto">
               <div className="card-title">Form Data for {task.name}</div>
-              <Table columns={metadataTableColumns} data={processedMetadata} />
+              <Table columns={metadataTableColumns} data={processedMetadata} addPagination={true} />
             </div>
           </div>
         </div>

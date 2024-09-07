@@ -9,6 +9,7 @@ import Modal from "src/core/components/Modal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import { Tooltip } from "react-tooltip"
+import getContributors from "../queries/getContributors"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
@@ -23,18 +24,56 @@ export const ContributorPrivilegesOptions = [
 export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
   const { projectId, isEdit = false, ...formProps } = props
 
+  // need all labels from all PMs for this project
+  // Contributors
+  const [{ contributors }] = useQuery(getContributors, {
+    where: { project: { id: projectId! } },
+    include: {
+      user: true,
+    },
+  })
+  // get all labels from all PMs
+  const projectManagers = contributors.filter(
+    (contributor) => contributor.privilege === "PROJECT_MANAGER"
+  )
+  const pmIds = projectManagers.map((pm) => pm.userId)
   const [{ labels }] = useQuery(getLabels, {
     where: {
-      projects: { some: { id: { in: projectId! } } },
+      userId: {
+        in: pmIds, // Filter labels where userId is in the list of PM IDs
+      },
+    },
+    include: {
+      contributors: true, // Optional: include contributor data if needed
+      user: true,
     },
   })
 
-  const labelOptions = labels.map((labels) => {
+  const labelMerged = labels.map((labels) => {
     return {
+      pm: labels["user"]["username"],
       label: labels["name"],
       id: labels["id"],
     }
   })
+
+  const extraData = labelMerged.map((item) => ({
+    pm: item.pm,
+  }))
+
+  const labelOptions = labelMerged.map((item) => ({
+    label: item.label,
+    id: item.id,
+  }))
+
+  const extraColumns = [
+    {
+      id: "pm",
+      header: "Project Manager",
+      accessorKey: "pm",
+      cell: (info) => <span>{info.getValue()}</span>,
+    },
+  ]
 
   const [openLabelsModal, setlabelsModal] = useState(false)
   const handleToggleLabelsModal = () => {
@@ -90,7 +129,12 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         <Modal open={openLabelsModal} size="w-7/8 max-w-xl">
           <div className="">
             <div className="flex justify-start mt-4">
-              <CheckboxFieldTable name="labelsId" options={labelOptions} />
+              <CheckboxFieldTable
+                name="labelsId"
+                options={labelOptions}
+                extraColumns={extraColumns}
+                extraData={extraData}
+              />
             </div>
             {/* closes the modal */}
             <div className="modal-action flex justify-end mt-4">

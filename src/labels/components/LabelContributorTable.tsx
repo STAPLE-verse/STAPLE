@@ -8,6 +8,7 @@ import { AddLabelForm } from "./AddLabelForm"
 import { LabelIdsFormSchema } from "../schemas"
 import { MultipleCheckboxColumn } from "./LabelTaskTable"
 import updateContributorLabel from "src/contributors/mutations/updateContributorLabel"
+import { useParam } from "@blitzjs/next"
 
 export type Label = {
   name: string
@@ -25,6 +26,7 @@ export type ContributorLabelInformation = {
 }
 
 const AddLabelsColumn = ({ row }) => {
+  const projectId = useParam("projectId", "number")
   const [updateContributorLabelMutation] = useMutation(updateContributorLabel)
   const {
     name = "",
@@ -85,6 +87,7 @@ const AddLabelsColumn = ({ row }) => {
           <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
           <div className="flex justify-start mt-4">
             <AddLabelForm
+              projectId={projectId}
               schema={LabelIdsFormSchema}
               submitText="Update Role"
               className="flex flex-col"
