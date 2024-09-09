@@ -46,7 +46,7 @@ const ShowProjectContent = ({ projectId }: ShowProjectContentProps) => {
           <button type="button" className="btn btn-primary mb-4" onClick={handleToggle}>
             Create Announcement
           </button>
-          <Modal open={openModal} size="w-full">
+          <Modal open={openModal} size="w-1/3">
             {/* Modal content */}
             <AnnouncementForm
               submitText="Send Announcement"
