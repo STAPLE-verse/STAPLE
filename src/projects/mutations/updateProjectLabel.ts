@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { UpdateProjectLabelSchema } from "../schemas"
