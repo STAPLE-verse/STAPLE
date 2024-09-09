@@ -24,18 +24,25 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   const projectId = useParam("projectId", "number")
   const { contributor: currentContributor } = useCurrentContributor(projectId)
 
-  const [{ teams, hasMore }] = useQuery(getTeams, {
+  type TeamWithContributors = {
+    id: number
+    contributors: { id: number }[] // Adjust based on actual contributor fields
+    // Add any other fields on the team you expect
+  }
+
+  const [{ teams }] = useQuery(getTeams, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
     include: {
-      contributors: true,
+      contributors: true, // Ensure that contributors are included
     },
   })
 
   // Filter teams if the privilege is CONTRIBUTOR
+  // Now explicitly type the teams to avoid the error
   const filteredTeams =
     privilege === ContributorPrivileges.CONTRIBUTOR
-      ? teams.filter((team) =>
+      ? (teams as TeamWithContributors[]).filter((team) =>
           team.contributors.some((contributor) => contributor.id === currentContributor?.id)
         )
       : teams

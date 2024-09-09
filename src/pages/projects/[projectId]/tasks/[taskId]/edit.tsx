@@ -38,7 +38,8 @@ export const EditTask = () => {
     .filter((id): id is number => id !== null)
 
   // Prepopulate form with previous responses
-  const labelsId = task.labels != undefined ? task.labels.map((label) => label.id) : []
+  //const labelsId = task.labels != undefined ? task.labels.map((label) => label.id) : []
+  const labelsId = task.labels?.map((label: { id: number }) => label.id) || []
 
   const initialValues = {
     name: task.name,

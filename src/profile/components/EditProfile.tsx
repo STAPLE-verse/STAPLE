@@ -84,10 +84,6 @@ export const EditProfile = () => {
           />
 
           <div className="flex justify-end mt-4">
-            <Link href="/api/auth/orcid" legacyBehavior>
-              <button className="btn btn-info mr-2">Connect your ORCID</button>
-            </Link>
-
             <button
               type="button"
               className="btn btn-warning"
