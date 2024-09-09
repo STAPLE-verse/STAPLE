@@ -44,7 +44,7 @@ const AddContainer = ({ projectId, refetch }) => {
         <Tooltip
           id="kanban-tooltip"
           content="Completed tasks appear in a shade of green"
-          className="z-[1099]"
+          className="z-[1099] ourtooltips"
         />
         <button
           type="button"

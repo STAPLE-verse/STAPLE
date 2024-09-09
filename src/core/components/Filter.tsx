@@ -29,7 +29,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
 
   return filterVariant === "range" ? (
     <div>
-      <div className="flex space-x-2">
+      <div className="flex flex-col space-y-2">
         <DebouncedInput
           type="number"
           min={Number(column.getFacetedMinMaxValues()?.[0] ?? "")}

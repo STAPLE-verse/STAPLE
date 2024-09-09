@@ -227,8 +227,9 @@
 .tooltip-right {
   padding: 10px;
   border-radius: 10px;
-  color: oklch(var(--bc));
-  background-color: oklch(var(--pc));
+  color: oklch(var(--n));
+  font-weight: bold;
+  background-color: oklch(var(--nc));
   /* position: absolute; */
   margin: 8px;
 }
@@ -584,4 +585,11 @@ span.arrow.tooltip-arrow {
 .size-circle .CircularProgressbar {
   width: 115px;
   height: 115px;
+}
+
+.ourtooltips {
+  background-color: oklch(var(--nc)) !important;
+  opacity: 1 !important;
+  color: oklch(var(--n)) !important;
+  font-weight: bold;
 }

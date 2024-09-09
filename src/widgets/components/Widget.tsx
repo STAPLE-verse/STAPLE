@@ -25,11 +25,19 @@ const Widget: React.FC<WidgetProps> = ({
         size === WidgetSize.SMALL ? "p-4" : size === WidgetSize.LARGE ? "p-6" : "p-5"
       }`}
     >
-      <div className="card-title text-base-content p-2" data-tooltip-id={tooltipId}>
+      <div
+        className="card-title text-base-content p-2 overflow-visible"
+        data-tooltip-id={tooltipId}
+      >
         {title}
       </div>
       <div className="flex-grow overflow-auto flex align-center">{display}</div>
-      <Tooltip id={tooltipId} content={tooltipContent} className="z-[1099]" />
+      <Tooltip
+        id={tooltipId}
+        content={tooltipContent}
+        className="z-[9999] ourtooltips"
+        place="top"
+      />
       <div className="card-actions mt-auto justify-end">{link}</div>
     </div>
   )

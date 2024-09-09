@@ -21,7 +21,7 @@ export const AssignmentCompletion = () => {
         <Tooltip
           id="tool-complete"
           content="Complete your individual or team task and view completion history"
-          className="z-[1099]"
+          className="z-[1099] ourtooltips"
         />
 
         {/* if no schema complete task as a Individual*/}

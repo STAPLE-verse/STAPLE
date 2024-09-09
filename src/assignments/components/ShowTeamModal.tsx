@@ -31,7 +31,11 @@ export const ShowTeamModal = ({ team }) => {
       >
         <span>{`${getTeamName(team)}`}</span>
       </button>
-      <Tooltip id="showTeamModalTooltip" content="Show team members" className="z-[1099]" />
+      <Tooltip
+        id="showTeamModalTooltip"
+        content="Show team members"
+        className="z-[1099] ourtooltips"
+      />
 
       <Modal open={openModal} size="w-7/6 max-w-1xl">
         <div className="flex flex-col justify-start mt-4">

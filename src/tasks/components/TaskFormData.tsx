@@ -38,7 +38,7 @@ export const TaskFormData = () => {
       <Tooltip
         id="form-tool"
         content="Review the form requirements for this task"
-        className="z-[1099]"
+        className="z-[1099] ourtooltips"
       />
       <div>
         {task.formVersion ? (

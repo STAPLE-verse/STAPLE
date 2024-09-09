@@ -87,14 +87,14 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         content="Project Managers can see and edit
       all parts of a project, while contributors can only complete
       tasks assigned to them."
-        className="z-[1099]"
+        className="z-[1099] ourtooltips"
         place="right"
         opacity={1}
       />
       <Tooltip
         id="role-tooltip"
         content="Add role labels to individual contributors (like administration)"
-        className="z-[1099]"
+        className="z-[1099] ourtooltips"
         place="right"
         opacity={1}
       />
