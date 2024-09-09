@@ -12,10 +12,10 @@ function classNames(...classes) {
 }
 
 export const CreditsTabs = () => {
-  const [selectedIndex, setSelectedIndex] = useState(0)
+  //const [selectedIndex, setSelectedIndex] = useState(0)
 
   return (
-    <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+    <Tab.Group defaultIndex={0}>
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
         {/* TabLink for table view */}
         <Tab

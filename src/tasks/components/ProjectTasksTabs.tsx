@@ -15,11 +15,11 @@ function classNames(...classes) {
 export const ProjectTasksTabs = () => {
   const projectId = useParam("projectId", "number")
   const { contributor: currentContributor } = useCurrentContributor(projectId)
-  const [selectedIndex, setSelectedIndex] = useState(0)
+  //const [selectedIndex, setSelectedIndex] = useState(0)
 
   return (
     <div>
-      <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+      <Tab.Group defaultIndex={0}>
         <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
           {/* Tablink for board view */}
           {currentContributor?.privilege === ContributorPrivileges.PROJECT_MANAGER && (
