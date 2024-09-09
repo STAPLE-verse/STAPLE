@@ -112,7 +112,7 @@ const Navbar = () => {
               <Tooltip
                 id="profile-tooltip"
                 content="Go to Profile update your information."
-                className="z-[1099]"
+                className="z-[1099] ourtooltips"
                 place="left"
               />
               <span className="text-1xl">{initial ? initial : "?"}</span>

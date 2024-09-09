@@ -30,7 +30,7 @@ const NotificationsMenu = () => {
           <Tooltip
             id="notifications-top-tooltip"
             content="View all notifications across projects."
-            className="z-[1099]"
+            className="z-[1099] ourtooltips"
             place="left"
           />
 

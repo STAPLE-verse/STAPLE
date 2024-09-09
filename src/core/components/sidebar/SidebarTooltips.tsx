@@ -32,7 +32,13 @@ const SidebarTooltips = () => {
   return (
     <>
       {tooltipContents.map((tooltip) => (
-        <Tooltip key={tooltip.id} id={tooltip.id} content={tooltip.content} className="z-[1099]" />
+        <Tooltip
+          key={tooltip.id}
+          id={tooltip.id}
+          content={tooltip.content}
+          className="z-[1099] ourtooltips"
+          place="right"
+        />
       ))}
     </>
   )
