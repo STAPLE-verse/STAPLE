@@ -10,8 +10,10 @@ import { Routes } from "@blitzjs/next"
 import { FormSpy } from "react-final-form"
 import { useMutation } from "@blitzjs/rpc"
 import usernameExist, { UserEmailExistErr } from "../mutations/usernameExist"
-import { EyeIcon } from "@heroicons/react/24/outline"
 import { useState } from "react"
+import LabeledPasswordField, {
+  LabeledPassWordFieldProps,
+} from "src/core/components/fields/LabeledPasswordField"
 
 type SignupFormProps = {
   onSuccess?: (values) => void
@@ -25,16 +27,23 @@ type SignupFormProps = {
 export const SignupForm = (props: SignupFormProps) => {
   const [usernameEmailExistQuery] = useMutation(usernameExist)
 
+  //TODO move state inside labeled password
   const [currType, setType] = useState("password")
-  const handleToggle = () => {
+  const handlePasswordToggle = () => {
     if (currType === "password") {
-      //  setIcon(eye);
       setType("text")
     } else {
-      //  setIcon(eyeOff)
       setType("password")
     }
-    console.log("setting type")
+  }
+
+  const [currTypeV, setcurrTypeV] = useState("password")
+  const handleVPasswordToggle = () => {
+    if (currTypeV === "password") {
+      setcurrTypeV("text")
+    } else {
+      setcurrTypeV("password")
+    }
   }
 
   return (
@@ -93,27 +102,21 @@ export const SignupForm = (props: SignupFormProps) => {
           className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
         />
 
-        <LabeledTextField
+        <LabeledPasswordField
           name="password"
           label="Password:"
           placeholder="Password"
-          type={currType as LabeledTextFieldProps["type"]}
+          type={currType as LabeledPassWordFieldProps["type"]}
+          onEyeClick={handlePasswordToggle}
           className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
         />
-        <div className="flex flex-col my-4 py-4 mb-4 mt-4">
-          <button className="btn btn-circle " onClick={handleToggle}>
-            <span className="">
-              <EyeIcon className="w-5 h-5 absolute ml-3 pointer-events-none"></EyeIcon>
-            </span>
-          </button>
-        </div>
-
-        <LabeledTextField
+        <LabeledPasswordField
           name="password_confirm"
           label="Confirm Password:"
           placeholder="Password"
-          type={currType as LabeledTextFieldProps["type"]}
+          type={currTypeV as LabeledPassWordFieldProps["type"]}
           className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
+          onEyeClick={handleVPasswordToggle}
         />
       </Form>
 
