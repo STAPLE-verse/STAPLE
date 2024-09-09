@@ -47,7 +47,11 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({
           <div className="card-title" data-tooltip-id="element-tool">
             {element.name}
           </div>
-          <Tooltip id="element-tool" content="Overall element information" className="z-[1099]" />
+          <Tooltip
+            id="element-tool"
+            content="Overall element information"
+            className="z-[1099] ourtooltips"
+          />
           {/* Element description */}
           {element.description}
           {/* Element last update */}
@@ -83,7 +87,11 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({
           <div className="card-title" data-tooltip-id="tasks-tool">
             Tasks
           </div>
-          <Tooltip id="tasks-tool" content="Tasks assigned to this element" className="z-[1099]" />
+          <Tooltip
+            id="tasks-tool"
+            content="Tasks assigned to this element"
+            className="z-[1099] ourtooltips"
+          />
           <div className="overflow-x-auto">
             <Table
               columns={elementTasksTableColumns}

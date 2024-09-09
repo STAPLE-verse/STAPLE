@@ -21,7 +21,7 @@ const ShowAssignmentProgress = () => {
       <Tooltip
         id="progress-tool"
         content="Percent of contributors/teams that have finished the task"
-        className="z-[1099]"
+        className="z-[1099] ourtooltips"
       />
       <div>
         <div className="w-20 h-20 m-2">
@@ -39,7 +39,7 @@ const ShowAssignmentProgress = () => {
               backgroundColor: "oklch(var(--b3))",
             })}
           />
-          <Tooltip id="progress-tooltip" />
+          <Tooltip id="progress-tooltip" className="z-[1099] ourtooltips" />
         </div>
       </div>
       <div className="stat-desc text-lg text-inherit">

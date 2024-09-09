@@ -60,7 +60,7 @@ export const CompleteTaskToggle = () => {
       <Tooltip
         id="status-tool"
         content="Complete the entire task even if not all contributors have finished"
-        className="z-[1099]"
+        className="z-[1099] ourtooltips"
       />
       <div>
         <input
