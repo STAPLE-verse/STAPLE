@@ -1,11 +1,11 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { TaskStatus, ContributorPrivileges, AssignmentStatus } from "db"
+import db, { TaskStatus, MemberPrivileges, AssignmentStatus } from "db"
 import { getLatestStatusLog } from "src/assignments/utils/getLatestStatusLog"
 import { z } from "zod"
 
 const GetTaskStatsSchema = z.object({
   projectId: z.number(),
-  privilege: z.enum([ContributorPrivileges.PROJECT_MANAGER, ContributorPrivileges.CONTRIBUTOR]),
+  privilege: z.enum([MemberPrivileges.PROJECT_MANAGER, MemberPrivileges.CONTRIBUTOR]),
 })
 
 export default resolver.pipe(
@@ -26,7 +26,7 @@ export default resolver.pipe(
       throw new Error("Contributor not found for this project")
     }
 
-    if (privilege === ContributorPrivileges.PROJECT_MANAGER) {
+    if (privilege === MemberPrivileges.PROJECT_MANAGER) {
       // If PROJECT_MANAGER, return all tasks for the project
       const allTask = await db.task.count({
         where: { projectId: projectId },
@@ -41,7 +41,7 @@ export default resolver.pipe(
         allTask,
         completedTask,
       }
-    } else if (privilege === ContributorPrivileges.CONTRIBUTOR) {
+    } else if (privilege === MemberPrivileges.CONTRIBUTOR) {
       // If CONTRIBUTOR, return only tasks assigned to the contributor
       const tasks = await db.task.findMany({
         where: { projectId: projectId },

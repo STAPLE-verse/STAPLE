@@ -12,13 +12,13 @@ import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
 import TaskLayout from "src/core/layouts/TaskLayout"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 import { useTaskContext } from "src/tasks/components/TaskContext"
 import { responseSubmitted } from "src/assignments/utils/responseSubmitted"
 
 export const EditTask = () => {
   // Ensure that only PM can edit a task
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
   //Setup
   const router = useRouter()
   const [updateTaskMutation] = useMutation(updateTask)

@@ -5,7 +5,7 @@ import Layout from "src/core/layouts/Layout"
 import TasksTab from "./TasksTab"
 import ContributorsTab from "./ContributorsTab"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -52,7 +52,7 @@ export const CreditsTabs = () => {
 }
 
 const CreditPage = () => {
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>

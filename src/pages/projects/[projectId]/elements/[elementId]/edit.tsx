@@ -15,7 +15,7 @@ import { FORM_ERROR } from "final-form"
 
 import toast from "react-hot-toast"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 
 export const EditElement = () => {
   const [updateElementMutation] = useMutation(updateElement)
@@ -86,7 +86,7 @@ export const EditElement = () => {
 }
 
 const EditElementPage = () => {
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

@@ -8,7 +8,7 @@ import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import Table from "src/core/components/Table"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "@prisma/client"
+import { MemberPrivileges } from "@prisma/client"
 import getInvites from "src/invites/queries/getInvites"
 import { inviteTableColumnsPM } from "src/invites/components/InvitesTable"
 
@@ -29,7 +29,7 @@ export const AllInvitesList = () => {
 // issue 37
 const InvitesPagePM = () => {
   const projectId = useParam("projectId", "number")
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>

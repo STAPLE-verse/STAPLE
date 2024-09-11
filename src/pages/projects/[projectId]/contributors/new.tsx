@@ -11,7 +11,7 @@ import Head from "next/head"
 import toast from "react-hot-toast"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 import { CreateContributorFormSchema } from "src/contributors/schemas"
 import { createNewInvitation } from "integrations/emails"
 
@@ -98,7 +98,7 @@ function NewContributor() {
 }
 
 const NewContributorPage = () => {
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>

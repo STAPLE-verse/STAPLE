@@ -17,7 +17,7 @@ import getElements from "src/elements/queries/getElements"
 import getTeams from "src/teams/queries/getTeams"
 import getContributors from "src/contributors/queries/getContributors"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 import DateFormat from "src/core/components/DateFormat"
 
 const Summary = () => {
@@ -227,7 +227,7 @@ const Summary = () => {
 }
 
 const SummaryPage = () => {
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>

@@ -7,8 +7,8 @@ import {
   ProjectSidebarItems,
   SidebarItemProps,
 } from "../components/sidebar/SidebarItems"
-import { ContributorPrivileges, Project } from "db"
-import { useContributorPrivilege } from "src/contributors/components/ContributorPrivilegeContext"
+import { MemberPrivileges, Project } from "db"
+import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
 
 export interface SidebarState {
   sidebarTitle: string
@@ -17,7 +17,7 @@ export interface SidebarState {
 
 export const getSidebarState = (
   project: Project | undefined,
-  privilege: ContributorPrivileges | null | undefined
+  privilege: MemberPrivileges | null | undefined
 ): SidebarState => {
   if (project && privilege) {
     const sidebarItems = ProjectSidebarItems(project.id).filter((item) => {
@@ -41,7 +41,7 @@ export const getSidebarState = (
 
 const useSidebar = (): SidebarState => {
   const projectId = useParam("projectId", "number")
-  const { privilege } = useContributorPrivilege()
+  const { privilege } = useMemberPrivileges()
   const [project] = useQuery(getProject, { id: projectId }, { enabled: !!projectId })
 
   const sidebarState = useMemo(() => {

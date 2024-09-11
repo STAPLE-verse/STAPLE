@@ -1,4 +1,4 @@
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 import { z } from "zod"
 
 export const InviteFormSchema = z.object({
@@ -8,7 +8,7 @@ export const InviteFormSchema = z.object({
 
 export const CreateInviteSchema = z.object({
   projectId: z.number(),
-  privilege: z.nativeEnum(ContributorPrivileges),
+  privilege: z.nativeEnum(MemberPrivileges),
   addedBy: z.string(),
   email: z.string(),
   labelsId: z.array(z.number()).optional().nullable(),

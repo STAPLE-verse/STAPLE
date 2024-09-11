@@ -5,11 +5,11 @@ import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetTotalTaskDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
-import { ContributorPrivileges } from "@prisma/client"
+import { MemberPrivileges } from "@prisma/client"
 import getTaskStats from "src/tasks/queries/getTaskStats"
 
 interface TaskTotalType
-  extends FC<{ size: "SMALL" | "MEDIUM" | "LARGE"; privilege: ContributorPrivileges }> {
+  extends FC<{ size: "SMALL" | "MEDIUM" | "LARGE"; privilege: MemberPrivileges }> {
   requiresPrivilege?: boolean
 }
 

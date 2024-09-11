@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { ContributorPrivileges, WidgetSize } from "db"
+import db, { MemberPrivileges, WidgetSize } from "db"
 import { z } from "zod"
 
 const addProjectManagerWidgetsProps = z.object({
@@ -19,7 +19,7 @@ export default resolver.pipe(
         show: true,
         position: 7,
         size: WidgetSize.SMALL,
-        privilege: [ContributorPrivileges.PROJECT_MANAGER],
+        privilege: [MemberPrivileges.PROJECT_MANAGER],
       },
       {
         userId,
@@ -28,7 +28,7 @@ export default resolver.pipe(
         show: true,
         position: 9,
         size: WidgetSize.SMALL,
-        privilege: [ContributorPrivileges.PROJECT_MANAGER],
+        privilege: [MemberPrivileges.PROJECT_MANAGER],
       },
       {
         userId,
@@ -37,7 +37,7 @@ export default resolver.pipe(
         show: true,
         position: 10,
         size: WidgetSize.SMALL,
-        privilege: [ContributorPrivileges.PROJECT_MANAGER],
+        privilege: [MemberPrivileges.PROJECT_MANAGER],
       },
     ]
 

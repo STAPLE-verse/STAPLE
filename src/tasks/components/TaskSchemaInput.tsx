@@ -1,5 +1,5 @@
 import { useQuery } from "@blitzjs/rpc"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 import React, { useState } from "react"
 import Modal from "src/core/components/Modal"
 import RadioFieldTable from "src/core/components/fields/RadioFieldTable"
@@ -11,7 +11,7 @@ export const TaskSchemaInput = ({ contributors }) => {
 
   // Get forms data
   const pmList = contributors
-    .filter((contributor) => contributor.privilege === ContributorPrivileges.PROJECT_MANAGER)
+    .filter((contributor) => contributor.privilege === MemberPrivileges.PROJECT_MANAGER)
     .map((pm) => pm.userId)
 
   const [pmForms] = useQuery(getForms, {

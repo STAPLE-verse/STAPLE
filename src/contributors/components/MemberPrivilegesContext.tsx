@@ -1,25 +1,25 @@
 import { useParam } from "@blitzjs/next"
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react"
+import React, { createContext, useContext, ReactNode } from "react"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getContributor from "../queries/getContributor"
 import { useQuery } from "@blitzjs/rpc"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 
-interface ContributorPrivilegeContextProps {
-  privilege: ContributorPrivileges | null
+interface MemberPrivilegesContextProps {
+  privilege: MemberPrivileges | null
   refetch: () => void
   isError: boolean
   error: unknown
 }
 
-const ContributorPrivilegeContext = createContext<ContributorPrivilegeContextProps>({
+const MemberPrivilegesContext = createContext<MemberPrivilegesContextProps>({
   privilege: null,
   refetch: () => {},
   isError: false,
   error: null,
 })
 
-export const ContributorPrivilegeProvider = ({ children }: { children: ReactNode }) => {
+export const MemberPrivilegesProvider = ({ children }: { children: ReactNode }) => {
   const user = useCurrentUser()
   const projectId = useParam("projectId", "number")
 
@@ -32,16 +32,16 @@ export const ContributorPrivilegeProvider = ({ children }: { children: ReactNode
   const privilege = data ? data.privilege : null
 
   return (
-    <ContributorPrivilegeContext.Provider value={{ privilege, refetch, isError, error }}>
+    <MemberPrivilegesContext.Provider value={{ privilege, refetch, isError, error }}>
       {children}
-    </ContributorPrivilegeContext.Provider>
+    </MemberPrivilegesContext.Provider>
   )
 }
 
-export const useContributorPrivilege = () => {
-  const context = useContext(ContributorPrivilegeContext)
+export const useMemberPrivileges = () => {
+  const context = useContext(MemberPrivilegesContext)
   if (context === undefined) {
-    throw new Error("usePrivilege must be used within a ContributorPrivilegeProvider")
+    throw new Error("usePrivilege must be used within a MemberPrivilegesProvider")
   }
   return context
 }

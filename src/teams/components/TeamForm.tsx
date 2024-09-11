@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { useQuery } from "@blitzjs/rpc"
-import { ContributorPrivileges } from "@prisma/client"
+import { MemberPrivileges } from "@prisma/client"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import getContributors from "src/contributors/queries/getContributors"
 import AssignTeamMembers, { TeamOption } from "./AssignTeamMembers"
@@ -15,9 +15,9 @@ interface TeamFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   currentContributorsId?: number[]
 }
 
-export const ContributorPrivilegesOptions = [
-  { id: 0, value: ContributorPrivileges.PROJECT_MANAGER, label: "Project Manager" },
-  { id: 1, value: ContributorPrivileges.CONTRIBUTOR, label: "Contributor" },
+export const MemberPrivilegesOptions = [
+  { id: 0, value: MemberPrivileges.PROJECT_MANAGER, label: "Project Manager" },
+  { id: 1, value: MemberPrivileges.CONTRIBUTOR, label: "Contributor" },
 ]
 
 export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>) {
