@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import { Ctx } from "blitz"
-import { TaskStatus } from "db"
+import { Status } from "db"
 import moment from "moment"
 
 import getTasks from "./getTasks"
@@ -15,7 +15,7 @@ export default resolver.pipe(resolver.authorize(), async (undefined, ctx: Ctx) =
       },
       where: {
         assignees: { some: { contributor: { user: { id: ctx.session.userId as number } } } },
-        status: TaskStatus.NOT_COMPLETED,
+        status: Status.NOT_COMPLETED,
       },
       orderBy: { id: "desc" },
     },

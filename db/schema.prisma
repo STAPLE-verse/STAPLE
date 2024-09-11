@@ -97,7 +97,7 @@ model Invitation {
   projectId      Int
   project        Project          @relation(fields: [projectId], references: [id])
   invitationCode String
-  labels         Label[]
+  labels         Label[] // will change to roles
   email          String
   privilege      MemberPrivileges @default(CONTRIBUTOR)
   addedBy        String
@@ -138,7 +138,7 @@ model Project {
   invitations Invitation[]
 }
 
-enum TaskStatus {
+enum Status {
   COMPLETED
   NOT_COMPLETED
 }
@@ -162,7 +162,7 @@ model Task {
   assignees       Assignment[]
   formVersionId   Int?
   formVersion     FormVersion? @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
-  status          TaskStatus   @default(NOT_COMPLETED)
+  status          Status       @default(NOT_COMPLETED)
   tags            String?
 
   labels Label[]

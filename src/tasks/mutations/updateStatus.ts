@@ -1,9 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { UpdateTaskStatusSchema } from "../schemas"
+import { UpdateStatusSchema } from "../schemas"
 
 export default resolver.pipe(
-  resolver.zod(UpdateTaskStatusSchema),
+  resolver.zod(UpdateStatusSchema),
   resolver.authorize(),
   async ({ id, ...data }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
