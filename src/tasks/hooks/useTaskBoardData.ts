@@ -1,9 +1,9 @@
 import { useQuery } from "@blitzjs/rpc"
 import { useEffect, useMemo, useState } from "react"
 import getColumns from "../queries/getColumns"
-import { Column, Task, Status } from "db"
+import { KanbanBoard, Task, Status } from "db"
 
-interface ColumnWithTasks extends Column {
+interface ColumnWithTasks extends KanbanBoard {
   tasks: Task[]
 }
 
@@ -26,16 +26,18 @@ export default function useTaskBoardData(projectId) {
 
   // Get data
   const [columns, { refetch }]: [ColumnWithTasks[], any] = useQuery(getColumns, {
-    orderBy: { columnIndex: "asc" },
+    orderBy: { containerOrder: "asc" },
     where: { project: { id: projectId! } },
     include: {
       tasks: {
         orderBy: {
           // Keep the order of the tasks by the query
-          columnTaskIndex: "asc",
+          containerTaskOrder: "asc",
         },
       },
     },
+    skip: undefined,
+    take: undefined,
   })
 
   const transformedData = useMemo(() => {

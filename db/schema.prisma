@@ -220,7 +220,7 @@ model KanbanBoard {
   id             Int      @id @default(autoincrement())
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  name           String   @default("To Do") // Might not need this
+  name           String   @default("To Do")
   tasks          Task[]
   containerOrder Int // tells you the order of the containers
   projectId      Int

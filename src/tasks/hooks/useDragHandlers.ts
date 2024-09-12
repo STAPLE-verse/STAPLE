@@ -80,7 +80,7 @@ const useDragHandlers = ({ containers, updateContainers }: DragHandlersProps) =>
           newContainers = containerSortingRes.newContainers
           const newColumnOrder = containerSortingRes.newColumnOrder
 
-          await updateColumnOrderMutation({ columnIds: newColumnOrder })
+          await updateColumnOrderMutation({ containerIds: newColumnOrder })
 
           updateContainers(newContainers)
         }
@@ -113,8 +113,8 @@ const useDragHandlers = ({ containers, updateContainers }: DragHandlersProps) =>
           const updateTasksList = newContainers.flatMap((container) =>
             container.items.map((item, itemIdx) => ({
               taskId: parseInt(item.id.replace("item-", "")),
-              columnId: parseInt(container.id.replace("container-", "")),
-              columnTaskIndex: itemIdx,
+              containerId: parseInt(container.id.replace("container-", "")),
+              containerTaskOrder: itemIdx,
             }))
           )
 

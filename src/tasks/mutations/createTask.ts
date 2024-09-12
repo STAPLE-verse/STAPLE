@@ -9,7 +9,7 @@ export default resolver.pipe(
   async (
     {
       projectId,
-      columnId,
+      containerId,
       name,
       description,
       elementId,
@@ -23,10 +23,10 @@ export default resolver.pipe(
     ctx
   ) => {
     // Get number of tasks for the column inside the project
-    const columnTaskIndex = await db.task.count({
+    const containerTaskOrder = await db.task.count({
       where: {
         projectId: projectId, // Filter tasks by projectId
-        columnId: columnId, // Filter tasks by columnId
+        containerId: containerId, // Filter tasks by containerId
       },
     })
 
@@ -34,13 +34,13 @@ export default resolver.pipe(
       data: {
         name,
         description,
-        columnTaskIndex,
+        containerTaskOrder,
         deadline,
         project: {
           connect: { id: projectId },
         },
-        column: {
-          connect: { id: columnId },
+        container: {
+          connect: { id: containerId },
         },
         createdBy: {
           connect: { id: createdById },

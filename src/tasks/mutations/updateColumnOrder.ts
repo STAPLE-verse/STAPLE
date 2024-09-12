@@ -5,16 +5,16 @@ import { UpdateColumnOrderSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(UpdateColumnOrderSchema),
   resolver.authorize(),
-  async ({ columnIds }) => {
+  async ({ containerIds }) => {
     // Perform updates within a transaction
     const updatedColumns = await db.$transaction(async (prisma) => {
-      const updates = columnIds.map((columnId, index) => {
-        return prisma.column.update({
+      const updates = containerIds.map((containerId, index) => {
+        return prisma.kanbanBoard.update({
           where: {
-            id: columnId,
+            id: containerId,
           },
           data: {
-            columnIndex: index,
+            containerOrder: index,
           },
         })
       })
