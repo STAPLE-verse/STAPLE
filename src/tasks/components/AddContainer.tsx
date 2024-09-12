@@ -32,7 +32,7 @@ const AddContainer = ({ projectId, refetch }) => {
             onChange={(e) => setContainerName(e.target.value)}
           />
           <button type="button" className="btn btn-primary" onClick={onAddContainer}>
-            Add container
+            Add Column
           </button>
         </div>
       </TaskModal>
@@ -51,7 +51,7 @@ const AddContainer = ({ projectId, refetch }) => {
           className="btn btn-primary"
           onClick={() => setShowAddContainerModal(true)}
         >
-          Add Container
+          Add Column
         </button>
       </div>
     </>
