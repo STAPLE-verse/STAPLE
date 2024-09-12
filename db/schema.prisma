@@ -144,25 +144,26 @@ enum Status {
 }
 
 model Task {
-  id            Int          @id @default(autoincrement())
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  createdBy     Contributor  @relation(fields: [createdById], references: [id], onDelete: Cascade)
-  createdById   Int
-  deadline      DateTime?
-  name          String
-  description   String?
-  containerId   Int
-  container     KanbanBoard  @relation(fields: [containerId], references: [id])
-  projectId     Int
-  project       Project      @relation(fields: [projectId], references: [id])
-  elementId     Int?
-  element       Element?     @relation(fields: [elementId], references: [id])
-  assignees     Assignment[]
-  formVersionId Int?
-  formVersion   FormVersion? @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
-  status        Status       @default(NOT_COMPLETED)
-  tags          String?
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  createdBy          Contributor  @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById        Int
+  deadline           DateTime?
+  name               String
+  description        String?
+  containerTaskOrder Int //tells you what order the tasks are in for that container
+  containerId        Int //tells you which container it is in
+  container          KanbanBoard  @relation(fields: [containerId], references: [id])
+  projectId          Int
+  project            Project      @relation(fields: [projectId], references: [id])
+  elementId          Int?
+  element            Element?     @relation(fields: [elementId], references: [id])
+  assignees          Assignment[]
+  formVersionId      Int?
+  formVersion        FormVersion? @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
+  status             Status       @default(NOT_COMPLETED)
+  tags               String?
 
   labels Label[]
 }
@@ -221,7 +222,7 @@ model KanbanBoard {
   updatedAt      DateTime @updatedAt
   name           String   @default("To Do") // Might not need this
   tasks          Task[]
-  containerOrder Int
+  containerOrder Int // tells you the order of the containers
   projectId      Int
   project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
