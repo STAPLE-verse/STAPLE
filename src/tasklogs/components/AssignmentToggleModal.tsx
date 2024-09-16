@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import getContributor from "src/contributors/queries/getContributor"
+import getContributor from "src/projectmembers/queries/getContributor"
 import { CompletedAs } from "db"
 
 export const AssignmentToggleModal = ({ assignment }) => {

@@ -4,7 +4,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { z } from "zod"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import getLabels from "../queries/getLabels"
-import getContributors from "src/contributors/queries/getContributors"
+import getContributors from "src/projectmembers/queries/getContributors"
 
 interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number

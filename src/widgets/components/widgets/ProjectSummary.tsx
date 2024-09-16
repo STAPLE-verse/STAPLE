@@ -1,7 +1,7 @@
 import React from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import getContributors from "src/contributors/queries/getContributors"
+import getContributors from "src/projectmembers/queries/getContributors"
 import getProject from "src/projects/queries/getProject"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"

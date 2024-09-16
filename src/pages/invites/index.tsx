@@ -8,7 +8,7 @@ import Modal from "src/core/components/Modal"
 import { InviteForm } from "src/invites/components/InviteForm"
 import { InviteFormSchema } from "src/invites/schemas"
 import toast from "react-hot-toast"
-import createContributor from "src/contributors/mutations/createContributor"
+import createContributor from "src/projectmembers/mutations/createContributor"
 import { useMutation } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
 

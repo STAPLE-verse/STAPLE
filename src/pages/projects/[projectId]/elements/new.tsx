@@ -10,7 +10,7 @@ import { FORM_ERROR } from "final-form"
 import { Suspense } from "react"
 import { useParam } from "@blitzjs/next"
 import toast from "react-hot-toast"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useContributorAuthorization from "src/projectmembers/hooks/UseContributorAuthorization"
 import { MemberPrivileges } from "db"
 
 const NewElementPage = () => {

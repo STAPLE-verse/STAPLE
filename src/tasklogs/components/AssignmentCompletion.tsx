@@ -4,7 +4,7 @@ import CompleteSchema from "./CompleteSchema"
 import CompleteToggle from "./CompleteToggle"
 import { CompletedAs } from "db"
 import { useTaskContext } from "src/tasks/components/TaskContext"
-import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import { useCurrentContributor } from "src/projectmembers/hooks/useCurrentContributor"
 
 export const AssignmentCompletion = () => {
   const { task, individualAssignments, teamAssignments } = useTaskContext()

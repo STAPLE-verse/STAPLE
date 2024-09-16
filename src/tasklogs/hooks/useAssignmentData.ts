@@ -1,6 +1,6 @@
 import { Assignment, AssignmentStatusLog, Contributor, Team, User } from "db"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getContributor from "src/contributors/queries/getContributor"
+import getContributor from "src/projectmembers/queries/getContributor"
 import { useQuery } from "@blitzjs/rpc"
 import { ExtendedTask } from "src/tasks/components/TaskContext"
 

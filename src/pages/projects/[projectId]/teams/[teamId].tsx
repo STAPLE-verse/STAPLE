@@ -9,12 +9,12 @@ import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import getTeam from "src/teams/queries/getTeam"
 import deleteTeam from "src/teams/mutations/deleteTeam"
-import getContributors from "src/contributors/queries/getContributors"
+import getContributors from "src/projectmembers/queries/getContributors"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
 import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
 import { labelTableColumnsTeam } from "src/labels/components/LabelTable"
 import { MemberPrivileges } from "db"
-import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import { useCurrentContributor } from "src/projectmembers/hooks/useCurrentContributor"
 
 export const ShowTeamPage = () => {
   const router = useRouter()

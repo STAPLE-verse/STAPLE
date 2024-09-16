@@ -11,7 +11,7 @@ import { Suspense } from "react"
 import Head from "next/head"
 import toast from "react-hot-toast"
 import createTeam from "src/teams/mutations/createTeam"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useContributorAuthorization from "src/projectmembers/hooks/UseContributorAuthorization"
 import { MemberPrivileges } from "db"
 
 const NewTeamPage = () => {

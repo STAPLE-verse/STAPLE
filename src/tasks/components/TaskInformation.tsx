@@ -2,7 +2,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { useContext } from "react"
 import { Tooltip } from "react-tooltip"
 import { TaskContext } from "./TaskContext"
-import getContributor from "src/contributors/queries/getContributor"
+import getContributor from "src/projectmembers/queries/getContributor"
 import { Contributor } from "@prisma/client"
 import DateFormat from "src/core/components/DateFormat"
 

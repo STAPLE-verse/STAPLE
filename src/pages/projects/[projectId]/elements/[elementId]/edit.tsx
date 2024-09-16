@@ -14,7 +14,7 @@ import { ElementForm } from "src/elements/components/ElementForm"
 import { FORM_ERROR } from "final-form"
 
 import toast from "react-hot-toast"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useContributorAuthorization from "src/projectmembers/hooks/UseContributorAuthorization"
 import { MemberPrivileges } from "db"
 
 export const EditElement = () => {

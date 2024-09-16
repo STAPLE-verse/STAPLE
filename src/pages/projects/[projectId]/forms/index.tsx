@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import { ProjectFormsList } from "src/forms/components/ProjectFormsList"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useContributorAuthorization from "src/projectmembers/hooks/UseContributorAuthorization"
 import { MemberPrivileges } from "db"
 
 const MetadataPage = () => {

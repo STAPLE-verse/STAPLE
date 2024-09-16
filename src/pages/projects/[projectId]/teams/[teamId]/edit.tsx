@@ -13,7 +13,7 @@ import { TeamForm } from "src/teams/components/TeamForm"
 import { FORM_ERROR } from "final-form"
 import { TeamFormSchema } from "src/teams/schemas"
 import updateTeam from "src/teams/mutations/updateTeam"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useContributorAuthorization from "src/projectmembers/hooks/UseContributorAuthorization"
 import { MemberPrivileges } from "db"
 
 export const EditTeam = () => {

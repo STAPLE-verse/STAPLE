@@ -5,16 +5,16 @@ import Link from "next/link"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
-import getContributors from "src/contributors/queries/getContributors"
+import getContributors from "src/projectmembers/queries/getContributors"
 import {
   ContributorInformation,
   pmContributorTableColumns,
   contributorContributorTableColumns,
-} from "src/contributors/components/ContributorTable"
+} from "src/projectmembers/components/ContributorTable"
 import Table from "src/core/components/Table"
-import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import { MemberPrivileges } from "@prisma/client"
-import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import { useCurrentContributor } from "src/projectmembers/hooks/useCurrentContributor"
 
 interface AllContributorsListProps {
   privilege: MemberPrivileges

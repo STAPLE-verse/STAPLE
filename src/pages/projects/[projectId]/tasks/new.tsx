@@ -10,7 +10,7 @@ import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
 import Head from "next/head"
 import toast from "react-hot-toast"
-import getContributor from "src/contributors/queries/getContributor"
+import getContributor from "src/projectmembers/queries/getContributor"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 const NewTaskPage = () => {

@@ -12,9 +12,9 @@ import {
   pmTeamTableColumns,
 } from "src/teams/components/TeamTable"
 import Table from "src/core/components/Table"
-import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import { MemberPrivileges } from "@prisma/client"
-import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import { useCurrentContributor } from "src/projectmembers/hooks/useCurrentContributor"
 
 interface AllTeamListProps {
   privilege: MemberPrivileges

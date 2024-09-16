@@ -12,10 +12,10 @@ import {
   labelContributorTableColumns,
 } from "src/labels/components/LabelContributorTable"
 
-import getContributors from "src/contributors/queries/getContributors"
+import getContributors from "src/projectmembers/queries/getContributors"
 import { AddLabelForm } from "src/labels/components/AddLabelForm"
 import { LabelIdsFormSchema } from "src/labels/schemas"
-import updateContributorLabel from "src/contributors/mutations/updateContributorLabel"
+import updateContributorLabel from "src/projectmembers/mutations/updateContributorLabel"
 
 export const AllContributorLabelsList = ({ contributors, onChange }) => {
   const [updateContributorLabelMutation] = useMutation(updateContributorLabel)

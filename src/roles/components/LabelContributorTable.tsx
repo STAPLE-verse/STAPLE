@@ -7,7 +7,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
 import { LabelIdsFormSchema } from "../schemas"
 import { MultipleCheckboxColumn } from "./LabelTaskTable"
-import updateContributorLabel from "src/contributors/mutations/updateContributorLabel"
+import updateContributorLabel from "src/projectmembers/mutations/updateContributorLabel"
 import { useParam } from "@blitzjs/next"
 
 export type Label = {

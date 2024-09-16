@@ -5,7 +5,7 @@ import TaskBoard from "src/tasks/components/TaskBoard"
 import Link from "next/link"
 import { MemberPrivileges } from "@prisma/client"
 import { ProjectTasksList } from "src/tasks/components/ProjectTasksList"
-import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import { useCurrentContributor } from "src/projectmembers/hooks/useCurrentContributor"
 import { useState } from "react"
 
 function classNames(...classes) {

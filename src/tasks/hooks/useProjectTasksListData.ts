@@ -2,7 +2,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTasks, { GetTasksInput } from "../queries/getTasks"
 import { MemberPrivileges } from "@prisma/client"
-import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import { processProjectTasks } from "../utils/processTasks"
 
 export default function useProjecTasksListData(projectId: number | undefined) {

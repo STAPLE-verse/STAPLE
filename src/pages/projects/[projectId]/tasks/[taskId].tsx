@@ -7,7 +7,7 @@ import { MemberPrivileges } from "@prisma/client"
 import { TaskInformation } from "src/tasks/components/TaskInformation"
 import { AssignmentCompletion } from "src/assignments/components/AssignmentCompletion"
 import { useTaskContext } from "src/tasks/components/TaskContext"
-import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import TaskLayout from "src/core/layouts/TaskLayout"
 
 const TaskContent = () => {

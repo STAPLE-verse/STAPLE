@@ -6,7 +6,7 @@ import Layout from "src/core/layouts/Layout"
 import { useParam } from "@blitzjs/next"
 import React from "react"
 import { ElementsList } from "src/elements/components/ElementList"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useContributorAuthorization from "src/projectmembers/hooks/UseContributorAuthorization"
 import { MemberPrivileges } from "db"
 import SearchButton from "src/core/components/SearchButton"
 
