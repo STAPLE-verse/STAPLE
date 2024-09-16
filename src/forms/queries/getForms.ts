@@ -2,15 +2,15 @@ import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
-interface GetFormsInput
+interface GetFormInput
   extends Pick<Prisma.FormFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, include, skip = 0, take = 100 }: GetFormsInput) => {
+  async ({ where, orderBy, include, skip = 0, take = 100 }: GetFormInput) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
-      items: forms,
+      items: form,
       hasMore,
       nextPage,
       count,
@@ -33,7 +33,7 @@ export default resolver.pipe(
         }),
     })
 
-    const formattedForms = forms.map((form) => {
+    const formattedForms = form.map((form) => {
       return {
         ...form,
         formVersion: form.versions[0] || null,
