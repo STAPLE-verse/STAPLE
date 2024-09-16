@@ -13,30 +13,31 @@ generator client {
 // --------------------------------------
 
 model User {
-  id             Int      @id @default(autoincrement())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  username       String   @unique
-  firstName      String?
-  lastName       String?
-  email          String   @unique
-  hashedPassword String?
-  role           String   @default("USER")
-  institution    String?
-  language       String   @default("en-US")
-  tos            Boolean?
-  orcid          String?
-
-  tokens   Token[]
-  sessions Session[]
-
-  contributions    Contributor[]
+  id               Int                @id @default(autoincrement())
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  hashedPassword   String?
+  role             String             @default("USER")
+  tos              Boolean?
+  tokens           Token[]
+  sessions         Session[]
+  // notifications and dashboards
+  notifications    Notification[]     @relation("UserNotifications")
+  widgets          Widget[]
+  projectWidget    ProjectWidget[]
+  // profile information
+  orcid            String?
+  institution      String?
+  username         String             @unique
+  firstName        String?
+  lastName         String?
+  email            String             @unique
+  language         String             @default("en-US")
+  // relational information
+  projects         ProjectMember[]
   forms            Form[]
-  notifications    Notification[] @relation("UserNotifications")
-  contributorLabel Label[]
-
-  widgets       Widget[]
-  projectWidget ProjectWidget[]
+  roles            Role[]
+  ProjectPrivilege ProjectPrivilege[]
 }
 
 model Session {
@@ -72,22 +73,29 @@ enum MemberPrivileges {
   CONTRIBUTOR
 }
 
-model Contributor {
-  createdAt           DateTime              @default(now())
-  id                  Int                   @id @default(autoincrement())
-  userId              Int
-  projectId           Int
-  user                User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  project             Project               @relation(fields: [projectId], references: [id])
-  assignments         Assignment[]
-  privilege           MemberPrivileges      @default(PROJECT_MANAGER)
-  teams               Team[]
-  tasks               Task[]
-  deleted             Boolean               @default(false)
-  assignmentStatusLog AssignmentStatusLog[]
-  // allow them to have multiple contributor labels, I think like the task array?
-  // add contributor label link here
-  labels              Label[]
+model ProjectMember {
+  id                 Int       @id @default(autoincrement())
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  name               String
+  projectId          Int
+  project            Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  users              User[]
+  tasks              Task[]
+  roles              Role[]
+  deleted            Boolean   @default(false)
+  taskLogAssignedTo  TaskLog[] @relation("assignedTo")
+  taskLogCompletedBy TaskLog[] @relation("completedBy")
+}
+
+model ProjectPrivilege {
+  createdAt DateTime         @default(now())
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  projectId Int
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project          @relation(fields: [projectId], references: [id])
+  privilege MemberPrivileges @default(PROJECT_MANAGER)
 }
 
 // Invites
@@ -97,45 +105,48 @@ model Invitation {
   projectId      Int
   project        Project          @relation(fields: [projectId], references: [id])
   invitationCode String
-  labels         Label[] // will change to roles
+  roles          Role[] // will change to roles
   email          String
   privilege      MemberPrivileges @default(CONTRIBUTOR)
   addedBy        String
 }
 
-// Contribution type
-model Label {
-  id           Int           @id @default(autoincrement())
-  userId       Int
-  user         User          @relation(fields: [userId], references: [id])
-  name         String
-  description  String?
-  taxonomy     String?
-  tasks        Task[]
-  contributors Contributor[]
-  invitation   Invitation[]
+model Role {
+  id             Int             @id @default(autoincrement())
+  userId         Int
+  user           User            @relation(fields: [userId], references: [id])
+  name           String
+  description    String?
+  taxonomy       String?
+  tasks          Task[]
+  projectMembers ProjectMember[]
+  invitation     Invitation[]
+  Project        Project?        @relation(fields: [projectId], references: [id])
+  projectId      Int?
 }
 
 model Project {
-  id            Int             @id @default(autoincrement())
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  name          String
-  description   String?
-  abstract      String?
-  keywords      String?
-  citation      String?
-  publisher     String?
-  identifier    String?
-  tasks         Task[]
-  elements      Element[]
-  containers    KanbanBoard[]
-  contributors  Contributor[]
-  teams         Team[]
-  projectWidget ProjectWidget[]
-  notifications Notification[]
-
-  invitations Invitation[]
+  id               Int                @id @default(autoincrement())
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  // project metadata
+  name             String
+  description      String?
+  abstract         String?
+  keywords         String?
+  citation         String?
+  publisher        String?
+  identifier       String?
+  // project relations
+  tasks            Task[]
+  elements         Element[]
+  containers       KanbanBoard[]
+  projectMembers   ProjectMember[]
+  roles            Role[]
+  projectWidget    ProjectWidget[]
+  notifications    Notification[]
+  ProjectPrivilege ProjectPrivilege[]
+  invitations      Invitation[]
 }
 
 enum Status {
@@ -144,76 +155,54 @@ enum Status {
 }
 
 model Task {
-  id                 Int          @id @default(autoincrement())
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
-  createdBy          Contributor  @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  id                 Int           @id @default(autoincrement())
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  createdBy          ProjectMember @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById        Int
+  // task metadata
   deadline           DateTime?
   name               String
   description        String?
+  tags               String?
+  // kanban coding
   containerTaskOrder Int //tells you what order the tasks are in for that container
   containerId        Int //tells you which container it is in
-  container          KanbanBoard  @relation(fields: [containerId], references: [id])
+  container          KanbanBoard   @relation(fields: [containerId], references: [id])
+  // task relations
   projectId          Int
-  project            Project      @relation(fields: [projectId], references: [id])
+  project            Project       @relation(fields: [projectId], references: [id])
   elementId          Int?
-  element            Element?     @relation(fields: [elementId], references: [id])
-  assignees          Assignment[]
+  element            Element?      @relation(fields: [elementId], references: [id])
   formVersionId      Int?
-  formVersion        FormVersion? @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
-  status             Status       @default(NOT_COMPLETED)
-  tags               String?
-
-  labels Label[]
+  formVersion        FormVersion?  @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
+  status             Status        @default(NOT_COMPLETED)
+  taskLogs           TaskLog[]
+  roles              Role[]
 }
 
-enum AssignmentStatus {
-  COMPLETED
-  NOT_COMPLETED
+model TaskLog {
+  id            Int            @id @default(autoincrement())
+  createdAt     DateTime       @default(now()) //tells us when things happened
+  status        Status         @default(NOT_COMPLETED) //tells us if it done
+  metadata      Json?
+  // this helps with showing to the users so we don't have go back to projectMember table
+  completedAs   CompletedAs    @default(INDIVIDUAL)
+  // who or which team should be assigned the task
+  assignedToId  Int
+  assignedTo    ProjectMember  @relation("assignedTo", fields: [assignedToId], references: [id])
+  // this is who does the task who might not be assigned like the project manager
+  // this should be the id of the user (singular)
+  completedById Int?
+  completedBy   ProjectMember? @relation("completedBy", fields: [completedById], references: [id])
+  // what is the task this is tied to
+  taskId        Int
+  task          Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
 enum CompletedAs {
   INDIVIDUAL
   TEAM
-}
-
-model AssignmentStatusLog {
-  id           Int              @id @default(autoincrement())
-  createdAt    DateTime         @default(now())
-  assignmentId Int
-  assignment   Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
-  status       AssignmentStatus @default(NOT_COMPLETED)
-  metadata     Json?
-  completedBy  Int?
-  completedAs  CompletedAs      @default(INDIVIDUAL)
-  contributor  Contributor?     @relation(fields: [completedBy], references: [id], onDelete: SetNull)
-
-  @@unique([assignmentId, createdAt])
-}
-
-model Assignment {
-  id            Int                   @id @default(autoincrement())
-  createdAt     DateTime              @default(now())
-  updatedAt     DateTime              @updatedAt
-  taskId        Int
-  task          Task                  @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  contributorId Int?
-  contributor   Contributor?          @relation(fields: [contributorId], references: [id], onDelete: SetNull)
-  teamId        Int?
-  team          Team?                 @relation(fields: [teamId], references: [id], onDelete: SetNull)
-  statusLogs    AssignmentStatusLog[]
-}
-
-model Team {
-  id           Int           @id @default(autoincrement())
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  name         String
-  contributors Contributor[]
-  projectId    Int
-  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  assignments  Assignment[]
 }
 
 model KanbanBoard {
