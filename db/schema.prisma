@@ -31,7 +31,7 @@ model User {
   sessions Session[]
 
   contributions    Contributor[]
-  forms            Forms[]
+  forms            Form[]
   notifications    Notification[] @relation("UserNotifications")
   contributorLabel Label[]
 
@@ -240,7 +240,7 @@ model Element {
   children    Element[] @relation("ElementToElement")
 }
 
-model Forms {
+model Form {
   id        Int           @id @default(autoincrement())
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
@@ -258,8 +258,8 @@ model FormVersion {
   schema    Json
   uiSchema  Json?
   createdAt DateTime @default(now())
-  Form      Forms    @relation(fields: [formId], references: [id], onDelete: Cascade)
-  Task      Task[]
+  form      Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  tasks     Task[]
 
   @@index([formId, version], name: "formVersionIndex")
 }
