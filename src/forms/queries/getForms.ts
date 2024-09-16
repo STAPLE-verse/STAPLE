@@ -3,7 +3,7 @@ import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
 interface GetFormsInput
-  extends Pick<Prisma.FormsFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
+  extends Pick<Prisma.FormFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
 
 export default resolver.pipe(
   resolver.authorize(),
@@ -17,9 +17,9 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.forms.count({ where }),
+      count: () => db.form.count({ where }),
       query: (paginateArgs) =>
-        db.forms.findMany({
+        db.form.findMany({
           ...paginateArgs,
           where,
           orderBy,

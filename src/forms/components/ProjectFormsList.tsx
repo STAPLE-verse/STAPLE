@@ -4,8 +4,6 @@ import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { TaskWithFormVersion, projectFormsTableColumns } from "./ProjectFormsTable"
 
-const ITEMS_PER_PAGE = 10
-
 export const ProjectFormsList = () => {
   // Setup
   const projectId = useParam("projectId", "number")

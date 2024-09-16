@@ -17,7 +17,7 @@ export default resolver.pipe(
         : "No Title"
 
     // Fetch the current form to get the current version number
-    const currentForm = await db.forms.findUnique({
+    const currentForm = await db.form.findUnique({
       where: { id },
       include: { versions: { orderBy: { version: "desc" }, take: 1 } },
     })

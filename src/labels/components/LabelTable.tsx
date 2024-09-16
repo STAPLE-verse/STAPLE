@@ -7,7 +7,6 @@ import toast from "react-hot-toast"
 import updateLabel from "../mutations/updateLabel"
 import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
-import { strict } from "assert"
 import { LabelFormSchema } from "../schemas"
 
 export type LabelInformation = {
