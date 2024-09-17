@@ -2,7 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { Status } from "db"
 import { z } from "zod"
-import { AssignmentStatus } from "db"
+import { TaskLog } from "db"
 
 const GetProjectStatsSchema = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -18,11 +18,22 @@ export default resolver.pipe(
     })
 
     const allProjectMember = await db.projectMember.count({
-      where: { projectId: id },
+      where: {
+        projectId: id,
+        users: {
+          every: { id: { not: undefined } }, // Ensures there's at least one user
+          none: { id: { gt: 1 } }, // Ensures there is only one user
+        },
+      },
     })
 
-    const allTeams = await db.team.count({
-      where: { projectId: id },
+    const allTeams = await db.projectMember.count({
+      where: {
+        projectId: id,
+        users: {
+          some: { id: { gt: 1 } }, // Ensures there are multiple users
+        },
+      },
     })
 
     const completedTask = await db.task.count({
@@ -38,21 +49,49 @@ export default resolver.pipe(
       },
     })
 
-    const assignmentForms = await db.task.findMany({
+    // get all tasks with schema
+    const taskForms = await db.task.findMany({
       where: {
         projectId: id,
         formVersionId: { not: null },
       },
-      include: { assignees: { include: { statusLogs: true } } },
     })
 
-    // all assignments that have a schema required
-    const allAssignments = assignmentForms.flatMap((task) => task.assignees)
+    // grab the last task log for each projectMember + task
+    const taskLogForms = await Promise.all(
+      taskForms.map(async (task) => {
+        // Fetch the distinct assignedToId values for the task
+        const distinctAssignedToIds = await db.taskLog.findMany({
+          where: {
+            taskId: task.id,
+          },
+          select: { assignedToId: true },
+          distinct: ["assignedToId"], // Ensure distinct assignedToId values
+        })
 
-    // not completed assignments with schema
-    const completedAssignments = allAssignments.filter(
-      (assignment) => assignment.statusLogs[0]?.status === AssignmentStatus.COMPLETED
+        // Fetch the latest TaskLog for each distinct assignedToId
+        const taskLogs = await Promise.all(
+          distinctAssignedToIds.map(async (assignedTo) => {
+            const latestTaskLog = await db.taskLog.findFirst({
+              where: {
+                taskId: task.id,
+                assignedToId: assignedTo.assignedToId,
+              },
+              orderBy: { createdAt: "desc" }, // Get the latest log by creation date
+            })
+            return latestTaskLog
+          })
+        )
+
+        return { ...task, latestTaskLogs: taskLogs }
+      })
     )
+
+    // Flatten all the latest taskLogs across all tasks
+    const allTaskLogs = taskLogForms.flatMap((task) => task.latestTaskLogs)
+
+    // Filter the completed task logs
+    const completedTaskLogs = allTaskLogs.filter((log) => log?.status === Status.COMPLETED)
 
     // no roles for projectMembers
     const contribRoles = await db.projectMember.findMany({
@@ -82,8 +121,8 @@ export default resolver.pipe(
       allElements: allElements,
       completedContribRoles: completedContribRoles.length,
       completedTaskRoles: completedTaskRoles.length,
-      allAssignments: allAssignments.length,
-      completedAssignments: completedAssignments.length,
+      allAssignments: allTaskLogs.length,
+      completedAssignments: completedTaskLogs.length,
     }
   }
 )
