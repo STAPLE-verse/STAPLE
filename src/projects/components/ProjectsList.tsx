@@ -14,7 +14,10 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
       {
         projectMembers: {
           some: {
-            userId: currentUser?.id,
+            users: {
+              some: { id: currentUser.id },
+            },
+            deleted: false,
           },
         },
       },

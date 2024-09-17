@@ -36,7 +36,7 @@ const Summary = () => {
       roles: true,
       element: true,
       createdBy: {
-        include: { user: true },
+        include: { users: true },
       },
       assignees: {
         orderBy: {
@@ -51,7 +51,7 @@ const Summary = () => {
           team: {
             include: {
               projectMembers: {
-                include: { user: true },
+                include: { users: true },
               },
             },
           },
