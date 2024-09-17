@@ -80,7 +80,7 @@ export default resolver.pipe(
 
     // Create the assignment
     if (projectMembersId != null && projectMembersId.length != 0) {
-      // Fetch User IDs corresponding to the Contributor IDs
+      // Fetch User IDs corresponding to the ProjectMember IDs
       const users = await db.projectMember.findMany({
         where: {
           id: { in: projectMembersId },
@@ -120,7 +120,7 @@ export default resolver.pipe(
     }
 
     if (teamsId != null && teamsId.length != 0) {
-      // Fetch User IDs corresponding to the Contributor IDs
+      // Fetch User IDs corresponding to the ProjectMember IDs
       const teams = await db.team.findMany({
         where: {
           id: {

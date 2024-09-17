@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { Status, MemberPrivileges, AssignmentStatus } from "db"
-import { getLatestStatusLog } from "src/assignments/utils/getLatestStatusLog"
+import { getLatestStatusLog } from "src/tasklogs/utils/getLatestStatusLog"
 import { z } from "zod"
 
 const GetTaskStatsSchema = z.object({

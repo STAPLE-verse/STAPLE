@@ -1,4 +1,4 @@
-import { getContributorName } from "src/services/getName"
+import { getProjectMemberName } from "src/services/getName"
 import {
   ExtendedAssignment,
   ExtendedAssignmentStatusLog,
@@ -20,7 +20,7 @@ export function processIndividualAssignments(
   return assignments.map((assignment) => {
     const latestLog = getLatestStatusLog(assignment.statusLogs)
     return {
-      projectMemberName: getContributorName(assignment.projectMember),
+      projectMemberName: getProjectMemberName(assignment.projectMember),
       lastUpdate: latestLog
         ? latestLog.createdAt.toLocaleDateString(undefined, {
             year: "numeric",
@@ -101,7 +101,7 @@ export function processAssignmentHistory(
   return assignmentStatusLog.map((statusLog) => {
     const processedData: ProcessedAssignmentHistory = {
       projectMemberName: statusLog.projectMember
-        ? getContributorName(statusLog.projectMember)
+        ? getProjectMemberName(statusLog.projectMember)
         : "Task created",
       lastUpdate: statusLog.createdAt.toLocaleDateString(undefined, {
         year: "numeric",

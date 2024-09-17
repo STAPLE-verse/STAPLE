@@ -4,11 +4,11 @@ import Layout from "src/core/layouts/Layout"
 import {
   assignmentTableColumns,
   assignmentTableColumnsSchema,
-} from "src/assignments/components/AssignmentTable"
+} from "src/tasklogs/components/AssignmentTable"
 import {
   teamAssignmentTableColumns,
   teamAssignmentTableColumnsSchema,
-} from "src/assignments/components/TeamAssignmentTable"
+} from "src/tasklogs/components/TeamAssignmentTable"
 import Table from "src/core/components/Table"
 import Link from "next/link"
 import TaskLayout from "src/core/layouts/TaskLayout"
@@ -16,7 +16,7 @@ import { useTaskContext } from "src/tasks/components/TaskContext"
 import {
   processIndividualAssignments,
   processTeamAssignments,
-} from "src/assignments/utils/processAssignments"
+} from "src/tasklogs/utils/processAssignments"
 
 const AssignmentsContent = () => {
   // Get values

@@ -16,9 +16,9 @@ export const FormTaskSchema = z
   .refine(
     (data) => {
       // Safely access the length or use 0 if projectMembersId is null or undefined
-      const hasContributors = (data.projectMembersId?.length ?? 0) > 0
+      const hasProjectMembers = (data.projectMembersId?.length ?? 0) > 0
       const hasTeams = (data.teamsId?.length ?? 0) > 0
-      return hasContributors || hasTeams
+      return hasProjectMembers || hasTeams
     },
     {
       message: "At least one contributor or team should be selected.",

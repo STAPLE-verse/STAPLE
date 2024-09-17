@@ -21,7 +21,7 @@ export const AllTasksList = () => {
         {
           assignees: {
             some: {
-              // Contributor as part of a team
+              // ProjectMember as part of a team
               team: { projectMembers: { some: { user: { id: currentUser?.id } } } },
               projectMemberId: null,
             },
@@ -39,7 +39,7 @@ export const AllTasksList = () => {
               projectMember: { user: { id: currentUser?.id } }, // Individual projectMember
             },
             {
-              team: { projectMembers: { some: { user: { id: currentUser?.id } } } }, // Contributor as part of a team
+              team: { projectMembers: { some: { user: { id: currentUser?.id } } } }, // ProjectMember as part of a team
             },
           ],
         },

@@ -4,14 +4,14 @@ import { useState } from "react"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import getContributor from "src/projectmembers/queries/getContributor"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { CompletedAs } from "db"
 
 export const AssignmentToggleModal = ({ assignment }) => {
   const [openModal, setOpenModal] = useState(false)
   const currentUser = useCurrentUser()
   const projectId = useParam("projectId", "number")
-  const [currentContributor] = useQuery(getContributor, {
+  const [currentProjectMember] = useQuery(getProjectMember, {
     where: { projectId: projectId, userId: currentUser!.id },
   })
 
@@ -35,7 +35,7 @@ export const AssignmentToggleModal = ({ assignment }) => {
             <CompleteToggle
               currentAssignment={assignment}
               completedRole="Completed"
-              completedBy={currentContributor.id}
+              completedBy={currentProjectMember.id}
               completedAs={assignment.teamId ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
             />
             <button type="button" className="btn btn-primary" onClick={handleToggleClose}>

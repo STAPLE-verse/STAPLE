@@ -60,7 +60,7 @@ const ByDate = ({ tasks, projectMembers, teams }) => {
     return logs
   }
 
-  const getContributorStatusLogs = (projectMembers) => {
+  const getProjectMemberStatusLogs = (projectMembers) => {
     let logs: any[] = []
     projectMembers.forEach((projectMember) => {
       let t = mapStatusLogs(projectMember.assignmentStatusLog, projectMember, "projectMember")
@@ -70,7 +70,7 @@ const ByDate = ({ tasks, projectMembers, teams }) => {
   }
 
   let logs = getTasksStatusLogs(tasks)
-  const projectMemberLogs = getContributorStatusLogs(projectMembers)
+  const projectMemberLogs = getProjectMemberStatusLogs(projectMembers)
   const teamLogs = getTeamsStatusLogs(teams)
 
   logs = logs.concat(projectMemberLogs)

@@ -1,25 +1,25 @@
-import { Assignment, AssignmentStatusLog, Contributor, Team, User } from "db"
+import { Assignment, AssignmentStatusLog, ProjectMember, Team, User } from "db"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getContributor from "src/projectmembers/queries/getContributor"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { useQuery } from "@blitzjs/rpc"
 import { ExtendedTask } from "src/tasks/components/TaskContext"
 
 // Creating custom types
-// Extend Contributor to include User with only username
-export type ExtendedContributor = Contributor & {
+// Extend ProjectMember to include User with only username
+export type ExtendedProjectMember = ProjectMember & {
   user: Pick<User, "username">
 }
 
 export type ExtendedTeam = Team & {
-  projectMembers: ExtendedContributor[]
+  projectMembers: ExtendedProjectMember[]
 }
 
 export type ExtendedAssignmentStatusLog = AssignmentStatusLog & {
-  projectMember?: ExtendedContributor | null
+  projectMember?: ExtendedProjectMember | null
 }
 
 export type ExtendedAssignment = Assignment & {
-  projectMember?: ExtendedContributor | null
+  projectMember?: ExtendedProjectMember | null
   team?: ExtendedTeam | null
   statusLogs?: ExtendedAssignmentStatusLog[]
 }
@@ -34,17 +34,17 @@ export default function useAssignmentData(task: ExtendedTask): useAssignmentData
   // Get assignments
   const assignments = task.assignees
 
-  // Get currentContributor
+  // Get currentProjectMember
   const currentUser = useCurrentUser()
   // TODO: Replace by hook
-  const [currentContributor] = useQuery(getContributor, {
+  const [currentProjectMember] = useQuery(getProjectMember, {
     where: { projectId: task.projectId, userId: currentUser!.id },
   })
 
   // Filter out individual assignments
   const individualAssignments = assignments.filter(
     (assignment) =>
-      assignment.projectMemberId !== null && assignment.projectMemberId == currentContributor.id
+      assignment.projectMemberId !== null && assignment.projectMemberId == currentProjectMember.id
   )
 
   // Filter out team assignments
@@ -52,7 +52,7 @@ export default function useAssignmentData(task: ExtendedTask): useAssignmentData
     return (
       assignment.teamId !== null &&
       assignment.team?.projectMembers?.some(
-        (projectMember) => projectMember.id === currentContributor.id
+        (projectMember) => projectMember.id === currentProjectMember.id
       )
     )
   })

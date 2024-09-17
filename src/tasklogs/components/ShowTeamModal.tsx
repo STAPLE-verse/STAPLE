@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Modal from "src/core/components/Modal"
-import { getContributorName, getTeamName } from "src/services/getName"
+import { getProjectMemberName, getTeamName } from "src/services/getName"
 import { Tooltip } from "react-tooltip"
 import { TeamMembers, teamMembersTableColumns } from "src/teams/components/TeamMembersTable"
 import Table from "src/core/components/Table"
@@ -12,7 +12,7 @@ export const ShowTeamModal = ({ team }) => {
 
   const teamMembers = projectMembers.map((projectMember) => {
     return {
-      username: getContributorName(projectMember),
+      username: getProjectMemberName(projectMember),
     } as TeamMembers
   })
 

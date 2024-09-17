@@ -4,12 +4,12 @@ import CompleteSchema from "./CompleteSchema"
 import CompleteToggle from "./CompleteToggle"
 import { CompletedAs } from "db"
 import { useTaskContext } from "src/tasks/components/TaskContext"
-import { useCurrentContributor } from "src/projectmembers/hooks/useCurrentContributor"
+import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
 
 export const AssignmentCompletion = () => {
   const { task, individualAssignments, teamAssignments } = useTaskContext()
 
-  const { projectMember: currentContributor } = useCurrentContributor(task.projectId)
+  const { projectMember: currentProjectMember } = useCurrentProjectMember(task.projectId)
 
   return (
     <div className="card bg-base-300 mx-2 w-1/2">
@@ -30,7 +30,7 @@ export const AssignmentCompletion = () => {
             <CompleteToggle
               currentAssignment={individualAssignments[0]}
               completedRole="Completed"
-              completedBy={currentContributor?.id}
+              completedBy={currentProjectMember?.id}
               completedAs={CompletedAs.INDIVIDUAL}
             />
             <span className="mx-2">
@@ -47,7 +47,7 @@ export const AssignmentCompletion = () => {
                 <CompleteToggle
                   currentAssignment={teamAssignment}
                   completedRole="Completed"
-                  completedBy={currentContributor?.id}
+                  completedBy={currentProjectMember?.id}
                   completedAs={CompletedAs.TEAM}
                 />
                 <span className="mx-2">
@@ -63,7 +63,7 @@ export const AssignmentCompletion = () => {
           <div className="flex grid-col-2">
             <CompleteSchema
               currentAssignment={individualAssignments[0]}
-              completedBy={currentContributor?.id}
+              completedBy={currentProjectMember?.id}
               completedAs={CompletedAs.INDIVIDUAL}
               schema={task.formVersion.schema}
               ui={task.formVersion.uiSchema}
@@ -85,7 +85,7 @@ export const AssignmentCompletion = () => {
               <div key={teamAssignment.id} className="mb-2 flex grid-col-2">
                 <CompleteSchema
                   currentAssignment={teamAssignment}
-                  completedBy={currentContributor?.id}
+                  completedBy={currentProjectMember?.id}
                   completedAs={CompletedAs.TEAM}
                   schema={task.formVersion?.schema}
                   ui={task.formVersion?.uiSchema}

@@ -6,7 +6,7 @@ import toast from "react-hot-toast"
 import { Tooltip } from "react-tooltip"
 import Modal from "src/core/components/Modal"
 import { useTaskContext } from "./TaskContext"
-import useAssignmentProgress from "src/assignments/hooks/useAssignmentProgress"
+import useAssignmentProgress from "src/tasklogs/hooks/useAssignmentProgress"
 
 export const CompleteTaskToggle = () => {
   const [updateStatusMutation] = useMutation(updateStatus)

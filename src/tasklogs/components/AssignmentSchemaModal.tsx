@@ -1,7 +1,7 @@
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import getContributor from "src/projectmembers/queries/getContributor"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { CompletedAs } from "db"
 import CompleteSchema from "./CompleteSchema"
 import { useTaskContext } from "src/tasks/components/TaskContext"
@@ -9,7 +9,7 @@ import { useTaskContext } from "src/tasks/components/TaskContext"
 export const AssignmentSchemaModal = ({ assignment }) => {
   const currentUser = useCurrentUser()
   const projectId = useParam("projectId", "number")
-  const [currentContributor] = useQuery(getContributor, {
+  const [currentProjectMember] = useQuery(getProjectMember, {
     where: { projectId: projectId, userId: currentUser!.id },
   })
   const { task } = useTaskContext()
@@ -18,7 +18,7 @@ export const AssignmentSchemaModal = ({ assignment }) => {
     <>
       <CompleteSchema
         currentAssignment={assignment}
-        completedBy={currentContributor.id}
+        completedBy={currentProjectMember.id}
         completedAs={assignment.teamId ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
         schema={task.formVersion?.schema}
         ui={task.formVersion?.uiSchema}

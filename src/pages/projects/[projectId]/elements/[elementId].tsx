@@ -11,7 +11,7 @@ import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivile
 import { ElementSummary } from "src/elements/components/ElementSummary"
 
 const ShowElementPage = () => {
-  // Contributor authentication
+  // ProjectMember authentication
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
   const { privilege } = useMemberPrivileges()
 

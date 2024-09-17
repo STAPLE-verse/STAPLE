@@ -1,9 +1,9 @@
 import React, { createContext, ReactNode, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
-import useAssignmentData from "src/assignments/hooks/useAssignmentData"
+import useAssignmentData from "src/tasklogs/hooks/useAssignmentData"
 import { Task, KanbanBoard, Element, FormVersion } from "db"
-import { ExtendedAssignment } from "src/assignments/hooks/useAssignmentData"
+import { ExtendedAssignment } from "src/tasklogs/hooks/useAssignmentData"
 
 // Creating custom types
 export type ExtendedTask = Task & {

@@ -1,5 +1,5 @@
 import { AssignmentStatus, Status } from "db"
-import { getLatestStatusLog } from "src/assignments/utils/getLatestStatusLog"
+import { getLatestStatusLog } from "src/tasklogs/utils/getLatestStatusLog"
 
 // Preprocessing tasks data for tables
 // All tasks table

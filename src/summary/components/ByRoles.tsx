@@ -2,7 +2,7 @@ import React from "react"
 import { RoleView } from "src/summary/components/UtilsViews"
 
 const ByRoles = ({ roles, tasks, projectMembers }) => {
-  const getRoleContributors = (roleId, projectMembers) => {
+  const getRoleProjectMembers = (roleId, projectMembers) => {
     let r = projectMembers.filter(
       (projectMember) => projectMember.roles.findIndex((role) => role.id != roleId) >= 0
     )
@@ -25,8 +25,8 @@ const ByRoles = ({ roles, tasks, projectMembers }) => {
             tasks={getRoleTasks(role.id, tasks)}
             key={role.id}
             printTask={true}
-            printContributor={true}
-            projectMembers={getRoleContributors(role.id, projectMembers)}
+            printProjectMember={true}
+            projectMembers={getRoleProjectMembers(role.id, projectMembers)}
           ></RoleView>
         ))}
       </div>

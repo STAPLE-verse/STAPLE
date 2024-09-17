@@ -1,4 +1,4 @@
-import { ExtendedProjectMember } from "src/assignments/hooks/useAssignmentData"
+import { ExtendedProjectMember } from "src/tasklogs/hooks/useAssignmentData"
 import { ExtendedTask } from "../components/TaskContext"
 
 // Function gets unique projectMembers from Task obj returned by TaskContext

@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import Table from "src/core/components/Table"
 
-export type ContributorOption = {
+export type ProjectMemberOption = {
   userName: string
   firstName: string
   lastName: string
@@ -11,14 +11,14 @@ export type ContributorOption = {
   assignmentId?: number
 }
 
-const columnHelper = createColumnHelper<ContributorOption>()
+const columnHelper = createColumnHelper<ProjectMemberOption>()
 
 type Props = {
   onChange?: (selected: any) => void
-  projectMemberOptions: ContributorOption[]
+  projectMemberOptions: ProjectMemberOption[]
 }
 
-const AssignContributors = ({ onChange, projectMemberOptions }: Props) => {
+const AssignProjectMembers = ({ onChange, projectMemberOptions }: Props) => {
   const [projectMemberChecked, setprojectMemberChecked] = useState(projectMemberOptions)
 
   const handleOnChange = (element) => {
@@ -35,7 +35,7 @@ const AssignContributors = ({ onChange, projectMemberOptions }: Props) => {
   }
 
   // ColumnDefs
-  const projectMemberTableColumns: ColumnDef<ContributorOption>[] = [
+  const projectMemberTableColumns: ColumnDef<ProjectMemberOption>[] = [
     columnHelper.accessor("id", {
       cell: (info) => (
         <span>
@@ -76,4 +76,4 @@ const AssignContributors = ({ onChange, projectMemberOptions }: Props) => {
   )
 }
 
-export default AssignContributors
+export default AssignProjectMembers

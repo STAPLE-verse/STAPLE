@@ -152,7 +152,7 @@ export const TeamView = ({ team, tasks, printTask = false }) => {
   )
 }
 
-export const ContributorsView = ({
+export const ProjectMembersView = ({
   projectMember,
   tasks,
   printTask = false,
@@ -200,7 +200,7 @@ export const RoleView = ({
   projectMembers,
   tasks,
   printTask = false,
-  printContributor = false,
+  printProjectMember = false,
 }) => {
   return (
     <div className="my-2">
@@ -208,7 +208,7 @@ export const RoleView = ({
       Description: {role.description}
       <br />
       Taxonomy: {role.taxonomy}
-      {printContributor && (
+      {printProjectMember && (
         <div>
           <h6>Contributors</h6>
           {projectMembers.length < 1 && <h6>This role does not have projectMembers</h6>}
@@ -278,7 +278,7 @@ export const DateLogView = ({ tasks, projectMembers, log, teams, printHeader }) 
     return t
   }
 
-  const getContributorForDate = (projectMembers, log) => {
+  const getProjectMemberForDate = (projectMembers, log) => {
     let t
     if (log.belongsTo == "projectMember") {
       t = projectMembers.filter((projectMember) => projectMember.id == log.elementId)
@@ -296,7 +296,7 @@ export const DateLogView = ({ tasks, projectMembers, log, teams, printHeader }) 
   }
 
   let filteredTask = getTasksForDate(tasks, log)
-  let filteredContributors = getContributorForDate(projectMembers, log)
+  let filteredProjectMembers = getProjectMemberForDate(projectMembers, log)
   let filteredTeams = getTeamsForDate(teams, log)
 
   return (
@@ -307,18 +307,18 @@ export const DateLogView = ({ tasks, projectMembers, log, teams, printHeader }) 
           Date: <DateFormat date={log.createdAt}></DateFormat>
         </h3>
       )}
-      {/* {filteredContributors.length < 1 && <h4>Not activity for projectMembers</h4>} */}
-      {filteredContributors.length > 0 && (
+      {/* {filteredProjectMembers.length < 1 && <h4>Not activity for projectMembers</h4>} */}
+      {filteredProjectMembers.length > 0 && (
         <div className="my-1">
           <h5>Contributor created or updated</h5>
-          {filteredContributors.map((projectMember) => (
-            <ContributorsView
+          {filteredProjectMembers.map((projectMember) => (
+            <ProjectMembersView
               projectMember={projectMember}
               tasks={[]}
               printTask={false}
               key={projectMember.id}
               printRoles={true}
-            ></ContributorsView>
+            ></ProjectMembersView>
           ))}
         </div>
       )}

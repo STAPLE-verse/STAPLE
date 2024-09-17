@@ -4,7 +4,7 @@ export interface TeamInformation {
   id: number
 }
 
-export interface ContributorInformation {
+export interface ProjectMemberInformation {
   projectMember: any
   tasks: any[]
   id: number
@@ -12,12 +12,12 @@ export interface ContributorInformation {
 
 export interface FlattenTasks {
   teamsInformation: TeamInformation[]
-  projectMembersInformation: ContributorInformation[]
+  projectMembersInformation: ProjectMemberInformation[]
 }
 
 function flattenTasksInformation(tasks): FlattenTasks {
   let teams: TeamInformation[] = []
-  let projectMembers: ContributorInformation[] = []
+  let projectMembers: ProjectMemberInformation[] = []
 
   const updateTeamData = (task, assignment, team) => {
     // console.log(team, task, assignment)
@@ -35,16 +35,16 @@ function flattenTasksInformation(tasks): FlattenTasks {
     }
   }
 
-  const updateContributorData = (task, assignment, projectMember) => {
+  const updateProjectMemberData = (task, assignment, projectMember) => {
     // console.log(projectMember, task, assignment)
     let index = projectMembers.findIndex((x) => x.projectMember.id == projectMember.id)
     if (index < 0) {
-      let newContributor = {
+      let newProjectMember = {
         projectMember: projectMember,
         tasks: [task],
         id: projectMember.id,
       }
-      projectMembers.push(newContributor)
+      projectMembers.push(newProjectMember)
     } else {
       let newTeam = projectMembers[index]
       if (newTeam != undefined) newTeam.tasks.push(task)
@@ -62,7 +62,7 @@ function flattenTasksInformation(tasks): FlattenTasks {
         }
         let projectMember = assignment.projectMember
         if (projectMember != null) {
-          updateContributorData(task, assignment, projectMember)
+          updateProjectMemberData(task, assignment, projectMember)
         }
       })
     }
@@ -70,11 +70,11 @@ function flattenTasksInformation(tasks): FlattenTasks {
   // console.log(teams)
   //TODO needs to sort teams and projectMembers
   let sortedTeams = teams
-  let sortedContributors = projectMembers
+  let sortedProjectMembers = projectMembers
 
   return {
     teamsInformation: sortedTeams,
-    projectMembersInformation: sortedContributors,
+    projectMembersInformation: sortedProjectMembers,
   }
 }
 

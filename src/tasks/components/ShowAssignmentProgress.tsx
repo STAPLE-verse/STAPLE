@@ -4,7 +4,7 @@ import "react-circular-progressbar/dist/styles.css"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { useTaskContext } from "./TaskContext"
-import useAssignmentProgress from "src/assignments/hooks/useAssignmentProgress"
+import useAssignmentProgress from "src/tasklogs/hooks/useAssignmentProgress"
 
 const ShowAssignmentProgress = () => {
   const { task } = useTaskContext()

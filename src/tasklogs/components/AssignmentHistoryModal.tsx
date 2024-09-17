@@ -6,7 +6,7 @@ import {
   assignmentHistoryTableColumnsNoMeta,
 } from "./AssignmentHistoryTable"
 import { Prisma } from "@prisma/client"
-import { processAssignmentHistory } from "src/assignments/utils/processAssignments"
+import { processAssignmentHistory } from "src/tasklogs/utils/processAssignments"
 import { ExtendedAssignmentStatusLog } from "../hooks/useAssignmentData"
 
 type AssignmentHistoryModalProps = {

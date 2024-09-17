@@ -1,5 +1,5 @@
 import React from "react"
-import { ContributorsView, TaskView, TeamView } from "src/summary/components/UtilsViews"
+import { ProjectMembersView, TaskView, TeamView } from "src/summary/components/UtilsViews"
 
 const ByTasks = ({ tasks, projectMembers, teams }) => {
   return (
@@ -21,14 +21,14 @@ const ByTasks = ({ tasks, projectMembers, teams }) => {
       <div className="my-2 ">
         <h2>Contributors Summary</h2>
         {projectMembers.map((conInfo) => (
-          <ContributorsView
+          <ProjectMembersView
             projectMember={conInfo}
             tasks={[]}
             printTask={false}
             // id={conInfo.id}
             key={conInfo.id}
             printRoles={true}
-          ></ContributorsView>
+          ></ProjectMembersView>
         ))}
       </div>
 

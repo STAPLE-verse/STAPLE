@@ -14,7 +14,7 @@ import TaskLayout from "src/core/layouts/TaskLayout"
 import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import { useTaskContext } from "src/tasks/components/TaskContext"
-import { responseSubmitted } from "src/assignments/utils/responseSubmitted"
+import { responseSubmitted } from "src/tasklogs/utils/responseSubmitted"
 
 export const EditTask = () => {
   // Ensure that only PM can edit a task

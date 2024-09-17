@@ -1,7 +1,7 @@
 import { useMutation } from "@blitzjs/rpc"
 import { AssignmentStatus, CompletedAs } from "db"
 import { useState } from "react"
-import updateAssignment from "src/assignments/mutations/updateAssignment"
+import updateAssignment from "src/tasklogs/mutations/updateAssignment"
 import { useTaskContext } from "src/tasks/components/TaskContext"
 
 const CompleteToggle = ({

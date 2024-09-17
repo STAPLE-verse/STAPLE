@@ -19,19 +19,19 @@ export default resolver.pipe(resolver.authorize(), async ({ taskId }: GetAssigne
   })
 
   // Collect userIds from direct projectMembers
-  const directContributorUserIds = assignments.flatMap((assignment) =>
+  const directProjectMemberUserIds = assignments.flatMap((assignment) =>
     assignment.projectMember ? [assignment.projectMember.userId] : []
   )
 
   // Collect userIds from team-assigned projectMembers
-  const teamContributorUserIds = assignments.flatMap((assignment) =>
+  const teamProjectMemberUserIds = assignments.flatMap((assignment) =>
     assignment.team
       ? assignment.team.projectMembers.map((projectMember) => projectMember.userId)
       : []
   )
 
   // Combine and deduplicate userIds
-  const userIds = Array.from(new Set([...directContributorUserIds, ...teamContributorUserIds]))
+  const userIds = Array.from(new Set([...directProjectMemberUserIds, ...teamProjectMemberUserIds]))
 
   return userIds
 })
