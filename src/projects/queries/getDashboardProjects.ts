@@ -6,7 +6,7 @@ export default resolver.pipe(resolver.authorize(), async (undefined, ctx: Ctx) =
   const { projects } = await getProjects(
     {
       where: {
-        contributors: {
+        projectMembers: {
           some: {
             userId: ctx.session.userId as number,
           },

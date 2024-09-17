@@ -4,12 +4,12 @@ import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextArea
 
 import { z } from "zod"
 
-interface LabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
+interface RoleFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   userId?: number
   taxonomyList: string[]
 }
 
-export function LabelForm<S extends z.ZodType<any, any>>(props: LabelFormProps<S>) {
+export function RoleForm<S extends z.ZodType<any, any>>(props: RoleFormProps<S>) {
   const { taxonomyList, ...formProps } = props
 
   return (
@@ -36,7 +36,7 @@ export function LabelForm<S extends z.ZodType<any, any>>(props: LabelFormProps<S
         className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
         name="taxonomy"
         label="Taxonomy:"
-        placeholder="Label Taxonomy"
+        placeholder="Role Taxonomy"
         type="text"
         list="taxonomy_tags"
       />

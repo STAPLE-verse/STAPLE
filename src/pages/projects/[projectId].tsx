@@ -18,7 +18,7 @@ interface ShowProjectContentProps {
 }
 
 const ShowProjectContent = ({ projectId }: ShowProjectContentProps) => {
-  const { contributor: currentProjectMember } = useCurrentProjectMember(projectId)
+  const { projectMember: currentProjectMember } = useCurrentProjectMember(projectId)
   const [openModal, setOpenModal] = useState(false)
 
   const handleToggle = () => {

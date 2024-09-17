@@ -14,16 +14,16 @@ export const AllTasksList = () => {
       OR: [
         {
           assignees: {
-            // Individual contributor
-            some: { contributor: { user: { id: currentUser?.id } }, teamId: null },
+            // Individual projectMember
+            some: { projectMember: { user: { id: currentUser?.id } }, teamId: null },
           },
         },
         {
           assignees: {
             some: {
               // Contributor as part of a team
-              team: { contributors: { some: { user: { id: currentUser?.id } } } },
-              contributorId: null,
+              team: { projectMembers: { some: { user: { id: currentUser?.id } } } },
+              projectMemberId: null,
             },
           },
         },
@@ -36,10 +36,10 @@ export const AllTasksList = () => {
         where: {
           OR: [
             {
-              contributor: { user: { id: currentUser?.id } }, // Individual contributor
+              projectMember: { user: { id: currentUser?.id } }, // Individual projectMember
             },
             {
-              team: { contributors: { some: { user: { id: currentUser?.id } } } }, // Contributor as part of a team
+              team: { projectMembers: { some: { user: { id: currentUser?.id } } } }, // Contributor as part of a team
             },
           ],
         },

@@ -4,20 +4,20 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import Modal from "src/core/components/Modal"
-import { LabelForm } from "src/labels/components/LabelForm"
+import { RoleForm } from "src/roles/components/RoleForm"
 import { FORM_ERROR } from "final-form"
 
 import toast from "react-hot-toast"
-import createLabel from "src/labels/mutations/createLabel"
-import getLabels from "src/labels/queries/getLabels"
-import { LabelFormSchema } from "src/labels/schemas"
-import { AllLabelsList } from "src/labels/components/AllLabelsList"
+import createRole from "src/roles/mutations/createRole"
+import getRoles from "src/roles/queries/getRoles"
+import { RoleFormSchema } from "src/roles/schemas"
+import { AllRolesList } from "src/roles/components/AllRolesList"
 
-const LabelBuilderPage = () => {
+const RoleBuilderPage = () => {
   const currentUser = useCurrentUser()
-  const [createLabelMutation] = useMutation(createLabel)
-  //Only show labels that belongs to current user
-  const [{ labels }, { refetch }] = useQuery(getLabels, {
+  const [createRoleMutation] = useMutation(createRole)
+  //Only show roles that belongs to current user
+  const [{ roles }, { refetch }] = useQuery(getRoles, {
     where: { user: { id: currentUser?.id } },
     orderBy: { id: "asc" },
   })
@@ -29,17 +29,17 @@ const LabelBuilderPage = () => {
     return self.indexOf(value) === index
   }
 
-  const taxonomyList = labels
-    .map((label) => {
-      const taxonomy = label.taxonomy || ""
+  const taxonomyList = roles
+    .map((role) => {
+      const taxonomy = role.taxonomy || ""
       return taxonomy
     })
     .filter(uniqueValues)
 
   // Modal open logics
-  const [openNewLabelModal, setOpenNewLabelModal] = useState(false)
-  const handleToggleNewLabelModal = () => {
-    setOpenNewLabelModal((prev) => !prev)
+  const [openNewRoleModal, setOpenNewRoleModal] = useState(false)
+  const handleToggleNewRoleModal = () => {
+    setOpenNewRoleModal((prev) => !prev)
   }
 
   const initialValues = {
@@ -48,19 +48,19 @@ const LabelBuilderPage = () => {
     taxonomy: " ",
   }
 
-  const handleCreateLabel = async (values) => {
+  const handleCreateRole = async (values) => {
     try {
-      const label = await createLabelMutation({
+      const role = await createRoleMutation({
         name: values.name,
         description: values.description,
         userId: currentUser!.id,
         taxonomy: values.taxonomy,
       })
       await reloadTable()
-      await toast.promise(Promise.resolve(label), {
-        loading: "Creating label...",
-        success: "Label created!",
-        error: "Failed to create the label...",
+      await toast.promise(Promise.resolve(role), {
+        loading: "Creating role...",
+        success: "Role created!",
+        error: "Failed to create the role...",
       })
     } catch (error: any) {
       console.error(error)
@@ -80,31 +80,31 @@ const LabelBuilderPage = () => {
         <h1 className="flex justify-center mb-2 text-3xl">All Roles</h1>
         <div>
           <Suspense fallback={<div>Loading...</div>}>
-            <AllLabelsList labels={labels} onChange={reloadTable} taxonomyList={taxonomyList} />
+            <AllRolesList roles={roles} onChange={reloadTable} taxonomyList={taxonomyList} />
           </Suspense>
         </div>
         <div>
           <button
             type="button"
             className="btn btn-primary mt-4"
-            onClick={() => handleToggleNewLabelModal()}
+            onClick={() => handleToggleNewRoleModal()}
           >
             New Role
           </button>
         </div>
 
-        <Modal open={openNewLabelModal} size="w-7/8 max-w-xl">
+        <Modal open={openNewRoleModal} size="w-7/8 max-w-xl">
           <div className="">
             <h1 className="flex justify-center mb-2 text-3xl">Create New Role</h1>
             <div className="flex justify-start mt-4">
-              <LabelForm
-                schema={LabelFormSchema}
+              <RoleForm
+                schema={RoleFormSchema}
                 submitText="Create Role"
                 className="flex flex-col"
-                onSubmit={handleCreateLabel}
+                onSubmit={handleCreateRole}
                 initialValues={initialValues}
                 taxonomyList={taxonomyList}
-              ></LabelForm>
+              ></RoleForm>
             </div>
 
             {/* closes the modal */}
@@ -113,7 +113,7 @@ const LabelBuilderPage = () => {
                 type="button"
                 /* button for popups */
                 className="btn btn-secondary"
-                onClick={handleToggleNewLabelModal}
+                onClick={handleToggleNewRoleModal}
               >
                 Close
               </button>
@@ -125,4 +125,4 @@ const LabelBuilderPage = () => {
   )
 }
 
-export default LabelBuilderPage
+export default RoleBuilderPage

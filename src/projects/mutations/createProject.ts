@@ -35,12 +35,12 @@ export default resolver.pipe(
       },
     })
 
-    // Create a contributor row to associate the current user with the project
-    await db.contributor.create({
+    // Create a projectMember row to associate the current user with the project
+    await db.projectMember.create({
       data: {
         userId,
         projectId: project.id,
-        // Since MemberPrivileges defaults to project manager the new contributor will be the project manager
+        // Since MemberPrivileges defaults to project manager the new projectMember will be the project manager
       },
     })
 

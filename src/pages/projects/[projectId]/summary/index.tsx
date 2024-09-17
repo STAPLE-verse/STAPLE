@@ -8,11 +8,11 @@ import Layout from "src/core/layouts/Layout"
 import getProject from "src/projects/queries/getProject"
 import ByProjectMembers from "src/summary/components/ByProjectMembers"
 import ByTasks from "src/summary/components/ByTasks"
-import ByLabels from "src/summary/components/ByLabels"
+import ByRoles from "src/summary/components/ByRoles"
 import ByDate from "src/summary/components/ByDate"
 import ByElements from "src/summary/components/ByElements"
 import getTasks from "src/tasks/queries/getTasks"
-import getLabels from "src/labels/queries/getLabels"
+import getRoles from "src/roles/queries/getRoles"
 import getElements from "src/elements/queries/getElements"
 import getTeams from "src/teams/queries/getTeams"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
@@ -33,7 +33,7 @@ const Summary = () => {
     where: { projectId: projectId },
     orderBy: { createdAt: "desc" },
     include: {
-      labels: true,
+      roles: true,
       element: true,
       createdBy: {
         include: { user: true },
@@ -55,7 +55,7 @@ const Summary = () => {
               },
             },
           },
-          contributor: {
+          projectMember: {
             include: {
               user: true,
             },
@@ -90,30 +90,30 @@ const Summary = () => {
     },
   })
   // Get projectMembers
-  //TODO: Only needs tos include label id
+  //TODO: Only needs tos include role id
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     orderBy: { user: { lastName: "asc" } },
     include: {
       user: true,
-      labels: true,
+      roles: true,
       assignmentStatusLog: true,
     },
   })
 
-  // get all labels from all PMs
+  // get all roles from all PMs
   const projectManagers = projectMembers.filter(
     (projectMember) => projectMember.privilege === "PROJECT_MANAGER"
   )
   const pmIds = projectManagers.map((pm) => pm.userId)
-  const [{ labels }] = useQuery(getLabels, {
+  const [{ roles }] = useQuery(getRoles, {
     where: {
       userId: {
-        in: pmIds, // Filter labels where userId is in the list of PM IDs
+        in: pmIds, // Filter roles where userId is in the list of PM IDs
       },
     },
     include: {
-      projectMembers: true, // Optional: include contributor data if needed
+      projectMembers: true, // Optional: include projectMember data if needed
     },
   })
 
@@ -129,7 +129,7 @@ const Summary = () => {
 
       {/* Select organization */}
       <div className="flex flex-row justify-center m-2">
-        {/* A dropdown menu here for organization: By Date, By Task, By Contributor, By Label, By
+        {/* A dropdown menu here for organization: By Date, By Task, By Contributor, By Role, By
             Element */}
         <select
           className="select select-info w-full max-w-xs"
@@ -140,8 +140,8 @@ const Summary = () => {
           </option>
           <option value="date">Organize project by Date</option>
           <option value="task">Organize project by Task</option>
-          <option value="contributor">Organize project by Contributor </option>
-          <option value="label">Organize project by Role</option>
+          <option value="projectMember">Organize project by Contributor </option>
+          <option value="role">Organize project by Role</option>
           <option value="element">Organize project by Element</option>
         </select>
       </div>
@@ -187,7 +187,7 @@ const Summary = () => {
         <div className="card bg-base-300 mx-2 w-full">
           <div className="card-body">
             <div className="card-title">Organized Metadata (under construction)</div>
-            {selectedOrganization === "contributor" && (
+            {selectedOrganization === "projectMember" && (
               <ByProjectMembers
                 tasks={tasks}
                 teams={teams}
@@ -197,8 +197,8 @@ const Summary = () => {
             {selectedOrganization === "task" && (
               <ByTasks tasks={tasks} projectMembers={projectMembers} teams={teams}></ByTasks>
             )}
-            {selectedOrganization === "label" && (
-              <ByLabels labels={labels} tasks={tasks} projectMembers={projectMembers}></ByLabels>
+            {selectedOrganization === "role" && (
+              <ByRoles roles={roles} tasks={tasks} projectMembers={projectMembers}></ByRoles>
             )}
             {selectedOrganization === "date" && (
               <ByDate tasks={tasks} projectMembers={projectMembers} teams={teams}></ByDate>

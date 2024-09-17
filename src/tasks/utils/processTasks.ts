@@ -47,7 +47,7 @@ export function processAllTasks(tasks): ProcessedAllTasks[] {
 // Finshed tasks table
 export type ProcessedFinishedTasks = {
   name: string
-  labels: string
+  roles: string
   completedOn: Date
   view: {
     taskId: number
@@ -57,16 +57,16 @@ export type ProcessedFinishedTasks = {
 
 export function processFinishedTasks(tasks): ProcessedFinishedTasks[] {
   return tasks.map((task) => {
-    const labels = task.labels
-    const labelNames =
-      labels && labels.length > 0 ? labels.map((label) => label.name).join(", ") : "No labels added"
+    const roles = task.roles
+    const roleNames =
+      roles && roles.length > 0 ? roles.map((role) => role.name).join(", ") : "No roles added"
 
     // TODO: Update this to make it safer
     const completedOn = task.assignees[0].statusLogs[0].createdAt
 
     return {
       name: task.name,
-      labels: labelNames,
+      roles: roleNames,
       completedOn: completedOn,
       view: {
         taskId: task.id,

@@ -4,7 +4,7 @@ import { z } from "zod"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
 import { MemberPrivileges } from "@prisma/client"
-import getLabels from "src/labels/queries/getLabels"
+import getRoles from "src/roles/queries/getRoles"
 import Modal from "src/core/components/Modal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
@@ -24,7 +24,7 @@ export const MemberPrivilegesOptions = [
 export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectMemberFormProps<S>) {
   const { projectId, isEdit = false, ...formProps } = props
 
-  // need all labels from all PMs for this project
+  // need all roles from all PMs for this project
   // Contributors
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
@@ -32,37 +32,37 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
       user: true,
     },
   })
-  // get all labels from all PMs
+  // get all roles from all PMs
   const projectManagers = projectMembers.filter(
-    (contributor) => contributor.privilege === "PROJECT_MANAGER"
+    (projectMember) => projectMember.privilege === "PROJECT_MANAGER"
   )
   const pmIds = projectManagers.map((pm) => pm.userId)
-  const [{ labels }] = useQuery(getLabels, {
+  const [{ roles }] = useQuery(getRoles, {
     where: {
       userId: {
-        in: pmIds, // Filter labels where userId is in the list of PM IDs
+        in: pmIds, // Filter roles where userId is in the list of PM IDs
       },
     },
     include: {
-      projectMembers: true, // Optional: include contributor data if needed
+      projectMembers: true, // Optional: include projectMember data if needed
       user: true,
     },
   })
 
-  const labelMerged = labels.map((labels) => {
+  const roleMerged = roles.map((roles) => {
     return {
-      pm: labels["user"]["username"],
-      label: labels["name"],
-      id: labels["id"],
+      pm: roles["user"]["username"],
+      role: roles["name"],
+      id: roles["id"],
     }
   })
 
-  const extraData = labelMerged.map((item) => ({
+  const extraData = roleMerged.map((item) => ({
     pm: item.pm,
   }))
 
-  const labelOptions = labelMerged.map((item) => ({
-    label: item.label,
+  const roleOptions = roleMerged.map((item) => ({
+    role: item.role,
     id: item.id,
   }))
 
@@ -75,9 +75,9 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
     },
   ]
 
-  const [openLabelsModal, setlabelsModal] = useState(false)
-  const handleToggleLabelsModal = () => {
-    setlabelsModal((prev) => !prev)
+  const [openRolesModal, setrolesModal] = useState(false)
+  const handleToggleRolesModal = () => {
+    setrolesModal((prev) => !prev)
   }
 
   return (
@@ -93,7 +93,7 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
       />
       <Tooltip
         id="role-tooltip"
-        content="Add role labels to individual contributors (like administration)"
+        content="Add roles to individual contributors (like administration)"
         className="z-[1099] ourtooltips"
         place="right"
         opacity={1}
@@ -122,23 +122,23 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
           type="button"
           className="btn btn-primary w-1/2"
           data-tooltip-id="role-tooltip"
-          onClick={() => handleToggleLabelsModal()}
+          onClick={() => handleToggleRolesModal()}
         >
           Add Role
         </button>
-        <Modal open={openLabelsModal} size="w-7/8 max-w-xl">
+        <Modal open={openRolesModal} size="w-7/8 max-w-xl">
           <div className="">
             <div className="flex justify-start mt-4">
               <CheckboxFieldTable
-                name="labelsId"
-                options={labelOptions}
+                name="rolesId"
+                options={roleOptions}
                 extraColumns={extraColumns}
                 extraData={extraData}
               />
             </div>
             {/* closes the modal */}
             <div className="modal-action flex justify-end mt-4">
-              <button type="button" className="btn btn-primary" onClick={handleToggleLabelsModal}>
+              <button type="button" className="btn btn-primary" onClick={handleToggleRolesModal}>
                 Close
               </button>
             </div>

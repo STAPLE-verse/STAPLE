@@ -11,15 +11,15 @@ export type ExtendedContributor = Contributor & {
 }
 
 export type ExtendedTeam = Team & {
-  contributors: ExtendedContributor[]
+  projectMembers: ExtendedContributor[]
 }
 
 export type ExtendedAssignmentStatusLog = AssignmentStatusLog & {
-  contributor?: ExtendedContributor | null
+  projectMember?: ExtendedContributor | null
 }
 
 export type ExtendedAssignment = Assignment & {
-  contributor?: ExtendedContributor | null
+  projectMember?: ExtendedContributor | null
   team?: ExtendedTeam | null
   statusLogs?: ExtendedAssignmentStatusLog[]
 }
@@ -44,14 +44,16 @@ export default function useAssignmentData(task: ExtendedTask): useAssignmentData
   // Filter out individual assignments
   const individualAssignments = assignments.filter(
     (assignment) =>
-      assignment.contributorId !== null && assignment.contributorId == currentContributor.id
+      assignment.projectMemberId !== null && assignment.projectMemberId == currentContributor.id
   )
 
   // Filter out team assignments
   const teamAssignments = assignments.filter((assignment) => {
     return (
       assignment.teamId !== null &&
-      assignment.team?.contributors?.some((contributor) => contributor.id === currentContributor.id)
+      assignment.team?.projectMembers?.some(
+        (projectMember) => projectMember.id === currentContributor.id
+      )
     )
   })
 

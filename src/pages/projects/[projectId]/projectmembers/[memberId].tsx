@@ -13,8 +13,8 @@ import { ProjectMember, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 
 import { ProjectMemberTaskListDone } from "src/tasks/components/ProjectMembersTaskListDone"
-import { ProjectMemberLabelsList } from "src/labels/components/ProjectMembersLabelsList"
-import { labelTableColumnsSimple } from "src/labels/components/LabelTable"
+import { ProjectMemberRolesList } from "src/roles/components/ProjectMembersRolesList"
+import { roleTableColumnsSimple } from "src/roles/components/RoleTable"
 import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
 import { MemberPrivileges } from "db"
@@ -24,33 +24,35 @@ export const ProjectMemberPage = () => {
   const router = useRouter()
   const [deleteProjectMemberMutation] = useMutation(deleteProjectMember)
 
-  const contributorId = useParam("contributorId", "number")
+  const projectMemberId = useParam("projectMemberId", "number")
   const projectId = useParam("projectId", "number")
 
   const currentUser = useCurrentUser()
-  const contributor = useQuery(getProjectMember, {
-    where: { id: contributorId },
+  const projectMember = useQuery(getProjectMember, {
+    where: { id: projectMemberId },
     include: { user: true },
   }) as unknown as ProjectMember & {
     user: User
   }
 
   const [currentProjectMember] = useQuery(getProjectMember, {
-    where: { projectId: projectId, id: contributorId },
+    where: { projectId: projectId, id: projectMemberId },
     include: { teams: true },
   })
 
-  const user = contributor[0].user
+  const user = projectMember[0].user
   const teams = currentProjectMember.hasOwnProperty("teams")
     ? currentProjectMember["teams"].map((team) => team.name)
     : ""
 
   const handleDelete = async () => {
     if (
-      window.confirm("This contributor will be removed from the project. Are you sure to continue?")
+      window.confirm(
+        "This projectMember will be removed from the project. Are you sure to continue?"
+      )
     ) {
       try {
-        await deleteProjectMemberMutation({ id: contributor[0].id })
+        await deleteProjectMemberMutation({ id: projectMember[0].id })
         // Check if User removed themselves and return to main page
         if (user.id === currentUser?.id) {
           await router.push(Routes.ProjectsPage())
@@ -87,7 +89,7 @@ export const ProjectMemberPage = () => {
             </p>
             <p>
               <span className="font-semibold">Privilege:</span>{" "}
-              {getPrivilegeText(contributor[0].privilege)}
+              {getPrivilegeText(projectMember[0].privilege)}
             </p>
 
             <p>
@@ -100,7 +102,7 @@ export const ProjectMemberPage = () => {
                   className="btn btn-primary"
                   href={Routes.EditProjectMemberPage({
                     projectId: projectId!,
-                    contributorId: contributorId!,
+                    projectMemberId: projectMemberId!,
                   })}
                 >
                   Edit Contributor
@@ -115,10 +117,10 @@ export const ProjectMemberPage = () => {
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
             <div className="card-title">Contribution Roles</div>
-            <ProjectMemberLabelsList
+            <ProjectMemberRolesList
               usersId={[user?.id]}
               projectId={projectId}
-              columns={labelTableColumnsSimple}
+              columns={roleTableColumnsSimple}
             />
             <div className="card-actions justify-end">
               {currentProjectMember.privilege === MemberPrivileges.PROJECT_MANAGER && (
@@ -137,7 +139,7 @@ export const ProjectMemberPage = () => {
           <div className="card-body">
             <div className="card-title">Contribution Tasks</div>
             <ProjectMemberTaskListDone
-              contributor={currentProjectMember}
+              projectMember={currentProjectMember}
               columns={finishedTasksTableColumns}
             />
 

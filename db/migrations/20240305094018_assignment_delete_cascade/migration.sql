@@ -1,5 +1,5 @@
 -- DropForeignKey
-ALTER TABLE "Assignment" DROP CONSTRAINT "Assignment_contributorId_fkey";
+ALTER TABLE "Assignment" DROP CONSTRAINT "Assignment_projectMemberId_fkey";
 
 -- DropForeignKey
 ALTER TABLE "Assignment" DROP CONSTRAINT "Assignment_taskId_fkey";
@@ -14,7 +14,7 @@ ALTER TABLE "Team" DROP CONSTRAINT "Team_projectId_fkey";
 ALTER TABLE "Assignment" ADD CONSTRAINT "Assignment_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Assignment" ADD CONSTRAINT "Assignment_contributorId_fkey" FOREIGN KEY ("contributorId") REFERENCES "Contributor"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Assignment" ADD CONSTRAINT "Assignment_projectMemberId_fkey" FOREIGN KEY ("projectMemberId") REFERENCES "Contributor"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Assignment" ADD CONSTRAINT "Assignment_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE CASCADE ON UPDATE CASCADE;

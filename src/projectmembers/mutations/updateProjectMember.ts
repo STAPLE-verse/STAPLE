@@ -2,22 +2,22 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { UpdateProjectMemberSchema } from "../schemas"
 
-async function connectLabels(contributorId, labelsId) {
+async function connectRoles(projectMemberId, rolesId) {
   await db.$transaction(async (prisma) => {
     await db.projectmember.update({
-      where: { id: contributorId },
+      where: { id: projectMemberId },
       data: {
-        labels: {
+        roles: {
           set: [],
         },
       },
     })
 
     await db.projectmember.update({
-      where: { id: contributorId },
+      where: { id: projectMemberId },
       data: {
-        labels: {
-          connect: labelsId?.map((c) => ({ id: c })) || [],
+        roles: {
+          connect: rolesId?.map((c) => ({ id: c })) || [],
         },
       },
     })
@@ -27,12 +27,12 @@ async function connectLabels(contributorId, labelsId) {
 export default resolver.pipe(
   resolver.zod(UpdateProjectMemberSchema),
   resolver.authorize(),
-  async ({ id, labelsId = [], ...data }) => {
+  async ({ id, rolesId = [], ...data }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const contributor = await db.projectmember.update({ where: { id }, data })
+    const projectMember = await db.projectmember.update({ where: { id }, data })
 
-    await connectLabels(id, labelsId)
+    await connectRoles(id, rolesId)
 
-    return contributor
+    return projectMember
   }
 )

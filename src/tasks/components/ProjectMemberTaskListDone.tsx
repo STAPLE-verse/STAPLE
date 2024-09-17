@@ -3,12 +3,12 @@ import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
 import { processFinishedTasks } from "../utils/processTasks"
 
-export const ContributorTaskListDone = ({ contributor, columns }) => {
+export const ContributorTaskListDone = ({ projectMember, columns }) => {
   const [{ tasks }] = useQuery(getTasks, {
     where: {
       OR: [
-        { assignees: { some: { contributorId: contributor.id } } },
-        { assignees: { some: { team: { contributors: { some: { id: contributor.id } } } } } },
+        { assignees: { some: { projectMemberId: projectMember.id } } },
+        { assignees: { some: { team: { projectMembers: { some: { id: projectMember.id } } } } } },
       ],
     },
     include: {
@@ -16,7 +16,7 @@ export const ContributorTaskListDone = ({ contributor, columns }) => {
         include: { statusLogs: { orderBy: { createdAt: "desc" } } },
       },
       project: true,
-      labels: true,
+      roles: true,
     },
     orderBy: { id: "asc" },
   })

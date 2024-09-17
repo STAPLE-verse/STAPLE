@@ -1,15 +1,15 @@
 import React, { useState } from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import Modal from "src/core/components/Modal"
-import { LabelForm } from "./LabelForm"
+import { RoleForm } from "./RoleForm"
 import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
-import updateLabel from "../mutations/updateLabel"
-import deleteLabel from "../mutations/deleteLabel"
+import updateRole from "../mutations/updateRole"
+import deleteRole from "../mutations/deleteRole"
 import { useMutation } from "@blitzjs/rpc"
-import { LabelFormSchema } from "../schemas"
+import { RoleFormSchema } from "../schemas"
 
-export type LabelInformation = {
+export type RoleInformation = {
   name: string
   description?: string
   taxonomy?: string
@@ -21,7 +21,7 @@ export type LabelInformation = {
 }
 
 const EditColumn = ({ row }) => {
-  const [updateLabelMutation] = useMutation(updateLabel)
+  const [updateRoleMutation] = useMutation(updateRole)
   const {
     name = "",
     description = "",
@@ -32,9 +32,9 @@ const EditColumn = ({ row }) => {
     ...rest
   } = { ...row }
 
-  const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
-  const handleToggleEditLabelModal = () => {
-    setOpenEditLabelModal((prev) => !prev)
+  const [openEditRoleModal, setOpenEditRoleModal] = useState(false)
+  const handleToggleEditRoleModal = () => {
+    setOpenEditRoleModal((prev) => !prev)
   }
 
   const initialValues = {
@@ -44,9 +44,9 @@ const EditColumn = ({ row }) => {
   }
   const taxonomyList = row.taxonomyList
 
-  const handleEditLabel = async (values) => {
+  const handleEditRole = async (values) => {
     try {
-      const updated = await updateLabelMutation({
+      const updated = await updateRoleMutation({
         ...values,
         userId: userId,
         id: id,
@@ -55,9 +55,9 @@ const EditColumn = ({ row }) => {
         onChangeCallback()
       }
       await toast.promise(Promise.resolve(updated), {
-        loading: "Editing label...",
-        success: "Label edited!",
-        error: "Failed to edit the label...",
+        loading: "Editing role...",
+        success: "Role edited!",
+        error: "Failed to edit the role...",
       })
     } catch (error: any) {
       console.error(error)
@@ -73,25 +73,25 @@ const EditColumn = ({ row }) => {
         type="button"
         /* button for popups */
         className="btn btn-primary"
-        onClick={handleToggleEditLabelModal}
+        onClick={handleToggleEditRoleModal}
       >
         Edit
       </button>
-      <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
+      <Modal open={openEditRoleModal} size="w-7/8 max-w-xl">
         <div className="">
           <h1 className="flex justify-center mb-2 text-3xl">Edit Role</h1>
           <div className="flex justify-start mt-4">
-            <LabelForm
-              schema={LabelFormSchema}
+            <RoleForm
+              schema={RoleFormSchema}
               submitText="Update Role"
               className="flex flex-col"
-              onSubmit={handleEditLabel}
+              onSubmit={handleEditRole}
               initialValues={initialValues}
               taxonomyList={taxonomyList}
               // name={""}
               // description={""}
               // taxonomy={""}
-            ></LabelForm>
+            ></RoleForm>
           </div>
 
           {/* closes the modal */}
@@ -100,7 +100,7 @@ const EditColumn = ({ row }) => {
               type="button"
               /* button for popups */
               className="btn btn-secondary"
-              onClick={handleToggleEditLabelModal}
+              onClick={handleToggleEditRoleModal}
             >
               Close
             </button>
@@ -112,22 +112,22 @@ const EditColumn = ({ row }) => {
 }
 
 const DeleteColumn = ({ row }) => {
-  const [deleteLabelMutation] = useMutation(deleteLabel)
+  const [deleteRoleMutation] = useMutation(deleteRole)
   const { id = null, onChangeCallback = null, ...rest } = { ...row }
 
-  const handleDeleteLabel = async (values) => {
+  const handleDeleteRole = async (values) => {
     if (window.confirm("This role will be permanently deleted. Are you sure to continue?")) {
       try {
-        const updated = await deleteLabelMutation({
+        const updated = await deleteRoleMutation({
           id: id,
         })
         if (onChangeCallback != undefined) {
           onChangeCallback()
         }
         await toast.promise(Promise.resolve(updated), {
-          loading: "Deleting label...",
-          success: "Label deleted!",
-          error: "Failed to delete the label...",
+          loading: "Deleting role...",
+          success: "Role deleted!",
+          error: "Failed to delete the role...",
         })
       } catch (error: any) {
         console.error(error)
@@ -144,7 +144,7 @@ const DeleteColumn = ({ row }) => {
         type="button"
         /* button for popups */
         className="btn btn-primary"
-        onClick={handleDeleteLabel}
+        onClick={handleDeleteRole}
       >
         Delete
       </button>
@@ -152,13 +152,13 @@ const DeleteColumn = ({ row }) => {
   )
 }
 
-const columnHelper = createColumnHelper<LabelInformation>()
+const columnHelper = createColumnHelper<RoleInformation>()
 
 // ColumnDefs
-export const labelTableColumns = [
+export const roleTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Label Name",
+    header: "Role Name",
   }),
 
   columnHelper.accessor("description", {
@@ -187,10 +187,10 @@ export const labelTableColumns = [
   }),
 ]
 
-export const labelTableColumnsSimple = [
+export const roleTableColumnsSimple = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Label Name",
+    header: "Role Name",
   }),
 
   columnHelper.accessor("description", {
@@ -203,14 +203,14 @@ export const labelTableColumnsSimple = [
   }),
 ]
 
-export const labelTableColumnsTeam = [
+export const roleTableColumnsTeam = [
   columnHelper.accessor("userName", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "User Name",
   }),
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Label Name",
+    header: "Role Name",
   }),
   columnHelper.accessor("description", {
     cell: (info) => <span>{info.getValue()}</span>,

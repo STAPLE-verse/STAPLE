@@ -12,7 +12,7 @@ const tooltipContents = [
   { id: "project-teams-tooltip", content: "Add, edit, and view project teams" },
   {
     id: "project-credit-tooltip",
-    content: "Add, edit, and view contribution explanations with labels",
+    content: "Add, edit, and view contribution explanations with roles",
   },
   { id: "project-form-tooltip", content: "Review and download project form data (metadata)" },
   { id: "project-summary-tooltip", content: "Review and download project summary (metadata)" },
@@ -25,7 +25,7 @@ const tooltipContents = [
   { id: "tasks-tooltip", content: "View all tasks for all projects" },
   { id: "forms-tooltip", content: "Build your own forms to collect data in a task (metadata)" },
   { id: "notifications-tooltip", content: "View all notifications for projects" },
-  { id: "labels-tooltip", content: "View, add, and edit contribution categories with labels" },
+  { id: "roles-tooltip", content: "View, add, and edit contribution categories with roles" },
   { id: "help-tooltip", content: "Get help with STAPLE" },
   { id: "project-notification-tooltip", content: "View notifications for this project" },
   { id: "invite-tooltip", content: "View and accept project invitations" },

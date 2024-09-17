@@ -34,7 +34,7 @@ export const AssignmentToggleModal = ({ assignment }) => {
           <div className="modal-action justify-between">
             <CompleteToggle
               currentAssignment={assignment}
-              completedLabel="Completed"
+              completedRole="Completed"
               completedBy={currentContributor.id}
               completedAs={assignment.teamId ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
             />

@@ -1,7 +1,7 @@
 import ProjectMemberNumber from "../components/widgets/ProjectMemberNumber"
 import ElementSummary from "../components/widgets/ElementSummary"
 import FormNumber from "../components/widgets/FormNumber"
-import LabelsSummary from "../components/widgets/LabelsSummary"
+import RolesSummary from "../components/widgets/RolesSummary"
 import LastProject from "../components/widgets/LastProject"
 import MainNotification from "../components/widgets/MainNotification"
 import MainOverdueTasks from "../components/widgets/MainOverDueTasks"
@@ -30,6 +30,6 @@ export const widgetRegistry = {
     FormNumber: FormNumber,
     TaskTotal: TaskTotal,
     ElementSummary: ElementSummary,
-    LabelsSummary: LabelsSummary,
+    RolesSummary: RolesSummary,
   },
 }

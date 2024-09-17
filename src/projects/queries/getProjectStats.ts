@@ -17,7 +17,7 @@ export default resolver.pipe(
       where: { projectId: id },
     })
 
-    const allProjectMember = await db.contributor.count({
+    const allProjectMember = await db.projectMember.count({
       where: { projectId: id },
     })
 
@@ -54,25 +54,25 @@ export default resolver.pipe(
       (assignment) => assignment.statusLogs[0]?.status === AssignmentStatus.COMPLETED
     )
 
-    // no labels for contributors
-    const contribLabels = await db.contributor.findMany({
+    // no roles for projectMembers
+    const contribRoles = await db.projectMember.findMany({
       where: {
         projectId: id,
       },
-      include: { labels: true },
+      include: { roles: true },
     })
 
-    const completedContribLabels = contribLabels.filter((label) => label.labels.length > 0)
+    const completedContribRoles = contribRoles.filter((role) => role.roles.length > 0)
 
-    // no labels for tasks
-    const taskLabels = await db.task.findMany({
+    // no roles for tasks
+    const taskRoles = await db.task.findMany({
       where: {
         projectId: id,
       },
-      include: { labels: true },
+      include: { roles: true },
     })
 
-    const completedTaskLabels = taskLabels.filter((label) => label.labels.length > 0)
+    const completedTaskRoles = taskRoles.filter((role) => role.roles.length > 0)
 
     return {
       allProjectMember: allProjectMember,
@@ -80,8 +80,8 @@ export default resolver.pipe(
       completedTask: completedTask,
       allTeams: allTeams,
       allElements: allElements,
-      completedContribLabels: completedContribLabels.length,
-      completedTaskLabels: completedTaskLabels.length,
+      completedContribRoles: completedContribRoles.length,
+      completedTaskRoles: completedTaskRoles.length,
       allAssignments: allAssignments.length,
       completedAssignments: completedAssignments.length,
     }

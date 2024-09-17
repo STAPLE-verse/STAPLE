@@ -7,7 +7,7 @@ import { useTaskContext } from "src/tasks/components/TaskContext"
 const CompleteToggle = ({
   currentAssignment,
   // refetch,
-  completedLabel,
+  completedRole,
   completedBy,
   completedAs,
 }) => {
@@ -56,7 +56,7 @@ const CompleteToggle = ({
               checked={isChecked}
               onChange={handleAssignmentStatusToggle}
             />
-            <span className="ml-2">{completedLabel}</span>
+            <span className="ml-2">{completedRole}</span>
           </label>
         </div>
       ) : (

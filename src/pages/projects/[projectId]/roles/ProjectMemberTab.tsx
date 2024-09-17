@@ -8,20 +8,20 @@ import toast from "react-hot-toast"
 import Table from "src/core/components/Table"
 import { useParam } from "@blitzjs/next"
 import {
-  ProjectMemberLabelInformation,
-  labelProjectMemberTableColumns,
-} from "src/labels/components/LabelProjectMemberTable"
+  ProjectMemberRoleInformation,
+  roleProjectMemberTableColumns,
+} from "src/roles/components/RoleProjectMemberTable"
 
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
-import { AddLabelForm } from "src/labels/components/AddLabelForm"
-import { LabelIdsFormSchema } from "src/labels/schemas"
-import updateProjectMemberLabel from "src/projectmembers/mutations/updateProjectMemberLabel"
+import { AddRoleForm } from "src/roles/components/AddRoleForm"
+import { RoleIdsFormSchema } from "src/roles/schemas"
+import updateProjectMemberRole from "src/projectmembers/mutations/updateProjectMemberRole"
 
-export const AllProjectMemberLabelsList = ({ projectMembers, onChange }) => {
-  const [updateProjectMemberLabelMutation] = useMutation(updateProjectMemberLabel)
+export const AllProjectMemberRolesList = ({ projectMembers, onChange }) => {
+  const [updateProjectMemberRoleMutation] = useMutation(updateProjectMemberRole)
   const projectId = useParam("projectId", "number")
 
-  const labelChanged = async () => {
+  const roleChanged = async () => {
     if (onChange != undefined) {
       onChange()
     }
@@ -37,25 +37,25 @@ export const AllProjectMemberLabelsList = ({ projectMembers, onChange }) => {
     setSelectedIds(newSelectedIds)
   }
 
-  const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
-  const handleToggleEditLabelModal = () => {
-    setOpenEditLabelModal((prev) => !prev)
+  const [openEditRoleModal, setOpenEditRoleModal] = useState(false)
+  const handleToggleEditRoleModal = () => {
+    setOpenEditRoleModal((prev) => !prev)
   }
 
-  const handleAddLabel = async (values) => {
+  const handleAddRole = async (values) => {
     try {
-      const updated = await updateProjectMemberLabelMutation({
+      const updated = await updateProjectMemberRoleMutation({
         ...values,
         projectMembersId: selectedIds,
         disconnect: false,
       })
-      await labelChanged()
+      await roleChanged()
       await toast.promise(Promise.resolve(updated), {
         loading: "Adding roles to contributors...",
         success: "Roles added!",
         error: "Failed to add the roles...",
       })
-      handleToggleEditLabelModal()
+      handleToggleEditRoleModal()
     } catch (error: any) {
       console.error(error)
       return {
@@ -65,22 +65,22 @@ export const AllProjectMemberLabelsList = ({ projectMembers, onChange }) => {
   }
 
   const initialValues = {
-    labelsId: [],
+    rolesId: [],
   }
 
-  const taskInformation = projectMembers.map((contributor) => {
+  const taskInformation = projectMembers.map((projectMember) => {
     const name = projectMember.user.username
     const lastname = projectMember.user.lastName
     const firstName = projectMember.user.firstName
 
     //TODO merge with task information tab
-    let t: ProjectMemberLabelInformation = {
+    let t: ProjectMemberRoleInformation = {
       username: name,
       firstname: firstName,
       lastname: lastname,
       id: projectMember.id,
-      labels: projectMember.labels,
-      onChangeCallback: labelChanged,
+      roles: projectMember.roles,
+      onChangeCallback: roleChanged,
       selectedIds: selectedIds,
       onMultipledAdded: handleMultipleChanged,
     }
@@ -90,31 +90,31 @@ export const AllProjectMemberLabelsList = ({ projectMembers, onChange }) => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <Table columns={labelProjectMemberTableColumns} data={taskInformation} addPagination={true} />
+      <Table columns={roleProjectMemberTableColumns} data={taskInformation} addPagination={true} />
 
       <div className="modal-action flex justify-end mt-4">
         <button
           type="button"
           /* button for popups */
           className="btn btn-primary"
-          onClick={handleToggleEditLabelModal}
+          onClick={handleToggleEditRoleModal}
           disabled={hasElements}
         >
           Add Multiple
         </button>
 
-        <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
+        <Modal open={openEditRoleModal} size="w-7/8 max-w-xl">
           <div className="">
             <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
             <div className="flex justify-start mt-4">
-              <AddLabelForm
+              <AddRoleForm
                 projectId={projectId}
-                schema={LabelIdsFormSchema}
+                schema={RoleIdsFormSchema}
                 submitText="Update Role"
                 className="flex flex-col"
-                onSubmit={handleAddLabel}
+                onSubmit={handleAddRole}
                 initialValues={initialValues}
-              ></AddLabelForm>
+              ></AddRoleForm>
             </div>
 
             {/* closes the modal */}
@@ -123,7 +123,7 @@ export const AllProjectMemberLabelsList = ({ projectMembers, onChange }) => {
                 type="button"
                 /* button for popups */
                 className="btn btn-secondary"
-                onClick={handleToggleEditLabelModal}
+                onClick={handleToggleEditRoleModal}
               >
                 Close
               </button>
@@ -140,7 +140,7 @@ const ProjectMembersTab = () => {
 
   const [{ projectMembers }, { refetch }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
-    include: { user: true, labels: true },
+    include: { user: true, roles: true },
     orderBy: { id: "asc" },
   })
 
@@ -152,7 +152,7 @@ const ProjectMembersTab = () => {
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <div>
         <Suspense fallback={<div>Loading...</div>}>
-          <AllProjectMemberLabelsList projectMembers={projectMembers} onChange={reloadTable} />
+          <AllProjectMemberRolesList projectMembers={projectMembers} onChange={reloadTable} />
         </Suspense>
       </div>
     </main>

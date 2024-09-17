@@ -14,7 +14,7 @@ export default resolver.pipe(resolver.authorize(), async (undefined, ctx: Ctx) =
         project: { select: { name: true } },
       },
       where: {
-        assignees: { some: { contributor: { user: { id: ctx.session.userId as number } } } },
+        assignees: { some: { projectMember: { user: { id: ctx.session.userId as number } } } },
         status: Status.NOT_COMPLETED,
       },
       orderBy: { id: "desc" },

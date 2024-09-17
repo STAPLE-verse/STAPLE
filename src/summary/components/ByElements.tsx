@@ -1,7 +1,7 @@
 import React from "react"
 import { ContributorsView, ElementView, TeamView } from "src/summary/components/UtilsViews"
 
-const ByElements = ({ elements, teams, contributors, tasks }) => {
+const ByElements = ({ elements, teams, projectMembers, tasks }) => {
   const getElementTask = (elementId, tasks) => {
     let r = tasks.find((task) => task.element != null && task.elementId == elementId)
     return r
@@ -13,12 +13,12 @@ const ByElements = ({ elements, teams, contributors, tasks }) => {
         {/* <h2>Elements Summary</h2> */}
         <div>
           <h2>Contributors Summary</h2>
-          {contributors.map((contributor) => (
+          {projectMembers.map((projectMember) => (
             <ContributorsView
-              contributor={contributor}
+              projectMember={projectMember}
               tasks={[]}
-              // id={contributor.id}
-              key={contributor.id}
+              // id={projectMember.id}
+              key={projectMember.id}
               printTask={false}
             ></ContributorsView>
           ))}

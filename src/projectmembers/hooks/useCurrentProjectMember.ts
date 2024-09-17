@@ -7,7 +7,7 @@ export const useCurrentProjectMember = (projectId) => {
 
   const shouldFetch = !!(projectId && currentUser?.id)
 
-  const [contributor, { isLoading, isError }] = useQuery(
+  const [projectMember, { isLoading, isError }] = useQuery(
     getProjectMember,
     {
       where: { projectId: projectId, userId: currentUser?.id },
@@ -18,8 +18,8 @@ export const useCurrentProjectMember = (projectId) => {
   )
 
   if (!shouldFetch) {
-    return { contributor: null, isLoading: false, isError: false, enabled: shouldFetch }
+    return { projectMember: null, isLoading: false, isError: false, enabled: shouldFetch }
   }
 
-  return { contributor, isLoading, isError, enabled: shouldFetch }
+  return { projectMember, isLoading, isError, enabled: shouldFetch }
 }

@@ -1,7 +1,7 @@
 import {
   JsonProjectMember,
   JsonProjectMemberUI,
-} from "src/services/jsonconverter/schema/contributorSchema"
+} from "src/services/jsonconverter/schema/projectMemberSchema"
 import { JsonFunder, JsonFunderUI } from "src/services/jsonconverter/schema/funderSchema"
 
 export function getDefaultSchemaLists() {

@@ -58,7 +58,7 @@ const NewTaskPage = () => {
                   projectMembersId: values.projectMembersId,
                   teamsId: values.teamsId,
                   formVersionId: values.formVersionId,
-                  labelsId: values.labelsId,
+                  rolesId: values.rolesId,
                 })
 
                 await toast.promise(Promise.resolve(task), {

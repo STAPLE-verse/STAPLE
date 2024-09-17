@@ -39,9 +39,9 @@ export const DeleteProjectSchema = z.object({
   id: z.number(),
 })
 
-export const UpdateProjectLabelSchema = z.object({
+export const UpdateProjectRoleSchema = z.object({
   projectsId: z.array(z.number()).nonempty(),
-  labelsId: z.array(z.number()).optional().nullable(),
+  rolesId: z.array(z.number()).optional().nullable(),
   disconnect: z.boolean(),
 })
 

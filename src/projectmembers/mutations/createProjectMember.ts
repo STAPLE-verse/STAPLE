@@ -15,13 +15,13 @@ export default resolver.pipe(
         invitationCode: invitationCode,
       },
       include: {
-        labels: true,
+        roles: true,
       },
     })
 
     if (projectInvite) {
-      // Create contributor
-      const contributor = await db.contributor.create({
+      // Create projectMember
+      const projectMember = await db.projectMember.create({
         data: {
           userId: userId,
           projectId: projectInvite!.projectId,
@@ -29,12 +29,12 @@ export default resolver.pipe(
         },
       })
 
-      //connect to labels
-      let c1 = await db.contributor.update({
-        where: { id: contributor.id },
+      //connect to roles
+      let c1 = await db.projectMember.update({
+        where: { id: projectMember.id },
         data: {
-          labels: {
-            connect: projectInvite!.labels.map((label) => ({ id: label.id })) || [],
+          roles: {
+            connect: projectInvite!.roles.map((role) => ({ id: role.id })) || [],
           },
         },
       })
@@ -45,13 +45,13 @@ export default resolver.pipe(
       await sendNotification(
         {
           templateId: "addedToProject",
-          recipients: [contributor.userId],
+          recipients: [projectMember.userId],
           data: {
             projectName: project!.name,
             addedBy: projectInvite!.addedBy,
-            privilege: getPrivilegeText(contributor.privilege),
+            privilege: getPrivilegeText(projectMember.privilege),
           },
-          projectId: contributor.projectId,
+          projectId: projectMember.projectId,
         },
         ctx
       )

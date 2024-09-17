@@ -25,15 +25,15 @@ function NewProjectMember() {
   // Handle events
   const handleSubmit = async (values) => {
     try {
-      const contributor = await createInviteMutation({
+      const projectMember = await createInviteMutation({
         projectId: projectId!,
         privilege: values.privilege,
         addedBy: currentUser!.username,
         email: values.email,
-        labelsId: values.labelsId,
+        rolesId: values.rolesId,
       })
 
-      //console.log(contributor)
+      //console.log(projectMember)
 
       if (projectMember.code == "already_added") {
         setFormError("User is already a contributor on the project.")
@@ -45,7 +45,9 @@ function NewProjectMember() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(createNewInvitation(values, currentUser, projectMember.contributor)),
+          body: JSON.stringify(
+            createNewInvitation(values, currentUser, projectMember.projectMember)
+          ),
         })
 
         if (response.ok) {
@@ -54,10 +56,10 @@ function NewProjectMember() {
           console.error("Failed to send email")
         }
 
-        await toast.promise(Promise.resolve(contributor), {
-          loading: "Inviting contributor...",
+        await toast.promise(Promise.resolve(projectMember), {
+          loading: "Inviting projectMember...",
           success: "Contributor invited to the project!",
-          error: "Failed to add the contributor...",
+          error: "Failed to add the projectMember...",
         })
         await router.push(
           Routes.ShowProjectPage({

@@ -2,7 +2,7 @@ import React from "react"
 
 import { createColumnHelper } from "@tanstack/react-table"
 
-export type PmLabelInformation = {
+export type PmRoleInformation = {
   name: string
   description?: string
   id: number
@@ -42,7 +42,7 @@ export const MultipleCheckboxColumn = ({ row }) => {
   )
 }
 
-const columnHelper = createColumnHelper<PmLabelInformation>()
+const columnHelper = createColumnHelper<PmRoleInformation>()
 
 // ColumnDefs
 export const labelPmTableColumns = [

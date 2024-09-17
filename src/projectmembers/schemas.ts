@@ -9,7 +9,7 @@ export const CreateProjectMemberSchema = z.object({
 export const CreateProjectMemberFormSchema = z.object({
   email: z.string(),
   privilege: z.nativeEnum(MemberPrivileges),
-  labelsId: z.array(z.number()).optional().nullable(),
+  rolesId: z.array(z.number()).optional().nullable(),
 })
 
 export const UpdateProjectMemberFormSchema = z.object({
@@ -20,7 +20,7 @@ export const UpdateProjectMemberSchema = z.object({
   id: z.number(),
   projectId: z.number(),
   privilege: z.nativeEnum(MemberPrivileges),
-  labelsId: z.array(z.number()).optional().nullable(),
+  rolesId: z.array(z.number()).optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
 })
 
@@ -28,8 +28,8 @@ export const DeleteProjectMemberSchema = z.object({
   id: z.number(),
 })
 
-export const UpdateProjectMemberLabelSchema = z.object({
+export const UpdateProjectMemberRoleSchema = z.object({
   projectMembersId: z.array(z.number()).nonempty(),
-  labelsId: z.array(z.number()).optional().nullable(),
+  rolesId: z.array(z.number()).optional().nullable(),
   disconnect: z.boolean(),
 })

@@ -11,7 +11,7 @@ const ProjectMemberNumber: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
 
-  // Fetch project stats for the contributors
+  // Fetch project stats for the projectMembers
   const [projectStats] = useQuery(getProjectStats, { id: projectId! })
 
   return (

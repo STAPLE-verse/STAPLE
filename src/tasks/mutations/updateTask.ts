@@ -2,12 +2,12 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { UpdateTaskSchema } from "../schemas"
 
-async function manageLabels(taskId, labelsId) {
+async function manageRoles(taskId, rolesId) {
   await db.$transaction(async (prisma) => {
     await db.task.update({
       where: { id: taskId },
       data: {
-        labels: {
+        roles: {
           set: [],
         },
       },
@@ -16,8 +16,8 @@ async function manageLabels(taskId, labelsId) {
     await db.task.update({
       where: { id: taskId },
       data: {
-        labels: {
-          connect: labelsId?.map((c) => ({ id: c })) || [],
+        roles: {
+          connect: rolesId?.map((c) => ({ id: c })) || [],
         },
       },
     })
@@ -40,14 +40,14 @@ async function manageAssignments(
     await Promise.all(
       idsToAdd.map((id) =>
         prisma.assignment.create({
-          data: isTeam ? { taskId, teamId: id } : { taskId, contributorId: id },
+          data: isTeam ? { taskId, teamId: id } : { taskId, projectMemberId: id },
         })
       )
     )
     await Promise.all(
       idsToDelete.map((id) =>
         prisma.assignment.deleteMany({
-          where: isTeam ? { taskId, teamId: id } : { taskId, contributorId: id },
+          where: isTeam ? { taskId, teamId: id } : { taskId, projectMemberId: id },
         })
       )
     )
@@ -57,18 +57,18 @@ async function manageAssignments(
 export default resolver.pipe(
   resolver.zod(UpdateTaskSchema),
   resolver.authorize(),
-  async ({ id, contributorsId = [], teamsId = [], labelsId = [], ...data }) => {
+  async ({ id, projectMembersId = [], teamsId = [], rolesId = [], ...data }) => {
     // Update task data
     const task = await db.task.update({ where: { id }, data })
 
-    // Get existing assignments for contributors and teams
+    // Get existing assignments for projectMembers and teams
     const existingAssignments = await db.assignment.findMany({
       where: { taskId: id },
-      select: { contributorId: true, teamId: true },
+      select: { projectMemberId: true, teamId: true },
     })
 
     const existingProjectMemberIds = existingAssignments
-      .map((a) => a.contributorId)
+      .map((a) => a.projectMemberId)
       .filter((id): id is number => id !== null)
 
     const existingTeamIds = existingAssignments
@@ -76,13 +76,13 @@ export default resolver.pipe(
       .filter((id): id is number => id !== null)
 
     // TODO: later we have to clean up the logic for undefined an nullable values
-    const safeProjectMembersId: number[] = contributorsId || []
+    const safeProjectMembersId: number[] = projectMembersId || []
     const safeTeamsId: number[] = teamsId || []
 
-    // Manage contributor and team assignments
+    // Manage projectMember and team assignments
     await manageAssignments(id, existingProjectMemberIds, safeProjectMembersId)
     await manageAssignments(id, existingTeamIds, safeTeamsId, true)
-    await manageLabels(id, labelsId)
+    await manageRoles(id, rolesId)
 
     return task
   }

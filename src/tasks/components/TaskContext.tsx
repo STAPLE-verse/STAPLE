@@ -11,7 +11,7 @@ export type ExtendedTask = Task & {
   element: Element | null
   formVersion: FormVersion | null
   assignees: ExtendedAssignment[]
-  labels: []
+  roles: []
 }
 
 interface TaskContextType {
@@ -41,10 +41,10 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
       formVersion: true,
       assignees: {
         include: {
-          contributor: { include: { user: { select: { username: true } } } },
+          projectMember: { include: { user: { select: { username: true } } } },
           team: {
             include: {
-              contributors: {
+              projectMembers: {
                 include: {
                   user: { select: { username: true } },
                 },
@@ -53,7 +53,7 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
           },
           statusLogs: {
             orderBy: { createdAt: "desc" },
-            include: { contributor: { include: { user: { select: { username: true } } } } },
+            include: { projectMember: { include: { user: { select: { username: true } } } } },
           },
         },
       },

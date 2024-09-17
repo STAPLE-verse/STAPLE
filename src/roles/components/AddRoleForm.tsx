@@ -3,7 +3,7 @@ import { Form, FormProps } from "src/core/components/fields/Form"
 import { useQuery } from "@blitzjs/rpc"
 import { z } from "zod"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
-import getLabels from "../queries/getLabels"
+import getRoles from "../queries/getRoles"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 
 interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
@@ -16,47 +16,47 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
   const { projectId, type, tasksId, ...formProps } = props
 
   // ProjectMembers
-  const [{ contributors }] = useQuery(getProjectMembers, {
+  const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     include: {
       user: true,
     },
   })
-  // get all labels from all PMs
+  // get all roles from all PMs
   const projectManagers = projectMembers.filter(
-    (contributor) => contributor.privilege === "PROJECT_MANAGER"
+    (projectMember) => projectMember.privilege === "PROJECT_MANAGER"
   )
   const pmIds = projectManagers.map((pm) => pm.userId)
   console.log(pmIds)
-  const [{ labels }] = useQuery(getLabels, {
+  const [{ roles }] = useQuery(getRoles, {
     where: {
       userId: {
-        in: pmIds, // Filter labels where userId is in the list of PM IDs
+        in: pmIds, // Filter roles where userId is in the list of PM IDs
       },
     },
     include: {
-      contributors: true, // Optional: include contributor data if needed
+      projectMembers: true, // Optional: include projectMember data if needed
       tasks: true,
       user: true,
     },
   })
 
-  // Assuming `labels` is an array of objects
-  const labelMerged = labels.map((label) => {
+  // Assuming `roles` is an array of objects
+  const roleMerged = roles.map((role) => {
     return {
-      pm: label["user"]["username"], // Accessing the nested username
-      label: label.name,
-      id: label.id,
+      pm: role["user"]["username"], // Accessing the nested username
+      role: role.name,
+      id: role.id,
     }
   })
 
   // Use the mapped array directly
-  const extraData = labelMerged.map((item) => ({
+  const extraData = roleMerged.map((item) => ({
     pm: item.pm,
   }))
 
-  const labelOptions = labelMerged.map((item) => ({
-    label: item.label,
+  const roleOptions = roleMerged.map((item) => ({
+    role: item.role,
     id: item.id,
   }))
 
@@ -73,8 +73,8 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
     <Form<S> {...formProps} encType="multipart/form-data">
       <div className="flex justify-start mt-4">
         <CheckboxFieldTable
-          name="labelsId"
-          options={labelOptions}
+          name="rolesId"
+          options={roleOptions}
           extraColumns={extraColumns}
           extraData={extraData}
         />

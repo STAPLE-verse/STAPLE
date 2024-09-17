@@ -14,7 +14,7 @@ function classNames(...classes) {
 
 export const ProjectTasksTabs = () => {
   const projectId = useParam("projectId", "number")
-  const { contributor: currentContributor } = useCurrentContributor(projectId)
+  const { projectMember: currentContributor } = useCurrentContributor(projectId)
   //const [selectedIndex, setSelectedIndex] = useState(0)
 
   return (

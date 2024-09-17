@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { UpdateProjectLabelSchema } from "../schemas"
+import { UpdateProjectRoleSchema } from "../schemas"
 
 async function updateProject(id, rolesId, disconnect) {
   let t
@@ -30,7 +30,7 @@ async function updateProject(id, rolesId, disconnect) {
 }
 
 export default resolver.pipe(
-  resolver.zod(UpdateProjectLabelSchema),
+  resolver.zod(UpdateProjectRoleSchema),
   resolver.authorize(),
   async ({ projectsId, rolesId = [], disconnect, ...data }) => {
     let p = null

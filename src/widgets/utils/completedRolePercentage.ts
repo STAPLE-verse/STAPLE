@@ -1,14 +1,14 @@
 import { Task } from "@prisma/client"
 
-export const completedLabelPercentage = (tasks: Task[]): number => {
+export const completedRolePercentage = (tasks: Task[]): number => {
   if (tasks.length === 0) {
     return 0
   }
 
-  const completedLabels = tasks.filter((task) => {
-    const l = task.hasOwnProperty("labels") ? task["labels"].length : 0
+  const completedRoles = tasks.filter((task) => {
+    const l = task.hasOwnProperty("roles") ? task["roles"].length : 0
     return l > 0
   })
 
-  return completedLabels.length / tasks.length
+  return completedRoles.length / tasks.length
 }

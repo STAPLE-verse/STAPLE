@@ -1,7 +1,7 @@
 // The function receives a ProjectMember object
-export function getProjectMemberName(contributor) {
-  if (contributor && contributor.id != null && contributor.hasOwnProperty("user")) {
-    const { firstName, lastName, username } = contributor.user
+export function getProjectMemberName(projectMember) {
+  if (projectMember && projectMember.id != null && projectMember.hasOwnProperty("user")) {
+    const { firstName, lastName, username } = projectMember.user
     if (firstName && lastName) {
       return `${firstName} ${lastName}`
     }

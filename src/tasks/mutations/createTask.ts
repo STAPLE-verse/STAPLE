@@ -15,10 +15,10 @@ export default resolver.pipe(
       elementId,
       deadline,
       createdById,
-      contributorsId,
+      projectMembersId,
       teamsId,
       formVersionId,
-      labelsId,
+      rolesId,
     },
     ctx
   ) => {
@@ -65,12 +65,12 @@ export default resolver.pipe(
       },
     })
 
-    //Connect to labels
+    //Connect to roles
     let task1 = await db.task.update({
       where: { id: task.id },
       data: {
-        labels: {
-          connect: labelsId?.map((c) => ({ id: c })) || [],
+        roles: {
+          connect: rolesId?.map((c) => ({ id: c })) || [],
         },
       },
     })
@@ -79,11 +79,11 @@ export default resolver.pipe(
     const createdByUsername = task.createdBy.user ? task.createdBy.user.username : null
 
     // Create the assignment
-    if (contributorsId != null && contributorsId.length != 0) {
+    if (projectMembersId != null && projectMembersId.length != 0) {
       // Fetch User IDs corresponding to the Contributor IDs
       const users = await db.projectMember.findMany({
         where: {
-          id: { in: contributorsId },
+          id: { in: projectMembersId },
         },
         select: {
           userId: true, // Only select the userId field
@@ -92,12 +92,12 @@ export default resolver.pipe(
       // Map to extract just the userIds
       const userIds = users.map((u) => u.userId)
 
-      contributorsId.forEach(async (contributorId) => {
+      projectMembersId.forEach(async (projectMemberId) => {
         // Create the assignment
         const assignment = await db.assignment.create({
           data: {
             task: { connect: { id: task.id } },
-            contributor: { connect: { id: contributorId } },
+            projectMember: { connect: { id: projectMemberId } },
           },
         })
         // Create assignment status log
@@ -107,7 +107,7 @@ export default resolver.pipe(
           },
         })
       })
-      // Send notification to the contributors
+      // Send notification to the projectMembers
       await sendNotification(
         {
           templateId: "taskAssigned",
@@ -128,7 +128,7 @@ export default resolver.pipe(
           },
         },
         include: {
-          contributors: {
+          projectMembers: {
             include: {
               user: true,
             },
@@ -157,7 +157,7 @@ export default resolver.pipe(
           },
         })
       })
-      // Send notification to the contributors
+      // Send notification to the projectMembers
       await sendNotification(
         {
           templateId: "taskAssigned",

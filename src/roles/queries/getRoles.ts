@@ -2,24 +2,24 @@ import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
-interface GetLabelsInput
-  extends Pick<Prisma.LabelFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
+interface GetRolesInput
+  extends Pick<Prisma.RoleFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, skip = 0, take = 100, include }: GetLabelsInput) => {
+  async ({ where, orderBy, skip = 0, take = 100, include }: GetRolesInput) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
-      items: labels,
+      items: roles,
       hasMore,
       nextPage,
       count,
     } = await paginate({
       skip,
       take,
-      count: () => db.label.count({ where }),
+      count: () => db.role.count({ where }),
       query: (paginateArgs) =>
-        db.label.findMany({
+        db.role.findMany({
           ...paginateArgs,
           where,
           orderBy,
@@ -28,7 +28,7 @@ export default resolver.pipe(
     })
 
     return {
-      labels,
+      roles,
       nextPage,
       hasMore,
       count,

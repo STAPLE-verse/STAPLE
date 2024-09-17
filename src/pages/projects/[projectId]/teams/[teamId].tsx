@@ -10,9 +10,9 @@ import Layout from "src/core/layouts/Layout"
 import getTeam from "src/teams/queries/getTeam"
 import deleteTeam from "src/teams/mutations/deleteTeam"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
-import { ProjectMemberLabelsList } from "src/labels/components/ProjectMembersLabelsList"
+import { ProjectMemberRolesList } from "src/roles/components/ProjectMembersRolesList"
 import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
-import { labelTableColumnsTeam } from "src/labels/components/LabelTable"
+import { roleTableColumnsTeam } from "src/roles/components/RoleTable"
 import { MemberPrivileges } from "db"
 import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
 
@@ -33,9 +33,9 @@ export const ShowTeamPage = () => {
     },
   })
 
-  const { contributor: currentProjectMember } = useCurrentProjectMember(projectId)
+  const { projectMember: currentProjectMember } = useCurrentProjectMember(projectId)
 
-  const membersId = projectMembers.map((contributor) => contributor.userId)
+  const membersId = projectMembers.map((projectMember) => projectMember.userId)
 
   const handleDelete = async () => {
     if (window.confirm("The team will be permanently deleted. Are you sure to continue?")) {
@@ -55,12 +55,12 @@ export const ShowTeamPage = () => {
           <div className="card bg-base-300 w-full">
             <div className="card-body">
               <div className="card-title">Team: {team.name} </div>
-              {projectMembers.map((contributor) => {
+              {projectMembers.map((projectMember) => {
                 return (
-                  <p key={contributor.id}>
-                    {contributor["user"].firstName || contributor["user"].lastName
-                      ? `${contributor["user"].firstName} ${contributor["user"].lastName}`
-                      : contributor["user"].username}
+                  <p key={projectMember.id}>
+                    {projectMember["user"].firstName || projectMember["user"].lastName
+                      ? `${projectMember["user"].firstName} ${projectMember["user"].lastName}`
+                      : projectMember["user"].username}
                   </p>
                 )
               })}
@@ -80,10 +80,10 @@ export const ShowTeamPage = () => {
           <div className="card bg-base-300 w-full mt-2">
             <div className="card-body">
               <div className="card-title">Team Member Contribution Roles</div>
-              <ProjectMemberLabelsList
+              <ProjectMemberRolesList
                 usersId={membersId}
                 projectId={projectId}
-                columns={labelTableColumnsTeam}
+                columns={roleTableColumnsTeam}
               />
             </div>
           </div>

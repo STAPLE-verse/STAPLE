@@ -8,7 +8,7 @@ const columnHelper = createColumnHelper<ProcessedAssignmentHistory>()
 
 // ColumnDefs
 export const assignmentHistoryTableColumns: ColumnDef<ProcessedAssignmentHistory>[] = [
-  columnHelper.accessor("contributorName", {
+  columnHelper.accessor("projectMemberName", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Changed By",
     id: "changedBy",
@@ -43,7 +43,7 @@ export const assignmentHistoryTableColumns: ColumnDef<ProcessedAssignmentHistory
 ]
 
 export const assignmentHistoryTableColumnsNoMeta: ColumnDef<ProcessedAssignmentHistory>[] = [
-  columnHelper.accessor("contributorName", {
+  columnHelper.accessor("projectMemberName", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Changed By",
     id: "changedBy",

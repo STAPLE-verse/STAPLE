@@ -8,7 +8,7 @@ import Layout from "src/core/layouts/Layout"
 import getTeams from "src/teams/queries/getTeams"
 import {
   TeamInformation,
-  contributorTeamTableColumns,
+  projectMemberTeamTableColumns,
   pmTeamTableColumns,
 } from "src/teams/components/TeamTable"
 import Table from "src/core/components/Table"
@@ -22,11 +22,11 @@ interface AllTeamListProps {
 
 export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   const projectId = useParam("projectId", "number")
-  const { contributor: currentProjectMember } = useCurrentProjectMember(projectId)
+  const { projectMember: currentProjectMember } = useCurrentProjectMember(projectId)
 
   type TeamWithProjectMembers = {
     id: number
-    projectMembers: { id: number }[] // Adjust based on actual contributor fields
+    projectMembers: { id: number }[] // Adjust based on actual projectMember fields
     // Add any other fields on the team you expect
   }
 
@@ -43,7 +43,7 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   const filteredTeams =
     privilege === MemberPrivileges.CONTRIBUTOR
       ? (teams as TeamWithProjectMembers[]).filter((team) =>
-          team.projectMembers.some((contributor) => contributor.id === currentProjectMember?.id)
+          team.projectMembers.some((projectMember) => projectMember.id === currentProjectMember?.id)
         )
       : teams
 
@@ -57,7 +57,7 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   })
 
   const tableColumns =
-    privilege === MemberPrivileges.CONTRIBUTOR ? contributorTeamTableColumns : pmTeamTableColumns
+    privilege === MemberPrivileges.CONTRIBUTOR ? projectMemberTeamTableColumns : pmTeamTableColumns
 
   return (
     <div>

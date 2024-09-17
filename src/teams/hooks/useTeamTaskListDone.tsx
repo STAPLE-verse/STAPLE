@@ -11,7 +11,7 @@ type TaskTableData = {
   id: number
   completedBy: string
   taskName: string
-  labels: string | JSX.Element
+  roles: string | JSX.Element
   completedAt: string
   taskId: number
   projectId: number
@@ -34,7 +34,7 @@ export const useTeamTaskListDone = (teamId: number) => {
         },
       },
       project: true,
-      labels: true,
+      roles: true,
     },
     orderBy: { id: "asc" },
   })
@@ -95,11 +95,11 @@ export const useTeamTaskListDone = (teamId: number) => {
         completedBy: userMap[assignee.statusLogs[0].completedBy] || "Unknown",
         // Task name
         taskName: task.name,
-        // Labels
-        labels:
-          task["labels"].length > 0
-            ? task["labels"].map((label) => label.name).join(", ")
-            : "No labels assigned",
+        // Roles
+        roles:
+          task["roles"].length > 0
+            ? task["roles"].map((role) => role.name).join(", ")
+            : "No roles assigned",
         // Date
         completedAt:
           assignee.statusLogs[0].createdAt?.toLocaleDateString(locale, {
@@ -133,10 +133,10 @@ export const useTeamTaskListDone = (teamId: number) => {
       header: "Task Name",
       id: "taskName",
     }),
-    columnHelper.accessor("labels", {
+    columnHelper.accessor("roles", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Roles",
-      id: "labels",
+      id: "roles",
     }),
     columnHelper.accessor("completedAt", {
       cell: (info) => <span>{info.getValue()}</span>,

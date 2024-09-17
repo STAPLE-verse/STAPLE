@@ -9,7 +9,7 @@ import { useCurrentContributor } from "src/projectmembers/hooks/useCurrentContri
 export const AssignmentCompletion = () => {
   const { task, individualAssignments, teamAssignments } = useTaskContext()
 
-  const { contributor: currentContributor } = useCurrentContributor(task.projectId)
+  const { projectMember: currentContributor } = useCurrentContributor(task.projectId)
 
   return (
     <div className="card bg-base-300 mx-2 w-1/2">
@@ -29,7 +29,7 @@ export const AssignmentCompletion = () => {
           <div className="flex grid-col-2">
             <CompleteToggle
               currentAssignment={individualAssignments[0]}
-              completedLabel="Completed"
+              completedRole="Completed"
               completedBy={currentContributor?.id}
               completedAs={CompletedAs.INDIVIDUAL}
             />
@@ -46,7 +46,7 @@ export const AssignmentCompletion = () => {
               <div key={teamAssignment.id} className="flex flex-col gap-2">
                 <CompleteToggle
                   currentAssignment={teamAssignment}
-                  completedLabel="Completed"
+                  completedRole="Completed"
                   completedBy={currentContributor?.id}
                   completedAs={CompletedAs.TEAM}
                 />

@@ -5,13 +5,13 @@ import Modal from "src/core/components/Modal"
 import RadioFieldTable from "src/core/components/fields/RadioFieldTable"
 import getForms from "src/forms/queries/getForms"
 
-export const TaskSchemaInput = ({ contributors }) => {
+export const TaskSchemaInput = ({ projectMembers }) => {
   const [openSchemaModal, setOpenSchemaModal] = useState(false)
   const handleToggleSchemaUpload = () => setOpenSchemaModal((prev) => !prev)
 
   // Get forms data
-  const pmList = contributors
-    .filter((contributor) => projectMember.privilege === MemberPrivileges.PROJECT_MANAGER)
+  const pmList = projectMembers
+    .filter((projectMember) => projectMember.privilege === MemberPrivileges.PROJECT_MANAGER)
     .map((pm) => pm.userId)
 
   const [pmForms] = useQuery(getForms, {
@@ -23,7 +23,7 @@ export const TaskSchemaInput = ({ contributors }) => {
     .filter((form) => form.formVersion)
     .flatMap((form) => form.formVersion!)
 
-  const options = schemas.map((schema) => ({ id: schema.id, label: schema.name }))
+  const options = schemas.map((schema) => ({ id: schema.id, role: schema.name }))
 
   // Extra columns for the select table
   const versionNumber = schemas.map((schema) => schema.version)

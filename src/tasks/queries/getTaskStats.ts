@@ -14,15 +14,15 @@ export default resolver.pipe(
   async ({ projectId, privilege }, ctx) => {
     const userId = ctx.session.userId
 
-    // Get contributorId based on userId and projectId
-    const contributor = await db.projectMember.findFirst({
+    // Get projectMemberId based on userId and projectId
+    const projectMember = await db.projectMember.findFirst({
       where: {
         userId,
         projectId: projectId,
       },
     })
 
-    if (!contributor) {
+    if (!projectMember) {
       throw new Error("Contributor not found for this project")
     }
 
@@ -42,12 +42,12 @@ export default resolver.pipe(
         completedTask,
       }
     } else if (privilege === MemberPrivileges.CONTRIBUTOR) {
-      // If CONTRIBUTOR, return only tasks assigned to the contributor
+      // If CONTRIBUTOR, return only tasks assigned to the projectMember
       const tasks = await db.task.findMany({
         where: { projectId: projectId },
         include: {
           assignees: {
-            where: { contributorId: projectMember.id },
+            where: { projectMemberId: projectMember.id },
             include: { statusLogs: true },
           },
         },

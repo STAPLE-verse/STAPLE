@@ -8,11 +8,11 @@ import Table from "src/core/components/Table"
 export const ShowTeamModal = ({ team }) => {
   const [openModal, setOpenModal] = useState(false)
 
-  let contributors = team.contributors
+  let projectMembers = team.projectMembers
 
-  const teamMembers = contributors.map((contributor) => {
+  const teamMembers = projectMembers.map((projectMember) => {
     return {
-      username: getContributorName(contributor),
+      username: getContributorName(projectMember),
     } as TeamMembers
   })
 

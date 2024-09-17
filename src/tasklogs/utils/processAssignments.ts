@@ -8,7 +8,7 @@ import { getLatestStatusLog } from "./getLatestStatusLog"
 import { Prisma } from "@prisma/client"
 
 export type ProcessedIndividualAssignment = {
-  contributorName: string
+  projectMemberName: string
   lastUpdate: string
   status: string
   assignment: ExtendedAssignment
@@ -20,7 +20,7 @@ export function processIndividualAssignments(
   return assignments.map((assignment) => {
     const latestLog = getLatestStatusLog(assignment.statusLogs)
     return {
-      contributorName: getContributorName(assignment.contributor),
+      projectMemberName: getContributorName(assignment.projectMember),
       lastUpdate: latestLog
         ? latestLog.createdAt.toLocaleDateString(undefined, {
             year: "numeric",
@@ -83,7 +83,7 @@ export function processTeamAssignments(
 }
 
 export type ProcessedAssignmentHistory = {
-  contributorName: string
+  projectMemberName: string
   lastUpdate: string
   status: string
   formData?: {
@@ -100,8 +100,8 @@ export function processAssignmentHistory(
 ): ProcessedAssignmentHistory[] {
   return assignmentStatusLog.map((statusLog) => {
     const processedData: ProcessedAssignmentHistory = {
-      contributorName: statusLog.contributor
-        ? getContributorName(statusLog.contributor)
+      projectMemberName: statusLog.projectMember
+        ? getContributorName(statusLog.projectMember)
         : "Task created",
       lastUpdate: statusLog.createdAt.toLocaleDateString(undefined, {
         year: "numeric",

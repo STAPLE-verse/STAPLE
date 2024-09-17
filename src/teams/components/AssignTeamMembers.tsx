@@ -19,9 +19,9 @@ type Props = {
 
 //TODO refactor this table: checkboxfield is available at other places. e.g. see TaskForm for Team selection
 const AssignTeamMembers = ({ onChange, teamOptions, showCheckbox }: Props) => {
-  const [contributorChecked, setcontributorChecked] = useState(teamOptions)
+  const [projectMemberChecked, setprojectMemberChecked] = useState(teamOptions)
   const handleOnChange = (element) => {
-    const updatedCheckedState = contributorChecked.map((item, index) => {
+    const updatedCheckedState = projectMemberChecked.map((item, index) => {
       let t = item
       if (item.id === element.id) {
         t.checked = !t.checked
@@ -34,10 +34,10 @@ const AssignTeamMembers = ({ onChange, teamOptions, showCheckbox }: Props) => {
   }
 
   // ColumnDefs
-  const contributorTableColumns: ColumnDef<TeamOption>[] = []
+  const projectMemberTableColumns: ColumnDef<TeamOption>[] = []
 
   if (showCheckbox) {
-    contributorTableColumns.push(
+    projectMemberTableColumns.push(
       columnHelper.accessor("id", {
         cell: (info) => (
           <span>
@@ -61,7 +61,7 @@ const AssignTeamMembers = ({ onChange, teamOptions, showCheckbox }: Props) => {
       })
     )
   }
-  contributorTableColumns.push(
+  projectMemberTableColumns.push(
     columnHelper.accessor("userName", {
       cell: (info) => <span>{`${info.row.original.userName}`}</span>,
       header: "User Name",
@@ -88,8 +88,8 @@ const AssignTeamMembers = ({ onChange, teamOptions, showCheckbox }: Props) => {
         <label>Add Team Members:</label>
       </div>
       <Table
-        columns={contributorTableColumns}
-        data={contributorChecked}
+        columns={projectMemberTableColumns}
+        data={projectMemberChecked}
         addPagination={true}
       ></Table>
     </div>

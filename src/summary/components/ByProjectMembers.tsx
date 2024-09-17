@@ -2,7 +2,7 @@ import React from "react"
 import { ProjectMembersView, TeamView } from "src/summary/components/UtilsViews"
 import { AssignmentStatus, CompletedAs } from "@prisma/client"
 
-const ByProjectMembers = ({ contributors, teams, tasks }) => {
+const ByProjectMembers = ({ projectMembers, teams, tasks }) => {
   // Filter functions
   const assignmentCompletedBy = (statusLog, completedAs, completedBy) => {
     let index = statusLog.findIndex(
@@ -44,11 +44,11 @@ const ByProjectMembers = ({ contributors, teams, tasks }) => {
       </div>
       <div>
         <h2>Contributors Summary</h2>
-        {projectMembers.map((contributor) => (
+        {projectMembers.map((projectMember) => (
           <ProjectMembersView
-            contributor={contributor}
-            tasks={getCompletedTask(tasks, CompletedAs.INDIVIDUAL, contributor.id)}
-            key={contributor.id}
+            projectMember={projectMember}
+            tasks={getCompletedTask(tasks, CompletedAs.INDIVIDUAL, projectMember.id)}
+            key={projectMember.id}
             printTask={true}
           ></ProjectMembersView>
         ))}

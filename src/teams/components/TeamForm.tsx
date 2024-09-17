@@ -30,13 +30,13 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
     },
   })
 
-  const currentTeamOptions = projectMembers.map((contributor) => {
+  const currentTeamOptions = projectMembers.map((projectMember) => {
     let checked = false
     if (teamId != undefined && currentProjectMembersId != undefined) {
       checked = currentProjectMembersId.find((id) => id == projectMember.id) != undefined
     }
     return {
-      userName: contributor["user"].username,
+      userName: projectMember["user"].username,
       id: projectMember.id,
       checked: checked,
       teamId: teamId,
@@ -62,7 +62,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
       />
       <div className="flex justify-start mt-4">
         <Field
-          name="contributorsId"
+          name="projectMembersId"
           initialValue={currentTeamOptions}
           validate={(values) => {
             let t = areAssignmentValid(values)

@@ -9,23 +9,25 @@ export default resolver.pipe(resolver.authorize(), async ({ taskId }: GetAssigne
   const assignments = await db.assignment.findMany({
     where: { taskId: taskId },
     include: {
-      contributor: true,
+      projectMember: true,
       team: {
         include: {
-          contributors: true,
+          projectMembers: true,
         },
       },
     },
   })
 
-  // Collect userIds from direct contributors
+  // Collect userIds from direct projectMembers
   const directContributorUserIds = assignments.flatMap((assignment) =>
-    assignment.contributor ? [assignment.contributor.userId] : []
+    assignment.projectMember ? [assignment.projectMember.userId] : []
   )
 
-  // Collect userIds from team-assigned contributors
+  // Collect userIds from team-assigned projectMembers
   const teamContributorUserIds = assignments.flatMap((assignment) =>
-    assignment.team ? assignment.team.contributors.map((contributor) => contributor.userId) : []
+    assignment.team
+      ? assignment.team.projectMembers.map((projectMember) => projectMember.userId)
+      : []
   )
 
   // Combine and deduplicate userIds

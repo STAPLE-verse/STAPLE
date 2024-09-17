@@ -146,8 +146,8 @@ export const HomeSidebarItems = (): SidebarItemProps[] => {
     {
       icon: TagIcon,
       text: "Roles",
-      route: Routes.LabelBuilderPage(),
-      tooltipId: "labels-tooltip",
+      route: Routes.RoleBuilderPage(),
+      tooltipId: "roles-tooltip",
     },
     {
       icon: QuestionMarkCircleIcon,

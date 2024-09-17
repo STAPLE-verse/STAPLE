@@ -12,7 +12,7 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
   where = {
     AND: [
       {
-        contributors: {
+        projectMembers: {
           some: {
             userId: currentUser?.id,
           },

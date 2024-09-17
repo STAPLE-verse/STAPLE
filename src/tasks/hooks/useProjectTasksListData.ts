@@ -20,12 +20,14 @@ export default function useProjecTasksListData(projectId: number | undefined) {
       queryParams.where = {
         ...queryParams.where,
         OR: [
-          { assignees: { some: { contributor: { user: { id: currentUser.id } }, teamId: null } } },
+          {
+            assignees: { some: { projectMember: { user: { id: currentUser.id } }, teamId: null } },
+          },
           {
             assignees: {
               some: {
-                team: { contributors: { some: { id: currentUser.id } } },
-                contributorId: null,
+                team: { projectMembers: { some: { id: currentUser.id } } },
+                projectMemberId: null,
               },
             },
           },

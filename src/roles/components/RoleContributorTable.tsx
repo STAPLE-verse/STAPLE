@@ -4,30 +4,30 @@ import Modal from "src/core/components/Modal"
 import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
 import { useMutation } from "@blitzjs/rpc"
-import { AddLabelForm } from "./AddLabelForm"
-import { LabelIdsFormSchema } from "../schemas"
-import { MultipleCheckboxColumn } from "./LabelTaskTable"
-import updateProjectMemberLabel from "src/projectmembers/mutations/updateProjectMemberLabel"
+import { AddRoleForm } from "./AddRoleForm"
+import { RoleIdsFormSchema } from "../schemas"
+import { MultipleCheckboxColumn } from "./RoleTaskTable"
+import updateProjectMemberRole from "src/projectmembers/mutations/updateProjectMemberRole"
 import { useParam } from "@blitzjs/next"
 
-export type Label = {
+export type Role = {
   name: string
 }
 
-export type ProjectMemberLabelInformation = {
+export type ProjectMemberRoleInformation = {
   username: string
   firstname?: string
   lastname?: string
-  labels?: Label[]
+  roles?: Role[]
   id: number
   onChangeCallback?: () => void
   selectedIds: number[]
   onMultipledAdded?: (selectedId) => void
 }
 
-const AddLabelsColumn = ({ row }) => {
+const AddRolesColumn = ({ row }) => {
   const projectId = useParam("projectId", "number")
-  const [updateProjectMemberLabelMutation] = useMutation(updateProjectMemberLabel)
+  const [updateProjectMemberRoleMutation] = useMutation(updateProjectMemberRole)
   const {
     name = "",
     description = "",
@@ -37,21 +37,21 @@ const AddLabelsColumn = ({ row }) => {
     ...rest
   } = { ...row }
 
-  const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
-  const handleToggleEditLabelModal = () => {
-    setOpenEditLabelModal((prev) => !prev)
+  const [openEditRoleModal, setOpenEditRoleModal] = useState(false)
+  const handleToggleEditRoleModal = () => {
+    setOpenEditRoleModal((prev) => !prev)
   }
 
-  const labelsId = row.labels.map((label) => label.id)
+  const rolesId = row.roles.map((role) => role.id)
   const initialValues = {
-    labelsId: labelsId,
+    rolesId: rolesId,
   }
 
-  const handleAddLabel = async (values) => {
+  const handleAddRole = async (values) => {
     try {
-      const updated = await updateProjectMemberLabelMutation({
-        labelsId: values.labelsId,
-        contributorsId: [row.id],
+      const updated = await updateProjectMemberRoleMutation({
+        rolesId: values.rolesId,
+        projectMembersId: [row.id],
         disconnect: true,
       })
       if (onChangeCallback != undefined) {
@@ -77,23 +77,23 @@ const AddLabelsColumn = ({ row }) => {
           type="button"
           /* button for popups */
           className="btn btn-primary"
-          onClick={handleToggleEditLabelModal}
+          onClick={handleToggleEditRoleModal}
         >
           Add Role
         </button>
       </div>
-      <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
+      <Modal open={openEditRoleModal} size="w-7/8 max-w-xl">
         <div className="">
           <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
           <div className="flex justify-start mt-4">
-            <AddLabelForm
+            <AddRoleForm
               projectId={projectId}
-              schema={LabelIdsFormSchema}
+              schema={RoleIdsFormSchema}
               submitText="Update Role"
               className="flex flex-col"
-              onSubmit={handleAddLabel}
+              onSubmit={handleAddRole}
               initialValues={initialValues}
-            ></AddLabelForm>
+            ></AddRoleForm>
           </div>
 
           {/* closes the modal */}
@@ -102,7 +102,7 @@ const AddLabelsColumn = ({ row }) => {
               type="button"
               /* button for popups */
               className="btn btn-secondary"
-              onClick={handleToggleEditLabelModal}
+              onClick={handleToggleEditRoleModal}
             >
               Close
             </button>
@@ -113,10 +113,10 @@ const AddLabelsColumn = ({ row }) => {
   )
 }
 
-const columnHelper = createColumnHelper<ProjectMemberLabelInformation>()
+const columnHelper = createColumnHelper<ProjectMemberRoleInformation>()
 
 // ColumnDefs
-export const labelProjectMemberTableColumns = [
+export const roleProjectMemberTableColumns = [
   columnHelper.accessor("username", {
     id: "username",
     cell: (info) => <span>{info.getValue()}</span>,
@@ -135,11 +135,11 @@ export const labelProjectMemberTableColumns = [
   }),
   columnHelper.accessor(
     (row) => {
-      const labels = row.labels || []
-      return labels.map((label) => label.name).join(", ") // Combine all label names into a single string
+      const roles = row.roles || []
+      return roles.map((role) => role.name).join(", ") // Combine all role names into a single string
     },
     {
-      id: "labels",
+      id: "roles",
       header: "Roles",
       cell: (info) => <div>{info.getValue()}</div>,
       enableColumnFilter: true,
@@ -150,7 +150,7 @@ export const labelProjectMemberTableColumns = [
     header: "Add Role",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <AddLabelsColumn row={info.row.original}></AddLabelsColumn>,
+    cell: (info) => <AddRolesColumn row={info.row.original}></AddRolesColumn>,
   }),
   columnHelper.accessor("id", {
     id: "multiple",

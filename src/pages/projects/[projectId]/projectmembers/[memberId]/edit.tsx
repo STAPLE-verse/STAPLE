@@ -23,13 +23,13 @@ export const EditProjectMember = () => {
   const [removeProjectManagerWidgetsMutation] = useMutation(removeProjectManagerWidgets)
   const router = useRouter()
 
-  const contributorId = useParam("contributorId", "number")
+  const projectMemberId = useParam("projectMemberId", "number")
   const projectId = useParam("projectId", "number")
 
-  const [contributor, { setQueryData }] = useQuery(getProjectMember, {
-    where: { id: contributorId, project: { id: projectId! } },
+  const [projectMember, { setQueryData }] = useQuery(getProjectMember, {
+    where: { id: projectMemberId, project: { id: projectId! } },
     include: {
-      labels: {
+      roles: {
         select: {
           name: true,
           id: true,
@@ -45,13 +45,13 @@ export const EditProjectMember = () => {
     },
   })
 
-  const labelsId =
-    contributor["labels"] != undefined ? contributor["labels"].map((label) => label.id) : []
+  const rolesId =
+    projectMember["roles"] != undefined ? projectMember["roles"].map((role) => role.id) : []
 
   // Set initial values
   const initialValues = {
     privilege: projectMember.privilege,
-    labelsId: labelsId,
+    rolesId: rolesId,
   }
 
   // Handle events
@@ -59,7 +59,7 @@ export const EditProjectMember = () => {
     await router.push(
       Routes.ShowProjectMemberPage({
         projectId: projectId!,
-        contributorId: contributorId as number,
+        projectMemberId: projectMemberId as number,
       })
     )
   }
@@ -70,7 +70,7 @@ export const EditProjectMember = () => {
         id: projectMember.id,
         projectId: projectId!,
         privilege: values.privilege,
-        labelsId: values.labelsId,
+        rolesId: values.rolesId,
       })
 
       await toast.promise(Promise.resolve(updated), {
@@ -99,7 +99,7 @@ export const EditProjectMember = () => {
       await router.push(
         Routes.ShowProjectMemberPage({
           projectId: projectId!,
-          contributorId: updated.id,
+          projectMemberId: updated.id,
         })
       )
     } catch (error: any) {
@@ -112,7 +112,7 @@ export const EditProjectMember = () => {
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="text-3xl mb-2">Edit Contributor {getProjectMemberName(contributor)}</h1>
+      <h1 className="text-3xl mb-2">Edit Contributor {getProjectMemberName(projectMember)}</h1>
       <Suspense fallback={<div>Loading...</div>}>
         <ProjectMemberForm
           submitText="Update Contributor"

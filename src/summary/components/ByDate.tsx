@@ -1,7 +1,7 @@
 import React from "react"
 import { DateLogView, compareDateSeconds } from "src/summary/components/UtilsViews"
 
-const ByDate = ({ tasks, contributors, teams }) => {
+const ByDate = ({ tasks, projectMembers, teams }) => {
   // Filter functions
   const mapStatusLogs = (statusLogs, element, belongsTo) => {
     let logs: any[] = []
@@ -60,20 +60,20 @@ const ByDate = ({ tasks, contributors, teams }) => {
     return logs
   }
 
-  const getContributorStatusLogs = (contributors) => {
+  const getContributorStatusLogs = (projectMembers) => {
     let logs: any[] = []
-    contributors.forEach((contributor) => {
-      let t = mapStatusLogs(contributor.assignmentStatusLog, contributor, "contributor")
+    projectMembers.forEach((projectMember) => {
+      let t = mapStatusLogs(projectMember.assignmentStatusLog, projectMember, "projectMember")
       logs = logs.concat(t)
     })
     return logs
   }
 
   let logs = getTasksStatusLogs(tasks)
-  const contributorLogs = getContributorStatusLogs(contributors)
+  const projectMemberLogs = getContributorStatusLogs(projectMembers)
   const teamLogs = getTeamsStatusLogs(teams)
 
-  logs = logs.concat(contributorLogs)
+  logs = logs.concat(projectMemberLogs)
   logs = logs.concat(teamLogs)
 
   const sortedLogs = logs.sort((d1, d2) => {
@@ -89,7 +89,7 @@ const ByDate = ({ tasks, contributors, teams }) => {
             log={log}
             tasks={tasks}
             key={log.id}
-            contributors={contributors}
+            projectMembers={projectMembers}
             teams={teams}
             printHeader={printHeader(log, index, sortedLogs)}
           ></DateLogView>

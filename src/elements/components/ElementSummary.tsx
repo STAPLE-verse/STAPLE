@@ -7,7 +7,7 @@ import "react-circular-progressbar/dist/styles.css"
 import { Element } from "@prisma/client"
 import { completedTaskPercentage } from "src/widgets/utils/completedTaskPercentage"
 import { completedFormPercentage } from "src/widgets/utils/completedFormPercentage"
-import { completedLabelPercentage } from "src/widgets/utils/completedLabelPercentage"
+import { completedRolePercentage } from "src/widgets/utils/completedRolePercentage"
 import { CircularPercentageWidget } from "src/widgets/components/CircularPercentageWidget"
 
 interface ElementSummaryProps {
@@ -24,7 +24,7 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
   const [{ tasks }] = useQuery(getTasks, {
     include: {
       assignees: { include: { statusLogs: true } },
-      labels: true,
+      roles: true,
     },
     where: {
       projectId: projectId,
@@ -35,7 +35,7 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
   // Calculate summary data
   const taskPercent = completedTaskPercentage(tasks)
   const formPercent = completedFormPercentage(tasks)
-  const labelPercent = completedLabelPercentage(tasks)
+  const rolePercent = completedRolePercentage(tasks)
 
   // Delete event
   const handleDelete = async () => {
@@ -64,11 +64,11 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
               title={"Form Data"}
               tooltip={"Percent of required forms completed"}
             />
-            {/* Labels */}
+            {/* Roles */}
             <CircularPercentageWidget
-              data={labelPercent}
-              title={"Labels"}
-              tooltip={"Percent of tasks in this element with labels"}
+              data={rolePercent}
+              title={"Roles"}
+              tooltip={"Percent of tasks in this element with roles"}
             />
 
             {/* Delete element button */}

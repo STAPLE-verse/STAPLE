@@ -1,15 +1,15 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { CreateLabelSchema } from "../schemas"
+import { CreateRoleSchema } from "../schemas"
 
 export default resolver.pipe(
-  resolver.zod(CreateLabelSchema),
+  resolver.zod(CreateRoleSchema),
   resolver.authorize(),
   async (input) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
 
-    const label = await db.label.create({ data: input })
+    const role = await db.role.create({ data: input })
 
-    return label
+    return role
   }
 )

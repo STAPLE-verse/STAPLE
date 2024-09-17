@@ -25,21 +25,20 @@ export const EditTask = () => {
   // Get tasks and assignments
   const { task, individualAssignments, teamAssignments, refetchTaskData } = useTaskContext()
 
-  // Calculate individual contributor ids
+  // Calculate individual projectMember ids
   const projectMembersId = individualAssignments
-    .map((assignment) => assignment.contributorId)
-    // assignment.contributorId is nullable thus we filter for initialValues
+    .map((assignment) => assignment.projectMemberId)
+    // assignment.projectMemberId is nullable thus we filter for initialValues
     .filter((id): id is number => id !== null)
 
-  // Calculate team member contributor ids
+  // Calculate team member projectMember ids
   const teamsId = teamAssignments
     .map((assignment) => assignment.teamId)
-    // assignment.contributorId is nullable thus we filter for initialValues
+    // assignment.projectMemberId is nullable thus we filter for initialValues
     .filter((id): id is number => id !== null)
 
   // Prepopulate form with previous responses
-  //const labelsId = task.labels != undefined ? task.labels.map((label) => label.id) : []
-  const labelsId = task.labels?.map((label: { id: number }) => label.id) || []
+  const rolesId = task.roles?.map((role: { id: number }) => role.id) || []
 
   const initialValues = {
     name: task.name,
@@ -49,7 +48,7 @@ export const EditTask = () => {
     projectMembersId: projectMembersId,
     teamsId: teamsId,
     formVersionId: task.formVersionId,
-    labelsId: labelsId,
+    rolesId: rolesId,
     elementId: task.elementId,
   }
 

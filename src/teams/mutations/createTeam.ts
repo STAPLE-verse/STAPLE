@@ -14,7 +14,7 @@ export default resolver.pipe(
           connect: { id: projectId },
         },
 
-        contributors: {
+        projectMembers: {
           connect: projectMembers.map((val) => ({
             id: val,
           })),

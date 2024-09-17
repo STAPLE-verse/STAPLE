@@ -7,10 +7,10 @@ interface JsonFormModalProps {
   schema: Prisma.JsonValue | null
   uiSchema: Prisma.JsonValue | null
   metadata?: Prisma.JsonValue | null
-  label: string
+  role: string
 }
 
-export const JsonFormModal = ({ schema, uiSchema, metadata = {}, label }: JsonFormModalProps) => {
+export const JsonFormModal = ({ schema, uiSchema, metadata = {}, role }: JsonFormModalProps) => {
   const [openModal, setOpenModal] = useState(false)
 
   const handleToggle = () => {
@@ -20,7 +20,7 @@ export const JsonFormModal = ({ schema, uiSchema, metadata = {}, label }: JsonFo
   return (
     <>
       <button type="button" className="btn btn-primary" onClick={handleToggle}>
-        {label}
+        {role}
       </button>
 
       <Modal open={openModal}>

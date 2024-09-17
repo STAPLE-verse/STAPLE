@@ -6,26 +6,26 @@ import { FORM_ERROR } from "final-form"
 
 import toast from "react-hot-toast"
 import { useMutation } from "@blitzjs/rpc"
-import { AddLabelForm } from "./AddLabelForm"
-import { LabelIdsFormSchema } from "../schemas"
-import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
+import { AddRoleForm } from "./AddRoleForm"
+import { RoleIdsFormSchema } from "../schemas"
+import updateTaskRole from "src/tasks/mutations/updateTaskRole"
 
-const TaskTableModal = ({ labels, tasksId, onChangeCallback, buttonName }) => {
+const TaskTableModal = ({ roles, tasksId, onChangeCallback, buttonName }) => {
   const projectId = useParam("projectId", "number")
-  const [updateTaskLabelMutation] = useMutation(updateTaskLabel)
+  const [updateTaskRoleMutation] = useMutation(updateTaskRole)
 
-  const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
-  const handleToggleEditLabelModal = () => {
-    setOpenEditLabelModal((prev) => !prev)
+  const [openEditRoleModal, setOpenEditRoleModal] = useState(false)
+  const handleToggleEditRoleModal = () => {
+    setOpenEditRoleModal((prev) => !prev)
   }
-  const labelsId = labels.map((label) => label.id)
+  const rolesId = roles.map((role) => role.id)
   const initialValues = {
-    labelsId: labelsId,
+    rolesId: rolesId,
   }
 
-  const handleAddLabel = async (values) => {
+  const handleAddRole = async (values) => {
     try {
-      const updated = await updateTaskLabelMutation({
+      const updated = await updateTaskRoleMutation({
         ...values,
         tasksId: tasksId,
         disconnect: true,
@@ -52,22 +52,22 @@ const TaskTableModal = ({ labels, tasksId, onChangeCallback, buttonName }) => {
         type="button"
         /* button for popups */
         className="btn btn-primary"
-        onClick={handleToggleEditLabelModal}
+        onClick={handleToggleEditRoleModal}
       >
         {buttonName}
       </button>
-      <Modal open={openEditLabelModal} size="w-7/8 max-w-xl">
+      <Modal open={openEditRoleModal} size="w-7/8 max-w-xl">
         <div className="">
           <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
           <div className="flex justify-start mt-4">
-            <AddLabelForm
+            <AddRoleForm
               projectId={projectId}
-              schema={LabelIdsFormSchema}
+              schema={RoleIdsFormSchema}
               submitText="Update Role"
               className="flex flex-col"
-              onSubmit={handleAddLabel}
+              onSubmit={handleAddRole}
               initialValues={initialValues}
-            ></AddLabelForm>
+            ></AddRoleForm>
           </div>
 
           {/* closes the modal */}
@@ -76,7 +76,7 @@ const TaskTableModal = ({ labels, tasksId, onChangeCallback, buttonName }) => {
               type="button"
               /* button for popups */
               className="btn btn-secondary"
-              onClick={handleToggleEditLabelModal}
+              onClick={handleToggleEditRoleModal}
             >
               Close
             </button>

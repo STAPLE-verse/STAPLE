@@ -24,32 +24,32 @@ export default resolver.pipe(
       where: { id: id },
       include: {
         task: true,
-        // contributor: true,
+        // projectMember: true,
         // team: true
       },
     })
 
     let userIds: number[] = []
 
-    // Check if the assignment is linked to a contributor
-    if (assignment && assignment.contributorId) {
-      const contributor = await db.contributor.findUnique({
-        where: { id: assignment.contributorId },
+    // Check if the assignment is linked to a projectMember
+    if (assignment && assignment.projectMemberId) {
+      const projectMember = await db.projectMember.findUnique({
+        where: { id: assignment.projectMemberId },
         include: {
           user: true,
         },
       })
 
-      if (contributor && contributor.user) {
-        userIds.push(contributor.user.id)
+      if (projectMember && projectMember.user) {
+        userIds.push(projectMember.user.id)
       }
     }
-    // If not a contributor, check if the assignment is linked to a team
+    // If not a projectMember, check if the assignment is linked to a team
     else if (assignment && assignment.teamId) {
       const team = await db.team.findUnique({
         where: { id: assignment.teamId },
         include: {
-          contributors: {
+          projectMembers: {
             include: {
               user: true,
             },
@@ -57,12 +57,12 @@ export default resolver.pipe(
         },
       })
 
-      if (team && team.contributors) {
-        userIds = team.contributors.map((contrib) => contrib.user.id)
+      if (team && team.projectMembers) {
+        userIds = team.projectMembers.map((contrib) => contrib.user.id)
       }
     }
 
-    const completedByUsername = await db.contributor
+    const completedByUsername = await db.projectMember
       .findUnique({ where: { id: completedBy! }, include: { user: true } })
       .then((result) => (result ? result.user.username : ""))
 

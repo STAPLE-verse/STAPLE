@@ -1,14 +1,14 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { DeleteLabelSchema } from "../schemas"
+import { UpdateRoleSchema } from "../schemas"
 
 export default resolver.pipe(
-  resolver.zod(DeleteLabelSchema),
+  resolver.zod(UpdateRoleSchema),
   resolver.authorize(),
-  async ({ id }) => {
+  async ({ id, ...data }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const label = await db.label.deleteMany({ where: { id } })
+    const role = await db.role.update({ where: { id }, data })
 
-    return label
+    return role
   }
 )

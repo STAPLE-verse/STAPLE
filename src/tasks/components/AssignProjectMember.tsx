@@ -15,14 +15,14 @@ const columnHelper = createColumnHelper<ContributorOption>()
 
 type Props = {
   onChange?: (selected: any) => void
-  contributorOptions: ContributorOption[]
+  projectMemberOptions: ContributorOption[]
 }
 
-const AssignContributors = ({ onChange, contributorOptions }: Props) => {
-  const [contributorChecked, setcontributorChecked] = useState(contributorOptions)
+const AssignContributors = ({ onChange, projectMemberOptions }: Props) => {
+  const [projectMemberChecked, setprojectMemberChecked] = useState(projectMemberOptions)
 
   const handleOnChange = (element) => {
-    const updatedCheckedState = contributorChecked.map((item, index) => {
+    const updatedCheckedState = projectMemberChecked.map((item, index) => {
       let t = item
       if (item.id === element.id) {
         t.checked = !t.checked
@@ -35,7 +35,7 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
   }
 
   // ColumnDefs
-  const contributorTableColumns: ColumnDef<ContributorOption>[] = [
+  const projectMemberTableColumns: ColumnDef<ContributorOption>[] = [
     columnHelper.accessor("id", {
       cell: (info) => (
         <span>
@@ -68,8 +68,8 @@ const AssignContributors = ({ onChange, contributorOptions }: Props) => {
     <div>
       <div className="flex mt-2 font-bold">Assign Contributors to Task</div>
       <Table
-        columns={contributorTableColumns}
-        data={contributorChecked}
+        columns={projectMemberTableColumns}
+        data={projectMemberChecked}
         addPagination={true}
       ></Table>
     </div>

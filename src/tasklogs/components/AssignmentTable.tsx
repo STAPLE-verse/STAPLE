@@ -10,7 +10,7 @@ const columnHelper = createColumnHelper<ProcessedIndividualAssignment>()
 // ColumnDefs
 // Table for assignment without a form
 export const assignmentTableColumns: ColumnDef<ProcessedIndividualAssignment>[] = [
-  columnHelper.accessor("contributorName", {
+  columnHelper.accessor("projectMemberName", {
     cell: (info) => <span>{`${info.getValue()}`}</span>,
     header: "Contributor Name",
   }),
@@ -39,7 +39,7 @@ export const assignmentTableColumns: ColumnDef<ProcessedIndividualAssignment>[] 
 
 // Table for assignment with a form
 export const assignmentTableColumnsSchema: ColumnDef<ProcessedIndividualAssignment>[] = [
-  columnHelper.accessor("contributorName", {
+  columnHelper.accessor("projectMemberName", {
     cell: (info) => <span>{`${info.getValue()}`}</span>,
     header: "Contributor Name",
   }),

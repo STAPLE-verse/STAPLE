@@ -30,7 +30,7 @@ export const pmProjectMemberTableColumns = [
           className="btn btn-primary"
           href={Routes.ShowProjectMemberPage({
             projectId: info.row.original.projectId!,
-            contributorId: info.getValue(),
+            projectMemberId: info.getValue(),
           })}
         >
           See Contributions
@@ -49,7 +49,7 @@ export const pmProjectMemberTableColumns = [
           className="btn btn-primary"
           href={Routes.EditProjectMemberPage({
             projectId: info.row.original.projectId!,
-            contributorId: info.getValue(),
+            projectMemberId: info.getValue(),
           })}
         >
           Edit Contributor
@@ -59,7 +59,7 @@ export const pmProjectMemberTableColumns = [
   }),
 ]
 
-export const contributorProjectMemberTableColumns = [
+export const projectMemberProjectMemberTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Contributor",
@@ -75,7 +75,7 @@ export const contributorProjectMemberTableColumns = [
           className="btn btn-primary"
           href={Routes.ShowProjectMemberPage({
             projectId: info.row.original.projectId!,
-            contributorId: info.getValue(),
+            projectMemberId: info.getValue(),
           })}
         >
           See Contributions
