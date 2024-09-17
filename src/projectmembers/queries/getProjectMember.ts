@@ -8,10 +8,10 @@ interface GetProjectMemberInput
 export default resolver.pipe(
   resolver.authorize(),
   async ({ where, include }: GetProjectMemberInput) => {
-    const projectmember = await db.projectmember.findFirst({ where, include })
+    const projectMember = await db.projectMember.findFirst({ where, include })
 
-    if (!projectmember) throw new NotFoundError()
+    if (!projectMember) throw new NotFoundError()
 
-    return projectmember as ProjectMember
+    return projectMember as ProjectMember
   }
 )

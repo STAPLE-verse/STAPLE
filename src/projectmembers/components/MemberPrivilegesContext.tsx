@@ -1,7 +1,7 @@
 import { useParam } from "@blitzjs/next"
 import React, { createContext, useContext, ReactNode } from "react"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getProjectMember from "../queries/getProjectMember"
+import getProjectPrivilege from "../queries/getProjectPrivilege"
 import { useQuery } from "@blitzjs/rpc"
 import { MemberPrivileges } from "db"
 
@@ -24,7 +24,7 @@ export const MemberPrivilegesProvider = ({ children }: { children: ReactNode }) 
   const projectId = useParam("projectId", "number")
 
   const [data, { isError, error, refetch }] = useQuery(
-    getProjectMember,
+    getProjectPrivilege,
     { where: { userId: user?.id, projectId: projectId } },
     { enabled: !!user && !!projectId, suspense: true }
   )
