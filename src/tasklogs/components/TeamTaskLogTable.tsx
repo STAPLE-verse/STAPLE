@@ -1,18 +1,18 @@
 import React from "react"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { AssignmentToggleModal } from "./AssignmentToggleModal"
-import { ProcessedIndividualAssignment } from "../utils/processAssignments"
-import { AssignmentSchemaModal } from "./AssignmentSchemaModal"
+import { AssignmentToggleModal } from "./TaskLogToggleModal"
+import { ShowTeamModal } from "./ShowTeamModal"
+import { ProcessedTeamAssignment } from "../utils/processAssignments"
+import { AssignmentSchemaModal } from "./TaskLogSchemaModal"
 
 // Column helper
-const columnHelper = createColumnHelper<ProcessedIndividualAssignment>()
+const columnHelper = createColumnHelper<ProcessedTeamAssignment>()
 
 // ColumnDefs
-// Table for assignment without a form
-export const assignmentTableColumns: ColumnDef<ProcessedIndividualAssignment>[] = [
-  columnHelper.accessor("projectMemberName", {
-    cell: (info) => <span>{`${info.getValue()}`}</span>,
-    header: "Contributor Name",
+export const teamAssignmentTableColumns: ColumnDef<ProcessedTeamAssignment>[] = [
+  columnHelper.accessor("team", {
+    cell: (info) => <div>{<ShowTeamModal team={info.getValue()}></ShowTeamModal>}</div>,
+    header: "Team Name",
   }),
   columnHelper.accessor("lastUpdate", {
     cell: (info) => <span>{info.getValue()}</span>,
@@ -27,9 +27,9 @@ export const assignmentTableColumns: ColumnDef<ProcessedIndividualAssignment>[] 
   columnHelper.accessor("assignment", {
     cell: (info) => {
       return (
-        <>
+        <div>
           <AssignmentToggleModal assignment={info.getValue()} />
-        </>
+        </div>
       )
     },
     header: "Change status",
@@ -37,11 +37,10 @@ export const assignmentTableColumns: ColumnDef<ProcessedIndividualAssignment>[] 
   }),
 ]
 
-// Table for assignment with a form
-export const assignmentTableColumnsSchema: ColumnDef<ProcessedIndividualAssignment>[] = [
-  columnHelper.accessor("projectMemberName", {
-    cell: (info) => <span>{`${info.getValue()}`}</span>,
-    header: "Contributor Name",
+export const teamAssignmentTableColumnsSchema: ColumnDef<ProcessedTeamAssignment>[] = [
+  columnHelper.accessor("team", {
+    cell: (info) => <div>{<ShowTeamModal team={info.getValue()}></ShowTeamModal>}</div>,
+    header: "Team Name",
   }),
   columnHelper.accessor("lastUpdate", {
     cell: (info) => <span>{info.getValue()}</span>,

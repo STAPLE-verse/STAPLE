@@ -1,5 +1,5 @@
 import { Tooltip } from "react-tooltip"
-import AssignmentHistoryModal from "./AssignmentHistoryModal"
+import AssignmentHistoryModal from "./TaskLogHistoryModal"
 import CompleteSchema from "./CompleteSchema"
 import CompleteToggle from "./CompleteToggle"
 import { CompletedAs } from "db"

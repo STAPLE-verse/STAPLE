@@ -1,5 +1,5 @@
 import { ExtendedTask } from "src/tasks/components/TaskContext"
-import { ExtendedAssignment } from "./useAssignmentData"
+import { ExtendedAssignment } from "./useTaskLogData"
 
 export default function useAssignmentProgress(task: ExtendedTask) {
   // Get assignments

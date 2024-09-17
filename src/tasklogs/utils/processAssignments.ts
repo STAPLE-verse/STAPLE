@@ -3,7 +3,7 @@ import {
   ExtendedAssignment,
   ExtendedAssignmentStatusLog,
   ExtendedTeam,
-} from "../hooks/useAssignmentData"
+} from "../hooks/useTaskLogData"
 import { getLatestStatusLog } from "./getLatestStatusLog"
 import { Prisma } from "@prisma/client"
 

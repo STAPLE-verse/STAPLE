@@ -4,10 +4,10 @@ import Table from "src/core/components/Table"
 import {
   assignmentHistoryTableColumns,
   assignmentHistoryTableColumnsNoMeta,
-} from "./AssignmentHistoryTable"
+} from "./TaskLogHistoryTable"
 import { Prisma } from "@prisma/client"
 import { processAssignmentHistory } from "src/tasklogs/utils/processAssignments"
-import { ExtendedAssignmentStatusLog } from "../hooks/useAssignmentData"
+import { ExtendedAssignmentStatusLog } from "../hooks/useTaskLogData"
 
 type AssignmentHistoryModalProps = {
   assignmentStatusLog: ExtendedAssignmentStatusLog[]
