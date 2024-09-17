@@ -3,12 +3,8 @@
  */
 
 import { expect, vi, test } from "vitest"
-import { getByText, render } from "test/utils"
+import { render, screen, fireEvent } from "test/utils"
 import { ShowTeamModal } from "src/assignments/components/ShowTeamModal"
-
-vi.mock("public/logo.png", () => ({
-  default: { src: "/logo.png" },
-}))
 
 test("renders show team modal", async () => {
   const curentTeam = {
@@ -17,11 +13,30 @@ test("renders show team modal", async () => {
     contributors: [
       {
         id: 1,
+        user: {
+          id: 1,
+          username: "user1",
+        },
+      },
+      {
+        id: 1,
+        user: {
+          id: 1,
+          username: "user2",
+        },
       },
     ],
   }
 
-  const { getByText } = render(<ShowTeamModal team={curentTeam}></ShowTeamModal>)
-  // const linkElement = getByText(/span/)
-  // expect(linkElement).toBeInTheDocument()
+  render(<ShowTeamModal team={curentTeam}></ShowTeamModal>)
+
+  expect(await screen.getByText("team1")).toBeInTheDocument()
+  const openModalBtn = screen.getByTestId("open-modal")
+  expect(openModalBtn).toBeInTheDocument()
+  fireEvent.click(openModalBtn)
+  expect(await screen.findByText("user1")).toBeInTheDocument()
+  expect(await screen.findByText("user2")).toBeInTheDocument()
+  const closeModalBtn = screen.getByTestId("open-modal")
+  fireEvent.click(closeModalBtn)
+  expect(screen.queryByText("user2")).not.toBeInTheDocument()
 })
