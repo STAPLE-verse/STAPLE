@@ -1,4 +1,4 @@
-import { Assignment, AssignmentStatusLog, ProjectMember, Team, User } from "db"
+import { TaskLog, ProjectMember, User } from "db"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { useQuery } from "@blitzjs/rpc"
@@ -14,23 +14,23 @@ export type ExtendedTeam = Team & {
   projectMembers: ExtendedProjectMember[]
 }
 
-export type ExtendedAssignmentStatusLog = AssignmentStatusLog & {
+export type ExtendedTaskLogStatusLog = TaskLogStatusLog & {
   projectMember?: ExtendedProjectMember | null
 }
 
-export type ExtendedAssignment = Assignment & {
+export type ExtendedTaskLog = TaskLog & {
   projectMember?: ExtendedProjectMember | null
   team?: ExtendedTeam | null
-  statusLogs?: ExtendedAssignmentStatusLog[]
+  statusLogs?: ExtendedTaskLogStatusLog[]
 }
 
-type useAssignmentDataType = {
-  individualAssignments: ExtendedAssignment[]
-  teamAssignments: ExtendedAssignment[]
+type useTaskLogDataType = {
+  individualTaskLogs: ExtendedTaskLog[]
+  teamTaskLogs: ExtendedTaskLog[]
 }
 
 // Hook to get assignment data from task returned by taskContext
-export default function useAssignmentData(task: ExtendedTask): useAssignmentDataType {
+export default function useTaskLogData(task: ExtendedTask): useTaskLogDataType {
   // Get assignments
   const assignments = task.assignees
 
@@ -42,13 +42,13 @@ export default function useAssignmentData(task: ExtendedTask): useAssignmentData
   })
 
   // Filter out individual assignments
-  const individualAssignments = assignments.filter(
+  const individualTaskLogs = assignments.filter(
     (assignment) =>
       assignment.projectMemberId !== null && assignment.projectMemberId == currentProjectMember.id
   )
 
   // Filter out team assignments
-  const teamAssignments = assignments.filter((assignment) => {
+  const teamTaskLogs = assignments.filter((assignment) => {
     return (
       assignment.teamId !== null &&
       assignment.team?.projectMembers?.some(
@@ -58,7 +58,7 @@ export default function useAssignmentData(task: ExtendedTask): useAssignmentData
   })
 
   return {
-    individualAssignments,
-    teamAssignments,
+    individualTaskLogs,
+    teamTaskLogs,
   }
 }

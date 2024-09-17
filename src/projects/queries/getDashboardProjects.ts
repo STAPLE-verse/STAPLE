@@ -7,11 +7,12 @@ export default resolver.pipe(resolver.authorize(), async (undefined, ctx: Ctx) =
     {
       where: {
         projectMembers: {
-          users: {
-            some: { id: ctx.session.userId as number },
+          some: {
+            users: {
+              some: { id: ctx.session.userId as number },
+            },
+            deleted: false,
           },
-          // make sure they haven't been deleted from the project
-          deleted: false,
         },
       },
       orderBy: { updatedAt: "asc" },

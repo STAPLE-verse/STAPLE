@@ -1,7 +1,7 @@
 import React from "react"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { AssignmentToggleModal } from "./TaskLogToggleModal"
-import { ProcessedIndividualAssignment } from "../utils/processAssignments"
+import { ProcessedIndividualAssignment } from "../utils/processTaskLogs"
 import { AssignmentSchemaModal } from "./TaskLogSchemaModal"
 
 // Column helper

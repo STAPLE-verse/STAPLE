@@ -1,22 +1,17 @@
 import { getProjectMemberName } from "src/services/getName"
-import {
-  ExtendedAssignment,
-  ExtendedAssignmentStatusLog,
-  ExtendedTeam,
-} from "../hooks/useTaskLogData"
-import { getLatestStatusLog } from "./getLatestTaskLog"
+import { ExtendedTaskLog, ExtendedTaskLogStatusLog, ExtendedTeam } from "../hooks/useTaskLogData"
 import { Prisma } from "@prisma/client"
 
-export type ProcessedIndividualAssignment = {
+export type ProcessedIndividualTaskLog = {
   projectMemberName: string
   lastUpdate: string
   status: string
-  assignment: ExtendedAssignment
+  assignment: ExtendedTaskLog
 }
 
-export function processIndividualAssignments(
-  assignments: ExtendedAssignment[]
-): ProcessedIndividualAssignment[] {
+export function processIndividualTaskLogs(
+  assignments: ExtendedTaskLog[]
+): ProcessedIndividualTaskLog[] {
   return assignments.map((assignment) => {
     const latestLog = getLatestStatusLog(assignment.statusLogs)
     return {
@@ -42,16 +37,14 @@ export function processIndividualAssignments(
   })
 }
 
-export type ProcessedTeamAssignment = {
+export type ProcessedTeamTaskLog = {
   team: ExtendedTeam
   lastUpdate: string
   status: string
-  assignment: ExtendedAssignment
+  assignment: ExtendedTaskLog
 }
 
-export function processTeamAssignments(
-  assignments: ExtendedAssignment[]
-): ProcessedTeamAssignment[] {
+export function processTeamTaskLogs(assignments: ExtendedTaskLog[]): ProcessedTeamTaskLog[] {
   return assignments.map((assignment) => {
     // Function fails if does not recieve assignment data for teams
     if (!assignment.team) {
@@ -82,7 +75,7 @@ export function processTeamAssignments(
   })
 }
 
-export type ProcessedAssignmentHistory = {
+export type ProcessedTaskLogHistory = {
   projectMemberName: string
   lastUpdate: string
   status: string
@@ -93,13 +86,13 @@ export type ProcessedAssignmentHistory = {
   }
 }
 
-export function processAssignmentHistory(
-  assignmentStatusLog: ExtendedAssignmentStatusLog[],
+export function processTaskLogHistory(
+  assignmentStatusLog: ExtendedTaskLogStatusLog[],
   schema?: any,
   ui?: any
-): ProcessedAssignmentHistory[] {
+): ProcessedTaskLogHistory[] {
   return assignmentStatusLog.map((statusLog) => {
-    const processedData: ProcessedAssignmentHistory = {
+    const processedData: ProcessedTaskLogHistory = {
       projectMemberName: statusLog.projectMember
         ? getProjectMemberName(statusLog.projectMember)
         : "Task created",

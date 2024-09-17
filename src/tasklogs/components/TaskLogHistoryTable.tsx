@@ -1,6 +1,6 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
-import { ProcessedAssignmentHistory } from "../utils/processAssignments"
+import { ProcessedAssignmentHistory } from "../utils/processTaskLogs"
 import { noSubmitButton } from "src/forms/utils/extendSchema"
 
 // Column helper

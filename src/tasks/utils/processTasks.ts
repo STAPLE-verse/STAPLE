@@ -1,5 +1,5 @@
-import { AssignmentStatus, Status } from "db"
-import { getLatestStatusLog } from "src/tasklogs/utils/getLatestStatusLog"
+import { Status } from "db"
+import { getLatestTaskLogs } from "src/tasklogs/utils/getLatestTaskLogs"
 
 // Preprocessing tasks data for tables
 // All tasks table
@@ -20,7 +20,7 @@ export function processAllTasks(tasks): ProcessedAllTasks[] {
 
     // Get the latest status log for each assignment and calculate the number of completed assignments
     const completedAssignments = assignments.reduce((count, assignment) => {
-      const latestLog = getLatestStatusLog(assignment.statusLogs)
+      const latestLog = getLatestTaskLog(assignment.statusLogs)
       if (latestLog?.status === AssignmentStatus.COMPLETED) {
         return count + 1
       }

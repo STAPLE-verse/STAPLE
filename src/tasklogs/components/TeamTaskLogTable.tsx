@@ -2,7 +2,7 @@ import React from "react"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { AssignmentToggleModal } from "./TaskLogToggleModal"
 import { ShowTeamModal } from "./ShowTeamModal"
-import { ProcessedTeamAssignment } from "../utils/processAssignments"
+import { ProcessedTeamAssignment } from "../utils/processTaskLogs"
 import { AssignmentSchemaModal } from "./TaskLogSchemaModal"
 
 // Column helper
