@@ -4,7 +4,7 @@ import {
   ExtendedAssignmentStatusLog,
   ExtendedTeam,
 } from "../hooks/useTaskLogData"
-import { getLatestStatusLog } from "./getLatestStatusLog"
+import { getLatestStatusLog } from "./getLatestTaskLog"
 import { Prisma } from "@prisma/client"
 
 export type ProcessedIndividualAssignment = {

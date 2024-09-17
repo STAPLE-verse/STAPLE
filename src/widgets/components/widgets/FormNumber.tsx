@@ -16,9 +16,7 @@ const FormNumber: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) 
 
   // Calculate form completion percentage
   const formPercent =
-    projectStats.allAssignments === 0
-      ? 0
-      : projectStats.completedAssignments / projectStats.allAssignments
+    projectStats.allTaskLogs === 0 ? 0 : projectStats.completedTaskLogs / projectStats.allTaskLogs
 
   return (
     <Widget

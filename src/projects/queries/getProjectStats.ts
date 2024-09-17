@@ -121,8 +121,8 @@ export default resolver.pipe(
       allElements: allElements,
       completedContribRoles: completedContribRoles.length,
       completedTaskRoles: completedTaskRoles.length,
-      allAssignments: allTaskLogs.length,
-      completedAssignments: completedTaskLogs.length,
+      allTaskLogs: allTaskLogs.length,
+      completedTaskLogs: completedTaskLogs.length,
     }
   }
 )
