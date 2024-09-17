@@ -11,8 +11,8 @@ export default resolver.pipe(
       where: { id },
       data: {
         name: data.name,
-        contributors: {
-          set: data.contributors.map((id) => ({ id })),
+        projectMembers: {
+          set: data.projectMembers.map((id) => ({ id })),
         },
       },
     })

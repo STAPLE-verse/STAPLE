@@ -23,7 +23,7 @@ export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormP
     },
   })
   // get all labels from all PMs
-  const projectManagers = contributors.filter(
+  const projectManagers = projectMembers.filter(
     (contributor) => contributor.privilege === "PROJECT_MANAGER"
   )
   const pmIds = projectManagers.map((pm) => pm.userId)

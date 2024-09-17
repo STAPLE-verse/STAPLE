@@ -50,7 +50,7 @@ const Summary = () => {
           },
           team: {
             include: {
-              contributors: {
+              projectMembers: {
                 include: { user: true },
               },
             },
@@ -84,14 +84,14 @@ const Summary = () => {
           },
         },
       },
-      contributors: {
+      projectMembers: {
         include: { user: true },
       },
     },
   })
-  // Get contributors
+  // Get projectMembers
   //TODO: Only needs tos include label id
-  const [{ contributors }] = useQuery(getProjectMembers, {
+  const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     orderBy: { user: { lastName: "asc" } },
     include: {
@@ -102,8 +102,8 @@ const Summary = () => {
   })
 
   // get all labels from all PMs
-  const projectManagers = contributors.filter(
-    (contributor) => contributor.privilege === "PROJECT_MANAGER"
+  const projectManagers = projectMembers.filter(
+    (projectMember) => projectMember.privilege === "PROJECT_MANAGER"
   )
   const pmIds = projectManagers.map((pm) => pm.userId)
   const [{ labels }] = useQuery(getLabels, {
@@ -113,7 +113,7 @@ const Summary = () => {
       },
     },
     include: {
-      contributors: true, // Optional: include contributor data if needed
+      projectMembers: true, // Optional: include contributor data if needed
     },
   })
 
@@ -191,23 +191,23 @@ const Summary = () => {
               <ByProjectMembers
                 tasks={tasks}
                 teams={teams}
-                contributors={contributors}
+                projectMembers={projectMembers}
               ></ByProjectMembers>
             )}
             {selectedOrganization === "task" && (
-              <ByTasks tasks={tasks} contributors={contributors} teams={teams}></ByTasks>
+              <ByTasks tasks={tasks} projectMembers={projectMembers} teams={teams}></ByTasks>
             )}
             {selectedOrganization === "label" && (
-              <ByLabels labels={labels} tasks={tasks} contributors={contributors}></ByLabels>
+              <ByLabels labels={labels} tasks={tasks} projectMembers={projectMembers}></ByLabels>
             )}
             {selectedOrganization === "date" && (
-              <ByDate tasks={tasks} contributors={contributors} teams={teams}></ByDate>
+              <ByDate tasks={tasks} projectMembers={projectMembers} teams={teams}></ByDate>
             )}
             {selectedOrganization === "element" && (
               <ByElements
                 elements={elements}
                 teams={teams}
-                contributors={contributors}
+                projectMembers={projectMembers}
                 tasks={tasks}
               ></ByElements>
             )}

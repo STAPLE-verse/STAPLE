@@ -13,20 +13,20 @@ export default resolver.pipe(
   async ({ where, orderBy, skip = 0, take = 100, include }: GetProjectMembersInput) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
-      items: contributors,
+      items: projectMembers,
       hasMore,
       nextPage,
       count,
     } = await paginate({
       skip,
       take,
-      count: () => db.contributor.count({ where }),
+      count: () => db.projectMember.count({ where }),
       query: (paginateArgs) =>
-        db.contributor.findMany({ ...paginateArgs, where, orderBy, include }),
+        db.projectMember.findMany({ ...paginateArgs, where, orderBy, include }),
     })
 
     return {
-      contributors,
+      projectMembers,
       nextPage,
       hasMore,
       count,

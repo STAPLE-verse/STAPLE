@@ -29,7 +29,7 @@ export const DeleteProjectMemberSchema = z.object({
 })
 
 export const UpdateProjectMemberLabelSchema = z.object({
-  contributorsId: z.array(z.number()).nonempty(),
+  projectMembersId: z.array(z.number()).nonempty(),
   labelsId: z.array(z.number()).optional().nullable(),
   disconnect: z.boolean(),
 })

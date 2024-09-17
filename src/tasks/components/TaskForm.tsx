@@ -44,7 +44,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     },
   })
   // get all labels from all PMs
-  const projectManagers = contributors.filter(
+  const projectManagers = projectMembers.filter(
     (contributor) => contributor.privilege === "PROJECT_MANAGER"
   )
   const pmIds = projectManagers.map((pm) => pm.userId)
@@ -88,7 +88,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     id: item.id,
   }))
 
-  const contributorOptions = contributors.map((contributor) => {
+  const contributorOptions = projectMembers.map((contributor) => {
     return {
       label: contributor["user"].username,
       id: contributor["id"],

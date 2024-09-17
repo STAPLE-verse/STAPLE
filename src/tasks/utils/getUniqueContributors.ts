@@ -20,8 +20,8 @@ export function getUniqueProjectMembers(task: ExtendedTask) {
 
   // Remove duplicates by using a Set with the contributor's id
   const uniqueProjectMembers = Array.from(
-    new Set(allProjectMembers.map((contributor) => contributor.id))
-  ).map((id) => allProjectMembers.find((contributor) => contributor.id === id)!)
+    new Set(allProjectMembers.map((contributor) => projectMember.id))
+  ).map((id) => allProjectMembers.find((contributor) => projectMember.id === id)!)
 
   return uniqueProjectMembers
 }

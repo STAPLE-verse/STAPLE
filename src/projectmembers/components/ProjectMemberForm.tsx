@@ -26,14 +26,14 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
 
   // need all labels from all PMs for this project
   // Contributors
-  const [{ contributors }] = useQuery(getProjectMembers, {
+  const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     include: {
       user: true,
     },
   })
   // get all labels from all PMs
-  const projectManagers = contributors.filter(
+  const projectManagers = projectMembers.filter(
     (contributor) => contributor.privilege === "PROJECT_MANAGER"
   )
   const pmIds = projectManagers.map((pm) => pm.userId)
@@ -44,7 +44,7 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
       },
     },
     include: {
-      contributors: true, // Optional: include contributor data if needed
+      projectMembers: true, // Optional: include contributor data if needed
       user: true,
     },
   })

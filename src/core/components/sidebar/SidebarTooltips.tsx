@@ -5,7 +5,10 @@ const tooltipContents = [
   { id: "project-dashboard-tooltip", content: "See overall project information dashboard" },
   { id: "project-tasks-tooltip", content: "View, add, edit, and complete project specific tasks" },
   { id: "project-elements-tooltip", content: "Elements help you organize tasks into buckets" },
-  { id: "project-contributors-tooltip", content: "Add, edit, and view all people on the project" },
+  {
+    id: "project-projectMembers-tooltip",
+    content: "Add, edit, and view all people on the project",
+  },
   { id: "project-teams-tooltip", content: "Add, edit, and view project teams" },
   {
     id: "project-credit-tooltip",

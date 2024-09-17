@@ -25,7 +25,7 @@ export const ShowTeamPage = () => {
   const teamId = useParam("teamId", "number")
   const [team] = useQuery(getTeam, { id: teamId })
 
-  const [{ contributors }] = useQuery(getProjectMembers, {
+  const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: { teams: { some: { id: teamId } } },
     orderBy: { id: "asc" },
     include: {
@@ -35,7 +35,7 @@ export const ShowTeamPage = () => {
 
   const { contributor: currentProjectMember } = useCurrentProjectMember(projectId)
 
-  const membersId = contributors.map((contributor) => contributor.userId)
+  const membersId = projectMembers.map((contributor) => contributor.userId)
 
   const handleDelete = async () => {
     if (window.confirm("The team will be permanently deleted. Are you sure to continue?")) {
@@ -55,7 +55,7 @@ export const ShowTeamPage = () => {
           <div className="card bg-base-300 w-full">
             <div className="card-body">
               <div className="card-title">Team: {team.name} </div>
-              {contributors.map((contributor) => {
+              {projectMembers.map((contributor) => {
                 return (
                   <p key={contributor.id}>
                     {contributor["user"].firstName || contributor["user"].lastName

@@ -17,7 +17,7 @@ import { AddLabelForm } from "src/labels/components/AddLabelForm"
 import { LabelIdsFormSchema } from "src/labels/schemas"
 import updateProjectMemberLabel from "src/projectmembers/mutations/updateProjectMemberLabel"
 
-export const AllProjectMemberLabelsList = ({ contributors, onChange }) => {
+export const AllProjectMemberLabelsList = ({ projectMembers, onChange }) => {
   const [updateProjectMemberLabelMutation] = useMutation(updateProjectMemberLabel)
   const projectId = useParam("projectId", "number")
 
@@ -46,7 +46,7 @@ export const AllProjectMemberLabelsList = ({ contributors, onChange }) => {
     try {
       const updated = await updateProjectMemberLabelMutation({
         ...values,
-        contributorsId: selectedIds,
+        projectMembersId: selectedIds,
         disconnect: false,
       })
       await labelChanged()
@@ -68,25 +68,25 @@ export const AllProjectMemberLabelsList = ({ contributors, onChange }) => {
     labelsId: [],
   }
 
-  const taskInformation = contributors.map((contributor) => {
-    const name = contributor.user.username
-    const lastname = contributor.user.lastName
-    const firstName = contributor.user.firstName
+  const taskInformation = projectMembers.map((contributor) => {
+    const name = projectMember.user.username
+    const lastname = projectMember.user.lastName
+    const firstName = projectMember.user.firstName
 
     //TODO merge with task information tab
     let t: ProjectMemberLabelInformation = {
       username: name,
       firstname: firstName,
       lastname: lastname,
-      id: contributor.id,
-      labels: contributor.labels,
+      id: projectMember.id,
+      labels: projectMember.labels,
       onChangeCallback: labelChanged,
       selectedIds: selectedIds,
       onMultipledAdded: handleMultipleChanged,
     }
     return t
   })
-  const hasElements = contributors.length < 1 || selectedIds.length < 1
+  const hasElements = projectMembers.length < 1 || selectedIds.length < 1
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
@@ -138,7 +138,7 @@ export const AllProjectMemberLabelsList = ({ contributors, onChange }) => {
 const ProjectMembersTab = () => {
   const projectId = useParam("projectId", "number")
 
-  const [{ contributors }, { refetch }] = useQuery(getProjectMembers, {
+  const [{ projectMembers }, { refetch }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     include: { user: true, labels: true },
     orderBy: { id: "asc" },
@@ -152,7 +152,7 @@ const ProjectMembersTab = () => {
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <div>
         <Suspense fallback={<div>Loading...</div>}>
-          <AllProjectMemberLabelsList contributors={contributors} onChange={reloadTable} />
+          <AllProjectMemberLabelsList projectMembers={projectMembers} onChange={reloadTable} />
         </Suspense>
       </div>
     </main>

@@ -11,8 +11,8 @@ export default resolver.pipe(
   resolver.zod(createAnnouncementSchema),
   resolver.authorize(),
   async ({ announcementText, projectId }) => {
-    // Get all contributors for the project
-    const contributors = await db.contributor.findMany({
+    // Get all projectMembers for the project
+    const projectMembers = await db.projectMember.findMany({
       where: {
         projectId: projectId,
       },
@@ -22,7 +22,7 @@ export default resolver.pipe(
     })
 
     // Get userIds
-    const userIds = contributors.map((contributor) => contributor.user.id)
+    const userIds = projectMembers.map((projectMember) => projectMember.user.id)
 
     // Create notification
     const annoucement = await db.notification.create({

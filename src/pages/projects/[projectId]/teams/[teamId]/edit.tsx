@@ -22,7 +22,7 @@ export const EditTeam = () => {
   const projectId = useParam("projectId", "number")
   const [team, { setQueryData }] = useQuery(
     getTeam,
-    { id: teamId, include: { contributors: true } },
+    { id: teamId, include: { projectMembers: true } },
     {
       staleTime: Infinity,
     }
@@ -30,7 +30,7 @@ export const EditTeam = () => {
   const [updateTeamMutation] = useMutation(updateTeam)
 
   const currentProjectMembersId =
-    team["contributors"] != undefined ? team["contributors"].map((el) => el["id"]) : []
+    team["projectMembers"] != undefined ? team["projectMembers"].map((el) => el["id"]) : []
 
   const initialValues = {
     name: team.name,
@@ -55,7 +55,7 @@ export const EditTeam = () => {
               submitText="Update Team"
               schema={TeamFormSchema}
               onSubmit={async (values) => {
-                let membersId: number[] = values.contributorsId
+                let membersId: number[] = values.projectMembersId
                   .filter((el) => el.checked)
                   .map((val) => val.id)
 
@@ -64,7 +64,7 @@ export const EditTeam = () => {
                     projectId: projectId!,
                     name: values.name,
                     id: team.id,
-                    contributors: membersId,
+                    projectMembers: membersId,
                   })
                   await toast.promise(Promise.resolve(updated), {
                     loading: "Updating team...",

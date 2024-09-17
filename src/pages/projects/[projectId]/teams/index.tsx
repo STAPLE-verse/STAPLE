@@ -26,7 +26,7 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
 
   type TeamWithProjectMembers = {
     id: number
-    contributors: { id: number }[] // Adjust based on actual contributor fields
+    projectMembers: { id: number }[] // Adjust based on actual contributor fields
     // Add any other fields on the team you expect
   }
 
@@ -34,7 +34,7 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
     include: {
-      contributors: true, // Ensure that contributors are included
+      projectMembers: true, // Ensure that projectMembers are included
     },
   })
 
@@ -43,7 +43,7 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   const filteredTeams =
     privilege === MemberPrivileges.CONTRIBUTOR
       ? (teams as TeamWithProjectMembers[]).filter((team) =>
-          team.contributors.some((contributor) => contributor.id === currentProjectMember?.id)
+          team.projectMembers.some((contributor) => contributor.id === currentProjectMember?.id)
         )
       : teams
 

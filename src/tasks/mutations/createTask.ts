@@ -81,7 +81,7 @@ export default resolver.pipe(
     // Create the assignment
     if (contributorsId != null && contributorsId.length != 0) {
       // Fetch User IDs corresponding to the Contributor IDs
-      const users = await db.contributor.findMany({
+      const users = await db.projectMember.findMany({
         where: {
           id: { in: contributorsId },
         },
@@ -138,7 +138,7 @@ export default resolver.pipe(
       })
       // Map to extract just the userIds
       const userIds = teams.flatMap((team) =>
-        team.contributors.map((contributor) => contributor.user.id)
+        team.projectMembers.map((projectMember) => projectMember.user.id)
       )
 
       teamsId.forEach(async (teamId) => {

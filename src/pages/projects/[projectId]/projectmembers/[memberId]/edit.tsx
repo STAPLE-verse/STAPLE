@@ -50,7 +50,7 @@ export const EditProjectMember = () => {
 
   // Set initial values
   const initialValues = {
-    privilege: contributor.privilege,
+    privilege: projectMember.privilege,
     labelsId: labelsId,
   }
 
@@ -67,7 +67,7 @@ export const EditProjectMember = () => {
   const handleSubmit = async (values) => {
     try {
       const updated = await updateProjectMemberMutation({
-        id: contributor.id,
+        id: projectMember.id,
         projectId: projectId!,
         privilege: values.privilege,
         labelsId: values.labelsId,
@@ -83,13 +83,13 @@ export const EditProjectMember = () => {
       if (values.privilege === "PROJECT_MANAGER") {
         // Add widgets for project manager
         await addProjectManagerWidgetsMutation({
-          userId: contributor.userId,
+          userId: projectMember.userId,
           projectId: projectId!,
         })
       } else if (values.privilege === "CONTRIBUTOR") {
         // Remove widgets exclusive to project manager
         await removeProjectManagerWidgetsMutation({
-          userId: contributor.userId,
+          userId: projectMember.userId,
           projectId: projectId!,
         })
       }

@@ -11,7 +11,7 @@ export const TaskSchemaInput = ({ contributors }) => {
 
   // Get forms data
   const pmList = contributors
-    .filter((contributor) => contributor.privilege === MemberPrivileges.PROJECT_MANAGER)
+    .filter((contributor) => projectMember.privilege === MemberPrivileges.PROJECT_MANAGER)
     .map((pm) => pm.userId)
 
   const [pmForms] = useQuery(getForms, {

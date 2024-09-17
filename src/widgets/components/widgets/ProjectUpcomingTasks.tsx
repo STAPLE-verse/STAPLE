@@ -21,7 +21,7 @@ const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = (
       project: { select: { name: true } },
     },
     where: {
-      assignees: { some: { contributor: { user: { id: currentUser?.id } } } },
+      assignees: { some: { projectMember: { user: { id: currentUser?.id } } } },
       status: Status.NOT_COMPLETED,
       projectId: projectId,
     },

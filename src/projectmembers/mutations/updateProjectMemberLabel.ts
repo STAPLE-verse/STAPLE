@@ -31,9 +31,9 @@ async function updateProjectMember(id, labelsId, disconnect) {
 export default resolver.pipe(
   resolver.zod(UpdateProjectMemberLabelSchema),
   resolver.authorize(),
-  async ({ contributorsId, labelsId = [], disconnect, ...data }) => {
+  async ({ projectMembersId, labelsId = [], disconnect, ...data }) => {
     let c = null
-    contributorsId.forEach(async (id) => {
+    projectMembersId.forEach(async (id) => {
       c = await updateProjectMember(id, labelsId, disconnect)
     })
 

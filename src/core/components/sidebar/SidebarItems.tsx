@@ -56,7 +56,7 @@ export const ProjectSidebarItems = (projectId: number): SidebarItemProps[] => {
       icon: UsersIcon,
       text: "Contributors",
       route: Routes.ProjectMembersPage({ projectId: projectId }),
-      tooltipId: "project-contributors-tooltip",
+      tooltipId: "project-projectMembers-tooltip",
       privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
     },
     {

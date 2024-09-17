@@ -7,7 +7,6 @@ import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import AssignTeamMembers, { TeamOption } from "./AssignTeamMembers"
 import { Field } from "react-final-form"
-import { FORM_ERROR } from "final-form"
 
 interface TeamFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
@@ -23,7 +22,7 @@ export const MemberPrivilegesOptions = [
 export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>) {
   const { projectId, teamId, currentProjectMembersId, ...formProps } = props
 
-  const [{ contributors }] = useQuery(getProjectMembers, {
+  const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
     include: {
@@ -31,14 +30,14 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
     },
   })
 
-  const currentTeamOptions = contributors.map((contributor) => {
+  const currentTeamOptions = projectMembers.map((contributor) => {
     let checked = false
     if (teamId != undefined && currentProjectMembersId != undefined) {
-      checked = currentProjectMembersId.find((id) => id == contributor.id) != undefined
+      checked = currentProjectMembersId.find((id) => id == projectMember.id) != undefined
     }
     return {
       userName: contributor["user"].username,
-      id: contributor.id,
+      id: projectMember.id,
       checked: checked,
       teamId: teamId,
     } as TeamOption

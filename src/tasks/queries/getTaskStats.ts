@@ -15,7 +15,7 @@ export default resolver.pipe(
     const userId = ctx.session.userId
 
     // Get contributorId based on userId and projectId
-    const contributor = await db.contributor.findFirst({
+    const contributor = await db.projectMember.findFirst({
       where: {
         userId,
         projectId: projectId,
@@ -47,7 +47,7 @@ export default resolver.pipe(
         where: { projectId: projectId },
         include: {
           assignees: {
-            where: { contributorId: contributor.id },
+            where: { contributorId: projectMember.id },
             include: { statusLogs: true },
           },
         },

@@ -44,7 +44,7 @@ const ByProjectMembers = ({ contributors, teams, tasks }) => {
       </div>
       <div>
         <h2>Contributors Summary</h2>
-        {contributors.map((contributor) => (
+        {projectMembers.map((contributor) => (
           <ProjectMembersView
             contributor={contributor}
             tasks={getCompletedTask(tasks, CompletedAs.INDIVIDUAL, contributor.id)}

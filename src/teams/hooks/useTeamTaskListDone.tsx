@@ -51,20 +51,20 @@ export const useTeamTaskListDone = (teamId: number) => {
     .filter((task) => task.assignees.length > 0)
 
   // Get usernames
-  // Collect all unique contributor IDs from tasks
-  const contributorIds = completedTasks.flatMap((task) =>
+  // Collect all unique projectMember IDs from tasks
+  const projectMemberIds = completedTasks.flatMap((task) =>
     task.assignees.flatMap((assignee) =>
       // Only use the latest change in statusLogs
       assignee.statusLogs[0].completedBy !== null ? assignee.statusLogs[0].completedBy : []
     )
   )
 
-  // Fetch all users based on contributor IDs
+  // Fetch all users based on projectMember IDs
   const [users] = useQuery(getUsers, {
     where: {
       contributions: {
         some: {
-          id: { in: contributorIds },
+          id: { in: projectMemberIds },
         },
       },
     },

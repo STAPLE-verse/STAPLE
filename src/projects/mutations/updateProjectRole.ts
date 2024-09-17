@@ -3,14 +3,14 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { UpdateProjectLabelSchema } from "../schemas"
 
-async function updateProject(id, labelsId, disconnect) {
+async function updateProject(id, rolesId, disconnect) {
   let t
   await db.$transaction(async (prisma) => {
     if (disconnect) {
       const task = await db.project.update({
         where: { id: id },
         data: {
-          labels: {
+          roles: {
             set: [],
           },
         },
@@ -20,8 +20,8 @@ async function updateProject(id, labelsId, disconnect) {
     t = db.project.update({
       where: { id: id },
       data: {
-        labels: {
-          connect: labelsId?.map((c) => ({ id: c })) || [],
+        roles: {
+          connect: rolesId?.map((c) => ({ id: c })) || [],
         },
       },
     })
@@ -32,10 +32,10 @@ async function updateProject(id, labelsId, disconnect) {
 export default resolver.pipe(
   resolver.zod(UpdateProjectLabelSchema),
   resolver.authorize(),
-  async ({ projectsId, labelsId = [], disconnect, ...data }) => {
+  async ({ projectsId, rolesId = [], disconnect, ...data }) => {
     let p = null
     projectsId.forEach(async (id) => {
-      p = await updateProject(id, labelsId, disconnect)
+      p = await updateProject(id, rolesId, disconnect)
     })
 
     // return task

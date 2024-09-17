@@ -26,7 +26,7 @@ const NewTaskPage = () => {
 
   const initialValues = {
     // Making sure that conributorsId always returns an empty array even if it is not touched
-    contributorsId: [],
+    projectMembersId: [],
   }
 
   return (
@@ -55,7 +55,7 @@ const NewTaskPage = () => {
                   deadline: values.deadline,
                   elementId: values.elementId,
                   createdById: currentProjectMember.id,
-                  contributorsId: values.contributorsId,
+                  projectMembersId: values.projectMembersId,
                   teamsId: values.teamsId,
                   formVersionId: values.formVersionId,
                   labelsId: values.labelsId,

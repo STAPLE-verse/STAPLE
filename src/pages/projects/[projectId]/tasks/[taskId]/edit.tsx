@@ -26,7 +26,7 @@ export const EditTask = () => {
   const { task, individualAssignments, teamAssignments, refetchTaskData } = useTaskContext()
 
   // Calculate individual contributor ids
-  const contributorsId = individualAssignments
+  const projectMembersId = individualAssignments
     .map((assignment) => assignment.contributorId)
     // assignment.contributorId is nullable thus we filter for initialValues
     .filter((id): id is number => id !== null)
@@ -46,7 +46,7 @@ export const EditTask = () => {
     description: task.description!,
     containerId: task.containerId,
     deadline: task.deadline,
-    contributorsId: contributorsId,
+    projectMembersId: projectMembersId,
     teamsId: teamsId,
     formVersionId: task.formVersionId,
     labelsId: labelsId,
