@@ -6,19 +6,19 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import toast from "react-hot-toast"
 import Layout from "src/core/layouts/Layout"
-import { UpdateContributorFormSchema } from "src/projectMember/schemas"
-import getContributor from "src/projectmembers/queries/getContributor"
-import updateContributor from "src/projectmembers/mutations/updateContributor"
-import { ContributorForm } from "src/projectmembers/components/ContributorForm"
+import { UpdateProjectMemberFormSchema } from "src/projectMember/schemas"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
+import updateProjectMember from "src/projectmembers/mutations/updateProjectMember"
+import { ProjectMemberForm } from "src/projectmembers/components/ProjectMemberForm"
 import { FORM_ERROR } from "final-form"
-import useContributorAuthorization from "src/projectmembers/hooks/UseContributorAuthorization"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "@prisma/client"
-import { getContributorName } from "src/services/getName"
+import { getProjectMemberName } from "src/services/getName"
 import addProjectManagerWidgets from "src/widgets/mutations/addProjectManagerWidgets"
 import removeProjectManagerWidgets from "src/widgets/mutations/removeProjectManagerWidgets"
 
-export const EditContributor = () => {
-  const [updateContributorMutation] = useMutation(updateContributor)
+export const EditProjectMember = () => {
+  const [updateProjectMemberMutation] = useMutation(updateProjectMember)
   const [addProjectManagerWidgetsMutation] = useMutation(addProjectManagerWidgets)
   const [removeProjectManagerWidgetsMutation] = useMutation(removeProjectManagerWidgets)
   const router = useRouter()
@@ -26,7 +26,7 @@ export const EditContributor = () => {
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
 
-  const [contributor, { setQueryData }] = useQuery(getContributor, {
+  const [contributor, { setQueryData }] = useQuery(getProjectMember, {
     where: { id: contributorId, project: { id: projectId! } },
     include: {
       labels: {
@@ -57,7 +57,7 @@ export const EditContributor = () => {
   // Handle events
   const handleCancel = async () => {
     await router.push(
-      Routes.ShowContributorPage({
+      Routes.ShowProjectMemberPage({
         projectId: projectId!,
         contributorId: contributorId as number,
       })
@@ -66,7 +66,7 @@ export const EditContributor = () => {
 
   const handleSubmit = async (values) => {
     try {
-      const updated = await updateContributorMutation({
+      const updated = await updateProjectMemberMutation({
         id: contributor.id,
         projectId: projectId!,
         privilege: values.privilege,
@@ -97,7 +97,7 @@ export const EditContributor = () => {
       await setQueryData(updated)
 
       await router.push(
-        Routes.ShowContributorPage({
+        Routes.ShowProjectMemberPage({
           projectId: projectId!,
           contributorId: updated.id,
         })
@@ -112,13 +112,13 @@ export const EditContributor = () => {
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="text-3xl mb-2">Edit Contributor {getContributorName(contributor)}</h1>
+      <h1 className="text-3xl mb-2">Edit Contributor {getProjectMemberName(contributor)}</h1>
       <Suspense fallback={<div>Loading...</div>}>
-        <ContributorForm
+        <ProjectMemberForm
           submitText="Update Contributor"
           projectId={projectId as number}
           isEdit={true}
-          schema={UpdateContributorFormSchema}
+          schema={UpdateProjectMemberFormSchema}
           initialValues={initialValues}
           cancelText="Cancel"
           onCancel={handleCancel}
@@ -129,8 +129,8 @@ export const EditContributor = () => {
   )
 }
 
-const EditContributorPage = () => {
-  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
+const EditProjectMemberPage = () => {
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>
@@ -138,12 +138,12 @@ const EditContributorPage = () => {
         <title>Edit Contributor</title>
       </Head>
       <Suspense fallback={<div>Loading...</div>}>
-        <EditContributor />
+        <EditProjectMember />
       </Suspense>
     </Layout>
   )
 }
 
-EditContributorPage.authenticate = true
+EditProjectMemberPage.authenticate = true
 
-export default EditContributorPage
+export default EditProjectMemberPage

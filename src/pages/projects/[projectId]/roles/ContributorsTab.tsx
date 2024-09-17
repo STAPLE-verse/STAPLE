@@ -8,17 +8,17 @@ import toast from "react-hot-toast"
 import Table from "src/core/components/Table"
 import { useParam } from "@blitzjs/next"
 import {
-  ContributorLabelInformation,
-  labelContributorTableColumns,
-} from "src/labels/components/LabelContributorTable"
+  ProjectMemberLabelInformation,
+  labelProjectMemberTableColumns,
+} from "src/labels/components/LabelProjectMemberTable"
 
-import getContributors from "src/projectmembers/queries/getContributors"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import { AddLabelForm } from "src/labels/components/AddLabelForm"
 import { LabelIdsFormSchema } from "src/labels/schemas"
-import updateContributorLabel from "src/projectmembers/mutations/updateContributorLabel"
+import updateProjectMemberLabel from "src/projectmembers/mutations/updateProjectMemberLabel"
 
-export const AllContributorLabelsList = ({ contributors, onChange }) => {
-  const [updateContributorLabelMutation] = useMutation(updateContributorLabel)
+export const AllProjectMemberLabelsList = ({ contributors, onChange }) => {
+  const [updateProjectMemberLabelMutation] = useMutation(updateProjectMemberLabel)
   const projectId = useParam("projectId", "number")
 
   const labelChanged = async () => {
@@ -44,7 +44,7 @@ export const AllContributorLabelsList = ({ contributors, onChange }) => {
 
   const handleAddLabel = async (values) => {
     try {
-      const updated = await updateContributorLabelMutation({
+      const updated = await updateProjectMemberLabelMutation({
         ...values,
         contributorsId: selectedIds,
         disconnect: false,
@@ -74,7 +74,7 @@ export const AllContributorLabelsList = ({ contributors, onChange }) => {
     const firstName = contributor.user.firstName
 
     //TODO merge with task information tab
-    let t: ContributorLabelInformation = {
+    let t: ProjectMemberLabelInformation = {
       username: name,
       firstname: firstName,
       lastname: lastname,
@@ -90,7 +90,7 @@ export const AllContributorLabelsList = ({ contributors, onChange }) => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <Table columns={labelContributorTableColumns} data={taskInformation} addPagination={true} />
+      <Table columns={labelProjectMemberTableColumns} data={taskInformation} addPagination={true} />
 
       <div className="modal-action flex justify-end mt-4">
         <button
@@ -135,10 +135,10 @@ export const AllContributorLabelsList = ({ contributors, onChange }) => {
   )
 }
 
-const ContributorsTab = () => {
+const ProjectMembersTab = () => {
   const projectId = useParam("projectId", "number")
 
-  const [{ contributors }, { refetch }] = useQuery(getContributors, {
+  const [{ contributors }, { refetch }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     include: { user: true, labels: true },
     orderBy: { id: "asc" },
@@ -152,11 +152,11 @@ const ContributorsTab = () => {
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <div>
         <Suspense fallback={<div>Loading...</div>}>
-          <AllContributorLabelsList contributors={contributors} onChange={reloadTable} />
+          <AllProjectMemberLabelsList contributors={contributors} onChange={reloadTable} />
         </Suspense>
       </div>
     </main>
   )
 }
 
-export default ContributorsTab
+export default ProjectMembersTab

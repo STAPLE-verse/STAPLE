@@ -17,7 +17,7 @@ export default resolver.pipe(
       where: { projectId: id },
     })
 
-    const allContributor = await db.contributor.count({
+    const allProjectMember = await db.contributor.count({
       where: { projectId: id },
     })
 
@@ -75,7 +75,7 @@ export default resolver.pipe(
     const completedTaskLabels = taskLabels.filter((label) => label.labels.length > 0)
 
     return {
-      allContributor: allContributor,
+      allProjectMember: allProjectMember,
       allTask: allTask,
       completedTask: completedTask,
       allTeams: allTeams,

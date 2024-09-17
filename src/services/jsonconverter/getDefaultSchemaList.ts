@@ -1,12 +1,12 @@
 import {
-  JsonContributor,
-  JsonContributorUI,
+  JsonProjectMember,
+  JsonProjectMemberUI,
 } from "src/services/jsonconverter/schema/contributorSchema"
 import { JsonFunder, JsonFunderUI } from "src/services/jsonconverter/schema/funderSchema"
 
 export function getDefaultSchemaLists() {
-  const schemas = [JsonContributor, JsonFunder]
-  const uis = [JsonContributorUI, JsonFunderUI]
+  const schemas = [JsonProjectMember, JsonFunder]
+  const uis = [JsonProjectMemberUI, JsonFunderUI]
 
   const restructured = schemas.map((schema, index) => {
     const parsed = JSON.parse(schema)

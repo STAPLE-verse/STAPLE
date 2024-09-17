@@ -8,14 +8,13 @@ export default resolver.pipe(
   resolver.zod(AcceptInviteSchema),
   resolver.authorize(),
   async ({ id, userId }, ctx) => {
-    let textResult
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const invite = await db.invitation.findUnique({
       where: { id },
-      include: { labels: true },
+      include: { roles: true },
     })
 
-    const contributor = await db.contributor.create({
+    const projectmember = await db.projectMember.create({
       data: {
         userId: userId,
         projectId: invite!.projectId,
@@ -23,12 +22,12 @@ export default resolver.pipe(
       },
     })
 
-    //connect to labels
-    let c1 = await db.contributor.update({
-      where: { id: contributor.id },
+    //connect to roles
+    let c1 = await db.projectMember.update({
+      where: { id: projectmember.id },
       data: {
-        labels: {
-          connect: invite!.labels.map((label) => ({ id: label.id })) || [],
+        roles: {
+          connect: invite!.roles.map((role) => ({ id: role.id })) || [],
         },
       },
     })
@@ -39,13 +38,13 @@ export default resolver.pipe(
     await sendNotification(
       {
         templateId: "addedToProject",
-        recipients: [contributor.userId],
+        recipients: [projectmember.userId],
         data: {
           projectName: project!.name,
           addedBy: invite!.addedBy,
-          privilege: getPrivilegeText(contributor.privilege),
+          privilege: getPrivilegeText(projectmember.privilege),
         },
-        projectId: contributor.projectId,
+        projectId: projectmember.projectId,
       },
       ctx
     )

@@ -3,8 +3,8 @@ import Head from "next/head"
 import { Tab } from "@headlessui/react"
 import Layout from "src/core/layouts/Layout"
 import TasksTab from "./TasksTab"
-import ContributorsTab from "./ContributorsTab"
-import useContributorAuthorization from "src/projectmembers/hooks/UseContributorAuthorization"
+import ProjectMembersTab from "./ProjectMembersTab"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 
 function classNames(...classes) {
@@ -44,7 +44,7 @@ export const CreditsTabs = () => {
 
         {/* Tabpanel for Assign Contributors */}
         <Tab.Panel>
-          <ContributorsTab></ContributorsTab>
+          <ProjectMembersTab></ProjectMembersTab>
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>
@@ -52,7 +52,7 @@ export const CreditsTabs = () => {
 }
 
 const CreditPage = () => {
-  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>

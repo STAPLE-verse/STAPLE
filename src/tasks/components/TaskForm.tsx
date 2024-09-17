@@ -7,7 +7,7 @@ import getElements from "src/elements/queries/getElements"
 import { useQuery } from "@blitzjs/rpc"
 import { FormSpy } from "react-final-form"
 import { z } from "zod"
-import getContributors from "src/projectmembers/queries/getContributors"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import Modal from "src/core/components/Modal"
 import { useState } from "react"
 import getTeams from "src/teams/queries/getTeams"
@@ -37,7 +37,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // Contributors
-  const [{ contributors }] = useQuery(getContributors, {
+  const [{ contributors }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     include: {
       user: true,
@@ -108,9 +108,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // Modal open logics
-  const [openContributorsModal, setContributorsModal] = useState(false)
-  const handleToggleContributorsModal = () => {
-    setContributorsModal((prev) => !prev)
+  const [openProjectMembersModal, setProjectMembersModal] = useState(false)
+  const handleToggleProjectMembersModal = () => {
+    setProjectMembersModal((prev) => !prev)
   }
 
   const [openTeamsModal, setTeamsModal] = useState(false)
@@ -172,7 +172,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         <button
           type="button"
           className="btn btn-primary w-1/2"
-          onClick={() => handleToggleContributorsModal()}
+          onClick={() => handleToggleProjectMembersModal()}
         >
           Assign Contributor(s)
         </button>
@@ -185,7 +185,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           }}
         </FormSpy>
         {/* Modal */}
-        <Modal open={openContributorsModal} size="w-7/8 max-w-xl">
+        <Modal open={openProjectMembersModal} size="w-7/8 max-w-xl">
           <div className="">
             <h1 className="flex justify-center mb2 text-3xl">Select Contributors</h1>
             <div className="flex justify-start mt-4">
@@ -197,7 +197,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
                 type="button"
                 /* button for popups */
                 className="btn btn-primary"
-                onClick={handleToggleContributorsModal}
+                onClick={handleToggleProjectMembersModal}
               >
                 Close
               </button>

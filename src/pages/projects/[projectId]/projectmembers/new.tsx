@@ -4,18 +4,18 @@ import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import createInvite from "src/invites/mutations/createInvite"
-import { ContributorForm } from "src/projectmembers/components/ContributorForm"
+import { ProjectMemberForm } from "src/projectmembers/components/ProjectMemberForm"
 import { FORM_ERROR } from "final-form"
 import { Suspense, useState } from "react"
 import Head from "next/head"
 import toast from "react-hot-toast"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import useContributorAuthorization from "src/projectmembers/hooks/UseContributorAuthorization"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
-import { CreateContributorFormSchema } from "src/projectMember/schemas"
+import { CreateProjectMemberFormSchema } from "src/projectMember/schemas"
 import { createNewInvitation } from "integrations/emails"
 
-function NewContributor() {
+function NewProjectMember() {
   const [createInviteMutation] = useMutation(createInvite)
   const [formError, setFormError] = useState<string | null>(null)
   const router = useRouter()
@@ -82,11 +82,11 @@ function NewContributor() {
           an email inviting them to join the project. You will not be able to add them to tasks or
           teams until they accept their invitation.
         </p>
-        <ContributorForm
+        <ProjectMemberForm
           projectId={projectId as number}
           className="flex flex-col"
           submitText="Add Contributor"
-          schema={CreateContributorFormSchema}
+          schema={CreateProjectMemberFormSchema}
           onSubmit={handleSubmit}
         />
         {formError && (
@@ -97,8 +97,8 @@ function NewContributor() {
   )
 }
 
-const NewContributorPage = () => {
-  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
+const NewProjectMemberPage = () => {
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>
@@ -106,12 +106,12 @@ const NewContributorPage = () => {
         <title>Invite New Contributor</title>
       </Head>
       <Suspense fallback={<div>Loading...</div>}>
-        <NewContributor />
+        <NewProjectMember />
       </Suspense>
     </Layout>
   )
 }
 
-NewContributorPage.authenticate = true
+NewProjectMemberPage.authenticate = true
 
-export default NewContributorPage
+export default NewProjectMemberPage

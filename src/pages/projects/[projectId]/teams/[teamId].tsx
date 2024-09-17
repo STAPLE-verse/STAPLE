@@ -9,12 +9,12 @@ import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import getTeam from "src/teams/queries/getTeam"
 import deleteTeam from "src/teams/mutations/deleteTeam"
-import getContributors from "src/projectmembers/queries/getContributors"
-import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
+import { ProjectMemberLabelsList } from "src/labels/components/ProjectMembersLabelsList"
 import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
 import { labelTableColumnsTeam } from "src/labels/components/LabelTable"
 import { MemberPrivileges } from "db"
-import { useCurrentContributor } from "src/projectmembers/hooks/useCurrentContributor"
+import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
 
 export const ShowTeamPage = () => {
   const router = useRouter()
@@ -25,7 +25,7 @@ export const ShowTeamPage = () => {
   const teamId = useParam("teamId", "number")
   const [team] = useQuery(getTeam, { id: teamId })
 
-  const [{ contributors }] = useQuery(getContributors, {
+  const [{ contributors }] = useQuery(getProjectMembers, {
     where: { teams: { some: { id: teamId } } },
     orderBy: { id: "asc" },
     include: {
@@ -33,7 +33,7 @@ export const ShowTeamPage = () => {
     },
   })
 
-  const { contributor: currentContributor } = useCurrentContributor(projectId)
+  const { contributor: currentProjectMember } = useCurrentProjectMember(projectId)
 
   const membersId = contributors.map((contributor) => contributor.userId)
 
@@ -66,7 +66,7 @@ export const ShowTeamPage = () => {
               })}
             </div>
             <div className="card-actions justify-end m-2">
-              {currentContributor!.privilege === MemberPrivileges.PROJECT_MANAGER && (
+              {currentProjectMember!.privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
                   href={Routes.EditTeamPage({ projectId: projectId!, teamId: team.id })}
@@ -80,7 +80,7 @@ export const ShowTeamPage = () => {
           <div className="card bg-base-300 w-full mt-2">
             <div className="card-body">
               <div className="card-title">Team Member Contribution Roles</div>
-              <ContributorLabelsList
+              <ProjectMemberLabelsList
                 usersId={membersId}
                 projectId={projectId}
                 columns={labelTableColumnsTeam}
@@ -94,7 +94,7 @@ export const ShowTeamPage = () => {
               <TeamTaskListDone teamId={teamId} />
             </div>
           </div>
-          {currentContributor!.privilege === MemberPrivileges.PROJECT_MANAGER && (
+          {currentProjectMember!.privilege === MemberPrivileges.PROJECT_MANAGER && (
             <div className="flex justify-end mt-4">
               <button type="button" className="btn btn-secondary" onClick={handleDelete}>
                 Delete Team

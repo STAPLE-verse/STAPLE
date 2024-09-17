@@ -138,10 +138,10 @@ export function GetProjectOverdueTaskDisplay({ pastDueTasks }) {
   )
 }
 
-export function GetContributorDisplay({ projectStats }) {
+export function GetProjectMemberDisplay({ projectStats }) {
   return (
     <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
-      {projectStats.allContributor}
+      {projectStats.allProjectMember}
       <UserIcon className="w-20" />
     </div>
   )

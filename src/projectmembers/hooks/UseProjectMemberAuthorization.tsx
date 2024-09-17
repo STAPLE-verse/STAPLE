@@ -2,7 +2,7 @@ import { MemberPrivileges } from "db"
 import { useMemberPrivileges } from "../components/MemberPrivilegesContext"
 import { AuthenticationError } from "blitz"
 
-const useContributorAuthorization = (requiredPrivileges: MemberPrivileges[]) => {
+const useProjectMemberAuthorization = (requiredPrivileges: MemberPrivileges[]) => {
   const { privilege, isError, error } = useMemberPrivileges()
 
   if (isError && error instanceof Error) {
@@ -16,4 +16,4 @@ const useContributorAuthorization = (requiredPrivileges: MemberPrivileges[]) => 
   return { isAuthorized: true }
 }
 
-export default useContributorAuthorization
+export default useProjectMemberAuthorization

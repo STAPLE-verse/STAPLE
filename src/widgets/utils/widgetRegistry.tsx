@@ -1,4 +1,4 @@
-import ContributorNumber from "../components/widgets/ContributorNumber"
+import ProjectMemberNumber from "../components/widgets/ProjectMemberNumber"
 import ElementSummary from "../components/widgets/ElementSummary"
 import FormNumber from "../components/widgets/FormNumber"
 import LabelsSummary from "../components/widgets/LabelsSummary"
@@ -25,7 +25,7 @@ export const widgetRegistry = {
     OverdueTask: ProjectOverdueTasks,
     UpcomingTask: ProjectUpcomingTasks,
     Notifications: ProjectNotification,
-    ContributorNumber: ContributorNumber,
+    ProjectMemberNumber: ProjectMemberNumber,
     TeamNumber: TeamNumber,
     FormNumber: FormNumber,
     TaskTotal: TaskTotal,

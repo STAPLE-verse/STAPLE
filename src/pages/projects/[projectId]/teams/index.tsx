@@ -14,7 +14,7 @@ import {
 import Table from "src/core/components/Table"
 import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import { MemberPrivileges } from "@prisma/client"
-import { useCurrentContributor } from "src/projectmembers/hooks/useCurrentContributor"
+import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
 
 interface AllTeamListProps {
   privilege: MemberPrivileges
@@ -22,9 +22,9 @@ interface AllTeamListProps {
 
 export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   const projectId = useParam("projectId", "number")
-  const { contributor: currentContributor } = useCurrentContributor(projectId)
+  const { contributor: currentProjectMember } = useCurrentProjectMember(projectId)
 
-  type TeamWithContributors = {
+  type TeamWithProjectMembers = {
     id: number
     contributors: { id: number }[] // Adjust based on actual contributor fields
     // Add any other fields on the team you expect
@@ -42,8 +42,8 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   // Now explicitly type the teams to avoid the error
   const filteredTeams =
     privilege === MemberPrivileges.CONTRIBUTOR
-      ? (teams as TeamWithContributors[]).filter((team) =>
-          team.contributors.some((contributor) => contributor.id === currentContributor?.id)
+      ? (teams as TeamWithProjectMembers[]).filter((team) =>
+          team.contributors.some((contributor) => contributor.id === currentProjectMember?.id)
         )
       : teams
 

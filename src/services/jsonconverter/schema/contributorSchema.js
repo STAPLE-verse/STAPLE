@@ -1,4 +1,4 @@
-export const JsonContributor = `
+export const JsonProjectMember = `
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
@@ -40,7 +40,7 @@ export const JsonContributor = `
 }
 `
 
-export const JsonContributorUI = `
+export const JsonProjectMemberUI = `
 {
   "ui:order": [
     "givenName",

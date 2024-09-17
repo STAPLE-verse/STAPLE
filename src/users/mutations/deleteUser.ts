@@ -11,19 +11,19 @@ export default resolver.pipe(resolver.authorize(), async (_, ctx) => {
 
   // TODO: Decide what to do with user information when the profile is deleted
   // Find all projects of the user
-  const userProjects = await db.contributor.findMany({
+  const userProjects = await db.projectMember.findMany({
     where: { userId: user.id },
-    include: { project: { include: { contributors: true } } },
+    include: { project: { include: { projectmembers: true } } },
   })
   if (!userProjects) throw new NotFoundError()
 
   userProjects.map(async (userProject) => {
-    // Delete projects where there are no other contributors
-    if (userProject.project.contributors.length === 1) {
+    // Delete projects where there are no other projectmembers
+    if (userProject.project.projectmembers.length === 1) {
       await db.project.delete({ where: { id: userProject.projectId } })
-      // Keep projects with multiple contributors but delete user contribution modal
-    } else if (userProject.project.contributors.length > 1) {
-      await db.contributor.delete({ where: { id: userProject.id } })
+      // Keep projects with multiple projectmembers but delete user contribution modal
+    } else if (userProject.project.projectmembers.length > 1) {
+      await db.projectMember.delete({ where: { id: userProject.id } })
     }
   })
 

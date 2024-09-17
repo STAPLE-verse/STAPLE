@@ -5,26 +5,26 @@ import Link from "next/link"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
-import getContributors from "src/projectmembers/queries/getContributors"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import {
-  ContributorInformation,
-  pmContributorTableColumns,
-  contributorContributorTableColumns,
-} from "src/projectmembers/components/ContributorTable"
+  ProjectMemberInformation,
+  pmProjectMemberTableColumns,
+  projectMemberProjectMemberTableColumns,
+} from "src/projectmembers/components/ProjectMemberTable"
 import Table from "src/core/components/Table"
 import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import { MemberPrivileges } from "@prisma/client"
-import { useCurrentContributor } from "src/projectmembers/hooks/useCurrentContributor"
+import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
 
-interface AllContributorsListProps {
+interface AllProjectMembersListProps {
   privilege: MemberPrivileges
 }
 
-export const AllContributorsList = ({ privilege }: AllContributorsListProps) => {
+export const AllProjectMembersList = ({ privilege }: AllProjectMembersListProps) => {
   const projectId = useParam("projectId", "number")
-  const { contributor: currentContributor } = useCurrentContributor(projectId)
+  const { projectMember: currentProjectMember } = useCurrentProjectMember(projectId)
 
-  const [{ contributors }] = useQuery(getContributors, {
+  const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
     include: {
@@ -32,37 +32,38 @@ export const AllContributorsList = ({ privilege }: AllContributorsListProps) => 
     },
   })
 
-  const filteredContributors =
+  const filteredProjectMembers =
     privilege === MemberPrivileges.CONTRIBUTOR
-      ? contributors.filter((contributor) => contributor.id === currentContributor?.id)
-      : contributors
+      ? projectMembers.filter((projectMember) => projectMember.id === currentProjectMember?.id)
+      : projectMembers
 
-  let contributorInformation: ContributorInformation[] = filteredContributors.map((contributor) => {
-    const firstName = contributor["user"].firstName
-    const lastName = contributor["user"].lastName
-    const username = contributor["user"].username
-    let t: ContributorInformation = {
-      name: firstName || lastName ? `${firstName} ${lastName}` : username,
-      id: contributor.id,
-      projectId: projectId,
+  let projectMemberInformation: ProjectMemberInformation[] = filteredProjectMembers.map(
+    (projectMember) => {
+      const firstName = projectMember["user"].firstName
+      const lastName = projectMember["user"].lastName
+      const username = projectMember["user"].username
+      let t: ProjectMemberInformation = {
+        name: firstName || lastName ? `${firstName} ${lastName}` : username,
+        id: projectMember.id,
+        projectId: projectId,
+      }
+      return t
     }
-    return t
-  })
+  )
 
   const tableColumns =
     privilege === MemberPrivileges.CONTRIBUTOR
-      ? contributorContributorTableColumns
-      : pmContributorTableColumns
+      ? projectMemberProjectMemberTableColumns
+      : pmProjectMemberTableColumns
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
-      <Table columns={tableColumns} data={contributorInformation} addPagination={true} />
+      <Table columns={tableColumns} data={projectMemberInformation} addPagination={true} />
     </main>
   )
 }
 // issue 37
-const ContributorsPage = () => {
+const ProjectMembersPage = () => {
   const projectId = useParam("projectId", "number")
   const { privilege } = useMemberPrivileges()
 
@@ -75,13 +76,13 @@ const ContributorsPage = () => {
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Contributors</h1>
         <Suspense fallback={<div>Loading...</div>}>
-          <AllContributorsList privilege={privilege!} />
+          <AllProjectMembersList privilege={privilege!} />
         </Suspense>
         {privilege === MemberPrivileges.PROJECT_MANAGER && (
           <div>
             <Link
               className="btn btn-primary mb-4 mt-4"
-              href={Routes.NewContributorPage({ projectId: projectId! })}
+              href={Routes.NewProjectMemberPage({ projectId: projectId! })}
             >
               Invite Contributor
             </Link>
@@ -99,4 +100,4 @@ const ContributorsPage = () => {
   )
 }
 
-export default ContributorsPage
+export default ProjectMembersPage

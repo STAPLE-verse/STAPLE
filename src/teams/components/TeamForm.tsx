@@ -4,7 +4,7 @@ import { z } from "zod"
 import { useQuery } from "@blitzjs/rpc"
 import { MemberPrivileges } from "@prisma/client"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
-import getContributors from "src/projectmembers/queries/getContributors"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import AssignTeamMembers, { TeamOption } from "./AssignTeamMembers"
 import { Field } from "react-final-form"
 import { FORM_ERROR } from "final-form"
@@ -12,7 +12,7 @@ import { FORM_ERROR } from "final-form"
 interface TeamFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
   teamId?: number
-  currentContributorsId?: number[]
+  currentProjectMembersId?: number[]
 }
 
 export const MemberPrivilegesOptions = [
@@ -21,9 +21,9 @@ export const MemberPrivilegesOptions = [
 ]
 
 export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>) {
-  const { projectId, teamId, currentContributorsId, ...formProps } = props
+  const { projectId, teamId, currentProjectMembersId, ...formProps } = props
 
-  const [{ contributors }] = useQuery(getContributors, {
+  const [{ contributors }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
     include: {
@@ -33,8 +33,8 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
 
   const currentTeamOptions = contributors.map((contributor) => {
     let checked = false
-    if (teamId != undefined && currentContributorsId != undefined) {
-      checked = currentContributorsId.find((id) => id == contributor.id) != undefined
+    if (teamId != undefined && currentProjectMembersId != undefined) {
+      checked = currentProjectMembersId.find((id) => id == contributor.id) != undefined
     }
     return {
       userName: contributor["user"].username,

@@ -1,12 +1,12 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { UpdateContributorLabelSchema } from "../schemas"
+import { UpdateProjectMemberLabelSchema } from "../schemas"
 
-async function updateContributor(id, labelsId, disconnect) {
+async function updateProjectMember(id, labelsId, disconnect) {
   let r
   await db.$transaction(async (prisma) => {
     if (disconnect) {
-      const c = await db.contributor.update({
+      const c = await db.projectmember.update({
         where: { id: id },
         data: {
           labels: {
@@ -29,12 +29,12 @@ async function updateContributor(id, labelsId, disconnect) {
 }
 
 export default resolver.pipe(
-  resolver.zod(UpdateContributorLabelSchema),
+  resolver.zod(UpdateProjectMemberLabelSchema),
   resolver.authorize(),
   async ({ contributorsId, labelsId = [], disconnect, ...data }) => {
     let c = null
     contributorsId.forEach(async (id) => {
-      c = await updateContributor(id, labelsId, disconnect)
+      c = await updateProjectMember(id, labelsId, disconnect)
     })
 
     // return task

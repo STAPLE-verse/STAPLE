@@ -7,14 +7,14 @@ import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
 import { LabelIdsFormSchema } from "../schemas"
 import { MultipleCheckboxColumn } from "./LabelTaskTable"
-import updateContributorLabel from "src/projectmembers/mutations/updateContributorLabel"
+import updateProjectMemberLabel from "src/projectmembers/mutations/updateProjectMemberLabel"
 import { useParam } from "@blitzjs/next"
 
 export type Label = {
   name: string
 }
 
-export type ContributorLabelInformation = {
+export type ProjectMemberLabelInformation = {
   username: string
   firstname?: string
   lastname?: string
@@ -27,7 +27,7 @@ export type ContributorLabelInformation = {
 
 const AddLabelsColumn = ({ row }) => {
   const projectId = useParam("projectId", "number")
-  const [updateContributorLabelMutation] = useMutation(updateContributorLabel)
+  const [updateProjectMemberLabelMutation] = useMutation(updateProjectMemberLabel)
   const {
     name = "",
     description = "",
@@ -49,7 +49,7 @@ const AddLabelsColumn = ({ row }) => {
 
   const handleAddLabel = async (values) => {
     try {
-      const updated = await updateContributorLabelMutation({
+      const updated = await updateProjectMemberLabelMutation({
         labelsId: values.labelsId,
         contributorsId: [row.id],
         disconnect: true,
@@ -113,10 +113,10 @@ const AddLabelsColumn = ({ row }) => {
   )
 }
 
-const columnHelper = createColumnHelper<ContributorLabelInformation>()
+const columnHelper = createColumnHelper<ProjectMemberLabelInformation>()
 
 // ColumnDefs
-export const labelContributorTableColumns = [
+export const labelProjectMemberTableColumns = [
   columnHelper.accessor("username", {
     id: "username",
     cell: (info) => <span>{info.getValue()}</span>,

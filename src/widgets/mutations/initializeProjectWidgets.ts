@@ -52,7 +52,7 @@ export default resolver.pipe(
       {
         userId,
         projectId,
-        type: "ContributorNumber",
+        type: "ProjectMemberNumber",
         show: true,
         position: 5,
         size: WidgetSize.SMALL,

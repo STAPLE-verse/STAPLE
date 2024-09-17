@@ -6,43 +6,43 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
-import getContributor from "src/projectmembers/queries/getContributor"
-import deleteContributor from "src/projectmembers/mutations/deleteContributor"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
+import deleteProjectMember from "src/projectmembers/mutations/deleteProjectMember"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { Contributor, User } from "@prisma/client"
+import { ProjectMember, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 
-import { ContributorTaskListDone } from "src/tasks/components/ContributorsTaskListDone"
-import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
+import { ProjectMemberTaskListDone } from "src/tasks/components/ProjectMembersTaskListDone"
+import { ProjectMemberLabelsList } from "src/labels/components/ProjectMembersLabelsList"
 import { labelTableColumnsSimple } from "src/labels/components/LabelTable"
 import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
 import { MemberPrivileges } from "db"
 import toast from "react-hot-toast"
 
-export const ContributorPage = () => {
+export const ProjectMemberPage = () => {
   const router = useRouter()
-  const [deleteContributorMutation] = useMutation(deleteContributor)
+  const [deleteProjectMemberMutation] = useMutation(deleteProjectMember)
 
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
 
   const currentUser = useCurrentUser()
-  const contributor = useQuery(getContributor, {
+  const contributor = useQuery(getProjectMember, {
     where: { id: contributorId },
     include: { user: true },
-  }) as unknown as Contributor & {
+  }) as unknown as ProjectMember & {
     user: User
   }
 
-  const [currentContributor] = useQuery(getContributor, {
+  const [currentProjectMember] = useQuery(getProjectMember, {
     where: { projectId: projectId, id: contributorId },
     include: { teams: true },
   })
 
   const user = contributor[0].user
-  const teams = currentContributor.hasOwnProperty("teams")
-    ? currentContributor["teams"].map((team) => team.name)
+  const teams = currentProjectMember.hasOwnProperty("teams")
+    ? currentProjectMember["teams"].map((team) => team.name)
     : ""
 
   const handleDelete = async () => {
@@ -50,12 +50,12 @@ export const ContributorPage = () => {
       window.confirm("This contributor will be removed from the project. Are you sure to continue?")
     ) {
       try {
-        await deleteContributorMutation({ id: contributor[0].id })
+        await deleteProjectMemberMutation({ id: contributor[0].id })
         // Check if User removed themselves and return to main page
         if (user.id === currentUser?.id) {
           await router.push(Routes.ProjectsPage())
         } else {
-          await router.push(Routes.ContributorsPage({ projectId: projectId! }))
+          await router.push(Routes.ProjectMembersPage({ projectId: projectId! }))
         }
       } catch (error) {
         toast.error(error.message)
@@ -95,10 +95,10 @@ export const ContributorPage = () => {
             </p>
 
             <div className="card-actions justify-end">
-              {currentContributor.privilege === MemberPrivileges.PROJECT_MANAGER ? (
+              {currentProjectMember.privilege === MemberPrivileges.PROJECT_MANAGER ? (
                 <Link
                   className="btn btn-primary"
-                  href={Routes.EditContributorPage({
+                  href={Routes.EditProjectMemberPage({
                     projectId: projectId!,
                     contributorId: contributorId!,
                   })}
@@ -115,13 +115,13 @@ export const ContributorPage = () => {
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
             <div className="card-title">Contribution Roles</div>
-            <ContributorLabelsList
+            <ProjectMemberLabelsList
               usersId={[user?.id]}
               projectId={projectId}
               columns={labelTableColumnsSimple}
             />
             <div className="card-actions justify-end">
-              {currentContributor.privilege === MemberPrivileges.PROJECT_MANAGER && (
+              {currentProjectMember.privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
                   href={Routes.CreditPage({ projectId: projectId! })}
@@ -136,13 +136,13 @@ export const ContributorPage = () => {
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
             <div className="card-title">Contribution Tasks</div>
-            <ContributorTaskListDone
-              contributor={currentContributor}
+            <ProjectMemberTaskListDone
+              contributor={currentProjectMember}
               columns={finishedTasksTableColumns}
             />
 
             <div className="card-actions justify-end">
-              {currentContributor.privilege === MemberPrivileges.PROJECT_MANAGER && (
+              {currentProjectMember.privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
                   href={Routes.CreditPage({ projectId: projectId! })}
@@ -153,7 +153,7 @@ export const ContributorPage = () => {
             </div>
           </div>
         </div>
-        {currentContributor.privilege === MemberPrivileges.PROJECT_MANAGER && (
+        {currentProjectMember.privilege === MemberPrivileges.PROJECT_MANAGER && (
           <div className="flex justify-end mt-4">
             <button
               className="btn btn-secondary"
@@ -170,16 +170,16 @@ export const ContributorPage = () => {
   )
 }
 
-const ShowContributorPage = () => {
+const ShowProjectMemberPage = () => {
   return (
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
-        <ContributorPage />
+        <ProjectMemberPage />
       </Suspense>
     </Layout>
   )
 }
 
-ShowContributorPage.authenticate = true
+ShowProjectMemberPage.authenticate = true
 
-export default ShowContributorPage
+export default ShowProjectMemberPage

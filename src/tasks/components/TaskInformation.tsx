@@ -2,11 +2,11 @@ import { useQuery } from "@blitzjs/rpc"
 import { useContext } from "react"
 import { Tooltip } from "react-tooltip"
 import { TaskContext } from "./TaskContext"
-import getContributor from "src/projectmembers/queries/getContributor"
-import { Contributor } from "@prisma/client"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
+import { ProjectMember } from "@prisma/client"
 import DateFormat from "src/core/components/DateFormat"
 
-interface ContributorWithUsername extends Contributor {
+interface ProjectMemberWithUsername extends ProjectMember {
   user: {
     username: string
   }
@@ -15,12 +15,12 @@ interface ContributorWithUsername extends Contributor {
 export const TaskInformation = () => {
   const taskContext = useContext(TaskContext)
   const task = taskContext?.task
-  const [pmData] = useQuery(getContributor, {
+  const [pmData] = useQuery(getProjectMember, {
     where: { id: task?.createdById },
     include: { user: { select: { username: true } } },
   })
 
-  const pm = pmData as ContributorWithUsername
+  const pm = pmData as ProjectMemberWithUsername
 
   if (!taskContext || !task) {
     return <div>Loading...</div>

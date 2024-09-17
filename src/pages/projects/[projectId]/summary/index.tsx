@@ -6,7 +6,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import getProject from "src/projects/queries/getProject"
-import ByContributors from "src/summary/components/ByContributors"
+import ByProjectMembers from "src/summary/components/ByProjectMembers"
 import ByTasks from "src/summary/components/ByTasks"
 import ByLabels from "src/summary/components/ByLabels"
 import ByDate from "src/summary/components/ByDate"
@@ -15,8 +15,8 @@ import getTasks from "src/tasks/queries/getTasks"
 import getLabels from "src/labels/queries/getLabels"
 import getElements from "src/elements/queries/getElements"
 import getTeams from "src/teams/queries/getTeams"
-import getContributors from "src/projectmembers/queries/getContributors"
-import useContributorAuthorization from "src/projectmembers/hooks/UseContributorAuthorization"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import DateFormat from "src/core/components/DateFormat"
 
@@ -91,7 +91,7 @@ const Summary = () => {
   })
   // Get contributors
   //TODO: Only needs tos include label id
-  const [{ contributors }] = useQuery(getContributors, {
+  const [{ contributors }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     orderBy: { user: { lastName: "asc" } },
     include: {
@@ -188,11 +188,11 @@ const Summary = () => {
           <div className="card-body">
             <div className="card-title">Organized Metadata (under construction)</div>
             {selectedOrganization === "contributor" && (
-              <ByContributors
+              <ByProjectMembers
                 tasks={tasks}
                 teams={teams}
                 contributors={contributors}
-              ></ByContributors>
+              ></ByProjectMembers>
             )}
             {selectedOrganization === "task" && (
               <ByTasks tasks={tasks} contributors={contributors} teams={teams}></ByTasks>
@@ -227,7 +227,7 @@ const Summary = () => {
 }
 
 const SummaryPage = () => {
-  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>

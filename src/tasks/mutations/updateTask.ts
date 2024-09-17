@@ -67,7 +67,7 @@ export default resolver.pipe(
       select: { contributorId: true, teamId: true },
     })
 
-    const existingContributorIds = existingAssignments
+    const existingProjectMemberIds = existingAssignments
       .map((a) => a.contributorId)
       .filter((id): id is number => id !== null)
 
@@ -76,11 +76,11 @@ export default resolver.pipe(
       .filter((id): id is number => id !== null)
 
     // TODO: later we have to clean up the logic for undefined an nullable values
-    const safeContributorsId: number[] = contributorsId || []
+    const safeProjectMembersId: number[] = contributorsId || []
     const safeTeamsId: number[] = teamsId || []
 
     // Manage contributor and team assignments
-    await manageAssignments(id, existingContributorIds, safeContributorsId)
+    await manageAssignments(id, existingProjectMemberIds, safeProjectMembersId)
     await manageAssignments(id, existingTeamIds, safeTeamsId, true)
     await manageLabels(id, labelsId)
 

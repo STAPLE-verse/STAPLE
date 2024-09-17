@@ -101,10 +101,10 @@ export const notificationColumns: ColumnDef<Notification>[] = [
 ]
 
 // project Managers
-type ContributorWithUser = Prisma.ContributorGetPayload<{
+type ProjectMemberWithUser = Prisma.ProjectMemberGetPayload<{
   include: { user: { select: { username: true; firstName: true; lastName: true } } }
 }>
-export const projectManagersColumns: ColumnDef<ContributorWithUser>[] = [
+export const projectManagersColumns: ColumnDef<ProjectMemberWithUser>[] = [
   {
     accessorKey: "user.username",
     cell: (info) => <span>{info.getValue() as string}</span>,

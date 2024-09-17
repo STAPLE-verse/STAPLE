@@ -1,7 +1,7 @@
 import { Prisma } from "db"
-import { getContributorName } from "src/services/getName"
+import { getProjectMemberName } from "src/services/getName"
 import { ExtendedTask } from "src/tasks/components/TaskContext"
-import { getUniqueContributors } from "src/tasks/utils/getUniqueContributors"
+import { getUniqueProjectMembers } from "src/tasks/utils/getUniqueProjectMembers"
 
 export type ProcessedMetadata = {
   completedBy: string
@@ -10,8 +10,8 @@ export type ProcessedMetadata = {
 }
 
 export function processMetadata(task: ExtendedTask): ProcessedMetadata[] {
-  // Get unique contributors for the task
-  const taskContributors = getUniqueContributors(task)
+  // Get unique project members for the task
+  const taskProjectMembers = getUniqueProjectMembers(task)
 
   // Filter completed statusLogs
   const statusLogs = task.assignees.flatMap((assignment) => assignment.statusLogs ?? [])
@@ -28,11 +28,11 @@ export function processMetadata(task: ExtendedTask): ProcessedMetadata[] {
   )
 
   const tableData = completedStatusLogs.flatMap((statusLog) => {
-    const contributor = taskContributors.find(
-      (contributor) => contributor.id === statusLog.completedBy
+    const projectmember = taskProjectMembers.find(
+      (projectmember) => projectmember.id === statusLog.completedBy
     )
     return {
-      completedBy: getContributorName(contributor),
+      completedBy: getProjectMemberName(projectmember),
       createdAt: statusLog.createdAt.toLocaleDateString(undefined, {
         year: "numeric",
         month: "long",

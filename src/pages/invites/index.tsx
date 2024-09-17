@@ -8,7 +8,7 @@ import Modal from "src/core/components/Modal"
 import { InviteForm } from "src/invites/components/InviteForm"
 import { InviteFormSchema } from "src/invites/schemas"
 import toast from "react-hot-toast"
-import createContributor from "src/projectmembers/mutations/createContributor"
+import createProjectMember from "src/projectmembers/mutations/createProjectMember"
 import { useMutation } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
 
@@ -20,12 +20,12 @@ const InvitesPage = () => {
   const handleToggleNewInviteModal = () => {
     setOpenNewInviteModal((prev) => !prev)
   }
-  const [createContributorMutation] = useMutation(createContributor)
+  const [createProjectMemberMutation] = useMutation(createProjectMember)
   const [formError, setFormError] = useState<string | null>(null)
 
   const handleInviteCode = async (values) => {
     try {
-      const invite = await createContributorMutation({
+      const invite = await createProjectMemberMutation({
         invitationCode: values.invitationCode,
         userId: values.userId,
       })

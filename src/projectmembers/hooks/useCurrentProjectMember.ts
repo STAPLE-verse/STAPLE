@@ -1,14 +1,14 @@
 import { useQuery } from "@blitzjs/rpc"
-import getContributor from "../queries/getContributor"
+import getProjectMember from "../queries/getProjectMember"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
-export const useCurrentContributor = (projectId) => {
+export const useCurrentProjectMember = (projectId) => {
   const currentUser = useCurrentUser()
 
   const shouldFetch = !!(projectId && currentUser?.id)
 
   const [contributor, { isLoading, isError }] = useQuery(
-    getContributor,
+    getProjectMember,
     {
       where: { projectId: projectId, userId: currentUser?.id },
     },

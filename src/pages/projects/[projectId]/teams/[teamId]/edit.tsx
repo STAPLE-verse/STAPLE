@@ -13,7 +13,7 @@ import { TeamForm } from "src/teams/components/TeamForm"
 import { FORM_ERROR } from "final-form"
 import { TeamFormSchema } from "src/teams/schemas"
 import updateTeam from "src/teams/mutations/updateTeam"
-import useContributorAuthorization from "src/projectmembers/hooks/UseContributorAuthorization"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 
 export const EditTeam = () => {
@@ -29,7 +29,7 @@ export const EditTeam = () => {
   )
   const [updateTeamMutation] = useMutation(updateTeam)
 
-  const currentContributorsId =
+  const currentProjectMembersId =
     team["contributors"] != undefined ? team["contributors"].map((el) => el["id"]) : []
 
   const initialValues = {
@@ -50,7 +50,7 @@ export const EditTeam = () => {
             <TeamForm
               projectId={projectId!}
               teamId={team.id}
-              currentContributorsId={currentContributorsId}
+              currentProjectMembersId={currentProjectMembersId}
               initialValues={initialValues}
               submitText="Update Team"
               schema={TeamFormSchema}
@@ -101,7 +101,7 @@ export const EditTeam = () => {
 }
 
 const EditTeamPage = () => {
-  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

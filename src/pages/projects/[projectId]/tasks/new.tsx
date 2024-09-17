@@ -10,7 +10,7 @@ import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
 import Head from "next/head"
 import toast from "react-hot-toast"
-import getContributor from "src/projectmembers/queries/getContributor"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 const NewTaskPage = () => {
@@ -20,7 +20,7 @@ const NewTaskPage = () => {
 
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
-  const [currentContributor] = useQuery(getContributor, {
+  const [currentProjectMember] = useQuery(getProjectMember, {
     where: { projectId: projectId, userId: currentUser!.id },
   })
 
@@ -54,7 +54,7 @@ const NewTaskPage = () => {
                   projectId: projectId!,
                   deadline: values.deadline,
                   elementId: values.elementId,
-                  createdById: currentContributor.id,
+                  createdById: currentProjectMember.id,
                   contributorsId: values.contributorsId,
                   teamsId: values.teamsId,
                   formVersionId: values.formVersionId,

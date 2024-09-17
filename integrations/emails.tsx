@@ -100,7 +100,7 @@ staple.helpdesk@gmail.com
   }
 }
 
-export function createNewInvitation(values, currentUser, contributor) {
+export function createNewInvitation(values, currentUser, projectmember) {
   return {
     from: "STAPLE <app@staple.science>",
     to: values.email,
@@ -124,7 +124,7 @@ alt="STAPLE Logo" height="200"></center>
         If you want to join the project, but have an account under a different
         email, you can log in or create an account with your desired email. Then
         click Invitations on the sidebar menu and click "Accept by Code". You would
-        use code: "${contributor.invitationCode}" to add this project.
+        use code: "${projectmember.invitationCode}" to add this project.
         <p>
         If you need more help, you can reply to this email to create a ticket.
         <p>

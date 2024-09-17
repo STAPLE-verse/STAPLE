@@ -17,7 +17,7 @@ const LabelsSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size 
   // Calculate label percentage
   const labelPercent =
     (projectStats.completedContribLabels + projectStats.completedTaskLabels) /
-    (projectStats.allContributor + projectStats.allTask)
+    (projectStats.allProjectMember + projectStats.allTask)
 
   return (
     <Widget

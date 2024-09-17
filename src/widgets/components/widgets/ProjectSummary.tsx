@@ -1,7 +1,7 @@
 import React from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import getContributors from "src/projectmembers/queries/getContributors"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import getProject from "src/projects/queries/getProject"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
@@ -13,7 +13,7 @@ const ProjectSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size
 
   const [project] = useQuery(getProject, { id: projectId })
 
-  const [{ contributors: projectManagers }] = useQuery(getContributors, {
+  const [{ contributors: projectManagers }] = useQuery(getProjectMembers, {
     where: {
       projectId: projectId,
       privilege: "PROJECT_MANAGER",

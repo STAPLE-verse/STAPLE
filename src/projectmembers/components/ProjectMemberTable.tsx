@@ -4,17 +4,17 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 
 // Define return type for the columns
-export type ContributorInformation = {
+export type ProjectMemberInformation = {
   name: string
   id: number
   projectId?: number
 }
 
 // Column helper
-const columnHelper = createColumnHelper<ContributorInformation>()
+const columnHelper = createColumnHelper<ProjectMemberInformation>()
 
 // ColumnDefs
-export const pmContributorTableColumns = [
+export const pmProjectMemberTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Contributor",
@@ -28,7 +28,7 @@ export const pmContributorTableColumns = [
       <div>
         <Link
           className="btn btn-primary"
-          href={Routes.ShowContributorPage({
+          href={Routes.ShowProjectMemberPage({
             projectId: info.row.original.projectId!,
             contributorId: info.getValue(),
           })}
@@ -47,7 +47,7 @@ export const pmContributorTableColumns = [
       <div>
         <Link
           className="btn btn-primary"
-          href={Routes.EditContributorPage({
+          href={Routes.EditProjectMemberPage({
             projectId: info.row.original.projectId!,
             contributorId: info.getValue(),
           })}
@@ -59,7 +59,7 @@ export const pmContributorTableColumns = [
   }),
 ]
 
-export const contributorContributorTableColumns = [
+export const contributorProjectMemberTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Contributor",
@@ -73,7 +73,7 @@ export const contributorContributorTableColumns = [
       <div>
         <Link
           className="btn btn-primary"
-          href={Routes.ShowContributorPage({
+          href={Routes.ShowProjectMemberPage({
             projectId: info.row.original.projectId!,
             contributorId: info.getValue(),
           })}

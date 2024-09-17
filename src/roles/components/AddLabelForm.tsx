@@ -4,7 +4,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { z } from "zod"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import getLabels from "../queries/getLabels"
-import getContributors from "src/projectmembers/queries/getContributors"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 
 interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -15,8 +15,8 @@ interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> 
 export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormProps<S>) {
   const { projectId, type, tasksId, ...formProps } = props
 
-  // Contributors
-  const [{ contributors }] = useQuery(getContributors, {
+  // ProjectMembers
+  const [{ contributors }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     include: {
       user: true,

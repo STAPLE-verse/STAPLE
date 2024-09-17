@@ -35,7 +35,7 @@ const AssignmentsContent = () => {
     : teamAssignmentTableColumns
 
   return (
-    <main className="flex flex-col mb-2 currentContributormt-2 mx-auto w-full max-w-7xl">
+    <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center mb-2 text-3xl">Review and Complete Tasks</h1>
 
       <div className="flex flex-row justify-center">

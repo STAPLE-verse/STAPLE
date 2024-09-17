@@ -1,17 +1,17 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { DeleteContributorSchema } from "../schemas"
+import { DeleteProjectMemberSchema } from "../schemas"
 
 export default resolver.pipe(
-  resolver.zod(DeleteContributorSchema),
+  resolver.zod(DeleteProjectMemberSchema),
   resolver.authorize(),
   async ({ id }) => {
-    const contributorToDelete = await db.contributor.findUnique({ where: { id } })
+    const contributorToDelete = await db.projectmember.findUnique({ where: { id } })
     if (!contributorToDelete) {
       throw new Error("Contributor not found")
     }
 
-    const projectManagerCount = await db.contributor.count({
+    const projectManagerCount = await db.projectmember.count({
       where: {
         projectId: contributorToDelete.projectId,
         privilege: "PROJECT_MANAGER",

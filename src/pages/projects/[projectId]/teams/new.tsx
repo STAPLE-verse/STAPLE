@@ -11,11 +11,11 @@ import { Suspense } from "react"
 import Head from "next/head"
 import toast from "react-hot-toast"
 import createTeam from "src/teams/mutations/createTeam"
-import useContributorAuthorization from "src/projectmembers/hooks/UseContributorAuthorization"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 
 const NewTeamPage = () => {
-  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   const router = useRouter()
   const projectId = useParam("projectId", "number")

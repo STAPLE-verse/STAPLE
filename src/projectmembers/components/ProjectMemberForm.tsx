@@ -9,9 +9,9 @@ import Modal from "src/core/components/Modal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import { Tooltip } from "react-tooltip"
-import getContributors from "../queries/getContributors"
+import getProjectMembers from "../queries/getProjectMembers"
 
-interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
+interface ProjectMemberFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
   isEdit?: boolean
 }
@@ -21,12 +21,12 @@ export const MemberPrivilegesOptions = [
   { id: 1, value: MemberPrivileges.CONTRIBUTOR, label: "Contributor" },
 ]
 
-export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
+export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectMemberFormProps<S>) {
   const { projectId, isEdit = false, ...formProps } = props
 
   // need all labels from all PMs for this project
   // Contributors
-  const [{ contributors }] = useQuery(getContributors, {
+  const [{ contributors }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     include: {
       user: true,
