@@ -3,7 +3,7 @@ import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
 import { processFinishedTasks } from "../utils/processTasks"
 
-export const ProjectMemberTaskListDone = ({ projectMember, columns }) => {
+export const ProjectMembersTaskListDone = ({ projectMember, columns }) => {
   const [{ tasks }] = useQuery(getTasks, {
     where: {
       OR: [

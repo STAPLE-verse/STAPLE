@@ -13,43 +13,55 @@ import {
 } from "src/projectmembers/components/ProjectMemberTable"
 import Table from "src/core/components/Table"
 import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
-import { MemberPrivileges } from "@prisma/client"
-import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
+import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 interface AllProjectMembersListProps {
   privilege: MemberPrivileges
 }
+type ProjectMemberWithUsers = ProjectMember & {
+  users: User[]
+}
 
 export const AllProjectMembersList = ({ privilege }: AllProjectMembersListProps) => {
   const projectId = useParam("projectId", "number")
-  const { projectMember: currentProjectMember } = useCurrentProjectMember(projectId)
+  const currentUser = useCurrentUser()
 
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
     include: {
-      user: true,
+      users: true,
     },
   })
 
   const filteredProjectMembers =
     privilege === MemberPrivileges.CONTRIBUTOR
-      ? projectMembers.filter((projectMember) => projectMember.id === currentProjectMember?.id)
+      ? projectMembers.filter(
+          (member: ProjectMemberWithUsers) =>
+            member.users.length === 1 && member.users[0]?.id === currentUser?.id
+        )
       : projectMembers
 
   let projectMemberInformation: ProjectMemberInformation[] = filteredProjectMembers.map(
     (projectMember) => {
-      const firstName = projectMember["user"].firstName
-      const lastName = projectMember["user"].lastName
-      const username = projectMember["user"].username
+      // Assuming users array is not empty and has at least one user
+      const user = projectMember["users"][0] // Get the first user
+      const firstName = user?.firstName || ""
+      const lastName = user?.lastName || ""
+      const username = user?.username || ""
+
       let t: ProjectMemberInformation = {
         name: firstName || lastName ? `${firstName} ${lastName}` : username,
         id: projectMember.id,
         projectId: projectId,
       }
+
       return t
     }
   )
+
+  console.log(filteredProjectMembers)
 
   const tableColumns =
     privilege === MemberPrivileges.CONTRIBUTOR
