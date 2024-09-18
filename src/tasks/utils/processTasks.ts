@@ -1,5 +1,4 @@
 import { Status } from "db"
-import { getLatestTaskLogs } from "src/tasklogs/utils/getLatestTaskLogs"
 
 // Preprocessing tasks data for tables
 // All tasks table

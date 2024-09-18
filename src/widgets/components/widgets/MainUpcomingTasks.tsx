@@ -6,8 +6,8 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetUpcomingTaskDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
-const MainUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
-  const [{ upcomingTasks }] = useQuery(getDashboardTasks, undefined)
+const MainUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }, ctx) => {
+  const [{ upcomingTasks }] = useQuery(getDashboardTasks, ctx)
 
   return (
     <Widget

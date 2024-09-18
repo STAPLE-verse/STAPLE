@@ -2,23 +2,22 @@ import { Suspense, useState } from "react"
 import Head from "next/head"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-
 import Layout from "src/core/layouts/Layout"
 import getProject from "src/projects/queries/getProject"
 import ProjectDashboard from "src/projects/components/ProjectDashboard"
 import Modal from "src/core/components/Modal"
 import createAnnouncement from "src/notifications/mutations/createAnnouncement"
-import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
 import { MemberPrivileges } from "db"
 import { AnnouncementForm } from "src/projects/components/AnnouncementForm"
 import { FormAnnouncementSchema } from "src/projects/schemas"
+import { useCurrentProjectPrivilege } from "src/projectmembers/hooks/useCurrentProjectPrivilege"
 
 interface ShowProjectContentProps {
   projectId: number
 }
 
 const ShowProjectContent = ({ projectId }: ShowProjectContentProps) => {
-  const { projectMember: currentProjectMember } = useCurrentProjectMember(projectId)
+  const { projectPrivilege } = useCurrentProjectPrivilege(projectId)
   const [openModal, setOpenModal] = useState(false)
 
   const handleToggle = () => {
@@ -41,7 +40,7 @@ const ShowProjectContent = ({ projectId }: ShowProjectContentProps) => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      {currentProjectMember!.privilege == MemberPrivileges.PROJECT_MANAGER && (
+      {projectPrivilege!.privilege == MemberPrivileges.PROJECT_MANAGER && (
         <>
           <button type="button" className="btn btn-primary mb-4" onClick={handleToggle}>
             Create Announcement

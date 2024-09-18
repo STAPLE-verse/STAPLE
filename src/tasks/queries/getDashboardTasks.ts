@@ -2,13 +2,15 @@ import { resolver } from "@blitzjs/rpc"
 import { Ctx } from "blitz"
 import { Status, TaskLog } from "db"
 import moment from "moment"
-
 import { getLatestTaskLog } from "src/tasklogs/utils/getLatestTaskLog"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
-export default resolver.pipe(resolver.authorize(), async (undefined, ctx: Ctx) => {
+export default resolver.pipe(resolver.authorize(), async (ctx: Ctx) => {
   const today = moment().startOf("day")
 
-  const alltaskLogs = await getLatestTaskLog(ctx)
+  const currentUser = useCurrentUser()
+
+  const alltaskLogs = await getLatestTaskLog(currentUser!.id, ctx)
 
   const taskLogs = (alltaskLogs as TaskLog[]).filter((taskLog) => {
     return taskLog.status === Status.NOT_COMPLETED

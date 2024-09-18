@@ -2,12 +2,12 @@ import { Ctx } from "blitz"
 import getTaskLogs from "../queries/getTaskLogs"
 
 // taskLogService.ts (for example)
-export const getLatestTaskLog = async (ctx: Ctx) => {
+export const getLatestTaskLog = async (userId: number, ctx: Ctx) => {
   const taskLogs = await getTaskLogs(
     {
       where: {
         assignedTo: {
-          users: { some: { id: ctx.session.userId as number } },
+          users: { some: { id: userId } },
         },
       },
       include: { task: true },

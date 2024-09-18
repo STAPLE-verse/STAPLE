@@ -1,19 +1,20 @@
 import React from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
+
 import getProject from "src/projects/queries/getProject"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetProjectSummaryDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
+import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 
 const ProjectSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const projectId = useParam("projectId", "number")
 
   const [project] = useQuery(getProject, { id: projectId })
 
-  const [{ projectMembers: projectManagers }] = useQuery(getProjectMembers, {
+  const [{ projectPrivilege: projectManagers }] = useQuery(getProjectManagers, {
     where: {
       projectId: projectId,
       privilege: "PROJECT_MANAGER",

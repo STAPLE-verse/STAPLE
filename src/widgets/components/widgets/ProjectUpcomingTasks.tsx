@@ -1,38 +1,36 @@
 import React from "react"
-import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import getTasks from "src/tasks/queries/getTasks"
-import { Status } from "db"
+import { Status, TaskLog } from "db"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetProjectUpcomingTaskDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import moment from "moment"
+import { getLatestTaskLog } from "src/tasklogs/utils/getLatestTaskLog"
 
-const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
+const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }, ctx) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
 
   // Fetch tasks for the project
-  const [{ tasks }] = useQuery(getTasks, {
-    include: {
-      project: { select: { name: true } },
-    },
-    where: {
-      assignees: { some: { projectMember: { user: { id: currentUser?.id } } } },
-      status: Status.NOT_COMPLETED,
-      projectId: projectId,
-    },
-    orderBy: { id: "desc" },
-  })
+  const alltaskLogs = getLatestTaskLog(currentUser!.id, ctx)
+
+  const taskLogs = (alltaskLogs as unknown as TaskLog[])
+    .filter((taskLog) => {
+      return taskLog.status === Status.NOT_COMPLETED && projectId === projectId
+    })
+    .sort((a, b) => {
+      // Sort by createdAt in descending order
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
 
   // Filter for upcoming tasks
   const today = moment().startOf("day")
-  const upcomingTasks = tasks.filter((task) => {
-    if (task && task.deadline) {
-      return moment(task.deadline).isSameOrAfter(today, "day")
+  const upcomingTasks = taskLogs.filter((taskLog) => {
+    if (taskLog && taskLog.task.deadline) {
+      return moment(taskLog.task.deadline).isSameOrAfter(today, "day")
     }
     return false
   })

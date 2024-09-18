@@ -1,8 +1,4 @@
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-  rectSwappingStrategy,
-} from "@dnd-kit/sortable"
+import { SortableContext, rectSwappingStrategy } from "@dnd-kit/sortable"
 
 import { SortableWidget } from "./SortableWidget"
 import { ConstructedWidget } from "../hooks/useWidgetConstruction"
