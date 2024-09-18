@@ -5,11 +5,18 @@ import CompleteToggle from "./CompleteToggle"
 import { CompletedAs } from "db"
 import { useTaskContext } from "src/tasks/components/TaskContext"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import { useFilterContributorAssignment } from "../hooks/useFilterContributorAssignment"
 
 export const AssignmentCompletion = () => {
   const { task, individualAssignments, teamAssignments } = useTaskContext()
 
   const { contributor: currentContributor } = useCurrentContributor(task.projectId)
+
+  const { filteredIndividualAssignments, filteredTeamAssignments } = useFilterContributorAssignment(
+    individualAssignments,
+    teamAssignments,
+    currentContributor!.id
+  )
 
   return (
     <div className="card bg-base-300 mx-2 w-1/2">
@@ -25,24 +32,28 @@ export const AssignmentCompletion = () => {
         />
 
         {/* if no schema complete task as a Individual*/}
-        {!task.formVersion && individualAssignments && individualAssignments.length > 0 && (
-          <div className="flex grid-col-2">
-            <CompleteToggle
-              currentAssignment={individualAssignments[0]}
-              completedLabel="Completed"
-              completedBy={currentContributor?.id}
-              completedAs={CompletedAs.INDIVIDUAL}
-            />
-            <span className="mx-2">
-              <AssignmentHistoryModal assignmentStatusLog={individualAssignments[0]!.statusLogs!} />
-            </span>
-          </div>
-        )}
+        {!task.formVersion &&
+          filteredIndividualAssignments &&
+          filteredIndividualAssignments.length > 0 && (
+            <div className="flex grid-col-2">
+              <CompleteToggle
+                currentAssignment={filteredIndividualAssignments[0]}
+                completedLabel="Completed"
+                completedBy={currentContributor?.id}
+                completedAs={CompletedAs.INDIVIDUAL}
+              />
+              <span className="mx-2">
+                <AssignmentHistoryModal
+                  assignmentStatusLog={filteredIndividualAssignments[0]!.statusLogs!}
+                />
+              </span>
+            </div>
+          )}
 
         {/* if no schema complete task as a Team*/}
-        {!task.formVersion && teamAssignments && teamAssignments.length > 0 && (
+        {!task.formVersion && filteredTeamAssignments && filteredTeamAssignments.length > 0 && (
           <div>
-            {teamAssignments.map((teamAssignment) => (
+            {filteredTeamAssignments.map((teamAssignment) => (
               <div key={teamAssignment.id} className="flex flex-col gap-2">
                 <CompleteToggle
                   currentAssignment={teamAssignment}
@@ -59,29 +70,31 @@ export const AssignmentCompletion = () => {
         )}
 
         {/* if schema and individual*/}
-        {task.formVersion && individualAssignments && individualAssignments.length > 0 && (
-          <div className="flex grid-col-2">
-            <CompleteSchema
-              currentAssignment={individualAssignments[0]}
-              completedBy={currentContributor?.id}
-              completedAs={CompletedAs.INDIVIDUAL}
-              schema={task.formVersion.schema}
-              ui={task.formVersion.uiSchema}
-            />
-            <span className="mx-2">
-              <AssignmentHistoryModal
-                assignmentStatusLog={individualAssignments[0]!.statusLogs!}
+        {task.formVersion &&
+          filteredIndividualAssignments &&
+          filteredIndividualAssignments.length > 0 && (
+            <div className="flex grid-col-2">
+              <CompleteSchema
+                currentAssignment={filteredIndividualAssignments[0]}
+                completedBy={currentContributor?.id}
+                completedAs={CompletedAs.INDIVIDUAL}
                 schema={task.formVersion.schema}
                 ui={task.formVersion.uiSchema}
               />
-            </span>
-          </div>
-        )}
+              <span className="mx-2">
+                <AssignmentHistoryModal
+                  assignmentStatusLog={filteredIndividualAssignments[0]!.statusLogs!}
+                  schema={task.formVersion.schema}
+                  ui={task.formVersion.uiSchema}
+                />
+              </span>
+            </div>
+          )}
 
         {/* if schema and team*/}
-        {task.formVersion && teamAssignments && teamAssignments.length > 0 && (
+        {task.formVersion && filteredTeamAssignments && filteredTeamAssignments.length > 0 && (
           <div className="">
-            {teamAssignments.map((teamAssignment) => (
+            {filteredTeamAssignments.map((teamAssignment) => (
               <div key={teamAssignment.id} className="mb-2 flex grid-col-2">
                 <CompleteSchema
                   currentAssignment={teamAssignment}
