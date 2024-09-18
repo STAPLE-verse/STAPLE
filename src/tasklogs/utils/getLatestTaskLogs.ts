@@ -1,10 +1,10 @@
-import { Ctx } from "blitz"
-import getTaskLogs from "../queries/getTaskLogs"
-import { TaskLog } from "db"
+import db, { TaskLog } from "db"
 
 // taskLogService.ts (for example)
-export const getLatestTaskLog = async (ctx: Ctx) => {
-  const taskLogs = await getTaskLogs({ include: { task: true } }, ctx)
+export const getLatestTaskLogs = async () => {
+  const taskLogs = await db.taskLog.findMany({
+    include: { task: true },
+  })
 
   const latestTaskLogs = taskLogs.reduce((acc, log) => {
     // Initialize the user entry if it does not exist

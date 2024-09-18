@@ -1,18 +1,24 @@
 import { useRouter } from "next/router"
-import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
 import deleteElement from "src/elements/mutations/deleteElement"
-import getTasks from "src/tasks/queries/getTasks"
 import "react-circular-progressbar/dist/styles.css"
-import { Element } from "@prisma/client"
+import { Element, Task, TaskLog } from "@prisma/client"
 import { completedTaskPercentage } from "src/widgets/utils/completedTaskPercentage"
 import { completedFormPercentage } from "src/widgets/utils/completedFormPercentage"
 import { completedRolePercentage } from "src/widgets/utils/completedRolePercentage"
 import { CircularPercentageWidget } from "src/widgets/components/CircularPercentageWidget"
+import { getLatestTaskLogs } from "src/tasklogs/utils/getLatestTaskLogs"
+import { useEffect, useState } from "react"
+import getTasks from "src/tasks/queries/getTasks"
 
 interface ElementSummaryProps {
   element: Element
   projectId: number | undefined
+}
+
+type TaskLogWithTask = TaskLog & {
+  task: Task
 }
 
 export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, projectId }) => {
@@ -21,9 +27,9 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
   const [deleteElementMutation] = useMutation(deleteElement)
 
   // Get tasks
+  // Get tasks
   const [{ tasks }] = useQuery(getTasks, {
     include: {
-      assignees: { include: { statusLogs: true } },
       roles: true,
     },
     where: {
@@ -32,9 +38,26 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
     },
   })
 
+  // Get tasklogs
+  const [allTaskLogs, setAllTaskLogs] = useState<TaskLogWithTask[] | null>(null)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    const fetchTaskLogs = async () => {
+      try {
+        const logs = await getLatestTaskLogs()
+        setAllTaskLogs(logs)
+      } catch (err) {
+        setError(err)
+      }
+    }
+
+    fetchTaskLogs()
+  }, [])
+
   // Calculate summary data
   const taskPercent = completedTaskPercentage(tasks)
-  const formPercent = completedFormPercentage(tasks)
+  const formPercent = completedFormPercentage(allTaskLogs)
   const rolePercent = completedRolePercentage(tasks)
 
   // Delete event

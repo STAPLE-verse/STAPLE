@@ -1,18 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { Status, Task, TaskLog } from "@prisma/client"
+import { Status } from "@prisma/client"
 import moment from "moment"
-import { Ctx } from "blitz"
-
-type TaskLogWithTask = TaskLog & {
-  task: Task
-}
-
-type DashboardTasksResponse = {
-  taskLogs: TaskLogWithTask[]
-  upcomingTasks: TaskLogWithTask[]
-  pastDueTasks: TaskLogWithTask[]
-}
 
 export default resolver.pipe(resolver.authorize(), async (_, ctx) => {
   const today = moment().startOf("day")
