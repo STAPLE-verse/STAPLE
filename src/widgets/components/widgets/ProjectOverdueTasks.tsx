@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import getTasks from "src/tasks/queries/getTasks"
@@ -10,27 +10,42 @@ import Widget from "../Widget"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import moment from "moment"
 import { getLatestTaskLog } from "src/tasklogs/utils/getLatestTaskLog"
-import { Ctx } from "blitz"
 
-const ProjectOverdueTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = async (
-  { size },
-  ctx
-) => {
+const ProjectOverdueTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
 
-  // Fetch tasks for the project
-  const alltaskLogs = await getLatestTaskLog(currentUser!.id, ctx)
+  // State to hold task logs and loading state
+  const [taskLogs, setTaskLogs] = useState<any[]>([]) // Adjust type based on actual data structure
+  const [loading, setLoading] = useState(true)
 
-  const taskLogs = (alltaskLogs as TaskLog[])
-    .filter((taskLog) => {
-      return taskLog.status === Status.NOT_COMPLETED && projectId === projectId
-    })
-    .sort((a, b) => {
-      // Sort by createdAt in descending order
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    })
+  // Fetch tasks for the project when component mounts or currentUser changes
+  useEffect(() => {
+    const fetchTaskLogs = async () => {
+      if (!currentUser) return // Wait for currentUser to be defined
+      setLoading(true)
+      try {
+        const allTaskLogs = await getLatestTaskLog(currentUser.id)
+        const filteredTaskLogs = allTaskLogs
+          .filter((taskLog) => {
+            return taskLog.status === Status.NOT_COMPLETED && taskLog.task.projectId === projectId
+          })
+          .sort((a, b) => {
+            // Sort by createdAt in descending order
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          })
+
+        setTaskLogs(filteredTaskLogs)
+      } catch (error) {
+        console.error("Error fetching task logs:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTaskLogs()
+  }, [currentUser, projectId]) // Dependencies: run when currentUser or projectId changes
 
   // Filter for overdue tasks
   const pastDueTasks = taskLogs.filter((taskLog) => {
@@ -39,6 +54,11 @@ const ProjectOverdueTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = as
     }
     return false
   })
+
+  // Loading state
+  if (loading) {
+    return <div>Loading overdue tasks...</div>
+  }
 
   return (
     <Widget

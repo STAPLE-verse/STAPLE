@@ -1,5 +1,6 @@
-import { resolver } from "@blitzjs/rpc"
-import db, { Status, MemberPrivileges } from "db"
+import { resolver, useQuery } from "@blitzjs/rpc"
+import db, { Status, MemberPrivileges, TaskLog } from "db"
+import { getLatestTaskLog } from "src/tasklogs/utils/getLatestTaskLog"
 import { z } from "zod"
 
 const GetTaskStatsSchema = z.object({
@@ -14,14 +15,14 @@ export default resolver.pipe(
     const userId = ctx.session.userId
 
     // Get projectMemberId based on userId and projectId
-    const projectMember = await db.projectMember.findFirst({
+    const projectPrivilege = await db.projectPrivilege.findFirst({
       where: {
-        userId,
+        userId: userId,
         projectId: projectId,
       },
     })
 
-    if (!projectMember) {
+    if (!projectPrivilege) {
       throw new Error("Contributor not found for this project")
     }
 
@@ -42,28 +43,21 @@ export default resolver.pipe(
       }
     } else if (privilege === MemberPrivileges.CONTRIBUTOR) {
       // If CONTRIBUTOR, return only tasks assigned to the projectMember
-      const tasks = await db.task.findMany({
-        where: { projectId: projectId },
-        include: {
-          assignees: {
-            where: { projectMemberId: projectMember.id },
-            include: { statusLogs: true },
-          },
-        },
-      })
+      const allTaskLogs = await getLatestTaskLog(userId, ctx)
 
-      const allTask = tasks.length
+      const projectTaskLogs = allTaskLogs
+        .filter((taskLog) => {
+          return taskLog.status === Status.NOT_COMPLETED && taskLog.task.projectId === projectId
+        })
+        .sort((a, b) => {
+          // Sort by createdAt in descending order
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        })
+
+      const allTask = allTaskLogs.length
 
       // Completition based on latest assignment status
-      const completedTask = tasks.reduce((count, task) => {
-        const latestStatusLog = getLatestStatusLog(task.assignees[0]?.statusLogs)
-
-        if (latestStatusLog?.status === AssignmentStatus.COMPLETED) {
-          return count + 1
-        }
-
-        return count
-      }, 0)
+      const completedTask = projectTaskLogs.length
 
       return {
         allTask,

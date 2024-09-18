@@ -15,9 +15,9 @@ const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = (
   const currentUser = useCurrentUser()
 
   // Fetch tasks for the project
-  const alltaskLogs = getLatestTaskLog(currentUser!.id, ctx)
+  const allTaskLogs = await getLatestTaskLog(currentUser!.id, ctx)
 
-  const taskLogs = (alltaskLogs as unknown as TaskLog[])
+  const taskLogs = allTaskLogs
     .filter((taskLog) => {
       return taskLog.status === Status.NOT_COMPLETED && projectId === projectId
     })

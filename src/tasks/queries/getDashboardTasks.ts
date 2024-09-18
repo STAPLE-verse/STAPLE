@@ -10,9 +10,9 @@ export default resolver.pipe(resolver.authorize(), async (ctx: Ctx) => {
 
   const currentUser = useCurrentUser()
 
-  const alltaskLogs = await getLatestTaskLog(currentUser!.id, ctx)
+  const allTaskLogs = await getLatestTaskLog(currentUser!.id, ctx)
 
-  const taskLogs = (alltaskLogs as TaskLog[]).filter((taskLog) => {
+  const taskLogs = (allTaskLogs as TaskLog[]).filter((taskLog) => {
     return taskLog.status === Status.NOT_COMPLETED
   })
 

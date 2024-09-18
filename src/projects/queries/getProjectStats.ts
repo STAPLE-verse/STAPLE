@@ -57,6 +57,8 @@ export default resolver.pipe(
       },
     })
 
+    console.log(taskForms)
+
     // grab the last task log for each projectMember + task
     const taskLogForms = await Promise.all(
       taskForms.map(async (task) => {
