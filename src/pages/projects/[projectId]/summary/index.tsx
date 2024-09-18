@@ -17,8 +17,11 @@ import getElements from "src/elements/queries/getElements"
 import getTeams from "src/teams/queries/getTeams"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
-import { MemberPrivileges } from "db"
+import { MemberPrivileges, ProjectMember, ProjectPrivilege, Role, User } from "db"
 import DateFormat from "src/core/components/DateFormat"
+import getTaskLog from "src/tasklogs/queries/getTaskLog"
+import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
+import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 
 const Summary = () => {
   // Setup
@@ -28,92 +31,86 @@ const Summary = () => {
   // Get projects
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
-  // Get tasks
-  const [{ tasks }] = useQuery(getTasks, {
-    where: { projectId: projectId },
+
+  // Get taskLogs and tasks
+  const [taskLogs] = useQuery(getTaskLogs, {
+    where: {
+      task: {
+        projectId: projectId,
+      },
+    },
     orderBy: { createdAt: "desc" },
     include: {
-      roles: true,
-      element: true,
-      createdBy: {
-        include: { users: true },
-      },
-      assignees: {
-        orderBy: {
-          updatedAt: "desc",
-        },
+      task: {
         include: {
-          statusLogs: {
-            orderBy: {
-              createdAt: "desc",
-            },
-          },
-          team: {
-            include: {
-              projectMembers: {
-                include: { users: true },
-              },
-            },
-          },
-          projectMember: {
-            include: {
-              user: true,
-            },
-          },
+          roles: true, // Include the roles relation within the task relation
         },
       },
     },
   })
+
   // Get elements
   const [{ elements }] = useQuery(getElements, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
     // include: { task: true },
   })
-  // Get teams
-  const [{ teams }] = useQuery(getTeams, {
-    where: { project: { id: projectId! } },
-    orderBy: { name: "asc" },
-    include: {
-      assignments: {
-        include: {
-          statusLogs: {
-            orderBy: {
-              createdAt: "desc",
-            },
-          },
-        },
-      },
-      projectMembers: {
-        include: { user: true },
+
+  // Get projectMembers
+  const [{ projectMembers }] = useQuery(getProjectMembers, {
+    where: {
+      project: { id: projectId! },
+      users: {
+        every: { id: { not: undefined } }, // Ensures there's at least one user
+        none: { id: { gt: 1 } }, // Ensures there is only one user
       },
     },
-  })
-  // Get projectMembers
-  //TODO: Only needs tos include role id
-  const [{ projectMembers }] = useQuery(getProjectMembers, {
-    where: { project: { id: projectId! } },
-    orderBy: { user: { lastName: "asc" } },
     include: {
-      user: true,
+      users: true,
       roles: true,
-      assignmentStatusLog: true,
     },
   })
 
-  // get all roles from all PMs
-  const projectManagers = projectMembers.filter(
-    (projectMember) => projectMember.privilege === "PROJECT_MANAGER"
-  )
-  const pmIds = projectManagers.map((pm) => pm.userId)
-  const [{ roles }] = useQuery(getRoles, {
+  // Map through projectMembers and flatten the users array to extract firstName and lastName
+  const flattenedMembers = projectMembers.map((member) => {
+    // Assuming there's only one user in each projectMember's `users` array
+    const user = member["users"][0] // Safe because you ensured only one user
+    return {
+      projectMemberId: member.id,
+      firstName: user?.firstName ?? "", // Ensure user exists and has firstName
+      lastName: user?.lastName ?? "",
+      role: member["roles"].map((role) => role.name).join(", "), // Flatten roles if needed
+    }
+  })
+
+  const [teams] = useQuery(getProjectMembers, {
     where: {
-      userId: {
-        in: pmIds, // Filter roles where userId is in the list of PM IDs
+      project: { id: projectId! },
+      users: {
+        some: { id: { gt: 1 } }, // Ensures there are multiple users
       },
     },
     include: {
-      projectMembers: true, // Optional: include projectMember data if needed
+      users: true,
+      roles: true,
+    },
+  })
+
+  type QueryResult<T> = {
+    data: T
+    // Other properties as needed
+  }
+
+  const projectManagers = useQuery(getProjectManagers, {
+    where: {
+      projectId: projectId,
+      privilege: "PROJECT_MANAGER",
+    },
+  })
+
+  const roles = useQuery(getRoles, {
+    where: {
+      userId: { in: projectManagers.map((pm) => pm.userId) }, // Ensure userId is an array
     },
   })
 
@@ -189,26 +186,26 @@ const Summary = () => {
             <div className="card-title">Organized Metadata (under construction)</div>
             {selectedOrganization === "projectMember" && (
               <ByProjectMembers
-                tasks={tasks}
+                tasks={taskLogs}
                 teams={teams}
-                projectMembers={projectMembers}
+                projectMembers={flattenedMembers}
               ></ByProjectMembers>
             )}
             {selectedOrganization === "task" && (
-              <ByTasks tasks={tasks} projectMembers={projectMembers} teams={teams}></ByTasks>
+              <ByTasks tasks={taskLogs} projectMembers={flattenedMembers} teams={teams}></ByTasks>
             )}
             {selectedOrganization === "role" && (
-              <ByRoles roles={roles} tasks={tasks} projectMembers={projectMembers}></ByRoles>
+              <ByRoles roles={roles} tasks={taskLogs} projectMembers={flattenedMembers}></ByRoles>
             )}
             {selectedOrganization === "date" && (
-              <ByDate tasks={tasks} projectMembers={projectMembers} teams={teams}></ByDate>
+              <ByDate tasks={taskLogs} projectMembers={flattenedMembers} teams={teams}></ByDate>
             )}
             {selectedOrganization === "element" && (
               <ByElements
                 elements={elements}
                 teams={teams}
-                projectMembers={projectMembers}
-                tasks={tasks}
+                projectMembers={flattenedMembers}
+                tasks={taskLogs}
               ></ByElements>
             )}
             {selectedOrganization === "none" && <span>Please select an output organization.</span>}
