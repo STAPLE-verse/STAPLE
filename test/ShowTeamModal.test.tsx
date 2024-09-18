@@ -36,6 +36,7 @@ test("renders show team modal", async () => {
   fireEvent.click(openModalBtn)
   expect(await screen.findByText("user1")).toBeInTheDocument()
   expect(await screen.findByText("user2")).toBeInTheDocument()
+  expect(await screen.queryByText("user3")).not.toBeInTheDocument()
   const closeModalBtn = screen.getByTestId("open-modal")
   fireEvent.click(closeModalBtn)
   expect(screen.queryByText("user2")).not.toBeInTheDocument()
