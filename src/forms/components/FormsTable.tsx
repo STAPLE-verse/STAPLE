@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import DateFormat from "src/core/components/DateFormat"
+import ArchiveFormButton from "./ArchiveFormButton"
 
 export interface FormWithFormVersion extends Forms {
   formVersion: FormVersion | null
@@ -64,5 +65,12 @@ export const formsTableColumns = [
       </Link>
     ),
     header: "Edit",
+  }),
+  columnHelper.accessor("id", {
+    id: "delete",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => <ArchiveFormButton formId={info.getValue()} />,
+    header: "Delete",
   }),
 ]
