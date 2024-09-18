@@ -1,13 +1,13 @@
 import React from "react"
 import { ProjectMembersView, TeamView } from "src/summary/components/UtilsViews"
-import { AssignmentStatus, CompletedAs } from "@prisma/client"
+import { Status, CompletedAs } from "@prisma/client"
 
 const ByProjectMembers = ({ projectMembers, teams, tasks }) => {
   // Filter functions
   const assignmentCompletedBy = (statusLog, completedAs, completedBy) => {
     let index = statusLog.findIndex(
       (log) =>
-        log.status == AssignmentStatus.COMPLETED &&
+        log.status == Status.COMPLETED &&
         log.completedAs == completedAs &&
         log.completedBy == completedBy
     )
