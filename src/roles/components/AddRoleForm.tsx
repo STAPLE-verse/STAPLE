@@ -6,13 +6,13 @@ import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import getRoles from "../queries/getRoles"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 
-interface AddLabelFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
+interface AddRoleFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
   type?: string
   tasksId?: number[]
 }
 
-export function AddLabelForm<S extends z.ZodType<any, any>>(props: AddLabelFormProps<S>) {
+export function AddRoleForm<S extends z.ZodType<any, any>>(props: AddRoleFormProps<S>) {
   const { projectId, type, tasksId, ...formProps } = props
 
   // ProjectMembers

@@ -1,6 +1,5 @@
 import { Suspense, useState } from "react"
 import { useMutation, useQuery } from "@blitzjs/rpc"
-
 import React from "react"
 import Modal from "src/core/components/Modal"
 import { FORM_ERROR } from "final-form"
@@ -11,11 +10,11 @@ import {
   ProjectMemberRoleInformation,
   roleProjectMemberTableColumns,
 } from "src/roles/components/RoleProjectMemberTable"
-
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import { AddRoleForm } from "src/roles/components/AddRoleForm"
 import { RoleIdsFormSchema } from "src/roles/schemas"
 import updateProjectMemberRole from "src/projectmembers/mutations/updateProjectMemberRole"
+import { projectMemberProjectMemberTableColumns } from "src/projectmembers/components/ProjectMemberTable"
 
 export const AllProjectMemberRolesList = ({ projectMembers, onChange }) => {
   const [updateProjectMemberRoleMutation] = useMutation(updateProjectMemberRole)
@@ -68,10 +67,12 @@ export const AllProjectMemberRolesList = ({ projectMembers, onChange }) => {
     rolesId: [],
   }
 
+  console.log(projectMembers)
+
   const taskInformation = projectMembers.map((projectMember) => {
-    const name = projectMember.user.username
-    const lastname = projectMember.user.lastName
-    const firstName = projectMember.user.firstName
+    const name = projectMember.users[0].username
+    const lastname = projectMember.users[0].lastName
+    const firstName = projectMember.users[0].firstName
 
     //TODO merge with task information tab
     let t: ProjectMemberRoleInformation = {
@@ -139,8 +140,14 @@ const ProjectMembersTab = () => {
   const projectId = useParam("projectId", "number")
 
   const [{ projectMembers }, { refetch }] = useQuery(getProjectMembers, {
-    where: { project: { id: projectId! } },
-    include: { user: true, roles: true },
+    where: {
+      project: { id: projectId! },
+      users: {
+        every: { id: { not: undefined } }, // Ensures there's at least one user
+        none: { id: { gt: 1 } }, // Ensures there is only one user
+      },
+    },
+    include: { users: true, roles: true },
     orderBy: { id: "asc" },
   })
 
