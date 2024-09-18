@@ -4,7 +4,7 @@ import { useField } from "react-final-form"
 
 interface CheckboxFieldTableProps<T> {
   name: string
-  options: { id: number; label: string }[]
+  options: { id: number; role: string }[]
   extraData?: T[]
   extraColumns?: any[]
 }

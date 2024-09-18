@@ -21,7 +21,14 @@ const NewTaskPage = () => {
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
   const [currentProjectMember] = useQuery(getProjectMember, {
-    where: { projectId: projectId, userId: currentUser!.id },
+    where: {
+      projectId: projectId,
+      users: {
+        some: {
+          id: currentUser!.id,
+        },
+      },
+    },
   })
 
   const initialValues = {
@@ -56,7 +63,6 @@ const NewTaskPage = () => {
                   elementId: values.elementId,
                   createdById: currentProjectMember.id,
                   projectMembersId: values.projectMembersId,
-                  teamsId: values.teamsId,
                   formVersionId: values.formVersionId,
                   rolesId: values.rolesId,
                 })

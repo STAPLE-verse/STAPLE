@@ -14,6 +14,8 @@ import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
 import DateField from "src/core/components/fields/DateField"
 import getRoles from "src/roles/queries/getRoles"
+import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
+import { z } from "zod"
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -35,26 +37,33 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     where: { project: { id: projectId! } },
   })
 
-  // Contributors
+  // Contributors - get only individuals
   const [{ projectMembers }] = useQuery(getProjectMembers, {
-    where: { project: { id: projectId! } },
-    include: {
-      user: true,
-    },
-  })
-  // get all roles from all PMs
-  const projectManagers = projectMembers.filter(
-    (projectMember) => projectMember.privilege === "PROJECT_MANAGER"
-  )
-  const pmIds = projectManagers.map((pm) => pm.userId)
-  const [{ roles }] = useQuery(getRoles, {
     where: {
-      userId: {
-        in: pmIds, // Filter roles where userId is in the list of PM IDs
+      project: { id: projectId! },
+      users: {
+        every: { id: { not: undefined } }, // Ensures there's at least one user
+        none: { id: { gt: 1 } }, // Ensures there is only one user
       },
     },
     include: {
-      projectMembers: true, // Optional: include projectMember data if needed
+      users: true,
+    },
+  })
+
+  // get all roles from all PMs
+  const [{ projectPrivilege }] = useQuery(getProjectManagers, {
+    where: {
+      projectId: projectId,
+      privilege: "PROJECT_MANAGER",
+    },
+  })
+
+  const [{ roles }] = useQuery(getRoles, {
+    where: {
+      userId: { in: projectPrivilege?.map((pm) => pm.userId) || [] },
+    },
+    include: {
       user: true,
     },
   })
@@ -89,14 +98,23 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
   const projectMemberOptions = projectMembers.map((projectMember) => {
     return {
-      role: projectMember["user"].username,
+      // will be only one user in this function
+      role: projectMember["users"][0].username,
       id: projectMember["id"],
     }
   })
 
   // Teams
-  const [{ teams }] = useQuery(getTeams, {
-    where: { project: { id: projectId! } },
+  const teams = useQuery(getProjectMembers, {
+    where: {
+      project: { id: projectId! },
+      users: {
+        some: { id: { gt: 1 } }, // Ensures there are multiple users
+      },
+    },
+    include: {
+      users: true,
+    },
   })
 
   const teamOptions = teams.map((team) => {
