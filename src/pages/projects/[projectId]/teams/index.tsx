@@ -13,28 +13,32 @@ import {
 } from "src/teams/components/TeamTable"
 import Table from "src/core/components/Table"
 import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
-import { MemberPrivileges } from "@prisma/client"
-import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
+import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 interface AllTeamListProps {
   privilege: MemberPrivileges
 }
 
+type ProjectMemberWithUsers = ProjectMember & {
+  users: User[]
+}
+
 export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   const projectId = useParam("projectId", "number")
-  const { projectMember: currentProjectMember } = useCurrentProjectMember(projectId)
+  const currentUser = useCurrentUser()
 
-  type TeamWithProjectMembers = {
-    id: number
-    projectMembers: { id: number }[] // Adjust based on actual projectMember fields
-    // Add any other fields on the team you expect
-  }
-
-  const [{ teams }] = useQuery(getTeams, {
-    where: { project: { id: projectId! } },
+  const [{ projectMembers }] = useQuery(getProjectMembers, {
+    where: {
+      projectId: projectId,
+      users: {
+        some: { id: { gt: 1 } }, // Ensures there are multiple users
+      },
+    },
     orderBy: { id: "asc" },
     include: {
-      projectMembers: true, // Ensure that projectMembers are included
+      users: true, // Ensure that projectMembers are included
     },
   })
 
@@ -42,14 +46,14 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   // Now explicitly type the teams to avoid the error
   const filteredTeams =
     privilege === MemberPrivileges.CONTRIBUTOR
-      ? (teams as TeamWithProjectMembers[]).filter((team) =>
-          team.projectMembers.some((projectMember) => projectMember.id === currentProjectMember?.id)
+      ? projectMembers.filter((projectMember: ProjectMemberWithUsers) =>
+          projectMember.users.some((user) => user.id === currentUser?.id)
         )
-      : teams
+      : projectMembers
 
   let teamInformation: TeamInformation[] = filteredTeams.map((team) => {
     let t: TeamInformation = {
-      name: team.name,
+      name: team.name ?? "Unknown",
       id: team.id,
       projectId: projectId,
     }
