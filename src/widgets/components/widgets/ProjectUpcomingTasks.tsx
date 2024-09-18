@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useParam } from "@blitzjs/next"
 import { Status, TaskLog } from "db"
 import { Routes } from "@blitzjs/next"
@@ -14,17 +14,38 @@ const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = (
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
 
-  // Fetch tasks for the project
-  const allTaskLogs = await getLatestTaskLog(currentUser!.id, ctx)
+  // State to hold task logs and loading state
+  const [taskLogs, setTaskLogs] = useState<any[]>([]) // Adjust type based on actual data structure
+  const [loading, setLoading] = useState(true)
 
-  const taskLogs = allTaskLogs
-    .filter((taskLog) => {
-      return taskLog.status === Status.NOT_COMPLETED && projectId === projectId
-    })
-    .sort((a, b) => {
-      // Sort by createdAt in descending order
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    })
+  // Fetch tasks for the project when component mounts or currentUser changes
+  useEffect(() => {
+    const fetchTaskLogs = async () => {
+      if (!currentUser) return // Wait for currentUser to be defined
+      setLoading(true)
+      try {
+        // Fetch tasks for the project
+        const allTaskLogs = await getLatestTaskLog(currentUser!.id)
+
+        const taskLogs = allTaskLogs
+          .filter((taskLog) => {
+            return taskLog.status === Status.NOT_COMPLETED && projectId === projectId
+          })
+          .sort((a, b) => {
+            // Sort by createdAt in descending order
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          })
+
+        setTaskLogs(taskLogs)
+      } catch (error) {
+        console.error("Error fetching task logs:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTaskLogs()
+  }, [currentUser, projectId]) // Dependencies: run when currentUser or projectId changes
 
   // Filter for upcoming tasks
   const today = moment().startOf("day")

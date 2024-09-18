@@ -1,6 +1,4 @@
-import { Ctx } from "blitz"
-import getTaskLogs from "../queries/getTaskLogs"
-import { CompletedAs, Prisma, Status, Task } from "db"
+import db, { CompletedAs, Prisma, Status, Task } from "db"
 
 type TaskLogWithTask = {
   id: number
@@ -15,13 +13,13 @@ type TaskLogWithTask = {
 }
 
 export const getLatestTaskLog = async (userId: number): Promise<TaskLogWithTask[]> => {
-  const taskLogs = await getTaskLogs({
+  const taskLogs = await db.taskLog.findMany({
     where: {
       assignedTo: {
         users: { some: { id: userId } },
       },
     },
-    include: { task: true }, // Ensure task is included
+    include: { task: true },
   })
 
   const latestTaskLogs = taskLogs.reduce((acc, log) => {

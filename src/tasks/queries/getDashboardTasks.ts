@@ -1,31 +1,45 @@
 import { resolver } from "@blitzjs/rpc"
-import { Ctx } from "blitz"
-import { Status, TaskLog } from "db"
+import db from "db"
+import { Status, Task, TaskLog } from "@prisma/client"
 import moment from "moment"
-import { getLatestTaskLog } from "src/tasklogs/utils/getLatestTaskLog"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { Ctx } from "blitz"
 
-export default resolver.pipe(resolver.authorize(), async (ctx: Ctx) => {
+type TaskLogWithTask = TaskLog & {
+  task: Task
+}
+
+type DashboardTasksResponse = {
+  taskLogs: TaskLogWithTask[]
+  upcomingTasks: TaskLogWithTask[]
+  pastDueTasks: TaskLogWithTask[]
+}
+
+export default resolver.pipe(resolver.authorize(), async (_, ctx) => {
   const today = moment().startOf("day")
+  const currentUser = ctx.session.userId // Ensure userId is accessible from ctx
 
-  const currentUser = useCurrentUser()
-
-  const allTaskLogs = await getLatestTaskLog(currentUser!.id, ctx)
-
-  const taskLogs = (allTaskLogs as TaskLog[]).filter((taskLog) => {
-    return taskLog.status === Status.NOT_COMPLETED
+  // Fetch the task logs
+  const allTaskLogs = await db.taskLog.findMany({
+    where: {
+      assignedToId: currentUser, // Filtering based on the current user's ID
+    },
+    include: {
+      task: true, // Ensure task is included
+    },
   })
 
+  // Filter and categorize tasks
+  const taskLogs = allTaskLogs.filter((taskLog) => taskLog.status === Status.NOT_COMPLETED)
+
   const upcomingTasks = taskLogs.filter((taskLog) => {
-    if (taskLog && taskLog.task.deadline) {
+    if (taskLog.task.deadline) {
       return moment(taskLog.task.deadline).isSameOrAfter(today, "day")
     }
     return false
   })
 
-  // get pastDue
   const pastDueTasks = taskLogs.filter((taskLog) => {
-    if (taskLog && taskLog.task.deadline) {
+    if (taskLog.task.deadline) {
       return moment(taskLog.task.deadline).isBefore(moment(), "minute")
     }
     return false

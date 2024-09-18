@@ -7,8 +7,9 @@ import { GetUpcomingTaskDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
 const MainUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }, ctx) => {
-  const [{ upcomingTasks }] = useQuery(getDashboardTasks, ctx)
-
+  const [{ taskLogs, upcomingTasks, pastDueTasks }, { error }] = useQuery(getDashboardTasks, ctx, {
+    suspense: true, // Set to false if you want to handle loading and error states manually
+  })
   return (
     <Widget
       title="Upcoming Tasks"
