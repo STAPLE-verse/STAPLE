@@ -1,15 +1,15 @@
 import React from "react"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { AssignmentToggleModal } from "./TaskLogToggleModal"
-import { ProcessedIndividualAssignment } from "../utils/processTaskLogs"
-import { AssignmentSchemaModal } from "./TaskLogSchemaModal"
+import { TaskLogToggleModal } from "./TaskLogToggleModal"
+import { ProcessedIndividualTaskLog } from "../utils/processTaskLogs"
+import { TaskLogSchemaModal } from "./TaskLogSchemaModal"
 
 // Column helper
-const columnHelper = createColumnHelper<ProcessedIndividualAssignment>()
+const columnHelper = createColumnHelper<ProcessedIndividualTaskLog>()
 
 // ColumnDefs
 // Table for assignment without a form
-export const assignmentTableColumns: ColumnDef<ProcessedIndividualAssignment>[] = [
+export const taskLogTableColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
   columnHelper.accessor("projectMemberName", {
     cell: (info) => <span>{`${info.getValue()}`}</span>,
     header: "Contributor Name",
@@ -24,11 +24,11 @@ export const assignmentTableColumns: ColumnDef<ProcessedIndividualAssignment>[] 
     header: "Status",
     id: "status",
   }),
-  columnHelper.accessor("assignment", {
+  columnHelper.accessor("taskLog", {
     cell: (info) => {
       return (
         <>
-          <AssignmentToggleModal assignment={info.getValue()} />
+          <TaskLogToggleModal taskLog={info.getValue()} />
         </>
       )
     },
@@ -38,7 +38,7 @@ export const assignmentTableColumns: ColumnDef<ProcessedIndividualAssignment>[] 
 ]
 
 // Table for assignment with a form
-export const assignmentTableColumnsSchema: ColumnDef<ProcessedIndividualAssignment>[] = [
+export const taskLogTableColumnsSchema: ColumnDef<ProcessedIndividualTaskLog>[] = [
   columnHelper.accessor("projectMemberName", {
     cell: (info) => <span>{`${info.getValue()}`}</span>,
     header: "Contributor Name",
@@ -53,11 +53,11 @@ export const assignmentTableColumnsSchema: ColumnDef<ProcessedIndividualAssignme
     header: "Status",
     id: "status",
   }),
-  columnHelper.accessor("assignment", {
+  columnHelper.accessor("taskLog", {
     cell: (info) => {
       return (
         <>
-          <AssignmentSchemaModal assignment={info.getValue()} />
+          <TaskLogSchemaModal taskLog={info.getValue()} />
         </>
       )
     },

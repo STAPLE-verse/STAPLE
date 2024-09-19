@@ -4,14 +4,14 @@ import "react-circular-progressbar/dist/styles.css"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { useTaskContext } from "./TaskContext"
-import useAssignmentProgress from "src/tasklogs/hooks/useAssignmentProgress"
+import useTaskLogProgress from "src/tasklogs/hooks/useTaskLogProgress"
 
 const ShowAssignmentProgress = () => {
-  const { task } = useTaskContext()
+  const { task, projectMembers } = useTaskContext()
 
-  const assignmentProgress = useAssignmentProgress(task)
+  const taskLogProgress = useTaskLogProgress(projectMembers)
 
-  const assignmentPercent = assignmentProgress.completed / assignmentProgress.all
+  const taskLogPercent = taskLogProgress.completed / taskLogProgress.all
 
   return (
     <div className="stat place-items-center">
@@ -26,10 +26,10 @@ const ShowAssignmentProgress = () => {
       <div>
         <div className="w-20 h-20 m-2">
           <CircularProgressbar
-            value={assignmentPercent * 100}
-            text={`${Math.round(assignmentPercent * 100)}%`}
+            value={taskLogPercent * 100}
+            text={`${Math.round(taskLogPercent * 100)}%`}
             data-tooltip-id="progress-tooltip"
-            data-tooltip-content={`${assignmentProgress.completed} tasks out of ${assignmentProgress.all}`}
+            data-tooltip-content={`${taskLogProgress.completed} tasks out of ${taskLogProgress.all}`}
             styles={buildStyles({
               textSize: "16px",
               pathTransitionDuration: 0,

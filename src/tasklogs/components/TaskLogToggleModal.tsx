@@ -7,12 +7,19 @@ import { useQuery } from "@blitzjs/rpc"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { CompletedAs } from "db"
 
-export const AssignmentToggleModal = ({ assignment }) => {
+export const TaskLogToggleModal = ({ taskLog }) => {
   const [openModal, setOpenModal] = useState(false)
-  const currentUser = useCurrentUser()
   const projectId = useParam("projectId", "number")
+  const currentUser = useCurrentUser()
   const [currentProjectMember] = useQuery(getProjectMember, {
-    where: { projectId: projectId, userId: currentUser!.id },
+    where: {
+      projectId: projectId,
+      users: {
+        some: {
+          id: currentUser!.id,
+        },
+      },
+    },
   })
 
   // Handle events
@@ -21,7 +28,6 @@ export const AssignmentToggleModal = ({ assignment }) => {
   }
   const handleToggleClose = () => {
     setOpenModal((prev) => !prev)
-    // window.location.reload()
   }
 
   return (
@@ -33,10 +39,10 @@ export const AssignmentToggleModal = ({ assignment }) => {
         <Modal open={openModal} size="w-11/12 max-w-3xl">
           <div className="modal-action justify-between">
             <CompleteToggle
-              currentAssignment={assignment}
+              taskLog={taskLog}
               completedRole="Completed"
-              completedBy={currentProjectMember.id}
-              completedAs={assignment.teamId ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
+              completedById={currentProjectMember.id}
+              completedAs={taskLog.name ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
             />
             <button type="button" className="btn btn-primary" onClick={handleToggleClose}>
               Close

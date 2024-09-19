@@ -6,20 +6,28 @@ import { CompletedAs } from "db"
 import CompleteSchema from "./CompleteSchema"
 import { useTaskContext } from "src/tasks/components/TaskContext"
 
-export const AssignmentSchemaModal = ({ assignment }) => {
-  const currentUser = useCurrentUser()
+export const TaskLogSchemaModal = ({ taskLog }) => {
   const projectId = useParam("projectId", "number")
+  const currentUser = useCurrentUser()
   const [currentProjectMember] = useQuery(getProjectMember, {
-    where: { projectId: projectId, userId: currentUser!.id },
+    where: {
+      projectId: projectId,
+      users: {
+        some: {
+          id: currentUser!.id,
+        },
+      },
+    },
   })
+
   const { task } = useTaskContext()
 
   return (
     <>
       <CompleteSchema
-        currentAssignment={assignment}
-        completedBy={currentProjectMember.id}
-        completedAs={assignment.teamId ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
+        taskLog={taskLog}
+        completedById={currentProjectMember.id}
+        completedAs={taskLog.name ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
         schema={task.formVersion?.schema}
         ui={task.formVersion?.uiSchema}
       />

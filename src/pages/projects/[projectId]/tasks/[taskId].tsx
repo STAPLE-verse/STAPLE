@@ -23,9 +23,9 @@ const TaskContent = () => {
           <TaskInformation />
           <TaskLogCompletion />
         </div>
-        {/* {privilege == MemberPrivileges.PROJECT_MANAGER && (
+        {privilege == MemberPrivileges.PROJECT_MANAGER && (
           <TaskSummary taskId={task.id} projectId={task.projectId} />
-        )} */}
+        )}
       </main>
     </>
   )

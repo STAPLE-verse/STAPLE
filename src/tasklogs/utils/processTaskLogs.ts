@@ -1,21 +1,23 @@
 import { getProjectMemberName } from "src/services/getName"
 import { ExtendedTaskLog } from "../hooks/useTaskLogData"
 import { Prisma } from "@prisma/client"
+import { ProjectMemberWithTaskLog } from "src/tasks/components/TaskContext"
+import { filterLatestTaskLog } from "./filterLatestTaskLog"
 
 export type ProcessedIndividualTaskLog = {
   projectMemberName: string
   lastUpdate: string
   status: string
-  assignment: ExtendedTaskLog
+  taskLog: ExtendedTaskLog
 }
 
 export function processIndividualTaskLogs(
-  assignments: ExtendedTaskLog[]
+  projectMembers: ProjectMemberWithTaskLog[]
 ): ProcessedIndividualTaskLog[] {
-  return assignments.map((assignment) => {
-    const latestLog = getLatestStatusLog(assignment.statusLogs)
+  return projectMembers.map((projectMember) => {
+    const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
     return {
-      projectMemberName: getProjectMemberName(assignment.projectMember),
+      projectMemberName: getProjectMemberName(projectMember),
       lastUpdate: latestLog
         ? latestLog.createdAt.toLocaleDateString(undefined, {
             year: "numeric",
@@ -32,7 +34,7 @@ export function processIndividualTaskLogs(
           ? "Completed"
           : "Not Completed"
         : "Unknown",
-      assignment,
+      taskLog: latestLog,
     }
   })
 }
@@ -41,17 +43,19 @@ export type ProcessedTeamTaskLog = {
   team: ExtendedTeam
   lastUpdate: string
   status: string
-  assignment: ExtendedTaskLog
+  taskLog: ExtendedTaskLog
 }
 
-export function processTeamTaskLogs(assignments: ExtendedTaskLog[]): ProcessedTeamTaskLog[] {
-  return assignments.map((assignment) => {
+export function processTeamTaskLogs(
+  projectMembers: ProjectMemberWithTaskLog[]
+): ProcessedTeamTaskLog[] {
+  return projectMembers.map((projectMember) => {
     // Function fails if does not recieve assignment data for teams
-    if (!assignment.team) {
-      throw new Error(`Missing team data for assignment ID: ${assignment.id}`)
+    if (!projectMember.name) {
+      throw new Error(`Missing team data for assignment ID: ${projectMember.id}`)
     }
 
-    const latestLog = getLatestStatusLog(assignment.statusLogs)
+    const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
     return {
       team: assignment.team,
       lastUpdate: latestLog
@@ -70,7 +74,7 @@ export function processTeamTaskLogs(assignments: ExtendedTaskLog[]): ProcessedTe
           ? "Completed"
           : "Not Completed"
         : "Unknown",
-      assignment,
+      taskLog: latestLog,
     }
   })
 }

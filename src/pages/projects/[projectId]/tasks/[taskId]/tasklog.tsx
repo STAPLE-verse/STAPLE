@@ -2,37 +2,32 @@ import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import {
-  assignmentTableColumns,
-  assignmentTableColumnsSchema,
-} from "src/tasklogs/components/AssignmentTable"
+  taskLogTableColumns,
+  taskLogTableColumnsSchema,
+} from "src/tasklogs/components/TaskLogTable"
 import {
-  teamAssignmentTableColumns,
-  teamAssignmentTableColumnsSchema,
-} from "src/tasklogs/components/TeamAssignmentTable"
+  teamTaskLogTableColumns,
+  teamTaskLogTableColumnsSchema,
+} from "src/tasklogs/components/TeamTaskLogTable"
 import Table from "src/core/components/Table"
 import Link from "next/link"
 import TaskLayout from "src/core/layouts/TaskLayout"
 import { useTaskContext } from "src/tasks/components/TaskContext"
-import {
-  processIndividualAssignments,
-  processTeamAssignments,
-} from "src/tasklogs/utils/processAssignments"
+import { processIndividualTaskLogs, processTeamTaskLogs } from "src/tasklogs/utils/processTaskLogs"
+import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
 
 const AssignmentsContent = () => {
   // Get values
-  const { task, individualAssignments, teamAssignments } = useTaskContext()
+  const { task, projectMembers } = useTaskContext()
+  const { individualProjectMembers, teamProjectMembers } = useSeparateProjectMembers(projectMembers)
 
   // Preprocess assignments to include only the latest log
-  const processedIndividualAssignments = processIndividualAssignments(individualAssignments)
-  const processedTeamAssignments = processTeamAssignments(teamAssignments)
+  const processedIndividualAssignments = processIndividualTaskLogs(individualProjectMembers)
+  const processedTeamAssignments = processTeamTaskLogs(teamProjectMembers)
 
   // Get columns definitions for tables
-  const individualColumns = task.formVersionId
-    ? assignmentTableColumnsSchema
-    : assignmentTableColumns
-  const teamColumns = task.formVersionId
-    ? teamAssignmentTableColumnsSchema
-    : teamAssignmentTableColumns
+  const individualColumns = task.formVersionId ? taskLogTableColumnsSchema : taskLogTableColumns
+  const teamColumns = task.formVersionId ? teamTaskLogTableColumnsSchema : teamTaskLogTableColumns
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
