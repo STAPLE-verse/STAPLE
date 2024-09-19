@@ -258,7 +258,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       </div>
 
       {formResponseSupplied ? (
-        <TaskSchemaInput projectMembers={projectMembers} />
+        <TaskSchemaInput projectManagers={projectPrivilege} />
       ) : (
         <p className="mt-4 w-1/2 text-red-500">
           The task is already being completed by the contributors. Please, create a new task if you
