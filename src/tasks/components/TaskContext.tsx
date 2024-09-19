@@ -1,23 +1,26 @@
 import React, { createContext, ReactNode, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
-import useTaskLogData from "src/tasklogs/hooks/useTaskLogData"
-import { Task, KanbanBoard, Element, FormVersion } from "db"
+import { Task, KanbanBoard, Element, FormVersion, ProjectMember, User } from "db"
 import { ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
+
+export type ProjectMemberWithTaskLog = ProjectMember & {
+  taskLogAssignedTo: ExtendedTaskLog[]
+  users: Pick<User, "id" | "username">[]
+}
 
 // Creating custom types
 export type ExtendedTask = Task & {
   container: KanbanBoard
   element: Element | null
   formVersion: FormVersion | null
-  taskLogs: ExtendedTaskLog[]
   roles: []
+  assignedTo: ProjectMemberWithTaskLog[]
 }
 
 interface TaskContextType {
   task: ExtendedTask
-  individualTaskLogs: ExtendedTaskLog[]
-  teamTaskLogs: ExtendedTaskLog[]
+  projectMembers: ProjectMemberWithTaskLog[]
   refetchTaskData: () => void
 }
 
@@ -40,23 +43,30 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
       container: true,
       formVersion: true,
       roles: true,
-      taskLogs: {
+      assignedTo: {
         include: {
-          // Include the username for the ProjectMembers assigned to the Task
-          assignedTo: { include: { users: { select: { id: true, username: true } } } },
+          taskLogAssignedTo: {
+            where: {
+              taskId: taskId, // Filter task logs by the current taskId
+            },
+          },
+          users: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
         },
       },
     },
   }) as [ExtendedTask, any]
 
-  // Filter data
-  const { individualTaskLogs, teamTaskLogs } = useTaskLogData(task)
+  const projectMembers = task.assignedTo
 
   // Set context value
   const contextValue = {
     task,
-    individualTaskLogs,
-    teamTaskLogs,
+    projectMembers,
     refetchTaskData,
   }
 

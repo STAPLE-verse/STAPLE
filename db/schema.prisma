@@ -85,6 +85,7 @@ model ProjectMember {
   roles              Role[]
   deleted            Boolean   @default(false)
   taskLogAssignedTo  TaskLog[] @relation("assignedTo")
+  taskAssignedTo     Task[]    @relation("assignedTo")
   taskLogCompletedBy TaskLog[] @relation("completedBy")
 }
 
@@ -179,6 +180,9 @@ model Task {
   status             Status        @default(NOT_COMPLETED)
   taskLogs           TaskLog[]
   roles              Role[]
+  // who or which team should be assigned the task
+  assignedToId       Int
+  assignedTo         ProjectMember @relation("assignedTo", fields: [assignedToId], references: [id])
 }
 
 model TaskLog {
