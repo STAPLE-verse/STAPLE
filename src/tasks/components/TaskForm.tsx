@@ -71,7 +71,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   const roleMerged = roles.map((role) => {
     return {
       pm: role["user"]["username"], // Accessing the nested username
-      role: role.name,
+      label: role.name,
       id: role.id,
     }
   })
@@ -91,14 +91,14 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   ]
 
   const roleOptions = roleMerged.map((item) => ({
-    role: item.role,
+    label: item.label,
     id: item.id,
   }))
 
   const projectMemberOptions = projectMembers.map((projectMember) => {
     return {
       // will be only one user in this function
-      role: projectMember["users"][0].username,
+      label: projectMember["users"][0].username,
       id: projectMember["id"],
     }
   })
@@ -116,11 +116,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     },
   })
 
-  console.log(teams)
-
   const teamOptions = teams.map((team) => {
     return {
-      role: team["name"],
+      label: team["name"],
       id: team["id"],
     }
   })
