@@ -81,11 +81,11 @@ model ProjectMember {
   project            Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   name               String?
   users              User[]
-  tasks              Task[]
+  createdTasks       Task[]    @relation("CreatedTasks")
+  assignedTasks      Task[]    @relation("AssignedTasks")
   roles              Role[]
   deleted            Boolean   @default(false)
   taskLogAssignedTo  TaskLog[] @relation("assignedTo")
-  taskAssignedTo     Task[]    @relation("assignedTo")
   taskLogCompletedBy TaskLog[] @relation("completedBy")
 }
 
@@ -156,10 +156,10 @@ enum Status {
 }
 
 model Task {
-  id                 Int           @id @default(autoincrement())
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  createdBy          ProjectMember @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  id                 Int             @id @default(autoincrement())
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  createdBy          ProjectMember   @relation("CreatedTasks", fields: [createdById], references: [id], onDelete: Cascade)
   createdById        Int
   // task metadata
   deadline           DateTime?
@@ -169,20 +169,19 @@ model Task {
   // kanban coding
   containerTaskOrder Int //tells you what order the tasks are in for that container
   containerId        Int //tells you which container it is in
-  container          KanbanBoard   @relation(fields: [containerId], references: [id])
+  container          KanbanBoard     @relation(fields: [containerId], references: [id])
   // task relations
   projectId          Int
-  project            Project       @relation(fields: [projectId], references: [id])
+  project            Project         @relation(fields: [projectId], references: [id])
   elementId          Int?
-  element            Element?      @relation(fields: [elementId], references: [id])
+  element            Element?        @relation(fields: [elementId], references: [id])
   formVersionId      Int?
-  formVersion        FormVersion?  @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
-  status             Status        @default(NOT_COMPLETED)
+  formVersion        FormVersion?    @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
+  status             Status          @default(NOT_COMPLETED)
   taskLogs           TaskLog[]
   roles              Role[]
   // who or which team should be assigned the task
-  assignedToId       Int
-  assignedTo         ProjectMember @relation("assignedTo", fields: [assignedToId], references: [id])
+  assignedMembers    ProjectMember[] @relation("AssignedTasks")
 }
 
 model TaskLog {

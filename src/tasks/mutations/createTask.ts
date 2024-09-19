@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { CompletedAs } from "db"
+import db from "db"
 import { CreateTaskSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
 
@@ -55,6 +55,9 @@ export default resolver.pipe(
               connect: { id: elementId },
             }
           : undefined,
+        assignedMembers: {
+          connect: projectMembersId ? projectMembersId.map((id) => ({ id })) : [],
+        },
       },
       include: {
         createdBy: {
@@ -66,14 +69,16 @@ export default resolver.pipe(
     })
 
     // connect to selected roles
-    let task1 = await db.task.update({
-      where: { id: task.id },
-      data: {
-        roles: {
-          connect: rolesId?.map((c) => ({ id: c })) || [],
+    if (rolesId && rolesId.length > 0) {
+      await db.task.update({
+        where: { id: task.id },
+        data: {
+          roles: {
+            connect: rolesId.map((c) => ({ id: c })),
+          },
         },
-      },
-    })
+      })
+    }
 
     // create initial statusLogs
     if (projectMembersId != null && projectMembersId.length != 0) {
@@ -91,7 +96,7 @@ export default resolver.pipe(
         const completedAsData = userCount > 1 ? "TEAM" : "INDIVIDUAL"
 
         // Create the taskLog
-        const taskLog = await db.taskLog.create({
+        await db.taskLog.create({
           data: {
             task: { connect: { id: task.id } },
             assignedTo: { connect: { id: projectMemberId } },

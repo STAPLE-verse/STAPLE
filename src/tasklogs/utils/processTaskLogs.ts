@@ -8,7 +8,7 @@ export type ProcessedIndividualTaskLog = {
   projectMemberName: string
   lastUpdate: string
   status: string
-  taskLog: ExtendedTaskLog
+  taskLog: ExtendedTaskLog | undefined
 }
 
 export function processIndividualTaskLogs(
@@ -43,7 +43,7 @@ export type ProcessedTeamTaskLog = {
   projectMember: ProjectMemberWithTaskLog
   lastUpdate: string
   status: string
-  taskLog: ExtendedTaskLog
+  taskLog: ExtendedTaskLog | undefined
 }
 
 export function processTeamTaskLogs(
