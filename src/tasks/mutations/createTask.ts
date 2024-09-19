@@ -111,8 +111,9 @@ export default resolver.pipe(
         },
       })
       // Map to extract just the userIds
-      // Flatten the arrays of users into a single array and create a unique set
-      const uniqueUserIds = Array.from(new Set(users.flatMap((pm) => pm.users)))
+      const uniqueUserIds = Array.from(
+        new Set(users.flatMap((pm) => pm.users.map((user) => user.id))) // Map over the users array to extract ids
+      )
 
       // Get username corresponding to the PM who created the task
       // it will always be one user to create so link to that projectMember
