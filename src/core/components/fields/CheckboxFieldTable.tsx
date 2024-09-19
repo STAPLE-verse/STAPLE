@@ -48,7 +48,7 @@ const CheckboxFieldTable = <T,>({
       },
       {
         id: "name",
-        accessorKey: "label",
+        accessorKey: "role",
         header: "Name",
         cell: (info) => info.getValue(),
       },
