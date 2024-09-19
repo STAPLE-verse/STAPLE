@@ -82,7 +82,7 @@ export const finishedTasksTableColumns = [
       filterVariant: "text",
     },
   }),
-  columnHelperFinished.accessor("labels", {
+  columnHelperFinished.accessor("roles", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Roles",
     enableColumnFilter: true,

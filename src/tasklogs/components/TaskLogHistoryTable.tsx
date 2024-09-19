@@ -1,13 +1,13 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
-import { ProcessedAssignmentHistory } from "../utils/processTaskLogs"
+import { ProcessedTaskLogHistory } from "../utils/processTaskLogs"
 import { noSubmitButton } from "src/forms/utils/extendSchema"
 
 // Column helper
-const columnHelper = createColumnHelper<ProcessedAssignmentHistory>()
+const columnHelper = createColumnHelper<ProcessedTaskLogHistory>()
 
 // ColumnDefs
-export const assignmentHistoryTableColumns: ColumnDef<ProcessedAssignmentHistory>[] = [
+export const taskLogHistoryTableColumns: ColumnDef<ProcessedTaskLogHistory>[] = [
   columnHelper.accessor("projectMemberName", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Changed By",
@@ -42,7 +42,7 @@ export const assignmentHistoryTableColumns: ColumnDef<ProcessedAssignmentHistory
   }),
 ]
 
-export const assignmentHistoryTableColumnsNoMeta: ColumnDef<ProcessedAssignmentHistory>[] = [
+export const taskLogHistoryTableColumnsNoMeta: ColumnDef<ProcessedTaskLogHistory>[] = [
   columnHelper.accessor("projectMemberName", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Changed By",

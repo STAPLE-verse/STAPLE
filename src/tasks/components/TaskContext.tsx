@@ -15,7 +15,7 @@ export type ExtendedTask = Task & {
   element: Element | null
   formVersion: FormVersion | null
   roles: []
-  assignedTo: ProjectMemberWithTaskLog[]
+  assignedMembers: ProjectMemberWithTaskLog[]
 }
 
 interface TaskContextType {
@@ -43,7 +43,7 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
       container: true,
       formVersion: true,
       roles: true,
-      assignedTo: {
+      assignedMembers: {
         include: {
           taskLogAssignedTo: {
             where: {
@@ -61,12 +61,10 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
     },
   }) as [ExtendedTask, any]
 
-  const projectMembers = task.assignedTo
-
   // Set context value
   const contextValue = {
     task,
-    projectMembers,
+    projectMembers: task.assignedMembers,
     refetchTaskData,
   }
 

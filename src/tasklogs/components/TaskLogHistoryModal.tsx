@@ -1,10 +1,7 @@
 import { useState } from "react"
 import Modal from "src/core/components/Modal"
 import Table from "src/core/components/Table"
-import {
-  assignmentHistoryTableColumns,
-  assignmentHistoryTableColumnsNoMeta,
-} from "./TaskLogHistoryTable"
+import { taskLogHistoryTableColumns, taskLogHistoryTableColumnsNoMeta } from "./TaskLogHistoryTable"
 import { Prisma } from "@prisma/client"
 import { processTaskLogHistory } from "src/tasklogs/utils/processTaskLogs"
 import { ExtendedTaskLog } from "../hooks/useTaskLogData"
@@ -34,9 +31,7 @@ export const AssignmentHistoryModal = ({ taskLogs, schema, ui }: AssignmentHisto
           <h1 className="flex justify-center mb-2 text-3xl">Task History</h1>
           <div className="modal-action flex flex-col">
             <Table
-              columns={
-                schema && ui ? assignmentHistoryTableColumns : assignmentHistoryTableColumnsNoMeta
-              }
+              columns={schema && ui ? taskLogHistoryTableColumns : taskLogHistoryTableColumnsNoMeta}
               data={processedAssignmentHistory}
               classNames={{
                 thead: "text-base",
