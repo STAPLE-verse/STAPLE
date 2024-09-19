@@ -9,7 +9,6 @@ import { FormSpy } from "react-final-form"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import Modal from "src/core/components/Modal"
 import { useState } from "react"
-import getTeams from "src/teams/queries/getTeams"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
 import DateField from "src/core/components/fields/DateField"
@@ -105,7 +104,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // Teams
-  const teams = useQuery(getProjectMembers, {
+  const [{ projectMembers: teams }] = useQuery(getProjectMembers, {
     where: {
       project: { id: projectId! },
       users: {
@@ -116,6 +115,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       users: true,
     },
   })
+
+  console.log(teams)
 
   const teamOptions = teams.map((team) => {
     return {
