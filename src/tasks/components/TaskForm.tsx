@@ -103,6 +103,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     }
   })
 
+  console.log(projectMemberOptions)
+
   // Teams
   const [{ projectMembers: teams }] = useQuery(getProjectMembers, {
     where: {
