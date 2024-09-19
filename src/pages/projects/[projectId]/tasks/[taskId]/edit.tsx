@@ -15,6 +15,7 @@ import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMe
 import { MemberPrivileges } from "db"
 import { useTaskContext } from "src/tasks/components/TaskContext"
 import { responseSubmitted } from "src/tasklogs/utils/responseSubmitted"
+import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
 
 export const EditTask = () => {
   // Ensure that only PM can edit a task
@@ -23,18 +24,17 @@ export const EditTask = () => {
   const router = useRouter()
   const [updateTaskMutation] = useMutation(updateTask)
   // Get tasks and assignments
-  const { task, individualAssignments, teamAssignments, refetchTaskData } = useTaskContext()
+  const { task, projectMembers, refetchTaskData } = useTaskContext()
+  const { individualProjectMembers, teamProjectMembers } = useSeparateProjectMembers(projectMembers)
 
   // Calculate individual projectMember ids
-  const projectMembersId = individualAssignments
-    .map((assignment) => assignment.projectMemberId)
-    // assignment.projectMemberId is nullable thus we filter for initialValues
+  const projectMembersId = individualProjectMembers
+    .map((projectMember) => projectMember.id)
     .filter((id): id is number => id !== null)
 
   // Calculate team member projectMember ids
-  const teamsId = teamAssignments
-    .map((assignment) => assignment.teamId)
-    // assignment.projectMemberId is nullable thus we filter for initialValues
+  const teamsId = teamProjectMembers
+    .map((projectMember) => projectMember.id)
     .filter((id): id is number => id !== null)
 
   // Prepopulate form with previous responses
