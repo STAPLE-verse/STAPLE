@@ -1,28 +1,29 @@
 import { useMutation } from "@blitzjs/rpc"
-import { AssignmentStatus, CompletedAs } from "db"
+import { Status, CompletedAs } from "db"
 import { useState } from "react"
-import updateAssignment from "src/tasklogs/mutations/updateAssignment"
 import { useTaskContext } from "src/tasks/components/TaskContext"
+import updateTaskLog from "../mutations/updateTaskLog"
 
 const CompleteToggle = ({
-  currentAssignment,
   // refetch,
+  taskLog,
   completedRole,
-  completedBy,
+  completedById,
   completedAs,
 }) => {
-  const [updateAssignmentMutation] = useMutation(updateAssignment)
+  const [updateTaskLogMutation] = useMutation(updateTaskLog)
   // Get refecth from taskContext
   const { refetchTaskData } = useTaskContext()
+
   // Handle assignment status
   const handleAssignmentStatusToggle = async () => {
     const newChecked = isChecked ? false : true
-    const newStatus = newChecked ? AssignmentStatus.COMPLETED : AssignmentStatus.NOT_COMPLETED
+    const newStatus = newChecked ? Status.COMPLETED : Status.NOT_COMPLETED
 
-    await updateAssignmentMutation({
-      id: currentAssignment.id,
+    await updateTaskLogMutation({
+      id: taskLog.id,
       status: newStatus,
-      completedBy: completedBy,
+      completedById: completedById,
       completedAs: completedAs as CompletedAs,
     })
 
@@ -31,18 +32,14 @@ const CompleteToggle = ({
     await refetchTaskData()
   }
 
-  const latestStatusLog = currentAssignment.statusLogs.reduce((latest, current) => {
-    return latest.createdAt > current.createdAt ? latest : current
-  }, currentAssignment.statusLogs[0])
+  const [isChecked, setIsChecked] = useState(taskLog.status === Status.COMPLETED)
 
-  const [isChecked, setIsChecked] = useState(latestStatusLog.status === AssignmentStatus.COMPLETED)
-
-  // Get team name if assignment is completed as a team
-  const teamName = completedAs === CompletedAs.TEAM ? currentAssignment.team.name : undefined
+  // Get team name if taskLog is completed as a team
+  const teamName = completedAs === CompletedAs.TEAM && taskLog.name ? taskLog.name : undefined
 
   return (
     <div>
-      {currentAssignment ? (
+      {taskLog ? (
         <div className="flex items-center space-x-2">
           <span className="font-semibold">
             {completedAs == CompletedAs.INDIVIDUAL && "Individual: "}

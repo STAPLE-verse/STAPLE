@@ -1,5 +1,5 @@
 import { getProjectMemberName } from "src/services/getName"
-import { ExtendedTaskLog, ExtendedTaskLogStatusLog, ExtendedTeam } from "../hooks/useTaskLogData"
+import { ExtendedTaskLog } from "../hooks/useTaskLogData"
 import { Prisma } from "@prisma/client"
 
 export type ProcessedIndividualTaskLog = {
@@ -87,16 +87,16 @@ export type ProcessedTaskLogHistory = {
 }
 
 export function processTaskLogHistory(
-  assignmentStatusLog: ExtendedTaskLogStatusLog[],
+  taskLogs: ExtendedTaskLog[],
   schema?: any,
   ui?: any
 ): ProcessedTaskLogHistory[] {
-  return assignmentStatusLog.map((statusLog) => {
+  return taskLogs.map((taskLog) => {
     const processedData: ProcessedTaskLogHistory = {
-      projectMemberName: statusLog.projectMember
-        ? getProjectMemberName(statusLog.projectMember)
+      projectMemberName: taskLog.assignedTo
+        ? getProjectMemberName(taskLog.assignedTo)
         : "Task created",
-      lastUpdate: statusLog.createdAt.toLocaleDateString(undefined, {
+      lastUpdate: taskLog.createdAt.toLocaleDateString(undefined, {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -105,12 +105,12 @@ export function processTaskLogHistory(
         second: "2-digit",
         hour12: false,
       }),
-      status: statusLog.status === "COMPLETED" ? "Completed" : "Not Completed",
+      status: taskLog.status === "COMPLETED" ? "Completed" : "Not Completed",
     }
 
     if (schema && ui) {
       processedData.formData = {
-        metadata: statusLog.metadata,
+        metadata: taskLog.metadata,
         schema: schema,
         ui: ui,
       }

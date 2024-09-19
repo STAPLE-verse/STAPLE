@@ -17,7 +17,7 @@ export const TaskInformation = () => {
   const task = taskContext?.task
   const [pmData] = useQuery(getProjectMember, {
     where: { id: task?.createdById },
-    include: { user: { select: { username: true } } },
+    include: { users: { select: { username: true } } },
   })
 
   const pm = pmData as ProjectMemberWithUsername

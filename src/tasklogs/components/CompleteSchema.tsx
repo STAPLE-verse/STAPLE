@@ -1,20 +1,18 @@
 import { useMutation } from "@blitzjs/rpc"
-import { AssignmentStatus } from "db"
+import { Status } from "db"
 import { CompletedAs as CompletedAsType } from "db"
 import { useState } from "react"
-import updateAssignment from "src/tasklogs/mutations/updateAssignment"
 import Modal from "src/core/components/Modal"
 import JsonForm from "./JsonForm"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import { useTaskContext } from "src/tasks/components/TaskContext"
+import updateTaskLog from "../mutations/updateTaskLog"
 
-const CompleteSchema = ({ currentAssignment, completedBy, completedAs, schema, ui }) => {
+const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => {
   // Setup
-  const [updateAssignmentMutation] = useMutation(updateAssignment)
-  // Get the latest assignment status from the AssignmentStatusLog
-  const latestAssignmentStatus = currentAssignment.statusLogs[0]
+  const [updateTaskLogMutation] = useMutation(updateTaskLog)
   // State to store metadata
-  const [assignmentMetadata, setAssignmentMetadata] = useState(latestAssignmentStatus!.metadata)
+  const [assignmentMetadata, setAssignmentMetadata] = useState(taskLog.metadata)
   // Get refecth from taskContext
   const { refetchTaskData } = useTaskContext()
 
@@ -26,10 +24,10 @@ const CompleteSchema = ({ currentAssignment, completedBy, completedAs, schema, u
 
   // Handle assignment metadata
   const handleJsonFormSubmit = async (data) => {
-    await updateAssignmentMutation({
-      id: currentAssignment!.id,
-      status: AssignmentStatus.COMPLETED,
-      completedBy: completedBy,
+    await updateTaskLogMutation({
+      id: taskLog.id,
+      status: Status.COMPLETED,
+      completedById: completedById,
       completedAs: completedAs as CompletedAsType,
       metadata: data.formData,
     })
@@ -49,10 +47,10 @@ const CompleteSchema = ({ currentAssignment, completedBy, completedAs, schema, u
   // Handle reset metadata
   // Using hard reset to bypass validation
   const handleResetMetadata = async () => {
-    await updateAssignmentMutation({
-      id: currentAssignment!.id,
-      status: AssignmentStatus.NOT_COMPLETED,
-      completedBy: completedBy,
+    await updateTaskLogMutation({
+      id: taskLog.id,
+      status: Status.NOT_COMPLETED,
+      completedById: completedById,
       completedAs: completedAs as CompletedAsType,
       metadata: {}, // Reset metadata to an empty object
     })
@@ -68,21 +66,21 @@ const CompleteSchema = ({ currentAssignment, completedBy, completedAs, schema, u
 
   return (
     <div>
-      {currentAssignment ? (
+      {taskLog ? (
         <div>
           <button className="btn btn-primary" onClick={() => handleToggle()}>
             {/* TODO: rewrite */}
             {completedAs === CompletedAsType.TEAM &&
-              latestAssignmentStatus.status === AssignmentStatus.COMPLETED &&
-              `Update ${currentAssignment.team.name} Data`}
+              taskLog.status === Status.COMPLETED &&
+              `Update ${taskLog.name} Data`}
             {completedAs === CompletedAsType.TEAM &&
-              latestAssignmentStatus.status === AssignmentStatus.NOT_COMPLETED &&
-              `Provide ${currentAssignment.team.name} Data`}
+              taskLog.status === Status.NOT_COMPLETED &&
+              `Provide ${taskLog.name} Data`}
             {completedAs === CompletedAsType.INDIVIDUAL &&
-              latestAssignmentStatus.status === AssignmentStatus.COMPLETED &&
+              taskLog.status === Status.COMPLETED &&
               `Update Individual Data`}
             {completedAs === CompletedAsType.INDIVIDUAL &&
-              latestAssignmentStatus.status === AssignmentStatus.NOT_COMPLETED &&
+              taskLog.status === Status.NOT_COMPLETED &&
               `Provide Individual Data`}
           </button>
           <Modal open={openAssignmentModal} size="w-11/12 max-w-5xl">

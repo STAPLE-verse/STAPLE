@@ -1,8 +1,7 @@
-import { AssignmentStatus, CompletedAs, Prisma } from "@prisma/client"
+import { Status, CompletedAs, Prisma } from "@prisma/client"
 import { z } from "zod"
 
-export const UpdateAssignmentSchema = z.object({
-  // For the assignment
+export const CreateTaskLogSchema = z.object({
   id: z.number(),
   // For the new assignmentStatusLog
   metadata: z
@@ -24,7 +23,7 @@ export const UpdateAssignmentSchema = z.object({
       { message: "Invalid JSON format" }
     )
     .transform((data) => data as Prisma.NullableJsonNullValueInput),
-  status: z.nativeEnum(AssignmentStatus),
-  completedBy: z.number().nullable(),
+  status: z.nativeEnum(Status),
+  completedById: z.number(),
   completedAs: z.nativeEnum(CompletedAs).optional(),
 })

@@ -10,7 +10,14 @@ export const useCurrentProjectMember = (projectId) => {
   const [projectMember, { isLoading, isError }] = useQuery(
     getProjectMember,
     {
-      where: { projectId: projectId, userId: currentUser?.id },
+      where: {
+        projectId: projectId,
+        users: {
+          some: {
+            id: currentUser?.id,
+          },
+        },
+      },
     },
     {
       enabled: shouldFetch,

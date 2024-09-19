@@ -1,23 +1,23 @@
 import React, { createContext, ReactNode, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
-import useAssignmentData from "src/tasklogs/hooks/useAssignmentData"
+import useTaskLogData from "src/tasklogs/hooks/useTaskLogData"
 import { Task, KanbanBoard, Element, FormVersion } from "db"
-import { ExtendedAssignment } from "src/tasklogs/hooks/useAssignmentData"
+import { ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
 
 // Creating custom types
 export type ExtendedTask = Task & {
   container: KanbanBoard
   element: Element | null
   formVersion: FormVersion | null
-  assignees: ExtendedAssignment[]
+  taskLogs: ExtendedTaskLog[]
   roles: []
 }
 
 interface TaskContextType {
   task: ExtendedTask
-  individualAssignments: ExtendedAssignment[]
-  teamAssignments: ExtendedAssignment[]
+  individualTaskLogs: ExtendedTaskLog[]
+  teamTaskLogs: ExtendedTaskLog[]
   refetchTaskData: () => void
 }
 
@@ -39,35 +39,24 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
       element: true,
       container: true,
       formVersion: true,
-      assignees: {
+      roles: true,
+      taskLogs: {
         include: {
-          projectMember: { include: { user: { select: { username: true } } } },
-          team: {
-            include: {
-              projectMembers: {
-                include: {
-                  user: { select: { username: true } },
-                },
-              },
-            },
-          },
-          statusLogs: {
-            orderBy: { createdAt: "desc" },
-            include: { projectMember: { include: { user: { select: { username: true } } } } },
-          },
+          // Include the username for the ProjectMembers assigned to the Task
+          assignedTo: { include: { users: { select: { id: true, username: true } } } },
         },
       },
     },
   }) as [ExtendedTask, any]
 
   // Filter data
-  const { individualAssignments, teamAssignments } = useAssignmentData(task)
+  const { individualTaskLogs, teamTaskLogs } = useTaskLogData(task)
 
   // Set context value
   const contextValue = {
     task,
-    individualAssignments,
-    teamAssignments,
+    individualTaskLogs,
+    teamTaskLogs,
     refetchTaskData,
   }
 

@@ -6,26 +6,22 @@ import {
   assignmentHistoryTableColumnsNoMeta,
 } from "./TaskLogHistoryTable"
 import { Prisma } from "@prisma/client"
-import { processAssignmentHistory } from "src/tasklogs/utils/processAssignments"
-import { ExtendedAssignmentStatusLog } from "../hooks/useTaskLogData"
+import { processTaskLogHistory } from "src/tasklogs/utils/processTaskLogs"
+import { ExtendedTaskLog } from "../hooks/useTaskLogData"
 
 type AssignmentHistoryModalProps = {
-  assignmentStatusLog: ExtendedAssignmentStatusLog[]
+  taskLogs: ExtendedTaskLog[]
   schema?: Prisma.JsonValue
   ui?: Prisma.JsonValue
 }
-export const AssignmentHistoryModal = ({
-  assignmentStatusLog,
-  schema,
-  ui,
-}: AssignmentHistoryModalProps) => {
+export const AssignmentHistoryModal = ({ taskLogs, schema, ui }: AssignmentHistoryModalProps) => {
   const [openModal, setOpenModal] = useState(false)
 
   const handleToggle = () => {
     setOpenModal((prev) => !prev)
   }
 
-  const processedAssignmentHistory = processAssignmentHistory(assignmentStatusLog, schema, ui)
+  const processedAssignmentHistory = processTaskLogHistory(taskLogs, schema, ui)
 
   return (
     <>
