@@ -40,7 +40,7 @@ export function processIndividualTaskLogs(
 }
 
 export type ProcessedTeamTaskLog = {
-  team: ExtendedTeam
+  projectMember: ProjectMemberWithTaskLog
   lastUpdate: string
   status: string
   taskLog: ExtendedTaskLog
@@ -57,7 +57,7 @@ export function processTeamTaskLogs(
 
     const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
     return {
-      team: assignment.team,
+      projectMember,
       lastUpdate: latestLog
         ? latestLog.createdAt.toLocaleDateString(undefined, {
             year: "numeric",

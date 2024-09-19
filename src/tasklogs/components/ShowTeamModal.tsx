@@ -1,18 +1,15 @@
 import { useState } from "react"
 import Modal from "src/core/components/Modal"
-import { getProjectMemberName, getTeamName } from "src/services/getName"
 import { Tooltip } from "react-tooltip"
 import { TeamMembers, teamMembersTableColumns } from "src/teams/components/TeamMembersTable"
 import Table from "src/core/components/Table"
 
-export const ShowTeamModal = ({ team }) => {
+export const ShowTeamModal = ({ projectMember }) => {
   const [openModal, setOpenModal] = useState(false)
 
-  let projectMembers = team.projectMembers
-
-  const teamMembers = projectMembers.map((projectMember) => {
+  const teamMembers = projectMember.users.map((user) => {
     return {
-      username: getProjectMemberName(projectMember),
+      username: user.username,
     } as TeamMembers
   })
 
@@ -29,7 +26,7 @@ export const ShowTeamModal = ({ team }) => {
         data-tooltip-id="showTeamModalTooltip"
         onClick={() => handleToggle()}
       >
-        <span>{`${getTeamName(team)}`}</span>
+        <span>{`${projectMember.name}`}</span>
       </button>
       <Tooltip
         id="showTeamModalTooltip"

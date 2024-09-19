@@ -11,14 +11,3 @@ export function getProjectMemberName(projectMember) {
 
   return null
 }
-
-// This function receives a Team object
-export function getTeamName(team) {
-  if (team.id != null) {
-    if (team.hasOwnProperty("name")) {
-      return team.name
-    }
-  }
-
-  return null
-}

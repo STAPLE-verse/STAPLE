@@ -10,8 +10,8 @@ const columnHelper = createColumnHelper<ProcessedTeamTaskLog>()
 
 // ColumnDefs
 export const teamTaskLogTableColumns: ColumnDef<ProcessedTeamTaskLog>[] = [
-  columnHelper.accessor("team", {
-    cell: (info) => <div>{<ShowTeamModal team={info.getValue()}></ShowTeamModal>}</div>,
+  columnHelper.accessor("projectMember", {
+    cell: (info) => <div>{<ShowTeamModal projectMember={info.getValue()}></ShowTeamModal>}</div>,
     header: "Team Name",
   }),
   columnHelper.accessor("lastUpdate", {
@@ -38,8 +38,8 @@ export const teamTaskLogTableColumns: ColumnDef<ProcessedTeamTaskLog>[] = [
 ]
 
 export const teamTaskLogTableColumnsSchema: ColumnDef<ProcessedTeamTaskLog>[] = [
-  columnHelper.accessor("team", {
-    cell: (info) => <div>{<ShowTeamModal team={info.getValue()}></ShowTeamModal>}</div>,
+  columnHelper.accessor("projectMember", {
+    cell: (info) => <div>{<ShowTeamModal projectMember={info.getValue()}></ShowTeamModal>}</div>,
     header: "Team Name",
   }),
   columnHelper.accessor("lastUpdate", {
