@@ -35,18 +35,15 @@ const NewTeamPage = () => {
             submitText="Add Team"
             schema={TeamFormSchema}
             onSubmit={async (values) => {
-              // console.log("adding team", values)
-              let membersId: number[] = values.projectMembersId
+              const teamMemberUserIds: number[] = values.projectMembers
                 .filter((el) => el.checked)
-                .map((val) => val.id)
-              // console.log(membersId)
+                .map((val) => val.userId)
               try {
                 //get this after team is created
-
                 const team = await createTeamMutation({
                   name: values.name,
                   projectId: projectId!,
-                  projectMembers: membersId,
+                  userIds: teamMemberUserIds,
                 })
                 await toast.promise(Promise.resolve(team), {
                   loading: "Adding team...",

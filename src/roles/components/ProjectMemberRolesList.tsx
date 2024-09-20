@@ -9,14 +9,21 @@ export const ProjectMemberRolesList = ({ usersId, projectId, columns }) => {
     where: {
       projectMembers: {
         some: {
-          userId: { in: usersId },
+          users: {
+            some: {
+              id: { in: usersId },
+            },
+          },
           projectId: { in: projectId },
         },
       },
     },
     include: {
-      projectMembers: true,
-      user: true,
+      projectMembers: {
+        include: {
+          users: true, // Include users related to project members
+        },
+      },
     },
     orderBy: { id: "asc" },
   })

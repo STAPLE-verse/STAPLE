@@ -11,7 +11,7 @@ import { Field } from "react-final-form"
 interface TeamFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
   teamId?: number
-  currentProjectMembersId?: number[]
+  currentProjectMemberIds?: number[]
 }
 
 export const MemberPrivilegesOptions = [
@@ -20,23 +20,33 @@ export const MemberPrivilegesOptions = [
 ]
 
 export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>) {
-  const { projectId, teamId, currentProjectMembersId, ...formProps } = props
+  const { projectId, teamId, currentProjectMemberIds, ...formProps } = props
 
+  // Get individual projectMembers only for the project
   const [{ projectMembers }] = useQuery(getProjectMembers, {
-    where: { project: { id: projectId! } },
+    where: {
+      project: { id: projectId! },
+      users: {
+        every: { id: { not: undefined } }, // Ensures there's at least one user
+        none: { id: { gt: 1 } }, // Ensures there is only one user
+      },
+    },
     orderBy: { id: "asc" },
     include: {
-      user: true,
+      users: true,
     },
   })
 
+  // Set initialValues of currentTeam projectMembers
   const currentTeamOptions = projectMembers.map((projectMember) => {
     let checked = false
-    if (teamId != undefined && currentProjectMembersId != undefined) {
-      checked = currentProjectMembersId.find((id) => id == projectMember.id) != undefined
+    if (teamId != undefined && currentProjectMemberIds != undefined) {
+      checked = currentProjectMemberIds.find((id) => id == projectMember.id) != undefined
     }
     return {
-      userName: projectMember["user"].username,
+      // TODO: ts does not recognize prisma include class
+      userName: projectMember.users[0].username,
+      userId: projectMember.users[0].id,
       id: projectMember.id,
       checked: checked,
       teamId: teamId,
@@ -62,7 +72,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
       />
       <div className="flex justify-start mt-4">
         <Field
-          name="projectMembersId"
+          name="projectMembers"
           initialValue={currentTeamOptions}
           validate={(values) => {
             let t = areAssignmentValid(values)

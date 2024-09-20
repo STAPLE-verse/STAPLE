@@ -5,41 +5,38 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-
 import Layout from "src/core/layouts/Layout"
-import getTeam from "src/teams/queries/getTeam"
 import deleteTeam from "src/teams/mutations/deleteTeam"
-import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
-import { ProjectMemberRolesList } from "src/roles/components/ProjectMembersRolesList"
+import { ProjectMemberRolesList } from "src/roles/components/ProjectMemberRolesList"
 import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
 import { roleTableColumnsTeam } from "src/roles/components/RoleTable"
-import { MemberPrivileges } from "db"
-import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
+import { MemberPrivileges, Prisma } from "db"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
+import { ProjectMemberWithUsers } from "."
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 
 export const ShowTeamPage = () => {
   const router = useRouter()
   const [deleteTeamMutation] = useMutation(deleteTeam)
 
   const projectId = useParam("projectId", "number")
+  const { privilege } = useMemberPrivileges()
 
   const teamId = useParam("teamId", "number")
-  const [team] = useQuery(getTeam, { id: teamId })
 
-  const [{ projectMembers }] = useQuery(getProjectMembers, {
-    where: { teams: { some: { id: teamId } } },
-    orderBy: { id: "asc" },
+  const [teamProjectMember] = useQuery(getProjectMember, {
+    where: { id: teamId },
     include: {
-      user: true,
+      users: true,
     },
-  })
+  }) as [ProjectMemberWithUsers, any]
 
-  const { projectMember: currentProjectMember } = useCurrentProjectMember(projectId)
-
-  const membersId = projectMembers.map((projectMember) => projectMember.userId)
+  const users = teamProjectMember.users
+  const userIds = users.map((user) => user.id)
 
   const handleDelete = async () => {
     if (window.confirm("The team will be permanently deleted. Are you sure to continue?")) {
-      await deleteTeamMutation({ id: team.id })
+      await deleteTeamMutation({ id: teamProjectMember.id })
       await router.push(Routes.TeamsPage({ projectId: projectId! }))
     }
   }
@@ -48,28 +45,31 @@ export const ShowTeamPage = () => {
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
         <Head>
-          <title>Team {team.name}</title>
+          <title>Team {teamProjectMember.name}</title>
         </Head>
 
         <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
           <div className="card bg-base-300 w-full">
             <div className="card-body">
-              <div className="card-title">Team: {team.name} </div>
-              {projectMembers.map((projectMember) => {
+              <div className="card-title">Team: {teamProjectMember.name} </div>
+              {users.map((user) => {
                 return (
-                  <p key={projectMember.id}>
-                    {projectMember["user"].firstName || projectMember["user"].lastName
-                      ? `${projectMember["user"].firstName} ${projectMember["user"].lastName}`
-                      : projectMember["user"].username}
+                  <p key={user.id}>
+                    {user.firstName || user.lastName
+                      ? `${user.firstName} ${user.lastName}`
+                      : user.username}
                   </p>
                 )
               })}
             </div>
             <div className="card-actions justify-end m-2">
-              {currentProjectMember!.privilege === MemberPrivileges.PROJECT_MANAGER && (
+              {privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
-                  href={Routes.EditTeamPage({ projectId: projectId!, teamId: team.id })}
+                  href={Routes.EditTeamPage({
+                    projectId: projectId!,
+                    teamId: teamProjectMember.id,
+                  })}
                 >
                   Edit Team
                 </Link>
@@ -81,7 +81,7 @@ export const ShowTeamPage = () => {
             <div className="card-body">
               <div className="card-title">Team Member Contribution Roles</div>
               <ProjectMemberRolesList
-                usersId={membersId}
+                usersId={userIds}
                 projectId={projectId}
                 columns={roleTableColumnsTeam}
               />
@@ -94,7 +94,7 @@ export const ShowTeamPage = () => {
               <TeamTaskListDone teamId={teamId} />
             </div>
           </div>
-          {currentProjectMember!.privilege === MemberPrivileges.PROJECT_MANAGER && (
+          {privilege === MemberPrivileges.PROJECT_MANAGER && (
             <div className="flex justify-end mt-4">
               <button type="button" className="btn btn-secondary" onClick={handleDelete}>
                 Delete Team

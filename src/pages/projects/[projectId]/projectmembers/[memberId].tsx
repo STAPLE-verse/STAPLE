@@ -13,7 +13,7 @@ import { ProjectMember, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 
 import { ProjectMemberTaskListDone } from "src/tasks/components/ProjectMembersTaskListDone"
-import { ProjectMemberRolesList } from "src/roles/components/ProjectMembersRolesList"
+import { ProjectMemberRolesList } from "src/roles/components/ProjectMemberRolesList"
 import { roleTableColumnsSimple } from "src/roles/components/RoleTable"
 import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
