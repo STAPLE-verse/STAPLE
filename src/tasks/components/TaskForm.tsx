@@ -119,8 +119,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
   const teamOptions = teams.map((team) => {
     return {
-      label: team["name"],
-      id: team["id"],
+      label: team.name ? team.name : "",
+      id: team.id,
     }
   })
 
