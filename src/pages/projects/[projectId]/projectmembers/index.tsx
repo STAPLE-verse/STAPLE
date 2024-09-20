@@ -28,7 +28,13 @@ export const AllProjectMembersList = ({ privilege }: AllProjectMembersListProps)
   const currentUser = useCurrentUser()
 
   const [{ projectMembers }] = useQuery(getProjectMembers, {
-    where: { project: { id: projectId! } },
+    where: {
+      project: { id: projectId! },
+      users: {
+        every: { id: { not: undefined } }, // Ensures there's at least one user
+        none: { id: { gt: 1 } }, // Ensures there is only one user
+      },
+    },
     orderBy: { id: "asc" },
     include: {
       users: true,
@@ -60,8 +66,6 @@ export const AllProjectMembersList = ({ privilege }: AllProjectMembersListProps)
       return t
     }
   )
-
-  console.log(filteredProjectMembers)
 
   const tableColumns =
     privilege === MemberPrivileges.CONTRIBUTOR

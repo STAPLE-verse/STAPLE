@@ -12,38 +12,35 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { ProjectMember, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 
-import { ProjectMemberTaskListDone } from "src/tasks/components/ProjectMembersTaskListDone"
+import { ProjectMembersTaskListDone } from "src/tasks/components/ProjectMembersTaskListDone"
 import { ProjectMemberRolesList } from "src/roles/components/ProjectMemberRolesList"
 import { roleTableColumnsSimple } from "src/roles/components/RoleTable"
 import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
 import { MemberPrivileges } from "db"
 import toast from "react-hot-toast"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
+import getTeamNames from "src/teams/queries/getTeamNames"
 
 export const ProjectMemberPage = () => {
   const router = useRouter()
   const [deleteProjectMemberMutation] = useMutation(deleteProjectMember)
-
+  const { privilege } = useMemberPrivileges()
   const projectMemberId = useParam("projectMemberId", "number")
   const projectId = useParam("projectId", "number")
 
   const currentUser = useCurrentUser()
   const projectMember = useQuery(getProjectMember, {
     where: { id: projectMemberId },
-    include: { user: true },
+    include: { users: true },
   }) as unknown as ProjectMember & {
-    user: User
+    users: User
   }
 
-  const [currentProjectMember] = useQuery(getProjectMember, {
-    where: { projectId: projectId, id: projectMemberId },
-    include: { teams: true },
-  })
+  const user = projectMember.users[0]
 
-  const user = projectMember[0].user
-  const teams = currentProjectMember.hasOwnProperty("teams")
-    ? currentProjectMember["teams"].map((team) => team.name)
-    : ""
+  // Get team memberships for the user
+  const teamNames = useQuery(getTeamNames, { userId: user.id })
 
   const handleDelete = async () => {
     if (
@@ -93,16 +90,16 @@ export const ProjectMemberPage = () => {
             </p>
 
             <p>
-              <span className="font-semibold">Team Membership:</span> {teams.join(", ")}
+              <span className="font-semibold">Team Membership:</span> {teamNames.join(", ")}
             </p>
 
             <div className="card-actions justify-end">
-              {currentProjectMember.privilege === MemberPrivileges.PROJECT_MANAGER ? (
+              {privilege === MemberPrivileges.PROJECT_MANAGER ? (
                 <Link
                   className="btn btn-primary"
                   href={Routes.EditProjectMemberPage({
                     projectId: projectId!,
-                    projectMemberId: projectMemberId!,
+                    memberId: projectMemberId!,
                   })}
                 >
                   Edit Contributor
@@ -123,7 +120,7 @@ export const ProjectMemberPage = () => {
               columns={roleTableColumnsSimple}
             />
             <div className="card-actions justify-end">
-              {currentProjectMember.privilege === MemberPrivileges.PROJECT_MANAGER && (
+              {privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
                   href={Routes.CreditPage({ projectId: projectId! })}
@@ -138,13 +135,13 @@ export const ProjectMemberPage = () => {
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
             <div className="card-title">Contribution Tasks</div>
-            <ProjectMemberTaskListDone
-              projectMember={currentProjectMember}
+            <ProjectMembersTaskListDone
+              projectMember={projectMember}
               columns={finishedTasksTableColumns}
             />
 
             <div className="card-actions justify-end">
-              {currentProjectMember.privilege === MemberPrivileges.PROJECT_MANAGER && (
+              {privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
                   href={Routes.CreditPage({ projectId: projectId! })}
@@ -155,7 +152,7 @@ export const ProjectMemberPage = () => {
             </div>
           </div>
         </div>
-        {currentProjectMember.privilege === MemberPrivileges.PROJECT_MANAGER && (
+        {privilege === MemberPrivileges.PROJECT_MANAGER && (
           <div className="flex justify-end mt-4">
             <button
               className="btn btn-secondary"

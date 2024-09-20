@@ -6,19 +6,28 @@ import { processFinishedTasks } from "../utils/processTasks"
 export const ProjectMembersTaskListDone = ({ projectMember, columns }) => {
   const [{ tasks }] = useQuery(getTasks, {
     where: {
-      OR: [
-        { assignees: { some: { projectMemberId: projectMember.id } } },
-        { assignees: { some: { team: { projectMembers: { some: { id: projectMember.id } } } } } },
-      ],
+      assignedMembers: {
+        some: {
+          id: projectMember.id, // Filter tasks assigned to this specific project member
+        },
+      },
     },
     include: {
-      assignees: {
-        include: { statusLogs: { orderBy: { createdAt: "desc" } } },
+      taskLogs: {
+        where: {
+          assignedToId: projectMember.id, // Ensure task logs are only for this project member
+        },
+        orderBy: { createdAt: "desc" }, // Order by createdAt, descending
       },
-      project: true,
-      roles: true,
+      assignedMembers: {
+        include: {
+          users: true, // Include user details for each assigned project member
+        },
+      },
+      project: true, // Include project details if needed
+      roles: true, // Include roles details if needed
     },
-    orderBy: { id: "asc" },
+    orderBy: { id: "asc" }, // Order tasks by ID
   })
 
   const completedTasks = tasks

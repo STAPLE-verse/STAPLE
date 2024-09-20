@@ -2,11 +2,12 @@ import React, { useState } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { useQuery } from "@blitzjs/rpc"
-import { MemberPrivileges } from "@prisma/client"
+import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import AssignTeamMembers, { TeamOption } from "./AssignTeamMembers"
 import { Field } from "react-final-form"
+import { ProjectMemberWithUsers } from "src/pages/projects/[projectId]/teams"
 
 interface TeamFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
