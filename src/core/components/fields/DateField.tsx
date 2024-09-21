@@ -52,6 +52,7 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
             disabled={submitting}
             ref={ref}
             {...props}
+            data-testid="datefield-input"
           />
         </label>
 
