@@ -41,7 +41,7 @@ export const TaskView = ({
   const lastChangedByAssignment = getAssignmentCompletedBy(task, lastChangedLog)
 
   return (
-    <div className="my-1 ">
+    <div className="my-1 " data-testid="taskview-testid">
       <h5>Name: {task.name} </h5>
       Description: {task.description}
       <br />
@@ -52,7 +52,7 @@ export const TaskView = ({
       Created By: {user.firstName} {user.lastName}
       {printAssignees && (
         <div>
-          {task.assignees.length < 0 && <h6>The task does have assignees</h6>}
+          {task.assignees.length < 1 && <h6>This task does not have assignees</h6>}
           {task.assignees.length > 0 && <h6>Assigned to:</h6>}
           {task.assignees.map((assignment) => (
             <div key={assignment.id} className="">
