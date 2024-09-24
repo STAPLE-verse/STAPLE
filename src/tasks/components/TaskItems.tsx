@@ -1,11 +1,12 @@
-import { UniqueIdentifier } from "@dnd-kit/core"
 import { useSortable } from "@dnd-kit/sortable"
 import React from "react"
 import { CSS } from "@dnd-kit/utilities"
 import clsx from "clsx"
-import { Bars3Icon, EllipsisHorizontalCircleIcon } from "@heroicons/react/24/outline"
+import { MagnifyingGlassPlusIcon } from "@heroicons/react/24/outline"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faArrowsUpDownLeftRight } from "@fortawesome/free-solid-svg-icons"
 
 type ItemsType = {
   id: string
@@ -44,9 +45,13 @@ const TaskItems = ({ id, title, completed, projectId }: ItemsType) => {
             href={Routes.ShowTaskPage({ projectId: projectId, taskId: taskId })}
             // data-dnd-drag-handle="true"
           >
-            <EllipsisHorizontalCircleIcon className="w-5 h-5 mr-2 border-transparent rounded-2xl shadow-sm hover:opacity-50"></EllipsisHorizontalCircleIcon>
+            <MagnifyingGlassPlusIcon className="w-7 h-7 mr-2 stroke-2 stroke-neutral border-transparent rounded-2xl shadow-sm hover:opacity-50"></MagnifyingGlassPlusIcon>
           </Link>
-          <Bars3Icon className="w-5 h-5" {...listeners}></Bars3Icon>
+          <FontAwesomeIcon
+            icon={faArrowsUpDownLeftRight}
+            className="w-6 h-6 text-neutral border-transparent rounded-2xl hover:opacity-50"
+            {...listeners}
+          />
         </div>
       </div>
     </div>
