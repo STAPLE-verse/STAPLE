@@ -1,4 +1,5 @@
 import { Routes } from "@blitzjs/next"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { Prisma, Project, Notification, Task } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
@@ -39,13 +40,13 @@ export const tasksColumns: ColumnDef<TaskWithProjectName>[] = [
     header: "View",
     cell: (info) => (
       <Link
-        className="btn btn-sm btn-secondary"
+        className="btn btn-sm btn-ghost"
         href={Routes.ShowTaskPage({
           projectId: info.row.original.projectId,
           taskId: info.getValue(),
         })}
       >
-        View
+        <MagnifyingGlassIcon width={25} className="stroke-secondary" />
       </Link>
     ),
     enableColumnFilter: false,
@@ -72,12 +73,12 @@ export const projectColumns: ColumnDef<Project>[] = [
     enableSorting: false,
     cell: (info) => (
       <Link
-        className="btn btn-sm btn-secondary"
+        className="btn btn-sm btn-ghost"
         href={Routes.ShowProjectPage({
           projectId: info.getValue(),
         })}
       >
-        View
+        <MagnifyingGlassIcon width={25} className="stroke-secondary" />
       </Link>
     ),
   }),
@@ -168,13 +169,13 @@ export const projectTaskColumns: ColumnDef<Task>[] = [
     enableColumnFilter: false,
     cell: (info) => (
       <Link
-        className="btn btn-sm btn-secondary"
+        className="btn btn-sm btn-ghosy"
         href={Routes.ShowTaskPage({
           projectId: info.row.original.projectId,
           taskId: info.getValue(),
         })}
       >
-        View
+        <MagnifyingGlassIcon width={25} className="stroke-secondary" />
       </Link>
     ),
   }),
