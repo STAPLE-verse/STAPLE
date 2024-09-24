@@ -6,7 +6,7 @@ export type ProcessedAllTasks = {
   name: string
   projectName: string
   deadline: Date | null
-  completition: number
+  completion: number
   view: {
     taskId: number
     projectId: number
@@ -68,7 +68,7 @@ export function processAllTasks(latestTaskLog: TaskLogWithTask[]): ProcessedAllT
         name: "Unknown Task",
         projectName: "Unknown Project",
         deadline: null,
-        completition: 0,
+        completion: 0,
         view: {
           taskId: 0,
           projectId: 0,
@@ -87,7 +87,7 @@ export function processAllTasks(latestTaskLog: TaskLogWithTask[]): ProcessedAllT
       name: task?.name || "Unknown Task",
       projectName: task?.project!.name || "Unknown Project",
       deadline: task?.deadline || null,
-      completition: completionPercentage,
+      completion: completionPercentage,
       view: {
         taskId: task?.id || 0,
         projectId: task?.projectId || 0,

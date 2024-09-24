@@ -1,15 +1,15 @@
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useQuery } from "@blitzjs/rpc"
-import getTasks from "../queries/getTasks"
+import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
+import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
+import { processAllTasks } from "../utils/processTasks"
 import Table from "src/core/components/Table"
 import { allTasksTableColumns } from "./TaskTable"
-import { processAllTasks } from "../utils/processTasks"
-
-import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 
 export const AllTasksList = () => {
   const currentUser = useCurrentUser()
 
+  // get latest logs that this user is involved in
   const [taskLogs] = useQuery(getTaskLogs, {
     where: {
       assignedTo: {
@@ -17,15 +17,19 @@ export const AllTasksList = () => {
       },
     },
     include: {
-      task: true,
+      task: {
+        include: {
+          project: true, // Include the project linked to the task
+        },
+      },
     },
-
     orderBy: { id: "asc" },
   })
 
-  //console.log(taskLogs)
+  // process those logs to get the latest one for each task-projectmemberId
+  const latestLogs = getLatestTaskLogs(taskLogs)
 
-  const processedTasks = processAllTasks(taskLogs)
+  const processedTasks = processAllTasks(latestLogs)
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">

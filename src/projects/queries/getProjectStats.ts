@@ -2,7 +2,6 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { Status } from "db"
 import { z } from "zod"
-import { TaskLog } from "db"
 
 const GetProjectStatsSchema = z.object({
   // This accepts type of undefined, but is required at runtime
