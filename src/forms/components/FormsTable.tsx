@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import DateFormat from "src/core/components/DateFormat"
+import { MagnifyingGlassIcon, PencilSquareIcon } from "@heroicons/react/24/outline"
 
 export interface FormWithFormVersion extends Form {
   formVersion: FormVersion | null
@@ -47,7 +48,7 @@ export const formsTableColumns = [
             schema={info.row.original.formVersion?.schema!}
             uiSchema={extendedUiSchema}
             metadata={{}}
-            label="View"
+            label={<MagnifyingGlassIcon width={25} className="stroke-primary" />}
           />
         </>
       )
@@ -59,8 +60,8 @@ export const formsTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
-      <Link className="btn btn-primary" href={Routes.FormEditPage({ formsId: info.getValue() })}>
-        Edit
+      <Link className="btn btn-ghost" href={Routes.FormEditPage({ formsId: info.getValue() })}>
+        <PencilSquareIcon width={25} className="stroke-primary" />
       </Link>
     ),
     header: "Edit",
