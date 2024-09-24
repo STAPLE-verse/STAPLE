@@ -8,15 +8,16 @@ export default resolver.pipe(
   resolver.authorize(),
   async (
     {
+      name,
       projectId,
       containerId,
-      name,
+      formVersionId,
       description,
       elementId,
       deadline,
       createdById,
       projectMembersId,
-      formVersionId,
+      teamsId,
       rolesId,
     },
     ctx
@@ -28,6 +29,8 @@ export default resolver.pipe(
         containerId: containerId, // Filter tasks by containerId
       },
     })
+
+    const combinedIds = [...(projectMembersId ? projectMembersId : []), ...(teamsId ? teamsId : [])]
 
     // create the Task to have the taskId
     const task = await db.task.create({
@@ -56,7 +59,7 @@ export default resolver.pipe(
             }
           : undefined,
         assignedMembers: {
-          connect: projectMembersId ? projectMembersId.map((id) => ({ id })) : [],
+          connect: combinedIds ? combinedIds.map((id) => ({ id })) : [],
         },
       },
       include: {
@@ -81,19 +84,15 @@ export default resolver.pipe(
     }
 
     // create initial statusLogs
-    if (projectMembersId != null && projectMembersId.length != 0) {
-      projectMembersId.forEach(async (projectMemberId) => {
-        // figure out if team or individual based on number of userIds
+    if (combinedIds != null && combinedIds.length != 0) {
+      combinedIds.forEach(async (projectMemberId) => {
+        // figure out if team or individual based on name null
         const projectMember = await db.projectMember.findUnique({
           where: { id: projectMemberId },
-          select: { users: true },
         })
 
-        // Count the number of user IDs in the 'users' array
-        const userCount = projectMember?.users.length || 0
-
-        // Determine if it's a team or individual based on the user count
-        const completedAsData = userCount > 1 ? "TEAM" : "INDIVIDUAL"
+        // Determine if it's a team or individual based on the name null
+        const completedAsData = projectMember?.name === null ? "TEAM" : "INDIVIDUAL"
 
         // Create the taskLog
         await db.taskLog.create({
@@ -109,7 +108,7 @@ export default resolver.pipe(
       // Fetch User IDs corresponding to the ProjectMember IDs
       const users = await db.projectMember.findMany({
         where: {
-          id: { in: projectMembersId },
+          id: { in: combinedIds },
         },
         select: {
           users: true, // Only select the userId field

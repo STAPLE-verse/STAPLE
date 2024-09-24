@@ -63,6 +63,7 @@ const NewTaskPage = () => {
                   elementId: values.elementId,
                   createdById: currentProjectMember.id,
                   projectMembersId: values.projectMembersId,
+                  teamsId: values.teamsId,
                   formVersionId: values.formVersionId,
                   rolesId: values.rolesId,
                 })

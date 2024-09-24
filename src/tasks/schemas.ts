@@ -36,6 +36,7 @@ export const CreateTaskSchema = z.object({
   deadline: z.date().optional().nullable(),
   createdById: z.number(),
   projectMembersId: z.array(z.number()).optional().nullable(),
+  teamsId: z.array(z.number()).optional().nullable(),
   rolesId: z.array(z.number()).optional().nullable(),
 })
 
