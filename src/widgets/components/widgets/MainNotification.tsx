@@ -13,7 +13,7 @@ const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
     <Widget
       title="Notifications"
       display={<GetNotificationDisplay notifications={notifications} />}
-      link={<PrimaryLink route={Routes.NotificationsPage()} text="All Tasks" />}
+      link={<PrimaryLink route={Routes.NotificationsPage()} text="All Notifications" />}
       tooltipId="tool-notifications"
       tooltipContent="Three recent notifications for all projects"
       size={size}
