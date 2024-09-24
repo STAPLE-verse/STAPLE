@@ -31,9 +31,14 @@ export const AllProjectMembersList = ({ privilege }: AllProjectMembersListProps)
     where: {
       project: { id: projectId! },
       users: {
-        every: { id: { not: undefined } }, // Ensures there's at least one user
-        none: { id: { gt: 1 } }, // Ensures there is only one user
+        every: {
+          id: { not: undefined }, // Ensures there's at least one user
+        },
+        none: {
+          id: { gt: 1 }, // Ensures there is only one user
+        },
       },
+      name: { equals: null }, // Ensures the name in ProjectMember is null
     },
     orderBy: { id: "asc" },
     include: {
