@@ -5,10 +5,8 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-
 import Layout from "src/core/layouts/Layout"
 import toast from "react-hot-toast"
-import getTeam from "src/teams/queries/getTeam"
 import { TeamForm } from "src/teams/components/TeamForm"
 import { FORM_ERROR } from "final-form"
 import { TeamFormSchema } from "src/teams/schemas"
@@ -24,7 +22,10 @@ export const EditTeam = () => {
   const teamId = useParam("teamId", "number")
   const projectId = useParam("projectId", "number")
   const [teamProjectMember, { setQueryData }] = useQuery(getProjectMember, {
-    where: { id: teamId },
+    where: {
+      id: teamId,
+      projectId: projectId,
+    },
     include: {
       users: true,
     },
@@ -32,8 +33,6 @@ export const EditTeam = () => {
 
   const users = teamProjectMember.users
   const userIds = users.map((user) => user.id)
-  // const currentProjectMembersId =
-  //   team["projectMembers"] != undefined ? team["projectMembers"].map((el) => el["id"]) : []
 
   const initialValues = {
     name: teamProjectMember.name ? teamProjectMember.name : undefined,

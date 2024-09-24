@@ -21,9 +21,7 @@ export const ShowTeamPage = () => {
 
   const projectId = useParam("projectId", "number")
   const { privilege } = useMemberPrivileges()
-
   const teamId = useParam("teamId", "number")
-
   const [teamProjectMember] = useQuery(getProjectMember, {
     where: { id: teamId },
     include: {

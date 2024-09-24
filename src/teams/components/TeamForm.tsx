@@ -15,11 +15,6 @@ interface TeamFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   currentProjectMemberIds?: number[]
 }
 
-export const MemberPrivilegesOptions = [
-  { id: 0, value: MemberPrivileges.PROJECT_MANAGER, label: "Project Manager" },
-  { id: 1, value: MemberPrivileges.CONTRIBUTOR, label: "Contributor" },
-]
-
 export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>) {
   const { projectId, teamId, currentProjectMemberIds, ...formProps } = props
 
@@ -27,10 +22,15 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: {
       projectId: projectId,
-      name: { not: null }, // Ensures the name in ProjectMember is non-null
       users: {
-        some: { id: { not: undefined } }, // Ensures there's at least one user
+        every: {
+          id: { not: undefined }, // Ensures there's at least one user
+        },
+        none: {
+          id: { gt: 1 }, // Ensures there is only one user
+        },
       },
+      name: { equals: null }, // Ensures the name in ProjectMember is null
     },
     orderBy: { id: "asc" },
     include: {
@@ -38,16 +38,18 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
     },
   })
 
+  const individualMembers = projectMembers as ProjectMemberWithUsers[]
+
   // Set initialValues of currentTeam projectMembers
-  const currentTeamOptions = projectMembers.map((projectMember) => {
+  const currentTeamOptions = individualMembers.map((projectMember) => {
     let checked = false
     if (teamId != undefined && currentProjectMemberIds != undefined) {
       checked = currentProjectMemberIds.find((id) => id == projectMember.id) != undefined
     }
     return {
       // TODO: ts does not recognize prisma include class
-      userName: projectMember.users[0].username,
-      userId: projectMember.users[0].id,
+      userName: projectMember.users[0]!.username,
+      userId: projectMember.users[0]!.id,
       id: projectMember.id,
       checked: checked,
       teamId: teamId,

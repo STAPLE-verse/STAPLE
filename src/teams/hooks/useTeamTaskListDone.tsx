@@ -5,6 +5,11 @@ import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { createColumnHelper } from "@tanstack/react-table"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
+import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
+import { ProjectMemberWithUsers } from "src/pages/projects/[projectId]/teams"
+import { ProjectMember, Task, TaskLog } from "db"
 
 // Define the type for the table data
 type TaskTableData = {
@@ -12,74 +17,60 @@ type TaskTableData = {
   completedBy: string
   taskName: string
   roles: string | JSX.Element
-  completedAt: string
+  latestUpdate: string
   taskId: number
   projectId: number
+}
+
+type TaskLogWithTaskCompleted = TaskLog & {
+  task: Task
+  completedBy: ProjectMember
 }
 
 // Custom Hook
 export const useTeamTaskListDone = (teamId: number) => {
   // Get table data
-  // Fetch tasks
-  const [{ tasks }] = useQuery(getTasks, {
+
+  // tasks for this team set
+  const [taskLogs] = useQuery(getTaskLogs, {
     where: {
-      assignees: {
-        some: { teamId },
-      },
+      assignedToId: teamId,
     },
     include: {
-      assignees: {
-        include: {
-          statusLogs: { orderBy: { createdAt: "desc" } },
-        },
-      },
-      project: true,
-      roles: true,
+      task: true,
+      completedBy: true,
     },
-    orderBy: { id: "asc" },
   })
+  // only the latest task log
+  const allTaskLogs = getLatestTaskLogs(taskLogs) as TaskLogWithTaskCompleted[]
 
-  // Filter completed tasks
-  const completedTasks = tasks
-    .map((task) => ({
-      ...task,
-      assignees: task["assignees"].filter(
-        (assignee) =>
-          assignee.statusLogs.length > 0 && assignee.statusLogs[0].status === "COMPLETED"
-      ),
-    }))
-    .filter((task) => task.assignees.length > 0)
-
-  // Get usernames
-  // Collect all unique projectMember IDs from tasks
-  const projectMemberIds = completedTasks.flatMap((task) =>
-    task.assignees.flatMap((assignee) =>
-      // Only use the latest change in statusLogs
-      assignee.statusLogs[0].completedBy !== null ? assignee.statusLogs[0].completedBy : []
-    )
-  )
-
+  // get user information based on teamId
+  const [projectMember] = useQuery(getProjectMember, {
+    where: {
+      id: teamId,
+    },
+    include: {
+      users: true,
+    },
+  }) as ProjectMemberWithUsers[]
+  const userIds = projectMember?.users.map((user) => user.id) || []
   // Fetch all users based on projectMember IDs
   const [users] = useQuery(getUsers, {
     where: {
-      contributions: {
-        some: {
-          id: { in: projectMemberIds },
-        },
-      },
+      id: { in: userIds }, // Filter users based on extracted IDs
     },
     include: {
-      contributions: true,
+      roles: true,
     },
   })
 
   // Create a user map for quick lookup and format the name
   const userMap: { [key: number]: string } = {}
   users.forEach((user) => {
-    user["contributions"].forEach((contribution) => {
+    user["roles"].forEach((role) => {
       const { firstName, lastName, username } = user
       const fullName = firstName && lastName ? `${firstName} ${lastName}` : username
-      userMap[contribution.id] = fullName
+      userMap[role.id] = fullName
     })
   })
 
@@ -87,22 +78,25 @@ export const useTeamTaskListDone = (teamId: number) => {
   const locale = currentUser ? currentUser.language : "en-US"
 
   // Transform tasks into the desired table format
-  const tableData: TaskTableData[] = completedTasks.flatMap((task) =>
-    task.assignees.map((assignee) => {
+  const tableData: TaskTableData[] = allTaskLogs.flatMap((taskLog) => {
+    // Ensure taskLog.task is an array; if it's a single task, wrap it in an array
+    const tasks = Array.isArray(taskLog.task) ? taskLog.task : [taskLog.task]
+
+    return tasks.map((task) => {
       return {
         id: task.id,
         // Completed by username
-        completedBy: userMap[assignee.statusLogs[0].completedBy] || "Unknown",
+        completedBy: userMap[taskLog.completedBy?.id] || "Not Completed", // Use completedBy directly
         // Task name
         taskName: task.name,
         // Roles
         roles:
-          task["roles"].length > 0
-            ? task["roles"].map((role) => role.name).join(", ")
+          task.roles?.length > 0
+            ? task.roles.map((role) => role.name).join(", ")
             : "No roles assigned",
         // Date
-        completedAt:
-          assignee.statusLogs[0].createdAt?.toLocaleDateString(locale, {
+        latestUpdate:
+          taskLog.createdAt?.toLocaleDateString(locale, {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -116,7 +110,7 @@ export const useTeamTaskListDone = (teamId: number) => {
         projectId: task.projectId,
       }
     })
-  )
+  })
 
   // Define columns
   // TODO: Define proper type for completedTasks
@@ -125,7 +119,7 @@ export const useTeamTaskListDone = (teamId: number) => {
   const columns = [
     columnHelper.accessor("completedBy", {
       cell: (info) => <span>{info.getValue()}</span>,
-      header: "Completed by",
+      header: "Completed By",
       id: "completedBy",
     }),
     columnHelper.accessor("taskName", {
@@ -138,10 +132,10 @@ export const useTeamTaskListDone = (teamId: number) => {
       header: "Roles",
       id: "roles",
     }),
-    columnHelper.accessor("completedAt", {
+    columnHelper.accessor("latestUpdate", {
       cell: (info) => <span>{info.getValue()}</span>,
-      header: "Completed at",
-      id: "completedAt",
+      header: "Latest Update",
+      id: "lastestUpdate",
     }),
     columnHelper.accessor("taskId", {
       id: "view",
