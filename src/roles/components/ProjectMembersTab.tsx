@@ -141,11 +141,16 @@ const ProjectMembersTab = () => {
 
   const [{ projectMembers }, { refetch }] = useQuery(getProjectMembers, {
     where: {
-      project: { id: projectId! },
+      projectId: projectId,
       users: {
-        every: { id: { not: undefined } }, // Ensures there's at least one user
-        none: { id: { gt: 1 } }, // Ensures there is only one user
+        every: {
+          id: { not: undefined }, // Ensures there's at least one user
+        },
+        none: {
+          id: { gt: 1 }, // Ensures there is only one user
+        },
       },
+      name: { equals: null }, // Ensures the name in ProjectMember is null
     },
     include: { users: true, roles: true },
     orderBy: { id: "asc" },

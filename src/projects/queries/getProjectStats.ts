@@ -16,21 +16,29 @@ export default resolver.pipe(
       where: { projectId: id },
     })
 
+    // just single users
     const allProjectMember = await db.projectMember.count({
       where: {
         projectId: id,
         users: {
-          every: { id: { not: undefined } }, // Ensures there's at least one user
-          none: { id: { gt: 1 } }, // Ensures there is only one user
+          every: {
+            id: { not: undefined }, // Ensures there's at least one user
+          },
+          none: {
+            id: { gt: 1 }, // Ensures there is only one user
+          },
         },
+        name: { equals: null }, // Ensures the name in ProjectMember is null
       },
     })
 
+    // get teams with a name
     const allTeams = await db.projectMember.count({
       where: {
         projectId: id,
+        name: { not: null }, // Ensures the name in ProjectMember is non-null
         users: {
-          some: { id: { gt: 1 } }, // Ensures there are multiple users
+          some: { id: { not: undefined } }, // Ensures there's at least one user
         },
       },
     })

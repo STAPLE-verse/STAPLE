@@ -53,14 +53,19 @@ const Summary = () => {
     // include: { task: true },
   })
 
-  // Get projectMembers
+  // Get only contributors one person no team
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: {
-      project: { id: projectId! },
+      projectId: projectId,
       users: {
-        every: { id: { not: undefined } }, // Ensures there's at least one user
-        none: { id: { gt: 1 } }, // Ensures there is only one user
+        every: {
+          id: { not: undefined }, // Ensures there's at least one user
+        },
+        none: {
+          id: { gt: 1 }, // Ensures there is only one user
+        },
       },
+      name: { equals: null }, // Ensures the name in ProjectMember is null
     },
     include: {
       users: true,
@@ -80,11 +85,13 @@ const Summary = () => {
     }
   })
 
+  // get teams with a name because they can be one person teams
   const [teams] = useQuery(getProjectMembers, {
     where: {
-      project: { id: projectId! },
+      projectId: projectId,
+      name: { not: null }, // Ensures the name in ProjectMember is non-null
       users: {
-        some: { id: { gt: 1 } }, // Ensures there are multiple users
+        some: { id: { not: undefined } }, // Ensures there's at least one user
       },
     },
     include: {

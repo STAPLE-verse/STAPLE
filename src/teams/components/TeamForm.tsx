@@ -26,10 +26,10 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
   // Get individual projectMembers only for the project
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: {
-      project: { id: projectId! },
+      projectId: projectId,
+      name: { not: null }, // Ensures the name in ProjectMember is non-null
       users: {
-        every: { id: { not: undefined } }, // Ensures there's at least one user
-        none: { id: { gt: 1 } }, // Ensures there is only one user
+        some: { id: { not: undefined } }, // Ensures there's at least one user
       },
     },
     orderBy: { id: "asc" },

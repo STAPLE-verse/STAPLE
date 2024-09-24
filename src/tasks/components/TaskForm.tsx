@@ -40,11 +40,16 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   // Contributors - get only individuals
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: {
-      project: { id: projectId! },
+      projectId: projectId,
       users: {
-        every: { id: { not: undefined } }, // Ensures there's at least one user
-        none: { id: { gt: 1 } }, // Ensures there is only one user
+        every: {
+          id: { not: undefined }, // Ensures there's at least one user
+        },
+        none: {
+          id: { gt: 1 }, // Ensures there is only one user
+        },
       },
+      name: { equals: null }, // Ensures the name in ProjectMember is null
     },
     include: {
       users: true,
@@ -107,9 +112,10 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   // Teams
   const [{ projectMembers: teams }] = useQuery(getProjectMembers, {
     where: {
-      project: { id: projectId! },
+      projectId: projectId,
+      name: { not: null }, // Ensures the name in ProjectMember is non-null
       users: {
-        some: { id: { gt: 1 } }, // Ensures there are multiple users
+        some: { id: { not: undefined } }, // Ensures there's at least one user
       },
     },
     include: {
