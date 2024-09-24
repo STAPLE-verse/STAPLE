@@ -3,22 +3,18 @@ import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
 import deleteElement from "src/elements/mutations/deleteElement"
 import "react-circular-progressbar/dist/styles.css"
-import { Element, Task, TaskLog } from "@prisma/client"
+import { Element } from "@prisma/client"
 import { completedTaskPercentage } from "src/widgets/utils/completedTaskPercentage"
 import { completedFormPercentage } from "src/widgets/utils/completedFormPercentage"
 import { completedRolePercentage } from "src/widgets/utils/completedRolePercentage"
 import { CircularPercentageWidget } from "src/widgets/components/CircularPercentageWidget"
-import { getLatestTaskLogs } from "src/tasklogs/utils/getLatestTaskLogs"
-import { useEffect, useState } from "react"
 import getTasks from "src/tasks/queries/getTasks"
+import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
+import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 
 interface ElementSummaryProps {
   element: Element
   projectId: number | undefined
-}
-
-type TaskLogWithTask = TaskLog & {
-  task: Task
 }
 
 export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, projectId }) => {
@@ -26,7 +22,6 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
   const router = useRouter()
   const [deleteElementMutation] = useMutation(deleteElement)
 
-  // Get tasks
   // Get tasks
   const [{ tasks }] = useQuery(getTasks, {
     include: {
@@ -38,22 +33,17 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
     },
   })
 
-  // Get tasklogs
-  const [allTaskLogs, setAllTaskLogs] = useState<TaskLogWithTask[] | null>(null)
-  const [error, setError] = useState<Error | null>(null)
-
-  useEffect(() => {
-    const fetchTaskLogs = async () => {
-      try {
-        const logs = await getLatestTaskLogs()
-        setAllTaskLogs(logs)
-      } catch (err) {
-        setError(err)
-      }
-    }
-
-    fetchTaskLogs()
-  }, [])
+  // get taskLogs for those tasks
+  const [taskLogs] = useQuery(getTaskLogs, {
+    where: {
+      taskId: { in: tasks.map((task) => task.id) },
+    },
+    include: {
+      task: true,
+    },
+  })
+  // only the latest task log
+  const allTaskLogs = getLatestTaskLogs(taskLogs)
 
   // Calculate summary data
   const taskPercent = completedTaskPercentage(tasks)
@@ -72,26 +62,26 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
     <div className="flex flex-row justify-center mt-2">
       <div className="card bg-base-300 w-full">
         <div className="card-body">
-          <div className="card-title">PM Information</div>
+          <div className="card-title">Project Manager Information</div>
 
           <div className="stats bg-base-300 text-lg font-bold">
             {/* Task status */}
             <CircularPercentageWidget
               data={taskPercent}
               title={"Task Status"}
-              tooltip={"Percent of overall tasks completed by PM"}
+              tooltip={"Percent of overall tasks completed by project manager"}
             />
             {/* Form data */}
             <CircularPercentageWidget
               data={formPercent}
               title={"Form Data"}
-              tooltip={"Percent of required forms completed"}
+              tooltip={"Percent of required forms completed by contributors"}
             />
             {/* Roles */}
             <CircularPercentageWidget
               data={rolePercent}
               title={"Roles"}
-              tooltip={"Percent of tasks in this element with roles"}
+              tooltip={"Percent of tasks in this element with assigned roles"}
             />
 
             {/* Delete element button */}
