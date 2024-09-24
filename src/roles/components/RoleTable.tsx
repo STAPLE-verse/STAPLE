@@ -8,6 +8,7 @@ import updateRole from "../mutations/updateRole"
 import deleteRole from "../mutations/deleteRole"
 import { useMutation } from "@blitzjs/rpc"
 import { RoleFormSchema } from "../schemas"
+import { PencilSquareIcon, XCircleIcon } from "@heroicons/react/24/outline"
 
 export type RoleInformation = {
   name: string
@@ -72,19 +73,19 @@ const EditColumn = ({ row }) => {
       <button
         type="button"
         /* button for popups */
-        className="btn btn-primary"
+        className="btn btn-ghost"
         onClick={handleToggleEditRoleModal}
       >
-        Edit
+        <PencilSquareIcon width={25} className="stroke-primary" />
       </button>
-      <Modal open={openEditRoleModal} size="w-7/8 max-w-xl">
+      <Modal open={openEditRoleModal} size="w-1/3 max-w-1/2">
         <div className="">
           <h1 className="flex justify-center mb-2 text-3xl">Edit Role</h1>
           <div className="flex justify-start mt-4">
             <RoleForm
               schema={RoleFormSchema}
               submitText="Update Role"
-              className="flex flex-col"
+              className="flex flex-col w-full"
               onSubmit={handleEditRole}
               initialValues={initialValues}
               taxonomyList={taxonomyList}
@@ -143,10 +144,10 @@ const DeleteColumn = ({ row }) => {
       <button
         type="button"
         /* button for popups */
-        className="btn btn-primary"
+        className="btn btn-ghost"
         onClick={handleDeleteRole}
       >
-        Delete
+        <XCircleIcon width={25} className="stroke-primary" />
       </button>
     </div>
   )
