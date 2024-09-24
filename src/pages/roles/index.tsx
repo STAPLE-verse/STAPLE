@@ -93,14 +93,14 @@ const RoleBuilderPage = () => {
           </button>
         </div>
 
-        <Modal open={openNewRoleModal} size="w-7/8 max-w-xl">
+        <Modal open={openNewRoleModal} size="w-1/3 max-w-1/2">
           <div className="">
             <h1 className="flex justify-center mb-2 text-3xl">Create New Role</h1>
             <div className="flex justify-start mt-4">
               <RoleForm
                 schema={RoleFormSchema}
                 submitText="Create Role"
-                className="flex flex-col"
+                className="flex flex-col w-full"
                 onSubmit={handleCreateRole}
                 initialValues={initialValues}
                 taxonomyList={taxonomyList}

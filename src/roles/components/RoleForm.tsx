@@ -16,7 +16,7 @@ export function RoleForm<S extends z.ZodType<any, any>>(props: RoleFormProps<S>)
     <Form<S> {...formProps}>
       {/* Name */}
       <LabeledTextField
-        className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
+        className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300 w-full"
         name="name"
         label="Role Name: (Required)"
         placeholder="Add Role Name"
@@ -25,7 +25,7 @@ export function RoleForm<S extends z.ZodType<any, any>>(props: RoleFormProps<S>)
 
       {/* Description */}
       <LabeledTextAreaField
-        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg bg-base-300 border-2"
+        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg bg-base-300 border-2 w-full"
         name="description"
         label="Role Description:"
         placeholder="Add Role Description"
@@ -33,7 +33,7 @@ export function RoleForm<S extends z.ZodType<any, any>>(props: RoleFormProps<S>)
       />
       {/* taxonomy */}
       <LabeledTextField
-        className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
+        className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300 w-full"
         name="taxonomy"
         label="Taxonomy:"
         placeholder="Role Taxonomy"
