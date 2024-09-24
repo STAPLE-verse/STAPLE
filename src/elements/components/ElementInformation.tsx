@@ -41,7 +41,7 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({
 
   return (
     <div className="flex flex-row justify-center w-full">
-      <div className="card bg-base-300 w-1/2 mr-2">
+      <div className="card bg-base-300 w-1/3 mr-2">
         <div className="card-body">
           {/* Element name */}
           <div className="card-title" data-tooltip-id="element-tool">
@@ -64,7 +64,7 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({
               className="btn btn-primary"
               href={Routes.EditElementPage({ projectId: projectId!, elementId: element.id })}
             >
-              Update element
+              Update Element
             </Link>
 
             <button className="btn btn-secondary" onClick={openModal}>
@@ -82,7 +82,7 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({
       </div>
 
       {/* Tasks */}
-      <div className="card bg-base-300 w-1/2 h-auto">
+      <div className="card bg-base-300 w-2/3 h-auto">
         <div className="card-body">
           <div className="card-title" data-tooltip-id="tasks-tool">
             Tasks
@@ -93,23 +93,7 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({
             className="z-[1099] ourtooltips"
           />
           <div className="overflow-x-auto">
-            <Table
-              columns={elementTasksTableColumns}
-              data={processedTasks}
-              addPagination={true}
-              classNames={{
-                table: "table-auto w-full text-sm",
-                thead: "text-sm text-base-content",
-                tbody: "text-md",
-                tfoot: "text-sm",
-                th: "p-2",
-                td: "p-2",
-                paginationButton: "btn-xs",
-                pageInfo: "text-xs",
-                goToPageInput: "input-xs",
-                pageSizeSelect: "select-xs",
-              }}
-            />
+            <Table columns={elementTasksTableColumns} data={processedTasks} addPagination={true} />
           </div>
         </div>
       </div>
