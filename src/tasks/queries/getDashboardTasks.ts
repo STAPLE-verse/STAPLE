@@ -17,22 +17,31 @@ export default resolver.pipe(resolver.authorize(), async (_, ctx) => {
     },
   })
 
-  // Filter and categorize tasks
-  const taskLogs = allTaskLogs.filter((taskLog) => taskLog.status === Status.NOT_COMPLETED)
+  // Filter and categorize tasks, sort by date
+  const taskLogs = allTaskLogs
+    .filter((taskLog) => taskLog.status === Status.NOT_COMPLETED)
+    .sort((a, b) => {
+      // Sort by createdAt in descending order
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
 
-  const upcomingTasks = taskLogs.filter((taskLog) => {
-    if (taskLog.task.deadline) {
-      return moment(taskLog.task.deadline).isSameOrAfter(today, "day")
-    }
-    return false
-  })
+  const upcomingTasks = taskLogs
+    .filter((taskLog) => {
+      if (taskLog.task.deadline) {
+        return moment(taskLog.task.deadline).isSameOrAfter(today, "day")
+      }
+      return false
+    })
+    .slice(0, 3) // top three rows
 
-  const pastDueTasks = taskLogs.filter((taskLog) => {
-    if (taskLog.task.deadline) {
-      return moment(taskLog.task.deadline).isBefore(moment(), "minute")
-    }
-    return false
-  })
+  const pastDueTasks = taskLogs
+    .filter((taskLog) => {
+      if (taskLog.task.deadline) {
+        return moment(taskLog.task.deadline).isBefore(moment(), "minute")
+      }
+      return false
+    })
+    .slice(0, 3) // top three rows
 
   return {
     taskLogs,
