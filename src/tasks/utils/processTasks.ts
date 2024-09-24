@@ -1,7 +1,7 @@
-import { Status } from "db"
+import { Status, TaskLog } from "db"
 
 // Preprocessing tasks data for tables
-// All tasks table
+// All Tasks Table
 export type ProcessedAllTasks = {
   name: string
   projectName: string
@@ -13,34 +13,89 @@ export type ProcessedAllTasks = {
   }
 }
 
-export function processAllTasks(tasks): ProcessedAllTasks[] {
-  return tasks.map((task) => {
-    const assignments = task.assignees
+type Project = {
+  id: number
+  name: string // Add other relevant fields as necessary
+}
 
-    // Get the latest status log for each assignment and calculate the number of completed assignments
-    const completedAssignments = assignments.reduce((count, assignment) => {
-      const latestLog = getLatestTaskLog(assignment.statusLogs)
-      if (latestLog?.status === AssignmentStatus.COMPLETED) {
-        return count + 1
+type Task = {
+  id: number
+  createdAt: Date
+  updatedAt: Date
+  createdById: number
+  deadline: Date | null
+  name: string
+  description: string | null
+  tags: string | null
+  containerTaskOrder: number
+  projectId: number
+  project?: Project // Include project as an optional field
+  status: Status
+}
+
+type TaskLogWithTask = TaskLog & {
+  task: Task
+}
+
+export function processAllTasks(latestTaskLog: TaskLogWithTask[]): ProcessedAllTasks[] {
+  const taskSummary: Record<number, { total: number; completed: number }> = {}
+
+  // Initialize the summary for each taskLog
+  latestTaskLog.forEach((log) => {
+    const { taskId, status } = log
+
+    // Initialize the summary for this taskId if it doesn't exist
+    if (!taskSummary[taskId]) {
+      taskSummary[taskId] = { total: 0, completed: 0 }
+    }
+
+    // Increment the total count
+    taskSummary[taskId].total += 1
+
+    // Increment the completed count if the status is "COMPLETED"
+    if (status === "COMPLETED") {
+      taskSummary[taskId].completed += 1
+    }
+  })
+
+  // Generate the final result array
+  const processedTasks: ProcessedAllTasks[] = Object.keys(taskSummary).map((taskId) => {
+    const taskData = taskSummary[Number(taskId)]
+
+    // Ensure taskData is defined
+    if (!taskData) {
+      return {
+        name: "Unknown Task",
+        projectName: "Unknown Project",
+        deadline: null,
+        completition: 0,
+        view: {
+          taskId: 0,
+          projectId: 0,
+        },
       }
-      return count
-    }, 0)
+    }
 
-    // Calculate the percentage of completed assignments
-    const completionPercentage =
-      assignments.length > 0 ? Math.round((completedAssignments / assignments.length) * 100) : 0
+    const { total, completed } = taskData
+    const completionPercentage = total > 0 ? Math.round((completed / total) * 100) : 0
+
+    // Find the corresponding task log
+    const taskLog = latestTaskLog.find((log) => log.taskId === Number(taskId))
+    const task = taskLog?.task // Assuming task is part of the log
 
     return {
-      name: task.name,
-      projectName: task.project.name,
-      deadline: task.deadline,
+      name: task?.name || "Unknown Task",
+      projectName: task?.project!.name || "Unknown Project",
+      deadline: task?.deadline || null,
       completition: completionPercentage,
       view: {
-        taskId: task.id,
-        projectId: task.projectId,
+        taskId: task?.id || 0,
+        projectId: task?.projectId || 0,
       },
     }
   })
+
+  return processedTasks
 }
 
 // Finshed tasks table

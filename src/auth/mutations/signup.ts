@@ -39,9 +39,7 @@ export default resolver.pipe(resolver.zod(Signup), async ({ email, password, use
     data: widgets,
   })
 
-  // const temp = await ResendMsg(createSignUpMsg(email))
-  // console.log(temp)
-  // console.log(createSignUpMsg(email))
+  await ResendMsg(createSignUpMsg(email))
 
   return user
 })
