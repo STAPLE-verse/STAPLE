@@ -234,7 +234,7 @@ export const LabelView = ({
 
 export const ElementView = ({ element, task, printTask = false }) => {
   return (
-    <div>
+    <div data-testid="elementview-testid">
       <h5> Element Name: {element.name} </h5>
       Description: {element.description}
       {printTask && (
