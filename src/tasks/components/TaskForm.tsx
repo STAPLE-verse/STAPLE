@@ -15,7 +15,6 @@ import DateField from "src/core/components/fields/DateField"
 import getRoles from "src/roles/queries/getRoles"
 import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 import { z } from "zod"
-import db from "db"
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number

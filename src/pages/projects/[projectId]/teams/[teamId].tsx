@@ -60,7 +60,7 @@ export const ShowTeamPage = () => {
                 )
               })}
             </div>
-            <div className="card-actions justify-end m-2">
+            <div className="card-actions justify-end m-4">
               {privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
