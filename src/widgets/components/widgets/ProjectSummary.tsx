@@ -32,6 +32,7 @@ const ProjectSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size
         <PrimaryLink
           route={Routes.EditProjectPage({ projectId: project.id })}
           text="Edit Project"
+          classNames="btn-primary"
         />
       }
       tooltipId="tool-project"

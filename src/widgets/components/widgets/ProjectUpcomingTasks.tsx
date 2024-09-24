@@ -58,6 +58,7 @@ const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = (
             projectId: projectId!,
           })}
           text="All Tasks"
+          classNames="btn-primary"
         />
       }
       tooltipId="tool-upcoming"

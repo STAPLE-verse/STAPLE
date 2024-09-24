@@ -57,6 +57,7 @@ const ProjectOverdueTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
             projectId: projectId!,
           })}
           text="All Tasks"
+          classNames="btn-primary"
         />
       }
       tooltipId="tool-overdue"

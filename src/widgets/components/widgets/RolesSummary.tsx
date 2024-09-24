@@ -6,6 +6,7 @@ import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetRolesDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 
 const RolesSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
@@ -23,7 +24,13 @@ const RolesSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
     <Widget
       title="Roles"
       display={<GetRolesDisplay rolePercent={rolePercent} />}
-      link={<PrimaryLink route={Routes.CreditPage({ projectId: projectId! })} text="View" />}
+      link={
+        <PrimaryLink
+          route={Routes.CreditPage({ projectId: projectId! })}
+          text={<MagnifyingGlassIcon width={25} className="stroke-primary" />}
+          classNames="btn-ghost"
+        />
+      }
       tooltipId="tool-roles"
       tooltipContent="Percent of project members or tasks with roles"
       size={size}

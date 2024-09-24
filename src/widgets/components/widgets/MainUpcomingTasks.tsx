@@ -14,7 +14,7 @@ const MainUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ s
     <Widget
       title="Upcoming Tasks"
       display={<GetUpcomingTaskDisplay upcomingTasks={upcomingTasks} />}
-      link={<PrimaryLink route={Routes.AllTasksPage()} text="All Tasks" />}
+      link={<PrimaryLink route={Routes.AllTasksPage()} text="All Tasks" classNames="btn-primary" />}
       tooltipId="tool-upcoming"
       tooltipContent="Three upcoming tasks for all projects"
       size={size}

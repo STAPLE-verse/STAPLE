@@ -6,6 +6,7 @@ import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetTeamDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 
 const TeamNumber: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
@@ -18,7 +19,13 @@ const TeamNumber: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) 
     <Widget
       title="Teams"
       display={<GetTeamDisplay projectStats={projectStats} />}
-      link={<PrimaryLink route={Routes.TeamsPage({ projectId: projectId! })} text="View" />}
+      link={
+        <PrimaryLink
+          route={Routes.TeamsPage({ projectId: projectId! })}
+          text={<MagnifyingGlassIcon width={25} className="stroke-primary" />}
+          classNames="btn-ghost"
+        />
+      }
       tooltipId="tool-teams"
       tooltipContent="Total number of teams"
       size={size}

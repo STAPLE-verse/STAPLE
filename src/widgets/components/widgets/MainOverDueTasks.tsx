@@ -14,7 +14,7 @@ const MainOverdueTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
     <Widget
       title="Overdue Tasks"
       display={<GetOverdueTaskDisplay pastDueTasks={pastDueTasks} />}
-      link={<PrimaryLink route={Routes.AllTasksPage()} text="All Tasks" />}
+      link={<PrimaryLink route={Routes.AllTasksPage()} text="All Tasks" classNames="btn-primary" />}
       tooltipId="tool-overdue"
       tooltipContent="Three overdue tasks for all projects"
       size={size}
