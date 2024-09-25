@@ -10,6 +10,7 @@ import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import { Tooltip } from "react-tooltip"
 import getProjectMembers from "../queries/getProjectMembers"
+import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 
 interface ProjectMemberFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
@@ -33,9 +34,13 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
     },
   })
   // get all roles from all PMs
-  const projectManagers = projectMembers.filter(
-    (projectMember) => projectMember.privilege === "PROJECT_MANAGER"
-  )
+  const projectManagers = useQuery(getProjectManagers, {
+    where: {
+      projectId: projectId,
+      privilege: "PROJECT_MANAGER",
+    },
+  })
+
   const pmIds = projectManagers.map((pm) => pm.userId)
   const [{ roles }] = useQuery(getRoles, {
     where: {
