@@ -14,7 +14,7 @@ const ProjectSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size
 
   const [project] = useQuery(getProject, { id: projectId })
 
-  const projectManagers = useQuery(getProjectManagers, {
+  const [projectManagers] = useQuery(getProjectManagers, {
     projectId: projectId!,
     include: {
       user: true,

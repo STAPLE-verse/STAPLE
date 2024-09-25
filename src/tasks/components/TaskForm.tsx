@@ -57,9 +57,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // get all roles from all PMs
-  const projectManagers = useQuery(getProjectManagers, {
+  const [projectManagers] = useQuery(getProjectManagers, {
     projectId: projectId!,
-  }) as ProjectPrivilege[]
+  })
 
   const [{ roles }] = useQuery(getRoles, {
     where: {

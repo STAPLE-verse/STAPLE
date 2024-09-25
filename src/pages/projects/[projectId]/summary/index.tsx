@@ -100,9 +100,9 @@ const Summary = () => {
     },
   })
 
-  const projectManagers = useQuery(getProjectManagers, {
+  const [projectManagers] = useQuery(getProjectManagers, {
     projectId: projectId!,
-  }) as ProjectPrivilege[]
+  })
 
   const roles = useQuery(getRoles, {
     where: {
@@ -115,8 +115,6 @@ const Summary = () => {
     //do query based on organization
     setSelectedOrganization(e)
   }
-
-  //console.log(teams)
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">

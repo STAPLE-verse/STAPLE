@@ -29,24 +29,24 @@ export const ProjectMemberRolesList = ({ usersId, projectId, columns }) => {
   })
 
   const projectMemberRoleInformation = roles.map((role) => {
-    const name = role.name
-    const description = role.description || ""
-    const taxonomy = role.taxonomy || ""
+    const { name, description, taxonomy, projectMembers } = role
 
-    const user = role["user"]
-    const userName = user["firstName"]
-      ? `${user["firstName"]} ${user["lastName"]}`
-      : user["username"]
+    // TODO: this does not exists but I am not sure what we want to achieve here
+    // I assume we want to list all the team members and their roles?
+    const userNames = projectMembers
+      .flatMap((projectMember) => projectMember.users)
+      .map((user) => (user.firstName ? `${user.firstName} ${user.lastName}` : user.username))
+      .join(", ")
 
     let t: RoleInformation = {
       name: name,
-      description: description,
+      description: description || "",
       id: role.id,
-      taxonomy: taxonomy,
+      taxonomy: taxonomy || "",
       userId: role.userId,
       onChangeCallback: undefined,
       taxonomyList: [],
-      userName: userName,
+      userName: userNames,
     }
     return t
   })

@@ -62,6 +62,7 @@ const RoleBuilderPage = () => {
         success: "Role created!",
         error: "Failed to create the role...",
       })
+      handleToggleNewRoleModal()
     } catch (error: any) {
       console.error(error)
       return {

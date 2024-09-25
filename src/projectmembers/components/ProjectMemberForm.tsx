@@ -26,17 +26,10 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
   const { projectId, isEdit = false, ...formProps } = props
 
   // need all roles from all PMs for this project
-  // ProjectMembers
-  const [{ projectMembers }] = useQuery(getProjectMembers, {
-    where: { project: { id: projectId! } },
-    include: {
-      users: true,
-    },
-  })
   // get all roles from all PMs
-  const projectManagers = useQuery(getProjectManagers, {
+  const [projectManagers] = useQuery(getProjectManagers, {
     projectId: projectId!,
-  }) as ProjectPrivilege[]
+  })
 
   const pmIds = projectManagers.map((pm) => pm.userId)
   const [{ roles }] = useQuery(getRoles, {
@@ -50,7 +43,7 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
       user: true,
     },
   })
-
+  console.log(roles)
   const roleMerged = roles.map((roles) => {
     return {
       pm: roles["user"]["username"],
@@ -64,7 +57,7 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
   }))
 
   const roleOptions = roleMerged.map((item) => ({
-    role: item.role,
+    label: item.role,
     id: item.id,
   }))
 
