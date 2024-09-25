@@ -60,7 +60,7 @@ export const TaskLogCompletion = () => {
           filteredTeamProjectMembers.length > 0 && (
             <div>
               {filteredTeamProjectMembers.map((teamProjectMember) => (
-                <div key={teamProjectMember.id} className="flex flex-col gap-2">
+                <div key={teamProjectMember.id} className="flex flex-row gap-2">
                   <CompleteToggle
                     taskLog={filterLatestTaskLog(teamProjectMember.taskLogAssignedTo)}
                     completedRole="Completed"

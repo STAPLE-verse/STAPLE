@@ -35,7 +35,10 @@ const CompleteToggle = ({
   const [isChecked, setIsChecked] = useState(taskLog.status === Status.COMPLETED)
 
   // Get team name if taskLog is completed as a team
-  const teamName = completedAs === CompletedAs.TEAM && taskLog.name ? taskLog.name : undefined
+  const teamName =
+    completedAs === CompletedAs.TEAM && taskLog.assignedTo.name
+      ? taskLog.assignedTo.name
+      : undefined
 
   return (
     <div>
