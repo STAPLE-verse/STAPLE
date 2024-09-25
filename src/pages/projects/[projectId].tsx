@@ -10,14 +10,15 @@ import createAnnouncement from "src/notifications/mutations/createAnnouncement"
 import { MemberPrivileges } from "db"
 import { AnnouncementForm } from "src/projects/components/AnnouncementForm"
 import { FormAnnouncementSchema } from "src/projects/schemas"
-import { useCurrentProjectPrivilege } from "src/projectmembers/hooks/useCurrentProjectPrivilege"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 
 interface ShowProjectContentProps {
   projectId: number
 }
 
 const ShowProjectContent = ({ projectId }: ShowProjectContentProps) => {
-  const { projectPrivilege } = useCurrentProjectPrivilege(projectId)
+  const { privilege: projectPrivilege } = useMemberPrivileges()
+  // const { projectPrivilege } = useCurrentProjectPrivilege(projectId)
   const [openModal, setOpenModal] = useState(false)
 
   const handleToggle = () => {
@@ -40,7 +41,7 @@ const ShowProjectContent = ({ projectId }: ShowProjectContentProps) => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      {projectPrivilege!.privilege == MemberPrivileges.PROJECT_MANAGER && (
+      {projectPrivilege == MemberPrivileges.PROJECT_MANAGER && (
         <>
           <button type="button" className="btn btn-primary mb-4" onClick={handleToggle}>
             Create Announcement
