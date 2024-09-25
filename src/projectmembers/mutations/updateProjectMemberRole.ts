@@ -6,7 +6,7 @@ async function updateProjectMember(id, rolesId, disconnect) {
   let r
   await db.$transaction(async (prisma) => {
     if (disconnect) {
-      const c = await db.projectmember.update({
+      const c = await db.projectMember.update({
         where: { id: id },
         data: {
           roles: {

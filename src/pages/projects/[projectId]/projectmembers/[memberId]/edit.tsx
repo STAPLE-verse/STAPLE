@@ -6,7 +6,7 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import toast from "react-hot-toast"
 import Layout from "src/core/layouts/Layout"
-import { UpdateProjectMemberFormSchema } from "src/projectMember/schemas"
+import { UpdateProjectMemberFormSchema } from "src/projectMembers/schemas"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import updateProjectMember from "src/projectmembers/mutations/updateProjectMember"
 import { ProjectMemberForm } from "src/projectmembers/components/ProjectMemberForm"
@@ -35,7 +35,7 @@ export const EditProjectMember = () => {
           id: true,
         },
       },
-      user: {
+      users: {
         select: {
           firstName: true,
           lastName: true,

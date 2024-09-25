@@ -6,12 +6,12 @@ export default resolver.pipe(
   resolver.zod(DeleteProjectMemberSchema),
   resolver.authorize(),
   async ({ id }) => {
-    const projectMemberToDelete = await db.projectmember.findUnique({ where: { id } })
+    const projectMemberToDelete = await db.projectMember.findUnique({ where: { id } })
     if (!projectMemberToDelete) {
       throw new Error("Contributor not found")
     }
 
-    const projectManagerCount = await db.projectmember.count({
+    const projectManagerCount = await db.projectMember.count({
       where: {
         projectId: projectMemberToDelete.projectId,
         privilege: "PROJECT_MANAGER",

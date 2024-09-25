@@ -1,4 +1,4 @@
-import { AssignmentStatus, CompletedAs } from "db"
+import { Status, CompletedAs } from "db"
 import DateFormat from "src/core/components/DateFormat"
 
 export const TaskView = ({
@@ -68,10 +68,8 @@ export const TaskView = ({
         </div>
       )}
       {/* TODO refactor this */}
-      {lastChangedLog.status == AssignmentStatus.NOT_COMPLETED && (
-        <h6>The task is not completed</h6>
-      )}
-      {lastChangedLog.status == AssignmentStatus.COMPLETED && (
+      {lastChangedLog.status == Status.NOT_COMPLETED && <h6>The task is not completed</h6>}
+      {lastChangedLog.status == Status.COMPLETED && (
         <div>
           <div>
             {lastChangedLog.completedAs == CompletedAs.INDIVIDUAL && (
@@ -163,7 +161,7 @@ export const ProjectMembersView = ({
     <div>
       <br />
       <h6>
-        name: {projectMember.user.firstName} {projectMember.user.lastName}
+        name: {projectMember.users.firstName} {projectMember.users.lastName}
       </h6>
       Added to Project: <DateFormat date={projectMember.createdAt}></DateFormat>
       <br />

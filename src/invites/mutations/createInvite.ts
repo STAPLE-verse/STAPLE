@@ -20,7 +20,9 @@ export default resolver.pipe(
     const findprojectmember = await db.projectMember.findFirst({
       where: {
         projectId: input.projectId,
-        user: { email: input.email },
+        users: {
+          some: { email: input.email }, // Use `some` to query an array field
+        },
       },
     })
 

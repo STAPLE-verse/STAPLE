@@ -12,8 +12,8 @@ import toast from "react-hot-toast"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
-import { CreateProjectMemberFormSchema } from "src/projectMember/schemas"
 import { createNewInvitation } from "integrations/emails"
+import { CreateProjectMemberFormSchema } from "src/projectmembers/schemas"
 
 function NewProjectMember() {
   const [createInviteMutation] = useMutation(createInvite)

@@ -4,7 +4,7 @@ import { UpdateProjectMemberSchema } from "../schemas"
 
 async function connectRoles(projectMemberId, rolesId) {
   await db.$transaction(async (prisma) => {
-    await db.projectmember.update({
+    await db.projectMember.update({
       where: { id: projectMemberId },
       data: {
         roles: {
@@ -13,7 +13,7 @@ async function connectRoles(projectMemberId, rolesId) {
       },
     })
 
-    await db.projectmember.update({
+    await db.projectMember.update({
       where: { id: projectMemberId },
       data: {
         roles: {
@@ -29,7 +29,7 @@ export default resolver.pipe(
   resolver.authorize(),
   async ({ id, rolesId = [], ...data }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const projectMember = await db.projectmember.update({ where: { id }, data })
+    const projectMember = await db.projectMember.update({ where: { id }, data })
 
     await connectRoles(id, rolesId)
 
