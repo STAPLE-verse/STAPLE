@@ -29,7 +29,7 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: { project: { id: projectId! } },
     include: {
-      user: true,
+      users: true,
     },
   })
   // get all roles from all PMs
