@@ -7,7 +7,7 @@ import { ProjectMember } from "@prisma/client"
 import DateFormat from "src/core/components/DateFormat"
 
 interface ProjectMemberWithUsername extends ProjectMember {
-  user: {
+  users: {
     username: string
   }
 }
@@ -22,12 +22,14 @@ export const TaskInformation = () => {
 
   const pm = pmData as ProjectMemberWithUsername
 
+  console.log(pm)
+
   if (!taskContext || !task) {
     return <div>Loading...</div>
   }
 
   return (
-    <div className="card bg-base-300 mx-2 w-1/2">
+    <div className="card bg-base-300 mx-2 w-1/3">
       <div className="card-body">
         <div className="card-title" data-tooltip-id="tool-task">
           Task Information
@@ -48,11 +50,12 @@ export const TaskInformation = () => {
         </p>
 
         <p>
-          <span className="font-semibold">Description:</span> {task.description}
+          <span className="font-semibold">Description:</span>{" "}
+          {task.description ? task.description : "No Description"}
         </p>
 
         <p>
-          <span className="font-semibold">Column:</span> {task["column"]?.name}
+          <span className="font-semibold">Column:</span> {task["container"]?.name}
         </p>
 
         <p>
@@ -61,7 +64,7 @@ export const TaskInformation = () => {
         </p>
 
         <p>
-          <span className="font-semibold">Created by:</span> {pm?.user?.username}
+          <span className="font-semibold">Created by:</span> {pm.users[0].username}
         </p>
 
         <p className="italic">

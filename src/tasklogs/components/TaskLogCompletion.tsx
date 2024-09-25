@@ -25,7 +25,7 @@ export const TaskLogCompletion = () => {
   )
 
   return (
-    <div className="card bg-base-300 mx-2 w-1/2">
+    <div className="card bg-base-300 mx-2 w-2/3">
       <div className="card-body">
         <div className="card-title" data-tooltip-id="tool-complete">
           Complete Task
