@@ -1,6 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
-import { Prisma, Project, Notification, Task } from "@prisma/client"
+import { Prisma, Project, Notification, Task, TaskLog } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import DateFormat from "src/core/components/DateFormat"
@@ -157,15 +157,18 @@ export const projectManagersColumns: ColumnDef<ProjectMemberWithUser>[] = [
 ]
 
 //past due project Tasks
-const projectTaskColumnHelper = createColumnHelper<Task>()
-export const projectTaskColumns: ColumnDef<Task>[] = [
-  projectTaskColumnHelper.accessor("name", {
+type TaskLogWithTask = TaskLog & {
+  task: Task
+}
+const projectTaskColumnHelper = createColumnHelper<TaskLogWithTask>()
+export const projectTaskColumns: ColumnDef<TaskLogWithTask>[] = [
+  projectTaskColumnHelper.accessor("task.name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
     enableSorting: false,
     enableColumnFilter: false,
   }),
-  projectTaskColumnHelper.accessor("deadline", {
+  projectTaskColumnHelper.accessor("task.deadline", {
     cell: (info) => (
       <span>
         {" "}
@@ -180,16 +183,16 @@ export const projectTaskColumns: ColumnDef<Task>[] = [
     enableSorting: false,
     enableColumnFilter: false,
   }),
-  projectTaskColumnHelper.accessor("id", {
+  projectTaskColumnHelper.accessor("taskId", {
     id: "view",
     header: "View",
     enableSorting: false,
     enableColumnFilter: false,
     cell: (info) => (
       <Link
-        className="btn btn-sm btn-ghosy"
+        className="btn btn-sm btn-ghost"
         href={Routes.ShowTaskPage({
-          projectId: info.row.original.projectId,
+          projectId: info.row.original.task.projectId,
           taskId: info.getValue(),
         })}
       >
