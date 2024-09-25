@@ -22,7 +22,7 @@ export const TaskInformation = () => {
 
   const pm = pmData as ProjectMemberWithUsername
 
-  console.log(pm)
+  //console.log(pm)
 
   if (!taskContext || !task) {
     return <div>Loading...</div>

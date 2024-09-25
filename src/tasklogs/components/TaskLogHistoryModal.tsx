@@ -20,6 +20,8 @@ export const AssignmentHistoryModal = ({ taskLogs, schema, ui }: AssignmentHisto
 
   const processedAssignmentHistory = processTaskLogHistory(taskLogs, schema, ui)
 
+  //console.log(taskLogs)
+
   return (
     <>
       <div className="">

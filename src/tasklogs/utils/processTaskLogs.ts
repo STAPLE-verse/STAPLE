@@ -57,7 +57,7 @@ export function processTeamTaskLogs(
 
     const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
     return {
-      projectMember,
+      projectMember: getProjectMemberName(projectMember),
       lastUpdate: latestLog
         ? latestLog.createdAt.toLocaleDateString(undefined, {
             year: "numeric",
@@ -97,8 +97,8 @@ export function processTaskLogHistory(
 ): ProcessedTaskLogHistory[] {
   return taskLogs.map((taskLog) => {
     const processedData: ProcessedTaskLogHistory = {
-      projectMemberName: taskLog.assignedTo
-        ? getProjectMemberName(taskLog.assignedTo)
+      projectMemberName: taskLog.completedBy
+        ? getProjectMemberName(taskLog.completedBy)
         : "Task created",
       lastUpdate: taskLog.createdAt.toLocaleDateString(undefined, {
         year: "numeric",

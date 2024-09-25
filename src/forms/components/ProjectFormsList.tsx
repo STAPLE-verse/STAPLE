@@ -22,7 +22,7 @@ export const ProjectFormsList = () => {
     orderBy: { id: "asc" },
   })
 
-  console.log(tasks)
+  //console.log(tasks)
 
   return (
     <div>

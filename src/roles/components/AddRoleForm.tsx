@@ -27,7 +27,7 @@ export function AddRoleForm<S extends z.ZodType<any, any>>(props: AddRoleFormPro
     (projectMember) => projectMember.privilege === "PROJECT_MANAGER"
   )
   const pmIds = projectManagers.map((pm) => pm.userId)
-  console.log(pmIds)
+  //console.log(pmIds)
   const [{ roles }] = useQuery(getRoles, {
     where: {
       userId: {

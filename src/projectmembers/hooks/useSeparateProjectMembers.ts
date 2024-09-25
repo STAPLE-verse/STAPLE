@@ -8,9 +8,10 @@ export function useSeparateProjectMembers(projectMembers: ProjectMemberWithTaskL
     const individualProjectMembers: ProjectMemberWithTaskLog[] = []
     const teamProjectMembers: ProjectMemberWithTaskLog[] = []
 
-    // Iterate through the project members and separate them based on the number of users
+    // Iterate through the project members and separate them based on
+    // team name being null since teams can be one person
     projectMembers.forEach((member) => {
-      if (member.users.length === 1) {
+      if (member.name === null) {
         individualProjectMembers.push(member)
       } else {
         teamProjectMembers.push(member)

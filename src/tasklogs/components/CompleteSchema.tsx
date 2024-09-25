@@ -72,10 +72,10 @@ const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => 
             {/* TODO: rewrite */}
             {completedAs === CompletedAsType.TEAM &&
               taskLog.status === Status.COMPLETED &&
-              `Update ${taskLog.name} Data`}
+              `Update ${taskLog.assignedTo.name} Data`}
             {completedAs === CompletedAsType.TEAM &&
               taskLog.status === Status.NOT_COMPLETED &&
-              `Provide ${taskLog.name} Data`}
+              `Provide ${taskLog.assignedTo.name} Data`}
             {completedAs === CompletedAsType.INDIVIDUAL &&
               taskLog.status === Status.COMPLETED &&
               `Update Individual Data`}

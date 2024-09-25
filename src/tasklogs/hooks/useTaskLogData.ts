@@ -9,7 +9,7 @@ export type ExtendedProjectMember = ProjectMember & {
 }
 
 export type ExtendedTaskLog = TaskLog & {
-  assignedTo: ExtendedProjectMember
+  completedBy: ExtendedProjectMember
 }
 
 type useTaskLogDataType = {
@@ -23,16 +23,10 @@ export default function useTaskLogData(task: ExtendedTask): useTaskLogDataType {
   const taskLogs = task.taskLogs
 
   // Filter out individual assignments
-  const individualTaskLogs = taskLogs.filter(
-    (taskLog) =>
-      taskLog.assignedTo && taskLog.assignedTo.users && taskLog.assignedTo.users.length === 1
-  )
+  const individualTaskLogs = taskLogs.filter((taskLog) => taskLog.assignedTo.name === null)
 
   // Filter out team assignments
-  const teamTaskLogs = taskLogs.filter(
-    (taskLog) =>
-      taskLog.assignedTo && taskLog.assignedTo.users && taskLog.assignedTo.users.length > 1
-  )
+  const teamTaskLogs = taskLogs.filter((taskLog) => taskLog.assignedTo.name != null)
 
   return {
     individualTaskLogs,

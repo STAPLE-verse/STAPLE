@@ -92,7 +92,7 @@ export default resolver.pipe(
         })
 
         // Determine if it's a team or individual based on the name null
-        const completedAsData = projectMember?.name === null ? "TEAM" : "INDIVIDUAL"
+        const completedAsData = projectMember?.name === null ? "INDIVIDUAL" : "TEAM"
 
         // Create the taskLog
         await db.taskLog.create({

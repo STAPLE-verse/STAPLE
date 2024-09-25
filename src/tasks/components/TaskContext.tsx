@@ -1,8 +1,8 @@
 import React, { createContext, ReactNode, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
-import { Task, KanbanBoard, Element, FormVersion, ProjectMember, User } from "db"
-import { ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
+import { Task, KanbanBoard, Element, FormVersion, ProjectMember, User, TaskLog } from "db"
+import { ExtendedProjectMember, ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
 
 export type ProjectMemberWithTaskLog = ProjectMember & {
   taskLogAssignedTo: ExtendedTaskLog[]
@@ -10,12 +10,18 @@ export type ProjectMemberWithTaskLog = ProjectMember & {
 }
 
 // Creating custom types
+type TaskLogWithCompletedBy = TaskLog & {
+  completedBy: ExtendedProjectMember
+  assignedTo: ExtendedProjectMember
+}
+
 export type ExtendedTask = Task & {
   container: KanbanBoard
   element: Element | null
   formVersion: FormVersion | null
   roles: []
   assignedMembers: ProjectMemberWithTaskLog[]
+  taskLogs: TaskLogWithCompletedBy[]
 }
 
 interface TaskContextType {
@@ -48,6 +54,18 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
           taskLogAssignedTo: {
             where: {
               taskId: taskId, // Filter task logs by the current taskId
+            },
+            include: {
+              completedBy: {
+                include: {
+                  users: true,
+                },
+              },
+              assignedTo: {
+                include: {
+                  users: true,
+                },
+              },
             },
           },
           users: {
