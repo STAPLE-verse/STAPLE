@@ -10,6 +10,7 @@ import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { ProjectMemberWithUsers } from "src/pages/projects/[projectId]/teams"
 import { ProjectMember, Task, TaskLog } from "db"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 
 // Define the type for the table data
 type TaskTableData = {
@@ -144,13 +145,13 @@ export const useTeamTaskListDone = (teamId: number) => {
       enableSorting: false,
       cell: (info) => (
         <Link
-          className="btn btn-primary"
+          className="btn btn-ghost"
           href={Routes.ShowTaskPage({
             projectId: info.row.original.projectId,
             taskId: info.getValue(),
           })}
         >
-          View
+          <MagnifyingGlassIcon width={25} className="stroke-primary" />
         </Link>
       ),
     }),
