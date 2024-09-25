@@ -56,7 +56,7 @@ export function Form<S extends z.ZodType<any, any>>({
               )}
 
               {cancelText && (
-                <button className="btn btn-secondary mt-4" onClick={onCancel}>
+                <button className="btn btn-secondary mt-4" type="button" onClick={onCancel}>
                   {cancelText}
                 </button>
               )}

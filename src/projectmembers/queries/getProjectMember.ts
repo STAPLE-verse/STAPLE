@@ -8,6 +8,7 @@ interface GetProjectMemberInput
 export default resolver.pipe(
   resolver.authorize(),
   async ({ where, include }: GetProjectMemberInput) => {
+    // TODO: consider using findUnique because findFirst returns something even if where: {id: undefined}
     const projectMember = await db.projectMember.findFirst({ where, include })
 
     if (!projectMember) throw new NotFoundError()

@@ -21,6 +21,7 @@ export const UpdateProjectMemberSchema = z.object({
   projectId: z.number(),
   privilege: z.nativeEnum(MemberPrivileges),
   rolesId: z.array(z.number()).optional().nullable(),
+  userId: z.number(),
   // template: __fieldName__: z.__zodType__(),
 })
 

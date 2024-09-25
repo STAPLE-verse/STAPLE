@@ -9,7 +9,6 @@ import Layout from "src/core/layouts/Layout"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import deleteProjectMember from "src/projectmembers/mutations/deleteProjectMember"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { ProjectMember, User } from "@prisma/client"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 
 import { ProjectMembersTaskListDone } from "src/tasks/components/ProjectMembersTaskListDone"
@@ -27,7 +26,7 @@ export const ProjectMemberPage = () => {
   const router = useRouter()
   const [deleteProjectMemberMutation] = useMutation(deleteProjectMember)
   const { privilege } = useMemberPrivileges()
-  const projectMemberId = useParam("projectMemberId", "number")
+  const projectMemberId = useParam("memberId", "number")
   const projectId = useParam("projectId", "number")
 
   const currentUser = useCurrentUser()
@@ -44,7 +43,7 @@ export const ProjectMemberPage = () => {
 
   // Get team memberships for the user
   const [teamNames] = useQuery(getTeamNames, { userId: projectMemberUser.id })
-  console.log(teamNames)
+
   const handleDelete = async () => {
     if (
       window.confirm(
@@ -100,11 +99,11 @@ export const ProjectMemberPage = () => {
             <div className="card-actions justify-end">
               {privilege === MemberPrivileges.PROJECT_MANAGER ? (
                 <Link
-                  className="btn btn-primary"
                   href={Routes.EditProjectMemberPage({
                     projectId: projectId!,
                     memberId: projectMemberId!,
                   })}
+                  className="btn btn-primary"
                 >
                   Edit Contributor
                 </Link>

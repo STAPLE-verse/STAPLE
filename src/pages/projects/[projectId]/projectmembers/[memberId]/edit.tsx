@@ -24,10 +24,10 @@ export const EditProjectMember = () => {
   const [removeProjectManagerWidgetsMutation] = useMutation(removeProjectManagerWidgets)
   const router = useRouter()
 
-  const projectMemberId = useParam("projectMemberId", "number")
+  const projectMemberId = useParam("memberId", "number")
   const projectId = useParam("projectId", "number")
 
-  const [projectMember, { setQueryData }] = useQuery(getProjectMember, {
+  const [projectMember, { refetch }] = useQuery(getProjectMember, {
     where: { id: projectMemberId, project: { id: projectId! } },
     include: {
       roles: {
@@ -67,7 +67,7 @@ export const EditProjectMember = () => {
     await router.push(
       Routes.ShowProjectMemberPage({
         projectId: projectId!,
-        memberId: projectMemberId as number,
+        memberId: projectMemberId!,
       })
     )
   }
@@ -77,6 +77,7 @@ export const EditProjectMember = () => {
       const updated = await updateProjectMemberMutation({
         id: projectMember.id,
         projectId: projectId!,
+        userId: projectMemberUser.id,
         privilege: values.privilege,
         rolesId: values.rolesId,
       })
@@ -87,22 +88,25 @@ export const EditProjectMember = () => {
         error: "Failed to update the contributor information...",
       })
 
-      // Add or remove widgets based on privilege change
-      if (values.privilege === "PROJECT_MANAGER") {
-        // Add widgets for project manager
-        await addProjectManagerWidgetsMutation({
-          userId: projectMemberUser.id,
-          projectId: projectId!,
-        })
-      } else if (values.privilege === "CONTRIBUTOR") {
-        // Remove widgets exclusive to project manager
-        await removeProjectManagerWidgetsMutation({
-          userId: projectMemberUser.id,
-          projectId: projectId!,
-        })
-      }
+      await refetch()
 
-      await setQueryData(updated)
+      // Check if the privilege has changed
+      if (projectMemberPrivilege.privilege !== values.privilege) {
+        // Add or remove widgets based on privilege change
+        if (values.privilege === "PROJECT_MANAGER") {
+          // Add widgets for project manager
+          await addProjectManagerWidgetsMutation({
+            userId: projectMemberUser.id,
+            projectId: projectId!,
+          })
+        } else if (values.privilege === "CONTRIBUTOR") {
+          // Remove widgets exclusive to project manager
+          await removeProjectManagerWidgetsMutation({
+            userId: projectMemberUser.id,
+            projectId: projectId!,
+          })
+        }
+      }
 
       await router.push(
         Routes.ShowProjectMemberPage({
@@ -124,7 +128,7 @@ export const EditProjectMember = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <ProjectMemberForm
           submitText="Update Contributor"
-          projectId={projectId as number}
+          projectId={projectId!}
           isEdit={true}
           schema={UpdateProjectMemberFormSchema}
           initialValues={initialValues}

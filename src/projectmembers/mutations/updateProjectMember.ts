@@ -27,11 +27,24 @@ async function connectRoles(projectMemberId, rolesId) {
 export default resolver.pipe(
   resolver.zod(UpdateProjectMemberSchema),
   resolver.authorize(),
-  async ({ id, rolesId = [], ...data }) => {
+  async ({ id, rolesId = [], privilege, projectId, userId, ...data }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const projectMember = await db.projectMember.update({ where: { id }, data })
 
     await connectRoles(id, rolesId)
+
+    // Update the privilege in the ProjectPrivilege table
+    if (privilege) {
+      await db.projectPrivilege.updateMany({
+        where: {
+          userId: userId,
+          projectId: projectId,
+        },
+        data: {
+          privilege, // Update the privilege to the new value
+        },
+      })
+    }
 
     return projectMember
   }
