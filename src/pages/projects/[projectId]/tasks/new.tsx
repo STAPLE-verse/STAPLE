@@ -1,7 +1,7 @@
 import { Routes } from "@blitzjs/next"
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useMutation } from "@blitzjs/rpc"
 import { FormTaskSchema } from "src/tasks/schemas"
 import createTask from "src/tasks/mutations/createTask"
 import { TaskForm } from "src/tasks/components/TaskForm"
@@ -10,8 +10,7 @@ import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
 import Head from "next/head"
 import toast from "react-hot-toast"
-import getProjectMember from "src/projectmembers/queries/getProjectMember"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
 
 const NewTaskPage = () => {
   // Setup
@@ -19,17 +18,7 @@ const NewTaskPage = () => {
   const [createTaskMutation] = useMutation(createTask)
 
   const projectId = useParam("projectId", "number")
-  const currentUser = useCurrentUser()
-  const [currentProjectMember] = useQuery(getProjectMember, {
-    where: {
-      projectId: projectId,
-      users: {
-        some: {
-          id: currentUser!.id,
-        },
-      },
-    },
-  })
+  const { projectMember: currentProjectMember } = useCurrentProjectMember(projectId)
 
   const initialValues = {
     // Making sure that conributorsId always returns an empty array even if it is not touched
@@ -61,7 +50,7 @@ const NewTaskPage = () => {
                   projectId: projectId!,
                   deadline: values.deadline,
                   elementId: values.elementId,
-                  createdById: currentProjectMember.id,
+                  createdById: currentProjectMember!.id,
                   projectMembersId: values.projectMembersId,
                   teamsId: values.teamsId,
                   formVersionId: values.formVersionId,

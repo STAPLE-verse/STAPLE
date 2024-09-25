@@ -16,7 +16,11 @@ export const useCurrentProjectMember = (projectId) => {
           some: {
             id: currentUser?.id,
           },
+          every: {
+            id: currentUser?.id, // Only this user should be in the users array
+          },
         },
+        name: null, // Ensures only individual ProjectMember is fetched
       },
     },
     {

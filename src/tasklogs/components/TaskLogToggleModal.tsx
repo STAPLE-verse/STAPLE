@@ -1,26 +1,14 @@
 import Modal from "src/core/components/Modal"
 import CompleteToggle from "./CompleteToggle"
 import { useState } from "react"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useParam } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
-import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { CompletedAs } from "db"
+import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
 
 export const TaskLogToggleModal = ({ taskLog }) => {
   const [openModal, setOpenModal] = useState(false)
   const projectId = useParam("projectId", "number")
-  const currentUser = useCurrentUser()
-  const [currentProjectMember] = useQuery(getProjectMember, {
-    where: {
-      projectId: projectId,
-      users: {
-        some: {
-          id: currentUser!.id,
-        },
-      },
-    },
-  })
+  const { projectMember: currentProjectMember } = useCurrentProjectMember(projectId)
 
   // Handle events
   const handleToggle = () => {
@@ -41,7 +29,7 @@ export const TaskLogToggleModal = ({ taskLog }) => {
             <CompleteToggle
               taskLog={taskLog}
               completedRole="Completed"
-              completedById={currentProjectMember.id}
+              completedById={currentProjectMember!.id}
               completedAs={taskLog.name ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
             />
             <button type="button" className="btn btn-primary" onClick={handleToggleClose}>
