@@ -1,35 +1,23 @@
-import { paginate } from "blitz"
 import { resolver } from "@blitzjs/rpc"
-import db, { Prisma } from "db"
+import db, { Prisma, ProjectPrivilege } from "db"
 
-interface GetProjectPrivilegeInput
-  extends Pick<
-    Prisma.ProjectPrivilegeFindManyArgs,
-    "where" | "orderBy" | "skip" | "take" | "include"
-  > {}
+interface GetProjectManagersInput
+  extends Pick<Prisma.ProjectPrivilegeFindManyArgs, "orderBy" | "include"> {
+  projectId: number
+}
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, skip = 0, take = 100, include }: GetProjectPrivilegeInput) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const {
-      items: projectPrivilege,
-      hasMore,
-      nextPage,
-      count,
-    } = await paginate({
-      skip,
-      take,
-      count: () => db.projectPrivilege.count({ where }),
-      query: (paginateArgs) =>
-        db.projectPrivilege.findMany({ ...paginateArgs, where, orderBy, include }),
+  async ({ projectId, orderBy, include }: GetProjectManagersInput) => {
+    const projectManagers = await db.projectPrivilege.findMany({
+      where: {
+        projectId: projectId,
+        privilege: "PROJECT_MANAGER",
+      },
+      orderBy,
+      include,
     })
 
-    return {
-      projectPrivilege,
-      nextPage,
-      hasMore,
-      count,
-    }
+    return projectManagers
   }
 )

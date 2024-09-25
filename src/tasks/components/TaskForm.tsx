@@ -15,6 +15,7 @@ import DateField from "src/core/components/fields/DateField"
 import getRoles from "src/roles/queries/getRoles"
 import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 import { z } from "zod"
+import { ProjectPrivilege } from "db"
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -56,16 +57,13 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // get all roles from all PMs
-  const [{ projectPrivilege }] = useQuery(getProjectManagers, {
-    where: {
-      projectId: projectId,
-      privilege: "PROJECT_MANAGER",
-    },
-  })
+  const projectManagers = useQuery(getProjectManagers, {
+    projectId: projectId!,
+  }) as ProjectPrivilege[]
 
   const [{ roles }] = useQuery(getRoles, {
     where: {
-      userId: { in: projectPrivilege?.map((pm) => pm.userId) || [] },
+      userId: { in: projectManagers?.map((pm) => pm.userId) || [] },
     },
     include: {
       user: true,
@@ -263,7 +261,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       </div>
 
       {formResponseSupplied ? (
-        <TaskSchemaInput projectManagers={projectPrivilege} />
+        <TaskSchemaInput projectManagers={projectManagers} />
       ) : (
         <p className="mt-4 w-1/2 text-red-500">
           The task is already being completed by the contributors. Please, create a new task if you

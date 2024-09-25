@@ -15,7 +15,7 @@ import getRoles from "src/roles/queries/getRoles"
 import getElements from "src/elements/queries/getElements"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
-import { MemberPrivileges } from "db"
+import { MemberPrivileges, ProjectPrivilege } from "db"
 import DateFormat from "src/core/components/DateFormat"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
@@ -101,11 +101,8 @@ const Summary = () => {
   })
 
   const projectManagers = useQuery(getProjectManagers, {
-    where: {
-      projectId: projectId,
-      privilege: "PROJECT_MANAGER",
-    },
-  })
+    projectId: projectId!,
+  }) as ProjectPrivilege[]
 
   const roles = useQuery(getRoles, {
     where: {

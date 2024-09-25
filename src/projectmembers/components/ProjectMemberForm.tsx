@@ -3,7 +3,7 @@ import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
-import { MemberPrivileges } from "@prisma/client"
+import { MemberPrivileges, ProjectPrivilege } from "@prisma/client"
 import getRoles from "src/roles/queries/getRoles"
 import Modal from "src/core/components/Modal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
@@ -35,11 +35,8 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
   })
   // get all roles from all PMs
   const projectManagers = useQuery(getProjectManagers, {
-    where: {
-      projectId: projectId,
-      privilege: "PROJECT_MANAGER",
-    },
-  })
+    projectId: projectId!,
+  }) as ProjectPrivilege[]
 
   const pmIds = projectManagers.map((pm) => pm.userId)
   const [{ roles }] = useQuery(getRoles, {
