@@ -24,8 +24,6 @@ export const TaskLogCompletion = () => {
     projectMember.users.some((user) => user.id === currentUser?.id)
   )
 
-  console.log(filteredTeamProjectMembers)
-
   return (
     <div className="card bg-base-300 mx-2 w-2/3">
       <div className="card-body">
