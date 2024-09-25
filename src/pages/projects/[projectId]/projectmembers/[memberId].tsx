@@ -21,6 +21,7 @@ import { MemberPrivileges } from "db"
 import toast from "react-hot-toast"
 import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import getTeamNames from "src/teams/queries/getTeamNames"
+import getProjectPrivilege from "src/projectmembers/queries/getProjectPrivilege"
 
 export const ProjectMemberPage = () => {
   const router = useRouter()
@@ -30,18 +31,20 @@ export const ProjectMemberPage = () => {
   const projectId = useParam("projectId", "number")
 
   const currentUser = useCurrentUser()
-  const projectMember = useQuery(getProjectMember, {
+  const [projectMember] = useQuery(getProjectMember, {
     where: { id: projectMemberId },
     include: { users: true },
-  }) as unknown as ProjectMember & {
-    users: User
-  }
+  })
 
-  const user = projectMember.users[0]
+  const projectMemberUser = projectMember.users[0]
+
+  const [projectMemberPrivilege] = useQuery(getProjectPrivilege, {
+    where: { userId: projectMemberUser.id, projectId: projectId },
+  })
 
   // Get team memberships for the user
-  const teamNames = useQuery(getTeamNames, { userId: user.id })
-
+  const [teamNames] = useQuery(getTeamNames, { userId: projectMemberUser.id })
+  console.log(teamNames)
   const handleDelete = async () => {
     if (
       window.confirm(
@@ -51,7 +54,7 @@ export const ProjectMemberPage = () => {
       try {
         await deleteProjectMemberMutation({ id: projectMember[0].id })
         // Check if User removed themselves and return to main page
-        if (user.id === currentUser?.id) {
+        if (projectMemberUser.id === currentUser?.id) {
           await router.push(Routes.ProjectsPage())
         } else {
           await router.push(Routes.ProjectMembersPage({ projectId: projectId! }))
@@ -65,32 +68,33 @@ export const ProjectMemberPage = () => {
   return (
     <>
       <Head>
-        <title>{user.username} Contributions</title>
+        <title>{projectMemberUser.username} Contributions</title>
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <div className="card bg-base-300 w-full">
           <div className="card-body">
             <div className="card-title">
-              {user.firstName && user.lastName
-                ? `${user.firstName} ${user.lastName}`
-                : user.username}
+              {projectMemberUser.firstName && projectMemberUser.lastName
+                ? `${projectMemberUser.firstName} ${projectMemberUser.lastName}`
+                : projectMemberUser.username}
             </div>
-            {user.firstName && user.lastName ? (
+            {projectMemberUser.firstName && projectMemberUser.lastName ? (
               <p>
-                <span className="font-semibold">Username:</span> {user.username}
+                <span className="font-semibold">Username:</span> {projectMemberUser.username}
               </p>
             ) : null}
             <p>
-              <span className="font-semibold">Email:</span> {user.email}
+              <span className="font-semibold">Email:</span> {projectMemberUser.email}
             </p>
             <p>
               <span className="font-semibold">Privilege:</span>{" "}
-              {getPrivilegeText(projectMember[0].privilege)}
+              {getPrivilegeText(projectMemberPrivilege.privilege)}
             </p>
 
             <p>
-              <span className="font-semibold">Team Membership:</span> {teamNames.join(", ")}
+              <span className="font-semibold">Team Membership:</span>{" "}
+              {teamNames.length > 0 ? teamNames.join(", ") : "No team memberships"}
             </p>
 
             <div className="card-actions justify-end">
@@ -115,7 +119,7 @@ export const ProjectMemberPage = () => {
           <div className="card-body">
             <div className="card-title">Contribution Roles</div>
             <ProjectMemberRolesList
-              usersId={[user?.id]}
+              usersId={[projectMemberUser.id]}
               projectId={projectId}
               columns={roleTableColumnsSimple}
             />

@@ -6,7 +6,6 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import toast from "react-hot-toast"
 import Layout from "src/core/layouts/Layout"
-import { UpdateProjectMemberFormSchema } from "src/projectMembers/schemas"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import updateProjectMember from "src/projectmembers/mutations/updateProjectMember"
 import { ProjectMemberForm } from "src/projectmembers/components/ProjectMemberForm"
@@ -16,6 +15,8 @@ import { MemberPrivileges } from "@prisma/client"
 import { getProjectMemberName } from "src/services/getName"
 import addProjectManagerWidgets from "src/widgets/mutations/addProjectManagerWidgets"
 import removeProjectManagerWidgets from "src/widgets/mutations/removeProjectManagerWidgets"
+import getProjectPrivilege from "src/projectmembers/queries/getProjectPrivilege"
+import { UpdateProjectMemberFormSchema } from "src/projectmembers/schemas"
 
 export const EditProjectMember = () => {
   const [updateProjectMemberMutation] = useMutation(updateProjectMember)
@@ -37,6 +38,7 @@ export const EditProjectMember = () => {
       },
       users: {
         select: {
+          id: true,
           firstName: true,
           lastName: true,
           username: true,
@@ -45,12 +47,18 @@ export const EditProjectMember = () => {
     },
   })
 
+  const projectMemberUser = projectMember.users[0]
+
+  const [projectMemberPrivilege] = useQuery(getProjectPrivilege, {
+    where: { userId: projectMemberUser.id, projectId: projectId },
+  })
+
   const rolesId =
     projectMember["roles"] != undefined ? projectMember["roles"].map((role) => role.id) : []
 
   // Set initial values
   const initialValues = {
-    privilege: projectMember.privilege,
+    privilege: projectMemberPrivilege.privilege,
     rolesId: rolesId,
   }
 
@@ -59,7 +67,7 @@ export const EditProjectMember = () => {
     await router.push(
       Routes.ShowProjectMemberPage({
         projectId: projectId!,
-        projectMemberId: projectMemberId as number,
+        memberId: projectMemberId as number,
       })
     )
   }
@@ -83,13 +91,13 @@ export const EditProjectMember = () => {
       if (values.privilege === "PROJECT_MANAGER") {
         // Add widgets for project manager
         await addProjectManagerWidgetsMutation({
-          userId: projectMember.userId,
+          userId: projectMemberUser.id,
           projectId: projectId!,
         })
       } else if (values.privilege === "CONTRIBUTOR") {
         // Remove widgets exclusive to project manager
         await removeProjectManagerWidgetsMutation({
-          userId: projectMember.userId,
+          userId: projectMemberUser.id,
           projectId: projectId!,
         })
       }
@@ -99,7 +107,7 @@ export const EditProjectMember = () => {
       await router.push(
         Routes.ShowProjectMemberPage({
           projectId: projectId!,
-          projectMemberId: updated.id,
+          memberId: updated.id,
         })
       )
     } catch (error: any) {

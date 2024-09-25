@@ -116,7 +116,9 @@ export function processFinishedTasks(tasks): ProcessedFinishedTasks[] {
       roles && roles.length > 0 ? roles.map((role) => role.name).join(", ") : "No roles added"
 
     // TODO: Update this to make it safer
-    const completedOn = task.assignees[0].statusLogs[0].createdAt
+    const latestLog = task.taskLogs?.[0]
+
+    const completedOn = latestLog?.status === "COMPLETED" ? latestLog.createdAt : null
 
     return {
       name: task.name,

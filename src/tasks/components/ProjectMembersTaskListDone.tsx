@@ -30,15 +30,10 @@ export const ProjectMembersTaskListDone = ({ projectMember, columns }) => {
     orderBy: { id: "asc" }, // Order tasks by ID
   })
 
-  const completedTasks = tasks
-    .map((task) => ({
-      ...task,
-      assignees: task["assignees"].filter(
-        (assignee) =>
-          assignee.statusLogs.length > 0 && assignee.statusLogs[0].status === "COMPLETED"
-      ),
-    }))
-    .filter((task) => task.assignees.length > 0)
+  const completedTasks = tasks.filter((task) => {
+    const latestLog = task.taskLogs[0] // Since logs are ordered by createdAt desc, the first one is the latest
+    return latestLog && latestLog.status === "COMPLETED"
+  })
 
   const processedTasks = processFinishedTasks(completedTasks)
 
