@@ -6,22 +6,32 @@ import Link from "next/link"
 import DateFormat from "src/core/components/DateFormat"
 
 // Tasks table
-type TaskWithProjectName = Prisma.TaskGetPayload<{
-  include: { project: { select: { name: true } } }
+type TaskLogWithTaskAndProjectName = Prisma.TaskLogGetPayload<{
+  include: {
+    task: {
+      include: {
+        project: {
+          select: {
+            name: true
+          }
+        }
+      }
+    }
+  }
 }>
-const taskColumnHelper = createColumnHelper<TaskWithProjectName>()
-export const tasksColumns: ColumnDef<TaskWithProjectName>[] = [
-  taskColumnHelper.accessor("name", {
+const taskColumnHelper = createColumnHelper<TaskLogWithTaskAndProjectName>()
+export const tasksColumns: ColumnDef<TaskLogWithTaskAndProjectName>[] = [
+  taskColumnHelper.accessor("task.name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
     enableColumnFilter: false,
   }),
-  taskColumnHelper.accessor((row) => row.project.name, {
+  taskColumnHelper.accessor((row) => row.task.project.name, {
     cell: (info) => <span>{info.getValue()} </span>,
     header: "Project",
     enableColumnFilter: false,
   }),
-  taskColumnHelper.accessor("deadline", {
+  taskColumnHelper.accessor("task.deadline", {
     cell: (info) => (
       <span>
         {" "}
@@ -42,7 +52,7 @@ export const tasksColumns: ColumnDef<TaskWithProjectName>[] = [
       <Link
         className="btn btn-sm btn-ghost"
         href={Routes.ShowTaskPage({
-          projectId: info.row.original.projectId,
+          projectId: info.row.original.task.projectId,
           taskId: info.getValue(),
         })}
       >
@@ -103,7 +113,15 @@ export const notificationColumns: ColumnDef<Notification>[] = [
 
 // project Managers
 type ProjectMemberWithUser = Prisma.ProjectMemberGetPayload<{
-  include: { user: { select: { username: true; firstName: true; lastName: true } } }
+  include: {
+    users: {
+      select: {
+        username: true
+        firstName: true
+        lastName: true
+      }
+    }
+  }
 }>
 export const projectManagersColumns: ColumnDef<ProjectMemberWithUser>[] = [
   {

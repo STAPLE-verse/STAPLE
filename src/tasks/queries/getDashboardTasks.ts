@@ -13,7 +13,11 @@ export default resolver.pipe(resolver.authorize(), async (_, ctx) => {
       assignedToId: currentUser, // Filtering based on the current user's ID
     },
     include: {
-      task: true, // Ensure task is included
+      task: {
+        include: {
+          project: true, // Include the project through the task relation
+        },
+      },
     },
   })
 
