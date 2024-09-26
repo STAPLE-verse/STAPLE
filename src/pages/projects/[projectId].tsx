@@ -17,8 +17,7 @@ interface ShowProjectContentProps {
 }
 
 const ShowProjectContent = ({ projectId }: ShowProjectContentProps) => {
-  const { privilege: projectPrivilege } = useMemberPrivileges()
-  // const { projectPrivilege } = useCurrentProjectPrivilege(projectId)
+  const { privilege } = useMemberPrivileges()
   const [openModal, setOpenModal] = useState(false)
 
   const handleToggle = () => {
@@ -41,7 +40,7 @@ const ShowProjectContent = ({ projectId }: ShowProjectContentProps) => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      {projectPrivilege == MemberPrivileges.PROJECT_MANAGER && (
+      {privilege == MemberPrivileges.PROJECT_MANAGER && (
         <>
           <button type="button" className="btn btn-primary mb-4" onClick={handleToggle}>
             Create Announcement

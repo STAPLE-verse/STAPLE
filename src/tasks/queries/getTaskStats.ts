@@ -1,5 +1,5 @@
 import { resolver, useQuery } from "@blitzjs/rpc"
-import db, { Status, MemberPrivileges, TaskLog } from "db"
+import db, { Status, MemberPrivileges } from "db"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import { z } from "zod"
@@ -44,18 +44,27 @@ export default resolver.pipe(
       }
     } else if (privilege === MemberPrivileges.CONTRIBUTOR) {
       // If CONTRIBUTOR, return only tasks assigned to the projectMember
-      const [taskLogs] = useQuery(getTaskLogs, {
+      const taskLogs = await db.taskLog.findMany({
         where: {
           task: { projectId: projectId },
-          assignedTo: { users: { some: { id: userId } } },
+          assignedTo: {
+            users: {
+              some: { id: userId },
+            },
+          },
         },
-        include: { task: true },
+        include: {
+          task: true,
+        },
+        orderBy: {
+          createdAt: "desc", // Ensure latest logs are fetched
+        },
       })
 
-      // get only the latest log for each task / projectmember
+      // Get only the latest log for each task / projectmember
       const latestTaskLogs = await getLatestTaskLogs(taskLogs)
 
-      // get the completed logs
+      // Get the completed logs
       const projectTaskLogs = latestTaskLogs.filter((taskLog) => {
         return taskLog.status === Status.COMPLETED
       })

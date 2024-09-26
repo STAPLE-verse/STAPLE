@@ -33,8 +33,6 @@ function NewProjectMember() {
         rolesId: values.rolesId,
       })
 
-      //console.log(projectMember)
-
       if (projectMember.code == "already_added") {
         setFormError("User is already a contributor on the project.")
       } else {
@@ -46,7 +44,7 @@ function NewProjectMember() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(
-            createNewInvitation(values, currentUser, projectMember.projectMember)
+            createNewInvitation(values, currentUser, projectMember.projectmember)
           ),
         })
 

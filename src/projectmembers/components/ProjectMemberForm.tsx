@@ -43,7 +43,7 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
       user: true,
     },
   })
-  console.log(roles)
+
   const roleMerged = roles.map((roles) => {
     return {
       pm: roles["user"]["username"],
