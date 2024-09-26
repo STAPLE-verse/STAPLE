@@ -27,19 +27,15 @@ export const AllProjectMembersList = ({ privilege }: AllProjectMembersListProps)
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
 
-  // this makes sure team name is empty
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: {
       projectId: projectId,
       users: {
-        every: {
-          id: { not: undefined }, // Ensures there's at least one user
-        },
-        none: {
-          id: { gt: 1 }, // Ensures there is only one user
+        some: {
+          id: { not: undefined }, // Optional, as every user should have an id
         },
       },
-      name: { equals: null }, // Ensures the name in ProjectMember is null
+      name: null, // Ensures the name in ProjectMember is null
     },
     orderBy: { id: "asc" },
     include: {

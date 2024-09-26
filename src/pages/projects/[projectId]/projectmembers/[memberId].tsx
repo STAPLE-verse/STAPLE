@@ -51,7 +51,7 @@ export const ProjectMemberPage = () => {
       )
     ) {
       try {
-        await deleteProjectMemberMutation({ id: projectMember[0].id })
+        await deleteProjectMemberMutation({ id: projectMember.id })
         // Check if User removed themselves and return to main page
         if (projectMemberUser.id === currentUser?.id) {
           await router.push(Routes.ProjectsPage())
