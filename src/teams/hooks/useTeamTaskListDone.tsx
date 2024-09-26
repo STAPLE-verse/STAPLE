@@ -1,16 +1,13 @@
 import { useQuery } from "@blitzjs/rpc"
-import getTasks from "src/tasks/queries/getTasks"
-import getUsers from "src/users/queries/getUsers"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { createColumnHelper } from "@tanstack/react-table"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
-import getProjectMember from "src/projectmembers/queries/getProjectMember"
-import { ProjectMemberWithUsers } from "src/pages/projects/[projectId]/teams"
-import { ProjectMember, Task, TaskLog } from "db"
+import { ProjectMember, Role, Task, TaskLog } from "db"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { ProjectMemberWithUsers } from "src/pages/projects/[projectId]/teams"
 
 // Define the type for the table data
 type TaskTableData = {
@@ -23,55 +20,49 @@ type TaskTableData = {
   projectId: number
 }
 
+type TaskWithRoles = Task & {
+  roles: Role[]
+}
+
 type TaskLogWithTaskCompleted = TaskLog & {
-  task: Task
-  completedBy: ProjectMember
+  task: TaskWithRoles
+  completedBy: ProjectMemberWithUsers
 }
 
 // Custom Hook
 export const useTeamTaskListDone = (teamId: number) => {
   // Get table data
-
   // tasks for this team set
   const [taskLogs] = useQuery(getTaskLogs, {
     where: {
       assignedToId: teamId,
     },
     include: {
-      task: true,
-      completedBy: true,
+      task: {
+        include: {
+          roles: true, // Include roles associated with the task
+        },
+      },
+      completedBy: {
+        include: {
+          users: true, // Include user details of the projectMember who completed the task
+        },
+      },
     },
-  })
-  // only the latest task log
-  const allTaskLogs = getLatestTaskLogs(taskLogs) as TaskLogWithTaskCompleted[]
+  }) as TaskLogWithTaskCompleted[]
 
-  // get user information based on teamId
-  const [projectMember] = useQuery(getProjectMember, {
-    where: {
-      id: teamId,
-    },
-    include: {
-      users: true,
-    },
-  }) as ProjectMemberWithUsers[]
-  const userIds = projectMember?.users.map((user) => user.id) || []
-  // Fetch all users based on projectMember IDs
-  const [users] = useQuery(getUsers, {
-    where: {
-      id: { in: userIds }, // Filter users based on extracted IDs
-    },
-    include: {
-      roles: true,
-    },
-  })
+  // only the latest task log
+  const latestTaskLogs = getLatestTaskLogs(taskLogs) as TaskLogWithTaskCompleted[]
 
   // Create a user map for quick lookup and format the name
   const userMap: { [key: number]: string } = {}
-  users.forEach((user) => {
-    user["roles"].forEach((role) => {
-      const { firstName, lastName, username } = user
+  latestTaskLogs.forEach((taskLog) => {
+    const { completedBy } = taskLog
+    // If `completedBy` has users associated with it
+    completedBy.users.forEach((user) => {
+      const { id, firstName, lastName, username } = user
       const fullName = firstName && lastName ? `${firstName} ${lastName}` : username
-      userMap[role.id] = fullName
+      userMap[id] = fullName
     })
   })
 
@@ -79,7 +70,7 @@ export const useTeamTaskListDone = (teamId: number) => {
   const locale = currentUser ? currentUser.language : "en-US"
 
   // Transform tasks into the desired table format
-  const tableData: TaskTableData[] = allTaskLogs.flatMap((taskLog) => {
+  const tableData: TaskTableData[] = latestTaskLogs.flatMap((taskLog) => {
     // Ensure taskLog.task is an array; if it's a single task, wrap it in an array
     const tasks = Array.isArray(taskLog.task) ? taskLog.task : [taskLog.task]
 
