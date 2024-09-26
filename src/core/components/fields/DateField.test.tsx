@@ -39,11 +39,7 @@ test("renders date field", async () => {
   const placeholder = "Enter date"
   const name = "A date field"
   const label = "My deadline"
-  const myDate = "2024/10/15"
-  let value = ""
-  const onChangeHandle = (val) => {
-    value = val.currentTarget.value
-  }
+  const onChangeHandle = (val) => {}
 
   render(
     <MyForm
@@ -57,13 +53,8 @@ test("renders date field", async () => {
 
   expect(screen.getByPlaceholderText(placeholder)).toBeInTheDocument()
   expect(await screen.findByText(label)).toBeInTheDocument()
+  expect(screen.getByText(/my deadline/i)).toBeInTheDocument()
   const inputField = screen.getByTestId("datefield-input")
   expect(inputField).toBeInTheDocument()
-
-  //TODO: no trigerring on change
-  //fireEvent.focus(inputField, { target: { value: myDate } })
-  //fireEvent.change(inputField, { target: { value: myDate } })
-
-  // // fireEvent.change(input, { target: { value: "test value" } })
-  // expect(value).equals(myDate)
+  expect(screen.queryByText(/A date field/i)).not.toBeInTheDocument()
 })
