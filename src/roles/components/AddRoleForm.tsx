@@ -4,7 +4,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { z } from "zod"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import getRoles from "../queries/getRoles"
-import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
+import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 
 interface AddRoleFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -15,19 +15,13 @@ interface AddRoleFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
 export function AddRoleForm<S extends z.ZodType<any, any>>(props: AddRoleFormProps<S>) {
   const { projectId, type, tasksId, ...formProps } = props
 
-  // ProjectMembers
-  const [{ projectMembers }] = useQuery(getProjectMembers, {
-    where: { project: { id: projectId! } },
-    include: {
-      user: true,
-    },
+  // Get all roles from all PMs
+  const [projectManagers] = useQuery(getProjectManagers, {
+    projectId: projectId!,
   })
-  // get all roles from all PMs
-  const projectManagers = projectMembers.filter(
-    (projectMember) => projectMember.privilege === "PROJECT_MANAGER"
-  )
+
   const pmIds = projectManagers.map((pm) => pm.userId)
-  //console.log(pmIds)
+
   const [{ roles }] = useQuery(getRoles, {
     where: {
       userId: {
@@ -35,16 +29,13 @@ export function AddRoleForm<S extends z.ZodType<any, any>>(props: AddRoleFormPro
       },
     },
     include: {
-      projectMembers: true, // Optional: include projectMember data if needed
-      tasks: true,
       user: true,
     },
   })
 
-  // Assuming `roles` is an array of objects
   const roleMerged = roles.map((role) => {
     return {
-      pm: role["user"]["username"], // Accessing the nested username
+      pm: role["user"]["username"],
       role: role.name,
       id: role.id,
     }
@@ -56,7 +47,7 @@ export function AddRoleForm<S extends z.ZodType<any, any>>(props: AddRoleFormPro
   }))
 
   const roleOptions = roleMerged.map((item) => ({
-    role: item.role,
+    label: item.role,
     id: item.id,
   }))
 

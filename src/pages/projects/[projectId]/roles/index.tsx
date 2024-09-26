@@ -39,12 +39,12 @@ export const CreditsTabs = () => {
       <Tab.Panels>
         {/* Tabpanel for Assign tasks */}
         <Tab.Panel>
-          <TasksTab></TasksTab>
+          <TasksTab />
         </Tab.Panel>
 
         {/* Tabpanel for Assign Contributors */}
         <Tab.Panel>
-          <ProjectMembersTab></ProjectMembersTab>
+          <ProjectMembersTab />
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>
