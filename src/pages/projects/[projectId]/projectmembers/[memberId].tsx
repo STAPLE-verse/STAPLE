@@ -46,9 +46,7 @@ export const ProjectMemberPage = () => {
 
   const handleDelete = async () => {
     if (
-      window.confirm(
-        "This projectMember will be removed from the project. Are you sure to continue?"
-      )
+      window.confirm("This Contributor will be removed from the project. Are you sure to continue?")
     ) {
       try {
         await deleteProjectMemberMutation({ id: projectMember.id })

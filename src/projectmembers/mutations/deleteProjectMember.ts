@@ -51,6 +51,14 @@ export default resolver.pipe(
       throw new Error("Cannot delete the last project manager on the project.")
     }
 
+    // Delete project widgets associated with this user and project
+    await db.projectWidget.deleteMany({
+      where: {
+        userId: userId,
+        projectId: projectMemberToDelete.projectId,
+      },
+    })
+
     // Proceed to delete the project privilege
     await db.projectPrivilege.delete({
       where: { id: projectPrivilege.id },
