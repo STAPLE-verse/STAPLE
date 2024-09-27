@@ -44,7 +44,7 @@ export const EditTask = () => {
   const initialValues = {
     name: task.name,
     description: task.description!,
-    columnId: task.columnId,
+    containerId: task.containerId,
     deadline: task.deadline,
     contributorsId: contributorsId,
     teamsId: teamsId,
