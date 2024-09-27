@@ -203,7 +203,7 @@ export const LabelView = ({
   printContributor = false,
 }) => {
   return (
-    <div className="my-2">
+    <div className="my-2" data-testid="labelview-testid">
       <h5> Name: {label.name} </h5>
       Description: {label.description}
       <br />
