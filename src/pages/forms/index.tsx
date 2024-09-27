@@ -26,7 +26,6 @@ const AllFormsPage = () => {
     },
     orderBy: { id: "asc" },
   })
-
   return (
     <Layout>
       <Head>

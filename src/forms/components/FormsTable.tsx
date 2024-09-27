@@ -1,5 +1,5 @@
 import React from "react"
-import { FormVersion, Forms } from "db"
+import { FormVersion, Form } from "db"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
@@ -7,7 +7,7 @@ import { JsonFormModal } from "src/core/components/JsonFormModal"
 import DateFormat from "src/core/components/DateFormat"
 import ArchiveFormButton from "./ArchiveFormButton"
 
-export interface FormWithFormVersion extends Forms {
+export interface FormWithFormVersion extends Form {
   formVersion: FormVersion | null
 }
 

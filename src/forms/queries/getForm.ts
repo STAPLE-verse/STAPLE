@@ -13,7 +13,7 @@ export default resolver.pipe(
   resolver.authorize(),
   async ({ id, version }) => {
     // Get the Form with the latest or a specific version
-    const form = await db.forms.findFirst({
+    const form = await db.form.findFirst({
       where: { id },
       include: {
         versions: {

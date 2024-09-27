@@ -17,7 +17,7 @@ export default resolver.pipe(
         : "No Title"
 
     // Create Form entry
-    const form = await db.forms.create({
+    const form = await db.form.create({
       data: {
         userId,
         versions: {
