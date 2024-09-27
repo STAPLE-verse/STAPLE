@@ -17,7 +17,7 @@ import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsL
 import { labelTableColumnsSimple } from "src/labels/components/LabelTable"
 import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 import toast from "react-hot-toast"
 
 export const ContributorPage = () => {
@@ -95,7 +95,7 @@ export const ContributorPage = () => {
             </p>
 
             <div className="card-actions justify-end">
-              {currentContributor.privilege === ContributorPrivileges.PROJECT_MANAGER ? (
+              {currentContributor.privilege === MemberPrivileges.PROJECT_MANAGER ? (
                 <Link
                   className="btn btn-primary"
                   href={Routes.EditContributorPage({
@@ -121,7 +121,7 @@ export const ContributorPage = () => {
               columns={labelTableColumnsSimple}
             />
             <div className="card-actions justify-end">
-              {currentContributor.privilege === ContributorPrivileges.PROJECT_MANAGER && (
+              {currentContributor.privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
                   href={Routes.CreditPage({ projectId: projectId! })}
@@ -142,7 +142,7 @@ export const ContributorPage = () => {
             />
 
             <div className="card-actions justify-end">
-              {currentContributor.privilege === ContributorPrivileges.PROJECT_MANAGER && (
+              {currentContributor.privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
                   href={Routes.CreditPage({ projectId: projectId! })}
@@ -153,7 +153,7 @@ export const ContributorPage = () => {
             </div>
           </div>
         </div>
-        {currentContributor.privilege === ContributorPrivileges.PROJECT_MANAGER && (
+        {currentContributor.privilege === MemberPrivileges.PROJECT_MANAGER && (
           <div className="flex justify-end mt-4">
             <button
               className="btn btn-secondary"

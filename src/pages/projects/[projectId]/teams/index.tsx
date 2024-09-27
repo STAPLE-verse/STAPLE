@@ -12,12 +12,12 @@ import {
   pmTeamTableColumns,
 } from "src/teams/components/TeamTable"
 import Table from "src/core/components/Table"
-import { useContributorPrivilege } from "src/contributors/components/ContributorPrivilegeContext"
-import { ContributorPrivileges } from "@prisma/client"
+import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
+import { MemberPrivileges } from "@prisma/client"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
 interface AllTeamListProps {
-  privilege: ContributorPrivileges
+  privilege: MemberPrivileges
 }
 
 export const AllTeamList = ({ privilege }: AllTeamListProps) => {
@@ -41,7 +41,7 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   // Filter teams if the privilege is CONTRIBUTOR
   // Now explicitly type the teams to avoid the error
   const filteredTeams =
-    privilege === ContributorPrivileges.CONTRIBUTOR
+    privilege === MemberPrivileges.CONTRIBUTOR
       ? (teams as TeamWithContributors[]).filter((team) =>
           team.contributors.some((contributor) => contributor.id === currentContributor?.id)
         )
@@ -57,9 +57,7 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   })
 
   const tableColumns =
-    privilege === ContributorPrivileges.CONTRIBUTOR
-      ? contributorTeamTableColumns
-      : pmTeamTableColumns
+    privilege === MemberPrivileges.CONTRIBUTOR ? contributorTeamTableColumns : pmTeamTableColumns
 
   return (
     <div>
@@ -71,7 +69,7 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
 // Issue 37
 const TeamsPage = () => {
   const projectId = useParam("projectId", "number")
-  const { privilege } = useContributorPrivilege()
+  const { privilege } = useMemberPrivileges()
 
   return (
     <Layout>
@@ -87,7 +85,7 @@ const TeamsPage = () => {
             <AllTeamList privilege={privilege!} />
           </Suspense>
         }
-        {privilege === ContributorPrivileges.PROJECT_MANAGER && (
+        {privilege === MemberPrivileges.PROJECT_MANAGER && (
           <div>
             <Link
               className="btn btn-primary mb-4 mt-4"

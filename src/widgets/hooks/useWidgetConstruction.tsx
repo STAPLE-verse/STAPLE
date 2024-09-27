@@ -1,6 +1,6 @@
 // hooks/useWidgetConstruction.ts
 import { useMemo } from "react"
-import { ContributorPrivileges, Widget, WidgetSize } from "db"
+import { MemberPrivileges, Widget, WidgetSize } from "db"
 import { widgetRegistry } from "../utils/widgetRegistry"
 
 export type ConstructedWidget = {
@@ -12,7 +12,7 @@ export type ConstructedWidget = {
 type UseWidgetConstructionProps = {
   widgets: Widget[]
   registryType: "main" | "project"
-  privilege?: ContributorPrivileges
+  privilege?: MemberPrivileges
 }
 
 export const useWidgetConstruction = ({

@@ -16,7 +16,7 @@ import {
   EnvelopeIcon,
 } from "@heroicons/react/24/outline"
 import { Routes } from "@blitzjs/next"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 import { ComponentType } from "react"
 import { RouteUrlObject } from "blitz"
 
@@ -26,7 +26,7 @@ export interface SidebarItemProps {
   route: RouteUrlObject
   alert?: boolean
   tooltipId: string
-  privilege?: ContributorPrivileges[]
+  privilege?: MemberPrivileges[]
 }
 
 export const ProjectSidebarItems = (projectId: number): SidebarItemProps[] => {
@@ -36,63 +36,63 @@ export const ProjectSidebarItems = (projectId: number): SidebarItemProps[] => {
       text: "Dashboard",
       route: Routes.ShowProjectPage({ projectId: projectId }),
       tooltipId: "project-dashboard-tooltip",
-      privilege: [ContributorPrivileges.CONTRIBUTOR, ContributorPrivileges.PROJECT_MANAGER],
+      privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
     },
     {
       icon: RectangleStackIcon,
       text: "Elements",
       route: Routes.ElementsPage({ projectId: projectId }),
       tooltipId: "project-elements-tooltip",
-      privilege: [ContributorPrivileges.PROJECT_MANAGER],
+      privilege: [MemberPrivileges.PROJECT_MANAGER],
     },
     {
       icon: ClipboardDocumentListIcon,
       text: "Tasks",
       route: Routes.TasksPage({ projectId: projectId }),
       tooltipId: "project-tasks-tooltip",
-      privilege: [ContributorPrivileges.CONTRIBUTOR, ContributorPrivileges.PROJECT_MANAGER],
+      privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
     },
     {
       icon: UsersIcon,
       text: "Contributors",
       route: Routes.ContributorsPage({ projectId: projectId }),
       tooltipId: "project-contributors-tooltip",
-      privilege: [ContributorPrivileges.CONTRIBUTOR, ContributorPrivileges.PROJECT_MANAGER],
+      privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
     },
     {
       icon: UserGroupIcon,
       text: "Teams",
       route: Routes.TeamsPage({ projectId: projectId }),
       tooltipId: "project-teams-tooltip",
-      privilege: [ContributorPrivileges.CONTRIBUTOR, ContributorPrivileges.PROJECT_MANAGER],
+      privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
     },
     {
       icon: DocumentChartBarIcon,
       text: "Form Data",
       route: Routes.MetadataPage({ projectId: projectId }),
       tooltipId: "project-form-tooltip",
-      privilege: [ContributorPrivileges.PROJECT_MANAGER],
+      privilege: [MemberPrivileges.PROJECT_MANAGER],
     },
     {
       icon: BellIcon,
       text: "Notifications",
       route: Routes.ProjectNotificationsPage({ projectId: projectId }),
       tooltipId: "project-notification-tooltip",
-      privilege: [ContributorPrivileges.CONTRIBUTOR, ContributorPrivileges.PROJECT_MANAGER],
+      privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
     },
     {
       icon: CheckCircleIcon,
       text: "Roles",
       route: Routes.CreditPage({ projectId: projectId }),
       tooltipId: "project-credit-tooltip",
-      privilege: [ContributorPrivileges.PROJECT_MANAGER],
+      privilege: [MemberPrivileges.PROJECT_MANAGER],
     },
     {
       icon: NewspaperIcon,
       text: "Summary",
       route: Routes.SummaryPage({ projectId: projectId }),
       tooltipId: "project-summary-tooltip",
-      privilege: [ContributorPrivileges.PROJECT_MANAGER],
+      privilege: [MemberPrivileges.PROJECT_MANAGER],
     },
 
     {
@@ -100,7 +100,7 @@ export const ProjectSidebarItems = (projectId: number): SidebarItemProps[] => {
       text: "Settings",
       route: Routes.EditProjectPage({ projectId: projectId }),
       tooltipId: "project-settings-tooltip",
-      privilege: [ContributorPrivileges.PROJECT_MANAGER],
+      privilege: [MemberPrivileges.PROJECT_MANAGER],
     },
   ]
 }

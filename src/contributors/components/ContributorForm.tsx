@@ -3,7 +3,7 @@ import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
-import { ContributorPrivileges } from "@prisma/client"
+import { MemberPrivileges } from "@prisma/client"
 import getLabels from "src/labels/queries/getLabels"
 import Modal from "src/core/components/Modal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
@@ -16,9 +16,9 @@ interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<
   isEdit?: boolean
 }
 
-export const ContributorPrivilegesOptions = [
-  { id: 0, value: ContributorPrivileges.PROJECT_MANAGER, label: "Project Manager" },
-  { id: 1, value: ContributorPrivileges.CONTRIBUTOR, label: "Contributor" },
+export const MemberPrivilegesOptions = [
+  { id: 0, value: MemberPrivileges.PROJECT_MANAGER, label: "Project Manager" },
+  { id: 1, value: MemberPrivileges.CONTRIBUTOR, label: "Contributor" },
 ]
 
 export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
@@ -111,7 +111,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         className="select text-primary select-bordered border-primary border-2 w-1/2 mt-4 bg-base-300"
         name="privilege"
         label="Select Privilege: (Required)"
-        options={ContributorPrivilegesOptions}
+        options={MemberPrivilegesOptions}
         optionText="label"
         optionValue="value"
         type="string"

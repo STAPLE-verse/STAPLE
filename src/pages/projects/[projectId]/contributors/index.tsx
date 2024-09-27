@@ -12,12 +12,12 @@ import {
   contributorContributorTableColumns,
 } from "src/contributors/components/ContributorTable"
 import Table from "src/core/components/Table"
-import { useContributorPrivilege } from "src/contributors/components/ContributorPrivilegeContext"
-import { ContributorPrivileges } from "@prisma/client"
+import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
+import { MemberPrivileges } from "@prisma/client"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
 interface AllContributorsListProps {
-  privilege: ContributorPrivileges
+  privilege: MemberPrivileges
 }
 
 export const AllContributorsList = ({ privilege }: AllContributorsListProps) => {
@@ -33,7 +33,7 @@ export const AllContributorsList = ({ privilege }: AllContributorsListProps) => 
   })
 
   const filteredContributors =
-    privilege === ContributorPrivileges.CONTRIBUTOR
+    privilege === MemberPrivileges.CONTRIBUTOR
       ? contributors.filter((contributor) => contributor.id === currentContributor?.id)
       : contributors
 
@@ -50,7 +50,7 @@ export const AllContributorsList = ({ privilege }: AllContributorsListProps) => 
   })
 
   const tableColumns =
-    privilege === ContributorPrivileges.CONTRIBUTOR
+    privilege === MemberPrivileges.CONTRIBUTOR
       ? contributorContributorTableColumns
       : pmContributorTableColumns
 
@@ -64,7 +64,7 @@ export const AllContributorsList = ({ privilege }: AllContributorsListProps) => 
 // issue 37
 const ContributorsPage = () => {
   const projectId = useParam("projectId", "number")
-  const { privilege } = useContributorPrivilege()
+  const { privilege } = useMemberPrivileges()
 
   return (
     <Layout>
@@ -77,7 +77,7 @@ const ContributorsPage = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <AllContributorsList privilege={privilege!} />
         </Suspense>
-        {privilege === ContributorPrivileges.PROJECT_MANAGER && (
+        {privilege === MemberPrivileges.PROJECT_MANAGER && (
           <div>
             <Link
               className="btn btn-primary mb-4 mt-4"

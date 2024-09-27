@@ -40,7 +40,7 @@ export default resolver.pipe(
       data: {
         userId,
         projectId: project.id,
-        // Since ContributorPrivileges defaults to project manager the new contirbutor will be the project manager
+        // Since MemberPrivileges defaults to project manager the new contributor will be the project manager
       },
     })
 

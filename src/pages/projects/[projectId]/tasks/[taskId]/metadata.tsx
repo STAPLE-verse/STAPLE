@@ -10,7 +10,7 @@ import DownloadXLSX from "src/forms/components/DownloadXLSX"
 import DownloadZIP from "src/forms/components/DownloadZIP"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 import TaskLayout from "src/core/layouts/TaskLayout"
 import { extendSchema } from "src/forms/utils/extendSchema"
 import { processMetadata } from "src/forms/utils/processMetadata"
@@ -19,7 +19,7 @@ import { JsonFormModal } from "src/core/components/JsonFormModal"
 
 const MetadataContent = () => {
   // Ensure that only PM can edit a task
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   // Get tasks and assignments
   const { task } = useTaskContext()

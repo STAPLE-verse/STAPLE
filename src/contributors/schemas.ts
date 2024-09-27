@@ -1,4 +1,4 @@
-import { ContributorPrivileges } from "@prisma/client"
+import { MemberPrivileges } from "@prisma/client"
 import { z } from "zod"
 
 export const CreateContributorSchema = z.object({
@@ -8,18 +8,18 @@ export const CreateContributorSchema = z.object({
 
 export const CreateContributorFormSchema = z.object({
   email: z.string(),
-  privilege: z.nativeEnum(ContributorPrivileges),
+  privilege: z.nativeEnum(MemberPrivileges),
   labelsId: z.array(z.number()).optional().nullable(),
 })
 
 export const UpdateContributorFormSchema = z.object({
-  privilege: z.nativeEnum(ContributorPrivileges),
+  privilege: z.nativeEnum(MemberPrivileges),
 })
 
 export const UpdateContributorSchema = z.object({
   id: z.number(),
   projectId: z.number(),
-  privilege: z.nativeEnum(ContributorPrivileges),
+  privilege: z.nativeEnum(MemberPrivileges),
   labelsId: z.array(z.number()).optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
 })

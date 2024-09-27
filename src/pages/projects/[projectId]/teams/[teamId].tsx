@@ -13,7 +13,7 @@ import getContributors from "src/contributors/queries/getContributors"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
 import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
 import { labelTableColumnsTeam } from "src/labels/components/LabelTable"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
 export const ShowTeamPage = () => {
@@ -66,7 +66,7 @@ export const ShowTeamPage = () => {
               })}
             </div>
             <div className="card-actions justify-end m-2">
-              {currentContributor!.privilege === ContributorPrivileges.PROJECT_MANAGER && (
+              {currentContributor!.privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
                   href={Routes.EditTeamPage({ projectId: projectId!, teamId: team.id })}
@@ -94,7 +94,7 @@ export const ShowTeamPage = () => {
               <TeamTaskListDone teamId={teamId} />
             </div>
           </div>
-          {currentContributor!.privilege === ContributorPrivileges.PROJECT_MANAGER && (
+          {currentContributor!.privilege === MemberPrivileges.PROJECT_MANAGER && (
             <div className="flex justify-end mt-4">
               <button type="button" className="btn btn-secondary" onClick={handleDelete}>
                 Delete Team

@@ -3,10 +3,10 @@ import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import { ProjectFormsList } from "src/forms/components/ProjectFormsList"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 
 const MetadataPage = () => {
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>
