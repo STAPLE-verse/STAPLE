@@ -13,7 +13,7 @@ export const TaskSchemaInput = ({ projectManagers }) => {
   const pmList = projectManagers.map((pm) => pm.userId)
 
   const [pmForms] = useQuery(getForms, {
-    where: { userId: { in: pmList } },
+    where: { userId: { in: pmList }, archived: false },
     include: { user: true },
   })
 

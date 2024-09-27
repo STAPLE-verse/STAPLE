@@ -22,6 +22,7 @@ const AllFormsPage = () => {
   const [{ forms }, { refetch }] = useQuery(getForms, {
     where: {
       user: { id: currentUser?.id },
+      archived: false,
     },
     orderBy: { id: "asc" },
   })

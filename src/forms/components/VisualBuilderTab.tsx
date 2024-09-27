@@ -27,7 +27,24 @@ const VisualBuilderTab: React.FC<VisualBuilderTabProps> = ({
         uischema={JSON.stringify(uiSchema)}
         mods={{}}
         onChange={(newSchema: string, newUiSchema: string) => {
-          onChange(JSON.parse(newSchema), JSON.parse(newUiSchema))
+          const parsedSchema = JSON.parse(newSchema)
+
+          // Remove "exclusiveMinimum" and "exclusiveMaximum" if they are null
+          if (parsedSchema.properties) {
+            Object.keys(parsedSchema.properties).forEach((key) => {
+              const property = parsedSchema.properties[key]
+
+              // Remove "exclusiveMinimum" and "exclusiveMaximum" if they are null
+              if (property.exclusiveMinimum === null) {
+                delete property.exclusiveMinimum
+              }
+              if (property.exclusiveMaximum === null) {
+                delete property.exclusiveMaximum
+              }
+            })
+          }
+
+          onChange(parsedSchema, JSON.parse(newUiSchema))
         }}
       />
     </div>

@@ -72,7 +72,7 @@ export default resolver.pipe(
         projectId,
         type: "FormNumber",
         show: true,
-        position: 7,
+        position: 8,
         size: WidgetSize.SMALL,
         privilege: [MemberPrivileges.PROJECT_MANAGER],
       },
@@ -81,7 +81,7 @@ export default resolver.pipe(
         projectId,
         type: "TaskTotal",
         show: true,
-        position: 8,
+        position: 7, // make these consistent for contributor
         size: WidgetSize.SMALL,
         privilege: [MemberPrivileges.PROJECT_MANAGER, MemberPrivileges.CONTRIBUTOR],
       },

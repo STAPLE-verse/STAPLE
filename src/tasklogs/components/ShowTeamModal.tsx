@@ -24,6 +24,7 @@ export const ShowTeamModal = ({ projectMember }) => {
         type="button"
         className="btn btn-primary"
         data-tooltip-id="showTeamModalTooltip"
+        data-testid="open-modal"
         onClick={() => handleToggle()}
       >
         <span>{`${projectMember.name}`}</span>
@@ -40,7 +41,12 @@ export const ShowTeamModal = ({ projectMember }) => {
           <Table columns={teamMembersTableColumns} data={teamMembers} addPagination={true} />
         </div>
         <div className="modal-action flex justify-end mt-4">
-          <button type="button" className="btn btn-primary" onClick={handleToggle}>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleToggle}
+            data-testid="close-modal"
+          >
             Close
           </button>
         </div>

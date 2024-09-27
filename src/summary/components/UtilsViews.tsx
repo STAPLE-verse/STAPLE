@@ -201,7 +201,7 @@ export const RoleView = ({
   printProjectMember = false,
 }) => {
   return (
-    <div className="my-2">
+    <div className="my-2" data-testid="labelview-testid">
       <h5> Name: {role.name} </h5>
       Description: {role.description}
       <br />
@@ -232,7 +232,7 @@ export const RoleView = ({
 
 export const ElementView = ({ element, task, printTask = false }) => {
   return (
-    <div>
+    <div data-testid="elementview-testid">
       <h5> Element Name: {element.name} </h5>
       Description: {element.description}
       {printTask && (
