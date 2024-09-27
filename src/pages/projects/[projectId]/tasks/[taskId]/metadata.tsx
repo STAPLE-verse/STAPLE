@@ -21,8 +21,8 @@ const MetadataContent = () => {
   // Ensure that only PM can edit a task
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
-  // Get tasks and assignments
-  const { task } = useTaskContext()
+  // Get tasks
+  const { task, projectMembers } = useTaskContext()
 
   // Extend uiSchema so submit button is not shown
   const extendedUiSchema = extendSchema({
@@ -35,7 +35,7 @@ const MetadataContent = () => {
   })
 
   // Prepare data for the metadatatable
-  const processedMetadata = processMetadata(task)
+  const processedMetadata = processMetadata(projectMembers)
 
   // Create table definitions based on the schema
   const metadataTableColumns = metadataTable(task.formVersion?.schema)

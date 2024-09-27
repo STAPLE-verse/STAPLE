@@ -1,7 +1,6 @@
-import { resolver, useQuery } from "@blitzjs/rpc"
+import { resolver } from "@blitzjs/rpc"
 import db, { Status, MemberPrivileges } from "db"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
-import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import { z } from "zod"
 
 const GetTaskStatsSchema = z.object({

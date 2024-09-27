@@ -1,8 +1,8 @@
-import { ExtendedProjectMember } from "src/tasklogs/hooks/useAssignmentData"
+import { ExtendedProjectMember } from "src/tasklogs/hooks/useTaskLogData"
 import { ExtendedTask } from "../components/TaskContext"
 
 // Function gets unique projectMembers from Task obj returned by TaskContext
-export function getUniqueProjectMembers(task: ExtendedTask) {
+export function getUniqueProjectMember(task: ExtendedTask) {
   // Collect individual projectMembers (where teamId is null)
   const individualProjectMembers = task.assignees
     .filter((assignment) => !assignment.teamId)

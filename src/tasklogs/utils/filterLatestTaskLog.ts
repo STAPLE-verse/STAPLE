@@ -1,4 +1,5 @@
 import { ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
+
 // Function to get the latest task log from an array of task logs based on the createdAt date
 export function filterLatestTaskLog(taskLogs: ExtendedTaskLog[]): ExtendedTaskLog | undefined {
   // Check if the input array is empty and return undefined if so
