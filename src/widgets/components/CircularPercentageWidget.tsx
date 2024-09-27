@@ -17,7 +17,7 @@ export const CircularPercentageWidget: React.FC<CircularPercentageWidgetProps> =
       <div className="stat-title text-2xl text-inherit" data-tooltip-id="status-tool">
         {title}
       </div>
-      <Tooltip id="status-tool" content={tooltip} className="z-[1099]" />
+      <Tooltip id="status-tool" content={tooltip} className="z-[1099] ourtooltips" />
       <div className="w-20 h-20 m-2">
         <CircularProgressbar
           value={data * 100}

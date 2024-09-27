@@ -14,7 +14,7 @@ export type ContributorInformation = {
 const columnHelper = createColumnHelper<ContributorInformation>()
 
 // ColumnDefs
-export const contributorTableColumns = [
+export const pmContributorTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Contributor",
@@ -53,6 +53,32 @@ export const contributorTableColumns = [
           })}
         >
           Edit Contributor
+        </Link>
+      </div>
+    ),
+  }),
+]
+
+export const contributorContributorTableColumns = [
+  columnHelper.accessor("name", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Contributor",
+  }),
+  columnHelper.accessor("id", {
+    id: "view",
+    header: "View",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <div>
+        <Link
+          className="btn btn-primary"
+          href={Routes.ShowContributorPage({
+            projectId: info.row.original.projectId!,
+            contributorId: info.getValue(),
+          })}
+        >
+          See Contributions
         </Link>
       </div>
     ),

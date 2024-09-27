@@ -7,7 +7,6 @@ import { FORM_ERROR } from "final-form"
 import { Signup } from "src/auth/schemas"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { FormSpy } from "react-final-form"
 import { useMutation } from "@blitzjs/rpc"
 import usernameExist, { UserEmailExistErr } from "../mutations/usernameExist"
 import { useState } from "react"
@@ -93,13 +92,13 @@ export const SignupForm = (props: SignupFormProps) => {
           name="username"
           label="Username:"
           placeholder="Username"
-          className="w-full text-primary border-primary border-2 mb-4 bg-base-300"
+          className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
         <LabeledTextField
           name="email"
           label="Email:"
           placeholder="Email"
-          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
+          className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
 
         <LabeledPasswordField
@@ -108,20 +107,20 @@ export const SignupForm = (props: SignupFormProps) => {
           placeholder="Password"
           type={currType as LabeledPassWordFieldProps["type"]}
           onEyeClick={handlePasswordToggle}
-          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
+          className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
         <LabeledPasswordField
           name="password_confirm"
           label="Confirm Password:"
           placeholder="Password"
           type={currTypeV as LabeledPassWordFieldProps["type"]}
-          className="mb-4 w-full text-primary border-primary border-2 bg-base-300"
+          className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
           onEyeClick={handleVPasswordToggle}
         />
       </Form>
 
       <div className="flex flex-row justify-end mb-4 mt-4">
-        <Link className="btn btn-info" href={Routes.LoginPage()}>
+        <Link className="btn btn-warning" href={Routes.LoginPage()}>
           I have an Account
         </Link>
       </div>

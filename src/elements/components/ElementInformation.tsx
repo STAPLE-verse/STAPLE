@@ -1,42 +1,43 @@
 import { Routes } from "@blitzjs/next"
-import { usePaginatedQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import Link from "next/link"
-import { useRouter } from "next/router"
 import { Tooltip } from "react-tooltip"
 import Table from "src/core/components/Table"
-import { taskElementColumns } from "src/tasks/components/TaskTable"
 import getTasks from "src/tasks/queries/getTasks"
 import { Element } from "@prisma/client"
 import DateFormat from "src/core/components/DateFormat"
+import { elementTasksTableColumns } from "src/tasks/components/TaskTable"
+import { processElementTasks } from "src/tasks/utils/processTasks"
+import { useState } from "react"
+import UpdateTasks from "./UpdateTasks"
 
 interface ElementInformationProps {
   element: Element
   projectId: number | undefined
+  onTasksUpdated: () => void
 }
 
-const ITEMS_PER_PAGE = 3
+export const ElementInformation: React.FC<ElementInformationProps> = ({
+  element,
+  projectId,
+  onTasksUpdated,
+}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-export const ElementInformation: React.FC<ElementInformationProps> = ({ element, projectId }) => {
-  // Setup
-  const router = useRouter()
-  const page = Number(router.query.page) || 0
+  const openModal = () => setIsModalOpen(true)
+  const closeModal = () => setIsModalOpen(false)
 
   // Get tasks
-  const [{ tasks, hasMore }] = usePaginatedQuery(getTasks, {
+  const [{ tasks }, { refetch }] = useQuery(getTasks, {
     where: {
       project: { id: projectId! },
-      elementId: element.id,
     },
     orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
   })
 
-  // Events
-  const goToPreviousPage = () =>
-    router.push({ query: { projectId: projectId, elementId: element.id, page: page - 1 } })
-  const goToNextPage = () =>
-    router.push({ query: { projectId: projectId, elementId: element.id, page: page + 1 } })
+  const elementTasks = tasks.filter((task) => task.elementId === element.id)
+
+  const processedTasks = processElementTasks(elementTasks)
 
   return (
     <div className="flex flex-row justify-center w-full">
@@ -46,7 +47,11 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({ element,
           <div className="card-title" data-tooltip-id="element-tool">
             {element.name}
           </div>
-          <Tooltip id="element-tool" content="Overall element information" className="z-[1099]" />
+          <Tooltip
+            id="element-tool"
+            content="Overall element information"
+            className="z-[1099] ourtooltips"
+          />
           {/* Element description */}
           {element.description}
           {/* Element last update */}
@@ -61,33 +66,50 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({ element,
             >
               Update element
             </Link>
+
+            <button className="btn btn-secondary" onClick={openModal}>
+              Update Tasks
+            </button>
+            <UpdateTasks
+              elementId={element.id}
+              open={isModalOpen}
+              onClose={closeModal}
+              onTasksUpdated={refetch}
+              tasks={tasks}
+            />
           </div>
         </div>
       </div>
 
       {/* Tasks */}
-      <div className="card bg-base-300 w-1/2">
+      <div className="card bg-base-300 w-1/2 h-auto">
         <div className="card-body">
           <div className="card-title" data-tooltip-id="tasks-tool">
             Tasks
           </div>
-          <Tooltip id="tasks-tool" content="Tasks assigned to this element" className="z-[1099]" />
-          <Table columns={taskElementColumns} data={tasks} />
-          <div className="join grid grid-cols-2 mt-4">
-            <button
-              className="join-item btn btn-secondary"
-              disabled={page === 0}
-              onClick={goToPreviousPage}
-            >
-              Previous
-            </button>
-            <button
-              className="join-item btn btn-secondary"
-              disabled={!hasMore}
-              onClick={goToNextPage}
-            >
-              Next
-            </button>
+          <Tooltip
+            id="tasks-tool"
+            content="Tasks assigned to this element"
+            className="z-[1099] ourtooltips"
+          />
+          <div className="overflow-x-auto">
+            <Table
+              columns={elementTasksTableColumns}
+              data={processedTasks}
+              addPagination={true}
+              classNames={{
+                table: "table-auto w-full text-sm",
+                thead: "text-sm text-base-content",
+                tbody: "text-md",
+                tfoot: "text-sm",
+                th: "p-2",
+                td: "p-2",
+                paginationButton: "btn-xs",
+                pageInfo: "text-xs",
+                goToPageInput: "input-xs",
+                pageSizeSelect: "select-xs",
+              }}
+            />
           </div>
         </div>
       </div>

@@ -11,10 +11,10 @@ import { Suspense } from "react"
 import { useParam } from "@blitzjs/next"
 import toast from "react-hot-toast"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 
 const NewElementPage = () => {
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
   const router = useRouter()
   const projectId = useParam("projectId", "number")
   const [createElementMutation] = useMutation(createElement)
@@ -30,7 +30,6 @@ const NewElementPage = () => {
           <ElementForm
             submitText="Create Element"
             schema={FormElementSchema}
-            // initialValues={{}}
             onSubmit={async (values) => {
               try {
                 const element = await createElementMutation({ ...values, projectId: projectId! })

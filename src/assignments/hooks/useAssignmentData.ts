@@ -1,7 +1,4 @@
 import { Assignment, AssignmentStatusLog, Contributor, Team, User } from "db"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import getContributor from "src/contributors/queries/getContributor"
-import { useQuery } from "@blitzjs/rpc"
 import { ExtendedTask } from "src/tasks/components/TaskContext"
 
 // Creating custom types
@@ -34,26 +31,13 @@ export default function useAssignmentData(task: ExtendedTask): useAssignmentData
   // Get assignments
   const assignments = task.assignees
 
-  // Get currentContributor
-  const currentUser = useCurrentUser()
-  // TODO: Replace by hook
-  const [currentContributor] = useQuery(getContributor, {
-    where: { projectId: task.projectId, userId: currentUser!.id },
-  })
-
   // Filter out individual assignments
   const individualAssignments = assignments.filter(
-    (assignment) =>
-      assignment.contributorId !== null && assignment.contributorId == currentContributor.id
+    (assignment) => assignment.contributorId !== null
   )
 
   // Filter out team assignments
-  const teamAssignments = assignments.filter((assignment) => {
-    return (
-      assignment.teamId !== null &&
-      assignment.team?.contributors?.some((contributor) => contributor.id === currentContributor.id)
-    )
-  })
+  const teamAssignments = assignments.filter((assignment) => assignment.teamId !== null)
 
   return {
     individualAssignments,

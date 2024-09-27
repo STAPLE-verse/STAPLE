@@ -14,8 +14,6 @@ import getTeams from "src/teams/queries/getTeams"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
 import DateField from "src/core/components/fields/DateField"
-import { AddLabelForm } from "src/labels/components/AddLabelForm"
-import { LabelIdsFormSchema } from "src/labels/schemas"
 import getLabels from "src/labels/queries/getLabels"
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
@@ -45,18 +43,50 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       user: true,
     },
   })
+  // get all labels from all PMs
+  const projectManagers = contributors.filter(
+    (contributor) => contributor.privilege === "PROJECT_MANAGER"
+  )
+  const pmIds = projectManagers.map((pm) => pm.userId)
   const [{ labels }] = useQuery(getLabels, {
     where: {
-      projects: { some: { id: { in: projectId! } } },
+      userId: {
+        in: pmIds, // Filter labels where userId is in the list of PM IDs
+      },
+    },
+    include: {
+      contributors: true, // Optional: include contributor data if needed
+      user: true,
     },
   })
 
-  const labelOptions = labels.map((labels) => {
+  // Assuming `labels` is an array of objects
+  const labelMerged = labels.map((label) => {
     return {
-      label: labels["name"],
-      id: labels["id"],
+      pm: label["user"]["username"], // Accessing the nested username
+      label: label.name,
+      id: label.id,
     }
   })
+
+  // Use the mapped array directly
+  const extraData = labelMerged.map((item) => ({
+    pm: item.pm,
+  }))
+
+  const extraColumns = [
+    {
+      id: "pm",
+      header: "Project Manager",
+      accessorKey: "pm",
+      cell: (info) => <span>{info.getValue()}</span>,
+    },
+  ]
+
+  const labelOptions = labelMerged.map((item) => ({
+    label: item.label,
+    id: item.id,
+  }))
 
   const contributorOptions = contributors.map((contributor) => {
     return {
@@ -97,7 +127,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     <Form<S> {...formProps} encType="multipart/form-data">
       {/* Name */}
       <LabeledTextField
-        className="mb-4 w-1/2 text-primary border-primary border-2 bg-base-300"
+        className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
         name="name"
         label="Task Name: (Required)"
         placeholder="Add Task Name"
@@ -106,9 +136,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Column */}
       <LabelSelectField
-        className="mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
-        name="columnId"
-        label="Current Status: (Required)"
+        className="select mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
+        name="containerId"
+        label="Current Column: (Required)"
         options={columns}
         optionText="name"
         optionValue="id"
@@ -127,7 +157,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Elements */}
       <LabelSelectField
-        className="mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
+        className="select mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="elementId"
         label="Assign Element:"
         options={elements}
@@ -231,7 +261,12 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           <div className="">
             <h1 className="flex justify-center mb2 text-3xl">Select Roles</h1>
             <div className="flex justify-start mt-4">
-              <CheckboxFieldTable name="labelsId" options={labelOptions} />
+              <CheckboxFieldTable
+                name="labelsId"
+                options={labelOptions}
+                extraColumns={extraColumns}
+                extraData={extraData}
+              />
             </div>
             {/* closes the modal */}
             <div className="modal-action flex justify-end mt-4">

@@ -45,6 +45,9 @@
   }
 }
 
+/* If it has a description I have checked it's use */
+
+/* form builder overall wrapper */
 .formHead-wrapper [class^="formHead"] {
   width: 100%;
   border: none;
@@ -57,6 +60,7 @@
   font-size: 16px;
 }
 
+/* form overall header */
 .formHead-wrapper [class^="formHead"] h5 {
   font-size: 18px;
   color: oklch(var(--bc));
@@ -64,16 +68,173 @@
   font-family: inherit;
 }
 
+/* form title block and input backgrounds */
 .formHead-wrapper .form-title,
-.form-description {
+.formHead-wrapper .form-description,
+.formHead-wrapper .input-bordered,
+.formHead-wrapper input[type="number"],
+.formHead-wrapper input[type="text"],
+.formHead-wrapper .card-text,
+.formHead-wrapper .card-textarea,
+.formHead-wrapper .card-select [class$="-control"],
+.modal-content input,
+.card-modal-select [class$="-control"] {
   --tw-border-opacity: 1;
-  background-color: oklch(var(--b1));
-  border-radius: 3px;
-  border-color: oklch(var(--p) / var(--tw-border-opacity));
-  border-width: 1px;
+  color: oklch(var(--p)) !important;
+  background-color: oklch(var(--pc));
+  padding: 3px;
+  border-color: oklch(var(--p) / var(--tw-border-opacity)) !important;
+  border-width: 2px !important;
+  width: 100%;
   font-family: inherit;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  margin-top: 0.5rem;
 }
 
+.formHead-wrapper .card-modal-select {
+  background-color: oklch(var(--pc)) !important;
+}
+
+/* form focus for inputs */
+.formHead-wrapper input:focus,
+.formHead-wrapper textarea:focus,
+.formHead-wrapper select:focus,
+.formHead-wrapper input[type="number"]:focus,
+.formHead-wrapper input[type="select"]:focus,
+.formHead-wrapper [class^="card-select"]:focus-within,
+.modal-content input:focus,
+.rjsf .field textarea:focus,
+.card-modal-select [class$="Input"]:focus {
+  outline-width: 3px !important;
+  outline-style: solid; /* Ensure that the outline style is set */
+  outline-color: oklch(var(--s)) !important;
+  outline-offset: 0;
+}
+
+/* select inputs */
+.formHead-wrapper .card-select {
+  border: none !important;
+  padding: 0px;
+  color: oklch(var(--p));
+  overflow-y: visible;
+  z-index: 1000;
+}
+
+/* formbuilder checkboxes and radio text color */
+.fb-checkbox,
+.fb-radio-button {
+  color: oklch(var(--p));
+}
+
+/* formbuilder checkboxes */
+.fb-checkbox input[type="checkbox"],
+.rjsf input[type="checkbox"] {
+  appearance: none; /* Remove default styling */
+  width: 20px;
+  height: 20px;
+  border: 2px solid oklch(var(--p));
+  border-radius: 4px; /* Optional: Add some rounding */
+  background-color: oklch(var(--b3)); /* Background color */
+  cursor: pointer;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+/* formbuilder checkboxes */
+.fb-checkbox input[type="checkbox"]:checked,
+.rjsf input[type="checkbox"]:checked {
+  background-color: oklch(var(--p)); /* Background color when checked */
+  border-color: oklch(var(--p)); /* Change border color when checked */
+}
+
+/* formbuilder checkboxes */
+.fb-checkbox input[type="checkbox"]:checked::before,
+.rjsf input[type="checkbox"]:checked::before {
+  content: "✔";
+  color: oklch(var(--pc));
+  display: block;
+  text-align: center;
+  line-height: 20px; /* Center the checkmark */
+}
+
+/* form visual checkboxes */
+.rjsf .checkbox {
+  display: flex;
+  align-items: center;
+  width: 100%; /* Ensures the container takes up the full width */
+}
+
+/* form visual checkboxes */
+.rjsf .checkbox label {
+  flex: 1; /* Allows the label to expand to fit the content */
+}
+
+/* form visual checkboxes */
+.rjsf .checkbox span {
+  flex: 1; /* Allows the span to take up more space */
+  white-space: normal; /* Allows text to wrap if needed */
+}
+
+/* form visual focus block */
+.rjsf input:focus,
+.rjsf .field select:focus {
+  outline-width: 3px !important;
+  outline-style: solid; /* Ensure that the outline style is set */
+  outline-color: oklch(var(--s)) !important;
+  outline-offset: 0;
+}
+
+/* json builder background color block */
+.jer-collection-text-area,
+.jer-input-text,
+.jer-input-number {
+  background-color: white;
+  color: black;
+}
+
+/* controls the collapse of the boxes*/
+.formHead-wrapper .collapse:not(.show) {
+  display: none;
+}
+
+.formHead-wrapper .collapse.show {
+  overflow: visible; /* or scroll */
+  height: auto; /* ensures the element can grow as needed */
+  transition: height 0.3s ease-out; /* animate height change */
+}
+
+/* form builder icons */
+.fa-circle-question,
+.fa-pencil,
+.fa-arrow-up,
+.fa-arrow-down,
+.fa-square-plus {
+  color: oklch(var(--s)) !important;
+  border: none !important;
+}
+
+/* form builder icons */
+.fa-trash {
+  color: oklch(var(--a)) !important;
+  border: none !important;
+}
+
+/* form builder tool tips */
+.tooltip-inner,
+.tooltip-arrow,
+.tooltip-left,
+.tooltip-right {
+  padding: 10px;
+  border-radius: 10px;
+  color: oklch(var(--n));
+  font-weight: bold;
+  background-color: oklch(var(--nc));
+  /* position: absolute; */
+  margin: 8px;
+}
+
+/* form builder popup modals makes it visible */
 .modal.show {
   --tw-border-opacity: 1;
   z-index: 1055;
@@ -89,10 +250,18 @@
   display: none;
   transform: none;
 }
+
+/* form builder popup modals
+not sure if this does anything
+*/
 .modal {
   background-color: none;
 }
 
+/* form builder popup modals
+not sure if this is needed
+controls the background layer behind modal
+*/
 .modal-backdrop {
   z-index: 1050;
   opacity: 0.25;
@@ -104,6 +273,7 @@
   background-color: black;
 }
 
+/* form builder popup modals centers modal */
 .modal-dialog {
   position: absolute;
   left: 35%;
@@ -115,6 +285,10 @@
   padding-bottom: 10px;
 }
 
+/* form builder popup modal
+makes it white background
+also makes it clickable
+*/
 .modal-content {
   position: relative;
   display: flex;
@@ -130,6 +304,9 @@
   outline: 0;
 }
 
+/* form builder modal popup
+puts save / close in the right place
+*/
 .modal-footer {
   display: flex;
   flex-shrink: 0;
@@ -144,124 +321,21 @@
   gap: 10px;
 }
 
+/* form builder modal popup
+makes everything left aligned properly
+*/
 .modal-body,
 .card-modal-entries {
   width: 100%;
 }
 
-.card-modal-number,
-.card-modal-text,
-.card-modal-select,
-.card-modal-textarea {
-  width: 100%;
-  --tw-border-opacity: 1;
-  background-color: oklch(var(--b1));
-  border-radius: 3px;
-  border-color: oklch(var(--p) / var(--tw-border-opacity));
-  border-width: 1px;
-  font-family: inherit;
-  color: oklch(var(--bc));
+/* form builder item box should be flex */
+.d-flex {
+  display: flex;
 }
 
-.card-textarea {
-  --tw-border-opacity: 1;
-  background-color: oklch(var(--b1));
-  border-radius: 3px;
-  border-color: oklch(var(--p) / var(--tw-border-opacity));
-  border-width: 1px;
-  font-family: inherit;
-  color: oklch(var(--bc));
-  width: 100%;
-}
-
-.card-modal-number,
-.card-modal-text {
-  padding: 10px;
-}
-
-.card-modal-select [class$="indicatorSeparator"] {
-  --tw-border-opacity: 1;
-  background-color: oklch(var(--p) / var(--tw-border-opacity)) !important;
-}
-
-.card-entry [class$="indicatorSeparator"] {
-  --tw-border-opacity: 1;
-  background-color: oklch(var(--p) / var(--tw-border-opacity)) !important;
-}
-
-.card-modal-select [class$="indicatorContainer"] {
-  background-color: oklch(var(--b1));
-  color: oklch(var(--bc));
-}
-
-.card-entry [class$="indicatorContainer"],
-[class$="ValueContainer"] {
-  background-color: oklch(var(--b1));
-  color: oklch(var(--bc));
-}
-
-.card-modal-select [class$="-control"],
-[class$="singleValue"] {
-  background-color: oklch(var(--b1)) !important;
-  border: none !important;
-  color: oklch(var(--bc)) !important;
-}
-
-.card-select [class$="-control"] {
-  --tw-border-opacity: 1;
-  background-color: oklch(var(--b1)) !important;
-  border-color: oklch(var(--p) / var(--tw-border-opacity)) !important;
-  border-width: 1px !important;
-  color: oklch(var(--bc)) !important;
-  border-radius: 4px;
-}
-
-.card-entry [class$="singleValue"] {
-  background-color: oklch(var(--b1)) !important;
-  border: none !important;
-  color: oklch(var(--bc)) !important;
-}
-
-.card-select {
-  border: none !important;
-}
-
-[id^="react-select"] {
-  color: oklch(var(--bc)) !important;
-  background-color: oklch(var(--b1)) !important;
-}
-
-.card-text {
-  --tw-border-opacity: 1;
-  color: oklch(var(--bc));
-  background-color: oklch(var(--b1));
-  padding: 3px;
-  border-color: oklch(var(--p) / var(--tw-border-opacity)) !important;
-  border-width: 1px !important;
-  width: 100%;
-}
-
-.formHead-wrapper [class^="cardEntries"],
-[class^="card-entry-row"],
-[class^="cardInteractions"],
-[class^="section-head"],
-[class^="section-footer"] {
-  color: oklch(var(--bc)) !important;
-  background-color: oklch(var(--b3));
-  border: none !important;
-}
-
-.formHead-wrapper [class^="cardEntries"] h5 {
-  color: oklch(var(--bc)) !important;
-  background-color: oklch(var(--b3));
-  border: none !important;
-  padding-bottom: 3px;
-}
-
-.formHead-wrapper .label {
-  color: oklch(var(--bc));
-}
-
+/* form builder change the way the item
+visuals look to our */
 .formHead-wrapper .d-flex,
 .card-container,
 .section-container,
@@ -276,31 +350,23 @@
   border: none !important;
 }
 
-.d-flex {
-  display: flex;
-}
-
-.card-category-options {
-  color: oklch(var(--bc));
+/* form builder background for possible values*/
+.card-enum {
   background-color: oklch(var(--b3)) !important;
-  border-bottom: none !important;
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  width: 100% !important;
+}
+
+/* form builder row and text colors */
+.formHead-wrapper [class^="cardEntries"] h5,
+.formHead-wrapper [class^="section-entries"] h5 {
+  color: oklch(var(--bc)) !important;
+  background-color: oklch(var(--b3));
   border: none !important;
-  text-align: left;
+  padding-bottom: 3px;
 }
 
-.formHead-wrapper .collapse:not(.show) {
-  display: none;
-}
-
-.formHead-wrapper [id$="info"],
-[id$="required"] {
-  color: oklch(var(--bc));
-}
-
+/* form builder control where the
+click action is and the hover for the
+tooltips */
 .formHead-wrapper [id$="moveupbiginfo"],
 [id$="editinfo"],
 [id$="trashinfo"] {
@@ -310,32 +376,56 @@
   padding: 0.25em;
 }
 
-.formHead-wrapper [id$="required"],
-[id$="Default"] {
-  color: oklch(var(--bc));
-  accent-color: oklch(var(--b3));
-  background-color: oklch(var(--b2));
-  border-color: oklch(var(--b1));
-}
-
-.fa-circle-question,
-.fa-pencil,
-.fa-arrow-up,
-.fa-arrow-down,
-.fa-square-plus {
-  color: oklch(var(--s)) !important;
+/* form builder turns off the extra borders*/
+.formHead-wrapper [class^="cardEntries"],
+[class^="card-entry-row"],
+[class^="cardInteractions"],
+[class^="section-head"],
+[class^="section-footer"] {
   border: none !important;
 }
 
-.fa-trash {
-  color: oklch(var(--a)) !important;
-  border: none !important;
+/* form builder color the text color within the
+item type box */
+.formHead-wrapper [class$="Input"] {
+  color: oklch(var(--p));
 }
 
-.card-enum {
-  background-color: oklch(var(--b1)) !important;
+/* form builder indicator separator */
+.formHead-wrapper [class$="indicatorSeparator"],
+.card-modal-select [class$="indicatorSeparator"] {
+  --tw-border-opacity: 1;
+  background-color: oklch(var(--p) / var(--tw-border-opacity)) !important;
 }
 
+/* form builder
+controls the way the select box looks */
+.formHead-wrapper [class$="indicatorContainer"],
+.card-modal-select [class$="indicatorContainer"],
+.formHead-wrapper [class$="singleValue"],
+.card-modal-select [class$="singleValue"] {
+  color: oklch(var(--p));
+}
+
+/* form builder  make the number full width */
+.card-number {
+  width: 100%;
+}
+
+/* form builder
+turn off the dot over the tooltips */
+span.arrow.tooltip-arrow {
+  display: none;
+}
+
+/* form builder drop down hidden */
+[id^="react-select"] {
+  color: oklch(var(--p)) !important;
+  background-color: oklch(var(--pc)) !important;
+  z-index: 2000;
+}
+
+/* form builder new section or item */
 .popover,
 .popover-header,
 .popover-body,
@@ -345,38 +435,160 @@
   border-color: oklch(var(--b6)) !important;
 }
 
+/* form builder new section or item */
 .popover {
   border-radius: 10px;
 }
 
+/* form builder new section or item */
 .popover-header,
 .popover-body {
   padding: 10px;
 }
 
-.tooltip-inner,
-.tooltip-arrow,
-.tooltip-left,
-.tooltip-right {
-  padding: 10px;
-  border-radius: 10px;
-  color: oklch(var(--bc));
-  background-color: oklch(var(--b1));
-  /* position: absolute; */
-  margin: 8px;
+/* form builder radio buttons */
+
+/* Create a custom radio button */
+.fb-radio-button input[type="radio"] {
+  appearance: none; /* Remove the default appearance */
+  -webkit-appearance: none; /* For WebKit-based browsers like Chrome and Safari */
+  -moz-appearance: none; /* For Firefox */
+  width: 15px; /* Custom size */
+  height: 15px; /* Custom size */
+  border: 2px solid oklch(var(--p)); /* Custom border color and size */
+  border-radius: 50%; /* Make it circular */
+  outline: none;
+  cursor: pointer;
+  position: relative;
 }
 
-/* div.tooltip.show {
-  z-index: 9999 !important;
-} */
-
-span.arrow.tooltip-arrow {
-  display: none;
+/* When the radio button is checked */
+.fb-radio-button input[type="radio"]:checked {
+  background-color: oklch(var(--pc)); /* Inner fill color */
+  border-color: oklch(var(--p)); /* Border color when checked */
 }
 
-.our-tooltip {
-  padding: 10px;
-  border-radius: 10px;
-  color: oklch(var(--bc));
-  background-color: oklch(var(--b1));
+/* Add an inner circle to indicate the selection */
+.fb-radio-button input[type="radio"]:checked::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px; /* Size of the inner circle */
+  height: 10px;
+  background-color: oklch(var(--s)); /* Inner circle color */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* how the displayed survey looks */
+.rjsf .field {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/* put a border after the title */
+.rjsf #root__description {
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid;
+  border-color: oklch(var(--s));
+}
+
+/* turn off this border why */
+.rjsf .checkbox,
+.rjsf .radio {
+  border: none;
+}
+
+.rjsf input[type="text"],
+.rjsf input[type^="date"],
+.rjsf input[type^="password"],
+.rjsf .field select,
+.rjsf .field textarea {
+  --tw-border-opacity: 1;
+  background-color: oklch(var(--pc));
+  border-radius: 3px;
+  border-color: oklch(var(--p) / var(--tw-border-opacity));
+  border-width: 2px;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  margin-top: 0.5rem;
+  color: oklch(var(--p));
+  width: 100%;
+}
+
+.rjsf .field input:not([type="checkbox"]):not([type="radio"]) {
+  --tw-border-opacity: 1;
+  background-color: oklch(var(--pc));
+  border-radius: 3px;
+  border-color: oklch(var(--p) / var(--tw-border-opacity));
+  border-width: 2px;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  margin-top: 0.5rem;
+  color: oklch(var(--p));
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+/* Create a custom radio button */
+.rjsf input[type="radio"] {
+  appearance: none; /* Remove the default appearance */
+  -webkit-appearance: none; /* For WebKit-based browsers like Chrome and Safari */
+  -moz-appearance: none; /* For Firefox */
+  width: 20px !important; /* Custom size */
+  height: 20px; /* Custom size */
+  border: 2px solid oklch(var(--p)); /* Custom border color and size */
+  border-radius: 50%; /* Make it circular */
+  outline: none;
+  cursor: pointer;
+  position: absolute;
+  margin-right: 10px;
+}
+
+/* When the radio button is checked */
+.rjsf input[type="radio"]:checked {
+  background-color: oklch(var(--pc)); /* Inner fill color */
+  border-color: oklch(var(--p)); /* Border color when checked */
+}
+
+/* Add an inner circle to indicate the selection */
+.rjsf input[type="radio"]:checked::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px; /* Size of the inner circle */
+  height: 10px;
+  background-color: oklch(var(--s)); /* Inner circle color */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.rjsf .radio {
+  width: 100%;
+}
+
+.rjsf .radio label span span {
+  margin-left: 30px;
+}
+
+.tooltip {
+  z-index: 9999; /* A higher value than the modal */
+}
+
+.size-circle .CircularProgressbar {
+  width: 115px;
+  height: 115px;
+}
+
+.ourtooltips {
+  background-color: oklch(var(--nc)) !important;
+  color: oklch(var(--n)) !important;
+  font-weight: bold;
 }

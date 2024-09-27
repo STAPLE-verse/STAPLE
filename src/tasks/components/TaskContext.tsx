@@ -2,15 +2,16 @@ import React, { createContext, ReactNode, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
 import useAssignmentData from "src/assignments/hooks/useAssignmentData"
-import { Task, Column, Element, FormVersion } from "db"
+import { Task, KanbanBoard, Element, FormVersion } from "db"
 import { ExtendedAssignment } from "src/assignments/hooks/useAssignmentData"
 
 // Creating custom types
 export type ExtendedTask = Task & {
-  column: Column
+  container: KanbanBoard
   element: Element | null
   formVersion: FormVersion | null
   assignees: ExtendedAssignment[]
+  labels: []
 }
 
 interface TaskContextType {
@@ -36,7 +37,7 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
     where: { id: taskId },
     include: {
       element: true,
-      column: true,
+      container: true,
       formVersion: true,
       assignees: {
         include: {

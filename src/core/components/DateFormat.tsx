@@ -1,7 +1,7 @@
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 interface DateFormatProps {
-  date?: Date
+  date?: Date | null
 }
 
 export default function DateFormat({ date }: DateFormatProps) {
@@ -9,7 +9,7 @@ export default function DateFormat({ date }: DateFormatProps) {
   const locale = currentUser ? currentUser.language : "en-US"
 
   return (
-    <span>
+    <span data-testid="dateformat-id">
       {" "}
       {date
         ? date.toLocaleDateString(locale, {

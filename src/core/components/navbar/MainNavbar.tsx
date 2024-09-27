@@ -1,6 +1,3 @@
-//
-// issue with element versus string
-
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import React, { Suspense } from "react"
@@ -12,6 +9,7 @@ import { getInitials } from "src/services/getInitials"
 import { HomeIcon } from "@heroicons/react/24/outline"
 import NotificationsMenu from "src/notifications/components/NotificationMenu"
 import Image from "next/image"
+import { Tooltip } from "react-tooltip"
 
 type LogoProps = {
   theme: string
@@ -43,11 +41,11 @@ const StapleLogo = ({ theme }: LogoProps) => {
 const Navbar = () => {
   // Get current user data
   const currentUser = useCurrentUser()
+
   // Get initials for avatar
-  const initial = getInitials(currentUser!.firstName || "", currentUser!.lastName || "")
-  // Defining tabs
-  // with names and routes
-  // let tabs = []
+  const initial = currentUser
+    ? getInitials(currentUser!.firstName || "", currentUser!.lastName || "")
+    : ""
 
   // Logout
   const [logoutMutation] = useMutation(logout)
@@ -67,13 +65,11 @@ const Navbar = () => {
   }
 
   function toggleTheme(e) {
-    //console.log(e);
     localStorage.setItem("theme", e.target.value)
     setTheme(e.target.value)
   }
 
   React.useEffect(() => {
-    //console.log(localStorage.getItem("theme"));
     getThemeFromLocalStorage()
     const htmlElement = document.querySelector("html")
     if (htmlElement) {
@@ -89,14 +85,6 @@ const Navbar = () => {
       <div className="flex-1">{StapleLogo({ theme })}</div>
       {/* On the right */}
       <div className="flex space-x-5">
-        {/* Templated tabs tab */}
-        {/* <ul className="menu menu-horizontal menu-lg">
-          {tabs.map((tab) => (
-            <li key={tab.name}>
-              <Link href={tab.href}>{tab.name}</Link>
-            </li>
-          ))}
-        </ul> */}
         {/* Home tab */}
         <label
           tabIndex={0}
@@ -110,6 +98,7 @@ const Navbar = () => {
         </label>
         {/* Notifications tab */}
         <NotificationsMenu />
+
         {/* Profile tab */}
         <div className="dropdown dropdown-end">
           {/* TODO: Change to avatar if image is uploaded */}
@@ -117,20 +106,25 @@ const Navbar = () => {
             <div
               // TODO: DaisyUI tooltip is not working because css cannot deal with element edge
               // https://github.com/saadeghi/daisyui/discussions/1695
-              className="w-10 rounded-full our-tooltip"
-              data-tip={initial ? "" : "Go to Profile to add your name."}
+              className="w-10 rounded-full"
+              data-tooltip-id="profile-tooltip"
             >
+              <Tooltip
+                id="profile-tooltip"
+                content="Go to Profile update your information."
+                className="z-[1099] ourtooltips"
+                place="left"
+              />
               <span className="text-1xl">{initial ? initial : "?"}</span>
             </div>
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-300 rounded-box w-52"
           >
             <li>
               <Link className="justify-between" key="Profile" href={Routes.ProfilePage()}>
                 Profile
-                {/* <span className="badge">New</span> */}
               </Link>
             </li>
             <li>
@@ -194,9 +188,10 @@ const Navbar = () => {
 // TODO: might have to add a general loading screens so that we wait for the body and the navbar to load together
 const MainNavbar = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Navbar />
-    </Suspense>
+    // TODO: is this necessary?
+    // <Suspense fallback={<div>Loading...</div>}>
+    <Navbar />
+    // </Suspense>
   )
 }
 

@@ -1,7 +1,6 @@
 import { Suspense, useState } from "react"
 import Head from "next/head"
-import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
-import router from "next/router"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import Modal from "src/core/components/Modal"
@@ -17,15 +16,10 @@ import { AllLabelsList } from "src/labels/components/AllLabelsList"
 const LabelBuilderPage = () => {
   const currentUser = useCurrentUser()
   const [createLabelMutation] = useMutation(createLabel)
-  const page = Number(router.query.page) || 0
-
-  const ITEMS_PER_PAGE = 7
   //Only show labels that belongs to current user
-  const [{ labels, hasMore }, { refetch }] = usePaginatedQuery(getLabels, {
+  const [{ labels }, { refetch }] = useQuery(getLabels, {
     where: { user: { id: currentUser?.id } },
     orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
   })
 
   const reloadTable = async () => {
@@ -86,19 +80,13 @@ const LabelBuilderPage = () => {
         <h1 className="flex justify-center mb-2 text-3xl">All Roles</h1>
         <div>
           <Suspense fallback={<div>Loading...</div>}>
-            <AllLabelsList
-              page={page}
-              labels={labels}
-              hasMore={hasMore}
-              onChange={reloadTable}
-              taxonomyList={taxonomyList}
-            />
+            <AllLabelsList labels={labels} onChange={reloadTable} taxonomyList={taxonomyList} />
           </Suspense>
         </div>
         <div>
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn btn-primary mt-4"
             onClick={() => handleToggleNewLabelModal()}
           >
             New Role

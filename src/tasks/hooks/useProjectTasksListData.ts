@@ -1,25 +1,22 @@
-import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTasks, { GetTasksInput } from "../queries/getTasks"
-import { ContributorPrivileges } from "@prisma/client"
-import { useContributorPrivilege } from "src/contributors/components/ContributorPrivilegeContext"
+import { MemberPrivileges } from "@prisma/client"
+import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
+import { processProjectTasks } from "../utils/processTasks"
 
-const ITEMS_PER_PAGE = 10
-
-export default function useProjecTasksListData(projectId: number | undefined, page: number) {
+export default function useProjecTasksListData(projectId: number | undefined) {
   const currentUser = useCurrentUser()
 
-  const { privilege } = useContributorPrivilege()
+  const { privilege } = useMemberPrivileges()
 
   let queryParams: GetTasksInput = {
     where: { project: { id: projectId } },
     orderBy: [{ id: "asc" }],
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
   }
 
   if (privilege && currentUser) {
-    if (privilege === ContributorPrivileges.CONTRIBUTOR) {
+    if (privilege === MemberPrivileges.CONTRIBUTOR) {
       queryParams.where = {
         ...queryParams.where,
         OR: [
@@ -37,7 +34,9 @@ export default function useProjecTasksListData(projectId: number | undefined, pa
     }
   }
 
-  const [{ tasks, hasMore }] = usePaginatedQuery(getTasks, queryParams)
+  const [{ tasks: fetchedTasks }] = useQuery(getTasks, queryParams)
 
-  return { tasks, hasMore }
+  const tasks = processProjectTasks(fetchedTasks)
+
+  return { tasks }
 }

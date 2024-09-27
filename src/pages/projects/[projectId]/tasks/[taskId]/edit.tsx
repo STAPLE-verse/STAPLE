@@ -12,13 +12,13 @@ import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
 import TaskLayout from "src/core/layouts/TaskLayout"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 import { useTaskContext } from "src/tasks/components/TaskContext"
 import { responseSubmitted } from "src/assignments/utils/responseSubmitted"
 
 export const EditTask = () => {
   // Ensure that only PM can edit a task
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
   //Setup
   const router = useRouter()
   const [updateTaskMutation] = useMutation(updateTask)
@@ -38,12 +38,13 @@ export const EditTask = () => {
     .filter((id): id is number => id !== null)
 
   // Prepopulate form with previous responses
-  const labelsId = task.labels != undefined ? task.labels.map((label) => label.id) : []
+  //const labelsId = task.labels != undefined ? task.labels.map((label) => label.id) : []
+  const labelsId = task.labels?.map((label: { id: number }) => label.id) || []
 
   const initialValues = {
     name: task.name,
     description: task.description!,
-    columnId: task.columnId,
+    containerId: task.containerId,
     deadline: task.deadline,
     contributorsId: contributorsId,
     teamsId: teamsId,

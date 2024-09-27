@@ -12,21 +12,12 @@ export default resolver.pipe(
     const user = await db.user.findFirst({ where: { id: ctx.session.userId } })
     if (!user) throw new NotFoundError()
 
-    try {
-      await authenticateUser(user.email, currentPassword)
-    } catch (error) {
-      if (error instanceof AuthenticationError) {
-        throw new Error("Invalid Password")
-      }
-      throw error
-    }
-
     const hashedPassword = await SecurePassword.hash(newPassword.trim())
     await db.user.update({
       where: { id: user.id },
-      data: { hashedPassword },
+      data: { hashedPassword: hashedPassword },
     })
 
-    return true
+    return user
   }
 )

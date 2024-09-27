@@ -1,12 +1,11 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import Head from "next/head"
 import { Tab } from "@headlessui/react"
 import Layout from "src/core/layouts/Layout"
-import LabelsTab from "./LabelsTab"
 import TasksTab from "./TasksTab"
 import ContributorsTab from "./ContributorsTab"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -18,14 +17,6 @@ export const CreditsTabs = () => {
   return (
     <Tab.Group defaultIndex={0}>
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
-        {/* Tablink for board view */}
-        <Tab
-          className={({ selected }) =>
-            classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
-          }
-        >
-          Add Roles
-        </Tab>
         {/* TabLink for table view */}
         <Tab
           className={({ selected }) =>
@@ -46,11 +37,6 @@ export const CreditsTabs = () => {
       </Tab.List>
 
       <Tab.Panels>
-        {/* Tab for Add Roles */}
-        <Tab.Panel>
-          <LabelsTab></LabelsTab>
-        </Tab.Panel>
-
         {/* Tabpanel for Assign tasks */}
         <Tab.Panel>
           <TasksTab></TasksTab>
@@ -66,7 +52,7 @@ export const CreditsTabs = () => {
 }
 
 const CreditPage = () => {
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>

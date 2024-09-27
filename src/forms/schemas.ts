@@ -84,3 +84,11 @@ export const EditFormSchema = z.object({
       else return data as Prisma.NullableJsonNullValueInput
     }),
 })
+
+export const AddFormTemplatesSchema = z.object({
+  selectedFormIds: z.array(z.number()),
+})
+
+export const ArchiveFormSchema = z.object({
+  formId: z.number(),
+})

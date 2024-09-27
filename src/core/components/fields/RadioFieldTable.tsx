@@ -35,6 +35,7 @@ const RadioFieldTable = <T,>({
         cell: ({ row }) => (
           <input
             type="radio"
+            className="radio radio-primary"
             checked={selectedId === row.original.id}
             onChange={() => handleSelection(row.original.id)}
           />
@@ -57,7 +58,7 @@ const RadioFieldTable = <T,>({
 
   return (
     <>
-      <Table columns={columns} data={data} />
+      <Table columns={columns} data={data} addPagination={true} />
       {meta.touched && meta.error && (
         <div role="alert" style={{ color: "red" }}>
           {meta.error}

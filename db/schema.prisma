@@ -31,7 +31,7 @@ model User {
   sessions Session[]
 
   contributions    Contributor[]
-  forms            Forms[]
+  forms            Form[]
   notifications    Notification[] @relation("UserNotifications")
   contributorLabel Label[]
 
@@ -49,9 +49,8 @@ model Session {
   antiCSRFToken      String?
   publicData         String?
   privateData        String?
-
-  user   User? @relation(fields: [userId], references: [id])
-  userId Int?
+  user               User?     @relation(fields: [userId], references: [id])
+  userId             Int?
 }
 
 model Token {
@@ -60,33 +59,17 @@ model Token {
   updatedAt   DateTime @updatedAt
   hashedToken String
   type        String
-  // See note below about TokenType enum
-  // type        TokenType
   expiresAt   DateTime
   sentTo      String
-
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
 
   @@unique([hashedToken, type])
 }
 
-// NOTE: It's highly recommended to use an enum for the token type
-//       but enums only work in Postgres.
-//       See: https://blitzjs.com/docs/database-overview#switch-to-postgre-sql
-// enum TokenType {
-//   RESET_PASSWORD
-// }
-
-enum ContributorPrivileges {
+enum MemberPrivileges {
   PROJECT_MANAGER
   CONTRIBUTOR
-}
-
-enum InvitationStatus {
-  INVITED
-  ACCEPTED
-  DECLINED
 }
 
 model Contributor {
@@ -97,10 +80,9 @@ model Contributor {
   user                User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   project             Project               @relation(fields: [projectId], references: [id])
   assignments         Assignment[]
-  privilege           ContributorPrivileges @default(PROJECT_MANAGER)
+  privilege           MemberPrivileges      @default(PROJECT_MANAGER)
   teams               Team[]
   tasks               Task[]
-  invitationStatus    InvitationStatus      @default(INVITED)
   deleted             Boolean               @default(false)
   assignmentStatusLog AssignmentStatusLog[]
   // allow them to have multiple contributor labels, I think like the task array?
@@ -108,8 +90,20 @@ model Contributor {
   labels              Label[]
 }
 
-// Contribution type
+// Invites
+model Invitation {
+  createdAt      DateTime         @default(now())
+  id             Int              @id @default(autoincrement())
+  projectId      Int
+  project        Project          @relation(fields: [projectId], references: [id])
+  invitationCode String
+  labels         Label[] // will change to roles
+  email          String
+  privilege      MemberPrivileges @default(CONTRIBUTOR)
+  addedBy        String
+}
 
+// Contribution type
 model Label {
   id           Int           @id @default(autoincrement())
   userId       Int
@@ -117,9 +111,9 @@ model Label {
   name         String
   description  String?
   taxonomy     String?
-  projects     Project[]
   tasks        Task[]
   contributors Contributor[]
+  invitation   Invitation[]
 }
 
 model Project {
@@ -135,40 +129,41 @@ model Project {
   identifier    String?
   tasks         Task[]
   elements      Element[]
-  columns       Column[]
+  containers    KanbanBoard[]
   contributors  Contributor[]
   teams         Team[]
-  labels        Label[]
   projectWidget ProjectWidget[]
   notifications Notification[]
+
+  invitations Invitation[]
 }
 
-enum TaskStatus {
+enum Status {
   COMPLETED
   NOT_COMPLETED
 }
 
 model Task {
-  id              Int          @id @default(autoincrement())
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  createdBy       Contributor  @relation(fields: [createdById], references: [id], onDelete: Cascade)
-  createdById     Int
-  deadline        DateTime?
-  name            String
-  description     String?
-  columnId        Int
-  columnTaskIndex Int
-  column          Column       @relation(fields: [columnId], references: [id])
-  projectId       Int
-  project         Project      @relation(fields: [projectId], references: [id])
-  elementId       Int?
-  element         Element?     @relation(fields: [elementId], references: [id])
-  assignees       Assignment[]
-  formVersionId   Int?
-  formVersion     FormVersion? @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
-  status          TaskStatus   @default(NOT_COMPLETED)
-  tags            String?
+  id                 Int          @id @default(autoincrement())
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  createdBy          Contributor  @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById        Int
+  deadline           DateTime?
+  name               String
+  description        String?
+  containerTaskOrder Int //tells you what order the tasks are in for that container
+  containerId        Int //tells you which container it is in
+  container          KanbanBoard  @relation(fields: [containerId], references: [id])
+  projectId          Int
+  project            Project      @relation(fields: [projectId], references: [id])
+  elementId          Int?
+  element            Element?     @relation(fields: [elementId], references: [id])
+  assignees          Assignment[]
+  formVersionId      Int?
+  formVersion        FormVersion? @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
+  status             Status       @default(NOT_COMPLETED)
+  tags               String?
 
   labels Label[]
 }
@@ -221,15 +216,15 @@ model Team {
   assignments  Assignment[]
 }
 
-model Column {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String   @default("To Do") // Might not need this
-  tasks       Task[]
-  columnIndex Int
-  projectId   Int
-  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+model KanbanBoard {
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  name           String   @default("To Do")
+  tasks          Task[]
+  containerOrder Int // tells you the order of the containers
+  projectId      Int
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 model Element {
@@ -245,7 +240,7 @@ model Element {
   children    Element[] @relation("ElementToElement")
 }
 
-model Forms {
+model Form {
   id        Int           @id @default(autoincrement())
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
@@ -263,8 +258,8 @@ model FormVersion {
   schema    Json
   uiSchema  Json?
   createdAt DateTime @default(now())
-  Form      Forms    @relation(fields: [formId], references: [id], onDelete: Cascade)
-  Task      Task[]
+  form      Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  tasks     Task[]
 
   @@index([formId, version], name: "formVersionIndex")
 }
@@ -280,26 +275,35 @@ model Notification {
   project      Project? @relation(fields: [projectId], references: [id])
 }
 
+enum WidgetSize {
+  SMALL
+  MEDIUM
+  LARGE
+}
+
 model Widget {
-  id       Int     @id @default(autoincrement())
+  id       Int        @id @default(autoincrement())
   userId   Int
-  user     User    @relation(fields: [userId], references: [id])
+  user     User       @relation(fields: [userId], references: [id])
   type     String // "LastProject", "Notifications", "OverdueTask", "UpcomingTask"
-  show     Boolean @default(true)
+  show     Boolean    @default(true)
   position Int
+  size     WidgetSize @default(MEDIUM)
 
   @@unique([userId, type])
 }
 
 model ProjectWidget {
-  id        Int     @id @default(autoincrement())
+  id        Int                @id @default(autoincrement())
   userId    Int
-  user      User    @relation(fields: [userId], references: [id])
+  user      User               @relation(fields: [userId], references: [id])
   projectId Int
-  project   Project @relation(fields: [projectId], references: [id])
+  project   Project            @relation(fields: [projectId], references: [id])
   type      String
-  show      Boolean @default(true)
+  show      Boolean            @default(true)
   position  Int
+  size      WidgetSize         @default(MEDIUM)
+  privilege MemberPrivileges[] @default([CONTRIBUTOR, PROJECT_MANAGER])
 
   @@unique([userId, projectId, type])
 }

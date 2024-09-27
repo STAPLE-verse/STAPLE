@@ -1,7 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { getSchemaTitle } from "src/services/getSchemaTitle"
 import { FormVersion, Task } from "db"
 
 export interface TaskWithFormVersion extends Task {
@@ -14,9 +13,9 @@ export const projectFormsTableColumns = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Task",
   }),
-  columnHelper.accessor((row) => row.formVersion?.schema, {
+  columnHelper.accessor((row) => row.formVersion?.name, {
     id: "formVersionSchema",
-    cell: (info) => <span>{info.getValue() ? getSchemaTitle(info.getValue()) : ""}</span>,
+    cell: (info) => <span>{info.getValue()}</span>,
     header: "Form Required",
   }),
   // Check if the id is correct

@@ -50,7 +50,7 @@ const NewTaskPage = () => {
                 const task = await createTaskMutation({
                   name: values.name,
                   description: values.description,
-                  columnId: values.columnId,
+                  containerId: values.containerId,
                   projectId: projectId!,
                   deadline: values.deadline,
                   elementId: values.elementId,

@@ -35,7 +35,7 @@ export const TaskInformation = () => {
         <Tooltip
           id="tool-task"
           content="Overall information about this task"
-          className="z-[1099]"
+          className="z-[1099] ourtooltips"
         />
 
         <p>

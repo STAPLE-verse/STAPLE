@@ -10,7 +10,7 @@ const GetColumn = z.object({
 
 export default resolver.pipe(resolver.zod(GetColumn), resolver.authorize(), async ({ id }) => {
   // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-  const column = await db.column.findFirst({ where: { id } })
+  const column = await db.kanbanBoard.findFirst({ where: { id } })
 
   if (!column) throw new NotFoundError()
 

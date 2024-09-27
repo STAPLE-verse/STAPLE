@@ -7,7 +7,6 @@ import toast from "react-hot-toast"
 import updateLabel from "../mutations/updateLabel"
 import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
-import { strict } from "assert"
 import { LabelFormSchema } from "../schemas"
 
 export type LabelInformation = {
@@ -46,7 +45,6 @@ const EditColumn = ({ row }) => {
   const taxonomyList = row.taxonomyList
 
   const handleEditLabel = async (values) => {
-    // console.log(values)
     try {
       const updated = await updateLabelMutation({
         ...values,
@@ -118,7 +116,6 @@ const DeleteColumn = ({ row }) => {
   const { id = null, onChangeCallback = null, ...rest } = { ...row }
 
   const handleDeleteLabel = async (values) => {
-    // console.log(values)
     if (window.confirm("This role will be permanently deleted. Are you sure to continue?")) {
       try {
         const updated = await deleteLabelMutation({

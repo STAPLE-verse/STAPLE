@@ -1,27 +1,22 @@
 import React, { useState } from "react"
-import { Task } from "db"
-
-import { RowSelection, createColumnHelper } from "@tanstack/react-table"
-import Link from "next/link"
-import { Routes } from "@blitzjs/next"
+import { createColumnHelper } from "@tanstack/react-table"
 import Modal from "src/core/components/Modal"
-import { LabelForm } from "./LabelForm"
 import { FORM_ERROR } from "final-form"
-
 import toast from "react-hot-toast"
-import updateLabel from "../mutations/updateLabel"
-import deleteLabel from "../mutations/deleteLabel"
 import { useMutation } from "@blitzjs/rpc"
 import { AddLabelForm } from "./AddLabelForm"
 import { LabelIdsFormSchema } from "../schemas"
 import updateTaskLabel from "src/tasks/mutations/updateTaskLabel"
-import { labelTableColumns } from "./LabelTable"
-import TaskTableModal from "./LabelAddTableModal"
+import { useParam } from "@blitzjs/next"
+
+export type Label = {
+  name: string
+}
 
 export type TaskLabelInformation = {
-  name: string
+  name?: string
   description?: string
-  labels?: []
+  labels?: Label[]
   id: number
   selectedIds: number[]
   onChangeCallback?: () => void
@@ -39,6 +34,7 @@ const AddLabelsColumn = ({ row }) => {
     ...rest
   } = { ...row }
 
+  const projectId = useParam("projectId", "number")
   const [openEditLabelModal, setOpenEditLabelModal] = useState(false)
   const handleToggleEditLabelModal = () => {
     setOpenEditLabelModal((prev) => !prev)
@@ -86,6 +82,7 @@ const AddLabelsColumn = ({ row }) => {
           <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
           <div className="flex justify-start mt-4">
             <AddLabelForm
+              projectId={projectId}
               schema={LabelIdsFormSchema}
               submitText="Update Role"
               className="flex flex-col"
@@ -111,21 +108,6 @@ const AddLabelsColumn = ({ row }) => {
   )
 }
 
-const LabelsColunm = ({ row }) => {
-  const labels = row.labels || []
-  return (
-    <div className="modal-action flex justify-center mt-4">
-      {
-        <ul className="list-none">
-          {labels.map((label) => (
-            <li key={label.id}> {label.name}</li>
-          ))}
-        </ul>
-      }
-    </div>
-  )
-}
-
 export const MultipleCheckboxColumn = ({ row }) => {
   const handleOnChange = (id) => {
     if (row.onMultipledAdded != undefined) {
@@ -141,7 +123,7 @@ export const MultipleCheckboxColumn = ({ row }) => {
             <label className="label cursor-pointer">
               <input
                 type="checkbox"
-                className="checkbox checkbox-primary"
+                className="checkbox checkbox-primary border-2"
                 checked={row.selectedIds.includes(row.id)}
                 onChange={() => {
                   handleOnChange(row.id)
@@ -170,26 +152,24 @@ export const labelTaskTableColumns = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Description",
   }),
-  columnHelper.accessor("labels", {
-    id: "labels",
-    cell: (info) => <LabelsColunm row={info.row.original}></LabelsColunm>,
-    header: "Roles",
-  }),
-
+  columnHelper.accessor(
+    (row) => {
+      const labels = row.labels || []
+      return labels.map((label) => label.name).join(", ") // Combine all label names into a single string
+    },
+    {
+      id: "labels",
+      header: "Roles",
+      cell: (info) => <div>{info.getValue()}</div>,
+      enableColumnFilter: true,
+    }
+  ),
   columnHelper.accessor("id", {
     id: "open",
     header: "Add Role",
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <AddLabelsColumn row={info.row.original}></AddLabelsColumn>,
-    // cell: (info) => (
-    //   <TaskTableModal
-    //     buttonName={"Add Role"}
-    //     labels={info.row.original.labels}
-    //     tasksId={[info.row.original.id]}
-    //     onChangeCallback={info.row.original.onChangeCallback || null}
-    //   ></TaskTableModal>
-    // ),
   }),
 
   columnHelper.accessor("id", {
@@ -199,30 +179,4 @@ export const labelTaskTableColumns = [
     cell: (info) => <MultipleCheckboxColumn row={info.row.original}></MultipleCheckboxColumn>,
     header: "Add Multiple",
   }),
-
-  // columnHelper.accessor("id", {
-  //   id: "multiple",
-  //   enableColumnFilter: false,
-  //   enableSorting: false,
-  //   cell: (info) => (
-  //     <span>
-  //       {
-  //         <div>
-  //           <label className="label cursor-pointer">
-  //             <input
-  //               type="checkbox"
-  //               className="checkbox checkbox-primary"
-  //               checked={false}
-  //               onChange={() => {
-  //                 // console.log("Add multiple")
-  //                 // handleOnChange(info.row.original)
-  //               }}
-  //             />
-  //           </label>
-  //         </div>
-  //       }
-  //     </span>
-  //   ),
-  //   header: "Add Multiple",
-  // }),
 ]

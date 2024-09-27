@@ -23,7 +23,7 @@ const AddContainer = ({ projectId, refetch }) => {
     <>
       <TaskModal showModal={showAddContainerModal} setShowModal={setShowAddContainerModal}>
         <div className="flex flex-col w-full items-start gap-y-4 bg-base-300">
-          <h1 className="text-3xl font-bold">Add Container</h1>
+          <h1 className="text-3xl font-bold">Add Column</h1>
           <TaskInput
             type="text"
             placeholder="Container Title"
@@ -32,7 +32,7 @@ const AddContainer = ({ projectId, refetch }) => {
             onChange={(e) => setContainerName(e.target.value)}
           />
           <button type="button" className="btn btn-primary" onClick={onAddContainer}>
-            Add container
+            Add Column
           </button>
         </div>
       </TaskModal>
@@ -44,14 +44,14 @@ const AddContainer = ({ projectId, refetch }) => {
         <Tooltip
           id="kanban-tooltip"
           content="Completed tasks appear in a shade of green"
-          className="z-[1099]"
+          className="z-[1099] ourtooltips"
         />
         <button
           type="button"
           className="btn btn-primary"
           onClick={() => setShowAddContainerModal(true)}
         >
-          Add Container
+          Add Column
         </button>
       </div>
     </>

@@ -80,7 +80,11 @@ const AssignmentsContent = () => {
           <div className="card-body overflow-x-auto">
             <div className="card-title">Individual Contributors</div>
             {processedIndividualAssignments.length > 0 ? (
-              <Table columns={individualColumns} data={processedIndividualAssignments} />
+              <Table
+                columns={individualColumns}
+                data={processedIndividualAssignments}
+                addPagination={true}
+              />
             ) : (
               <span>This task does not have individual contributors </span>
             )}
@@ -93,7 +97,7 @@ const AssignmentsContent = () => {
           <div className="card-body overflow-x-auto">
             <div className="card-title">Team Contributors</div>
             {processedTeamAssignments.length > 0 ? (
-              <Table columns={teamColumns} data={processedTeamAssignments} />
+              <Table columns={teamColumns} data={processedTeamAssignments} addPagination={true} />
             ) : (
               <span>This task does not have teams of contributors</span>
             )}

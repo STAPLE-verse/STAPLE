@@ -13,25 +13,25 @@ export default resolver.pipe(
         // Inputs from project creation form
         ...input,
         // Initialize project with "To Do", "In Progress", "Done" kanban board columns
-        columns: {
+        containers: {
           create: [
             {
               name: "To Do",
-              columnIndex: 0,
+              containerOrder: 0,
             },
             {
               name: "In Progress",
-              columnIndex: 1,
+              containerOrder: 1,
             },
             {
               name: "Done",
-              columnIndex: 2,
+              containerOrder: 2,
             },
           ],
         },
       },
       include: {
-        columns: true,
+        containers: true,
       },
     })
 
@@ -40,7 +40,7 @@ export default resolver.pipe(
       data: {
         userId,
         projectId: project.id,
-        // Since ContributorPrivileges defaults to project manager the new contirbutor will be the project manager
+        // Since MemberPrivileges defaults to project manager the new contributor will be the project manager
       },
     })
 

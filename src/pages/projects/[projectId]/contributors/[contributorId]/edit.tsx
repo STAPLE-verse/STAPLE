@@ -12,11 +12,15 @@ import updateContributor from "src/contributors/mutations/updateContributor"
 import { ContributorForm } from "src/contributors/components/ContributorForm"
 import { FORM_ERROR } from "final-form"
 import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "@prisma/client"
+import { MemberPrivileges } from "@prisma/client"
 import { getContributorName } from "src/services/getName"
+import addProjectManagerWidgets from "src/widgets/mutations/addProjectManagerWidgets"
+import removeProjectManagerWidgets from "src/widgets/mutations/removeProjectManagerWidgets"
 
 export const EditContributor = () => {
   const [updateContributorMutation] = useMutation(updateContributor)
+  const [addProjectManagerWidgetsMutation] = useMutation(addProjectManagerWidgets)
+  const [removeProjectManagerWidgetsMutation] = useMutation(removeProjectManagerWidgets)
   const router = useRouter()
 
   const contributorId = useParam("contributorId", "number")
@@ -43,6 +47,7 @@ export const EditContributor = () => {
 
   const labelsId =
     contributor["labels"] != undefined ? contributor["labels"].map((label) => label.id) : []
+
   // Set initial values
   const initialValues = {
     privilege: contributor.privilege,
@@ -67,12 +72,30 @@ export const EditContributor = () => {
         privilege: values.privilege,
         labelsId: values.labelsId,
       })
+
       await toast.promise(Promise.resolve(updated), {
         loading: "Updating contributor information...",
         success: "Contributor information updated!",
         error: "Failed to update the contributor information...",
       })
+
+      // Add or remove widgets based on privilege change
+      if (values.privilege === "PROJECT_MANAGER") {
+        // Add widgets for project manager
+        await addProjectManagerWidgetsMutation({
+          userId: contributor.userId,
+          projectId: projectId!,
+        })
+      } else if (values.privilege === "CONTRIBUTOR") {
+        // Remove widgets exclusive to project manager
+        await removeProjectManagerWidgetsMutation({
+          userId: contributor.userId,
+          projectId: projectId!,
+        })
+      }
+
       await setQueryData(updated)
+
       await router.push(
         Routes.ShowContributorPage({
           projectId: projectId!,
@@ -107,7 +130,7 @@ export const EditContributor = () => {
 }
 
 const EditContributorPage = () => {
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>

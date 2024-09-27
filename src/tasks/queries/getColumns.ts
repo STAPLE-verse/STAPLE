@@ -1,13 +1,13 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
-interface GetColumnsInput
-  extends Pick<Prisma.ColumnFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
+interface GetKanbanBoardInput
+  extends Pick<Prisma.KanbanBoardFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, skip, take, include }: GetColumnsInput) => {
-    const query: Prisma.ColumnFindManyArgs = {
+  async ({ where, orderBy, skip, take, include }: GetKanbanBoardInput) => {
+    const query: Prisma.KanbanBoardFindManyArgs = {
       where,
       orderBy,
       skip,
@@ -15,7 +15,7 @@ export default resolver.pipe(
       include,
     }
 
-    const columns = await db.column.findMany(query)
+    const columns = await db.kanbanBoard.findMany(query)
 
     return columns
   }

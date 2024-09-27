@@ -1,14 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-
-type UpdateWidgetPositionInput = {
-  id: number
-  position: number
-}[]
-
-interface UpdatePositionsInput {
-  positions: UpdateWidgetPositionInput
-}
+import { UpdatePositionsInput } from "./updateWidget"
 
 export default resolver.pipe(
   resolver.authorize(),

@@ -1,6 +1,7 @@
 import { useQuery } from "@blitzjs/rpc"
 import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
+import { processFinishedTasks } from "../utils/processTasks"
 
 export const ContributorTaskListDone = ({ contributor, columns }) => {
   const [{ tasks }] = useQuery(getTasks, {
@@ -30,9 +31,11 @@ export const ContributorTaskListDone = ({ contributor, columns }) => {
     }))
     .filter((task) => task.assignees.length > 0)
 
+  const processedTasks = processFinishedTasks(completedTasks)
+
   return (
     <div>
-      <Table columns={columns} data={completedTasks} />
+      <Table columns={columns} data={processedTasks} addPagination={true} />
     </div>
   )
 }

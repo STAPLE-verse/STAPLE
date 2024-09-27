@@ -15,11 +15,10 @@ import { getPrivilegeText } from "src/services/getPrivilegeText"
 import { ContributorTaskListDone } from "src/tasks/components/ContributorsTaskListDone"
 import { ContributorLabelsList } from "src/labels/components/ContributorsLabelsList"
 import { labelTableColumnsSimple } from "src/labels/components/LabelTable"
-import { taskFinishedTableColumns } from "src/tasks/components/TaskTable"
+import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
-import { ContributorPrivileges } from "db"
+import { MemberPrivileges } from "db"
 import toast from "react-hot-toast"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
 
 export const ContributorPage = () => {
   const router = useRouter()
@@ -35,8 +34,6 @@ export const ContributorPage = () => {
   }) as unknown as Contributor & {
     user: User
   }
-
-  console.log(contributor)
 
   const [currentContributor] = useQuery(getContributor, {
     where: { projectId: projectId, id: contributorId },
@@ -67,7 +64,7 @@ export const ContributorPage = () => {
   }
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>{user.username} Contributions</title>
       </Head>
@@ -98,7 +95,7 @@ export const ContributorPage = () => {
             </p>
 
             <div className="card-actions justify-end">
-              {currentContributor.privilege === ContributorPrivileges.PROJECT_MANAGER ? (
+              {currentContributor.privilege === MemberPrivileges.PROJECT_MANAGER ? (
                 <Link
                   className="btn btn-primary"
                   href={Routes.EditContributorPage({
@@ -122,11 +119,16 @@ export const ContributorPage = () => {
               usersId={[user?.id]}
               projectId={projectId}
               columns={labelTableColumnsSimple}
-            ></ContributorLabelsList>
+            />
             <div className="card-actions justify-end">
-              <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId! })}>
-                Edit Roles
-              </Link>
+              {currentContributor.privilege === MemberPrivileges.PROJECT_MANAGER && (
+                <Link
+                  className="btn btn-primary"
+                  href={Routes.CreditPage({ projectId: projectId! })}
+                >
+                  Edit Roles
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -136,37 +138,45 @@ export const ContributorPage = () => {
             <div className="card-title">Contribution Tasks</div>
             <ContributorTaskListDone
               contributor={currentContributor}
-              columns={taskFinishedTableColumns}
-            ></ContributorTaskListDone>
+              columns={finishedTasksTableColumns}
+            />
+
             <div className="card-actions justify-end">
-              <Link className="btn btn-primary" href={Routes.CreditPage({ projectId: projectId! })}>
-                Edit Roles
-              </Link>
+              {currentContributor.privilege === MemberPrivileges.PROJECT_MANAGER && (
+                <Link
+                  className="btn btn-primary"
+                  href={Routes.CreditPage({ projectId: projectId! })}
+                >
+                  Edit Roles
+                </Link>
+              )}
             </div>
           </div>
         </div>
-
-        <div className="flex justify-end mt-4">
-          <button
-            className="btn btn-secondary"
-            type="button"
-            onClick={handleDelete}
-            style={{ marginLeft: "0.5rem" }}
-          >
-            Delete Contributor
-          </button>
-        </div>
+        {currentContributor.privilege === MemberPrivileges.PROJECT_MANAGER && (
+          <div className="flex justify-end mt-4">
+            <button
+              className="btn btn-secondary"
+              type="button"
+              onClick={handleDelete}
+              style={{ marginLeft: "0.5rem" }}
+            >
+              Delete Contributor
+            </button>
+          </div>
+        )}
       </main>
-    </Layout>
+    </>
   )
 }
 
 const ShowContributorPage = () => {
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ContributorPage />
-    </Suspense>
+    <Layout>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ContributorPage />
+      </Suspense>
+    </Layout>
   )
 }
 

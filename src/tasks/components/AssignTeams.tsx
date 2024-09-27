@@ -46,7 +46,7 @@ const AssignTeams = ({ onChange, teamOptions }: Props) => {
               <label className="label cursor-pointer">
                 <input
                   type="checkbox"
-                  className="checkbox checkbox-primary"
+                  className="checkbox checkbox-primary border-2"
                   checked={info.row.original.checked}
                   onChange={() => {
                     handleOnChange(info.row.original)
@@ -69,7 +69,7 @@ const AssignTeams = ({ onChange, teamOptions }: Props) => {
   return (
     <div>
       <div className="flex mt-2 font-bold">Assign Team to task</div>
-      <Table columns={contributorTableColumns} data={teamChecked}></Table>
+      <Table columns={contributorTableColumns} data={teamChecked} addPagination={true}></Table>
     </div>
   )
 }

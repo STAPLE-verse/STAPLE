@@ -23,6 +23,7 @@ const ElementItem: React.FC<ElementItemProps> = ({ element, projectId, tasks, on
 
   return (
     <div className="collapse collapse-arrow bg-base-300 mb-2" key={element.id}>
+      {/* Don't change this one it's not a check box */}
       <input type="checkbox" />
       {/* Element name */}
       <div className="collapse-title text-xl font-medium">{element.name}</div>
@@ -77,7 +78,7 @@ const ElementItem: React.FC<ElementItemProps> = ({ element, projectId, tasks, on
             View Element
           </Link>
           {/* Update tasks in the element */}
-          <button className="btn btn-primary" onClick={openModal}>
+          <button className="btn btn-secondary" onClick={openModal}>
             Update Tasks
           </button>
           <UpdateTasks

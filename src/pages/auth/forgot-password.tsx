@@ -29,9 +29,9 @@ const ForgotPasswordPage: BlitzPage = () => {
       <h1 className="text-center text-3xl">Reset Password</h1>
 
       {isSuccess ? (
-        <div className="mt-2 mb-2">
+        <div className="mt-10 mb-2">
           <h2 className="text-center text-3xl">Request Submitted</h2>
-          <p>
+          <p className="text-xl mt-2">
             If your email is in our system, you will receive instructions to reset your password
             shortly.
           </p>
@@ -55,7 +55,7 @@ const ForgotPasswordPage: BlitzPage = () => {
             name="email"
             label="Email:"
             placeholder="Email"
-            className="mb-4 mt-4 w-full text-primary border-primary border-2 bg-base-300"
+            className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
           />
         </Form>
       )}

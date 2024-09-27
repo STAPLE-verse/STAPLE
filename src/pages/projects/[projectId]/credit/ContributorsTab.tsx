@@ -1,14 +1,10 @@
 import { Suspense, useState } from "react"
-import { useMutation, usePaginatedQuery } from "@blitzjs/rpc"
-import router, { useRouter } from "next/router"
-
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { useMutation, useQuery } from "@blitzjs/rpc"
 
 import React from "react"
 import Modal from "src/core/components/Modal"
 import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
-import createLabel from "src/labels/mutations/createLabel"
 import Table from "src/core/components/Table"
 import { useParam } from "@blitzjs/next"
 import {
@@ -21,10 +17,9 @@ import { AddLabelForm } from "src/labels/components/AddLabelForm"
 import { LabelIdsFormSchema } from "src/labels/schemas"
 import updateContributorLabel from "src/contributors/mutations/updateContributorLabel"
 
-export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange }) => {
-  const projectId = useParam("projectId", "number")
-  const router = useRouter()
+export const AllContributorLabelsList = ({ contributors, onChange }) => {
   const [updateContributorLabelMutation] = useMutation(updateContributorLabel)
+  const projectId = useParam("projectId", "number")
 
   const labelChanged = async () => {
     if (onChange != undefined) {
@@ -32,14 +27,9 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
     }
   }
 
-  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
-
   const [selectedIds, setSelectedIds] = useState([] as number[])
-  //TODO refactor and merge with task tab
   const handleMultipleChanged = (selectedId: number) => {
     const isSelected = selectedIds.includes(selectedId)
-    // console.log("Id changed: ", selectedId, " is selected: ", isSelected)
     const newSelectedIds = isSelected
       ? selectedIds.filter((id) => id !== selectedId)
       : [...selectedIds, selectedId]
@@ -54,8 +44,6 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
 
   const handleAddLabel = async (values) => {
     try {
-      //console.log(values)
-      //console.log(selectedIds)
       const updated = await updateContributorLabelMutation({
         ...values,
         contributorsId: selectedIds,
@@ -102,19 +90,8 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <Table columns={labelContributorTableColumns} data={taskInformation} />
-      <div className="join grid grid-cols-2 my-6">
-        <button
-          className="join-item btn btn-secondary"
-          disabled={page === 0}
-          onClick={goToPreviousPage}
-        >
-          Previous
-        </button>
-        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
-      </div>
+      <Table columns={labelContributorTableColumns} data={taskInformation} addPagination={true} />
+
       <div className="modal-action flex justify-end mt-4">
         <button
           type="button"
@@ -131,6 +108,7 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
             <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
             <div className="flex justify-start mt-4">
               <AddLabelForm
+                projectId={projectId}
                 schema={LabelIdsFormSchema}
                 submitText="Update Role"
                 className="flex flex-col"
@@ -158,19 +136,12 @@ export const AllContributorLabelsList = ({ hasMore, page, contributors, onChange
 }
 
 const ContributorsTab = () => {
-  // const currentUser = useCurrentUser()
-
-  const page = Number(router.query.page) || 0
   const projectId = useParam("projectId", "number")
 
-  const ITEMS_PER_PAGE = 7
-
-  const [{ contributors, hasMore }, { refetch }] = usePaginatedQuery(getContributors, {
+  const [{ contributors }, { refetch }] = useQuery(getContributors, {
     where: { project: { id: projectId! } },
     include: { user: true, labels: true },
     orderBy: { id: "asc" },
-    skip: ITEMS_PER_PAGE * page,
-    take: ITEMS_PER_PAGE,
   })
 
   const reloadTable = async () => {
@@ -181,12 +152,7 @@ const ContributorsTab = () => {
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <div>
         <Suspense fallback={<div>Loading...</div>}>
-          <AllContributorLabelsList
-            page={page}
-            contributors={contributors}
-            hasMore={hasMore}
-            onChange={reloadTable}
-          />
+          <AllContributorLabelsList contributors={contributors} onChange={reloadTable} />
         </Suspense>
       </div>
     </main>

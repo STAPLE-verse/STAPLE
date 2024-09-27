@@ -1,13 +1,13 @@
 import React from "react"
-import { FormVersion, Forms } from "db"
+import { FormVersion, Form } from "db"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
-import { getSchemaTitle } from "src/services/getSchemaTitle"
 import DateFormat from "src/core/components/DateFormat"
+import ArchiveFormButton from "./ArchiveFormButton"
 
-export interface FormWithFormVersion extends Forms {
+export interface FormWithFormVersion extends Form {
   formVersion: FormVersion | null
 }
 
@@ -16,8 +16,8 @@ const columnHelper = createColumnHelper<FormWithFormVersion>()
 
 // ColumnDefs
 export const formsTableColumns = [
-  columnHelper.accessor("formVersion.schema", {
-    cell: (info) => <span>{getSchemaTitle(info.getValue())}</span>,
+  columnHelper.accessor("formVersion.name", {
+    cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
   }),
   columnHelper.accessor("updatedAt", {
@@ -45,7 +45,7 @@ export const formsTableColumns = [
       return (
         <>
           <JsonFormModal
-            schema={info.row.original.formVersion?.schema}
+            schema={info.row.original.formVersion?.schema!}
             uiSchema={extendedUiSchema}
             metadata={{}}
             label="View"
@@ -65,5 +65,12 @@ export const formsTableColumns = [
       </Link>
     ),
     header: "Edit",
+  }),
+  columnHelper.accessor("id", {
+    id: "delete",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => <ArchiveFormButton formId={info.getValue()} />,
+    header: "Delete",
   }),
 ]

@@ -7,43 +7,71 @@ import { getPrivilegeText } from "src/services/getPrivilegeText"
 export default resolver.pipe(
   resolver.zod(CreateContributorSchema),
   resolver.authorize(),
-  async (input, ctx) => {
-    // Create contributor
-    const contributor = await db.contributor.create({
-      data: {
-        userId: input.userId,
-        projectId: input.projectId,
-        privilege: input.privilege,
+  async ({ invitationCode, userId }, ctx) => {
+    var textResult
+    // get the invitation information
+    const projectInvite = await db.invitation.findFirst({
+      where: {
+        invitationCode: invitationCode,
+      },
+      include: {
+        labels: true,
       },
     })
 
-    //connect to labels
-    let c1 = await db.contributor.update({
-      where: { id: contributor.id },
-      data: {
-        labels: {
-          connect: input.labelsId?.map((c) => ({ id: c })) || [],
-        },
-      },
-    })
-
-    // Send notification
-    // Get information for the notification
-    const project = await db.project.findFirst({ where: { id: input.projectId } })
-    await sendNotification(
-      {
-        templateId: "addedToProject",
-        recipients: [input.userId],
+    if (projectInvite) {
+      // Create contributor
+      const contributor = await db.contributor.create({
         data: {
-          projectName: project!.name,
-          addedBy: input.addedBy,
-          privilege: getPrivilegeText(input.privilege),
+          userId: userId,
+          projectId: projectInvite!.projectId,
+          privilege: projectInvite!.privilege,
         },
-        projectId: input.projectId,
-      },
-      ctx
-    )
+      })
 
-    return contributor
+      //connect to labels
+      let c1 = await db.contributor.update({
+        where: { id: contributor.id },
+        data: {
+          labels: {
+            connect: projectInvite!.labels.map((label) => ({ id: label.id })) || [],
+          },
+        },
+      })
+
+      // Get information for the notification
+      const project = await db.project.findFirst({ where: { id: projectInvite!.projectId } })
+      // Send notification
+      await sendNotification(
+        {
+          templateId: "addedToProject",
+          recipients: [contributor.userId],
+          data: {
+            projectName: project!.name,
+            addedBy: projectInvite!.addedBy,
+            privilege: getPrivilegeText(contributor.privilege),
+          },
+          projectId: contributor.projectId,
+        },
+        ctx
+      )
+
+      // delete invitation(s) for that email and project Id
+      await db.invitation.deleteMany({
+        where: {
+          email: projectInvite!.email,
+          projectId: projectInvite!.projectId,
+        },
+      })
+      textResult = {
+        code: "worked",
+        projectId: projectInvite!.projectId,
+      }
+    } else {
+      textResult = {
+        code: "no_code",
+      }
+    }
+    return textResult
   }
 )
