@@ -9,7 +9,7 @@ export default function DateFormat({ date }: DateFormatProps) {
   const locale = currentUser ? currentUser.language : "en-US"
 
   return (
-    <span>
+    <span data-testid="dateformat-id">
       {" "}
       {date
         ? date.toLocaleDateString(locale, {
