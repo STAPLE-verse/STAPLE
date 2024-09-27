@@ -1,4 +1,4 @@
-import { TaskStatus } from "@prisma/client"
+import { Status } from "@prisma/client"
 import { z } from "zod"
 
 export const FormTaskSchema = z
@@ -53,9 +53,9 @@ export const UpdateTaskSchema = z.object({
   labelsId: z.array(z.number()).optional().nullable(),
 })
 
-export const UpdateTaskStatusSchema = z.object({
+export const UpdateStatusSchema = z.object({
   id: z.number(),
-  status: z.nativeEnum(TaskStatus),
+  status: z.nativeEnum(Status),
 })
 
 export const DeleteTaskSchema = z.object({

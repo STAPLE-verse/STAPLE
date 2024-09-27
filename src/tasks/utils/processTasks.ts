@@ -1,4 +1,4 @@
-import { AssignmentStatus, TaskStatus } from "db"
+import { AssignmentStatus, Status } from "db"
 import { getLatestStatusLog } from "src/assignments/utils/getLatestStatusLog"
 
 // Preprocessing tasks data for tables
@@ -93,7 +93,7 @@ export function processProjectTasks(tasks): ProcessedProjectTasks[] {
     name: task.name,
     description: task.description ? task.description.substring(0, 50) : "No Description",
     deadline: task.deadline,
-    status: task.status === TaskStatus.COMPLETED ? "Completed" : "Not completed",
+    status: task.status === Status.COMPLETED ? "Completed" : "Not completed",
     view: {
       taskId: task.id,
       projectId: task.projectId,
@@ -116,7 +116,7 @@ export function processElementTasks(tasks): ProcessedElementTasks[] {
   return tasks.map((task) => ({
     name: task.name,
     deadline: task.deadline,
-    status: task.status === TaskStatus.COMPLETED ? "Completed" : "Not completed",
+    status: task.status === Status.COMPLETED ? "Completed" : "Not completed",
     view: {
       taskId: task.id,
       projectId: task.projectId,

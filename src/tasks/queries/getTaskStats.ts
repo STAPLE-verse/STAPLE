@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { TaskStatus, MemberPrivileges, AssignmentStatus } from "db"
+import db, { Status, MemberPrivileges, AssignmentStatus } from "db"
 import { getLatestStatusLog } from "src/assignments/utils/getLatestStatusLog"
 import { z } from "zod"
 
@@ -34,7 +34,7 @@ export default resolver.pipe(
 
       // Completition based on task.status
       const completedTask = await db.task.count({
-        where: { projectId: projectId, status: TaskStatus.COMPLETED },
+        where: { projectId: projectId, status: Status.COMPLETED },
       })
 
       return {

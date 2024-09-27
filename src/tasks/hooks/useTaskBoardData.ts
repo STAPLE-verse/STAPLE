@@ -1,7 +1,7 @@
 import { useQuery } from "@blitzjs/rpc"
 import { useEffect, useMemo, useState } from "react"
 import getColumns from "../queries/getColumns"
-import { Column, Task, TaskStatus } from "db"
+import { Column, Task, Status } from "db"
 
 interface ColumnWithTasks extends Column {
   tasks: Task[]
@@ -45,7 +45,7 @@ export default function useTaskBoardData(projectId) {
       items: column.tasks.map((task) => ({
         id: `item-${task.id}`,
         title: task.name,
-        completed: task.status === TaskStatus.COMPLETED,
+        completed: task.status === Status.COMPLETED,
       })),
     }))
   }, [columns])

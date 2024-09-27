@@ -2,7 +2,7 @@ import React from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import getTasks from "src/tasks/queries/getTasks"
-import { TaskStatus } from "db"
+import { Status } from "db"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetProjectUpcomingTaskDisplay } from "src/core/components/GetWidgetDisplay"
@@ -22,7 +22,7 @@ const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = (
     },
     where: {
       assignees: { some: { contributor: { user: { id: currentUser?.id } } } },
-      status: TaskStatus.NOT_COMPLETED,
+      status: Status.NOT_COMPLETED,
       projectId: projectId,
     },
     orderBy: { id: "desc" },
