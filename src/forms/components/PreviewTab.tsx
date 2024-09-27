@@ -1,5 +1,5 @@
 import React from "react"
-import JsonForm from "src/assignments/components/JsonForm"
+import JsonForm from "src/tasklogs/components/JsonForm"
 import validator from "@rjsf/validator-ajv8"
 
 interface PreviewTabProps {

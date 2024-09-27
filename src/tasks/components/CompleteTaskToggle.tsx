@@ -6,23 +6,20 @@ import toast from "react-hot-toast"
 import { Tooltip } from "react-tooltip"
 import Modal from "src/core/components/Modal"
 import { useTaskContext } from "./TaskContext"
-import useAssignmentProgress from "src/assignments/hooks/useAssignmentProgress"
+import useTaskLogProgress from "src/tasklogs/hooks/useTaskLogProgress"
 
 export const CompleteTaskToggle = () => {
   const [updateStatusMutation] = useMutation(updateStatus)
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
 
-  const { task } = useTaskContext()
+  const { task, projectMembers } = useTaskContext()
 
-  const assignmentProgress = useAssignmentProgress(task)
+  const taskLogProgress = useTaskLogProgress(projectMembers)
 
   const [status, setStatus] = useState(task?.status || Status.NOT_COMPLETED)
 
   const handleStatus = async () => {
-    if (
-      assignmentProgress.completed !== assignmentProgress.all &&
-      status === Status.NOT_COMPLETED
-    ) {
+    if (taskLogProgress.completed !== taskLogProgress.all && status === Status.NOT_COMPLETED) {
       setIsConfirmModalOpen(true)
     } else {
       await StatusUpdate()

@@ -1,44 +1,54 @@
 import { resolver } from "@blitzjs/rpc"
-import { Ctx } from "blitz"
-import { Status } from "db"
+import db from "db"
+import { Status } from "@prisma/client"
 import moment from "moment"
 
-import getTasks from "./getTasks"
-
-export default resolver.pipe(resolver.authorize(), async (undefined, ctx: Ctx) => {
+export default resolver.pipe(resolver.authorize(), async (_, ctx) => {
   const today = moment().startOf("day")
+  const currentUser = ctx.session.userId // Ensure userId is accessible from ctx
 
-  const { tasks } = await getTasks(
-    {
-      include: {
-        project: { select: { name: true } },
-      },
-      where: {
-        assignees: { some: { contributor: { user: { id: ctx.session.userId as number } } } },
-        status: Status.NOT_COMPLETED,
-      },
-      orderBy: { id: "desc" },
+  // Fetch the task logs
+  const allTaskLogs = await db.taskLog.findMany({
+    where: {
+      assignedToId: currentUser, // Filtering based on the current user's ID
     },
-    ctx
-  )
-
-  const upcomingTasks = tasks.filter((task) => {
-    if (task && task.deadline) {
-      return moment(task.deadline).isSameOrAfter(today, "day")
-    }
-    return false
+    include: {
+      task: {
+        include: {
+          project: true, // Include the project through the task relation
+        },
+      },
+    },
   })
 
-  // get pastDue
-  const pastDueTasks = tasks.filter((task) => {
-    if (task && task.deadline) {
-      return moment(task.deadline).isBefore(moment(), "minute")
-    }
-    return false
-  })
+  // Filter and categorize tasks, sort by date
+  const taskLogs = allTaskLogs
+    .filter((taskLog) => taskLog.status === Status.NOT_COMPLETED)
+    .sort((a, b) => {
+      // Sort by createdAt in descending order
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
+
+  const upcomingTasks = taskLogs
+    .filter((taskLog) => {
+      if (taskLog.task.deadline) {
+        return moment(taskLog.task.deadline).isSameOrAfter(today, "day")
+      }
+      return false
+    })
+    .slice(0, 3) // top three rows
+
+  const pastDueTasks = taskLogs
+    .filter((taskLog) => {
+      if (taskLog.task.deadline) {
+        return moment(taskLog.task.deadline).isBefore(moment(), "minute")
+      }
+      return false
+    })
+    .slice(0, 3) // top three rows
 
   return {
-    tasks,
+    taskLogs,
     upcomingTasks,
     pastDueTasks,
   }

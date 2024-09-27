@@ -14,7 +14,7 @@ import { ElementForm } from "src/elements/components/ElementForm"
 import { FORM_ERROR } from "final-form"
 
 import toast from "react-hot-toast"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 
 export const EditElement = () => {
@@ -86,7 +86,7 @@ export const EditElement = () => {
 }
 
 const EditElementPage = () => {
-  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

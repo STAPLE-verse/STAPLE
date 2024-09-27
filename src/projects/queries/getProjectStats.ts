@@ -2,7 +2,6 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { Status } from "db"
 import { z } from "zod"
-import { AssignmentStatus } from "db"
 
 const GetProjectStatsSchema = z.object({
   // This accepts type of undefined, but is required at runtime
@@ -17,12 +16,31 @@ export default resolver.pipe(
       where: { projectId: id },
     })
 
-    const allContributor = await db.contributor.count({
-      where: { projectId: id },
+    // just single users
+    const allProjectMember = await db.projectMember.count({
+      where: {
+        projectId: id,
+        users: {
+          every: {
+            id: { not: undefined }, // Ensures there's at least one user
+          },
+          none: {
+            id: { gt: 1 }, // Ensures there is only one user
+          },
+        },
+        name: { equals: null }, // Ensures the name in ProjectMember is null
+      },
     })
 
-    const allTeams = await db.team.count({
-      where: { projectId: id },
+    // get teams with a name
+    const allTeams = await db.projectMember.count({
+      where: {
+        projectId: id,
+        name: { not: null }, // Ensures the name in ProjectMember is non-null
+        users: {
+          some: { id: { not: undefined } }, // Ensures there's at least one user
+        },
+      },
     })
 
     const completedTask = await db.task.count({
@@ -38,52 +56,82 @@ export default resolver.pipe(
       },
     })
 
-    const assignmentForms = await db.task.findMany({
+    // get all tasks with schema
+    const taskForms = await db.task.findMany({
       where: {
         projectId: id,
         formVersionId: { not: null },
       },
-      include: { assignees: { include: { statusLogs: true } } },
     })
 
-    // all assignments that have a schema required
-    const allAssignments = assignmentForms.flatMap((task) => task.assignees)
+    // console.log(taskForms)
 
-    // not completed assignments with schema
-    const completedAssignments = allAssignments.filter(
-      (assignment) => assignment.statusLogs[0]?.status === AssignmentStatus.COMPLETED
+    // grab the last task log for each projectMember + task
+    const taskLogForms = await Promise.all(
+      taskForms.map(async (task) => {
+        // Fetch the distinct assignedToId values for the task
+        const distinctAssignedToIds = await db.taskLog.findMany({
+          where: {
+            taskId: task.id,
+          },
+          select: { assignedToId: true },
+          distinct: ["assignedToId"], // Ensure distinct assignedToId values
+        })
+
+        // Fetch the latest TaskLog for each distinct assignedToId
+        const taskLogs = await Promise.all(
+          distinctAssignedToIds.map(async (assignedTo) => {
+            const latestTaskLog = await db.taskLog.findFirst({
+              where: {
+                taskId: task.id,
+                assignedToId: assignedTo.assignedToId,
+              },
+              orderBy: { createdAt: "desc" }, // Get the latest log by creation date
+            })
+            return latestTaskLog
+          })
+        )
+
+        return { ...task, latestTaskLogs: taskLogs }
+      })
     )
 
-    // no labels for contributors
-    const contribLabels = await db.contributor.findMany({
+    // Flatten all the latest taskLogs across all tasks
+    const allTaskLogs = taskLogForms.flatMap((task) => task.latestTaskLogs)
+
+    // Filter the completed task logs
+    const completedTaskLogs = allTaskLogs.filter((log) => log?.status === Status.COMPLETED)
+
+    // no roles for projectMembers
+    const contribRoles = await db.projectMember.findMany({
       where: {
         projectId: id,
       },
-      include: { labels: true },
+      include: { roles: true },
     })
 
-    const completedContribLabels = contribLabels.filter((label) => label.labels.length > 0)
+    const completedContribRoles = contribRoles.filter((role) => role.roles.length > 0)
 
-    // no labels for tasks
-    const taskLabels = await db.task.findMany({
+    // no roles for tasks
+    const taskRoles = await db.task.findMany({
       where: {
         projectId: id,
       },
-      include: { labels: true },
+      include: { roles: true },
     })
 
-    const completedTaskLabels = taskLabels.filter((label) => label.labels.length > 0)
+    const completedTaskRoles = taskRoles.filter((role) => role.roles.length > 0)
 
     return {
-      allContributor: allContributor,
+      allProjectMember: allProjectMember,
       allTask: allTask,
       completedTask: completedTask,
       allTeams: allTeams,
       allElements: allElements,
-      completedContribLabels: completedContribLabels.length,
-      completedTaskLabels: completedTaskLabels.length,
-      allAssignments: allAssignments.length,
-      completedAssignments: completedAssignments.length,
+      completedContribRoles: completedContribRoles.length,
+      completedTaskRoles: completedTaskRoles.length,
+      allTaskLogs: allTaskLogs.length,
+      completedTaskLogs: completedTaskLogs.length,
     }
   }
 )

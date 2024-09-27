@@ -7,7 +7,6 @@ export default resolver.pipe(
   resolver.authorize(),
   async (input, ctx) => {
     const userId = ctx.session.userId
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const project = await db.project.create({
       data: {
         // Inputs from project creation form
@@ -35,12 +34,21 @@ export default resolver.pipe(
       },
     })
 
-    // Create a contributor row to associate the current user with the project
-    await db.contributor.create({
+    // Create project member row for "individuals"
+    await db.projectMember.create({
       data: {
-        userId,
         projectId: project.id,
-        // Since MemberPrivileges defaults to project manager the new contributor will be the project manager
+        users: {
+          connect: { id: userId }, // Connect an existing user to the project member
+        },
+      },
+    })
+
+    // Create project privileges
+    await db.projectPrivilege.create({
+      data: {
+        projectId: project.id,
+        userId: userId,
       },
     })
 

@@ -4,15 +4,15 @@ import Layout from "src/core/layouts/Layout"
 import getElement from "src/elements/queries/getElement"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import { ElementInformation } from "src/elements/components/ElementInformation"
-import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import { ElementSummary } from "src/elements/components/ElementSummary"
 
 const ShowElementPage = () => {
-  // Contributor authentication
-  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  // ProjectMember authentication
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
   const { privilege } = useMemberPrivileges()
 
   // Get elements

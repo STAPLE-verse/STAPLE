@@ -5,36 +5,41 @@ import Link from "next/link"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
-import getTeams from "src/teams/queries/getTeams"
 import {
   TeamInformation,
-  contributorTeamTableColumns,
+  projectMemberTeamTableColumns,
   pmTeamTableColumns,
 } from "src/teams/components/TeamTable"
 import Table from "src/core/components/Table"
-import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
-import { MemberPrivileges } from "@prisma/client"
-import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
+import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 interface AllTeamListProps {
   privilege: MemberPrivileges
 }
 
+export type ProjectMemberWithUsers = ProjectMember & {
+  users: User[]
+}
+
 export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   const projectId = useParam("projectId", "number")
-  const { contributor: currentContributor } = useCurrentContributor(projectId)
+  const currentUser = useCurrentUser()
 
-  type TeamWithContributors = {
-    id: number
-    contributors: { id: number }[] // Adjust based on actual contributor fields
-    // Add any other fields on the team you expect
-  }
-
-  const [{ teams }] = useQuery(getTeams, {
-    where: { project: { id: projectId! } },
+  // use this to get teams
+  const [{ projectMembers }] = useQuery(getProjectMembers, {
+    where: {
+      projectId: projectId,
+      name: { not: null }, // Ensures the name in ProjectMember is non-null
+      users: {
+        some: { id: { not: undefined } }, // Ensures there's at least one user
+      },
+    },
     orderBy: { id: "asc" },
     include: {
-      contributors: true, // Ensure that contributors are included
+      users: true, // Ensure that projectMembers are included
     },
   })
 
@@ -42,14 +47,14 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   // Now explicitly type the teams to avoid the error
   const filteredTeams =
     privilege === MemberPrivileges.CONTRIBUTOR
-      ? (teams as TeamWithContributors[]).filter((team) =>
-          team.contributors.some((contributor) => contributor.id === currentContributor?.id)
+      ? projectMembers.filter((projectMember: ProjectMemberWithUsers) =>
+          projectMember.users.some((user) => user.id === currentUser?.id)
         )
-      : teams
+      : projectMembers
 
   let teamInformation: TeamInformation[] = filteredTeams.map((team) => {
     let t: TeamInformation = {
-      name: team.name,
+      name: team.name ?? "Unknown",
       id: team.id,
       projectId: projectId,
     }
@@ -57,7 +62,7 @@ export const AllTeamList = ({ privilege }: AllTeamListProps) => {
   })
 
   const tableColumns =
-    privilege === MemberPrivileges.CONTRIBUTOR ? contributorTeamTableColumns : pmTeamTableColumns
+    privilege === MemberPrivileges.CONTRIBUTOR ? projectMemberTeamTableColumns : pmTeamTableColumns
 
   return (
     <div>

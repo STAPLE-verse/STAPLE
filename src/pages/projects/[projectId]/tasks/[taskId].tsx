@@ -1,13 +1,12 @@
-// imports
 import { TaskSummary } from "src/tasks/components/TaskSummary"
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import { MemberPrivileges } from "@prisma/client"
 import { TaskInformation } from "src/tasks/components/TaskInformation"
-import { AssignmentCompletion } from "src/assignments/components/AssignmentCompletion"
+import { TaskLogCompletion } from "src/tasklogs/components/TaskLogCompletion"
 import { useTaskContext } from "src/tasks/components/TaskContext"
-import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import TaskLayout from "src/core/layouts/TaskLayout"
 
 const TaskContent = () => {
@@ -22,7 +21,7 @@ const TaskContent = () => {
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <div className="flex flex-row justify-center m-2">
           <TaskInformation />
-          <AssignmentCompletion />
+          <TaskLogCompletion />
         </div>
         {privilege == MemberPrivileges.PROJECT_MANAGER && (
           <TaskSummary taskId={task.id} projectId={task.projectId} />

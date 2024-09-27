@@ -6,6 +6,7 @@ import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetFormDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 
 const FormNumber: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
@@ -16,15 +17,19 @@ const FormNumber: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) 
 
   // Calculate form completion percentage
   const formPercent =
-    projectStats.allAssignments === 0
-      ? 0
-      : projectStats.completedAssignments / projectStats.allAssignments
+    projectStats.allTaskLogs === 0 ? 0 : projectStats.completedTaskLogs / projectStats.allTaskLogs
 
   return (
     <Widget
       title="Forms"
       display={<GetFormDisplay formPercent={formPercent} />}
-      link={<PrimaryLink route={Routes.MetadataPage({ projectId: projectId! })} text="View" />}
+      link={
+        <PrimaryLink
+          route={Routes.MetadataPage({ projectId: projectId! })}
+          text={<MagnifyingGlassIcon width={25} className="stroke-primary" />}
+          classNames="btn-ghost"
+        />
+      }
       tooltipId="tool-forms"
       tooltipContent="Percent of forms completed"
       size={size}

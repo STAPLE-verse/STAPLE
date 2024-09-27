@@ -9,6 +9,7 @@ import {
   ProcessedProjectTasks,
   ProcessedElementTasks,
 } from "../utils/processTasks"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 
 // Column helper
 const columnHelperAll = createColumnHelper<ProcessedAllTasks>()
@@ -42,8 +43,8 @@ export const allTasksTableColumns = [
       filterVariant: "text",
     },
   }),
-  columnHelperAll.accessor("completition", {
-    header: "Completition",
+  columnHelperAll.accessor("completion", {
+    header: "Completion",
     enableColumnFilter: true,
     enableSorting: true,
     cell: (info) => <span>{info.getValue()}%</span>,
@@ -58,13 +59,13 @@ export const allTasksTableColumns = [
     enableSorting: false,
     cell: (info) => (
       <Link
-        className="btn btn-primary"
+        className="btn btn-ghost"
         href={Routes.ShowTaskPage({
           projectId: info.getValue().projectId,
           taskId: info.getValue().taskId,
         })}
       >
-        View
+        <MagnifyingGlassIcon width={25} className="stroke-primary" />
       </Link>
     ),
   }),
@@ -82,7 +83,7 @@ export const finishedTasksTableColumns = [
       filterVariant: "text",
     },
   }),
-  columnHelperFinished.accessor("labels", {
+  columnHelperFinished.accessor("roles", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Roles",
     enableColumnFilter: true,
@@ -107,13 +108,13 @@ export const finishedTasksTableColumns = [
     enableSorting: false,
     cell: (info) => (
       <Link
-        className="btn btn-primary"
+        className="btn btn-ghost"
         href={Routes.ShowTaskPage({
           projectId: info.getValue().projectId,
           taskId: info.getValue().taskId,
         })}
       >
-        View
+        <MagnifyingGlassIcon width={25} className="stroke-primary" />
       </Link>
     ),
   }),
@@ -165,13 +166,13 @@ export const projectTasksTableColumns = [
     enableSorting: false,
     cell: (info) => (
       <Link
-        className="btn btn-primary"
+        className="btn btn-ghost"
         href={Routes.ShowTaskPage({
           projectId: info.getValue().projectId,
           taskId: info.getValue().taskId,
         })}
       >
-        View
+        <MagnifyingGlassIcon width={25} className="stroke-primary" />
       </Link>
     ),
   }),
@@ -214,13 +215,13 @@ export const elementTasksTableColumns = [
     enableSorting: false,
     cell: (info) => (
       <Link
-        className="btn btn-primary"
+        className="btn btn-ghost"
         href={Routes.ShowTaskPage({
           projectId: info.getValue().projectId,
           taskId: info.getValue().taskId,
         })}
       >
-        View
+        <MagnifyingGlassIcon width={25} className="stroke-primary" />
       </Link>
     ),
   }),

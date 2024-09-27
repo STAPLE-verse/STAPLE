@@ -1,41 +1,52 @@
-import React from "react"
-import { useQuery } from "@blitzjs/rpc"
+import React, { useEffect, useState } from "react"
 import { useParam } from "@blitzjs/next"
-import getTasks from "src/tasks/queries/getTasks"
-import { Status } from "db"
+import { Status, Task, TaskLog } from "db"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetProjectUpcomingTaskDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import moment from "moment"
+import { useQuery } from "@blitzjs/rpc"
+import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
+import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 
-const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
+type TaskLogWithTask = TaskLog & {
+  task: Task
+}
+
+const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }, ctx) => {
   // Get projectId from the route params
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
 
-  // Fetch tasks for the project
-  const [{ tasks }] = useQuery(getTasks, {
-    include: {
-      project: { select: { name: true } },
-    },
+  // get TaskLogs for this project and user
+  const [taskLogs] = useQuery(getTaskLogs, {
     where: {
-      assignees: { some: { contributor: { user: { id: currentUser?.id } } } },
-      status: Status.NOT_COMPLETED,
-      projectId: projectId,
+      task: { projectId: projectId },
+      assignedTo: { users: { some: { id: currentUser?.id } } },
     },
-    orderBy: { id: "desc" },
+    include: { task: true }, // Include the task relation
   })
+  // deal with typing
+  const typedTaskLogs = taskLogs as TaskLogWithTask[]
+  // get latest log for each task
+  const latestLog = getLatestTaskLogs(typedTaskLogs)
 
   // Filter for upcoming tasks
   const today = moment().startOf("day")
-  const upcomingTasks = tasks.filter((task) => {
-    if (task && task.deadline) {
-      return moment(task.deadline).isSameOrAfter(today, "day")
-    }
-    return false
-  })
+  const upcomingTasks = latestLog
+    .filter((taskLog) => {
+      if (taskLog && taskLog.task.deadline) {
+        return moment(taskLog.task.deadline).isSameOrAfter(today, "day")
+      }
+      return false
+    })
+    .sort((a, b) => {
+      // Sort by createdAt in descending order
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
+    .slice(0, 3) // top three rows
 
   return (
     <Widget
@@ -47,6 +58,7 @@ const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = (
             projectId: projectId!,
           })}
           text="All Tasks"
+          classNames="btn-primary"
         />
       }
       tooltipId="tool-upcoming"

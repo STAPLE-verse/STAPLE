@@ -2,7 +2,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTasks, { GetTasksInput } from "../queries/getTasks"
 import { MemberPrivileges } from "@prisma/client"
-import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import { processProjectTasks } from "../utils/processTasks"
 
 export default function useProjecTasksListData(projectId: number | undefined) {
@@ -20,12 +20,14 @@ export default function useProjecTasksListData(projectId: number | undefined) {
       queryParams.where = {
         ...queryParams.where,
         OR: [
-          { assignees: { some: { contributor: { user: { id: currentUser.id } }, teamId: null } } },
           {
-            assignees: {
+            assignedMembers: {
               some: {
-                team: { contributors: { some: { id: currentUser.id } } },
-                contributorId: null,
+                users: {
+                  some: {
+                    id: currentUser.id,
+                  },
+                },
               },
             },
           },

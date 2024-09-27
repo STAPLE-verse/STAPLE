@@ -4,20 +4,20 @@ export interface TeamInformation {
   id: number
 }
 
-export interface ContributorInformation {
-  contributor: any
+export interface ProjectMemberInformation {
+  projectMember: any
   tasks: any[]
   id: number
 }
 
 export interface FlattenTasks {
   teamsInformation: TeamInformation[]
-  contributorsInformation: ContributorInformation[]
+  projectMembersInformation: ProjectMemberInformation[]
 }
 
 function flattenTasksInformation(tasks): FlattenTasks {
   let teams: TeamInformation[] = []
-  let contributors: ContributorInformation[] = []
+  let projectMembers: ProjectMemberInformation[] = []
 
   const updateTeamData = (task, assignment, team) => {
     // console.log(team, task, assignment)
@@ -35,18 +35,18 @@ function flattenTasksInformation(tasks): FlattenTasks {
     }
   }
 
-  const updateContributorData = (task, assignment, contributor) => {
-    // console.log(contributor, task, assignment)
-    let index = contributors.findIndex((x) => x.contributor.id == contributor.id)
+  const updateProjectMemberData = (task, assignment, projectMember) => {
+    // console.log(projectMember, task, assignment)
+    let index = projectMembers.findIndex((x) => x.projectMember.id == projectMember.id)
     if (index < 0) {
-      let newContributor = {
-        contributor: contributor,
+      let newProjectMember = {
+        projectMember: projectMember,
         tasks: [task],
-        id: contributor.id,
+        id: projectMember.id,
       }
-      contributors.push(newContributor)
+      projectMembers.push(newProjectMember)
     } else {
-      let newTeam = contributors[index]
+      let newTeam = projectMembers[index]
       if (newTeam != undefined) newTeam.tasks.push(task)
     }
   }
@@ -60,21 +60,21 @@ function flattenTasksInformation(tasks): FlattenTasks {
         if (team != null) {
           updateTeamData(task, assignment, team)
         }
-        let contributor = assignment.contributor
-        if (contributor != null) {
-          updateContributorData(task, assignment, contributor)
+        let projectMember = assignment.projectMember
+        if (projectMember != null) {
+          updateProjectMemberData(task, assignment, projectMember)
         }
       })
     }
   })
   // console.log(teams)
-  //TODO needs to sort teams and contributors
+  //TODO needs to sort teams and projectMembers
   let sortedTeams = teams
-  let sortedContributors = contributors
+  let sortedProjectMembers = projectMembers
 
   return {
     teamsInformation: sortedTeams,
-    contributorsInformation: sortedContributors,
+    projectMembersInformation: sortedProjectMembers,
   }
 }
 

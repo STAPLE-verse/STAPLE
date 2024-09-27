@@ -5,66 +5,67 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-
 import Layout from "src/core/layouts/Layout"
 import toast from "react-hot-toast"
-import getTeam from "src/teams/queries/getTeam"
 import { TeamForm } from "src/teams/components/TeamForm"
 import { FORM_ERROR } from "final-form"
 import { TeamFormSchema } from "src/teams/schemas"
 import updateTeam from "src/teams/mutations/updateTeam"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
+import { ProjectMemberWithUsers } from ".."
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
 
 export const EditTeam = () => {
+  const [updateTeamMutation] = useMutation(updateTeam)
   const router = useRouter()
   const teamId = useParam("teamId", "number")
   const projectId = useParam("projectId", "number")
-  const [team, { setQueryData }] = useQuery(
-    getTeam,
-    { id: teamId, include: { contributors: true } },
-    {
-      staleTime: Infinity,
-    }
-  )
-  const [updateTeamMutation] = useMutation(updateTeam)
+  const [teamProjectMember, { setQueryData }] = useQuery(getProjectMember, {
+    where: {
+      id: teamId,
+      projectId: projectId,
+    },
+    include: {
+      users: true,
+    },
+  }) as [ProjectMemberWithUsers, any]
 
-  const currentContributorsId =
-    team["contributors"] != undefined ? team["contributors"].map((el) => el["id"]) : []
+  const users = teamProjectMember.users
+  const userIds = users.map((user) => user.id)
 
   const initialValues = {
-    name: team.name,
+    name: teamProjectMember.name ? teamProjectMember.name : undefined,
   }
 
   return (
     <Layout>
       <Head>
-        <title>Edit {team.name}</title>
+        <title>Edit {teamProjectMember.name}</title>
       </Head>
 
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">Edit {team.name}</h1>
+        <h1 className="text-3xl">Edit {teamProjectMember.name}</h1>
 
         {
           <Suspense fallback={<div>Loading...</div>}>
             <TeamForm
               projectId={projectId!}
-              teamId={team.id}
-              currentContributorsId={currentContributorsId}
+              teamId={teamProjectMember.id}
+              currentProjectMemberIds={userIds}
               initialValues={initialValues}
               submitText="Update Team"
               schema={TeamFormSchema}
               onSubmit={async (values) => {
-                let membersId: number[] = values.contributorsId
+                const teamMemberUserIds: number[] = values.projectMembers
                   .filter((el) => el.checked)
-                  .map((val) => val.id)
+                  .map((val) => val.userId)
 
                 try {
                   const updated = await updateTeamMutation({
-                    projectId: projectId!,
                     name: values.name,
-                    id: team.id,
-                    contributors: membersId,
+                    id: teamProjectMember.id,
+                    userIds: teamMemberUserIds,
                   })
                   await toast.promise(Promise.resolve(updated), {
                     loading: "Updating team...",
@@ -75,7 +76,7 @@ export const EditTeam = () => {
                   await router.push(
                     Routes.ShowTeamPage({
                       projectId: projectId!,
-                      teamId: team.id,
+                      teamId: teamProjectMember.id,
                     })
                   )
                 } catch (error: any) {
@@ -101,7 +102,7 @@ export const EditTeam = () => {
 }
 
 const EditTeamPage = () => {
-  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

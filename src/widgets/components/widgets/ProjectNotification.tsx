@@ -32,6 +32,7 @@ const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
         <PrimaryLink
           route={Routes.ProjectNotificationsPage({ projectId: projectId! })}
           text="Project Notifications"
+          classNames="btn-primary"
         />
       }
       tooltipId="tool-notification"

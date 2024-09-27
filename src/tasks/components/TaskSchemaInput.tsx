@@ -5,14 +5,12 @@ import Modal from "src/core/components/Modal"
 import RadioFieldTable from "src/core/components/fields/RadioFieldTable"
 import getForms from "src/forms/queries/getForms"
 
-export const TaskSchemaInput = ({ contributors }) => {
+export const TaskSchemaInput = ({ projectManagers }) => {
   const [openSchemaModal, setOpenSchemaModal] = useState(false)
   const handleToggleSchemaUpload = () => setOpenSchemaModal((prev) => !prev)
 
   // Get forms data
-  const pmList = contributors
-    .filter((contributor) => contributor.privilege === MemberPrivileges.PROJECT_MANAGER)
-    .map((pm) => pm.userId)
+  const pmList = projectManagers.map((pm) => pm.userId)
 
   const [pmForms] = useQuery(getForms, {
     where: { userId: { in: pmList }, archived: false },

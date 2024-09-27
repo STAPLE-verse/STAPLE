@@ -6,19 +6,19 @@ import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import getProject from "src/projects/queries/getProject"
-import ByContributors from "src/summary/components/ByContributors"
+import ByProjectMembers from "src/summary/components/ByProjectMembers"
 import ByTasks from "src/summary/components/ByTasks"
-import ByLabels from "src/summary/components/ByLabels"
+import ByRoles from "src/summary/components/ByRoles"
 import ByDate from "src/summary/components/ByDate"
 import ByElements from "src/summary/components/ByElements"
-import getTasks from "src/tasks/queries/getTasks"
-import getLabels from "src/labels/queries/getLabels"
+import getRoles from "src/roles/queries/getRoles"
 import getElements from "src/elements/queries/getElements"
-import getTeams from "src/teams/queries/getTeams"
-import getContributors from "src/contributors/queries/getContributors"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import DateFormat from "src/core/components/DateFormat"
+import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
+import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 
 const Summary = () => {
   // Setup
@@ -28,92 +28,85 @@ const Summary = () => {
   // Get projects
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
-  // Get tasks
-  const [{ tasks }] = useQuery(getTasks, {
-    where: { projectId: projectId },
+
+  // Get taskLogs and tasks
+  const [taskLogs] = useQuery(getTaskLogs, {
+    where: {
+      task: {
+        projectId: projectId,
+      },
+    },
     orderBy: { createdAt: "desc" },
     include: {
-      labels: true,
-      element: true,
-      createdBy: {
-        include: { user: true },
-      },
-      assignees: {
-        orderBy: {
-          updatedAt: "desc",
-        },
+      task: {
         include: {
-          statusLogs: {
-            orderBy: {
-              createdAt: "desc",
-            },
-          },
-          team: {
-            include: {
-              contributors: {
-                include: { user: true },
-              },
-            },
-          },
-          contributor: {
-            include: {
-              user: true,
-            },
-          },
+          roles: true, // Include the roles relation within the task relation
         },
       },
     },
   })
+
   // Get elements
   const [{ elements }] = useQuery(getElements, {
     where: { project: { id: projectId! } },
     orderBy: { id: "asc" },
     // include: { task: true },
   })
-  // Get teams
-  const [{ teams }] = useQuery(getTeams, {
-    where: { project: { id: projectId! } },
-    orderBy: { name: "asc" },
-    include: {
-      assignments: {
-        include: {
-          statusLogs: {
-            orderBy: {
-              createdAt: "desc",
-            },
-          },
+
+  // Get only contributors one person no team
+  const [{ projectMembers }] = useQuery(getProjectMembers, {
+    where: {
+      projectId: projectId,
+      users: {
+        every: {
+          id: { not: undefined }, // Ensures there's at least one user
+        },
+        none: {
+          id: { gt: 1 }, // Ensures there is only one user
         },
       },
-      contributors: {
-        include: { user: true },
-      },
+      name: { equals: null }, // Ensures the name in ProjectMember is null
     },
-  })
-  // Get contributors
-  //TODO: Only needs tos include label id
-  const [{ contributors }] = useQuery(getContributors, {
-    where: { project: { id: projectId! } },
-    orderBy: { user: { lastName: "asc" } },
     include: {
-      user: true,
-      labels: true,
-      assignmentStatusLog: true,
+      users: true,
+      roles: true,
     },
   })
 
-  // get all labels from all PMs
-  const projectManagers = contributors.filter(
-    (contributor) => contributor.privilege === "PROJECT_MANAGER"
-  )
-  const pmIds = projectManagers.map((pm) => pm.userId)
-  const [{ labels }] = useQuery(getLabels, {
+  // Map through projectMembers and flatten the users array to extract firstName and lastName
+  const flattenedMembers = projectMembers.map((member) => {
+    // Assuming there's only one user in each projectMember's `users` array
+    const user = member["users"][0] // Safe because you ensured only one user
+    return {
+      projectMemberId: member.id,
+      firstName: user?.firstName ?? "", // Ensure user exists and has firstName
+      lastName: user?.lastName ?? "",
+      role: member["roles"].map((role) => role.name).join(", "), // Flatten roles if needed
+    }
+  })
+
+  // get teams with a name because they can be one person teams
+  const [teams] = useQuery(getProjectMembers, {
     where: {
-      userId: {
-        in: pmIds, // Filter labels where userId is in the list of PM IDs
+      projectId: projectId,
+      name: { not: null }, // Ensures the name in ProjectMember is non-null
+      users: {
+        some: { id: { not: undefined } }, // Ensures there's at least one user
       },
     },
     include: {
-      contributors: true, // Optional: include contributor data if needed
+      users: true,
+      roles: true,
+    },
+  })
+
+  const [projectManagers] = useQuery(getProjectManagers, {
+    projectId: projectId!,
+  })
+
+  const roles = useQuery(getRoles, {
+    where: {
+      userId: { in: projectManagers.map((pm) => pm.userId) }, // Ensure userId is an array
     },
   })
 
@@ -129,7 +122,7 @@ const Summary = () => {
 
       {/* Select organization */}
       <div className="flex flex-row justify-center m-2">
-        {/* A dropdown menu here for organization: By Date, By Task, By Contributor, By Label, By
+        {/* A dropdown menu here for organization: By Date, By Task, By Contributor, By Role, By
             Element */}
         <select
           className="select select-info w-full max-w-xs"
@@ -140,8 +133,8 @@ const Summary = () => {
           </option>
           <option value="date">Organize project by Date</option>
           <option value="task">Organize project by Task</option>
-          <option value="contributor">Organize project by Contributor </option>
-          <option value="label">Organize project by Role</option>
+          <option value="projectMember">Organize project by Contributor </option>
+          <option value="role">Organize project by Role</option>
           <option value="element">Organize project by Element</option>
         </select>
       </div>
@@ -187,28 +180,28 @@ const Summary = () => {
         <div className="card bg-base-300 mx-2 w-full">
           <div className="card-body">
             <div className="card-title">Organized Metadata (under construction)</div>
-            {selectedOrganization === "contributor" && (
-              <ByContributors
-                tasks={tasks}
+            {selectedOrganization === "projectMember" && (
+              <ByProjectMembers
+                tasks={taskLogs}
                 teams={teams}
-                contributors={contributors}
-              ></ByContributors>
+                projectMembers={flattenedMembers}
+              ></ByProjectMembers>
             )}
             {selectedOrganization === "task" && (
-              <ByTasks tasks={tasks} contributors={contributors} teams={teams}></ByTasks>
+              <ByTasks tasks={taskLogs} projectMembers={flattenedMembers} teams={teams}></ByTasks>
             )}
-            {selectedOrganization === "label" && (
-              <ByLabels labels={labels} tasks={tasks} contributors={contributors}></ByLabels>
+            {selectedOrganization === "role" && (
+              <ByRoles roles={roles} tasks={taskLogs} projectMembers={flattenedMembers}></ByRoles>
             )}
             {selectedOrganization === "date" && (
-              <ByDate tasks={tasks} contributors={contributors} teams={teams}></ByDate>
+              <ByDate tasks={taskLogs} projectMembers={flattenedMembers} teams={teams}></ByDate>
             )}
             {selectedOrganization === "element" && (
               <ByElements
                 elements={elements}
                 teams={teams}
-                contributors={contributors}
-                tasks={tasks}
+                projectMembers={flattenedMembers}
+                tasks={taskLogs}
               ></ByElements>
             )}
             {selectedOrganization === "none" && <span>Please select an output organization.</span>}
@@ -227,7 +220,7 @@ const Summary = () => {
 }
 
 const SummaryPage = () => {
-  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>

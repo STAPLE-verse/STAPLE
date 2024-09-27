@@ -11,6 +11,21 @@ export default resolver.pipe(
   resolver.zod(addProjectManagerWidgetsProps),
   resolver.authorize(),
   async ({ userId, projectId }) => {
+    // Check if the user already has the PROJECT_MANAGER privilege
+    const existingPrivilege = await db.projectPrivilege.findFirst({
+      where: {
+        userId: userId,
+        projectId: projectId,
+        privilege: MemberPrivileges.PROJECT_MANAGER,
+      },
+    })
+
+    // If the user is already a project manager, return early
+    if (existingPrivilege) {
+      console.log("User is already a project manager. No widgets will be added.")
+      return
+    }
+
     const widgetData = [
       {
         userId,
@@ -33,7 +48,7 @@ export default resolver.pipe(
       {
         userId,
         projectId,
-        type: "LabelsSummary",
+        type: "RolesSummary",
         show: true,
         position: 10,
         size: WidgetSize.SMALL,

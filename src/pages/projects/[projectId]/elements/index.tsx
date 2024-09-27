@@ -6,7 +6,7 @@ import Layout from "src/core/layouts/Layout"
 import { useParam } from "@blitzjs/next"
 import React from "react"
 import { ElementsList } from "src/elements/components/ElementList"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import SearchButton from "src/core/components/SearchButton"
 
@@ -43,7 +43,7 @@ const Elements = () => {
 }
 
 const ElementsPage = () => {
-  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

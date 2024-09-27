@@ -7,22 +7,22 @@ export const FormTaskSchema = z
     containerId: z.number(),
     description: z.string().optional().nullable(),
     elementId: z.number().optional().nullable(),
-    contributorsId: z.array(z.number()).optional().nullable(),
+    projectMembersId: z.array(z.number()).optional().nullable(),
     teamsId: z.array(z.number()).optional().nullable(),
-    labelsId: z.array(z.number()).optional().nullable(),
+    rolesId: z.array(z.number()).optional().nullable(),
     deadline: z.date().optional().nullable(),
     formVersionId: z.number().optional().nullable(),
   })
   .refine(
     (data) => {
-      // Safely access the length or use 0 if contributorsId is null or undefined
-      const hasContributors = (data.contributorsId?.length ?? 0) > 0
+      // Safely access the length or use 0 if projectMembersId is null or undefined
+      const hasProjectMembers = (data.projectMembersId?.length ?? 0) > 0
       const hasTeams = (data.teamsId?.length ?? 0) > 0
-      return hasContributors || hasTeams
+      return hasProjectMembers || hasTeams
     },
     {
       message: "At least one contributor or team should be selected.",
-      path: ["contributorsId"],
+      path: ["projectMembersId"],
     }
   )
 
@@ -35,9 +35,9 @@ export const CreateTaskSchema = z.object({
   elementId: z.number().optional().nullable(),
   deadline: z.date().optional().nullable(),
   createdById: z.number(),
-  contributorsId: z.array(z.number()).optional().nullable(),
+  projectMembersId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.number()).optional().nullable(),
-  labelsId: z.array(z.number()).optional().nullable(),
+  rolesId: z.array(z.number()).optional().nullable(),
 })
 
 export const UpdateTaskSchema = z.object({
@@ -46,11 +46,11 @@ export const UpdateTaskSchema = z.object({
   description: z.string().optional().nullable(),
   containerId: z.number(),
   elementId: z.number().optional().nullable(),
-  contributorsId: z.array(z.number()).optional().nullable(),
+  projectMembersId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.any()).optional().nullable(),
   formVersionId: z.number().optional().nullable(),
   deadline: z.date().optional().nullable(),
-  labelsId: z.array(z.number()).optional().nullable(),
+  rolesId: z.array(z.number()).optional().nullable(),
 })
 
 export const UpdateStatusSchema = z.object({
@@ -72,9 +72,9 @@ export const UpdateTaskOrderSchema = z.object({
   ),
 })
 
-export const UpdateTaskLabelSchema = z.object({
+export const UpdateTaskRoleSchema = z.object({
   tasksId: z.array(z.number()).nonempty(),
-  labelsId: z.array(z.number()).optional().nullable(),
+  rolesId: z.array(z.number()).optional().nullable(),
   disconnect: z.boolean(),
 })
 

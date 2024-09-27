@@ -8,7 +8,7 @@ import {
   SidebarItemProps,
 } from "../components/sidebar/SidebarItems"
 import { MemberPrivileges, Project } from "db"
-import { useMemberPrivileges } from "src/contributors/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 
 export interface SidebarState {
   sidebarTitle: string

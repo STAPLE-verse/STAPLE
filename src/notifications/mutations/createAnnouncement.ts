@@ -11,25 +11,30 @@ export default resolver.pipe(
   resolver.zod(createAnnouncementSchema),
   resolver.authorize(),
   async ({ announcementText, projectId }) => {
-    // Get all contributors for the project
-    const contributors = await db.contributor.findMany({
+    // Get all projectMembers for the project
+    const projectMembers = await db.projectMember.findMany({
       where: {
         projectId: projectId,
       },
       include: {
-        user: true,
+        users: true,
       },
     })
 
     // Get userIds
-    const userIds = contributors.map((contributor) => contributor.user.id)
+    const userIds = projectMembers
+      .flatMap((pm) => pm.users.map((user) => user.id)) // Flatten the nested arrays and extract IDs
+      .filter((id) => id !== undefined) // Optionally filter out any undefined values
+
+    // Step 3: Remove duplicates (if needed)
+    const uniqueUserIds = [...new Set(userIds)]
 
     // Create notification
     const annoucement = await db.notification.create({
       data: {
         message: announcementText,
         recipients: {
-          connect: userIds.map((id) => ({ id })),
+          connect: uniqueUserIds.map((id) => ({ id })),
         },
         announcement: true,
         projectId: projectId,

@@ -52,7 +52,7 @@ export default resolver.pipe(
       {
         userId,
         projectId,
-        type: "ContributorNumber",
+        type: "ProjectMemberNumber",
         show: true,
         position: 5,
         size: WidgetSize.SMALL,
@@ -97,7 +97,7 @@ export default resolver.pipe(
       {
         userId,
         projectId,
-        type: "LabelsSummary",
+        type: "RolesSummary",
         show: true,
         position: 10,
         size: WidgetSize.SMALL,

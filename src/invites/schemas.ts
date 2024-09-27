@@ -11,7 +11,7 @@ export const CreateInviteSchema = z.object({
   privilege: z.nativeEnum(MemberPrivileges),
   addedBy: z.string(),
   email: z.string(),
-  labelsId: z.array(z.number()).optional().nullable(),
+  rolesId: z.array(z.number()).optional().nullable(),
 
   // template: __fieldName__: z.__zodType__(),
 })

@@ -2,43 +2,55 @@ import React, { useState } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { useQuery } from "@blitzjs/rpc"
-import { MemberPrivileges } from "@prisma/client"
+import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
-import getContributors from "src/contributors/queries/getContributors"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import AssignTeamMembers, { TeamOption } from "./AssignTeamMembers"
 import { Field } from "react-final-form"
-import { FORM_ERROR } from "final-form"
+import { ProjectMemberWithUsers } from "src/pages/projects/[projectId]/teams"
 
 interface TeamFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
   teamId?: number
-  currentContributorsId?: number[]
+  currentProjectMemberIds?: number[]
 }
 
-export const MemberPrivilegesOptions = [
-  { id: 0, value: MemberPrivileges.PROJECT_MANAGER, label: "Project Manager" },
-  { id: 1, value: MemberPrivileges.CONTRIBUTOR, label: "Contributor" },
-]
-
 export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>) {
-  const { projectId, teamId, currentContributorsId, ...formProps } = props
+  const { projectId, teamId, currentProjectMemberIds, ...formProps } = props
 
-  const [{ contributors }] = useQuery(getContributors, {
-    where: { project: { id: projectId! } },
+  // Get individual projectMembers only for the project
+  const [{ projectMembers }] = useQuery(getProjectMembers, {
+    where: {
+      projectId: projectId,
+      users: {
+        every: {
+          id: { not: undefined }, // Ensures there's at least one user
+        },
+        none: {
+          id: { gt: 1 }, // Ensures there is only one user
+        },
+      },
+      name: { equals: null }, // Ensures the name in ProjectMember is null
+    },
     orderBy: { id: "asc" },
     include: {
-      user: true,
+      users: true,
     },
   })
 
-  const currentTeamOptions = contributors.map((contributor) => {
+  const individualMembers = projectMembers as ProjectMemberWithUsers[]
+
+  // Set initialValues of currentTeam projectMembers
+  const currentTeamOptions = individualMembers.map((projectMember) => {
     let checked = false
-    if (teamId != undefined && currentContributorsId != undefined) {
-      checked = currentContributorsId.find((id) => id == contributor.id) != undefined
+    if (teamId != undefined && currentProjectMemberIds != undefined) {
+      checked = currentProjectMemberIds.find((id) => id == projectMember.id) != undefined
     }
     return {
-      userName: contributor["user"].username,
-      id: contributor.id,
+      // TODO: ts does not recognize prisma include class
+      userName: projectMember.users[0]!.username,
+      userId: projectMember.users[0]!.id,
+      id: projectMember.id,
       checked: checked,
       teamId: teamId,
     } as TeamOption
@@ -63,7 +75,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
       />
       <div className="flex justify-start mt-4">
         <Field
-          name="contributorsId"
+          name="projectMembers"
           initialValue={currentTeamOptions}
           validate={(values) => {
             let t = areAssignmentValid(values)

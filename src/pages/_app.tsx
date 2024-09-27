@@ -4,7 +4,7 @@ import React, { Suspense } from "react"
 import { withBlitz } from "src/blitz-client"
 import "src/styles/globals.css"
 import "src/core/styles/index.css"
-import { MemberPrivilegesProvider } from "src/contributors/components/MemberPrivilegesContext"
+import { MemberPrivilegesProvider } from "src/projectmembers/components/MemberPrivilegesContext"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -13,7 +13,7 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
     return (
       <ErrorComponent
         statusCode={error.statusCode}
-        title="Sorry, you are not authorized to access this"
+        title="Sorry, you are not authorized to access this page."
       />
     )
   } else {

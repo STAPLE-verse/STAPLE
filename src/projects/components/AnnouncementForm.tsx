@@ -1,9 +1,8 @@
-import React, { Suspense } from "react"
+import React from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
 
 import { z } from "zod"
-import { FORM_ERROR } from "final-form"
 
 export function AnnouncementForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (

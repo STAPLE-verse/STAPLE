@@ -2,11 +2,11 @@ import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import { ProjectFormsList } from "src/forms/components/ProjectFormsList"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 
 const MetadataPage = () => {
-  useContributorAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>
