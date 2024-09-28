@@ -6,10 +6,9 @@ import { expect, test } from "vitest"
 import { render, screen } from "test/utils"
 import { TaskView } from "./UtilsViews"
 
-test("renders Only Utils/Task view ", async () => {
+const getSimpleTestTask = () => {
   const createdAtStr: string = "2024-03-27 11:43 PM"
   const task1CreatedAt: Date = new Date(createdAtStr)
-  const exptask1CreatedAt = "March 27, 2024 at 23:43:00"
   const userLastName = "user lastname"
   const userFirstName = "user firstname"
   const task1 = {
@@ -24,11 +23,59 @@ test("renders Only Utils/Task view ", async () => {
         firstName: userFirstName,
       },
     },
-    assignees: [],
-    labels: [],
-    element: undefined,
+    assignees: [] as any,
+    labels: [] as any,
+    element: undefined as any,
   }
+  return task1
+}
 
+const getExtendedTestTask = () => {
+  const element = {
+    id: 1,
+    name: "element1",
+  }
+  const labels = [
+    {
+      id: 1,
+      name: "label1",
+    },
+    {
+      id: 2,
+      name: "label2",
+    },
+  ]
+  const assignees = [
+    {
+      id: 1,
+      statusLogs: [],
+      team: {
+        name: "team1",
+        id: 2,
+      },
+    },
+    {
+      id: 2,
+      statusLogs: [],
+      contributor: {
+        id: 1,
+        user: {
+          firstName: "contributor_first",
+          lastName: "contributor_last",
+          id: 1,
+        },
+      },
+    },
+  ]
+  let task1 = getSimpleTestTask()
+  task1.assignees = assignees
+  task1.element = element
+  task1.labels = labels
+  return task1
+}
+
+test("renders Only Utils/Task view ", async () => {
+  const task1 = getSimpleTestTask()
   const { debug } = render(
     <TaskView task={task1} printLabels={true} printAssignees={true} printElement={true}></TaskView>
   )
@@ -38,70 +85,17 @@ test("renders Only Utils/Task view ", async () => {
   expect(screen.getByText(/user firstname/i)).toBeInTheDocument()
   expect(screen.getByText(/user lastname/i)).toBeInTheDocument()
   expect(screen.getByRole("heading", { name: /name: task1/i }))
-  expect(screen.getByText("This task does not have assignees")).toBeInTheDocument()
   expect(screen.getByText("This task does not have labels")).toBeInTheDocument()
   expect(screen.getByText("This task does not have element")).toBeInTheDocument()
-  expect(screen.getByText(exptask1CreatedAt)).toBeInTheDocument()
+  expect(screen.getByText("March 27, 2024 at 23:43:00")).toBeInTheDocument()
 
   expect(screen.queryByText("Completed as")).not.toBeInTheDocument()
   expect(screen.queryByText("Contribution Categories")).not.toBeInTheDocument()
   expect(screen.queryByText("Element")).not.toBeInTheDocument()
 })
 
-//TODO: needs to add status log, after fix resend keys to run app
 test("renders Utils/Task view with subelements", async () => {
-  const createdAtStr: string = "2024-03-27 11:43 PM"
-  const task1CreatedAt: Date = new Date(createdAtStr)
-  const exptask1CreatedAt = "March 27, 2024 at 23:43:00"
-  const userLastName = "user lastname"
-  const userFirstName = "user firstname"
-  const task1 = {
-    name: "task1",
-    description: "a task test ",
-    createdAt: task1CreatedAt,
-    createdBy: {
-      user: {
-        id: 1,
-        username: "user1",
-        lastName: userLastName,
-        firstName: userFirstName,
-      },
-    },
-    assignees: [
-      {
-        statusLogs: [],
-        team: {
-          name: "team1",
-          id: 1,
-        },
-      },
-      {
-        statusLogs: [],
-        contributor: {
-          user: {
-            firstName: "contributor_first",
-            lastName: "contributor_last",
-            id: 1,
-          },
-        },
-      },
-    ],
-    labels: [
-      {
-        id: 1,
-        name: "label1",
-      },
-      {
-        id: 2,
-        name: "label2",
-      },
-    ],
-    element: {
-      id: 1,
-      name: "element1",
-    },
-  }
-
+  const task1 = getExtendedTestTask()
   const { debug } = render(
     <TaskView task={task1} printLabels={true} printAssignees={true} printElement={true}></TaskView>
   )
@@ -120,7 +114,7 @@ test("renders Utils/Task view with subelements", async () => {
   expect(screen.queryByText("This task does not have assignees")).not.toBeInTheDocument()
   expect(screen.queryByText("This task does not have labels")).not.toBeInTheDocument()
   expect(screen.queryByText("This task does not have element")).not.toBeInTheDocument()
-  expect(screen.getByText(exptask1CreatedAt)).toBeInTheDocument()
+  expect(screen.getByText("March 27, 2024 at 23:43:00")).toBeInTheDocument()
 
   expect(screen.queryByText("Completed as")).not.toBeInTheDocument()
   expect(screen.getByText(/contribution categories:/i)).toBeInTheDocument()
