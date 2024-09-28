@@ -32,8 +32,8 @@ const ArchiveFormButton = ({ formId, onArchived }: ArchiveFormButtonProps) => {
   }
 
   return (
-    <button className="btn btn-primary" onClick={handleArchive}>
-      <TrashIcon className="h-5 w-5 text-white" aria-hidden="true" />
+    <button className="btn btn-ghost" onClick={handleArchive}>
+      <TrashIcon aria-hidden="true" width={25} className="stroke-primary" />
     </button>
   )
 }
