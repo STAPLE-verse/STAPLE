@@ -60,7 +60,12 @@ const UpdateTasks: React.FC<UpdateTasksProps> = ({
               <CheckboxFieldTable name="selectedTasks" options={taskOptions} />
             </Form>
           ) : (
-            <p>There are no tasks available to add.</p>
+            <div className="flex flex-col items-center">
+              <p>There are no tasks available to add.</p>
+              <button className="btn btn-primary mt-4" onClick={onClose}>
+                Close
+              </button>
+            </div>
           )}
         </>
       )}
