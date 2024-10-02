@@ -52,6 +52,7 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
             disabled={submitting}
             ref={ref}
             {...props}
+            data-testid="datefield-input"
           />
         </label>
 
@@ -60,7 +61,7 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
             {normalizedError}
           </div>
         )}
-        <style jsx>{`
+        <style jsx={"true"}>{`
           label {
             display: flex;
             flex-direction: column;
