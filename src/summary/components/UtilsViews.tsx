@@ -41,7 +41,7 @@ export const TaskView = ({
   const lastChangedByAssignment = getAssignmentCompletedBy(task, lastChangedLog)
 
   return (
-    <div className="my-1 ">
+    <div className="my-1 " data-testid="taskview-testid">
       <h5>Name: {task.name} </h5>
       Description: {task.description}
       <br />
