@@ -38,11 +38,22 @@ export const LabeledPasswordField = forwardRef<HTMLInputElement, LabeledPassWord
         <label {...labelProps} className="flex flex-row">
           {label}
         </label>
-        <div className="flex flex-row mx-auto w-full max-w items-center ">
-          <input {...input} disabled={submitting} {...props} ref={ref} />
-          <button className="mx-2" onClick={onEyeClick}>
-            {props.type == "password" && <EyeIcon className="w-5 h-5  "></EyeIcon>}
-            {props.type == "text" && <EyeSlashIcon className="w-5 h-5  "></EyeSlashIcon>}
+
+        <div className="relative w-full max-w mx-auto">
+          <input
+            {...input}
+            disabled={submitting}
+            {...props}
+            ref={ref}
+            className={`${props.className || ""} w-full pr-10`} // Add padding to the right for the eye button
+          />
+          <button
+            className="absolute right-2 top-1/2 transform -translate-y-1/2" // Positioning the button inside the input field
+            onClick={onEyeClick}
+            type="button" // Ensure the button does not submit the form
+          >
+            {props.type === "password" && <EyeIcon className="w-5 h-5" />}
+            {props.type === "text" && <EyeSlashIcon className="w-5 h-5" />}
           </button>
         </div>
 
@@ -65,6 +76,11 @@ export const LabeledPasswordField = forwardRef<HTMLInputElement, LabeledPassWord
             border-radius: 3px;
             appearance: none;
             margin-top: 0.5rem;
+          }
+          input:focus {
+            outline-color: oklch(var(--s)) !important;
+            outline-offset: 0;
+            outline-width: 3px !important;
           }
         `}</style>
       </div>
