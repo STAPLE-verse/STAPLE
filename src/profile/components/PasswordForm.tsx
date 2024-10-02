@@ -1,10 +1,8 @@
-import { Label } from "@headlessui/react/dist/components/label/label"
 import { useState } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import LabeledPasswordField, {
   LabeledPassWordFieldProps,
 } from "src/core/components/fields/LabeledPasswordField"
-import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 
 import { z } from "zod"
 
