@@ -4,7 +4,7 @@
 
 import { expect, test } from "vitest"
 import { render, screen } from "test/utils"
-import { LabelView } from "./UtilsViews"
+import { RoleView } from "./UtilsViews"
 
 test("renders Only Utils/Label view ", async () => {
   const label1 = {
@@ -14,13 +14,13 @@ test("renders Only Utils/Label view ", async () => {
   }
 
   render(
-    <LabelView
-      label={label1}
-      contributors={[]}
+    <RoleView
+      role={label1}
+      projectMembers={[]}
       tasks={undefined}
-      printContributor={true}
+      printProjectMember={true}
       printTask={false}
-    ></LabelView>
+    ></RoleView>
   )
 
   const elView = screen.getByTestId("labelview-testid")
@@ -31,7 +31,7 @@ test("renders Only Utils/Label view ", async () => {
   expect(screen.getByRole("heading", { name: /name: label1/i })).toBeInTheDocument()
   expect(
     screen.getByRole("heading", {
-      name: /this label does not have contributors/i,
+      name: /this role does not have projectmembers/i,
     })
   ).toBeInTheDocument()
   expect(
@@ -58,13 +58,13 @@ test("renders  Utils/Label view with contributors  ", async () => {
   ]
 
   render(
-    <LabelView
-      label={label1}
-      contributors={contributors}
+    <RoleView
+      role={label1}
+      projectMembers={contributors}
       tasks={[]}
-      printContributor={true}
+      printProjectMember={true}
       printTask={true}
-    ></LabelView>
+    ></RoleView>
   )
 
   const elView = screen.getByTestId("labelview-testid")
@@ -77,7 +77,7 @@ test("renders  Utils/Label view with contributors  ", async () => {
   expect(screen.getByText(/user: username userlast/i)).toBeInTheDocument()
   expect(
     screen.getByRole("heading", {
-      name: /this label does not have tasks/i,
+      name: /this role does not have tasks/i,
     })
   ).toBeInTheDocument()
 
