@@ -180,38 +180,6 @@ const Summary = () => {
         <div className="card bg-base-300 mx-2 w-full">
           <div className="card-body">
             <div className="card-title">Organized Metadata (under construction)</div>
-            {selectedOrganization === "projectMember" && (
-              <ByProjectMembers
-                tasks={taskLogs}
-                teams={teams}
-                projectMembers={flattenedMembers}
-              ></ByProjectMembers>
-            )}
-            {selectedOrganization === "task" && (
-              <ByTasks tasks={taskLogs} projectMembers={flattenedMembers} teams={teams}></ByTasks>
-            )}
-            {selectedOrganization === "role" && (
-              <ByRoles roles={roles} tasks={taskLogs} projectMembers={flattenedMembers}></ByRoles>
-            )}
-            {selectedOrganization === "date" && (
-              <ByDate tasks={taskLogs} projectMembers={flattenedMembers} teams={teams}></ByDate>
-            )}
-            {selectedOrganization === "element" && (
-              <ByElements
-                elements={elements}
-                teams={teams}
-                projectMembers={flattenedMembers}
-                tasks={taskLogs}
-              ></ByElements>
-            )}
-            {selectedOrganization === "none" && <span>Please select an output organization.</span>}
-            {/* <br />
-                Here we will print out the database basically by organization they pick at the top
-                <br />
-                So, if they pick by date: Print out the date, everything that happened on that date
-                with breaks between the dates
-                <br />
-                If they pick by task, loop through the tasks and print out each thing, etc. */}
           </div>
         </div>
       </div>
