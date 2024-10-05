@@ -19,28 +19,27 @@ export interface LabeledPassWordFieldProps extends PropsWithoutRef<JSX.Intrinsic
 
 export const LabeledPasswordField = forwardRef<HTMLInputElement, LabeledPassWordFieldProps>(
   ({ onEyeClick, name, label, outerProps, fieldProps, labelProps, ...props }, ref) => {
+    let validValue = (v) => (v === "" ? null : v)
+    let myType = props.type === "number" ? (Number as any) : validValue
     const {
       input,
       meta: { touched, error, submitError, submitting },
     } = useField(name, {
-      parse:
-        props.type === "number"
-          ? (Number as any)
-          : // Converting `""` to `null` ensures empty values will be set to null in the DB
-            (v) => (v === "" ? null : v),
+      parse: myType,
       ...fieldProps,
     })
 
     const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
 
     return (
-      <div {...outerProps}>
+      <div {...outerProps} data-testid="labeledpassword-testid">
         <label {...labelProps} className="flex flex-row">
           {label}
         </label>
 
         <div className="relative w-full max-w mx-auto">
           <input
+            data-testid="inputtarget-testid"
             {...input}
             disabled={submitting}
             {...props}
@@ -48,12 +47,17 @@ export const LabeledPasswordField = forwardRef<HTMLInputElement, LabeledPassWord
             className={`${props.className || ""} w-full pr-10`} // Add padding to the right for the eye button
           />
           <button
+            data-testid="showpassword-testid"
             className="absolute right-2 top-1/2 transform -translate-y-1/2" // Positioning the button inside the input field
             onClick={onEyeClick}
             type="button" // Ensure the button does not submit the form
           >
-            {props.type === "password" && <EyeIcon className="w-5 h-5" />}
-            {props.type === "text" && <EyeSlashIcon className="w-5 h-5" />}
+            {props.type === "password" && (
+              <EyeIcon className="w-5 h-5" data-testid="eyeopen-testid" />
+            )}
+            {props.type === "text" && (
+              <EyeSlashIcon className="w-5 h-5" data-testid="eyeclose-testid" />
+            )}
           </button>
         </div>
 
@@ -63,7 +67,7 @@ export const LabeledPasswordField = forwardRef<HTMLInputElement, LabeledPassWord
           </div>
         )}
 
-        <style jsx>{`
+        <style jsx="true">{`
           label {
             display: flex;
             flex-direction: column;
