@@ -1,12 +1,12 @@
 import { useMutation } from "@blitzjs/rpc"
 import archiveForm from "../mutations/archiveForm"
 import toast from "react-hot-toast"
-import { Forms } from "@prisma/client"
+import { Form } from "@prisma/client"
 import { TrashIcon } from "@heroicons/react/24/outline"
 
 interface ArchiveFormButtonProps {
   formId: number
-  onArchived?: (form: Forms) => void // Optional callback for when the form is archived
+  onArchived?: (form: Form) => void // Optional callback for when the form is archived
 }
 
 const ArchiveFormButton = ({ formId, onArchived }: ArchiveFormButtonProps) => {
