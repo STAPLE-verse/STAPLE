@@ -32,12 +32,14 @@ export const ProjectMemberPage = () => {
   const projectId = useParam("projectId", "number")
 
   const currentUser = useCurrentUser()
-  const projectMember = useQuery(getProjectMember, {
+  const [projectMember] = useQuery(getProjectMember, {
     where: { id: projectMemberId },
     include: { users: true },
-  }) as unknown as ProjectMemberWithUsers
+  })
 
-  const projectMemberUser = projectMember.users[0]
+  const typedprojectMember = projectMember as unknown as ProjectMemberWithUsers
+
+  const projectMemberUser = typedprojectMember.users[0]
 
   const [projectMemberPrivilege] = useQuery(getProjectPrivilege, {
     where: { userId: projectMemberUser!.id, projectId: projectId },
