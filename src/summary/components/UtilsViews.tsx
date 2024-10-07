@@ -158,7 +158,7 @@ export const ProjectMembersView = ({
 }) => {
   let newTasks = tasks
   return (
-    <div>
+    <div data-testid="projectmemberview-testid">
       <br />
       <h6>
         name: {projectMember.users.firstName} {projectMember.users.lastName}
