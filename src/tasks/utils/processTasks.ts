@@ -49,12 +49,12 @@ export function processAllTasks(latestTaskLog: TaskLogWithTask[]): ProcessedAllT
       taskSummary[taskId] = { total: 0, completed: 0 }
     }
 
-    // Increment the total count
-    taskSummary[taskId].total += 1
+    // Use type assertion to avoid TypeScript's undefined warning
+    ;(taskSummary[taskId] as { total: number; completed: number }).total += 1
 
     // Increment the completed count if the status is "COMPLETED"
     if (status === "COMPLETED") {
-      taskSummary[taskId].completed += 1
+      ;(taskSummary[taskId] as { total: number; completed: number }).completed += 1
     }
   })
 

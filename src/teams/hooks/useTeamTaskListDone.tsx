@@ -21,19 +21,22 @@ type TaskTableData = {
 }
 
 type TaskWithRoles = Task & {
-  roles: Role[]
+  roles: Role[] // Assuming roles is an array of Role
 }
 
-type TaskLogWithTaskCompleted = TaskLog & {
-  task: TaskWithRoles
-  completedBy: ProjectMemberWithUsers
+type TaskLogWithTask = TaskLog & {
+  task: TaskWithRoles // This should already exist in your current setup
+}
+
+// Define the TaskLogWithTaskCompleted type
+type TaskLogWithTaskCompleted = TaskLogWithTask & {
+  completedBy: ProjectMemberWithUsers // Ensure this is included
 }
 
 // Custom Hook
 export const useTeamTaskListDone = (teamId: number) => {
-  // Get table data
-  // tasks for this team set
-  const [taskLogs] = useQuery(getTaskLogs, {
+  // Get table data for tasks assigned to the team
+  const taskLogs = useQuery(getTaskLogs, {
     where: {
       assignedToId: teamId,
     },
@@ -49,10 +52,13 @@ export const useTeamTaskListDone = (teamId: number) => {
         },
       },
     },
-  }) as TaskLogWithTaskCompleted[]
+  }) as (TaskLog & { completedBy: ProjectMemberWithUsers; task: TaskWithRoles })[] // Casting directly here
 
-  // only the latest task log
-  const latestTaskLogs = getLatestTaskLogs(taskLogs) as TaskLogWithTaskCompleted[]
+  // Filter to get only the latest task logs
+  let latestTaskLogs: TaskLogWithTaskCompleted[] = []
+  if (taskLogs) {
+    latestTaskLogs = (getLatestTaskLogs(taskLogs) as TaskLogWithTaskCompleted[]) || []
+  }
 
   // Create a user map for quick lookup and format the name
   const userMap: { [key: number]: string } = {}

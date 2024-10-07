@@ -67,7 +67,7 @@ export const LabeledPasswordField = forwardRef<HTMLInputElement, LabeledPassWord
           </div>
         )}
 
-        <style jsx="true">{`
+        <style jsx>{`
           label {
             display: flex;
             flex-direction: column;

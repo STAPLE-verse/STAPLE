@@ -24,7 +24,7 @@ export default resolver.pipe(
     }
 
     // Get the userId from the associated users array
-    const userId = projectMemberToDelete.users[0].id
+    const userId = projectMemberToDelete.users[0]!.id
 
     // Check if the project member has any privileges related to the project
     const projectPrivilege = await db.projectPrivilege.findFirst({
