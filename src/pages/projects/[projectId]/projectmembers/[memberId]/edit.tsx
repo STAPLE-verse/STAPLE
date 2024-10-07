@@ -11,12 +11,14 @@ import updateProjectMember from "src/projectmembers/mutations/updateProjectMembe
 import { ProjectMemberForm } from "src/projectmembers/components/ProjectMemberForm"
 import { FORM_ERROR } from "final-form"
 import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
-import { MemberPrivileges } from "@prisma/client"
+import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
 import { getProjectMemberName } from "src/services/getName"
 import addProjectManagerWidgets from "src/widgets/mutations/addProjectManagerWidgets"
 import removeProjectManagerWidgets from "src/widgets/mutations/removeProjectManagerWidgets"
 import getProjectPrivilege from "src/projectmembers/queries/getProjectPrivilege"
 import { UpdateProjectMemberFormSchema } from "src/projectmembers/schemas"
+
+type ProjectMemberWithUsers = ProjectMember & { users: User[] }
 
 export const EditProjectMember = () => {
   const [updateProjectMemberMutation] = useMutation(updateProjectMember)
@@ -47,10 +49,12 @@ export const EditProjectMember = () => {
     },
   })
 
-  const projectMemberUser = projectMember.users[0]
+  const typedProjectMember = projectMember as ProjectMemberWithUsers
+
+  const projectMemberUser = typedProjectMember.users[0]
 
   const [projectMemberPrivilege] = useQuery(getProjectPrivilege, {
-    where: { userId: projectMemberUser.id, projectId: projectId },
+    where: { userId: projectMemberUser!.id, projectId: projectId },
   })
 
   const rolesId =
@@ -77,7 +81,7 @@ export const EditProjectMember = () => {
       const updated = await updateProjectMemberMutation({
         id: projectMember.id,
         projectId: projectId!,
-        userId: projectMemberUser.id,
+        userId: projectMemberUser!.id,
         privilege: values.privilege,
         rolesId: values.rolesId,
       })
@@ -96,13 +100,13 @@ export const EditProjectMember = () => {
         if (values.privilege === "PROJECT_MANAGER") {
           // Add widgets for project manager
           await addProjectManagerWidgetsMutation({
-            userId: projectMemberUser.id,
+            userId: projectMemberUser!.id,
             projectId: projectId!,
           })
         } else if (values.privilege === "CONTRIBUTOR") {
           // Remove widgets exclusive to project manager
           await removeProjectManagerWidgetsMutation({
-            userId: projectMemberUser.id,
+            userId: projectMemberUser!.id,
             projectId: projectId!,
           })
         }
