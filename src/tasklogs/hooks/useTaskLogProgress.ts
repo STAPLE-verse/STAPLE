@@ -12,9 +12,9 @@ export default function useTaskLogProgress(projectMembers: ProjectMemberWithTask
       // Take the latest status log only
       const latestTaskLog = filterLatestTaskLog(taskLogs)
 
-      if (latestTaskLog.status === "NOT_COMPLETED") {
+      if (latestTaskLog!.status === "NOT_COMPLETED") {
         notCompletedAssignmentsCount += 1
-      } else if (latestTaskLog.status === "COMPLETED") {
+      } else if (latestTaskLog!.status === "COMPLETED") {
         completedAssignmentsCount += 1
       }
     } else {
