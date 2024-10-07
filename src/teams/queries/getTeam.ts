@@ -8,7 +8,7 @@ const GetTeam = z.object({
   id: z.number().optional().refine(Boolean, "Required"),
   include: z
     .object({
-      contributors: z.boolean().optional(),
+      projectMembers: z.boolean().optional(),
       assignments: z.boolean().optional(),
     })
     .optional(),

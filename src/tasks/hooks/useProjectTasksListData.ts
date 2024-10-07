@@ -1,14 +1,14 @@
 import { useQuery } from "@blitzjs/rpc"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTasks, { GetTasksInput } from "../queries/getTasks"
-import { ContributorPrivileges } from "@prisma/client"
-import { useContributorPrivilege } from "src/contributors/components/ContributorPrivilegeContext"
+import { MemberPrivileges } from "@prisma/client"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import { processProjectTasks } from "../utils/processTasks"
 
 export default function useProjecTasksListData(projectId: number | undefined) {
   const currentUser = useCurrentUser()
 
-  const { privilege } = useContributorPrivilege()
+  const { privilege } = useMemberPrivileges()
 
   let queryParams: GetTasksInput = {
     where: { project: { id: projectId } },
@@ -16,16 +16,18 @@ export default function useProjecTasksListData(projectId: number | undefined) {
   }
 
   if (privilege && currentUser) {
-    if (privilege === ContributorPrivileges.CONTRIBUTOR) {
+    if (privilege === MemberPrivileges.CONTRIBUTOR) {
       queryParams.where = {
         ...queryParams.where,
         OR: [
-          { assignees: { some: { contributor: { user: { id: currentUser.id } }, teamId: null } } },
           {
-            assignees: {
+            assignedMembers: {
               some: {
-                team: { contributors: { some: { id: currentUser.id } } },
-                contributorId: null,
+                users: {
+                  some: {
+                    id: currentUser.id,
+                  },
+                },
               },
             },
           },

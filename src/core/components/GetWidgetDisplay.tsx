@@ -138,10 +138,10 @@ export function GetProjectOverdueTaskDisplay({ pastDueTasks }) {
   )
 }
 
-export function GetContributorDisplay({ projectStats }) {
+export function GetProjectMemberDisplay({ projectStats }) {
   return (
     <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
-      {projectStats.allContributor}
+      {projectStats.allProjectMember}
       <UserIcon className="w-20" />
     </div>
   )
@@ -203,12 +203,12 @@ export function GetElementDisplay({ projectStats }) {
   )
 }
 
-export function GetLabelsDisplay({ labelPercent }) {
+export function GetRolesDisplay({ rolePercent }) {
   return (
     <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
       <CircularProgressbar
-        value={labelPercent * 100}
-        text={`${Math.round(labelPercent * 100)}%`}
+        value={rolePercent * 100}
+        text={`${Math.round(rolePercent * 100)}%`}
         styles={buildStyles({
           textSize: "16px",
           pathTransitionDuration: 0,

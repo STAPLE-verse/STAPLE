@@ -4,16 +4,16 @@ import Layout from "src/core/layouts/Layout"
 import getElement from "src/elements/queries/getElement"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import { MemberPrivileges } from "db"
 import { ElementInformation } from "src/elements/components/ElementInformation"
-import { useContributorPrivilege } from "src/contributors/components/ContributorPrivilegeContext"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import { ElementSummary } from "src/elements/components/ElementSummary"
 
 const ShowElementPage = () => {
-  // Contributor authentication
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
-  const { privilege } = useContributorPrivilege()
+  // ProjectMember authentication
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  const { privilege } = useMemberPrivileges()
 
   // Get elements
   const projectId = useParam("projectId", "number")
@@ -29,7 +29,7 @@ const ShowElementPage = () => {
         <div>
           <Suspense fallback={<div>Loading...</div>}>
             <ElementInformation element={element} projectId={projectId} onTasksUpdated={refetch} />
-            {privilege == ContributorPrivileges.PROJECT_MANAGER && (
+            {privilege == MemberPrivileges.PROJECT_MANAGER && (
               <ElementSummary element={element} projectId={projectId} />
             )}
           </Suspense>

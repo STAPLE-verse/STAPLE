@@ -6,6 +6,10 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
 import usernameExist, { UserEmailExistErr } from "../mutations/usernameExist"
+import { useState } from "react"
+import LabeledPasswordField, {
+  LabeledPassWordFieldProps,
+} from "src/core/components/fields/LabeledPasswordField"
 
 type SignupFormProps = {
   onSuccess?: (values) => void
@@ -18,6 +22,26 @@ type SignupFormProps = {
 
 export const SignupForm = (props: SignupFormProps) => {
   const [usernameEmailExistQuery] = useMutation(usernameExist)
+
+  //TODO move state inside labeled password
+  const [currType, setType] = useState("password")
+  const handlePasswordToggle = () => {
+    if (currType === "password") {
+      setType("text")
+    } else {
+      setType("password")
+    }
+  }
+
+  const [currTypeV, setcurrTypeV] = useState("password")
+  const handleVPasswordToggle = () => {
+    if (currTypeV === "password") {
+      setcurrTypeV("text")
+    } else {
+      setcurrTypeV("password")
+    }
+  }
+
   return (
     <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
       <div className="flex justify-center items-center w-full">
@@ -74,20 +98,21 @@ export const SignupForm = (props: SignupFormProps) => {
           className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
 
-        <LabeledTextField
+        <LabeledPasswordField
           name="password"
           label="Password:"
           placeholder="Password"
-          type="password"
+          type={currType as LabeledPassWordFieldProps["type"]}
+          onEyeClick={handlePasswordToggle}
           className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
-
-        <LabeledTextField
+        <LabeledPasswordField
           name="password_confirm"
           label="Confirm Password:"
           placeholder="Password"
-          type="password"
           className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
+          onEyeClick={handleVPasswordToggle}
+          type={currTypeV as LabeledPassWordFieldProps["type"]}
         />
       </Form>
 

@@ -1,5 +1,3 @@
-import Layout from "src/core/layouts/Layout"
-import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import { Form } from "src/core/components/fields/Form"
 import { FORM_ERROR } from "final-form"
 import { ResetPassword } from "src/auth/schemas"
@@ -9,11 +7,34 @@ import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import Link from "next/link"
 import { assert } from "blitz"
+import {
+  LabeledPasswordField,
+  LabeledPassWordFieldProps,
+} from "src/core/components/fields/LabeledPasswordField"
+import { useState } from "react"
 
 const ResetPasswordPage: BlitzPage = () => {
   const router = useRouter()
   const token = router.query.token?.toString()
   const [resetPasswordMutation, { isSuccess }] = useMutation(resetPassword)
+
+  const [currType, setType] = useState("password")
+  const handlePasswordToggle = () => {
+    if (currType === "password") {
+      setType("text")
+    } else {
+      setType("password")
+    }
+  }
+
+  const [currTypeV, setcurrTypeV] = useState("password")
+  const handleVPasswordToggle = () => {
+    if (currTypeV === "password") {
+      setcurrTypeV("text")
+    } else {
+      setcurrTypeV("password")
+    }
+  }
 
   return (
     <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
@@ -64,16 +85,18 @@ const ResetPasswordPage: BlitzPage = () => {
             }
           }}
         >
-          <LabeledTextField
+          <LabeledPasswordField
             name="password"
             label="New Password"
-            type="password"
+            type={currType as LabeledPassWordFieldProps["type"]}
+            onEyeClick={handlePasswordToggle}
             className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
           />
-          <LabeledTextField
+          <LabeledPasswordField
             name="passwordConfirmation"
             label="Confirm New Password"
-            type="password"
+            type={currTypeV as LabeledPassWordFieldProps["type"]}
+            onEyeClick={handleVPasswordToggle}
             className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
           />
         </Form>

@@ -1,13 +1,13 @@
 import { useState } from "react"
 import Modal from "./Modal"
-import JsonForm from "src/assignments/components/JsonForm"
+import JsonForm from "src/tasklogs/components/JsonForm"
 import { Prisma } from "@prisma/client"
 
 interface JsonFormModalProps {
   schema: Prisma.JsonValue | null
   uiSchema: Prisma.JsonValue | null
   metadata?: Prisma.JsonValue | null
-  label: string
+  label: string | JSX.Element
 }
 
 export const JsonFormModal = ({ schema, uiSchema, metadata = {}, label }: JsonFormModalProps) => {

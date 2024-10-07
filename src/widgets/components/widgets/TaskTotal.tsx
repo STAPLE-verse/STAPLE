@@ -5,11 +5,12 @@ import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetTotalTaskDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
-import { ContributorPrivileges } from "@prisma/client"
+import { MemberPrivileges } from "@prisma/client"
 import getTaskStats from "src/tasks/queries/getTaskStats"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 
 interface TaskTotalType
-  extends FC<{ size: "SMALL" | "MEDIUM" | "LARGE"; privilege: ContributorPrivileges }> {
+  extends FC<{ size: "SMALL" | "MEDIUM" | "LARGE"; privilege: MemberPrivileges }> {
   requiresPrivilege?: boolean
 }
 
@@ -27,7 +28,13 @@ const TaskTotal: TaskTotalType = ({ size, privilege }) => {
     <Widget
       title="Tasks"
       display={<GetTotalTaskDisplay taskPercent={taskPercent} />}
-      link={<PrimaryLink route={Routes.TasksPage({ projectId: projectId! })} text="View" />}
+      link={
+        <PrimaryLink
+          route={Routes.TasksPage({ projectId: projectId! })}
+          text={<MagnifyingGlassIcon width={25} className="stroke-primary" />}
+          classNames="btn-ghost"
+        />
+      }
       tooltipId="tool-tasks"
       tooltipContent="Percent of tasks completed"
       size={size}

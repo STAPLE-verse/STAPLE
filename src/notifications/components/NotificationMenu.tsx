@@ -50,7 +50,7 @@ const NotificationsMenu = () => {
           )}
           <div className="card-actions">
             <Link className="btn btn-primary btn-block" href={Routes.NotificationsPage()}>
-              View notifications
+              View Notifications
             </Link>
           </div>
         </div>

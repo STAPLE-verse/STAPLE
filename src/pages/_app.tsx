@@ -4,7 +4,7 @@ import React, { Suspense } from "react"
 import { withBlitz } from "src/blitz-client"
 import "src/styles/globals.css"
 import "src/core/styles/index.css"
-import { ContributorPrivilegeProvider } from "src/contributors/components/ContributorPrivilegeContext"
+import { MemberPrivilegesProvider } from "src/projectmembers/components/MemberPrivilegesContext"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -13,7 +13,7 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
     return (
       <ErrorComponent
         statusCode={error.statusCode}
-        title="Sorry, you are not authorized to access this"
+        title="Sorry, you are not authorized to access this page."
       />
     )
   } else {
@@ -32,9 +32,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
       {/* TODO: Is it a good solution to add a big general suspnese? */}
       <Suspense fallback="Loading...">
-        <ContributorPrivilegeProvider>
+        <MemberPrivilegesProvider>
           {getLayout(<Component {...pageProps} />)}
-        </ContributorPrivilegeProvider>
+        </MemberPrivilegesProvider>
       </Suspense>
     </ErrorBoundary>
   )

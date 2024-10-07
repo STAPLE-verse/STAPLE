@@ -6,14 +6,15 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetUpcomingTaskDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
-const MainUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
-  const [{ upcomingTasks }] = useQuery(getDashboardTasks, undefined)
-
+const MainUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }, ctx) => {
+  const [{ taskLogs, upcomingTasks, pastDueTasks }, { error }] = useQuery(getDashboardTasks, ctx, {
+    suspense: true, // Set to false if you want to handle loading and error states manually
+  })
   return (
     <Widget
       title="Upcoming Tasks"
       display={<GetUpcomingTaskDisplay upcomingTasks={upcomingTasks} />}
-      link={<PrimaryLink route={Routes.AllTasksPage()} text="All Tasks" />}
+      link={<PrimaryLink route={Routes.AllTasksPage()} text="All Tasks" classNames="btn-primary" />}
       tooltipId="tool-upcoming"
       tooltipContent="Three upcoming tasks for all projects"
       size={size}

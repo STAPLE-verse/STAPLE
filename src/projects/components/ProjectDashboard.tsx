@@ -22,7 +22,7 @@ import initializeProjectWidgets from "src/widgets/mutations/initializeProjectWid
 import { useWidgetConstruction } from "src/widgets/hooks/useWidgetConstruction"
 import { sortWidgets } from "src/widgets/utils/sortWidgets"
 import { WidgetContainer } from "src/widgets/components/WidgetContainer"
-import { useContributorPrivilege } from "src/contributors/components/ContributorPrivilegeContext"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 
 const ProjectDashboard = () => {
   const [updateWidgetMutation] = useMutation(updateProjectWidgets)
@@ -31,7 +31,7 @@ const ProjectDashboard = () => {
   const projectId = useParam("projectId", "number")
   const currentUser = useCurrentUser()
   const userId = currentUser?.id!
-  const { privilege } = useContributorPrivilege()
+  const { privilege } = useMemberPrivileges()
 
   const [widgets, setWidgets] = useState<any[]>([])
 

@@ -6,15 +6,16 @@ import getColumns from "../queries/getColumns"
 import getElements from "src/elements/queries/getElements"
 import { useQuery } from "@blitzjs/rpc"
 import { FormSpy } from "react-final-form"
-import { z } from "zod"
-import getContributors from "src/contributors/queries/getContributors"
+import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import Modal from "src/core/components/Modal"
 import { useState } from "react"
-import getTeams from "src/teams/queries/getTeams"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
 import DateField from "src/core/components/fields/DateField"
-import getLabels from "src/labels/queries/getLabels"
+import getRoles from "src/roles/queries/getRoles"
+import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
+import { z } from "zod"
+import { ProjectPrivilege } from "db"
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -36,41 +37,50 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     where: { project: { id: projectId! } },
   })
 
-  // Contributors
-  const [{ contributors }] = useQuery(getContributors, {
-    where: { project: { id: projectId! } },
+  // Contributors - get only individuals
+  const [{ projectMembers }] = useQuery(getProjectMembers, {
+    where: {
+      projectId: projectId,
+      users: {
+        every: {
+          id: { not: undefined }, // Ensures there's at least one user
+        },
+        none: {
+          id: { gt: 1 }, // Ensures there is only one user
+        },
+      },
+      name: { equals: null }, // Ensures the name in ProjectMember is null
+    },
     include: {
-      user: true,
+      users: true,
     },
   })
-  // get all labels from all PMs
-  const projectManagers = contributors.filter(
-    (contributor) => contributor.privilege === "PROJECT_MANAGER"
-  )
-  const pmIds = projectManagers.map((pm) => pm.userId)
-  const [{ labels }] = useQuery(getLabels, {
+
+  // get all roles from all PMs
+  const [projectManagers] = useQuery(getProjectManagers, {
+    projectId: projectId!,
+  })
+
+  const [{ roles }] = useQuery(getRoles, {
     where: {
-      userId: {
-        in: pmIds, // Filter labels where userId is in the list of PM IDs
-      },
+      userId: { in: projectManagers?.map((pm) => pm.userId) || [] },
     },
     include: {
-      contributors: true, // Optional: include contributor data if needed
       user: true,
     },
   })
 
-  // Assuming `labels` is an array of objects
-  const labelMerged = labels.map((label) => {
+  // Assuming `roles` is an array of objects
+  const roleMerged = roles.map((role) => {
     return {
-      pm: label["user"]["username"], // Accessing the nested username
-      label: label.name,
-      id: label.id,
+      pm: role["user"]["username"], // Accessing the nested username
+      label: role.name,
+      id: role.id,
     }
   })
 
   // Use the mapped array directly
-  const extraData = labelMerged.map((item) => ({
+  const extraData = roleMerged.map((item) => ({
     pm: item.pm,
   }))
 
@@ -83,34 +93,44 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     },
   ]
 
-  const labelOptions = labelMerged.map((item) => ({
+  const roleOptions = roleMerged.map((item) => ({
     label: item.label,
     id: item.id,
   }))
 
-  const contributorOptions = contributors.map((contributor) => {
+  const projectMemberOptions = projectMembers.map((projectMember) => {
     return {
-      label: contributor["user"].username,
-      id: contributor["id"],
+      // will be only one user in this function
+      label: projectMember["users"][0].username,
+      id: projectMember["id"],
     }
   })
 
   // Teams
-  const [{ teams }] = useQuery(getTeams, {
-    where: { project: { id: projectId! } },
+  const [{ projectMembers: teams }] = useQuery(getProjectMembers, {
+    where: {
+      projectId: projectId,
+      name: { not: null }, // Ensures the name in ProjectMember is non-null
+      users: {
+        some: { id: { not: undefined } }, // Ensures there's at least one user
+      },
+    },
+    include: {
+      users: true,
+    },
   })
 
   const teamOptions = teams.map((team) => {
     return {
-      label: team["name"],
-      id: team["id"],
+      label: team.name ? team.name : "",
+      id: team.id,
     }
   })
 
   // Modal open logics
-  const [openContributorsModal, setContributorsModal] = useState(false)
-  const handleToggleContributorsModal = () => {
-    setContributorsModal((prev) => !prev)
+  const [openProjectMembersModal, setProjectMembersModal] = useState(false)
+  const handleToggleProjectMembersModal = () => {
+    setProjectMembersModal((prev) => !prev)
   }
 
   const [openTeamsModal, setTeamsModal] = useState(false)
@@ -118,9 +138,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     setTeamsModal((prev) => !prev)
   }
 
-  const [openLabelsModal, setlabelsModal] = useState(false)
-  const handleToggleLabelsModal = () => {
-    setlabelsModal((prev) => !prev)
+  const [openRolesModal, setrolesModal] = useState(false)
+  const handleToggleRolesModal = () => {
+    setrolesModal((prev) => !prev)
   }
 
   return (
@@ -137,8 +157,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       {/* Column */}
       <LabelSelectField
         className="select mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
-        name="columnId"
-        label="Current Status: (Required)"
+        name="containerId"
+        label="Current Column: (Required)"
         options={columns}
         optionText="name"
         optionValue="id"
@@ -172,24 +192,24 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         <button
           type="button"
           className="btn btn-primary w-1/2"
-          onClick={() => handleToggleContributorsModal()}
+          onClick={() => handleToggleProjectMembersModal()}
         >
           Assign Contributor(s)
         </button>
         <FormSpy subscription={{ errors: true }}>
           {({ form }) => {
             const errors = form.getState().errors
-            return errors?.contributorsId ? (
-              <div style={{ color: "red" }}>{errors.contributorsId}</div>
+            return errors?.projectMembersId ? (
+              <div style={{ color: "red" }}>{errors.projectMembersId}</div>
             ) : null
           }}
         </FormSpy>
         {/* Modal */}
-        <Modal open={openContributorsModal} size="w-7/8 max-w-xl">
+        <Modal open={openProjectMembersModal} size="w-7/8 max-w-xl">
           <div className="">
             <h1 className="flex justify-center mb2 text-3xl">Select Contributors</h1>
             <div className="flex justify-start mt-4">
-              <CheckboxFieldTable name="contributorsId" options={contributorOptions} />
+              <CheckboxFieldTable name="projectMembersId" options={projectMemberOptions} />
             </div>
             {/* closes the modal */}
             <div className="modal-action flex justify-end mt-4">
@@ -197,7 +217,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
                 type="button"
                 /* button for popups */
                 className="btn btn-primary"
-                onClick={handleToggleContributorsModal}
+                onClick={handleToggleProjectMembersModal}
               >
                 Close
               </button>
@@ -219,8 +239,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         <FormSpy subscription={{ errors: true }}>
           {({ form }) => {
             const errors = form.getState().errors
-            return errors?.contributorsId ? (
-              <div style={{ color: "red" }}>{errors.contributorsId}</div>
+            return errors?.projectMembersId ? (
+              <div style={{ color: "red" }}>{errors.projectMembersId}</div>
             ) : null
           }}
         </FormSpy>
@@ -241,7 +261,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       </div>
 
       {formResponseSupplied ? (
-        <TaskSchemaInput contributors={contributors} />
+        <TaskSchemaInput projectManagers={projectManagers} />
       ) : (
         <p className="mt-4 w-1/2 text-red-500">
           The task is already being completed by the contributors. Please, create a new task if you
@@ -253,24 +273,24 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         <button
           type="button"
           className="btn btn-primary w-1/2"
-          onClick={() => handleToggleLabelsModal()}
+          onClick={() => handleToggleRolesModal()}
         >
           Assign Role(s)
         </button>
-        <Modal open={openLabelsModal} size="w-7/8 max-w-xl">
+        <Modal open={openRolesModal} size="w-7/8 max-w-xl">
           <div className="">
             <h1 className="flex justify-center mb2 text-3xl">Select Roles</h1>
             <div className="flex justify-start mt-4">
               <CheckboxFieldTable
-                name="labelsId"
-                options={labelOptions}
+                name="rolesId"
+                options={roleOptions}
                 extraColumns={extraColumns}
                 extraData={extraData}
               />
             </div>
             {/* closes the modal */}
             <div className="modal-action flex justify-end mt-4">
-              <button type="button" className="btn btn-primary" onClick={handleToggleLabelsModal}>
+              <button type="button" className="btn btn-primary" onClick={handleToggleRolesModal}>
                 Close
               </button>
             </div>

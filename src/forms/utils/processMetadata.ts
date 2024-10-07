@@ -1,7 +1,7 @@
 import { Prisma } from "db"
-import { getContributorName } from "src/services/getName"
-import { ExtendedTask } from "src/tasks/components/TaskContext"
-import { getUniqueContributors } from "src/tasks/utils/getUniqueContributors"
+import { getProjectMemberName } from "src/services/getName"
+import { ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
+import { filterLatestTaskLog } from "src/tasklogs/utils/filterLatestTaskLog"
 
 export type ProcessedMetadata = {
   completedBy: string
@@ -9,30 +9,27 @@ export type ProcessedMetadata = {
   [key: string]: any
 }
 
-export function processMetadata(task: ExtendedTask): ProcessedMetadata[] {
-  // Get unique contributors for the task
-  const taskContributors = getUniqueContributors(task)
+export function processMetadata(projectMembers): ProcessedMetadata[] {
+  const latestCompletedTaskLogs: ExtendedTaskLog[] = []
 
-  // Filter completed statusLogs
-  const statusLogs = task.assignees.flatMap((assignment) => assignment.statusLogs ?? [])
+  // Iterate over each project member
+  projectMembers.forEach((member) => {
+    // Get the latest task log for this project member using the provided function
+    const latestLog = filterLatestTaskLog(member.taskLogAssignedTo)
 
-  const completedStatusLogs = statusLogs.filter(
-    (statusLog): statusLog is NonNullable<typeof statusLog> & { metadata: Prisma.JsonObject } => {
-      return (
-        statusLog?.status === "COMPLETED" &&
-        statusLog.metadata !== null &&
-        typeof statusLog.metadata === "object" &&
-        !Array.isArray(statusLog.metadata)
-      )
+    // Check if the latest log exists and is completed
+    if (latestLog && latestLog.status === "COMPLETED") {
+      latestCompletedTaskLogs.push(latestLog)
     }
-  )
+  })
 
-  const tableData = completedStatusLogs.flatMap((statusLog) => {
-    const contributor = taskContributors.find(
-      (contributor) => contributor.id === statusLog.completedBy
-    )
+  // Process metadata for each of the latest completed logs
+  const tableData = latestCompletedTaskLogs.map((statusLog) => {
+    // Find the project member who completed this task
+    const projectMember = projectMembers.find((member) => member.id === statusLog.completedById)
+
     return {
-      completedBy: getContributorName(contributor),
+      completedBy: getProjectMemberName(projectMember), // Use getProjectMemberName to get username
       createdAt: statusLog.createdAt.toLocaleDateString(undefined, {
         year: "numeric",
         month: "long",

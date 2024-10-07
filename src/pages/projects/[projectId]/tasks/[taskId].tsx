@@ -1,18 +1,17 @@
-// imports
 import { TaskSummary } from "src/tasks/components/TaskSummary"
 import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
-import { ContributorPrivileges } from "@prisma/client"
+import { MemberPrivileges } from "@prisma/client"
 import { TaskInformation } from "src/tasks/components/TaskInformation"
-import { AssignmentCompletion } from "src/assignments/components/AssignmentCompletion"
+import { TaskLogCompletion } from "src/tasklogs/components/TaskLogCompletion"
 import { useTaskContext } from "src/tasks/components/TaskContext"
-import { useContributorPrivilege } from "src/contributors/components/ContributorPrivilegeContext"
+import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import TaskLayout from "src/core/layouts/TaskLayout"
 
 const TaskContent = () => {
   const { task } = useTaskContext()
-  const { privilege } = useContributorPrivilege()
+  const { privilege } = useMemberPrivileges()
 
   return (
     <>
@@ -22,9 +21,9 @@ const TaskContent = () => {
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <div className="flex flex-row justify-center m-2">
           <TaskInformation />
-          <AssignmentCompletion />
+          <TaskLogCompletion />
         </div>
-        {privilege == ContributorPrivileges.PROJECT_MANAGER && (
+        {privilege == MemberPrivileges.PROJECT_MANAGER && (
           <TaskSummary taskId={task.id} projectId={task.projectId} />
         )}
       </main>

@@ -57,7 +57,7 @@ export const pmTeamTableColumns = [
   }),
 ]
 
-export const contributorTeamTableColumns = [
+export const projectMemberTeamTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Team Name",

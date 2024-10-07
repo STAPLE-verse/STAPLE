@@ -37,7 +37,7 @@ const AssignTeams = ({ onChange, teamOptions }: Props) => {
   }
 
   // ColumnDefs
-  const contributorTableColumns: ColumnDef<TeamOption>[] = [
+  const projectMemberTableColumns: ColumnDef<TeamOption>[] = [
     columnHelper.accessor("id", {
       cell: (info) => (
         <span>
@@ -69,7 +69,7 @@ const AssignTeams = ({ onChange, teamOptions }: Props) => {
   return (
     <div>
       <div className="flex mt-2 font-bold">Assign Team to task</div>
-      <Table columns={contributorTableColumns} data={teamChecked} addPagination={true}></Table>
+      <Table columns={projectMemberTableColumns} data={teamChecked} addPagination={true}></Table>
     </div>
   )
 }

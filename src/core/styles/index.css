@@ -589,7 +589,6 @@ span.arrow.tooltip-arrow {
 
 .ourtooltips {
   background-color: oklch(var(--nc)) !important;
-  opacity: 1 !important;
   color: oklch(var(--n)) !important;
   font-weight: bold;
 }

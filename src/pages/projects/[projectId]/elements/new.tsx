@@ -10,11 +10,11 @@ import { FORM_ERROR } from "final-form"
 import { Suspense } from "react"
 import { useParam } from "@blitzjs/next"
 import toast from "react-hot-toast"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import { MemberPrivileges } from "db"
 
 const NewElementPage = () => {
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
   const router = useRouter()
   const projectId = useParam("projectId", "number")
   const [createElementMutation] = useMutation(createElement)

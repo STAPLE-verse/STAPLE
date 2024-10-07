@@ -1,11 +1,11 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { TaskStatus, ContributorPrivileges, AssignmentStatus } from "db"
-import { getLatestStatusLog } from "src/assignments/utils/getLatestStatusLog"
+import db, { Status, MemberPrivileges } from "db"
+import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import { z } from "zod"
 
 const GetTaskStatsSchema = z.object({
   projectId: z.number(),
-  privilege: z.enum([ContributorPrivileges.PROJECT_MANAGER, ContributorPrivileges.CONTRIBUTOR]),
+  privilege: z.enum([MemberPrivileges.PROJECT_MANAGER, MemberPrivileges.CONTRIBUTOR]),
 })
 
 export default resolver.pipe(
@@ -14,57 +14,64 @@ export default resolver.pipe(
   async ({ projectId, privilege }, ctx) => {
     const userId = ctx.session.userId
 
-    // Get contributorId based on userId and projectId
-    const contributor = await db.contributor.findFirst({
+    // Get projectMemberId based on userId and projectId
+    const projectPrivilege = await db.projectPrivilege.findFirst({
       where: {
-        userId,
+        userId: userId,
         projectId: projectId,
       },
     })
 
-    if (!contributor) {
+    if (!projectPrivilege) {
       throw new Error("Contributor not found for this project")
     }
 
-    if (privilege === ContributorPrivileges.PROJECT_MANAGER) {
+    if (privilege === MemberPrivileges.PROJECT_MANAGER) {
       // If PROJECT_MANAGER, return all tasks for the project
       const allTask = await db.task.count({
         where: { projectId: projectId },
       })
 
-      // Completition based on task.status
+      // Completion based on task.status
       const completedTask = await db.task.count({
-        where: { projectId: projectId, status: TaskStatus.COMPLETED },
+        where: { projectId: projectId, status: Status.COMPLETED },
       })
 
       return {
         allTask,
         completedTask,
       }
-    } else if (privilege === ContributorPrivileges.CONTRIBUTOR) {
-      // If CONTRIBUTOR, return only tasks assigned to the contributor
-      const tasks = await db.task.findMany({
-        where: { projectId: projectId },
-        include: {
-          assignees: {
-            where: { contributorId: contributor.id },
-            include: { statusLogs: true },
+    } else if (privilege === MemberPrivileges.CONTRIBUTOR) {
+      // If CONTRIBUTOR, return only tasks assigned to the projectMember
+      const taskLogs = await db.taskLog.findMany({
+        where: {
+          task: { projectId: projectId },
+          assignedTo: {
+            users: {
+              some: { id: userId },
+            },
           },
+        },
+        include: {
+          task: true,
+        },
+        orderBy: {
+          createdAt: "desc", // Ensure latest logs are fetched
         },
       })
 
-      const allTask = tasks.length
+      // Get only the latest log for each task / projectmember
+      const latestTaskLogs = await getLatestTaskLogs(taskLogs)
 
-      // Completition based on latest assignment status
-      const completedTask = tasks.reduce((count, task) => {
-        const latestStatusLog = getLatestStatusLog(task.assignees[0]?.statusLogs)
+      // Get the completed logs
+      const projectTaskLogs = latestTaskLogs.filter((taskLog) => {
+        return taskLog.status === Status.COMPLETED
+      })
 
-        if (latestStatusLog?.status === AssignmentStatus.COMPLETED) {
-          return count + 1
-        }
+      const allTask = latestTaskLogs.length
 
-        return count
-      }, 0)
+      // Completion based on latest assignment status
+      const completedTask = projectTaskLogs.length
 
       return {
         allTask,

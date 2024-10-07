@@ -1,13 +1,13 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
+import db, { CompletedAs } from "db"
 import { UpdateTaskSchema } from "../schemas"
 
-async function manageLabels(taskId, labelsId) {
+async function manageRoles(taskId, rolesId) {
   await db.$transaction(async (prisma) => {
     await db.task.update({
       where: { id: taskId },
       data: {
-        labels: {
+        roles: {
           set: [],
         },
       },
@@ -16,16 +16,16 @@ async function manageLabels(taskId, labelsId) {
     await db.task.update({
       where: { id: taskId },
       data: {
-        labels: {
-          connect: labelsId?.map((c) => ({ id: c })) || [],
+        roles: {
+          connect: rolesId?.map((c) => ({ id: c })) || [],
         },
       },
     })
   })
 }
 
-// Helper function to manage assignments
-async function manageAssignments(
+// Helper function to manage taskLogs
+async function manageTaskLogs(
   taskId: number,
   currentIds: number[],
   newIds: number[],
@@ -35,54 +35,111 @@ async function manageAssignments(
   const idsToDelete = currentIds.filter((id) => !newIds.includes(id))
   const idsToAdd = newIds.filter((id) => !currentIds.includes(id))
 
-  // Create new assignments and disconnect old ones in a single transaction
+  // Determine the completedAs value based on the isTeam flag
+  const completedAsValue = isTeam ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL
+
+  // Create new taskLog and disconnect old ones in a single transaction
   await db.$transaction(async (prisma) => {
     await Promise.all(
       idsToAdd.map((id) =>
-        prisma.assignment.create({
-          data: isTeam ? { taskId, teamId: id } : { taskId, contributorId: id },
+        prisma.taskLog.create({
+          data: {
+            taskId,
+            assignedToId: id,
+            completedAs: completedAsValue, // Set completedAs based on isTeam flag
+          },
         })
       )
     )
     await Promise.all(
       idsToDelete.map((id) =>
-        prisma.assignment.deleteMany({
-          where: isTeam ? { taskId, teamId: id } : { taskId, contributorId: id },
+        prisma.taskLog.deleteMany({
+          where: { taskId, assignedToId: id },
         })
       )
     )
   })
 }
 
+// Helper function to manage assigned project members
+async function manageAssignedMembers(taskId: number, currentIds: number[], newIds: number[]) {
+  const idsToDelete = currentIds.filter((id) => !newIds.includes(id))
+  const idsToAdd = newIds.filter((id) => !currentIds.includes(id))
+
+  await db.task.update({
+    where: { id: taskId },
+    data: {
+      assignedMembers: {
+        disconnect: idsToDelete.map((id) => ({ id })), // Disconnect old members
+        connect: idsToAdd.map((id) => ({ id })), // Connect new members
+      },
+    },
+  })
+}
+
 export default resolver.pipe(
   resolver.zod(UpdateTaskSchema),
   resolver.authorize(),
-  async ({ id, contributorsId = [], teamsId = [], labelsId = [], ...data }) => {
+  async ({ id, projectMembersId = [], teamsId = [], rolesId = [], ...data }) => {
+    // TODO: later we have to clean up the logic for undefined an nullable values
+    const safeProjectMembersId: number[] = projectMembersId || []
+    const safeTeamsId: number[] = teamsId || []
+
     // Update task data
     const task = await db.task.update({ where: { id }, data })
 
-    // Get existing assignments for contributors and teams
-    const existingAssignments = await db.assignment.findMany({
-      where: { taskId: id },
-      select: { contributorId: true, teamId: true },
+    // Fetch existing assigned project members for the task
+    const existingTask = await db.task.findUnique({
+      where: { id },
+      select: {
+        assignedMembers: {
+          select: { id: true }, // Only select the IDs of assigned members
+        },
+      },
     })
 
-    const existingContributorIds = existingAssignments
-      .map((a) => a.contributorId)
-      .filter((id): id is number => id !== null)
+    // Get the current assigned member IDs
+    const existingAssignedMemberIds = existingTask?.assignedMembers.map((member) => member.id) || []
 
-    const existingTeamIds = existingAssignments
-      .map((a) => a.teamId)
-      .filter((id): id is number => id !== null)
+    // Update assigned members on the task
+    await manageAssignedMembers(id, existingAssignedMemberIds, [
+      ...safeProjectMembersId,
+      ...safeTeamsId,
+    ])
 
-    // TODO: later we have to clean up the logic for undefined an nullable values
-    const safeContributorsId: number[] = contributorsId || []
-    const safeTeamsId: number[] = teamsId || []
+    // Update taskLog data
+    // Get existing taskLogs for projectMembers and teams
+    const existingTaskLogs = await db.taskLog.findMany({
+      where: { taskId: id },
+      select: {
+        assignedToId: true,
+        completedAs: true,
+      },
+    })
 
-    // Manage contributor and team assignments
-    await manageAssignments(id, existingContributorIds, safeContributorsId)
-    await manageAssignments(id, existingTeamIds, safeTeamsId, true)
-    await manageLabels(id, labelsId)
+    const teamProjectMemberIds = new Set<number>()
+    const individualProjectMemberIds = new Set<number>()
+
+    existingTaskLogs.forEach((taskLog) => {
+      if (taskLog.assignedToId !== null) {
+        if (taskLog.completedAs === CompletedAs.TEAM) {
+          teamProjectMemberIds.add(taskLog.assignedToId) // Add to team set
+        } else if (taskLog.completedAs === CompletedAs.INDIVIDUAL) {
+          individualProjectMemberIds.add(taskLog.assignedToId) // Add to individual set
+        }
+      }
+    })
+
+    // Convert sets to arrays and keep only unique ids
+    const uniqueTeamProjectMemberIds = Array.from(teamProjectMemberIds)
+    const uniqueIndividualProjectMemberIds = Array.from(individualProjectMemberIds)
+
+    // Manage projectMember and team taskLogs
+    await manageTaskLogs(id, uniqueIndividualProjectMemberIds, safeProjectMembersId)
+    await manageTaskLogs(id, uniqueTeamProjectMemberIds, safeTeamsId, true)
+
+    // Update roles data
+    await manageRoles(id, rolesId)
 
     return task
   }

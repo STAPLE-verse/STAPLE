@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { CompletedAs } from "db"
+import db from "db"
 import { CreateTaskSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
 
@@ -8,39 +8,42 @@ export default resolver.pipe(
   resolver.authorize(),
   async (
     {
-      projectId,
-      columnId,
       name,
+      projectId,
+      containerId,
+      formVersionId,
       description,
       elementId,
       deadline,
       createdById,
-      contributorsId,
+      projectMembersId,
       teamsId,
-      formVersionId,
-      labelsId,
+      rolesId,
     },
     ctx
   ) => {
     // Get number of tasks for the column inside the project
-    const columnTaskIndex = await db.task.count({
+    const containerTaskOrder = await db.task.count({
       where: {
         projectId: projectId, // Filter tasks by projectId
-        columnId: columnId, // Filter tasks by columnId
+        containerId: containerId, // Filter tasks by containerId
       },
     })
 
+    const combinedIds = [...(projectMembersId ? projectMembersId : []), ...(teamsId ? teamsId : [])]
+
+    // create the Task to have the taskId
     const task = await db.task.create({
       data: {
         name,
         description,
-        columnTaskIndex,
+        containerTaskOrder,
         deadline,
         project: {
           connect: { id: projectId },
         },
-        column: {
-          connect: { id: columnId },
+        container: {
+          connect: { id: containerId },
         },
         createdBy: {
           connect: { id: createdById },
@@ -55,113 +58,75 @@ export default resolver.pipe(
               connect: { id: elementId },
             }
           : undefined,
+        assignedMembers: {
+          connect: combinedIds ? combinedIds.map((id) => ({ id })) : [],
+        },
       },
       include: {
         createdBy: {
           include: {
-            user: true,
+            users: true,
           },
         },
       },
     })
 
-    //Connect to labels
-    let task1 = await db.task.update({
-      where: { id: task.id },
-      data: {
-        labels: {
-          connect: labelsId?.map((c) => ({ id: c })) || [],
-        },
-      },
-    })
-
-    // Get username corresponding to the PM who created the task
-    const createdByUsername = task.createdBy.user ? task.createdBy.user.username : null
-
-    // Create the assignment
-    if (contributorsId != null && contributorsId.length != 0) {
-      // Fetch User IDs corresponding to the Contributor IDs
-      const users = await db.contributor.findMany({
-        where: {
-          id: { in: contributorsId },
-        },
-        select: {
-          userId: true, // Only select the userId field
+    // connect to selected roles
+    if (rolesId && rolesId.length > 0) {
+      await db.task.update({
+        where: { id: task.id },
+        data: {
+          roles: {
+            connect: rolesId.map((c) => ({ id: c })),
+          },
         },
       })
-      // Map to extract just the userIds
-      const userIds = users.map((u) => u.userId)
-
-      contributorsId.forEach(async (contributorId) => {
-        // Create the assignment
-        const assignment = await db.assignment.create({
-          data: {
-            task: { connect: { id: task.id } },
-            contributor: { connect: { id: contributorId } },
-          },
-        })
-        // Create assignment status log
-        await db.assignmentStatusLog.create({
-          data: {
-            assignmentId: assignment.id,
-          },
-        })
-      })
-      // Send notification to the contributors
-      await sendNotification(
-        {
-          templateId: "taskAssigned",
-          recipients: userIds,
-          data: { taskName: name, createdBy: createdByUsername, deadline: deadline },
-          projectId: projectId,
-        },
-        ctx
-      )
     }
 
-    if (teamsId != null && teamsId.length != 0) {
-      // Fetch User IDs corresponding to the Contributor IDs
-      const teams = await db.team.findMany({
-        where: {
-          id: {
-            in: teamsId,
-          },
-        },
-        include: {
-          contributors: {
-            include: {
-              user: true,
-            },
-          },
-        },
-        orderBy: { createdAt: "desc" },
-      })
-      // Map to extract just the userIds
-      const userIds = teams.flatMap((team) =>
-        team.contributors.map((contributor) => contributor.user.id)
-      )
+    // create initial statusLogs
+    if (combinedIds != null && combinedIds.length != 0) {
+      combinedIds.forEach(async (projectMemberId) => {
+        // figure out if team or individual based on name null
+        const projectMember = await db.projectMember.findUnique({
+          where: { id: projectMemberId },
+        })
 
-      teamsId.forEach(async (teamId) => {
-        // Create the assignment
-        const assignment = await db.assignment.create({
+        // Determine if it's a team or individual based on the name null
+        const completedAsData = projectMember?.name === null ? "INDIVIDUAL" : "TEAM"
+
+        // Create the taskLog
+        await db.taskLog.create({
           data: {
             task: { connect: { id: task.id } },
-            team: { connect: { id: teamId } },
-          },
-        })
-        // Create assignment status log
-        await db.assignmentStatusLog.create({
-          data: {
-            assignmentId: assignment.id,
-            completedAs: CompletedAs.TEAM,
+            assignedTo: { connect: { id: projectMemberId } },
+            completedAs: completedAsData,
           },
         })
       })
-      // Send notification to the contributors
+
+      // create announcement
+      // Fetch User IDs corresponding to the ProjectMember IDs
+      const users = await db.projectMember.findMany({
+        where: {
+          id: { in: combinedIds },
+        },
+        select: {
+          users: true, // Only select the userId field
+        },
+      })
+      // Map to extract just the userIds
+      const uniqueUserIds = Array.from(
+        new Set(users.flatMap((pm) => pm.users.map((user) => user.id))) // Map over the users array to extract ids
+      )
+
+      // Get username corresponding to the PM who created the task
+      // it will always be one user to create so link to that projectMember
+      const createdByUsername = task.createdBy.users[0] ? task.createdBy.users[0].username : null
+
       await sendNotification(
         {
           templateId: "taskAssigned",
-          recipients: userIds,
+          recipients: uniqueUserIds,
           data: { taskName: name, createdBy: createdByUsername, deadline: deadline },
           projectId: projectId,
         },

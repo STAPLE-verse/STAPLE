@@ -1,7 +1,7 @@
 import React from "react"
-import { ContributorsView, TaskView, TeamView } from "src/summary/components/UtilsViews"
+import { ProjectMembersView, TaskView, TeamView } from "src/summary/components/UtilsViews"
 
-const ByTasks = ({ tasks, contributors, teams }) => {
+const ByTasks = ({ tasks, projectMembers, teams }) => {
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center mb-2 text-3xl">By task organization</h1>
@@ -20,22 +20,22 @@ const ByTasks = ({ tasks, contributors, teams }) => {
       </div>
       <div className="my-2 ">
         <h2>Contributors Summary</h2>
-        {contributors.map((conInfo) => (
-          <ContributorsView
-            contributor={conInfo}
+        {projectMembers.map((conInfo) => (
+          <ProjectMembersView
+            projectMember={conInfo}
             tasks={[]}
             printTask={false}
             // id={conInfo.id}
             key={conInfo.id}
-            printLabels={true}
-          ></ContributorsView>
+            printRoles={true}
+          ></ProjectMembersView>
         ))}
       </div>
 
       <div className="my-2 ">
         <h2>Tasks Summary</h2>
         {tasks.map((task) => (
-          <TaskView task={task} key={task.id} printLabels={true} printAssignees={true}></TaskView>
+          <TaskView task={task} key={task.id} printRoles={true} printAssignees={true}></TaskView>
         ))}
       </div>
     </main>

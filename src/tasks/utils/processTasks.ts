@@ -1,53 +1,107 @@
-import { AssignmentStatus, TaskStatus } from "db"
-import { getLatestStatusLog } from "src/assignments/utils/getLatestStatusLog"
+import { Status, TaskLog } from "db"
 
 // Preprocessing tasks data for tables
-// All tasks table
+// All Tasks Table
 export type ProcessedAllTasks = {
   name: string
   projectName: string
   deadline: Date | null
-  completition: number
+  completion: number
   view: {
     taskId: number
     projectId: number
   }
 }
 
-export function processAllTasks(tasks): ProcessedAllTasks[] {
-  return tasks.map((task) => {
-    const assignments = task.assignees
+type Project = {
+  id: number
+  name: string // Add other relevant fields as necessary
+}
 
-    // Get the latest status log for each assignment and calculate the number of completed assignments
-    const completedAssignments = assignments.reduce((count, assignment) => {
-      const latestLog = getLatestStatusLog(assignment.statusLogs)
-      if (latestLog?.status === AssignmentStatus.COMPLETED) {
-        return count + 1
+type Task = {
+  id: number
+  createdAt: Date
+  updatedAt: Date
+  createdById: number
+  deadline: Date | null
+  name: string
+  description: string | null
+  tags: string | null
+  containerTaskOrder: number
+  projectId: number
+  project?: Project // Include project as an optional field
+  status: Status
+}
+
+type TaskLogWithTask = TaskLog & {
+  task: Task
+}
+
+export function processAllTasks(latestTaskLog: TaskLogWithTask[]): ProcessedAllTasks[] {
+  const taskSummary: Record<number, { total: number; completed: number }> = {}
+
+  // Initialize the summary for each taskLog
+  latestTaskLog.forEach((log) => {
+    const { taskId, status } = log
+
+    // Initialize the summary for this taskId if it doesn't exist
+    if (!taskSummary[taskId]) {
+      taskSummary[taskId] = { total: 0, completed: 0 }
+    }
+
+    // Increment the total count
+    taskSummary[taskId].total += 1
+
+    // Increment the completed count if the status is "COMPLETED"
+    if (status === "COMPLETED") {
+      taskSummary[taskId].completed += 1
+    }
+  })
+
+  // Generate the final result array
+  const processedTasks: ProcessedAllTasks[] = Object.keys(taskSummary).map((taskId) => {
+    const taskData = taskSummary[Number(taskId)]
+
+    // Ensure taskData is defined
+    if (!taskData) {
+      return {
+        name: "Unknown Task",
+        projectName: "Unknown Project",
+        deadline: null,
+        completion: 0,
+        view: {
+          taskId: 0,
+          projectId: 0,
+        },
       }
-      return count
-    }, 0)
+    }
 
-    // Calculate the percentage of completed assignments
-    const completionPercentage =
-      assignments.length > 0 ? Math.round((completedAssignments / assignments.length) * 100) : 0
+    const { total, completed } = taskData
+    const completionPercentage = total > 0 ? Math.round((completed / total) * 100) : 0
+
+    // Find the corresponding task log
+    const taskLog = latestTaskLog.find((log) => log.taskId === Number(taskId))
+    const task = taskLog?.task // Assuming task is part of the log
 
     return {
-      name: task.name,
-      projectName: task.project.name,
-      deadline: task.deadline,
-      completition: completionPercentage,
+      name: task?.name || "Unknown Task",
+      projectName: task?.project!.name || "Unknown Project",
+      deadline: task?.deadline || null,
+      completion: completionPercentage,
       view: {
-        taskId: task.id,
-        projectId: task.projectId,
+        taskId: task?.id || 0,
+        projectId: task?.projectId || 0,
       },
     }
   })
+
+  return processedTasks
 }
 
 // Finshed tasks table
 export type ProcessedFinishedTasks = {
   name: string
-  labels: string
+  roles: string
   completedOn: Date
   view: {
     taskId: number
@@ -57,16 +111,18 @@ export type ProcessedFinishedTasks = {
 
 export function processFinishedTasks(tasks): ProcessedFinishedTasks[] {
   return tasks.map((task) => {
-    const labels = task.labels
-    const labelNames =
-      labels && labels.length > 0 ? labels.map((label) => label.name).join(", ") : "No labels added"
+    const roles = task.roles
+    const roleNames =
+      roles && roles.length > 0 ? roles.map((role) => role.name).join(", ") : "No roles added"
 
     // TODO: Update this to make it safer
-    const completedOn = task.assignees[0].statusLogs[0].createdAt
+    const latestLog = task.taskLogs?.[0]
+
+    const completedOn = latestLog?.status === "COMPLETED" ? latestLog.createdAt : null
 
     return {
       name: task.name,
-      labels: labelNames,
+      roles: roleNames,
       completedOn: completedOn,
       view: {
         taskId: task.id,
@@ -93,7 +149,7 @@ export function processProjectTasks(tasks): ProcessedProjectTasks[] {
     name: task.name,
     description: task.description ? task.description.substring(0, 50) : "No Description",
     deadline: task.deadline,
-    status: task.status === TaskStatus.COMPLETED ? "Completed" : "Not completed",
+    status: task.status === Status.COMPLETED ? "Completed" : "Not completed",
     view: {
       taskId: task.id,
       projectId: task.projectId,
@@ -116,7 +172,7 @@ export function processElementTasks(tasks): ProcessedElementTasks[] {
   return tasks.map((task) => ({
     name: task.name,
     deadline: task.deadline,
-    status: task.status === TaskStatus.COMPLETED ? "Completed" : "Not completed",
+    status: task.status === Status.COMPLETED ? "Completed" : "Not completed",
     view: {
       taskId: task.id,
       projectId: task.projectId,

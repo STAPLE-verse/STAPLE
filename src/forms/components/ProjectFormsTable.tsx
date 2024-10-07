@@ -2,6 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { FormVersion, Task } from "db"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 
 export interface TaskWithFormVersion extends Task {
   formVersion: FormVersion | null
@@ -25,13 +26,13 @@ export const projectFormsTableColumns = [
     enableSorting: false,
     cell: (info) => (
       <Link
-        className="btn btn-primary"
+        className="btn btn-ghost"
         href={Routes.ShowMetadataPage({
           taskId: info.getValue(),
           projectId: info.row.original.projectId,
         })}
       >
-        View
+        <MagnifyingGlassIcon width={25} className="stroke-primary" />
       </Link>
     ),
     header: "View",

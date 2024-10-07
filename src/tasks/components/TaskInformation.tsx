@@ -2,12 +2,12 @@ import { useQuery } from "@blitzjs/rpc"
 import { useContext } from "react"
 import { Tooltip } from "react-tooltip"
 import { TaskContext } from "./TaskContext"
-import getContributor from "src/contributors/queries/getContributor"
-import { Contributor } from "@prisma/client"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
+import { ProjectMember } from "@prisma/client"
 import DateFormat from "src/core/components/DateFormat"
 
-interface ContributorWithUsername extends Contributor {
-  user: {
+interface ProjectMemberWithUsername extends ProjectMember {
+  users: {
     username: string
   }
 }
@@ -15,19 +15,21 @@ interface ContributorWithUsername extends Contributor {
 export const TaskInformation = () => {
   const taskContext = useContext(TaskContext)
   const task = taskContext?.task
-  const [pmData] = useQuery(getContributor, {
+  const [pmData] = useQuery(getProjectMember, {
     where: { id: task?.createdById },
-    include: { user: { select: { username: true } } },
+    include: { users: { select: { username: true } } },
   })
 
-  const pm = pmData as ContributorWithUsername
+  const pm = pmData as ProjectMemberWithUsername
+
+  //console.log(pm)
 
   if (!taskContext || !task) {
     return <div>Loading...</div>
   }
 
   return (
-    <div className="card bg-base-300 mx-2 w-1/2">
+    <div className="card bg-base-300 mx-2 w-1/3">
       <div className="card-body">
         <div className="card-title" data-tooltip-id="tool-task">
           Task Information
@@ -48,11 +50,12 @@ export const TaskInformation = () => {
         </p>
 
         <p>
-          <span className="font-semibold">Description:</span> {task.description}
+          <span className="font-semibold">Description:</span>{" "}
+          {task.description ? task.description : "No Description"}
         </p>
 
         <p>
-          <span className="font-semibold">Column:</span> {task["column"]?.name}
+          <span className="font-semibold">Column:</span> {task["container"]?.name}
         </p>
 
         <p>
@@ -61,7 +64,7 @@ export const TaskInformation = () => {
         </p>
 
         <p>
-          <span className="font-semibold">Created by:</span> {pm?.user?.username}
+          <span className="font-semibold">Created by:</span> {pm.users[0].username}
         </p>
 
         <p className="italic">

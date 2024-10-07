@@ -9,8 +9,8 @@ import DownloadJSON from "src/forms/components/DownloadJSON"
 import DownloadXLSX from "src/forms/components/DownloadXLSX"
 import DownloadZIP from "src/forms/components/DownloadZIP"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import { MemberPrivileges } from "db"
 import TaskLayout from "src/core/layouts/TaskLayout"
 import { extendSchema } from "src/forms/utils/extendSchema"
 import { processMetadata } from "src/forms/utils/processMetadata"
@@ -19,10 +19,10 @@ import { JsonFormModal } from "src/core/components/JsonFormModal"
 
 const MetadataContent = () => {
   // Ensure that only PM can edit a task
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
-  // Get tasks and assignments
-  const { task } = useTaskContext()
+  // Get tasks
+  const { task, projectMembers } = useTaskContext()
 
   // Extend uiSchema so submit button is not shown
   const extendedUiSchema = extendSchema({
@@ -35,7 +35,7 @@ const MetadataContent = () => {
   })
 
   // Prepare data for the metadatatable
-  const processedMetadata = processMetadata(task)
+  const processedMetadata = processMetadata(projectMembers)
 
   // Create table definitions based on the schema
   const metadataTableColumns = metadataTable(task.formVersion?.schema)

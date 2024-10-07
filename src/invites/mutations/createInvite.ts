@@ -17,36 +17,38 @@ export default resolver.pipe(
   async (input) => {
     let textResult
     // check to make sure email not already there
-    const findcontributor = await db.contributor.findFirst({
+    const findprojectmember = await db.projectMember.findFirst({
       where: {
         projectId: input.projectId,
-        user: { email: input.email },
+        users: {
+          some: { email: input.email }, // Use `some` to query an array field
+        },
       },
     })
 
-    if (findcontributor) {
+    if (findprojectmember) {
       textResult = {
         code: "already_added",
-        findcontributor,
+        findprojectmember,
       }
     } else {
-      // Create contributor
-      const contributor = await db.invitation.create({
+      // Create projectmember
+      const projectmember = await db.invitation.create({
         data: {
           projectId: input.projectId,
           privilege: input.privilege,
           email: input.email,
           invitationCode: generateToken(20),
           addedBy: input.addedBy,
-          labels: {
-            connect: input.labelsId?.map((c) => ({ id: c })) || [],
+          roles: {
+            connect: input.rolesId?.map((c) => ({ id: c })) || [],
           },
         },
       })
 
       textResult = {
         code: "invite_sent",
-        contributor,
+        projectmember,
       }
     }
 

@@ -8,53 +8,68 @@ export default resolver.pipe(
   resolver.zod(AcceptInviteSchema),
   resolver.authorize(),
   async ({ id, userId }, ctx) => {
-    let textResult
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+    // Find the invitation and related roles
     const invite = await db.invitation.findUnique({
       where: { id },
-      include: { labels: true },
+      include: { roles: true },
     })
+    if (!invite) throw new Error("Invitation not found")
 
-    const contributor = await db.contributor.create({
+    // Create the project privilege
+    const projectPrivilege = await db.projectPrivilege.create({
       data: {
         userId: userId,
-        projectId: invite!.projectId,
-        privilege: invite!.privilege,
+        projectId: invite.projectId,
+        privilege: invite.privilege,
       },
     })
 
-    //connect to labels
-    let c1 = await db.contributor.update({
-      where: { id: contributor.id },
+    // Create the project member
+    const projectmember = await db.projectMember.create({
       data: {
-        labels: {
-          connect: invite!.labels.map((label) => ({ id: label.id })) || [],
+        users: {
+          connect: { id: userId },
         },
+        projectId: invite!.projectId,
       },
     })
+
+    // Assign roles to the project member
+    if (invite.roles && invite.roles.length > 0) {
+      await db.projectMember.update({
+        where: { id: projectmember.id },
+        data: {
+          roles: {
+            connect: invite.roles.map((role) => ({ id: role.id })),
+          },
+        },
+      })
+    }
 
     // Get information for the notification
-    const project = await db.project.findFirst({ where: { id: invite!.projectId } })
+    const project = await db.project.findFirst({ where: { id: invite.projectId } })
+    if (!project) throw new Error("Project not found")
+
     // Send notification
     await sendNotification(
       {
         templateId: "addedToProject",
-        recipients: [contributor.userId],
+        recipients: [userId],
         data: {
-          projectName: project!.name,
-          addedBy: invite!.addedBy,
-          privilege: getPrivilegeText(contributor.privilege),
+          projectName: project.name,
+          addedBy: invite.addedBy,
+          privilege: getPrivilegeText(projectPrivilege.privilege),
         },
-        projectId: contributor.projectId,
+        projectId: project.id,
       },
       ctx
     )
 
-    // delete invitation(s) for that email and project Id
+    // Delete invitation(s) for that email and project Id
     await db.invitation.deleteMany({
       where: {
-        email: invite!.email,
-        projectId: invite!.projectId,
+        email: invite.email,
+        projectId: invite.projectId,
       },
     })
 

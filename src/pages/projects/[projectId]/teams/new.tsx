@@ -11,11 +11,11 @@ import { Suspense } from "react"
 import Head from "next/head"
 import toast from "react-hot-toast"
 import createTeam from "src/teams/mutations/createTeam"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import { MemberPrivileges } from "db"
 
 const NewTeamPage = () => {
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   const router = useRouter()
   const projectId = useParam("projectId", "number")
@@ -35,18 +35,15 @@ const NewTeamPage = () => {
             submitText="Add Team"
             schema={TeamFormSchema}
             onSubmit={async (values) => {
-              // console.log("adding team", values)
-              let membersId: number[] = values.contributorsId
+              const teamMemberUserIds: number[] = values.projectMembers
                 .filter((el) => el.checked)
-                .map((val) => val.id)
-              // console.log(membersId)
+                .map((val) => val.userId)
               try {
                 //get this after team is created
-
                 const team = await createTeamMutation({
                   name: values.name,
                   projectId: projectId!,
-                  contributors: membersId,
+                  userIds: teamMemberUserIds,
                 })
                 await toast.promise(Promise.resolve(team), {
                   loading: "Adding team...",

@@ -1,23 +1,32 @@
 import React, { createContext, ReactNode, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
-import useAssignmentData from "src/assignments/hooks/useAssignmentData"
-import { Task, Column, Element, FormVersion } from "db"
-import { ExtendedAssignment } from "src/assignments/hooks/useAssignmentData"
+import { Task, KanbanBoard, Element, FormVersion, ProjectMember, User, TaskLog } from "db"
+import { ExtendedProjectMember, ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
+
+export type ProjectMemberWithTaskLog = ProjectMember & {
+  taskLogAssignedTo: ExtendedTaskLog[]
+  users: Pick<User, "id" | "username">[]
+}
 
 // Creating custom types
+type TaskLogWithCompletedBy = TaskLog & {
+  completedBy: ExtendedProjectMember
+  assignedTo: ExtendedProjectMember
+}
+
 export type ExtendedTask = Task & {
-  column: Column
+  container: KanbanBoard
   element: Element | null
   formVersion: FormVersion | null
-  assignees: ExtendedAssignment[]
-  labels: []
+  roles: []
+  assignedMembers: ProjectMemberWithTaskLog[]
+  taskLogs: TaskLogWithCompletedBy[]
 }
 
 interface TaskContextType {
   task: ExtendedTask
-  individualAssignments: ExtendedAssignment[]
-  teamAssignments: ExtendedAssignment[]
+  projectMembers: ProjectMemberWithTaskLog[]
   refetchTaskData: () => void
 }
 
@@ -37,37 +46,46 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
     where: { id: taskId },
     include: {
       element: true,
-      column: true,
+      container: true,
       formVersion: true,
-      assignees: {
+      roles: true,
+      assignedMembers: {
         include: {
-          contributor: { include: { user: { select: { username: true } } } },
-          team: {
+          taskLogAssignedTo: {
+            where: {
+              taskId: taskId, // Filter task logs by the current taskId
+            },
             include: {
-              contributors: {
+              completedBy: {
                 include: {
-                  user: { select: { username: true } },
+                  users: true,
+                },
+              },
+              assignedTo: {
+                include: {
+                  users: true,
                 },
               },
             },
+            orderBy: {
+              createdAt: "desc",
+            },
           },
-          statusLogs: {
-            orderBy: { createdAt: "desc" },
-            include: { contributor: { include: { user: { select: { username: true } } } } },
+          users: {
+            select: {
+              id: true,
+              username: true,
+            },
           },
         },
       },
     },
   }) as [ExtendedTask, any]
 
-  // Filter data
-  const { individualAssignments, teamAssignments } = useAssignmentData(task)
-
   // Set context value
   const contextValue = {
     task,
-    individualAssignments,
-    teamAssignments,
+    projectMembers: task.assignedMembers,
     refetchTaskData,
   }
 

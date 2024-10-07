@@ -11,45 +11,44 @@ import { TaskForm } from "src/tasks/components/TaskForm"
 import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
 import TaskLayout from "src/core/layouts/TaskLayout"
-import useContributorAuthorization from "src/contributors/hooks/UseContributorAuthorization"
-import { ContributorPrivileges } from "db"
+import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import { MemberPrivileges } from "db"
 import { useTaskContext } from "src/tasks/components/TaskContext"
-import { responseSubmitted } from "src/assignments/utils/responseSubmitted"
+import { responseSubmitted } from "src/tasklogs/utils/responseSubmitted"
+import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
 
 export const EditTask = () => {
   // Ensure that only PM can edit a task
-  useContributorAuthorization([ContributorPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
   //Setup
   const router = useRouter()
   const [updateTaskMutation] = useMutation(updateTask)
   // Get tasks and assignments
-  const { task, individualAssignments, teamAssignments, refetchTaskData } = useTaskContext()
+  const { task, projectMembers, refetchTaskData } = useTaskContext()
+  const { individualProjectMembers, teamProjectMembers } = useSeparateProjectMembers(projectMembers)
 
-  // Calculate individual contributor ids
-  const contributorsId = individualAssignments
-    .map((assignment) => assignment.contributorId)
-    // assignment.contributorId is nullable thus we filter for initialValues
+  // Calculate individual projectMember ids
+  const projectMembersId = individualProjectMembers
+    .map((projectMember) => projectMember.id)
     .filter((id): id is number => id !== null)
 
-  // Calculate team member contributor ids
-  const teamsId = teamAssignments
-    .map((assignment) => assignment.teamId)
-    // assignment.contributorId is nullable thus we filter for initialValues
+  // Calculate team member projectMember ids
+  const teamsId = teamProjectMembers
+    .map((projectMember) => projectMember.id)
     .filter((id): id is number => id !== null)
 
   // Prepopulate form with previous responses
-  //const labelsId = task.labels != undefined ? task.labels.map((label) => label.id) : []
-  const labelsId = task.labels?.map((label: { id: number }) => label.id) || []
+  const rolesId = task.roles?.map((role: { id: number }) => role.id) || []
 
   const initialValues = {
     name: task.name,
     description: task.description!,
-    columnId: task.columnId,
+    containerId: task.containerId,
     deadline: task.deadline,
-    contributorsId: contributorsId,
+    projectMembersId: projectMembersId,
     teamsId: teamsId,
     formVersionId: task.formVersionId,
-    labelsId: labelsId,
+    rolesId: rolesId,
     elementId: task.elementId,
   }
 

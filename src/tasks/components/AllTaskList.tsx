@@ -1,55 +1,35 @@
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useQuery } from "@blitzjs/rpc"
-import getTasks from "../queries/getTasks"
+import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
+import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
+import { processAllTasks } from "../utils/processTasks"
 import Table from "src/core/components/Table"
 import { allTasksTableColumns } from "./TaskTable"
-import { processAllTasks } from "../utils/processTasks"
 
 export const AllTasksList = () => {
   const currentUser = useCurrentUser()
 
-  const [{ tasks }] = useQuery(getTasks, {
+  // get latest logs that this user is involved in
+  const [taskLogs] = useQuery(getTaskLogs, {
     where: {
-      // Only return tasks where user is assigned
-      OR: [
-        {
-          assignees: {
-            // Individual contributor
-            some: { contributor: { user: { id: currentUser?.id } }, teamId: null },
-          },
-        },
-        {
-          assignees: {
-            some: {
-              // Contributor as part of a team
-              team: { contributors: { some: { user: { id: currentUser?.id } } } },
-              contributorId: null,
-            },
-          },
-        },
-      ],
+      assignedTo: {
+        users: { some: { id: currentUser?.id } },
+      },
     },
     include: {
-      project: true,
-      // Only return assignments of the user
-      assignees: {
-        where: {
-          OR: [
-            {
-              contributor: { user: { id: currentUser?.id } }, // Individual contributor
-            },
-            {
-              team: { contributors: { some: { user: { id: currentUser?.id } } } }, // Contributor as part of a team
-            },
-          ],
+      task: {
+        include: {
+          project: true, // Include the project linked to the task
         },
-        include: { statusLogs: { orderBy: { createdAt: "desc" } } },
       },
     },
     orderBy: { id: "asc" },
   })
 
-  const processedTasks = processAllTasks(tasks)
+  // process those logs to get the latest one for each task-projectmemberId
+  const latestLogs = getLatestTaskLogs(taskLogs)
+
+  const processedTasks = processAllTasks(latestLogs)
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">

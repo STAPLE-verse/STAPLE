@@ -1,9 +1,9 @@
-import { AssignmentStatus, CompletedAs } from "db"
+import { Status, CompletedAs } from "db"
 import DateFormat from "src/core/components/DateFormat"
 
 export const TaskView = ({
   task,
-  printLabels = false,
+  printRoles = false,
   printAssignees = false,
   printElement = true,
 }) => {
@@ -41,7 +41,7 @@ export const TaskView = ({
   const lastChangedByAssignment = getAssignmentCompletedBy(task, lastChangedLog)
 
   return (
-    <div className="my-1 ">
+    <div className="my-1 " data-testid="taskview-testid">
       <h5>Name: {task.name} </h5>
       Description: {task.description}
       <br />
@@ -57,10 +57,10 @@ export const TaskView = ({
           {task.assignees.map((assignment) => (
             <div key={assignment.id} className="">
               {assignment.team != null && <span>Team Name: {assignment.team.name} </span>}
-              {assignment.contributor != null && (
+              {assignment.projectMember != null && (
                 <span>
-                  Contributor Name: {assignment.contributor.user.firstName}{" "}
-                  {assignment.contributor.user.lastName}{" "}
+                  Contributor Name: {assignment.projectMember.user.firstName}{" "}
+                  {assignment.projectMember.user.lastName}{" "}
                 </span>
               )}
             </div>
@@ -68,10 +68,8 @@ export const TaskView = ({
         </div>
       )}
       {/* TODO refactor this */}
-      {lastChangedLog.status == AssignmentStatus.NOT_COMPLETED && (
-        <h6>The task is not completed</h6>
-      )}
-      {lastChangedLog.status == AssignmentStatus.COMPLETED && (
+      {lastChangedLog.status == Status.NOT_COMPLETED && <h6>The task is not completed</h6>}
+      {lastChangedLog.status == Status.COMPLETED && (
         <div>
           <div>
             {lastChangedLog.completedAs == CompletedAs.INDIVIDUAL && (
@@ -79,8 +77,8 @@ export const TaskView = ({
                 Completed as an individual by:{" "}
                 <span>
                   {" "}
-                  {lastChangedByAssignment.contributor.user.firstName}{" "}
-                  {lastChangedByAssignment.contributor.user.lastName}
+                  {lastChangedByAssignment.projectMember.user.firstName}{" "}
+                  {lastChangedByAssignment.projectMember.user.lastName}
                 </span>
               </div>
             )}
@@ -94,15 +92,15 @@ export const TaskView = ({
           </div>
         </div>
       )}
-      {printLabels && (
+      {printRoles && (
         <div className="">
-          {task.labels.length < 1 && <h6>This task does not have labels</h6>}
-          {task.labels.length > 0 && (
+          {task.roles.length < 1 && <h6>This task does not have roles</h6>}
+          {task.roles.length > 0 && (
             <div>
               Contribution Categories:
-              {task.labels.map((label) => (
-                <span key={label.id} className="mx-2">
-                  {label.name}
+              {task.roles.map((role) => (
+                <span key={role.id} className="mx-2">
+                  {role.name}
                 </span>
               ))}
             </div>
@@ -126,12 +124,12 @@ export const TaskView = ({
 
 export const TeamView = ({ team, tasks, printTask = false }) => {
   return (
-    <div className="my-2">
+    <div className="my-2" data-testid="teamview-testid">
       <h5> Name: {team.name} </h5>
       Created: <DateFormat date={team.createdAt}></DateFormat>
       <div>
         <h6>Members</h6>
-        {team.contributors.map((element) => (
+        {team.projectMembers.map((element) => (
           <div key={element.id}>
             name: {element.user.firstName} {element.user.lastName}
           </div>
@@ -152,30 +150,30 @@ export const TeamView = ({ team, tasks, printTask = false }) => {
   )
 }
 
-export const ContributorsView = ({
-  contributor,
+export const ProjectMembersView = ({
+  projectMember,
   tasks,
   printTask = false,
-  printLabels = false,
+  printRoles = false,
 }) => {
   let newTasks = tasks
   return (
-    <div>
+    <div data-testid="projectmemberview-testid">
       <br />
       <h6>
-        name: {contributor.user.firstName} {contributor.user.lastName}
+        name: {projectMember.users.firstName} {projectMember.users.lastName}
       </h6>
-      Added to Project: <DateFormat date={contributor.createdAt}></DateFormat>
+      Added to Project: <DateFormat date={projectMember.createdAt}></DateFormat>
       <br />
-      {printLabels && (
+      {printRoles && (
         <div className="">
-          {contributor.labels.length < 1 && <h6>This contributor does not have labels</h6>}
-          {contributor.labels.length > 0 && (
+          {projectMember.roles.length < 1 && <h6>This contributor does not have roles</h6>}
+          {projectMember.roles.length > 0 && (
             <div>
               Contribution Categories:
-              {contributor.labels.map((label) => (
-                <span key={label.id} className="mx-2">
-                  {label.name}
+              {projectMember.roles.map((role) => (
+                <span key={role.id} className="mx-2">
+                  {role.name}
                 </span>
               ))}
             </div>
@@ -195,24 +193,24 @@ export const ContributorsView = ({
   )
 }
 
-export const LabelView = ({
-  label,
-  contributors,
+export const RoleView = ({
+  role,
+  projectMembers,
   tasks,
   printTask = false,
-  printContributor = false,
+  printProjectMember = false,
 }) => {
   return (
-    <div className="my-2">
-      <h5> Name: {label.name} </h5>
-      Description: {label.description}
+    <div className="my-2" data-testid="labelview-testid">
+      <h5> Name: {role.name} </h5>
+      Description: {role.description}
       <br />
-      Taxonomy: {label.taxonomy}
-      {printContributor && (
+      Taxonomy: {role.taxonomy}
+      {printProjectMember && (
         <div>
           <h6>Contributors</h6>
-          {contributors.length < 1 && <h6>This label does not have contributors</h6>}
-          {contributors.map((element) => (
+          {projectMembers.length < 1 && <h6>This role does not have projectMembers</h6>}
+          {projectMembers.map((element) => (
             <div key={element.id}>
               user: {element.user.firstName} {element.user.lastName}
             </div>
@@ -222,7 +220,7 @@ export const LabelView = ({
       {printTask && (
         <div>
           <h6>Tasks</h6>
-          {tasks.length < 1 && <h6>This label does not have tasks</h6>}
+          {tasks.length < 1 && <h6>This role does not have tasks</h6>}
           {tasks.map((task) => (
             <TaskView key={task.id} task={task} printAssignees={true}></TaskView>
           ))}
@@ -234,7 +232,7 @@ export const LabelView = ({
 
 export const ElementView = ({ element, task, printTask = false }) => {
   return (
-    <div>
+    <div data-testid="elementview-testid">
       <h5> Element Name: {element.name} </h5>
       Description: {element.description}
       {printTask && (
@@ -247,7 +245,7 @@ export const ElementView = ({ element, task, printTask = false }) => {
               task={task}
               printAssignees={true}
               printElement={false}
-              printLabels={true}
+              printRoles={true}
             ></TaskView>
           )}
         </div>
@@ -263,7 +261,7 @@ export const compareDateSeconds = (d1, d2) => {
   return d1Seconds == d2Seconds
 }
 
-export const DateLogView = ({ tasks, contributors, log, teams, printHeader }) => {
+export const DateLogView = ({ tasks, projectMembers, log, teams, printHeader }) => {
   const getTasksForDate = (tasks, log) => {
     const t = tasks.filter(
       (task) => log.belongsTo == "task" && task.id == log.elementId
@@ -278,17 +276,17 @@ export const DateLogView = ({ tasks, contributors, log, teams, printHeader }) =>
     return t
   }
 
-  const getContributorForDate = (contributors, log) => {
+  const getProjectMemberForDate = (projectMembers, log) => {
     let t
-    if (log.belongsTo == "contributor") {
-      t = contributors.filter((contributor) => contributor.id == log.elementId)
+    if (log.belongsTo == "projectMember") {
+      t = projectMembers.filter((projectMember) => projectMember.id == log.elementId)
     }
-    //  else if (log.belongsTo == "contributor" && !log.fromLog){
-    //   t = contributors.filter((contributor) => contributor.id == log.elementId)
+    //  else if (log.belongsTo == "projectMember" && !log.fromLog){
+    //   t = projectMembers.filter((projectMember) => projectMember.id == log.elementId)
     // }
     else {
-      t = contributors.filter((contributor) =>
-        compareDateSeconds(contributor.createdAt, log.createdAt)
+      t = projectMembers.filter((projectMember) =>
+        compareDateSeconds(projectMember.createdAt, log.createdAt)
       )
     }
 
@@ -296,7 +294,7 @@ export const DateLogView = ({ tasks, contributors, log, teams, printHeader }) =>
   }
 
   let filteredTask = getTasksForDate(tasks, log)
-  let filteredContributors = getContributorForDate(contributors, log)
+  let filteredProjectMembers = getProjectMemberForDate(projectMembers, log)
   let filteredTeams = getTeamsForDate(teams, log)
 
   return (
@@ -307,18 +305,18 @@ export const DateLogView = ({ tasks, contributors, log, teams, printHeader }) =>
           Date: <DateFormat date={log.createdAt}></DateFormat>
         </h3>
       )}
-      {/* {filteredContributors.length < 1 && <h4>Not activity for contributors</h4>} */}
-      {filteredContributors.length > 0 && (
+      {/* {filteredProjectMembers.length < 1 && <h4>Not activity for projectMembers</h4>} */}
+      {filteredProjectMembers.length > 0 && (
         <div className="my-1">
           <h5>Contributor created or updated</h5>
-          {filteredContributors.map((contributor) => (
-            <ContributorsView
-              contributor={contributor}
+          {filteredProjectMembers.map((projectMember) => (
+            <ProjectMembersView
+              projectMember={projectMember}
               tasks={[]}
               printTask={false}
-              key={contributor.id}
-              printLabels={true}
-            ></ContributorsView>
+              key={projectMember.id}
+              printRoles={true}
+            ></ProjectMembersView>
           ))}
         </div>
       )}
@@ -338,7 +336,7 @@ export const DateLogView = ({ tasks, contributors, log, teams, printHeader }) =>
         <div className="my-1">
           <h6>Task created or updated</h6>
           {filteredTask.map((task) => (
-            <TaskView task={task} key={task.id} printLabels={true} printAssignees={true}></TaskView>
+            <TaskView task={task} key={task.id} printRoles={true} printAssignees={true}></TaskView>
           ))}
         </div>
       )}

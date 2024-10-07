@@ -2,7 +2,8 @@ import React from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import clsx from "clsx"
-import { Bars2Icon } from "@heroicons/react/24/outline"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faArrowsUpDownLeftRight } from "@fortawesome/free-solid-svg-icons"
 import { UniqueIdentifier } from "@dnd-kit/core"
 
 interface ContainerProps {
@@ -37,7 +38,11 @@ const TaskContainer = ({ id, children, title, description }: ContainerProps) => 
           <h1 className="text-xl">{title}</h1>
           <p className="text-sm">{description}</p>
         </div>
-        <Bars2Icon className="w-5 h-5" {...listeners}></Bars2Icon>
+        <FontAwesomeIcon
+          icon={faArrowsUpDownLeftRight}
+          className="w-6 h-6 text-base-content border-transparent rounded-2xl hover:opacity-50"
+          {...listeners}
+        />
       </div>
 
       {children}

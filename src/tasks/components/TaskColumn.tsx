@@ -1,27 +1,17 @@
 import React from "react"
 import { HTMLAttributes, ClassAttributes } from "react"
-import { Column, Task } from "db"
-
-import { useRouter } from "next/router"
-// import SortableTaskCard from "./SortableTaskCard"
-import TaskCard from "./TaskCard"
-import { useDroppable, DragOverlay } from "@dnd-kit/core"
+import { KanbanBoard, Task } from "db"
+import { useDroppable } from "@dnd-kit/core"
 import DraggableTaskCard from "./DraggableTaskCard"
 
 interface TaskColumnProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
-  column: Column
+  column: KanbanBoard
   tasks: Task[]
 }
 
 // Set the maximum number of tasks to return for the column
 // TODO: Extend logic should be added or pagination to the UI
-const ITEMS_PER_PAGE = 10
-
 const TaskColumn = ({ column, tasks }: TaskColumnProps) => {
-  // Setup
-  const router = useRouter()
-  const page = Number(router.query.page) || 0
-
   const { isOver, setNodeRef } = useDroppable({
     id: `column-${column.id}`,
   })
@@ -39,7 +29,7 @@ const TaskColumn = ({ column, tasks }: TaskColumnProps) => {
         style={style}
         className="flex flex-col flex-grow h-full space-y-6 p-3 rounded-lg"
       >
-        {tasks.map((task, index) => (
+        {tasks.map((task) => (
           <DraggableTaskCard
             taskId={task.id}
             key={task.id}

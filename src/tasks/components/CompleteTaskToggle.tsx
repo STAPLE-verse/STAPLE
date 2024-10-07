@@ -1,54 +1,50 @@
 import { useMutation } from "@blitzjs/rpc"
-import { TaskStatus } from "db"
+import { Status } from "db"
 import { useState } from "react"
-import updateTaskStatus from "../mutations/updateTaskStatus"
+import updateStatus from "../mutations/updateStatus"
 import toast from "react-hot-toast"
 import { Tooltip } from "react-tooltip"
 import Modal from "src/core/components/Modal"
 import { useTaskContext } from "./TaskContext"
-import useAssignmentProgress from "src/assignments/hooks/useAssignmentProgress"
+import useTaskLogProgress from "src/tasklogs/hooks/useTaskLogProgress"
 
 export const CompleteTaskToggle = () => {
-  const [updateTaskStatusMutation] = useMutation(updateTaskStatus)
+  const [updateStatusMutation] = useMutation(updateStatus)
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
 
-  const { task } = useTaskContext()
+  const { task, projectMembers } = useTaskContext()
 
-  const assignmentProgress = useAssignmentProgress(task)
+  const taskLogProgress = useTaskLogProgress(projectMembers)
 
-  const [taskStatus, setTaskStatus] = useState(task?.status || TaskStatus.NOT_COMPLETED)
+  const [status, setStatus] = useState(task?.status || Status.NOT_COMPLETED)
 
-  const handleTaskStatus = async () => {
-    if (
-      assignmentProgress.completed !== assignmentProgress.all &&
-      taskStatus === TaskStatus.NOT_COMPLETED
-    ) {
+  const handleStatus = async () => {
+    if (taskLogProgress.completed !== taskLogProgress.all && status === Status.NOT_COMPLETED) {
       setIsConfirmModalOpen(true)
     } else {
-      await taskStatusUpdate()
+      await StatusUpdate()
     }
   }
 
-  const taskStatusUpdate = async () => {
-    const newStatus =
-      taskStatus === TaskStatus.COMPLETED ? TaskStatus.NOT_COMPLETED : TaskStatus.COMPLETED
+  const StatusUpdate = async () => {
+    const newStatus = status === Status.COMPLETED ? Status.NOT_COMPLETED : Status.COMPLETED
 
     try {
-      const updatedTaskStatus = await updateTaskStatusMutation({ id: task.id, status: newStatus })
+      const updatedStatus = await updateStatusMutation({ id: task.id, status: newStatus })
       toast.success(
         `Task status updated to ${
-          updatedTaskStatus.status === "COMPLETED" ? "Completed" : "Not Completed"
+          updatedStatus.status === "COMPLETED" ? "Completed" : "Not Completed"
         }`
       )
-      setTaskStatus(updatedTaskStatus.status)
+      setStatus(updatedStatus.status)
     } catch (error) {
       console.error("Error updating task status:", error)
       toast.error("Failed to update task status")
     }
   }
 
-  const confirmUpdateTaskStatus = async () => {
-    await taskStatusUpdate()
+  const confirmUpdateStatus = async () => {
+    await StatusUpdate()
     setIsConfirmModalOpen(false)
   }
 
@@ -65,8 +61,8 @@ export const CompleteTaskToggle = () => {
       <div>
         <input
           type="checkbox"
-          checked={taskStatus === TaskStatus.COMPLETED}
-          onChange={handleTaskStatus}
+          checked={status === Status.COMPLETED}
+          onChange={handleStatus}
           className="checkbox checkbox-primary border-2"
         />
         <Modal open={isConfirmModalOpen} size="w-11/12 max-w-3xl">
@@ -76,7 +72,7 @@ export const CompleteTaskToggle = () => {
               completed?
             </p>
             <div className="flex flex-row space-x-4">
-              <button className="btn btn-primary" onClick={confirmUpdateTaskStatus}>
+              <button className="btn btn-primary" onClick={confirmUpdateStatus}>
                 Confirm
               </button>
               <button className="btn btn-secondary" onClick={() => setIsConfirmModalOpen(false)}>
@@ -87,7 +83,7 @@ export const CompleteTaskToggle = () => {
         </Modal>
       </div>
       <div className="stat-desc text-lg text-inherit">
-        {taskStatus === "COMPLETED" ? "Completed" : "Not Completed"}
+        {status === "COMPLETED" ? "Completed" : "Not Completed"}
       </div>
     </div>
   )

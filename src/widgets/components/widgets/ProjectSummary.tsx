@@ -1,23 +1,21 @@
 import React from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import getContributors from "src/contributors/queries/getContributors"
+
 import getProject from "src/projects/queries/getProject"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetProjectSummaryDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
+import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 
 const ProjectSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const projectId = useParam("projectId", "number")
 
   const [project] = useQuery(getProject, { id: projectId })
 
-  const [{ contributors: projectManagers }] = useQuery(getContributors, {
-    where: {
-      projectId: projectId,
-      privilege: "PROJECT_MANAGER",
-    },
+  const [projectManagers] = useQuery(getProjectManagers, {
+    projectId: projectId!,
     include: {
       user: true,
     },
@@ -31,6 +29,7 @@ const ProjectSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size
         <PrimaryLink
           route={Routes.EditProjectPage({ projectId: project.id })}
           text="Edit Project"
+          classNames="btn-primary"
         />
       }
       tooltipId="tool-project"

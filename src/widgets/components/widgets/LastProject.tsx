@@ -13,7 +13,9 @@ const LastProject: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size })
     <Widget
       title="Last Updated Projects"
       display={<GetProjectDisplay projects={projects} />}
-      link={<PrimaryLink route={Routes.ProjectsPage()} text="All Projects" />}
+      link={
+        <PrimaryLink route={Routes.ProjectsPage()} text="All Projects" classNames="btn-primary" />
+      }
       tooltipId="tool-last-project"
       tooltipContent="Three recently updated projects"
       size={size}

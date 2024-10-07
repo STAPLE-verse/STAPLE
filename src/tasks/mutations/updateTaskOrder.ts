@@ -11,8 +11,8 @@ export default resolver.pipe(
         const updatedTask = await db.task.update({
           where: { id: task.taskId },
           data: {
-            columnId: task.columnId,
-            columnTaskIndex: task.columnTaskIndex,
+            containerId: task.containerId,
+            containerTaskOrder: task.containerTaskOrder,
           },
         })
         return updatedTask
