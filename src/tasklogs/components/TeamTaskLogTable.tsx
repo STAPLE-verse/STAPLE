@@ -11,7 +11,14 @@ const columnHelper = createColumnHelper<ProcessedTeamTaskLog>()
 // ColumnDefs
 export const teamTaskLogTableColumns: ColumnDef<ProcessedTeamTaskLog>[] = [
   columnHelper.accessor("projectMember", {
-    cell: (info) => <div>{<ShowTeamModal projectMember={info.getValue()}></ShowTeamModal>}</div>,
+    cell: (info) => {
+      const rowData = info.row.original // Access the entire row data
+      return (
+        <div>
+          <ShowTeamModal projectMember={rowData}></ShowTeamModal>
+        </div>
+      )
+    },
     header: "Team Name",
   }),
   columnHelper.accessor("lastUpdate", {

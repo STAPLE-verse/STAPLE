@@ -57,7 +57,7 @@ export function processTeamTaskLogs(
 
     const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
     return {
-      projectMember: getProjectMemberName(projectMember),
+      projectMember: projectMember,
       lastUpdate: latestLog
         ? latestLog.createdAt.toLocaleDateString(undefined, {
             year: "numeric",
@@ -75,6 +75,7 @@ export function processTeamTaskLogs(
           : "Not Completed"
         : "Unknown",
       taskLog: latestLog,
+      users: projectMember.users,
     }
   })
 }
