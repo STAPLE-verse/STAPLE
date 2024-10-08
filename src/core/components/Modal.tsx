@@ -15,10 +15,13 @@ const Modal = ({ children, open, size = "max-w-lg" }: Props) => {
       renderBackdrop={(props) => (
         <div {...props} className="fixed inset-0 bg-black opacity-50 z-[1040]" />
       )}
-      className="fixed inset-0 flex items-center justify-center z-[1050]"
+      className="fixed inset-0 flex items-start justify-center z-[1050] overflow-y-auto"
     >
       <div
-        className={cn("flex justify-center bg-base-100 p-6 rounded-lg shadow-lg relative", size)}
+        className={cn(
+          "flex justify-center bg-base-100 p-6 rounded-lg shadow-lg relative min-h-screen",
+          size
+        )}
       >
         <div className="w-full">{children}</div>
       </div>
