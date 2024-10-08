@@ -4,7 +4,7 @@
 
 import { expect, vi, test } from "vitest"
 import { render, screen, fireEvent } from "test/utils"
-import { ShowTeamModal } from "src/assignments/components/ShowTeamModal"
+import { ShowTeamModal } from "src/tasklogs/components/ShowTeamModal"
 
 test("renders show team modal", async () => {
   const curentTeam = {

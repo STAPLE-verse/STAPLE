@@ -25,6 +25,8 @@ const AssignmentsContent = () => {
   const processedIndividualAssignments = processIndividualTaskLogs(individualProjectMembers)
   const processedTeamAssignments = processTeamTaskLogs(teamProjectMembers)
 
+  console.log(processedTeamAssignments)
+
   // Get columns definitions for tables
   const individualColumns = task.formVersionId ? taskLogTableColumnsSchema : taskLogTableColumns
   const teamColumns = task.formVersionId ? teamTaskLogTableColumnsSchema : teamTaskLogTableColumns
