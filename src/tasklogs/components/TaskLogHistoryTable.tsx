@@ -32,6 +32,7 @@ export const taskLogHistoryTableColumns: ColumnDef<ProcessedTaskLogHistory>[] = 
             schema={info.getValue()!.schema}
             uiSchema={noSubmitButton(info.getValue()!.ui)}
             label="View Form Data"
+            classNames="btn-primary"
           />
         ) : (
           <span>No metadata provided</span>

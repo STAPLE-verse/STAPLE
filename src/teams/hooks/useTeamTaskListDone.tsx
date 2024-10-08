@@ -5,7 +5,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
-import { ProjectMember, Role, Task, TaskLog } from "db"
+import { ProjectMember, Role, Status, Task, TaskLog } from "db"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { ProjectMemberWithUsers } from "src/pages/projects/[projectId]/teams"
 
@@ -36,9 +36,10 @@ type TaskLogWithTaskCompleted = TaskLogWithTask & {
 // Custom Hook
 export const useTeamTaskListDone = (teamId: number) => {
   // Get table data for tasks assigned to the team
-  const taskLogs = useQuery(getTaskLogs, {
+  const [taskLogs] = useQuery(getTaskLogs, {
     where: {
       assignedToId: teamId,
+      status: Status.COMPLETED,
     },
     include: {
       task: {
@@ -52,7 +53,7 @@ export const useTeamTaskListDone = (teamId: number) => {
         },
       },
     },
-  }) as (TaskLog & { completedBy: ProjectMemberWithUsers; task: TaskWithRoles })[] // Casting directly here
+  })
 
   // Filter to get only the latest task logs
   let latestTaskLogs: TaskLogWithTaskCompleted[] = []
