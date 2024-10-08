@@ -14,6 +14,7 @@ import { MemberPrivileges } from "db"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { ProjectMemberWithUsers } from "."
 import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
+import { Tooltip } from "react-tooltip"
 
 export const ShowTeamPage = () => {
   const router = useRouter()
@@ -77,7 +78,15 @@ export const ShowTeamPage = () => {
 
           <div className="card bg-base-300 w-full mt-2">
             <div className="card-body">
-              <div className="card-title">Team Member Contribution Roles</div>
+              <div className="card-title" data-tooltip-id="teamMembers">
+                Team Member Contribution Roles
+              </div>
+              <Tooltip
+                id="teamMembers"
+                content="All individual member assigned roles are shown"
+                className="z-[1099] ourtooltips"
+              />
+
               <ProjectMemberRolesList
                 usersId={userIds}
                 projectId={projectId}
@@ -88,7 +97,14 @@ export const ShowTeamPage = () => {
 
           <div className="card bg-base-300 w-full mt-2">
             <div className="card-body">
-              <div className="card-title">Team Task Contribution Roles</div>
+              <div className="card-title" data-tooltip-id="teamContributions">
+                Team Task Contribution Roles
+              </div>
+              <Tooltip
+                id="teamContributions"
+                content="Only completed tasks are included"
+                className="z-[1099] ourtooltips"
+              />
               <TeamTaskListDone teamId={teamId} />
             </div>
           </div>

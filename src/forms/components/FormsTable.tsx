@@ -50,6 +50,7 @@ export const formsTableColumns = [
             uiSchema={extendedUiSchema}
             metadata={{}}
             label={<MagnifyingGlassIcon width={25} className="stroke-primary" />}
+            classNames="btn-ghost"
           />
         </>
       )

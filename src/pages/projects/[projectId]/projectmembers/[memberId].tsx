@@ -21,6 +21,7 @@ import toast from "react-hot-toast"
 import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import getTeamNames from "src/teams/queries/getTeamNames"
 import getProjectPrivilege from "src/projectmembers/queries/getProjectPrivilege"
+import { Tooltip } from "react-tooltip"
 
 type ProjectMemberWithUsers = ProjectMember & { users: User[] }
 
@@ -32,12 +33,14 @@ export const ProjectMemberPage = () => {
   const projectId = useParam("projectId", "number")
 
   const currentUser = useCurrentUser()
-  const projectMember = useQuery(getProjectMember, {
+  const [projectMember] = useQuery(getProjectMember, {
     where: { id: projectMemberId },
     include: { users: true },
-  }) as unknown as ProjectMemberWithUsers
+  })
 
-  const projectMemberUser = projectMember.users[0]
+  const typedprojectMember = projectMember as unknown as ProjectMemberWithUsers
+
+  const projectMemberUser = typedprojectMember.users[0]
 
   const [projectMemberPrivilege] = useQuery(getProjectPrivilege, {
     where: { userId: projectMemberUser!.id, projectId: projectId },
@@ -137,7 +140,14 @@ export const ProjectMemberPage = () => {
 
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
-            <div className="card-title">Contribution Tasks</div>
+            <div className="card-title" data-tooltip-id="memberTasks">
+              Contribution Tasks
+            </div>
+            <Tooltip
+              id="memberTasks"
+              content="Only completed tasks are included"
+              className="z-[1099] ourtooltips"
+            />
             <ProjectMembersTaskListDone
               projectMember={projectMember}
               columns={finishedTasksTableColumns}
