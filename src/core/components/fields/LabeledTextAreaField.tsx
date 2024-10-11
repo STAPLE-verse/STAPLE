@@ -16,25 +16,29 @@ export interface LabeledTextAreaFieldProps
 
 export const LabeledTextAreaField = forwardRef<HTMLTextAreaElement, LabeledTextAreaFieldProps>(
   ({ name, label, outerProps, fieldProps, labelProps, ...props }, ref) => {
+    let validValue = (v) => (v === "" ? null : v)
+    let myType = props.type === "number" ? (Number as any) : validValue
     const {
       input,
       meta: { touched, error, submitError, submitting },
     } = useField(name, {
-      parse:
-        props.type === "number"
-          ? (Number as any)
-          : // Converting `""` to `null` ensures empty values will be set to null in the DB
-            (v) => (v === "" ? null : v),
+      parse: myType,
       ...fieldProps,
     })
 
     const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
 
     return (
-      <div {...outerProps}>
+      <div {...outerProps} data-testid="labeledarea-testid">
         <label {...labelProps}>
           {label}
-          <textarea {...input} disabled={submitting} {...props} ref={ref} />
+          <textarea
+            {...input}
+            disabled={submitting}
+            {...props}
+            ref={ref}
+            data-testid="labeledtarget-testid"
+          />
         </label>
 
         {touched && normalizedError && (
@@ -43,7 +47,7 @@ export const LabeledTextAreaField = forwardRef<HTMLTextAreaElement, LabeledTextA
           </div>
         )}
 
-        <style jsx>{`
+        <style jsx="true">{`
           label {
             display: flex;
             flex-direction: column;
