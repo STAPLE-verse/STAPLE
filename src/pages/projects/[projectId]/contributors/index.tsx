@@ -81,7 +81,7 @@ export const AllProjectMembersList = ({ privilege }: AllProjectMembersListProps)
   )
 }
 // issue 37
-const ProjectMembersPage = () => {
+const ContributorsPage = () => {
   const projectId = useParam("projectId", "number")
   const { privilege } = useMemberPrivileges()
 
@@ -100,7 +100,7 @@ const ProjectMembersPage = () => {
           <div>
             <Link
               className="btn btn-primary mb-4 mt-4"
-              href={Routes.NewProjectMemberPage({ projectId: projectId! })}
+              href={Routes.NewContributorPage({ projectId: projectId! })}
             >
               Invite Contributor
             </Link>
@@ -118,4 +118,4 @@ const ProjectMembersPage = () => {
   )
 }
 
-export default ProjectMembersPage
+export default ContributorsPage

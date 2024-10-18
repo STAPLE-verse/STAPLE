@@ -88,6 +88,7 @@ function NewProjectMember() {
           submitText="Add Contributor"
           schema={CreateProjectMemberFormSchema}
           onSubmit={handleSubmit}
+          currentUserId={currentUser!.id}
         />
         {formError && (
           <div className="error-message text-red-600 mt-2 font-bold"> {formError} </div>
@@ -97,7 +98,7 @@ function NewProjectMember() {
   )
 }
 
-const NewProjectMemberPage = () => {
+const NewContributorPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
@@ -112,6 +113,6 @@ const NewProjectMemberPage = () => {
   )
 }
 
-NewProjectMemberPage.authenticate = true
+NewContributorPage.authenticate = true
 
-export default NewProjectMemberPage
+export default NewContributorPage

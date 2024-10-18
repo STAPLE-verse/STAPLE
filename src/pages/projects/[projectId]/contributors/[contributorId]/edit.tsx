@@ -20,17 +20,17 @@ import { UpdateProjectMemberFormSchema } from "src/projectmembers/schemas"
 
 type ProjectMemberWithUsers = ProjectMember & { users: User[] }
 
-export const EditProjectMember = () => {
+export const EditContributor = () => {
   const [updateProjectMemberMutation] = useMutation(updateProjectMember)
   const [addProjectManagerWidgetsMutation] = useMutation(addProjectManagerWidgets)
   const [removeProjectManagerWidgetsMutation] = useMutation(removeProjectManagerWidgets)
   const router = useRouter()
 
-  const projectMemberId = useParam("memberId", "number")
+  const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
 
   const [projectMember, { refetch }] = useQuery(getProjectMember, {
-    where: { id: projectMemberId, project: { id: projectId! } },
+    where: { id: contributorId, project: { id: projectId! } },
     include: {
       roles: {
         select: {
@@ -69,9 +69,9 @@ export const EditProjectMember = () => {
   // Handle events
   const handleCancel = async () => {
     await router.push(
-      Routes.ShowProjectMemberPage({
+      Routes.ShowContributorPage({
         projectId: projectId!,
-        memberId: projectMemberId!,
+        contributorId: contributorId!,
       })
     )
   }
@@ -113,9 +113,9 @@ export const EditProjectMember = () => {
       }
 
       await router.push(
-        Routes.ShowProjectMemberPage({
+        Routes.ShowContributorPage({
           projectId: projectId!,
-          memberId: updated.id,
+          contributorId: updated.id,
         })
       )
     } catch (error: any) {
@@ -146,7 +146,7 @@ export const EditProjectMember = () => {
   )
 }
 
-const EditProjectMemberPage = () => {
+const EditContributorPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
@@ -155,12 +155,12 @@ const EditProjectMemberPage = () => {
         <title>Edit Contributor</title>
       </Head>
       <Suspense fallback={<div>Loading...</div>}>
-        <EditProjectMember />
+        <EditContributor />
       </Suspense>
     </Layout>
   )
 }
 
-EditProjectMemberPage.authenticate = true
+EditContributorPage.authenticate = true
 
-export default EditProjectMemberPage
+export default EditContributorPage

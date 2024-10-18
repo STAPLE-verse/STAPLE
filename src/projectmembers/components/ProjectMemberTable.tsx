@@ -28,9 +28,9 @@ export const pmProjectMemberTableColumns = [
       <div>
         <Link
           className="btn btn-primary"
-          href={Routes.ShowProjectMemberPage({
+          href={Routes.ShowContributorPage({
             projectId: info.row.original.projectId!,
-            memberId: info.getValue(),
+            contributorId: info.getValue(),
           })}
         >
           See Contributions
@@ -47,9 +47,9 @@ export const pmProjectMemberTableColumns = [
       <div>
         <Link
           className="btn btn-primary"
-          href={Routes.EditProjectMemberPage({
+          href={Routes.EditContributorPage({
             projectId: info.row.original.projectId!,
-            memberId: info.getValue(),
+            contributorId: info.getValue(),
           })}
         >
           Edit Contributor
@@ -73,9 +73,9 @@ export const projectMemberProjectMemberTableColumns = [
       <div>
         <Link
           className="btn btn-primary"
-          href={Routes.ShowProjectMemberPage({
+          href={Routes.ShowContributorPage({
             projectId: info.row.original.projectId!,
-            memberId: info.getValue(),
+            contributorId: info.getValue(),
           })}
         >
           See Contributions

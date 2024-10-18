@@ -25,16 +25,16 @@ import { Tooltip } from "react-tooltip"
 
 type ProjectMemberWithUsers = ProjectMember & { users: User[] }
 
-export const ProjectMemberPage = () => {
+export const ContributorPage = () => {
   const router = useRouter()
   const [deleteProjectMemberMutation] = useMutation(deleteProjectMember)
   const { privilege } = useMemberPrivileges()
-  const projectMemberId = useParam("memberId", "number")
+  const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
 
   const currentUser = useCurrentUser()
   const [projectMember] = useQuery(getProjectMember, {
-    where: { id: projectMemberId },
+    where: { id: contributorId },
     include: { users: true },
   })
 
@@ -62,7 +62,7 @@ export const ProjectMemberPage = () => {
         if (projectMemberUser!.id === currentUser?.id) {
           await router.push(Routes.ProjectsPage())
         } else {
-          await router.push(Routes.ProjectMembersPage({ projectId: projectId! }))
+          await router.push(Routes.ContributorsPage({ projectId: projectId! }))
         }
       } catch (error) {
         toast.error(error.message)
@@ -105,9 +105,9 @@ export const ProjectMemberPage = () => {
             <div className="card-actions justify-end">
               {privilege === MemberPrivileges.PROJECT_MANAGER ? (
                 <Link
-                  href={Routes.EditProjectMemberPage({
+                  href={Routes.EditContributorPage({
                     projectId: projectId!,
-                    memberId: projectMemberId!,
+                    contributorId: contributorId!,
                   })}
                   className="btn btn-primary"
                 >
@@ -185,16 +185,16 @@ export const ProjectMemberPage = () => {
   )
 }
 
-const ShowProjectMemberPage = () => {
+const ShowContributorPage = () => {
   return (
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
-        <ProjectMemberPage />
+        <ContributorPage />
       </Suspense>
     </Layout>
   )
 }
 
-ShowProjectMemberPage.authenticate = true
+ShowContributorPage.authenticate = true
 
-export default ShowProjectMemberPage
+export default ShowContributorPage
