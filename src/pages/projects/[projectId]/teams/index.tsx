@@ -11,7 +11,7 @@ import {
   pmTeamTableColumns,
 } from "src/teams/components/TeamTable"
 import Table from "src/core/components/Table"
-import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"

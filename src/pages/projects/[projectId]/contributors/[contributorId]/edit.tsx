@@ -15,7 +15,7 @@ import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
 import { getContributorName } from "src/services/getName"
 import addProjectManagerWidgets from "src/widgets/mutations/addProjectManagerWidgets"
 import removeProjectManagerWidgets from "src/widgets/mutations/removeProjectManagerWidgets"
-import getProjectPrivilege from "src/projectmembers/queries/getProjectPrivilege"
+import getProjectPrivilege from "src/projectprivileges/queries/getProjectPrivilege"
 import { UpdateProjectMemberFormSchema } from "src/projectmembers/schemas"
 
 type ProjectMemberWithUsers = ProjectMember & { users: User[] }
