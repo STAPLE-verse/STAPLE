@@ -5,50 +5,61 @@ import moment from "moment"
 
 export default resolver.pipe(resolver.authorize(), async (_, ctx) => {
   const today = moment().startOf("day")
-  const currentUser = ctx.session.userId // Ensure userId is accessible from ctx
+  const currentUser = ctx.session.userId // Get the current userId
 
-  // Fetch the task logs
-  const allTaskLogs = await db.taskLog.findMany({
+  // Step 1: Fetch tasks assigned to the current user
+  const assignedTasks = await db.task.findMany({
     where: {
-      assignedToId: currentUser, // Filtering based on the current user's ID
-    },
-    include: {
-      task: {
-        include: {
-          project: true, // Include the project through the task relation
+      assignedMembers: {
+        some: {
+          users: {
+            some: {
+              id: currentUser, // Filter by user's assigned tasks
+            },
+          },
         },
       },
     },
+    include: {
+      taskLogs: true, // Include all task logs for each task
+      project: true, // Optionally include the project
+    },
   })
 
-  // Filter and categorize tasks, sort by date
-  const taskLogs = allTaskLogs
-    .filter((taskLog) => taskLog.status === Status.NOT_COMPLETED)
-    .sort((a, b) => {
-      // Sort by createdAt in descending order
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  // Step 2: For each task, find the latest taskLog
+  const tasksWithLatestLogs = assignedTasks.map((task) => {
+    const latestTaskLog = task.taskLogs.reduce((latest, current) => {
+      return new Date(current.createdAt) > new Date(latest.createdAt) ? current : latest
     })
 
-  const upcomingTasks = taskLogs
-    .filter((taskLog) => {
-      if (taskLog.task.deadline) {
-        return moment(taskLog.task.deadline).isSameOrAfter(today, "day")
-      }
-      return false
-    })
-    .slice(0, 3) // top three rows
+    return {
+      ...task,
+      latestTaskLog,
+    }
+  })
 
-  const pastDueTasks = taskLogs
-    .filter((taskLog) => {
-      if (taskLog.task.deadline) {
-        return moment(taskLog.task.deadline).isBefore(moment(), "minute")
-      }
-      return false
+  // Step 3: Filter and categorize tasks based on the latest taskLog status
+  const upcomingTasks = tasksWithLatestLogs
+    .filter((task) => {
+      return (
+        task.latestTaskLog.status === Status.NOT_COMPLETED &&
+        task.deadline &&
+        moment(task.deadline).isSameOrAfter(today, "day")
+      )
     })
-    .slice(0, 3) // top three rows
+    .slice(0, 3) // Limit to top 3
+
+  const pastDueTasks = tasksWithLatestLogs
+    .filter((task) => {
+      return (
+        task.latestTaskLog.status === Status.NOT_COMPLETED &&
+        task.deadline &&
+        moment(task.deadline).isBefore(today, "minute")
+      )
+    })
+    .slice(0, 3) // Limit to top 3
 
   return {
-    taskLogs,
     upcomingTasks,
     pastDueTasks,
   }

@@ -7,7 +7,7 @@ import { useParam } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
 import Table from "src/core/components/Table"
-import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "@prisma/client"
 import getInvites from "src/invites/queries/getInvites"
 import { inviteTableColumnsPM } from "src/invites/components/InvitesTable"
@@ -45,15 +45,15 @@ const InvitesPagePM = () => {
         </Suspense>
         <div>
           <Link
-            className="btn btn-primary mb-4"
-            href={Routes.NewProjectMemberPage({ projectId: projectId! })}
+            className="btn btn-primary mb-4 mt-4"
+            href={Routes.NewContributorPage({ projectId: projectId! })}
           >
             Invite Contributor
           </Link>
 
           <Link
-            className="btn btn-secondary mx-2 mb-4"
-            href={Routes.ProjectMembersPage({ projectId: projectId! })}
+            className="btn btn-secondary mx-2 mb-4 mt-4"
+            href={Routes.ContributorsPage({ projectId: projectId! })}
           >
             View Contributors
           </Link>

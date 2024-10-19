@@ -6,32 +6,24 @@ import Link from "next/link"
 import DateFormat from "src/core/components/DateFormat"
 
 // Tasks table
-type TaskLogWithTaskAndProjectName = Prisma.TaskLogGetPayload<{
+type TasWithProject = Prisma.TaskGetPayload<{
   include: {
-    task: {
-      include: {
-        project: {
-          select: {
-            name: true
-          }
-        }
-      }
-    }
+    project: true
   }
 }>
-const taskColumnHelper = createColumnHelper<TaskLogWithTaskAndProjectName>()
-export const tasksColumns: ColumnDef<TaskLogWithTaskAndProjectName>[] = [
-  taskColumnHelper.accessor("task.name", {
+const taskColumnHelper = createColumnHelper<TasWithProject>()
+export const tasksColumns: ColumnDef<TasWithProject>[] = [
+  taskColumnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
     enableColumnFilter: false,
   }),
-  taskColumnHelper.accessor((row) => row.task.project.name, {
+  taskColumnHelper.accessor((row) => row.project.name, {
     cell: (info) => <span>{info.getValue()} </span>,
     header: "Project",
     enableColumnFilter: false,
   }),
-  taskColumnHelper.accessor("task.deadline", {
+  taskColumnHelper.accessor("deadline", {
     cell: (info) => (
       <span>
         {" "}
@@ -52,7 +44,7 @@ export const tasksColumns: ColumnDef<TaskLogWithTaskAndProjectName>[] = [
       <Link
         className="btn btn-sm btn-ghost"
         href={Routes.ShowTaskPage({
-          projectId: info.row.original.task.projectId,
+          projectId: info.row.original.projectId,
           taskId: info.getValue(),
         })}
       >

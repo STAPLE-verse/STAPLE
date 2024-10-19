@@ -4,13 +4,13 @@ import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import createInvite from "src/invites/mutations/createInvite"
-import { ProjectMemberForm } from "src/projectmembers/components/ProjectMemberForm"
+import { ContributorForm } from "src/contributors/components/ContributorForm"
 import { FORM_ERROR } from "final-form"
 import { Suspense, useState } from "react"
 import Head from "next/head"
 import toast from "react-hot-toast"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import { createNewInvitation } from "integrations/emails"
 import { CreateProjectMemberFormSchema } from "src/projectmembers/schemas"
@@ -82,12 +82,13 @@ function NewProjectMember() {
           an email inviting them to join the project. You will not be able to add them to tasks or
           teams until they accept their invitation.
         </p>
-        <ProjectMemberForm
+        <ContributorForm
           projectId={projectId as number}
           className="flex flex-col"
           submitText="Add Contributor"
           schema={CreateProjectMemberFormSchema}
           onSubmit={handleSubmit}
+          currentUserId={currentUser!.id}
         />
         {formError && (
           <div className="error-message text-red-600 mt-2 font-bold"> {formError} </div>
@@ -97,7 +98,7 @@ function NewProjectMember() {
   )
 }
 
-const NewProjectMemberPage = () => {
+const NewContributorPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
@@ -112,6 +113,6 @@ const NewProjectMemberPage = () => {
   )
 }
 
-NewProjectMemberPage.authenticate = true
+NewContributorPage.authenticate = true
 
-export default NewProjectMemberPage
+export default NewContributorPage

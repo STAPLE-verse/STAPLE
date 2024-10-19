@@ -1,5 +1,5 @@
 import { MemberPrivileges } from "db"
-import { useMemberPrivileges } from "../components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "../../projectmembers/components/MemberPrivilegesContext"
 import { AuthenticationError } from "blitz"
 
 const useProjectMemberAuthorization = (requiredPrivileges: MemberPrivileges[]) => {

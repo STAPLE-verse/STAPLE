@@ -5,7 +5,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
-import { ProjectMember, Role, Status, Task, TaskLog } from "db"
+import { Role, Status, Task, TaskLog } from "db"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { ProjectMemberWithUsers } from "src/pages/projects/[projectId]/teams"
 

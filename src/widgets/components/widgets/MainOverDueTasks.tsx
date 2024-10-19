@@ -6,7 +6,7 @@ import { GetOverdueTaskDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 
 const MainOverdueTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }, ctx) => {
-  const [{ taskLogs, upcomingTasks, pastDueTasks }, { error }] = useQuery(getDashboardTasks, ctx, {
+  const [{ pastDueTasks }] = useQuery(getDashboardTasks, ctx, {
     suspense: true, // Set to false if you want to handle loading and error states manually
   })
 
