@@ -4,7 +4,7 @@ import React, { Suspense } from "react"
 import { withBlitz } from "src/blitz-client"
 import "src/styles/globals.css"
 import "src/core/styles/index.css"
-import { MemberPrivilegesProvider } from "src/projectmembers/components/MemberPrivilegesContext"
+import { MemberPrivilegesProvider } from "src/projectprivileges/components/MemberPrivilegesContext"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {

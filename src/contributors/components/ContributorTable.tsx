@@ -2,19 +2,13 @@ import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-
-// Define return type for the columns
-export type ProjectMemberInformation = {
-  name: string
-  id: number
-  projectId?: number
-}
+import { ContributorTableData } from "../utils/processContributorTableData"
 
 // Column helper
-const columnHelper = createColumnHelper<ProjectMemberInformation>()
+const columnHelper = createColumnHelper<ContributorTableData>()
 
 // ColumnDefs
-export const pmProjectMemberTableColumns = [
+export const pmContributorTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Contributor",
@@ -28,9 +22,9 @@ export const pmProjectMemberTableColumns = [
       <div>
         <Link
           className="btn btn-primary"
-          href={Routes.ShowProjectMemberPage({
+          href={Routes.ShowContributorPage({
             projectId: info.row.original.projectId!,
-            memberId: info.getValue(),
+            contributorId: info.getValue(),
           })}
         >
           See Contributions
@@ -47,9 +41,9 @@ export const pmProjectMemberTableColumns = [
       <div>
         <Link
           className="btn btn-primary"
-          href={Routes.EditProjectMemberPage({
+          href={Routes.EditContributorPage({
             projectId: info.row.original.projectId!,
-            memberId: info.getValue(),
+            contributorId: info.getValue(),
           })}
         >
           Edit Contributor
@@ -59,7 +53,7 @@ export const pmProjectMemberTableColumns = [
   }),
 ]
 
-export const projectMemberProjectMemberTableColumns = [
+export const contributorTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Contributor",
@@ -73,9 +67,9 @@ export const projectMemberProjectMemberTableColumns = [
       <div>
         <Link
           className="btn btn-primary"
-          href={Routes.ShowProjectMemberPage({
+          href={Routes.ShowContributorPage({
             projectId: info.row.original.projectId!,
-            memberId: info.getValue(),
+            contributorId: info.getValue(),
           })}
         >
           See Contributions

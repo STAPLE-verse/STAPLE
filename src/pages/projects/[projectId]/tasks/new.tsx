@@ -10,7 +10,7 @@ import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
 import Head from "next/head"
 import toast from "react-hot-toast"
-import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
+import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
 const NewTaskPage = () => {
   // Setup
@@ -18,7 +18,7 @@ const NewTaskPage = () => {
   const [createTaskMutation] = useMutation(createTask)
 
   const projectId = useParam("projectId", "number")
-  const { projectMember: currentProjectMember } = useCurrentProjectMember(projectId)
+  const { projectMember: currentProjectMember } = useCurrentContributor(projectId)
 
   const initialValues = {
     // Making sure that conributorsId always returns an empty array even if it is not touched

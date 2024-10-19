@@ -14,7 +14,6 @@ import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import { AddRoleForm } from "src/roles/components/AddRoleForm"
 import { RoleIdsFormSchema } from "src/roles/schemas"
 import updateProjectMemberRole from "src/projectmembers/mutations/updateProjectMemberRole"
-import { projectMemberProjectMemberTableColumns } from "src/projectmembers/components/ProjectMemberTable"
 
 export const AllProjectMemberRolesList = ({ projectMembers, onChange }) => {
   const [updateProjectMemberRoleMutation] = useMutation(updateProjectMemberRole)

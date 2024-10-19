@@ -1,5 +1,5 @@
 import { Prisma } from "db"
-import { getProjectMemberName } from "src/services/getName"
+import { getContributorName } from "src/services/getName"
 import { ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
 import { filterLatestTaskLog } from "src/tasklogs/utils/filterLatestTaskLog"
 
@@ -29,7 +29,7 @@ export function processMetadata(projectMembers): ProcessedMetadata[] {
     const projectMember = projectMembers.find((member) => member.id === statusLog.completedById)
 
     return {
-      completedBy: getProjectMemberName(projectMember), // Use getProjectMemberName to get username
+      completedBy: getContributorName(projectMember), // Use getProjectMemberName to get username
       createdAt: statusLog.createdAt.toLocaleDateString(undefined, {
         year: "numeric",
         month: "long",
