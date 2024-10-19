@@ -73,7 +73,7 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
           </div>
         )}
 
-        <style jsx>{`
+        <style>{`
           label {
             display: flex;
             flex-direction: column;
