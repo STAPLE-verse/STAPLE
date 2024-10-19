@@ -4,7 +4,7 @@ import CompleteToggle from "./CompleteToggle"
 import { CompletedAs } from "db"
 import { useTaskContext } from "src/tasks/components/TaskContext"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
+import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 import TaskLogHistoryModal from "./TaskLogHistoryModal"
 import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
 import { filterLatestTaskLog } from "../utils/filterLatestTaskLog"
@@ -12,7 +12,7 @@ import { filterLatestTaskLog } from "../utils/filterLatestTaskLog"
 export const TaskLogCompletion = () => {
   const { task, projectMembers } = useTaskContext()
   const { individualProjectMembers, teamProjectMembers } = useSeparateProjectMembers(projectMembers)
-  const { projectMember: currentProjectMember } = useCurrentProjectMember(task.projectId)
+  const { projectMember: currentProjectMember } = useCurrentContributor(task.projectId)
   const currentUser = useCurrentUser()
 
   // Filter based on the currentUser

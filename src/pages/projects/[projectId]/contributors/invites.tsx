@@ -7,7 +7,7 @@ import { useParam } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
 import Table from "src/core/components/Table"
-import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "@prisma/client"
 import getInvites from "src/invites/queries/getInvites"
 import { inviteTableColumnsPM } from "src/invites/components/InvitesTable"

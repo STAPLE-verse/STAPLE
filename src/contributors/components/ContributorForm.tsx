@@ -11,7 +11,7 @@ import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import { Tooltip } from "react-tooltip"
 import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 
-interface ProjectMemberFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
+interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
   isEdit?: boolean
   currentUserId: number
@@ -22,7 +22,7 @@ export const MemberPrivilegesOptions = [
   { id: 1, value: MemberPrivileges.CONTRIBUTOR, label: "Contributor" },
 ]
 
-export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectMemberFormProps<S>) {
+export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
   const { projectId, isEdit = false, currentUserId, ...formProps } = props
 
   // need all roles from all PMs for this project

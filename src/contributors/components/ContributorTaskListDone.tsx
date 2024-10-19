@@ -1,27 +1,28 @@
 import { useQuery } from "@blitzjs/rpc"
 import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
-import { processFinishedTasks } from "../utils/processTasks"
 import { ProjectMember, Task, TaskLog } from "db"
+import { processFinishedTasks } from "src/tasks/utils/processTasks"
+import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
 
 type TaskWithLogs = Task & {
   taskLogs: TaskLog[]
   assignedMembers: ProjectMember[]
 }
 
-export const ProjectMembersTaskListDone = ({ projectMember, columns }) => {
+export const ContributorTaskListDone = ({ contributor }) => {
   const [{ tasks }] = useQuery(getTasks, {
     where: {
       assignedMembers: {
         some: {
-          id: projectMember.id, // Filter tasks assigned to this specific project member
+          id: contributor.id, // Filter tasks assigned to this specific project member
         },
       },
     },
     include: {
       taskLogs: {
         where: {
-          assignedToId: projectMember.id, // Ensure task logs are only for this project member
+          assignedToId: contributor.id, // Ensure task logs are only for this project member
         },
         orderBy: { createdAt: "desc" }, // Order by createdAt, descending
       },
@@ -45,7 +46,7 @@ export const ProjectMembersTaskListDone = ({ projectMember, columns }) => {
 
   return (
     <div>
-      <Table columns={columns} data={processedTasks} addPagination={true} />
+      <Table columns={finishedTasksTableColumns} data={processedTasks} addPagination={true} />
     </div>
   )
 }

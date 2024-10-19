@@ -8,9 +8,9 @@ import toast from "react-hot-toast"
 import Layout from "src/core/layouts/Layout"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import updateProjectMember from "src/projectmembers/mutations/updateProjectMember"
-import { ProjectMemberForm } from "src/projectmembers/components/ProjectMemberForm"
+import { ContributorForm } from "src/contributors/components/ContributorForm"
 import { FORM_ERROR } from "final-form"
-import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
 import { getContributorName } from "src/services/getName"
 import addProjectManagerWidgets from "src/widgets/mutations/addProjectManagerWidgets"
@@ -130,7 +130,7 @@ export const EditContributor = () => {
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
       <h1 className="text-3xl mb-2">Edit Contributor {getContributorName(projectMember)}</h1>
       <Suspense fallback={<div>Loading...</div>}>
-        <ProjectMemberForm
+        <ContributorForm
           submitText="Update Contributor"
           projectId={projectId!}
           currentUserId={projectMemberUser!.id}

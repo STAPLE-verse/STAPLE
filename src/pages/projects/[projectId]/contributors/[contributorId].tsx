@@ -10,10 +10,8 @@ import deleteProjectMember from "src/projectmembers/mutations/deleteProjectMembe
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 
-import { ProjectMembersTaskListDone } from "src/tasks/components/ProjectMembersTaskListDone"
 import { ProjectMemberRolesList } from "src/roles/components/ProjectMemberRolesList"
 import { roleTableColumnsSimple } from "src/roles/components/RoleTable"
-import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
 import { MemberPrivileges } from "db"
 import toast from "react-hot-toast"
@@ -23,6 +21,7 @@ import getProjectPrivilege from "src/projectmembers/queries/getProjectPrivilege"
 import { Tooltip } from "react-tooltip"
 import getContributor from "src/contributors/queries/getContributor"
 import { getContributorName } from "src/services/getName"
+import { ContributorTaskListDone } from "src/contributors/components/ContributorTaskListDone"
 
 export const ContributorPage = () => {
   const router = useRouter()
@@ -143,10 +142,7 @@ export const ContributorPage = () => {
               content="Only completed tasks are included"
               className="z-[1099] ourtooltips"
             />
-            <ProjectMembersTaskListDone
-              projectMember={contributor}
-              columns={finishedTasksTableColumns}
-            />
+            <ContributorTaskListDone contributor={contributor} />
 
             <div className="card-actions justify-end">
               {privilege === MemberPrivileges.PROJECT_MANAGER && (
