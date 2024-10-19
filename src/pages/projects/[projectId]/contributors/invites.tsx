@@ -45,14 +45,14 @@ const InvitesPagePM = () => {
         </Suspense>
         <div>
           <Link
-            className="btn btn-primary mb-4"
+            className="btn btn-primary mb-4 mt-4"
             href={Routes.NewContributorPage({ projectId: projectId! })}
           >
             Invite Contributor
           </Link>
 
           <Link
-            className="btn btn-secondary mx-2 mb-4"
+            className="btn btn-secondary mx-2 mb-4 mt-4"
             href={Routes.ContributorsPage({ projectId: projectId! })}
           >
             View Contributors

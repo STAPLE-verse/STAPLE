@@ -2,19 +2,13 @@ import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-
-// Define return type for the columns
-export type ProjectMemberInformation = {
-  name: string
-  id: number
-  projectId?: number
-}
+import { ContributorTableData } from "../utils/processContributorTableData"
 
 // Column helper
-const columnHelper = createColumnHelper<ProjectMemberInformation>()
+const columnHelper = createColumnHelper<ContributorTableData>()
 
 // ColumnDefs
-export const pmProjectMemberTableColumns = [
+export const pmContributorTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Contributor",
@@ -59,7 +53,7 @@ export const pmProjectMemberTableColumns = [
   }),
 ]
 
-export const projectMemberProjectMemberTableColumns = [
+export const contributorTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Contributor",

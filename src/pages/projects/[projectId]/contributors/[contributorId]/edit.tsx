@@ -12,7 +12,7 @@ import { ProjectMemberForm } from "src/projectmembers/components/ProjectMemberFo
 import { FORM_ERROR } from "final-form"
 import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
-import { getProjectMemberName } from "src/services/getName"
+import { getContributorName } from "src/services/getName"
 import addProjectManagerWidgets from "src/widgets/mutations/addProjectManagerWidgets"
 import removeProjectManagerWidgets from "src/widgets/mutations/removeProjectManagerWidgets"
 import getProjectPrivilege from "src/projectmembers/queries/getProjectPrivilege"
@@ -128,7 +128,7 @@ export const EditContributor = () => {
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="text-3xl mb-2">Edit Contributor {getProjectMemberName(projectMember)}</h1>
+      <h1 className="text-3xl mb-2">Edit Contributor {getContributorName(projectMember)}</h1>
       <Suspense fallback={<div>Loading...</div>}>
         <ProjectMemberForm
           submitText="Update Contributor"
