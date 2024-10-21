@@ -2,7 +2,7 @@ import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { ContributorTableData } from "../utils/processContributorTableData"
+import { ContributorTableData } from "../processing/processContributorTableData"
 
 // Column helper
 const columnHelper = createColumnHelper<ContributorTableData>()

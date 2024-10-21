@@ -1,9 +1,13 @@
 import { useQuery } from "@blitzjs/rpc"
-import { MemberPrivileges } from "db"
+import { User } from "db"
 import React, { useState } from "react"
 import Modal from "src/core/components/Modal"
 import RadioFieldTable from "src/core/components/fields/RadioFieldTable"
-import getForms from "src/forms/queries/getForms"
+import getForms, { FormWithFormVersion } from "src/forms/queries/getForms"
+
+export interface FormWithVersionAndUser extends FormWithFormVersion {
+  user: User | null
+}
 
 export const TaskSchemaInput = ({ projectManagers }) => {
   const [openSchemaModal, setOpenSchemaModal] = useState(false)
@@ -17,7 +21,9 @@ export const TaskSchemaInput = ({ projectManagers }) => {
     include: { user: true },
   })
 
-  const schemas = pmForms.forms
+  const typedPmForms = pmForms as FormWithVersionAndUser[]
+
+  const schemas = typedPmForms
     .filter((form) => form.formVersion)
     .flatMap((form) => form.formVersion!)
 
@@ -25,7 +31,8 @@ export const TaskSchemaInput = ({ projectManagers }) => {
 
   // Extra columns for the select table
   const versionNumber = schemas.map((schema) => schema.version)
-  const pmNames = pmForms.forms
+
+  const pmNames = typedPmForms
     .filter((form) => form.formVersion) // Keep only forms where formVersion is defined
     .map((form) => form.user?.username) // Map to the username
 
@@ -33,6 +40,7 @@ export const TaskSchemaInput = ({ projectManagers }) => {
     version: version,
     username: pmNames[index], // Safely access pmNames[index]
   }))
+
   const extraColumns = [
     {
       id: "version",

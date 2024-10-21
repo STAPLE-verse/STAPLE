@@ -5,19 +5,16 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import DateFormat from "src/core/components/DateFormat"
-import ArchiveFormButton from "./ArchiveFormButton"
+import ArchiveFormButton from "../../components/ArchiveFormButton"
 import { MagnifyingGlassIcon, PencilSquareIcon } from "@heroicons/react/24/outline"
-
-export interface FormWithFormVersion extends Form {
-  formVersion: FormVersion | null
-}
+import { FormTableData } from "../processing/processFormsTableData"
 
 // Column helper
-const columnHelper = createColumnHelper<FormWithFormVersion>()
+const columnHelper = createColumnHelper<FormTableData>()
 
 // ColumnDefs
 export const formsTableColumns = [
-  columnHelper.accessor("formVersion.name", {
+  columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
   }),
@@ -30,25 +27,12 @@ export const formsTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => {
-      const uiSchema = info.row.original.formVersion?.uiSchema || {}
-      let extendedUiSchema = {}
-      // TODO: This assumes uiSchema is always an object, although the type def allows for string, number(?) as well
-      // I am not sure where would we encounter those
-      if (uiSchema && typeof uiSchema === "object" && !Array.isArray(uiSchema)) {
-        // We do not want to show the submit button
-        extendedUiSchema = {
-          ...uiSchema,
-          "ui:submitButtonOptions": {
-            norender: true,
-          },
-        }
-      }
       return (
         <>
           <JsonFormModal
-            schema={info.row.original.formVersion?.schema!}
-            uiSchema={extendedUiSchema}
-            metadata={{}}
+            schema={info.row.original.schema}
+            uiSchema={info.row.original.uiSchema}
+            metadata={{}} // Adjust metadata as needed
             label={<MagnifyingGlassIcon width={25} className="stroke-primary" />}
             classNames="btn-ghost"
           />
