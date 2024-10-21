@@ -26,7 +26,12 @@ export const JsonFormModal = ({
 
   return (
     <>
-      <button type="button" className={`btn ${classNames}`} onClick={handleToggle}>
+      <button
+        type="button"
+        className={`btn ${classNames}`}
+        onClick={handleToggle}
+        data-testid="jsonformmodal-btid"
+      >
         {label}
       </button>
 
