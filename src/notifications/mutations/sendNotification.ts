@@ -2,7 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import { getDynamicSchema } from "../schemas"
 import db from "db"
-import { compileTemplate } from "../compileTemplate"
+import { compileTemplate } from "../utils/compileTemplate"
 
 const sendNotificationSchema = z.object({
   templateId: z.string(),

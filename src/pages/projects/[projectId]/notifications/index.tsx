@@ -2,14 +2,13 @@ import { Suspense } from "react"
 import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import Table from "src/core/components/Table"
-import {
-  ExtendedNotification,
-  useProjectNotificationTableColumns,
-} from "src/notifications/hooks/useNotificationTable"
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import getNotifications from "src/notifications/queries/getNotifications"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { useProjectNotificationTableColumns } from "src/notifications/tables/columns/ProjectNotificationTableColumns"
+import { ExtendedNotification } from "src/notifications/tables/processing/processNotificationTableData"
+import { processProjectNotificationTableData } from "src/notifications/tables/processing/processProjectNotificationTableData"
 
 const NotificationContent = () => {
   const projectId = useParam("projectId", "number")
@@ -31,6 +30,9 @@ const NotificationContent = () => {
 
   const extendedNotifications = notifications as unknown as ExtendedNotification[]
 
+  // Preprocess table data
+  const projectNotificationTableData = processProjectNotificationTableData(extendedNotifications)
+
   // Get columns and pass refetch
   const columns = useProjectNotificationTableColumns(refetch)
 
@@ -41,7 +43,7 @@ const NotificationContent = () => {
       </Head>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Project Notifications</h1>
-        <Table columns={columns} data={extendedNotifications} addPagination={true} />
+        <Table columns={columns} data={projectNotificationTableData} addPagination={true} />
       </main>
     </>
   )
