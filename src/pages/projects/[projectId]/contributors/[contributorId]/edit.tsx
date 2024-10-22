@@ -133,7 +133,7 @@ export const EditContributor = () => {
         <ContributorForm
           submitText="Update Contributor"
           projectId={projectId!}
-          currentUserId={projectMemberUser!.id}
+          editedUserId={projectMemberUser!.id}
           isEdit={true}
           schema={UpdateProjectMemberFormSchema}
           initialValues={initialValues}

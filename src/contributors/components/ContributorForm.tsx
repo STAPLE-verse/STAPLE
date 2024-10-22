@@ -14,7 +14,7 @@ import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
   isEdit?: boolean
-  currentUserId: number
+  editedUserId?: number
 }
 
 export const MemberPrivilegesOptions = [
@@ -23,7 +23,7 @@ export const MemberPrivilegesOptions = [
 ]
 
 export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
-  const { projectId, isEdit = false, currentUserId, ...formProps } = props
+  const { projectId, isEdit = false, editedUserId, ...formProps } = props
 
   // need all roles from all PMs for this project
   // get all roles from all PMs
@@ -34,7 +34,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
   const pmIds = projectManagers.map((pm) => pm.userId)
 
   // Check if the current user is the last project manager
-  const isLastProjectManager = pmIds.length === 1 && pmIds[0] === currentUserId
+  const isLastProjectManager = isEdit && pmIds.length === 1 && pmIds[0] === editedUserId
 
   const [{ roles }] = useQuery(getRoles, {
     where: {

@@ -2,30 +2,12 @@ import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-
 import Layout from "src/core/layouts/Layout"
-import Table from "src/core/components/Table"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "@prisma/client"
-import getInvites from "src/invites/queries/getInvites"
-import { inviteTableColumnsPM } from "src/invites/components/InvitesTable"
+import { AllInvitesList } from "src/invites/components/AllInvitesList"
 
-export const AllInvitesList = () => {
-  const projectId = useParam("projectId", "number")
-  const [invites] = useQuery(getInvites, {
-    where: { project: { id: projectId! } },
-    orderBy: { id: "asc" },
-  })
-
-  return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      {/* <h1 className="flex justify-center mb-2">All Contributors</h1> */}
-      <Table columns={inviteTableColumnsPM} data={invites} addPagination={true} />
-    </main>
-  )
-}
 // issue 37
 const InvitesPagePM = () => {
   const projectId = useParam("projectId", "number")
