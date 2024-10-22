@@ -1,5 +1,5 @@
 import { Project, Notification } from "db"
-import { stripHtmlTags } from "src/core/utils/stripHtmlTags"
+import { stripHtmlTags } from "src/notifications/utils/stripHtmlTags"
 
 // Type for notifications with project included
 export type ExtendedNotification = Notification & {

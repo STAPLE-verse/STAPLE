@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import DateFormat from "src/core/components/DateFormat"
 import ReadToggle from "src/notifications/components/ReadToggle"
 import { NotificationTableData } from "../processing/processNotificationTableData"
-import HtmlFormat from "src/core/components/HtmlFormat"
+import HtmlFormat from "src/notifications/components/HtmlFormat"
 
 // Column helper
 const columnHelper = createColumnHelper<NotificationTableData>()

@@ -1,4 +1,4 @@
-import { stripHtmlTags } from "src/core/utils/stripHtmlTags"
+import { stripHtmlTags } from "src/notifications/utils/stripHtmlTags"
 import { ExtendedNotification } from "./processNotificationTableData"
 
 export type ProjectNotificationTableData = {

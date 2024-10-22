@@ -1,8 +1,7 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import { useMemo } from "react"
 import DateFormat from "src/core/components/DateFormat"
-import HtmlFormat from "src/core/components/HtmlFormat"
-import { stripHtmlTags } from "src/core/utils/stripHtmlTags"
+import HtmlFormat from "src/notifications/components/HtmlFormat"
 import ReadToggle from "src/notifications/components/ReadToggle"
 import { ProjectNotificationTableData } from "../processing/processProjectNotificationTableData"
 
