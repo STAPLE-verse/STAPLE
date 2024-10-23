@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react"
+import { Suspense } from "react"
 import Head from "next/head"
 import { Tab } from "@headlessui/react"
 import Layout from "src/core/layouts/Layout"
@@ -11,7 +11,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
 }
 
-export const CreditsTabs = () => {
+export const RolesTabs = () => {
   //const [selectedIndex, setSelectedIndex] = useState(0)
 
   return (
@@ -51,19 +51,19 @@ export const CreditsTabs = () => {
   )
 }
 
-const CreditPage = () => {
+const RolesPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>
       <Head>
-        <title>Assign Roles to Contributions</title>
+        <title>Assign Roles</title>
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         {
           <Suspense fallback={<div>Loading...</div>}>
-            <CreditsTabs />
+            <RolesTabs />
           </Suspense>
         }
       </main>
@@ -71,4 +71,4 @@ const CreditPage = () => {
   )
 }
 
-export default CreditPage
+export default RolesPage

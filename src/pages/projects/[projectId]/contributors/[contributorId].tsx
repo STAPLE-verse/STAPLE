@@ -116,7 +116,7 @@ export const ContributorPage = () => {
               {privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
-                  href={Routes.CreditPage({ projectId: projectId! })}
+                  href={Routes.RolesPage({ projectId: projectId! })}
                 >
                   Edit Roles
                 </Link>
@@ -141,7 +141,7 @@ export const ContributorPage = () => {
               {privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
-                  href={Routes.CreditPage({ projectId: projectId! })}
+                  href={Routes.RolesPage({ projectId: projectId! })}
                 >
                   Edit Roles
                 </Link>
