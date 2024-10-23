@@ -22,7 +22,7 @@ import initializeProjectWidgets from "src/widgets/mutations/initializeProjectWid
 import { useWidgetConstruction } from "src/widgets/hooks/useWidgetConstruction"
 import { sortWidgets } from "src/widgets/utils/sortWidgets"
 import { WidgetContainer } from "src/widgets/components/WidgetContainer"
-import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 
 const ProjectDashboard = () => {
   const [updateWidgetMutation] = useMutation(updateProjectWidgets)

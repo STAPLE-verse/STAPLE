@@ -13,7 +13,7 @@ import { roleTableColumnsTeam } from "src/roles/components/RoleTable"
 import { MemberPrivileges } from "db"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { ProjectMemberWithUsers } from "."
-import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { Tooltip } from "react-tooltip"
 
 export const ShowTeamPage = () => {

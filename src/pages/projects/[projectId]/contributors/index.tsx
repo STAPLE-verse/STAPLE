@@ -10,7 +10,7 @@ import {
   contributorTableColumns,
 } from "src/contributors/components/ContributorTable"
 import Table from "src/core/components/Table"
-import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { MemberPrivileges } from "@prisma/client"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { processContributorTableData } from "src/contributors/utils/processContributorTableData"
