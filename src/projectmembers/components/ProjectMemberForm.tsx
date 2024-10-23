@@ -3,18 +3,18 @@ import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
-import { MemberPrivileges, ProjectPrivilege } from "@prisma/client"
+import { MemberPrivileges } from "@prisma/client"
 import getRoles from "src/roles/queries/getRoles"
 import Modal from "src/core/components/Modal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import { Tooltip } from "react-tooltip"
-import getProjectMembers from "../queries/getProjectMembers"
 import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 
 interface ProjectMemberFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
   isEdit?: boolean
+  currentUserId: number
 }
 
 export const MemberPrivilegesOptions = [
@@ -23,7 +23,7 @@ export const MemberPrivilegesOptions = [
 ]
 
 export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectMemberFormProps<S>) {
-  const { projectId, isEdit = false, ...formProps } = props
+  const { projectId, isEdit = false, currentUserId, ...formProps } = props
 
   // need all roles from all PMs for this project
   // get all roles from all PMs
@@ -32,6 +32,10 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
   })
 
   const pmIds = projectManagers.map((pm) => pm.userId)
+
+  // Check if the current user is the last project manager
+  const isLastProjectManager = pmIds.length === 1 && pmIds[0] === currentUserId
+
   const [{ roles }] = useQuery(getRoles, {
     where: {
       userId: {
@@ -79,9 +83,11 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
     <Form<S> {...formProps}>
       <Tooltip
         id="priv-tooltip"
-        content="Project Managers can see and edit
-      all parts of a project, while contributors can only complete
-      tasks assigned to them."
+        content={
+          isLastProjectManager
+            ? "User is the last project manager on the project. The privilege cannot be changed."
+            : "Project Managers can see and edit all parts of a project, while contributors can only complete tasks assigned to them."
+        }
         className="z-[1099] ourtooltips"
         place="right"
         opacity={1}
@@ -111,6 +117,7 @@ export function ProjectMemberForm<S extends z.ZodType<any, any>>(props: ProjectM
         optionValue="value"
         type="string"
         data-tooltip-id="priv-tooltip"
+        disabled={isLastProjectManager}
       />
       <div className="mt-4">
         <button
