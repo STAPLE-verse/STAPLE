@@ -21,7 +21,7 @@ const ProjectMemberNumber: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
       display={<GetProjectMemberDisplay projectStats={projectStats} />}
       link={
         <PrimaryLink
-          route={Routes.ProjectMembersPage({ projectId: projectId! })}
+          route={Routes.ContributorsPage({ projectId: projectId! })}
           text={<MagnifyingGlassIcon width={25} className="stroke-primary" />}
           classNames="btn-ghost"
         />

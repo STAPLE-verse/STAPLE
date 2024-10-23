@@ -1,4 +1,4 @@
-import { getProjectMemberName } from "src/services/getName"
+import { getContributorName } from "src/services/getName"
 import { ExtendedTaskLog } from "../hooks/useTaskLogData"
 import { Prisma } from "@prisma/client"
 import { ProjectMemberWithTaskLog } from "src/tasks/components/TaskContext"
@@ -17,7 +17,7 @@ export function processIndividualTaskLogs(
   return projectMembers.map((projectMember) => {
     const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
     return {
-      projectMemberName: getProjectMemberName(projectMember),
+      projectMemberName: getContributorName(projectMember),
       lastUpdate: latestLog
         ? latestLog.createdAt.toLocaleDateString(undefined, {
             year: "numeric",
@@ -99,7 +99,7 @@ export function processTaskLogHistory(
   return taskLogs.map((taskLog) => {
     const processedData: ProcessedTaskLogHistory = {
       projectMemberName: taskLog.completedBy
-        ? getProjectMemberName(taskLog.completedBy)
+        ? getContributorName(taskLog.completedBy)
         : "Task created",
       lastUpdate: taskLog.createdAt.toLocaleDateString(undefined, {
         year: "numeric",

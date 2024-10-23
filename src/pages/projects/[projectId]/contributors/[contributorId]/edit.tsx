@@ -8,11 +8,11 @@ import toast from "react-hot-toast"
 import Layout from "src/core/layouts/Layout"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import updateProjectMember from "src/projectmembers/mutations/updateProjectMember"
-import { ProjectMemberForm } from "src/projectmembers/components/ProjectMemberForm"
+import { ContributorForm } from "src/contributors/components/ContributorForm"
 import { FORM_ERROR } from "final-form"
-import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
-import { getProjectMemberName } from "src/services/getName"
+import { getContributorName } from "src/services/getName"
 import addProjectManagerWidgets from "src/widgets/mutations/addProjectManagerWidgets"
 import removeProjectManagerWidgets from "src/widgets/mutations/removeProjectManagerWidgets"
 import getProjectPrivilege from "src/projectmembers/queries/getProjectPrivilege"
@@ -20,17 +20,17 @@ import { UpdateProjectMemberFormSchema } from "src/projectmembers/schemas"
 
 type ProjectMemberWithUsers = ProjectMember & { users: User[] }
 
-export const EditProjectMember = () => {
+export const EditContributor = () => {
   const [updateProjectMemberMutation] = useMutation(updateProjectMember)
   const [addProjectManagerWidgetsMutation] = useMutation(addProjectManagerWidgets)
   const [removeProjectManagerWidgetsMutation] = useMutation(removeProjectManagerWidgets)
   const router = useRouter()
 
-  const projectMemberId = useParam("memberId", "number")
+  const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
 
   const [projectMember, { refetch }] = useQuery(getProjectMember, {
-    where: { id: projectMemberId, project: { id: projectId! } },
+    where: { id: contributorId, project: { id: projectId! } },
     include: {
       roles: {
         select: {
@@ -69,9 +69,9 @@ export const EditProjectMember = () => {
   // Handle events
   const handleCancel = async () => {
     await router.push(
-      Routes.ShowProjectMemberPage({
+      Routes.ShowContributorPage({
         projectId: projectId!,
-        memberId: projectMemberId!,
+        contributorId: contributorId!,
       })
     )
   }
@@ -113,9 +113,9 @@ export const EditProjectMember = () => {
       }
 
       await router.push(
-        Routes.ShowProjectMemberPage({
+        Routes.ShowContributorPage({
           projectId: projectId!,
-          memberId: updated.id,
+          contributorId: updated.id,
         })
       )
     } catch (error: any) {
@@ -128,9 +128,9 @@ export const EditProjectMember = () => {
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="text-3xl mb-2">Edit Contributor {getProjectMemberName(projectMember)}</h1>
+      <h1 className="text-3xl mb-2">Edit Contributor {getContributorName(projectMember)}</h1>
       <Suspense fallback={<div>Loading...</div>}>
-        <ProjectMemberForm
+        <ContributorForm
           submitText="Update Contributor"
           projectId={projectId!}
           currentUserId={projectMemberUser!.id}
@@ -146,7 +146,7 @@ export const EditProjectMember = () => {
   )
 }
 
-const EditProjectMemberPage = () => {
+const EditContributorPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
@@ -155,12 +155,12 @@ const EditProjectMemberPage = () => {
         <title>Edit Contributor</title>
       </Head>
       <Suspense fallback={<div>Loading...</div>}>
-        <EditProjectMember />
+        <EditContributor />
       </Suspense>
     </Layout>
   )
 }
 
-EditProjectMemberPage.authenticate = true
+EditContributorPage.authenticate = true
 
-export default EditProjectMemberPage
+export default EditContributorPage

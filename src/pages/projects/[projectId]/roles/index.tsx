@@ -4,7 +4,7 @@ import { Tab } from "@headlessui/react"
 import Layout from "src/core/layouts/Layout"
 import TasksTab from "src/roles/components/TasksTab"
 import ProjectMembersTab from "src/roles/components/ProjectMembersTab"
-import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 
 function classNames(...classes) {

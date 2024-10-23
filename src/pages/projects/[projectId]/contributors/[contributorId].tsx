@@ -6,63 +6,58 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
-import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import deleteProjectMember from "src/projectmembers/mutations/deleteProjectMember"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 
-import { ProjectMembersTaskListDone } from "src/tasks/components/ProjectMembersTaskListDone"
 import { ProjectMemberRolesList } from "src/roles/components/ProjectMemberRolesList"
 import { roleTableColumnsSimple } from "src/roles/components/RoleTable"
-import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
-import { MemberPrivileges, ProjectMember, User } from "db"
+import { MemberPrivileges } from "db"
 import toast from "react-hot-toast"
 import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import getTeamNames from "src/teams/queries/getTeamNames"
 import getProjectPrivilege from "src/projectmembers/queries/getProjectPrivilege"
 import { Tooltip } from "react-tooltip"
+import getContributor from "src/contributors/queries/getContributor"
+import { getContributorName } from "src/services/getName"
+import { ContributorTaskListDone } from "src/contributors/components/ContributorTaskListDone"
 
-type ProjectMemberWithUsers = ProjectMember & { users: User[] }
-
-export const ProjectMemberPage = () => {
+export const ContributorPage = () => {
   const router = useRouter()
   const [deleteProjectMemberMutation] = useMutation(deleteProjectMember)
   const { privilege } = useMemberPrivileges()
-  const projectMemberId = useParam("memberId", "number")
+  const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
 
   const currentUser = useCurrentUser()
-  const [projectMember] = useQuery(getProjectMember, {
-    where: { id: projectMemberId },
-    include: { users: true },
-  })
 
-  const typedprojectMember = projectMember as unknown as ProjectMemberWithUsers
+  const [contributor] = useQuery(getContributor, { contributorId: contributorId! })
 
-  const projectMemberUser = typedprojectMember.users[0]
+  const contributorUser = contributor?.users[0]
 
-  const [projectMemberPrivilege] = useQuery(getProjectPrivilege, {
-    where: { userId: projectMemberUser!.id, projectId: projectId },
+  const [contributorPrivilege] = useQuery(getProjectPrivilege, {
+    where: { userId: contributorUser!.id, projectId: projectId },
   })
 
   // Get team memberships for the user
   const [teamNames] = useQuery(getTeamNames, {
-    userId: projectMemberUser!.id,
+    userId: contributorUser!.id,
     projectId: projectId,
   })
 
+  // Event handler for deleting a contributor
   const handleDelete = async () => {
     if (
       window.confirm("This Contributor will be removed from the project. Are you sure to continue?")
     ) {
       try {
-        await deleteProjectMemberMutation({ id: projectMember.id })
+        await deleteProjectMemberMutation({ id: contributorUser!.id })
         // Check if User removed themselves and return to main page
-        if (projectMemberUser!.id === currentUser?.id) {
+        if (contributorUser!.id === currentUser?.id) {
           await router.push(Routes.ProjectsPage())
         } else {
-          await router.push(Routes.ProjectMembersPage({ projectId: projectId! }))
+          await router.push(Routes.ContributorsPage({ projectId: projectId! }))
         }
       } catch (error) {
         toast.error(error.message)
@@ -73,28 +68,24 @@ export const ProjectMemberPage = () => {
   return (
     <>
       <Head>
-        <title>{projectMemberUser!.username} Contributions</title>
+        <title>{contributorUser!.username} Contributions</title>
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <div className="card bg-base-300 w-full">
           <div className="card-body">
-            <div className="card-title">
-              {projectMemberUser!.firstName && projectMemberUser!.lastName
-                ? `${projectMemberUser!.firstName} ${projectMemberUser!.lastName}`
-                : projectMemberUser!.username}
-            </div>
-            {projectMemberUser!.firstName && projectMemberUser!.lastName ? (
+            <div className="card-title">{getContributorName(contributor)}</div>
+            {contributorUser!.firstName && contributorUser!.lastName ? (
               <p>
-                <span className="font-semibold">Username:</span> {projectMemberUser!.username}
+                <span className="font-semibold">Username:</span> {contributorUser!.username}
               </p>
             ) : null}
             <p>
-              <span className="font-semibold">Email:</span> {projectMemberUser!.email}
+              <span className="font-semibold">Email:</span> {contributorUser!.email}
             </p>
             <p>
               <span className="font-semibold">Privilege:</span>{" "}
-              {getPrivilegeText(projectMemberPrivilege.privilege)}
+              {getPrivilegeText(contributorPrivilege.privilege)}
             </p>
 
             <p>
@@ -105,9 +96,9 @@ export const ProjectMemberPage = () => {
             <div className="card-actions justify-end">
               {privilege === MemberPrivileges.PROJECT_MANAGER ? (
                 <Link
-                  href={Routes.EditProjectMemberPage({
+                  href={Routes.EditContributorPage({
                     projectId: projectId!,
-                    memberId: projectMemberId!,
+                    contributorId: contributorId!,
                   })}
                   className="btn btn-primary"
                 >
@@ -124,7 +115,7 @@ export const ProjectMemberPage = () => {
           <div className="card-body">
             <div className="card-title">Contribution Roles</div>
             <ProjectMemberRolesList
-              usersId={[projectMemberUser!.id]}
+              usersId={[contributorUser!.id]}
               projectId={projectId}
               columns={roleTableColumnsSimple}
             />
@@ -151,10 +142,7 @@ export const ProjectMemberPage = () => {
               content="Only completed tasks are included"
               className="z-[1099] ourtooltips"
             />
-            <ProjectMembersTaskListDone
-              projectMember={projectMember}
-              columns={finishedTasksTableColumns}
-            />
+            <ContributorTaskListDone contributor={contributor} />
 
             <div className="card-actions justify-end">
               {privilege === MemberPrivileges.PROJECT_MANAGER && (
@@ -185,16 +173,16 @@ export const ProjectMemberPage = () => {
   )
 }
 
-const ShowProjectMemberPage = () => {
+const ShowContributorPage = () => {
   return (
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
-        <ProjectMemberPage />
+        <ContributorPage />
       </Suspense>
     </Layout>
   )
 }
 
-ShowProjectMemberPage.authenticate = true
+ShowContributorPage.authenticate = true
 
-export default ShowProjectMemberPage
+export default ShowContributorPage
