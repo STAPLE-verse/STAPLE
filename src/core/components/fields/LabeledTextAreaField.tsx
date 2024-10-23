@@ -47,7 +47,7 @@ export const LabeledTextAreaField = forwardRef<HTMLTextAreaElement, LabeledTextA
           </div>
         )}
 
-        <style jsx="true">{`
+        <style>{`
           label {
             display: flex;
             flex-direction: column;
