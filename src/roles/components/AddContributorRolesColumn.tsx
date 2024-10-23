@@ -1,31 +1,14 @@
-import React, { useState } from "react"
-import { createColumnHelper } from "@tanstack/react-table"
-import Modal from "src/core/components/Modal"
-import { FORM_ERROR } from "final-form"
-import toast from "react-hot-toast"
+import { useParam } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
+import { FORM_ERROR } from "final-form"
+import { useState } from "react"
+import toast from "react-hot-toast"
+import Modal from "src/core/components/Modal"
+import updateProjectMemberRole from "src/projectmembers/mutations/updateProjectMemberRole"
 import { AddRoleForm } from "./AddRoleForm"
 import { RoleIdsFormSchema } from "../schemas"
-import { MultipleCheckboxColumn } from "./RoleTaskTable"
-import updateProjectMemberRole from "src/projectmembers/mutations/updateProjectMemberRole"
-import { useParam } from "@blitzjs/next"
 
-export type Role = {
-  name: string
-}
-
-export type ProjectMemberRoleInformation = {
-  username: string
-  firstname?: string
-  lastname?: string
-  roles?: Role[]
-  id: number
-  onChangeCallback?: () => void
-  selectedIds: number[]
-  onMultipledAdded?: (selectedId) => void
-}
-
-const AddRolesColumn = ({ row }) => {
+export const AddContributorRolesColumn = ({ row }) => {
   const projectId = useParam("projectId", "number")
   const [updateProjectMemberRoleMutation] = useMutation(updateProjectMemberRole)
   const {
@@ -112,51 +95,3 @@ const AddRolesColumn = ({ row }) => {
     </div>
   )
 }
-
-const columnHelper = createColumnHelper<ProjectMemberRoleInformation>()
-
-// ColumnDefs
-export const roleProjectMemberTableColumns = [
-  columnHelper.accessor("username", {
-    id: "username",
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Username",
-  }),
-
-  columnHelper.accessor("firstname", {
-    id: "firstname",
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "First Name",
-  }),
-  columnHelper.accessor("lastname", {
-    id: "lastaname",
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Last Name",
-  }),
-  columnHelper.accessor(
-    (row) => {
-      const roles = row.roles || []
-      return roles.map((role) => role.name).join(", ") // Combine all role names into a single string
-    },
-    {
-      id: "roles",
-      header: "Roles",
-      cell: (info) => <div>{info.getValue()}</div>,
-      enableColumnFilter: true,
-    }
-  ),
-  columnHelper.accessor("id", {
-    id: "open",
-    header: "Add Role",
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => <AddRolesColumn row={info.row.original}></AddRolesColumn>,
-  }),
-  columnHelper.accessor("id", {
-    id: "multiple",
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => <MultipleCheckboxColumn row={info.row.original}></MultipleCheckboxColumn>,
-    header: "Add Multiple",
-  }),
-]
