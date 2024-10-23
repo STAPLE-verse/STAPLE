@@ -47,7 +47,10 @@ export const ProjectMemberPage = () => {
   })
 
   // Get team memberships for the user
-  const [teamNames] = useQuery(getTeamNames, { userId: projectMemberUser!.id })
+  const [teamNames] = useQuery(getTeamNames, {
+    userId: projectMemberUser!.id,
+    projectId: projectId,
+  })
 
   const handleDelete = async () => {
     if (
