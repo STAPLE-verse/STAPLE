@@ -37,7 +37,7 @@ export const ShowTeamModal = ({ projectMember }) => {
 
       <Modal open={openModal} size="w-7/6 max-w-1xl">
         <div className="flex flex-col justify-start mt-4">
-          <h3>Team members</h3>
+          <h3>Team Members</h3>
           <Table columns={teamMembersTableColumns} data={teamMembers} addPagination={true} />
         </div>
         <div className="modal-action flex justify-end mt-4">
