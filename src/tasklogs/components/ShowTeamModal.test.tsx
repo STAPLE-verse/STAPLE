@@ -9,9 +9,8 @@ import { ShowTeamModal } from "./ShowTeamModal"
 test("renders show team modal", async () => {
   const curentProjectMember = {
     id: 1,
-    name: "team1",
     projectMember: {
-      name: "test team",
+      name: "team1",
     },
     users: [
       {
