@@ -55,6 +55,7 @@ const MetadataContent = () => {
                   schema={getJsonSchema(task.formVersion?.schema)}
                   uiSchema={extendedUiSchema}
                   label="Form Requirements"
+                  classNames="btn-primary"
                 />
 
                 <Link

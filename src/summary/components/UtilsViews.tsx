@@ -124,7 +124,7 @@ export const TaskView = ({
 
 export const TeamView = ({ team, tasks, printTask = false }) => {
   return (
-    <div className="my-2">
+    <div className="my-2" data-testid="teamview-testid">
       <h5> Name: {team.name} </h5>
       Created: <DateFormat date={team.createdAt}></DateFormat>
       <div>
@@ -158,7 +158,7 @@ export const ProjectMembersView = ({
 }) => {
   let newTasks = tasks
   return (
-    <div>
+    <div data-testid="projectmemberview-testid">
       <br />
       <h6>
         name: {projectMember.users.firstName} {projectMember.users.lastName}

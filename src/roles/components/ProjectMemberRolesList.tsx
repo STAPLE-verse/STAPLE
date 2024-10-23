@@ -2,6 +2,18 @@ import { useQuery } from "@blitzjs/rpc"
 import getRoles from "../queries/getRoles"
 import { RoleInformation } from "./RoleTable"
 import Table from "src/core/components/Table"
+import { ProjectMember, Role } from "db"
+
+type RoleWithProjectMembers = Role & {
+  projectMembers: (ProjectMember & {
+    users: {
+      id: number
+      firstName: string
+      lastName: string
+      username: string
+    }[]
+  })[]
+}
 
 export const ProjectMemberRolesList = ({ usersId, projectId, columns }) => {
   // this grabs roles for just this set of projectMembers in this project
@@ -28,7 +40,9 @@ export const ProjectMemberRolesList = ({ usersId, projectId, columns }) => {
     orderBy: { id: "asc" },
   })
 
-  const projectMemberRoleInformation = roles.map((role) => {
+  const typedRoles = roles as RoleWithProjectMembers[]
+
+  const projectMemberRoleInformation = typedRoles.map((role) => {
     const { name, description, taxonomy, projectMembers } = role
 
     // TODO: this does not exists but I am not sure what we want to achieve here

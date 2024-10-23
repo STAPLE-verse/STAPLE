@@ -5,7 +5,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
-import { ProjectMember, Role, Task, TaskLog } from "db"
+import { ProjectMember, Role, Status, Task, TaskLog } from "db"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { ProjectMemberWithUsers } from "src/pages/projects/[projectId]/teams"
 
@@ -21,21 +21,25 @@ type TaskTableData = {
 }
 
 type TaskWithRoles = Task & {
-  roles: Role[]
+  roles: Role[] // Assuming roles is an array of Role
 }
 
-type TaskLogWithTaskCompleted = TaskLog & {
-  task: TaskWithRoles
-  completedBy: ProjectMemberWithUsers
+type TaskLogWithTask = TaskLog & {
+  task: TaskWithRoles // This should already exist in your current setup
+}
+
+// Define the TaskLogWithTaskCompleted type
+type TaskLogWithTaskCompleted = TaskLogWithTask & {
+  completedBy: ProjectMemberWithUsers // Ensure this is included
 }
 
 // Custom Hook
 export const useTeamTaskListDone = (teamId: number) => {
-  // Get table data
-  // tasks for this team set
+  // Get table data for tasks assigned to the team
   const [taskLogs] = useQuery(getTaskLogs, {
     where: {
       assignedToId: teamId,
+      status: Status.COMPLETED,
     },
     include: {
       task: {
@@ -49,10 +53,13 @@ export const useTeamTaskListDone = (teamId: number) => {
         },
       },
     },
-  }) as TaskLogWithTaskCompleted[]
+  })
 
-  // only the latest task log
-  const latestTaskLogs = getLatestTaskLogs(taskLogs) as TaskLogWithTaskCompleted[]
+  // Filter to get only the latest task logs
+  let latestTaskLogs: TaskLogWithTaskCompleted[] = []
+  if (taskLogs) {
+    latestTaskLogs = (getLatestTaskLogs(taskLogs) as TaskLogWithTaskCompleted[]) || []
+  }
 
   // Create a user map for quick lookup and format the name
   const userMap: { [key: number]: string } = {}

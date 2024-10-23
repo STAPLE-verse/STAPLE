@@ -2,6 +2,12 @@ import { useQuery } from "@blitzjs/rpc"
 import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
 import { processFinishedTasks } from "../utils/processTasks"
+import { ProjectMember, Task, TaskLog } from "db"
+
+type TaskWithLogs = Task & {
+  taskLogs: TaskLog[]
+  assignedMembers: ProjectMember[]
+}
 
 export const ProjectMembersTaskListDone = ({ projectMember, columns }) => {
   const [{ tasks }] = useQuery(getTasks, {
@@ -28,7 +34,7 @@ export const ProjectMembersTaskListDone = ({ projectMember, columns }) => {
       roles: true, // Include roles details if needed
     },
     orderBy: { id: "asc" }, // Order tasks by ID
-  })
+  }) as unknown as [{ tasks: TaskWithLogs[] }]
 
   const completedTasks = tasks.filter((task) => {
     const latestLog = task.taskLogs[0] // Since logs are ordered by createdAt desc, the first one is the latest

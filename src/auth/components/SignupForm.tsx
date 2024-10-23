@@ -1,7 +1,4 @@
-import {
-  LabeledTextField,
-  LabeledTextFieldProps,
-} from "src/core/components/fields/LabeledTextField"
+import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import { Form } from "src/core/components/fields/Form"
 import { FORM_ERROR } from "final-form"
 import { Signup } from "src/auth/schemas"
@@ -113,9 +110,9 @@ export const SignupForm = (props: SignupFormProps) => {
           name="password_confirm"
           label="Confirm Password:"
           placeholder="Password"
-          type={currTypeV as LabeledPassWordFieldProps["type"]}
           className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
           onEyeClick={handleVPasswordToggle}
+          type={currTypeV as LabeledPassWordFieldProps["type"]}
         />
       </Form>
 

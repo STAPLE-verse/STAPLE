@@ -16,11 +16,14 @@ import { ProjectMemberRolesList } from "src/roles/components/ProjectMemberRolesL
 import { roleTableColumnsSimple } from "src/roles/components/RoleTable"
 import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
 import Link from "next/link"
-import { MemberPrivileges } from "db"
+import { MemberPrivileges, ProjectMember, User } from "db"
 import toast from "react-hot-toast"
 import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
 import getTeamNames from "src/teams/queries/getTeamNames"
 import getProjectPrivilege from "src/projectmembers/queries/getProjectPrivilege"
+import { Tooltip } from "react-tooltip"
+
+type ProjectMemberWithUsers = ProjectMember & { users: User[] }
 
 export const ProjectMemberPage = () => {
   const router = useRouter()
@@ -35,14 +38,16 @@ export const ProjectMemberPage = () => {
     include: { users: true },
   })
 
-  const projectMemberUser = projectMember.users[0]
+  const typedprojectMember = projectMember as unknown as ProjectMemberWithUsers
+
+  const projectMemberUser = typedprojectMember.users[0]
 
   const [projectMemberPrivilege] = useQuery(getProjectPrivilege, {
-    where: { userId: projectMemberUser.id, projectId: projectId },
+    where: { userId: projectMemberUser!.id, projectId: projectId },
   })
 
   // Get team memberships for the user
-  const [teamNames] = useQuery(getTeamNames, { userId: projectMemberUser.id })
+  const [teamNames] = useQuery(getTeamNames, { userId: projectMemberUser!.id })
 
   const handleDelete = async () => {
     if (
@@ -51,7 +56,7 @@ export const ProjectMemberPage = () => {
       try {
         await deleteProjectMemberMutation({ id: projectMember.id })
         // Check if User removed themselves and return to main page
-        if (projectMemberUser.id === currentUser?.id) {
+        if (projectMemberUser!.id === currentUser?.id) {
           await router.push(Routes.ProjectsPage())
         } else {
           await router.push(Routes.ProjectMembersPage({ projectId: projectId! }))
@@ -65,24 +70,24 @@ export const ProjectMemberPage = () => {
   return (
     <>
       <Head>
-        <title>{projectMemberUser.username} Contributions</title>
+        <title>{projectMemberUser!.username} Contributions</title>
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <div className="card bg-base-300 w-full">
           <div className="card-body">
             <div className="card-title">
-              {projectMemberUser.firstName && projectMemberUser.lastName
-                ? `${projectMemberUser.firstName} ${projectMemberUser.lastName}`
-                : projectMemberUser.username}
+              {projectMemberUser!.firstName && projectMemberUser!.lastName
+                ? `${projectMemberUser!.firstName} ${projectMemberUser!.lastName}`
+                : projectMemberUser!.username}
             </div>
-            {projectMemberUser.firstName && projectMemberUser.lastName ? (
+            {projectMemberUser!.firstName && projectMemberUser!.lastName ? (
               <p>
-                <span className="font-semibold">Username:</span> {projectMemberUser.username}
+                <span className="font-semibold">Username:</span> {projectMemberUser!.username}
               </p>
             ) : null}
             <p>
-              <span className="font-semibold">Email:</span> {projectMemberUser.email}
+              <span className="font-semibold">Email:</span> {projectMemberUser!.email}
             </p>
             <p>
               <span className="font-semibold">Privilege:</span>{" "}
@@ -116,7 +121,7 @@ export const ProjectMemberPage = () => {
           <div className="card-body">
             <div className="card-title">Contribution Roles</div>
             <ProjectMemberRolesList
-              usersId={[projectMemberUser.id]}
+              usersId={[projectMemberUser!.id]}
               projectId={projectId}
               columns={roleTableColumnsSimple}
             />
@@ -135,7 +140,14 @@ export const ProjectMemberPage = () => {
 
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
-            <div className="card-title">Contribution Tasks</div>
+            <div className="card-title" data-tooltip-id="memberTasks">
+              Contribution Tasks
+            </div>
+            <Tooltip
+              id="memberTasks"
+              content="Only completed tasks are included"
+              className="z-[1099] ourtooltips"
+            />
             <ProjectMembersTaskListDone
               projectMember={projectMember}
               columns={finishedTasksTableColumns}

@@ -61,7 +61,7 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
             {normalizedError}
           </div>
         )}
-        <style jsx={"true"}>{`
+        <style jsx>{`
           label {
             display: flex;
             flex-direction: column;

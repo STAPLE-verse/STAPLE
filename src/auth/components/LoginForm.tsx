@@ -7,6 +7,10 @@ import login from "src/auth/mutations/login"
 import { Login } from "src/auth/schemas"
 import { useMutation } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
+import LabeledPasswordField, {
+  LabeledPassWordFieldProps,
+} from "src/core/components/fields/LabeledPasswordField"
+import { useState } from "react"
 
 type LoginFormProps = {
   onSuccess?: (user: PromiseReturnType<typeof login>) => void
@@ -14,6 +18,16 @@ type LoginFormProps = {
 
 export const LoginForm = (props: LoginFormProps) => {
   const [loginMutation] = useMutation(login)
+
+  const [currType, setType] = useState("password")
+  const handlePasswordToggle = () => {
+    if (currType === "password") {
+      setType("text")
+    } else {
+      setType("password")
+    }
+  }
+
   return (
     <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
       <div className="flex justify-center items-center w-full">
@@ -57,11 +71,12 @@ export const LoginForm = (props: LoginFormProps) => {
           className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
 
-        <LabeledTextField
+        <LabeledPasswordField
           name="password"
           label="Password:"
           placeholder="Password"
-          type="password"
+          type={currType as LabeledPassWordFieldProps["type"]}
+          onEyeClick={handlePasswordToggle}
           className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
         />
       </Form>
