@@ -51,7 +51,7 @@ const ProjectNavbar = () => {
     },
     {
       name: "Contributors",
-      href: Routes.ProjectMembersPage({ projectId: projectId! }),
+      href: Routes.ContributorsPage({ projectId: projectId! }),
     },
     {
       name: "Settings",

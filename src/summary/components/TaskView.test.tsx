@@ -24,7 +24,7 @@ const getSimpleTestTask = () => {
       },
     },
     assignees: [] as any,
-    labels: [] as any,
+    roles: [] as any,
     element: undefined as any,
   }
   return task1
@@ -35,7 +35,7 @@ const getExtendedTestTask = () => {
     id: 1,
     name: "element1",
   }
-  const labels = [
+  const roles = [
     {
       id: 1,
       name: "label1",
@@ -57,7 +57,7 @@ const getExtendedTestTask = () => {
     {
       id: 2,
       statusLogs: [],
-      contributor: {
+      projectMember: {
         id: 1,
         user: {
           firstName: "contributor_first",
@@ -70,14 +70,14 @@ const getExtendedTestTask = () => {
   let task1 = getSimpleTestTask()
   task1.assignees = assignees
   task1.element = element
-  task1.labels = labels
+  task1.roles = roles
   return task1
 }
 
 test("renders Only Utils/Task view ", async () => {
   const task1 = getSimpleTestTask()
   const { debug } = render(
-    <TaskView task={task1} printLabels={true} printAssignees={true} printElement={true}></TaskView>
+    <TaskView task={task1} printRoles={true} printAssignees={true} printElement={true}></TaskView>
   )
 
   const taskView = screen.getByTestId("taskview-testid")
@@ -85,7 +85,7 @@ test("renders Only Utils/Task view ", async () => {
   expect(screen.getByText(/user firstname/i)).toBeInTheDocument()
   expect(screen.getByText(/user lastname/i)).toBeInTheDocument()
   expect(screen.getByRole("heading", { name: /name: task1/i }))
-  expect(screen.getByText("This task does not have labels")).toBeInTheDocument()
+  expect(screen.getByText("This task does not have roles")).toBeInTheDocument()
   expect(screen.getByText("This task does not have element")).toBeInTheDocument()
   expect(screen.getByText("March 27, 2024 at 23:43:00")).toBeInTheDocument()
 
@@ -97,9 +97,8 @@ test("renders Only Utils/Task view ", async () => {
 test("renders Utils/Task view with subelements", async () => {
   const task1 = getExtendedTestTask()
   const { debug } = render(
-    <TaskView task={task1} printLabels={true} printAssignees={true} printElement={true}></TaskView>
+    <TaskView task={task1} printRoles={true} printAssignees={true} printElement={true}></TaskView>
   )
-  debug()
 
   const taskView = screen.getByTestId("taskview-testid")
   expect(taskView).toBeInTheDocument()
