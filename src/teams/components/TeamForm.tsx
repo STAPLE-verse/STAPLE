@@ -20,13 +20,12 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
   const [contributors] = useQuery(getContributors, { projectId: projectId! })
 
   const allProjectMemberUserIds = contributors.map((contributor) => contributor.users[0]?.id)
-
+  console.log("allProjectMemberUserIds", allProjectMemberUserIds)
   // Set initialValues of currentTeam projectMembers
   const currentTeamOptions = contributors.map((contributor) => {
     let checked = false
     if (teamId != undefined && currentProjectMemberUserIds != undefined) {
-      checked =
-        currentProjectMemberUserIds.find((id) => allProjectMemberUserIds.includes(id)) != undefined
+      checked = currentProjectMemberUserIds.includes(contributor.users[0]!.id)
     }
     return {
       // TODO: ts does not recognize prisma include class
@@ -37,7 +36,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
       teamId: teamId,
     } as TeamOption
   })
-
+  console.log("currentTeamOptions", currentTeamOptions)
   const [validAssignments, setValidAssignments] = useState(true)
   const areAssignmentValid = (values) => {
     if (values != undefined && values.findIndex((el) => el.checked) >= 0) {

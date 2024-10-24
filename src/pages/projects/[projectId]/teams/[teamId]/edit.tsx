@@ -30,16 +30,17 @@ export const EditTeam = () => {
       users: true,
     },
   }) as [ProjectMemberWithUsers, any]
+  console.log("edit", teamProjectMember)
 
   const users = teamProjectMember.users
   const userIds = users.map((user) => user.id)
-
+  console.log("edit", userIds)
   const initialValues = {
     name: teamProjectMember.name ? teamProjectMember.name : undefined,
   }
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>Edit {teamProjectMember.name}</title>
       </Head>
@@ -47,57 +48,55 @@ export const EditTeam = () => {
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <h1 className="text-3xl">Edit {teamProjectMember.name}</h1>
 
-        {
-          <Suspense fallback={<div>Loading...</div>}>
-            <TeamForm
-              projectId={projectId!}
-              teamId={teamProjectMember.id}
-              currentProjectMemberUserIds={userIds}
-              initialValues={initialValues}
-              submitText="Update Team"
-              schema={TeamFormSchema}
-              onSubmit={async (values) => {
-                const teamMemberUserIds: number[] = values.projectMembers
-                  .filter((el) => el.checked)
-                  .map((val) => val.userId)
+        <Suspense fallback={<div>Loading...</div>}>
+          <TeamForm
+            projectId={projectId!}
+            teamId={teamProjectMember.id}
+            currentProjectMemberUserIds={userIds}
+            initialValues={initialValues}
+            submitText="Update Team"
+            schema={TeamFormSchema}
+            onSubmit={async (values) => {
+              const teamMemberUserIds: number[] = values.projectMembers
+                .filter((el) => el.checked)
+                .map((val) => val.userId)
 
-                try {
-                  const updated = await updateTeamMutation({
-                    name: values.name,
-                    id: teamProjectMember.id,
-                    userIds: teamMemberUserIds,
+              try {
+                const updated = await updateTeamMutation({
+                  name: values.name,
+                  id: teamProjectMember.id,
+                  userIds: teamMemberUserIds,
+                })
+                await toast.promise(Promise.resolve(updated), {
+                  loading: "Updating team...",
+                  success: "Team updated!",
+                  error: "Failed to update team...",
+                })
+                await setQueryData(updated)
+                await router.push(
+                  Routes.ShowTeamPage({
+                    projectId: projectId!,
+                    teamId: teamProjectMember.id,
                   })
-                  await toast.promise(Promise.resolve(updated), {
-                    loading: "Updating team...",
-                    success: "Team updated!",
-                    error: "Failed to update team...",
-                  })
-                  await setQueryData(updated)
-                  await router.push(
-                    Routes.ShowTeamPage({
-                      projectId: projectId!,
-                      teamId: teamProjectMember.id,
-                    })
-                  )
-                } catch (error: any) {
-                  console.error(error)
-                  return {
-                    [FORM_ERROR]: error.toString(),
-                  }
+                )
+              } catch (error: any) {
+                console.error(error)
+                return {
+                  [FORM_ERROR]: error.toString(),
                 }
-              }}
-            />
+              }
+            }}
+          />
 
-            <Link
-              className="btn btn-secondary self-end mt-4"
-              href={Routes.ShowTeamPage({ projectId: projectId!, teamId: teamId! })}
-            >
-              Cancel
-            </Link>
-          </Suspense>
-        }
+          <Link
+            className="btn btn-secondary self-end mt-4"
+            href={Routes.ShowTeamPage({ projectId: projectId!, teamId: teamId! })}
+          >
+            Cancel
+          </Link>
+        </Suspense>
       </main>
-    </Layout>
+    </>
   )
 }
 
@@ -105,9 +104,11 @@ const EditTeamPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <EditTeam />
-    </Suspense>
+    <Layout>
+      <Suspense fallback={<div>Loading...</div>}>
+        <EditTeam />
+      </Suspense>
+    </Layout>
   )
 }
 
