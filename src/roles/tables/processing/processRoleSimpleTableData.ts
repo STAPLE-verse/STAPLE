@@ -1,10 +1,10 @@
-export type RoleContributorTableData = {
+export type RoleSimpleTableData = {
   name: string
   description: string
   taxonomy: string
 }
 
-export function processRoleContributorTableData(roles): RoleContributorTableData[] {
+export function processRoleSimpleTableData(roles): RoleSimpleTableData[] {
   return roles.map((role) => {
     const { name, description, taxonomy } = role
 

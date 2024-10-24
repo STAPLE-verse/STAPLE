@@ -1,21 +1,46 @@
+import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
-import { RoleContributorTableData } from "../processing/processRoleContributorTableData"
+import { MultiSelectCheckbox } from "src/core/components/fields/MultiSelectCheckbox"
 
-const columnHelper = createColumnHelper<RoleContributorTableData>()
+export type ContributorRoleData = {
+  username: string
+  firstname: string
+  lastname: string
+  roleNames: string
+  id: number
+}
+
+const columnHelper = createColumnHelper<ContributorRoleData>()
 
 // ColumnDefs
 export const RoleContributorTableColumns = [
-  columnHelper.accessor("name", {
+  columnHelper.accessor("username", {
+    id: "username",
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Role Name",
+    header: "Username",
   }),
 
-  columnHelper.accessor("description", {
+  columnHelper.accessor("firstname", {
+    id: "firstname",
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Description",
+    header: "First Name",
   }),
-  columnHelper.accessor("taxonomy", {
+  columnHelper.accessor("lastname", {
+    id: "lastaname",
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Taxonomy",
+    header: "Last Name",
+  }),
+  columnHelper.accessor("roleNames", {
+    id: "roleNames",
+    header: "Roles",
+    cell: (info) => <div>{info.getValue()}</div>,
+    enableColumnFilter: true,
+  }),
+  columnHelper.accessor("id", {
+    id: "multiple",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => <MultiSelectCheckbox id={info.getValue()} />,
+    header: "Add Role",
   }),
 ]

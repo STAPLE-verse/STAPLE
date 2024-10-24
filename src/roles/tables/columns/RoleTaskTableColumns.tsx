@@ -1,7 +1,7 @@
 import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import { AddTaskRolesColumn } from "../../components/AddTaskRolesColumn"
-import { MultipleCheckboxColumn } from "../../components/MultipleCheckboxColumn"
+import { MultipleCheckboxColumn } from "../../../core/components/fields/MultiSelectCheckbox"
 import { RoleTaskTableData } from "../processing/processRoleTaskTableData"
 
 const columnHelper = createColumnHelper<RoleTaskTableData>()

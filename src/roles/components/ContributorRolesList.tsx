@@ -2,8 +2,8 @@ import { useQuery } from "@blitzjs/rpc"
 import getRoles from "../queries/getRoles"
 import Table from "src/core/components/Table"
 import { ProjectMember, Role } from "db"
-import { processRoleContributorTableData } from "../tables/processing/processRoleContributorTableData"
-import { RoleContributorTableColumns } from "../tables/columns/RoleContributorTableColumns"
+import { processRoleSimpleTableData } from "../tables/processing/processRoleSimpleTableData"
+import { RoleSimpleTableColumns } from "../tables/columns/RoleSimpleTableColumns"
 
 type RoleWithProjectMembers = Role & {
   projectMembers: (ProjectMember & {
@@ -44,12 +44,12 @@ export const ContributorRolesList = ({ usersId, projectId }) => {
   const typedRoles = roles as RoleWithProjectMembers[]
 
   // Process table data and select columns dynamically
-  const tableData = processRoleContributorTableData(typedRoles)
+  const tableData = processRoleSimpleTableData(typedRoles)
 
   return (
     <div>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <Table columns={RoleContributorTableColumns} data={tableData} addPagination={true} />
+        <Table columns={RoleSimpleTableColumns} data={tableData} addPagination={true} />
       </main>
     </div>
   )
