@@ -30,11 +30,10 @@ export const EditTeam = () => {
       users: true,
     },
   }) as [ProjectMemberWithUsers, any]
-  console.log("edit", teamProjectMember)
 
   const users = teamProjectMember.users
   const userIds = users.map((user) => user.id)
-  console.log("edit", userIds)
+
   const initialValues = {
     name: teamProjectMember.name ? teamProjectMember.name : undefined,
   }

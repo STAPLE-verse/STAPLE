@@ -19,8 +19,6 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
   // Get individual projectMembers only for the project
   const [contributors] = useQuery(getContributors, { projectId: projectId! })
 
-  const allProjectMemberUserIds = contributors.map((contributor) => contributor.users[0]?.id)
-  console.log("allProjectMemberUserIds", allProjectMemberUserIds)
   // Set initialValues of currentTeam projectMembers
   const currentTeamOptions = contributors.map((contributor) => {
     let checked = false
@@ -36,7 +34,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
       teamId: teamId,
     } as TeamOption
   })
-  console.log("currentTeamOptions", currentTeamOptions)
+
   const [validAssignments, setValidAssignments] = useState(true)
   const areAssignmentValid = (values) => {
     if (values != undefined && values.findIndex((el) => el.checked) >= 0) {
