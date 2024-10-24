@@ -40,7 +40,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
           </div>
         )}
 
-        <style jsx="true">{`
+        <style>{`
           label {
             display: flex;
             flex-direction: column;

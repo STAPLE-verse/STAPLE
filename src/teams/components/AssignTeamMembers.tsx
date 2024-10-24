@@ -71,7 +71,7 @@ const AssignTeamMembers = ({ onChange, teamOptions, showCheckbox }: Props) => {
   return (
     <div>
       <div className="flex">
-        <style jsx>{`
+        <style>{`
           label {
             display: flex;
             flex-direction: column;
