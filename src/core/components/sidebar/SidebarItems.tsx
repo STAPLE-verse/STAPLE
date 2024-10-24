@@ -83,7 +83,7 @@ export const ProjectSidebarItems = (projectId: number): SidebarItemProps[] => {
     {
       icon: CheckCircleIcon,
       text: "Roles",
-      route: Routes.CreditPage({ projectId: projectId }),
+      route: Routes.RolesPage({ projectId: projectId }),
       tooltipId: "project-credit-tooltip",
       privilege: [MemberPrivileges.PROJECT_MANAGER],
     },

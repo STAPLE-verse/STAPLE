@@ -9,7 +9,7 @@ export type TeamMembers = {
 const columnHelper = createColumnHelper<TeamMembers>()
 
 // ColumnDefs
-export const teamMembersTableColumns: ColumnDef<TeamMembers>[] = [
+export const TeamMembersColumn: ColumnDef<TeamMembers>[] = [
   columnHelper.accessor("username", {
     cell: (info) => <span>{`${info.row.original.username}`}</span>,
     header: "Username",

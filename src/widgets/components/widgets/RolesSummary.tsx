@@ -26,7 +26,7 @@ const RolesSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
       display={<GetRolesDisplay rolePercent={rolePercent} />}
       link={
         <PrimaryLink
-          route={Routes.CreditPage({ projectId: projectId! })}
+          route={Routes.RolesPage({ projectId: projectId! })}
           text={<MagnifyingGlassIcon width={25} className="stroke-primary" />}
           classNames="btn-ghost"
         />

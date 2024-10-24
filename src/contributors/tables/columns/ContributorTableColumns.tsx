@@ -2,20 +2,16 @@ import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
+import { ContributorTableData } from "../processing/processContributorTableData"
 
-export type TeamInformation = {
-  name: string
-  id: number
-  projectId?: number
-}
 // Column helper
-const columnHelper = createColumnHelper<TeamInformation>()
+const columnHelper = createColumnHelper<ContributorTableData>()
 
 // ColumnDefs
-export const pmTeamTableColumns = [
+export const pmContributorTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Team Name",
+    header: "Contributor",
   }),
   columnHelper.accessor("id", {
     id: "view",
@@ -23,12 +19,12 @@ export const pmTeamTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
-      <div className="">
+      <div>
         <Link
           className="btn btn-primary"
-          href={Routes.ShowTeamPage({
+          href={Routes.ShowContributorPage({
             projectId: info.row.original.projectId!,
-            teamId: info.getValue(),
+            contributorId: info.getValue(),
           })}
         >
           See Contributions
@@ -42,25 +38,25 @@ export const pmTeamTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
-      <div className="">
+      <div>
         <Link
           className="btn btn-primary"
-          href={Routes.EditTeamPage({
+          href={Routes.EditContributorPage({
             projectId: info.row.original.projectId!,
-            teamId: info.getValue(),
+            contributorId: info.getValue(),
           })}
         >
-          Edit Team
+          Edit Contributor
         </Link>
       </div>
     ),
   }),
 ]
 
-export const projectMemberTeamTableColumns = [
+export const contributorTableColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Team Name",
+    header: "Contributor",
   }),
   columnHelper.accessor("id", {
     id: "view",
@@ -68,12 +64,12 @@ export const projectMemberTeamTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
-      <div className="">
+      <div>
         <Link
           className="btn btn-primary"
-          href={Routes.ShowTeamPage({
+          href={Routes.ShowContributorPage({
             projectId: info.row.original.projectId!,
-            teamId: info.getValue(),
+            contributorId: info.getValue(),
           })}
         >
           See Contributions

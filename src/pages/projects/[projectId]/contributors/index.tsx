@@ -8,12 +8,12 @@ import Layout from "src/core/layouts/Layout"
 import {
   pmContributorTableColumns,
   contributorTableColumns,
-} from "src/contributors/components/ContributorTable"
+} from "src/contributors/tables/columns/ContributorTableColumns"
 import Table from "src/core/components/Table"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { MemberPrivileges } from "@prisma/client"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { processContributorTableData } from "src/contributors/utils/processContributorTableData"
+import { processContributorTableData } from "src/contributors/tables/processing/processContributorTableData"
 import getContributors, { ContributorWithUser } from "src/contributors/queries/getContributors"
 
 interface ContributorListProps {

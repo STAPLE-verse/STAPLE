@@ -15,7 +15,7 @@ import { MemberPrivileges } from "db"
 import { createNewInvitation } from "integrations/emails"
 import { CreateProjectMemberFormSchema } from "src/projectmembers/schemas"
 
-function NewProjectMember() {
+function NewContributor() {
   const [createInviteMutation] = useMutation(createInvite)
   const [formError, setFormError] = useState<string | null>(null)
   const router = useRouter()
@@ -88,7 +88,7 @@ function NewProjectMember() {
           submitText="Add Contributor"
           schema={CreateProjectMemberFormSchema}
           onSubmit={handleSubmit}
-          currentUserId={currentUser!.id}
+          isEdit={false}
         />
         {formError && (
           <div className="error-message text-red-600 mt-2 font-bold"> {formError} </div>
@@ -107,7 +107,7 @@ const NewContributorPage = () => {
         <title>Invite New Contributor</title>
       </Head>
       <Suspense fallback={<div>Loading...</div>}>
-        <NewProjectMember />
+        <NewContributor />
       </Suspense>
     </Layout>
   )

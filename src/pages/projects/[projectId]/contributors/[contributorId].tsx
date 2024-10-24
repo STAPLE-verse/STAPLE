@@ -4,14 +4,10 @@ import Head from "next/head"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-
 import Layout from "src/core/layouts/Layout"
 import deleteProjectMember from "src/projectmembers/mutations/deleteProjectMember"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
-
-import { ProjectMemberRolesList } from "src/roles/components/ProjectMemberRolesList"
-import { roleTableColumnsSimple } from "src/roles/components/RoleTable"
 import Link from "next/link"
 import { MemberPrivileges } from "db"
 import toast from "react-hot-toast"
@@ -22,6 +18,7 @@ import { Tooltip } from "react-tooltip"
 import getContributor from "src/contributors/queries/getContributor"
 import { getContributorName } from "src/services/getName"
 import { ContributorTaskListDone } from "src/contributors/components/ContributorTaskListDone"
+import { ContributorRolesList } from "src/roles/components/ContributorRolesList"
 
 export const ContributorPage = () => {
   const router = useRouter()
@@ -114,16 +111,12 @@ export const ContributorPage = () => {
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
             <div className="card-title">Contribution Roles</div>
-            <ProjectMemberRolesList
-              usersId={[contributorUser!.id]}
-              projectId={projectId}
-              columns={roleTableColumnsSimple}
-            />
+            <ContributorRolesList usersId={[contributorUser!.id]} projectId={projectId} />
             <div className="card-actions justify-end">
               {privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
-                  href={Routes.CreditPage({ projectId: projectId! })}
+                  href={Routes.RolesPage({ projectId: projectId! })}
                 >
                   Edit Roles
                 </Link>
@@ -148,7 +141,7 @@ export const ContributorPage = () => {
               {privilege === MemberPrivileges.PROJECT_MANAGER && (
                 <Link
                   className="btn btn-primary"
-                  href={Routes.CreditPage({ projectId: projectId! })}
+                  href={Routes.RolesPage({ projectId: projectId! })}
                 >
                   Edit Roles
                 </Link>
