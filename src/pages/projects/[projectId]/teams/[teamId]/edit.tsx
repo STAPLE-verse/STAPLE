@@ -52,7 +52,7 @@ export const EditTeam = () => {
             <TeamForm
               projectId={projectId!}
               teamId={teamProjectMember.id}
-              currentProjectMemberIds={userIds}
+              currentProjectMemberUserIds={userIds}
               initialValues={initialValues}
               submitText="Update Team"
               schema={TeamFormSchema}
