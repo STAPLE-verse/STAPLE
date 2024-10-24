@@ -24,21 +24,35 @@ export const TeamRolesList = ({ usersId, projectId }) => {
         some: {
           users: {
             some: {
-              id: { in: usersId },
+              id: { in: usersId }, // Fetch only projectMembers with users in usersId
             },
           },
-          projectId: { in: projectId },
+          projectId: projectId, // Ensure that the roles belong to the correct project
         },
       },
     },
     include: {
       projectMembers: {
+        where: {
+          name: null,
+          users: {
+            some: {
+              id: { in: usersId }, // Restrict projectMembers to only users in usersId
+            },
+          },
+        },
         include: {
-          users: true, // Include users related to project members
+          users: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              username: true,
+            },
+          },
         },
       },
     },
-    orderBy: { id: "asc" },
   })
 
   const typedRoles = roles as RoleWithProjectMembers[]
