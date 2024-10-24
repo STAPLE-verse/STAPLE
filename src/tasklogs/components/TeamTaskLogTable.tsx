@@ -1,9 +1,9 @@
 import React from "react"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { TaskLogToggleModal } from "./TaskLogToggleModal"
-import { ShowTeamModal } from "../../teams/components/ShowTeamModal"
 import { ProcessedTeamTaskLog } from "../utils/processTaskLogs"
 import { TaskLogSchemaModal } from "./TaskLogSchemaModal"
+import { ShowTeamModal } from "src/teams/components/ShowTeamModal"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedTeamTaskLog>()
