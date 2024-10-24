@@ -6,16 +6,18 @@ export default resolver.pipe(
   resolver.zod(UpdateTeamSchema),
   resolver.authorize(),
   async ({ id, name, userIds }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const team = await db.projectMember.update({
       where: { id },
       data: {
         name: name,
         users: {
-          connect: userIds.map((userId) => ({
+          set: userIds.map((userId) => ({
             id: userId,
           })),
         },
+      },
+      include: {
+        users: true, // Include the users relation in the result
       },
     })
 

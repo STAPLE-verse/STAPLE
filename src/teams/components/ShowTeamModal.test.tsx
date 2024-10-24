@@ -4,7 +4,7 @@
 
 import { expect, vi, test } from "vitest"
 import { render, screen, fireEvent } from "test/utils"
-import { ShowTeamModal } from "./ShowTeamModal"
+import { ShowTeamModal } from "src/teams/components/ShowTeamModal"
 
 test("renders show team modal", async () => {
   const curentProjectMember = {

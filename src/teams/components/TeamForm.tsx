@@ -19,14 +19,11 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
   // Get individual projectMembers only for the project
   const [contributors] = useQuery(getContributors, { projectId: projectId! })
 
-  const allProjectMemberUserIds = contributors.map((contributor) => contributor.users[0]?.id)
-
   // Set initialValues of currentTeam projectMembers
   const currentTeamOptions = contributors.map((contributor) => {
     let checked = false
     if (teamId != undefined && currentProjectMemberUserIds != undefined) {
-      checked =
-        currentProjectMemberUserIds.find((id) => allProjectMemberUserIds.includes(id)) != undefined
+      checked = currentProjectMemberUserIds.includes(contributor.users[0]!.id)
     }
     return {
       // TODO: ts does not recognize prisma include class

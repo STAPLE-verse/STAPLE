@@ -1,5 +1,5 @@
 import { useQuery } from "@blitzjs/rpc"
-import getRoles from "../queries/getRoles"
+import getRoles from "../../roles/queries/getRoles"
 import Table from "src/core/components/Table"
 import { ProjectMember, Role } from "db"
 import { RoleTeamTableColumns } from "../tables/columns/RoleTeamTableColumns"
