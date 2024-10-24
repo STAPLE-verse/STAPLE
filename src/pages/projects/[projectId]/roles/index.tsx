@@ -21,7 +21,7 @@ export const RolesTabs = () => {
             classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
           }
         >
-          Assign Contributors
+          Assign Tasks
         </Tab>
 
         <Tab
@@ -29,20 +29,20 @@ export const RolesTabs = () => {
             classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
           }
         >
-          Assign Tasks
+          Assign Contributors
         </Tab>
         {/* TODO: First click on board does not change it after init */}
       </Tab.List>
 
       <Tab.Panels>
-        {/* Tabpanel for Assign Contributors */}
-        <Tab.Panel>
-          <ContributorsTab />
-        </Tab.Panel>
-
         {/* Tabpanel for Assign tasks */}
         <Tab.Panel>
           <TasksTab />
+        </Tab.Panel>
+
+        {/* Tabpanel for Assign Contributors */}
+        <Tab.Panel>
+          <ContributorsTab />
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>

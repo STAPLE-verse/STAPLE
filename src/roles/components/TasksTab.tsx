@@ -3,7 +3,9 @@ import { useQuery } from "@blitzjs/rpc"
 import getTasks from "src/tasks/queries/getTasks"
 import { useParam } from "@blitzjs/next"
 import React from "react"
-import { AllTasksRolesList } from "./AllTasksRolesList"
+import { AddRoleModal } from "./AddRoleModal"
+import { RoleTaskTable } from "./RoleTaskTable"
+import { MultiSelectProvider } from "src/core/components/fields/MultiSelectContext"
 
 const TasksTab = () => {
   const projectId = useParam("projectId", "number")
@@ -14,17 +16,16 @@ const TasksTab = () => {
     orderBy: { id: "asc" },
   })
 
-  const reloadTable = async () => {
-    await refetch()
-  }
-
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <div>
+      <MultiSelectProvider>
         <Suspense fallback={<div>Loading...</div>}>
-          <AllTasksRolesList tasks={tasks} onChange={reloadTable} projectId={projectId} />
+          <RoleTaskTable tasks={tasks} />
+          <div className="modal-action flex justify-end mt-4">
+            <AddRoleModal projectId={projectId} rows={tasks} refetch={refetch} type={"task"} />
+          </div>
         </Suspense>
-      </div>
+      </MultiSelectProvider>
     </main>
   )
 }

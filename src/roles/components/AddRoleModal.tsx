@@ -5,34 +5,42 @@ import { RoleIdsFormSchema } from "src/roles/schemas"
 import { useMultiSelect } from "../../core/components/fields/MultiSelectContext"
 import { getCommonRoles } from "../utils/getCommonRoles"
 import { useAddRoleContributor } from "../hooks/useAddRoleContributor"
+import { useAddRoleTask } from "../hooks/useAddRoleTask"
 
-export const AddRoleModal = ({ contributors, projectId, refetch }) => {
+export const AddRoleModal = ({ rows, projectId, refetch, type }) => {
   // Handle modal state
   const [openModal, setOpenModal] = useState(false)
   const handleToggleModal = () => {
-    setOpenModal((prev) => !prev)
+    setOpenModal((prev) => {
+      if (prev) {
+        resetSelection() // Reset the checkboxes if the modal is being closed
+      }
+      return !prev
+    })
   }
 
   // Filter the contributors based on selected IDs
   const { selectedIds, resetSelection } = useMultiSelect()
-  const selectedContributors = contributors.filter((contributor) =>
-    selectedIds.includes(contributor.id)
-  )
+  const selectedRows = rows.filter((row) => selectedIds.includes(row.id))
 
   // Determine initial roles based on the selected contributors
-  const initialRoles = getCommonRoles(selectedContributors)
+  const initialRoles = getCommonRoles(selectedRows)
 
   const initialValues = {
     rolesId: initialRoles.map((role) => role.id),
   }
 
   // Handle form submission
-  const { handleAddRole } = useAddRoleContributor(refetch)
+  // Call both hooks unconditionally
+  const { handleAddRole: handleAddContributorRole } = useAddRoleContributor(refetch)
+  const { handleAddRole: handleAddTaskRole } = useAddRoleTask(refetch)
+
+  // Select the appropriate handler based on roleType
+  const handleAddRole = type === "contributor" ? handleAddContributorRole : handleAddTaskRole
 
   const onSubmit = async (values) => {
     const result = await handleAddRole(values, selectedIds)
     if (result === true) {
-      resetSelection() // Reset selection if successful
       handleToggleModal() // Close the modal
     }
   }
@@ -43,7 +51,7 @@ export const AddRoleModal = ({ contributors, projectId, refetch }) => {
         type="button"
         className="btn btn-primary"
         onClick={handleToggleModal}
-        disabled={contributors.length < 1 || selectedIds.length < 1}
+        disabled={rows.length < 1 || selectedIds.length < 1}
       >
         Add Role
       </button>

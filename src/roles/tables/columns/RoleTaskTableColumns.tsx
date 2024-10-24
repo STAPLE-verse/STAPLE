@@ -1,8 +1,13 @@
 import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
-import { AddTaskRolesColumn } from "../../components/AddTaskRolesColumn"
-import { MultipleCheckboxColumn } from "../../../core/components/fields/MultiSelectCheckbox"
-import { RoleTaskTableData } from "../processing/processRoleTaskTableData"
+import { MultiSelectCheckbox } from "../../../core/components/fields/MultiSelectCheckbox"
+
+export type RoleTaskTableData = {
+  name: string
+  description: string
+  rolesNames: string
+  id: number
+}
 
 const columnHelper = createColumnHelper<RoleTaskTableData>()
 
@@ -13,7 +18,6 @@ export const RoleTaskTableColumns = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
   }),
-
   columnHelper.accessor("description", {
     id: "description",
     cell: (info) => <span>{info.getValue()}</span>,
@@ -26,18 +30,10 @@ export const RoleTaskTableColumns = [
     enableColumnFilter: true,
   }),
   columnHelper.accessor("id", {
-    id: "open",
-    header: "Add Role",
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => <AddTaskRolesColumn row={info.row.original}></AddTaskRolesColumn>,
-  }),
-
-  columnHelper.accessor("id", {
     id: "multiple",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <MultipleCheckboxColumn row={info.row.original}></MultipleCheckboxColumn>,
+    cell: (info) => <MultiSelectCheckbox id={info.getValue()}></MultiSelectCheckbox>,
     header: "Add Multiple",
   }),
 ]

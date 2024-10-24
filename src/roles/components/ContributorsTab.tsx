@@ -30,7 +30,12 @@ const ContributorsTab = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <RoleContributorTable contributors={contributors} />
           <div className="modal-action flex justify-end mt-4">
-            <AddRoleModal contributors={contributors} refetch={refetch} projectId={projectId} />
+            <AddRoleModal
+              rows={contributors}
+              refetch={refetch}
+              projectId={projectId}
+              type={"contributor"}
+            />
           </div>
         </Suspense>
       </MultiSelectProvider>
