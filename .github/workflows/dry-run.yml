@@ -22,4 +22,6 @@ jobs:
           npx blitz prisma generate
 
       - name: Run build
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: npm run build
