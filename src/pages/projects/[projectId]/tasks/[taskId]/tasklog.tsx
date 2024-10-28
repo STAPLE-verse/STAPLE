@@ -1,20 +1,19 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
-import {
-  taskLogTableColumns,
-  taskLogTableColumnsSchema,
-} from "src/tasklogs/components/TaskLogTable"
-import {
-  teamTaskLogTableColumns,
-  teamTaskLogTableColumnsSchema,
-} from "src/tasklogs/components/TeamTaskLogTable"
+import { TaskLogCompleteColumns } from "src/tasklogs/tabels/columns/TaskLogCompleteColumns"
 import Table from "src/core/components/Table"
 import Link from "next/link"
 import TaskLayout from "src/core/layouts/TaskLayout"
 import { useTaskContext } from "src/tasks/components/TaskContext"
-import { processIndividualTaskLogs, processTeamTaskLogs } from "src/tasklogs/utils/processTaskLogs"
+import {
+  processIndividualTaskLogs,
+  processTeamTaskLogs,
+} from "src/tasklogs/tabels/processing/processTaskLogs"
 import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
+import { TaskLogFormColumns } from "src/tasklogs/tabels/columns/TaskLogFormColumns"
+import { TeamTaskLogFormColumns } from "src/tasklogs/tabels/columns/TeamTaskLogFormColumns"
+import { TeamTaskLogCompleteColumns } from "src/tasklogs/tabels/columns/TeamTaskLogCompleteColumns"
 
 const AssignmentsContent = () => {
   // Get values
@@ -25,11 +24,9 @@ const AssignmentsContent = () => {
   const processedIndividualAssignments = processIndividualTaskLogs(individualProjectMembers)
   const processedTeamAssignments = processTeamTaskLogs(teamProjectMembers)
 
-  //console.log(processedTeamAssignments)
-
   // Get columns definitions for tables
-  const individualColumns = task.formVersionId ? taskLogTableColumnsSchema : taskLogTableColumns
-  const teamColumns = task.formVersionId ? teamTaskLogTableColumnsSchema : teamTaskLogTableColumns
+  const individualColumns = task.formVersionId ? TaskLogFormColumns : TaskLogCompleteColumns
+  const teamColumns = task.formVersionId ? TeamTaskLogFormColumns : TeamTaskLogCompleteColumns
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">

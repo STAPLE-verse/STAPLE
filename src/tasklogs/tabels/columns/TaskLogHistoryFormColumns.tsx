@@ -1,13 +1,13 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
-import { ProcessedTaskLogHistory } from "../utils/processTaskLogs"
+import { ProcessedTaskLogHistory } from "../processing/processTaskLogs"
 import { noSubmitButton } from "src/forms/utils/extendSchema"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedTaskLogHistory>()
 
 // ColumnDefs
-export const taskLogHistoryTableColumns: ColumnDef<ProcessedTaskLogHistory>[] = [
+export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistory>[] = [
   columnHelper.accessor("projectMemberName", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Changed By",
@@ -40,23 +40,5 @@ export const taskLogHistoryTableColumns: ColumnDef<ProcessedTaskLogHistory>[] = 
       </>
     ),
     header: "Form Data",
-  }),
-]
-
-export const taskLogHistoryTableColumnsNoMeta: ColumnDef<ProcessedTaskLogHistory>[] = [
-  columnHelper.accessor("projectMemberName", {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Changed By",
-    id: "changedBy",
-  }),
-  columnHelper.accessor("lastUpdate", {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Last Update",
-    id: "createdAt",
-  }),
-  columnHelper.accessor("status", {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Status",
-    id: "status",
   }),
 ]

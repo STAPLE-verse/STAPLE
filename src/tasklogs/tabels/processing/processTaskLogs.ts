@@ -1,8 +1,8 @@
 import { getContributorName } from "src/services/getName"
-import { ExtendedTaskLog } from "../hooks/useTaskLogData"
+import { ExtendedTaskLog } from "../../hooks/useTaskLogData"
 import { Prisma } from "@prisma/client"
 import { ProjectMemberWithTaskLog } from "src/tasks/components/TaskContext"
-import { filterLatestTaskLog } from "./filterLatestTaskLog"
+import { filterLatestTaskLog } from "../../utils/filterLatestTaskLog"
 
 export type ProcessedIndividualTaskLog = {
   projectMemberName: string
