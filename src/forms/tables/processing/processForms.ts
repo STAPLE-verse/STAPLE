@@ -8,7 +8,7 @@ export type FormTableData = {
   id: number
 }
 
-export function processFormsTableData(forms: FormWithFormVersion[]): FormTableData[] {
+export function processForms(forms: FormWithFormVersion[]): FormTableData[] {
   return forms.map((form) => {
     // Handle cases where formVersion is null
     const formVersion = form.formVersion || { uiSchema: {}, schema: {}, name: "Unknown" }

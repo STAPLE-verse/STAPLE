@@ -7,7 +7,7 @@ import { ElementTasksData } from "../processing/processElementTasks"
 
 const columnHelperElement = createColumnHelper<ElementTasksData>()
 
-export const elementTasksTableColumns = [
+export const ElementTasksColumns = [
   columnHelperElement.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",

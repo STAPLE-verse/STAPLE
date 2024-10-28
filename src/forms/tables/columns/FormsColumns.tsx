@@ -1,5 +1,4 @@
 import React from "react"
-import { FormVersion, Form } from "db"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
@@ -7,13 +6,13 @@ import { JsonFormModal } from "src/core/components/JsonFormModal"
 import DateFormat from "src/core/components/DateFormat"
 import ArchiveFormButton from "../../components/ArchiveFormButton"
 import { MagnifyingGlassIcon, PencilSquareIcon } from "@heroicons/react/24/outline"
-import { FormTableData } from "../processing/processFormsTableData"
+import { FormTableData } from "../processing/processForms"
 
 // Column helper
 const columnHelper = createColumnHelper<FormTableData>()
 
 // ColumnDefs
-export const formsTableColumns = [
+export const FormsColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",

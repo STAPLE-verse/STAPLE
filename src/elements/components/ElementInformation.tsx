@@ -8,7 +8,7 @@ import { Element } from "@prisma/client"
 import DateFormat from "src/core/components/DateFormat"
 import { useState } from "react"
 import UpdateTasks from "./UpdateTasks"
-import { elementTasksTableColumns } from "../tables/columns/elementTasksTableColumns"
+import { ElementTasksColumns } from "../tables/columns/ElementTasksColumns"
 import { processElementTasks } from "../tables/processing/processElementTasks"
 
 interface ElementInformationProps {
@@ -93,7 +93,7 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({
             className="z-[1099] ourtooltips"
           />
           <div className="overflow-x-auto">
-            <Table columns={elementTasksTableColumns} data={processedTasks} addPagination={true} />
+            <Table columns={ElementTasksColumns} data={processedTasks} addPagination={true} />
           </div>
         </div>
       </div>
