@@ -2,7 +2,7 @@ import { Status, TaskLog } from "db"
 
 // Preprocessing tasks data for tables
 // All Tasks Table
-export type ProcessedAllTasks = {
+export type AllTasksData = {
   name: string
   projectName: string
   deadline: Date | null
@@ -37,7 +37,7 @@ type TaskLogWithTask = TaskLog & {
   task: Task
 }
 
-export function processAllTasks(latestTaskLog: TaskLogWithTask[]): ProcessedAllTasks[] {
+export function processAllTasks(latestTaskLog: TaskLogWithTask[]): AllTasksData[] {
   const taskSummary: Record<number, { total: number; completed: number }> = {}
 
   // Initialize the summary for each taskLog
@@ -59,7 +59,7 @@ export function processAllTasks(latestTaskLog: TaskLogWithTask[]): ProcessedAllT
   })
 
   // Generate the final result array
-  const processedTasks: ProcessedAllTasks[] = Object.keys(taskSummary).map((taskId) => {
+  const processedTasks: AllTasksData[] = Object.keys(taskSummary).map((taskId) => {
     const taskData = taskSummary[Number(taskId)]
 
     // Ensure taskData is defined
@@ -96,86 +96,4 @@ export function processAllTasks(latestTaskLog: TaskLogWithTask[]): ProcessedAllT
   })
 
   return processedTasks
-}
-
-// Finshed tasks table
-export type ProcessedFinishedTasks = {
-  name: string
-  roles: string
-  completedOn: Date
-  view: {
-    taskId: number
-    projectId: number
-  }
-}
-
-export function processFinishedTasks(tasks): ProcessedFinishedTasks[] {
-  return tasks.map((task) => {
-    const roles = task.roles
-    const roleNames =
-      roles && roles.length > 0 ? roles.map((role) => role.name).join(", ") : "No roles added"
-
-    // TODO: Update this to make it safer
-    const latestLog = task.taskLogs?.[0]
-
-    const completedOn = latestLog?.status === "COMPLETED" ? latestLog.createdAt : null
-
-    return {
-      name: task.name,
-      roles: roleNames,
-      completedOn: completedOn,
-      view: {
-        taskId: task.id,
-        projectId: task.projectId,
-      },
-    }
-  })
-}
-
-// Project task table
-export type ProcessedProjectTasks = {
-  name: string
-  description: string
-  deadline: Date | null
-  status: string
-  view: {
-    taskId: number
-    projectId: number
-  }
-}
-
-export function processProjectTasks(tasks): ProcessedProjectTasks[] {
-  return tasks.map((task) => ({
-    name: task.name,
-    description: task.description ? task.description.substring(0, 50) : "No Description",
-    deadline: task.deadline,
-    status: task.status === Status.COMPLETED ? "Completed" : "Not completed",
-    view: {
-      taskId: task.id,
-      projectId: task.projectId,
-    },
-  }))
-}
-
-// Element task table
-export type ProcessedElementTasks = {
-  name: string
-  deadline: Date | null
-  status: string
-  view: {
-    taskId: number
-    projectId: number
-  }
-}
-
-export function processElementTasks(tasks): ProcessedElementTasks[] {
-  return tasks.map((task) => ({
-    name: task.name,
-    deadline: task.deadline,
-    status: task.status === Status.COMPLETED ? "Completed" : "Not completed",
-    view: {
-      taskId: task.id,
-      projectId: task.projectId,
-    },
-  }))
 }

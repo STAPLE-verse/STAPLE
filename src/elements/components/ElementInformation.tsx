@@ -6,10 +6,10 @@ import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
 import { Element } from "@prisma/client"
 import DateFormat from "src/core/components/DateFormat"
-import { processElementTasks } from "src/tasks/utils/processTasks"
 import { useState } from "react"
 import UpdateTasks from "./UpdateTasks"
 import { elementTasksTableColumns } from "../tables/columns/elementTasksTableColumns"
+import { processElementTasks } from "../tables/processing/processElementTasks"
 
 interface ElementInformationProps {
   element: Element

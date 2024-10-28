@@ -1,14 +1,17 @@
-import { Routes } from "@blitzjs/next"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
+import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
-import { ElementTasksData } from "../processing/processElementTasks"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { FinishedTasksData } from "../processing/processFinishedTasks"
 
-const columnHelperElement = createColumnHelper<ElementTasksData>()
+// Column helper
+const columnHelperFinished = createColumnHelper<FinishedTasksData>()
 
-export const elementTasksTableColumns = [
-  columnHelperElement.accessor("name", {
+// ColumnDefs
+export const FinishedTasksColumns = [
+  columnHelperFinished.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
     enableColumnFilter: true,
@@ -17,25 +20,25 @@ export const elementTasksTableColumns = [
       filterVariant: "text",
     },
   }),
-  columnHelperElement.accessor("deadline", {
-    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
-    header: "Due Date",
+  columnHelperFinished.accessor("roles", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Roles",
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
       filterVariant: "text",
     },
   }),
-  columnHelperElement.accessor("status", {
+  columnHelperFinished.accessor("completedOn", {
+    cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Completed",
-    cell: (info) => <span>{info.getValue()}</span>,
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
-      filterVariant: "select",
+      filterVariant: "text",
     },
   }),
-  columnHelperElement.accessor("view", {
+  columnHelperFinished.accessor("view", {
     id: "view",
     header: "View",
     enableColumnFilter: false,

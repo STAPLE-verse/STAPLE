@@ -2,9 +2,9 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useQuery } from "@blitzjs/rpc"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
-import { processAllTasks } from "../utils/processTasks"
+import { processAllTasks } from "../tables/processing/processAllTasks"
 import Table from "src/core/components/Table"
-import { allTasksTableColumns } from "./TaskTable"
+import { AllTasksColumns } from "../tables/columns/AllTasksColumns"
 
 export const AllTasksList = () => {
   const currentUser = useCurrentUser()
@@ -35,7 +35,7 @@ export const AllTasksList = () => {
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center mb-2 text-3xl">All Tasks</h1>
       <div>
-        <Table columns={allTasksTableColumns} data={processedTasks} addPagination={true} />
+        <Table columns={AllTasksColumns} data={processedTasks} addPagination={true} />
       </div>
     </main>
   )
