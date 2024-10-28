@@ -13,7 +13,7 @@ import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { ProjectMemberWithUsers } from "."
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { Tooltip } from "react-tooltip"
-import { TeamRolesList } from "src/roles/components/TeamRolesList"
+import { TeamRolesList } from "src/teams/components/TeamRolesList"
 
 export const ShowTeamPage = () => {
   const router = useRouter()
