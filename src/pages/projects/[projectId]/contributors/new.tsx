@@ -59,11 +59,7 @@ function NewContributor() {
           success: "Contributor invited to the project!",
           error: "Failed to add the projectMember...",
         })
-        await router.push(
-          Routes.ShowProjectPage({
-            projectId: projectId!,
-          })
-        )
+        await router.push(Routes.ContributorsPage({ projectId: projectId! }))
       }
     } catch (error: any) {
       console.error(error)
