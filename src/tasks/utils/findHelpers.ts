@@ -26,16 +26,17 @@ export function findContainerItems(id: UniqueIdentifier | undefined, containers:
   return container.items
 }
 
-type ItemKeys = keyof DNDType["items"]
+type ItemKeys = keyof DNDType["items"][number]
 
-export function findItemValue(
+// Update the function signature to return the type of each key
+export function findItemValue<T extends ItemKeys>(
   id: UniqueIdentifier | undefined,
   containers: DNDType[],
-  key: ItemKeys
-): string {
+  key: T
+): DNDType["items"][number][T] | undefined {
   const container = findValueOfItems(id, "item", containers)
-  if (!container) return ""
+  if (!container) return undefined
   const item = container.items.find((item) => item.id === id)
-  if (!item) return ""
-  return item[key] ?? ""
+  if (!item) return undefined
+  return item[key] // Return the actual type of the property
 }

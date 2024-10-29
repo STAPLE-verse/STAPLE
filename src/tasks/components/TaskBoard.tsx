@@ -1,8 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-// see here https://github.com/microsoft/TypeScript/issues/49613
-
-//packages
 import {
   DndContext,
   DragOverlay,
@@ -82,15 +77,22 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
               {activeId && activeId.toString().includes("item") && (
                 <TaskItems
                   id={activeId}
-                  title={findItemValue(activeId, containers, "title")}
-                  completed={findItemValue(activeId, containers, "completed")}
+                  title={findItemValue(activeId, containers, "title") || ""}
+                  completed={findItemValue(activeId, containers, "completed") || false}
+                  projectId={projectId}
                 />
               )}
               {/* Drag Overlay For Container */}
               {activeId && activeId.toString().includes("container") && (
                 <TaskContainer id={activeId} title={findContainerTitle(activeId, containers)}>
                   {findContainerItems(activeId, containers).map((i) => (
-                    <TaskItems key={i.id} title={i.title} id={i.id} completed={i.completed} />
+                    <TaskItems
+                      key={i.id}
+                      title={i.title}
+                      id={i.id}
+                      completed={i.completed}
+                      projectId={projectId}
+                    />
                   ))}
                 </TaskContainer>
               )}
