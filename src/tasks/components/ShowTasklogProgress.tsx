@@ -6,7 +6,7 @@ import { Routes } from "@blitzjs/next"
 import { useTaskContext } from "./TaskContext"
 import useTaskLogProgress from "src/tasklogs/hooks/useTaskLogProgress"
 
-const ShowAssignmentProgress = () => {
+const ShowTasklogProgress = () => {
   const { task, projectMembers } = useTaskContext()
 
   const taskLogProgress = useTaskLogProgress(projectMembers)
@@ -54,4 +54,4 @@ const ShowAssignmentProgress = () => {
   )
 }
 
-export default ShowAssignmentProgress
+export default ShowTasklogProgress

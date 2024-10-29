@@ -1,7 +1,7 @@
 //imports
 import { useMutation } from "@blitzjs/rpc"
 import deleteTask from "src/tasks/mutations/deleteTask"
-import ShowAssignmentProgress from "src/tasks/components/ShowAssignmentProgress"
+import ShowTasklogProgress from "src/tasks/components/ShowTasklogProgress"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -40,7 +40,7 @@ export const TaskSummary = ({ taskId, projectId }: TaskSummaryProps) => {
             {/* Task form data widget */}
             <TaskFormData />
             {/* Assignment Progress widget */}
-            <ShowAssignmentProgress />
+            <ShowTasklogProgress />
             {/* Task edit buttons */}
             <div className="stat place-items-center">
               <div className="stat-title text-2xl text-inherit">
