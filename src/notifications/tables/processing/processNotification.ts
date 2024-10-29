@@ -14,7 +14,7 @@ export type NotificationTableData = {
   notification: ExtendedNotification
 }
 
-export function processNotificationTableData(
+export function processNotification(
   notifications: ExtendedNotification[]
 ): NotificationTableData[] {
   return notifications.map((notification) => {

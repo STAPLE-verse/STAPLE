@@ -5,11 +5,11 @@ import Table from "src/core/components/Table"
 import { usePaginatedQuery } from "@blitzjs/rpc"
 import getNotifications from "src/notifications/queries/getNotifications"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { useNotificationTableColumns } from "src/notifications/tables/columns/NotificationTableColumns"
+import { useNotificationTableColumns } from "src/notifications/tables/columns/NotificationColumns"
 import {
   ExtendedNotification,
-  processNotificationTableData,
-} from "src/notifications/tables/processing/processNotificationTableData"
+  processNotification,
+} from "src/notifications/tables/processing/processNotification"
 
 const NotificationContent = () => {
   const currentUser = useCurrentUser()
@@ -30,7 +30,7 @@ const NotificationContent = () => {
   const extendedNotifications = notifications as unknown as ExtendedNotification[]
 
   // Preprocess table data
-  const notificationTableData = processNotificationTableData(extendedNotifications)
+  const notificationTableData = processNotification(extendedNotifications)
 
   // Get columns and pass refetch
   const columns = useNotificationTableColumns(refetch)

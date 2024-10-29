@@ -3,10 +3,10 @@ import { useMemo } from "react"
 import DateFormat from "src/core/components/DateFormat"
 import HtmlFormat from "src/notifications/components/HtmlFormat"
 import ReadToggle from "src/notifications/components/ReadToggle"
-import { ProjectNotificationTableData } from "../processing/processProjectNotificationTableData"
+import { ProjectNotificationData } from "../processing/processProjectNotification"
 
 // Column helper
-const columnHelper = createColumnHelper<ProjectNotificationTableData>()
+const columnHelper = createColumnHelper<ProjectNotificationData>()
 
 // ColumnDefs
 export const useProjectNotificationTableColumns = (refetch: () => void) => {

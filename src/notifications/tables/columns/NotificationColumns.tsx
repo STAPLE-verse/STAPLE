@@ -2,7 +2,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { useMemo } from "react"
 import DateFormat from "src/core/components/DateFormat"
 import ReadToggle from "src/notifications/components/ReadToggle"
-import { NotificationTableData } from "../processing/processNotificationTableData"
+import { NotificationTableData } from "../processing/processNotification"
 import HtmlFormat from "src/notifications/components/HtmlFormat"
 
 // Column helper
