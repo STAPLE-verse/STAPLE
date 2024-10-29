@@ -1,6 +1,6 @@
 import { useMutation } from "@blitzjs/rpc"
 import { Status } from "db"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import updateStatus from "../mutations/updateStatus"
 import toast from "react-hot-toast"
 import { Tooltip } from "react-tooltip"
@@ -17,6 +17,10 @@ export const CompleteTaskToggle = () => {
   const taskLogProgress = useTaskLogProgress(projectMembers)
 
   const [status, setStatus] = useState(task?.status || Status.NOT_COMPLETED)
+
+  useEffect(() => {
+    setStatus(task?.status || Status.NOT_COMPLETED)
+  }, [task?.status])
 
   const handleStatus = async () => {
     if (taskLogProgress.completed !== taskLogProgress.all && status === Status.NOT_COMPLETED) {
