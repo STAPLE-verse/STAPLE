@@ -6,14 +6,14 @@ import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import {
-  pmContributorTableColumns,
-  contributorTableColumns,
-} from "src/contributors/tables/columns/ContributorTableColumns"
+  PmContributorColumns,
+  ContributorColumns,
+} from "src/contributors/tables/columns/ContributorColumns"
 import Table from "src/core/components/Table"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { MemberPrivileges } from "@prisma/client"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { processContributorTableData } from "src/contributors/tables/processing/processContributorTableData"
+import { processContributor } from "src/contributors/tables/processing/processContributor"
 import getContributors, { ContributorWithUser } from "src/contributors/queries/getContributors"
 
 interface ContributorListProps {
@@ -34,10 +34,10 @@ export const ContributorList = ({ privilege }: ContributorListProps) => {
         )
       : contributors
 
-  const contributorTableData = processContributorTableData(filteredContributors, projectId!)
+  const contributorTableData = processContributor(filteredContributors, projectId!)
 
   const tableColumns =
-    privilege === MemberPrivileges.CONTRIBUTOR ? contributorTableColumns : pmContributorTableColumns
+    privilege === MemberPrivileges.CONTRIBUTOR ? ContributorColumns : PmContributorColumns
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">

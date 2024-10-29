@@ -22,8 +22,9 @@ const TaskItems = ({ id, title, completed, projectId }: ItemsType) => {
       type: "item",
     },
   })
+
   const taskId = parseInt(id.replace("item-", ""))
-  // console.log(completed)
+
   return (
     <div
       ref={setNodeRef}
@@ -41,10 +42,7 @@ const TaskItems = ({ id, title, completed, projectId }: ItemsType) => {
       <div className="flex items-center justify-between">
         <b className="text-accent-content">{title}</b>
         <div className="flex justify-end items-center">
-          <Link
-            href={Routes.ShowTaskPage({ projectId: projectId, taskId: taskId })}
-            // data-dnd-drag-handle="true"
-          >
+          <Link href={Routes.ShowTaskPage({ projectId: projectId, taskId: taskId })}>
             <MagnifyingGlassPlusIcon className="w-7 h-7 mr-2 stroke-2 stroke-neutral border-transparent rounded-2xl shadow-sm hover:opacity-50"></MagnifyingGlassPlusIcon>
           </Link>
           <FontAwesomeIcon

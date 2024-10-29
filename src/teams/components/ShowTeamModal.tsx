@@ -27,7 +27,7 @@ export const ShowTeamModal = ({ projectMember }) => {
         data-testid="open-modal"
         onClick={() => handleToggle()}
       >
-        <span>{`${projectMember.projectMember.name}`}</span>
+        <span>{`${projectMember.name}`}</span>
       </button>
       <Tooltip
         id="showTeamModalTooltip"

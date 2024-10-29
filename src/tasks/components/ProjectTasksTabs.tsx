@@ -15,9 +15,6 @@ export const ProjectTasksTabs = () => {
   const projectId = useParam("projectId", "number")
   const { privilege: projectPrivilege } = useMemberPrivileges()
 
-  // const { projectPrivilege } = useCurrentProjectPrivilege(projectId)
-  //const [selectedIndex, setSelectedIndex] = useState(0)
-
   return (
     <div>
       <Tab.Group defaultIndex={0}>

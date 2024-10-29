@@ -1,14 +1,17 @@
-import { Routes } from "@blitzjs/next"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
+import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
-import { ProcessedElementTasks } from "src/tasks/utils/processTasks"
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { ProjectTasksData } from "../processing/processProjectTasks"
 
-const columnHelperElement = createColumnHelper<ProcessedElementTasks>()
+// Column helper
+const columnHelperProject = createColumnHelper<ProjectTasksData>()
 
-export const elementTasksTableColumns = [
-  columnHelperElement.accessor("name", {
+// ColumnDefs
+export const ProjectTasksColumns = [
+  columnHelperProject.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
     enableColumnFilter: true,
@@ -17,7 +20,16 @@ export const elementTasksTableColumns = [
       filterVariant: "text",
     },
   }),
-  columnHelperElement.accessor("deadline", {
+  columnHelperProject.accessor("description", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Description",
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "text",
+    },
+  }),
+  columnHelperProject.accessor("deadline", {
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Due Date",
     enableColumnFilter: true,
@@ -26,7 +38,7 @@ export const elementTasksTableColumns = [
       filterVariant: "text",
     },
   }),
-  columnHelperElement.accessor("status", {
+  columnHelperProject.accessor("status", {
     header: "Completed",
     cell: (info) => <span>{info.getValue()}</span>,
     enableColumnFilter: true,
@@ -35,7 +47,7 @@ export const elementTasksTableColumns = [
       filterVariant: "select",
     },
   }),
-  columnHelperElement.accessor("view", {
+  columnHelperProject.accessor("view", {
     id: "view",
     header: "View",
     enableColumnFilter: false,

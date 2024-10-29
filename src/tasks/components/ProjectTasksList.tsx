@@ -1,5 +1,5 @@
 import { useParam } from "@blitzjs/next"
-import { projectTasksTableColumns } from "src/tasks/components/TaskTable"
+import { ProjectTasksColumns } from "src/tasks/tables/columns/ProjectTasksColumns"
 import Table from "src/core/components/Table"
 import useProjecTasksListData from "../hooks/useProjectTasksListData"
 
@@ -10,7 +10,7 @@ export const ProjectTasksList = () => {
 
   return (
     <div>
-      <Table columns={projectTasksTableColumns} data={tasks} addPagination={true} />
+      <Table columns={ProjectTasksColumns} data={tasks} addPagination={true} />
     </div>
   )
 }

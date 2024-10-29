@@ -2,8 +2,8 @@ import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import { projectFormsTableColumns } from "../tables/columns/ProjectFormsTable"
-import { processProjectFormsTableData } from "../tables/processing/processProjectFormsTableData"
+import { ProjectFormsColumns } from "../tables/columns/ProjectFormsColumns"
+import { processProjectForms } from "../tables/processing/processProjectForms"
 import { FormVersion, Task } from "db"
 
 export interface TaskWithFormVersion extends Task {
@@ -28,11 +28,11 @@ export const ProjectFormsList = () => {
     orderBy: { id: "asc" },
   })
 
-  const projectFormsTableData = processProjectFormsTableData(tasks as TaskWithFormVersion[])
+  const projectFormsTableData = processProjectForms(tasks as TaskWithFormVersion[])
 
   return (
     <div>
-      <Table data={projectFormsTableData} columns={projectFormsTableColumns} addPagination={true} />
+      <Table data={projectFormsTableData} columns={ProjectFormsColumns} addPagination={true} />
     </div>
   )
 }

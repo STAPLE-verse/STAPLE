@@ -1,16 +1,16 @@
 import { stripHtmlTags } from "src/notifications/utils/stripHtmlTags"
-import { ExtendedNotification } from "./processNotificationTableData"
+import { ExtendedNotification } from "./processNotification"
 
-export type ProjectNotificationTableData = {
+export type ProjectNotificationData = {
   createdAt: Date
   cleanMessage: string
   rawMessage: string
   notification: ExtendedNotification
 }
 
-export function processProjectNotificationTableData(
+export function processProjectNotification(
   notifications: ExtendedNotification[]
-): ProjectNotificationTableData[] {
+): ProjectNotificationData[] {
   return notifications.map((notification) => {
     const cleanMessage = stripHtmlTags(notification.message || "")
 

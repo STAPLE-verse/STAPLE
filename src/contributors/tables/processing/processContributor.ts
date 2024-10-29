@@ -7,7 +7,7 @@ export type ContributorTableData = {
   projectId?: number
 }
 
-export function processContributorTableData(contributors, projectId): ContributorTableData[] {
+export function processContributor(contributors, projectId): ContributorTableData[] {
   return contributors.map((contributor) => {
     return {
       name: getContributorName(contributor),

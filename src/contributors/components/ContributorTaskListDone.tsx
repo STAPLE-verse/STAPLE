@@ -2,8 +2,8 @@ import { useQuery } from "@blitzjs/rpc"
 import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
 import { ProjectMember, Task, TaskLog } from "db"
-import { processFinishedTasks } from "src/tasks/utils/processTasks"
-import { finishedTasksTableColumns } from "src/tasks/components/TaskTable"
+import { FinishedTasksColumns } from "src/tasks/tables/columns/FinishedTasksColumns"
+import { processFinishedTasks } from "src/tasks/tables/processing/processFinishedTasks"
 
 type TaskWithLogs = Task & {
   taskLogs: TaskLog[]
@@ -46,7 +46,7 @@ export const ContributorTaskListDone = ({ contributor }) => {
 
   return (
     <div>
-      <Table columns={finishedTasksTableColumns} data={processedTasks} addPagination={true} />
+      <Table columns={FinishedTasksColumns} data={processedTasks} addPagination={true} />
     </div>
   )
 }

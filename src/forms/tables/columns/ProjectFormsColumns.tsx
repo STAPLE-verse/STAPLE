@@ -2,11 +2,11 @@ import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
-import { ProjectFormTableData } from "../processing/processProjectFormsTableData"
+import { ProjectFormData } from "../processing/processProjectForms"
 
-const columnHelper = createColumnHelper<ProjectFormTableData>()
+const columnHelper = createColumnHelper<ProjectFormData>()
 
-export const projectFormsTableColumns = [
+export const ProjectFormsColumns = [
   columnHelper.accessor("taskName", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Task",

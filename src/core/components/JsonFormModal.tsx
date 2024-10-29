@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Modal from "./Modal"
-import JsonForm from "src/tasklogs/components/JsonForm"
+import JsonForm from "src/core/components/JsonForm"
 import { Prisma } from "@prisma/client"
 
 interface JsonFormModalProps {

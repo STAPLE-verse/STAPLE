@@ -2,13 +2,13 @@ import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { ContributorTableData } from "../processing/processContributorTableData"
+import { ContributorTableData } from "../processing/processContributor"
 
 // Column helper
 const columnHelper = createColumnHelper<ContributorTableData>()
 
 // ColumnDefs
-export const pmContributorTableColumns = [
+export const PmContributorColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Contributor",
@@ -53,7 +53,7 @@ export const pmContributorTableColumns = [
   }),
 ]
 
-export const contributorTableColumns = [
+export const ContributorColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Contributor",

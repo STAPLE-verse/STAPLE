@@ -7,8 +7,8 @@ import { useQuery } from "@blitzjs/rpc"
 import getNotifications from "src/notifications/queries/getNotifications"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useProjectNotificationTableColumns } from "src/notifications/tables/columns/ProjectNotificationTableColumns"
-import { ExtendedNotification } from "src/notifications/tables/processing/processNotificationTableData"
-import { processProjectNotificationTableData } from "src/notifications/tables/processing/processProjectNotificationTableData"
+import { ExtendedNotification } from "src/notifications/tables/processing/processNotification"
+import { processProjectNotification } from "src/notifications/tables/processing/processProjectNotification"
 
 const NotificationContent = () => {
   const projectId = useParam("projectId", "number")
@@ -31,7 +31,7 @@ const NotificationContent = () => {
   const extendedNotifications = notifications as unknown as ExtendedNotification[]
 
   // Preprocess table data
-  const projectNotificationTableData = processProjectNotificationTableData(extendedNotifications)
+  const projectNotificationTableData = processProjectNotification(extendedNotifications)
 
   // Get columns and pass refetch
   const columns = useProjectNotificationTableColumns(refetch)

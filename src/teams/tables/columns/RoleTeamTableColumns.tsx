@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { RoleTeamTableData } from "../processing/processRoleTeamTableData"
+import { RoleTeamTableData } from "../processing/processRoleTeam"
 
 const columnHelper = createColumnHelper<RoleTeamTableData>()
 
