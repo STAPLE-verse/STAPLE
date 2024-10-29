@@ -3,7 +3,7 @@ import getRoles from "../../roles/queries/getRoles"
 import Table from "src/core/components/Table"
 import { ProjectMember, Role } from "db"
 import { RoleTeamTableColumns } from "../tables/columns/RoleTeamTableColumns"
-import { processRoleTeamTableData } from "../tables/processing/processRoleTeamTableData"
+import { processRoleTeam } from "../tables/processing/processRoleTeam"
 
 type RoleWithProjectMembers = Role & {
   projectMembers: (ProjectMember & {
@@ -58,7 +58,7 @@ export const TeamRolesList = ({ usersId, projectId }) => {
   const typedRoles = roles as RoleWithProjectMembers[]
 
   // Process table data and select columns dynamically
-  const tableData = processRoleTeamTableData(typedRoles)
+  const tableData = processRoleTeam(typedRoles)
 
   return (
     <div>

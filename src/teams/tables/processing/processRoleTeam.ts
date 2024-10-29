@@ -5,7 +5,7 @@ export type RoleTeamTableData = {
   taxonomy: string
 }
 
-export function processRoleTeamTableData(roles): RoleTeamTableData[] {
+export function processRoleTeam(roles): RoleTeamTableData[] {
   return roles.map((role) => {
     const { name, description, taxonomy, projectMembers } = role
 
