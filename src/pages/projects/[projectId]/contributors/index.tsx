@@ -2,53 +2,45 @@ import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import {
-  PmContributorColumns,
-  ContributorColumns,
+  ProjectManagerContributorColumns,
+  StandardContributorColumns,
 } from "src/contributors/tables/columns/ContributorColumns"
 import Table from "src/core/components/Table"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { MemberPrivileges } from "@prisma/client"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { processContributor } from "src/contributors/tables/processing/processContributor"
-import getContributors, { ContributorWithUser } from "src/contributors/queries/getContributors"
+import { useContributorsData } from "src/contributors/hooks/useContributorsData"
+import Loading from "src/core/components/Loading"
+import { CurrentUser } from "src/users/queries/getCurrentUser"
 
 interface ContributorListProps {
   privilege: MemberPrivileges
+  currentUser: CurrentUser
+  projectId: number
 }
 
-export const ContributorList = ({ privilege }: ContributorListProps) => {
-  const projectId = useParam("projectId", "number")
-  const currentUser = useCurrentUser()
-
-  const [contributors] = useQuery(getContributors, { projectId: projectId! })
-
-  const filteredContributors =
-    privilege === MemberPrivileges.CONTRIBUTOR
-      ? contributors.filter(
-          (contributor: ContributorWithUser) =>
-            contributor.users.length === 1 && contributor.users[0]?.id === currentUser?.id
-        )
-      : contributors
-
-  const contributorTableData = processContributor(filteredContributors, projectId!)
+export const ContributorList = ({ privilege, currentUser, projectId }: ContributorListProps) => {
+  const contributorTableData = useContributorsData(privilege, currentUser, projectId)
 
   const tableColumns =
-    privilege === MemberPrivileges.CONTRIBUTOR ? ContributorColumns : PmContributorColumns
+    privilege === MemberPrivileges.CONTRIBUTOR
+      ? StandardContributorColumns
+      : ProjectManagerContributorColumns
 
   return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+    <Suspense fallback={<Loading />}>
       <Table columns={tableColumns} data={contributorTableData} addPagination={true} />
-    </main>
+    </Suspense>
   )
 }
 
 const ContributorsPage = () => {
   const projectId = useParam("projectId", "number")
   const { privilege } = useMemberPrivileges()
+  const currentUser = useCurrentUser()
 
   return (
     <Layout>
@@ -58,8 +50,12 @@ const ContributorsPage = () => {
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Contributors</h1>
-        <Suspense fallback={<div>Loading...</div>}>
-          <ContributorList privilege={privilege!} />
+        <Suspense fallback={<Loading />}>
+          <ContributorList
+            privilege={privilege!}
+            currentUser={currentUser!}
+            projectId={projectId!}
+          />
         </Suspense>
         {privilege === MemberPrivileges.PROJECT_MANAGER && (
           <div>
@@ -69,7 +65,6 @@ const ContributorsPage = () => {
             >
               Invite Contributor
             </Link>
-
             <Link
               className="btn btn-secondary mx-2 mb-4 mt-4"
               href={Routes.InvitesPagePM({ projectId: projectId! })}

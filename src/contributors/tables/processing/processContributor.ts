@@ -1,3 +1,4 @@
+import { ContributorWithUser } from "src/contributors/queries/getContributors"
 import { getContributorName } from "src/services/getName"
 
 // Define return type for the columns
@@ -7,7 +8,10 @@ export type ContributorTableData = {
   projectId?: number
 }
 
-export function processContributor(contributors, projectId): ContributorTableData[] {
+export function processContributor(
+  contributors: ContributorWithUser[],
+  projectId: number
+): ContributorTableData[] {
   return contributors.map((contributor) => {
     return {
       name: getContributorName(contributor),
