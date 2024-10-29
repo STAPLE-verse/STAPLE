@@ -78,7 +78,7 @@ export const ShowTeamPage = () => {
           <div className="card bg-base-300 w-full mt-2">
             <div className="card-body">
               <div className="card-title" data-tooltip-id="teamMembers">
-                Team Member Contribution Roles
+                Team Member Roles
               </div>
               <Tooltip
                 id="teamMembers"
@@ -93,7 +93,7 @@ export const ShowTeamPage = () => {
           <div className="card bg-base-300 w-full mt-2">
             <div className="card-body">
               <div className="card-title" data-tooltip-id="teamContributions">
-                Team Task Contribution Roles
+                Team Tasks
               </div>
               <Tooltip
                 id="teamContributions"

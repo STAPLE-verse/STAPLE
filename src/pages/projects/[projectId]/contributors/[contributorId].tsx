@@ -110,7 +110,7 @@ export const ContributorPage = () => {
 
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
-            <div className="card-title">Contribution Roles</div>
+            <div className="card-title">Contributor Roles</div>
             <ContributorRolesList usersId={[contributorUser!.id]} projectId={projectId} />
             <div className="card-actions justify-end">
               {privilege === MemberPrivileges.PROJECT_MANAGER && (
@@ -128,7 +128,7 @@ export const ContributorPage = () => {
         <div className="card bg-base-300 w-full mt-2">
           <div className="card-body">
             <div className="card-title" data-tooltip-id="memberTasks">
-              Contribution Tasks
+              Contributor Tasks
             </div>
             <Tooltip
               id="memberTasks"
