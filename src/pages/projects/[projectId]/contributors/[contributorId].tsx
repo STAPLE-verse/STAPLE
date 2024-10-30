@@ -64,8 +64,8 @@ export const ContributorPage = () => {
               {teamNames.length > 0 ? teamNames.join(", ") : "No team memberships"}
             </p>
 
-            <div className="card-actions justify-end">
-              {privilege === MemberPrivileges.PROJECT_MANAGER ? (
+            {privilege === MemberPrivileges.PROJECT_MANAGER && (
+              <div className="card-actions justify-end">
                 <Link
                   href={Routes.EditContributorPage({
                     projectId: projectId!,
@@ -75,10 +75,8 @@ export const ContributorPage = () => {
                 >
                   Edit Contributor
                 </Link>
-              ) : (
-                ""
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
 
