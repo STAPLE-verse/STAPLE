@@ -30,6 +30,8 @@ const ProjectMemberRolesList = ({
     include: {
       projectMembers: {
         where: {
+          projectId: projectId,
+          name: null,
           users: { some: { id: { in: usersId } } },
         },
         include: {
