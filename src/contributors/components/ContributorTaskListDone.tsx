@@ -1,28 +1,41 @@
 import { useQuery } from "@blitzjs/rpc"
 import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
-import { ProjectMember, Task, TaskLog } from "db"
+import { MemberPrivileges, ProjectMember, Task, TaskLog } from "db"
 import { FinishedTasksColumns } from "src/tasks/tables/columns/FinishedTasksColumns"
 import { processFinishedTasks } from "src/tasks/tables/processing/processFinishedTasks"
+import Card from "src/core/components/Card"
+import Link from "next/link"
+import { Routes } from "@blitzjs/next"
 
 type TaskWithLogs = Task & {
   taskLogs: TaskLog[]
   assignedMembers: ProjectMember[]
 }
 
-export const ContributorTaskListDone = ({ contributor }) => {
+interface ContributorTaskListDoneProps {
+  contributorId: number
+  projectId: number
+  privilege: MemberPrivileges
+}
+
+export const ContributorTaskListDone = ({
+  contributorId,
+  projectId,
+  privilege,
+}: ContributorTaskListDoneProps) => {
   const [{ tasks }] = useQuery(getTasks, {
     where: {
       assignedMembers: {
         some: {
-          id: contributor.id, // Filter tasks assigned to this specific project member
+          id: contributorId, // Filter tasks assigned to this specific project member
         },
       },
     },
     include: {
       taskLogs: {
         where: {
-          assignedToId: contributor.id, // Ensure task logs are only for this project member
+          assignedToId: contributorId, // Ensure task logs are only for this project member
         },
         orderBy: { createdAt: "desc" }, // Order by createdAt, descending
       },
@@ -45,8 +58,18 @@ export const ContributorTaskListDone = ({ contributor }) => {
   const processedTasks = processFinishedTasks(completedTasks)
 
   return (
-    <div>
+    <Card
+      title={"Contributor Tasks"}
+      tooltipContent="Only completed tasks are included"
+      actions={
+        privilege === MemberPrivileges.PROJECT_MANAGER && (
+          <Link className="btn btn-primary" href={Routes.RolesPage({ projectId: projectId! })}>
+            Edit Roles
+          </Link>
+        )
+      }
+    >
       <Table columns={FinishedTasksColumns} data={processedTasks} addPagination={true} />
-    </div>
+    </Card>
   )
 }

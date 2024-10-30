@@ -39,47 +39,17 @@ export const ContributorPage = () => {
           contributorUser={contributorUser!}
         />
 
-        <div className="card bg-base-300 w-full mt-2">
-          <div className="card-body">
-            <div className="card-title">Contributor Roles</div>
-            <ContributorRolesList usersId={[contributorUser!.id]} projectId={projectId} />
-            <div className="card-actions justify-end">
-              {privilege === MemberPrivileges.PROJECT_MANAGER && (
-                <Link
-                  className="btn btn-primary"
-                  href={Routes.RolesPage({ projectId: projectId! })}
-                >
-                  Edit Roles
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
+        <ContributorRolesList
+          usersId={[contributorUser!.id]}
+          projectId={projectId!}
+          privilege={privilege!}
+        />
 
-        <div className="card bg-base-300 w-full mt-2">
-          <div className="card-body">
-            <div className="card-title" data-tooltip-id="memberTasks">
-              Contributor Tasks
-            </div>
-            <Tooltip
-              id="memberTasks"
-              content="Only completed tasks are included"
-              className="z-[1099] ourtooltips"
-            />
-            <ContributorTaskListDone contributor={contributor} />
-
-            <div className="card-actions justify-end">
-              {privilege === MemberPrivileges.PROJECT_MANAGER && (
-                <Link
-                  className="btn btn-primary"
-                  href={Routes.RolesPage({ projectId: projectId! })}
-                >
-                  Edit Roles
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
+        <ContributorTaskListDone
+          contributorId={contributorId!}
+          projectId={projectId!}
+          privilege={privilege!}
+        />
 
         {privilege === MemberPrivileges.PROJECT_MANAGER && (
           <div className="flex justify-end">
