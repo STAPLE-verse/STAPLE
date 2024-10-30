@@ -2,6 +2,7 @@ import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 import { MemberPrivileges, User } from "db"
+import Card from "src/core/components/Card"
 
 interface ContributorInformationProps {
   contributorId: number
@@ -26,41 +27,38 @@ const ContributorInformation = ({
       : contributorUser.username
 
   return (
-    <div className="card bg-base-300 w-full">
-      <div className="card-body">
-        <div className="card-title">{contributorName}</div>
-        {contributorUser.firstName && contributorUser.lastName ? (
-          <p>
-            <span className="font-semibold">Username:</span> {contributorUser.username}
-          </p>
-        ) : null}
+    <Card
+      title={contributorName}
+      actions={
+        privilege === MemberPrivileges.PROJECT_MANAGER ? (
+          <Link
+            href={Routes.EditContributorPage({
+              projectId: projectId,
+              contributorId: contributorId,
+            })}
+            className="btn btn-primary"
+          >
+            Edit Contributor
+          </Link>
+        ) : null
+      }
+    >
+      {contributorUser.firstName && contributorUser.lastName && (
         <p>
-          <span className="font-semibold">Email:</span> {contributorUser.email}
+          <span className="font-semibold">Username:</span> {contributorUser.username}
         </p>
-        <p>
-          <span className="font-semibold">Privilege:</span> {getPrivilegeText(contributorPrivilege)}
-        </p>
-
-        <p>
-          <span className="font-semibold">Team Membership:</span>
-          {teamNames.length > 0 ? teamNames.join(", ") : "No team memberships"}
-        </p>
-
-        {privilege === MemberPrivileges.PROJECT_MANAGER && (
-          <div className="card-actions justify-end">
-            <Link
-              href={Routes.EditContributorPage({
-                projectId: projectId,
-                contributorId: contributorId,
-              })}
-              className="btn btn-primary"
-            >
-              Edit Contributor
-            </Link>
-          </div>
-        )}
-      </div>
-    </div>
+      )}
+      <p>
+        <span className="font-semibold">Email:</span> {contributorUser.email}
+      </p>
+      <p>
+        <span className="font-semibold">Privilege:</span> {getPrivilegeText(contributorPrivilege)}
+      </p>
+      <p>
+        <span className="font-semibold">Team Membership:</span>{" "}
+        {teamNames.length > 0 ? teamNames.join(", ") : "No team memberships"}
+      </p>
+    </Card>
   )
 }
 
