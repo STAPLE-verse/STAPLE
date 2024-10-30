@@ -1,16 +1,12 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
-import { useRouter } from "next/router"
-import { useQuery, useMutation } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
-import deleteProjectMember from "src/projectmembers/mutations/deleteProjectMember"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
 import Link from "next/link"
 import { MemberPrivileges } from "db"
-import toast from "react-hot-toast"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import getTeamNames from "src/teams/queries/getTeamNames"
 import getProjectPrivilege from "src/projectprivileges/queries/getProjectPrivilege"
@@ -19,15 +15,12 @@ import getContributor from "src/contributors/queries/getContributor"
 import { getContributorName } from "src/services/getName"
 import { ContributorTaskListDone } from "src/contributors/components/ContributorTaskListDone"
 import { ContributorRolesList } from "src/roles/components/ContributorRolesList"
+import DeleteContributor from "src/contributors/components/DeleteContributor"
 
 export const ContributorPage = () => {
-  const router = useRouter()
-  const [deleteProjectMemberMutation] = useMutation(deleteProjectMember)
   const { privilege } = useMemberPrivileges()
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
-
-  const currentUser = useCurrentUser()
 
   const [contributor] = useQuery(getContributor, { contributorId: contributorId! })
 
@@ -42,25 +35,6 @@ export const ContributorPage = () => {
     userId: contributorUser!.id,
     projectId: projectId,
   })
-
-  // Event handler for deleting a contributor
-  const handleDelete = async () => {
-    if (
-      window.confirm("This Contributor will be removed from the project. Are you sure to continue?")
-    ) {
-      try {
-        await deleteProjectMemberMutation({ id: contributorUser!.id })
-        // Check if User removed themselves and return to main page
-        if (contributorUser!.id === currentUser?.id) {
-          await router.push(Routes.ProjectsPage())
-        } else {
-          await router.push(Routes.ContributorsPage({ projectId: projectId! }))
-        }
-      } catch (error) {
-        toast.error(error.message)
-      }
-    }
-  }
 
   return (
     <>
@@ -150,15 +124,8 @@ export const ContributorPage = () => {
           </div>
         </div>
         {privilege === MemberPrivileges.PROJECT_MANAGER && (
-          <div className="flex justify-end mt-4">
-            <button
-              className="btn btn-secondary"
-              type="button"
-              onClick={handleDelete}
-              style={{ marginLeft: "0.5rem" }}
-            >
-              Delete Contributor
-            </button>
+          <div className="flex justify-end">
+            <DeleteContributor contributor={contributor!} />
           </div>
         )}
       </main>
