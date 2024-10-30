@@ -9,18 +9,15 @@ import { ContributorTeamColumns } from "src/teams/tables/columns/ContributorTeam
 import { PmTeamColumns } from "src/teams/tables/columns/PmTeamColumns"
 import Table from "src/core/components/Table"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
-import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
+import { MemberPrivileges } from "@prisma/client"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { processTeam } from "src/teams/tables/processing/processTeam"
+import { ProjectMemberWithUsers } from "src/core/types"
 
 interface AllTeamListProps {
   privilege: MemberPrivileges
   projectId: number | undefined
-}
-
-export type ProjectMemberWithUsers = ProjectMember & {
-  users: User[]
 }
 
 export const AllTeamList = ({ privilege, projectId }: AllTeamListProps) => {

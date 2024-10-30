@@ -10,10 +10,10 @@ import deleteTeam from "src/teams/mutations/deleteTeam"
 import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
 import { MemberPrivileges } from "db"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
-import { ProjectMemberWithUsers } from "."
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { Tooltip } from "react-tooltip"
 import { TeamRolesList } from "src/teams/components/TeamRolesList"
+import { ProjectMemberWithUsers } from "src/core/types"
 
 export const ShowTeamPage = () => {
   const router = useRouter()
@@ -90,19 +90,8 @@ export const ShowTeamPage = () => {
             </div>
           </div>
 
-          <div className="card bg-base-300 w-full mt-2">
-            <div className="card-body">
-              <div className="card-title" data-tooltip-id="teamContributions">
-                Team Tasks
-              </div>
-              <Tooltip
-                id="teamContributions"
-                content="Only completed tasks are included"
-                className="z-[1099] ourtooltips"
-              />
-              <TeamTaskListDone teamId={teamId} />
-            </div>
-          </div>
+          <TeamTaskListDone teamId={teamId!} projectId={projectId!} privilege={privilege!} />
+
           {privilege === MemberPrivileges.PROJECT_MANAGER && (
             <div className="flex justify-end mt-4">
               <button type="button" className="btn btn-secondary" onClick={handleDelete}>

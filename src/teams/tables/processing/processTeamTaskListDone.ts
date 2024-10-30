@@ -1,5 +1,5 @@
 import { getContributorName } from "src/services/getName"
-import { TaskLogWithTaskCompleted } from "src/teams/hooks/useTeamTaskListDone"
+import { TaskLogWithTaskCompleted } from "src/core/types"
 
 export type TeamTaskListDoneData = {
   id: number
@@ -11,55 +11,45 @@ export type TeamTaskListDoneData = {
   projectId: number
 }
 
+// Adjusted processor function for team task list done
 export function processTeamTaskListDone(
   taskLogs: TaskLogWithTaskCompleted[],
   locale: string
 ): TeamTaskListDoneData[] {
-  // Create a user map for quick lookup and format the name
   const userMap: { [key: number]: string } = {}
+
+  // Populate user map for quick contributor name lookup
   taskLogs.forEach((taskLog) => {
-    const { completedBy } = taskLog
-    // If `completedBy` has users associated with it
-    if (completedBy) {
-      const contributorName = getContributorName(completedBy)
+    if (taskLog.completedBy) {
+      const contributorName = getContributorName(taskLog.completedBy)
       if (contributorName) {
-        userMap[completedBy.id] = contributorName
+        userMap[taskLog.completedBy.id] = contributorName
       }
     }
   })
 
   // Transform tasks into the desired table format
-  return taskLogs.flatMap((taskLog) => {
-    // Ensure taskLog.task is an array; if it's a single task, wrap it in an array
-    const tasks = Array.isArray(taskLog.task) ? taskLog.task : [taskLog.task]
-
-    return tasks.map((task) => {
-      return {
-        id: task.id,
-        // Completed by contributor name
-        completedBy: userMap[taskLog.completedBy?.id] || "Not Completed",
-        // Task name
-        taskName: task.name,
-        // Roles
-        roles:
-          task.roles?.length > 0
-            ? task.roles.map((role) => role.name).join(", ")
-            : "No roles assigned",
-        // Date
-        latestUpdate:
-          taskLog.createdAt?.toLocaleDateString(locale, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false,
-          }) || "Unknown",
-        // View
-        taskId: task.id,
-        projectId: task.projectId,
-      }
-    })
+  return taskLogs.map((taskLog) => {
+    const task = taskLog.task
+    return {
+      id: task.id,
+      completedBy: userMap[taskLog.completedBy?.id] || "Not Completed",
+      taskName: task.name,
+      roles: task.roles?.length
+        ? task.roles.map((role) => role.name).join(", ")
+        : "No roles assigned",
+      latestUpdate:
+        taskLog.createdAt?.toLocaleDateString(locale, {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }) || "Unknown",
+      taskId: task.id,
+      projectId: task.projectId,
+    }
   })
 }

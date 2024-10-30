@@ -5,12 +5,13 @@ import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import { processAllTasks } from "../tables/processing/processAllTasks"
 import Table from "src/core/components/Table"
 import { AllTasksColumns } from "../tables/columns/AllTasksColumns"
+import { TaskLogWithTask } from "src/core/types"
 
 export const AllTasksList = () => {
   const currentUser = useCurrentUser()
 
   // get latest logs that this user is involved in
-  const [taskLogs] = useQuery(getTaskLogs, {
+  const [fetchedTaskLogs] = useQuery(getTaskLogs, {
     where: {
       assignedTo: {
         users: { some: { id: currentUser?.id } },
@@ -26,8 +27,11 @@ export const AllTasksList = () => {
     orderBy: { id: "asc" },
   })
 
+  // Cast and handle the possibility of `undefined`
+  const taskLogs: TaskLogWithTask[] = (fetchedTaskLogs ?? []) as TaskLogWithTask[]
+
   // process those logs to get the latest one for each task-projectmemberId
-  const latestLogs = getLatestTaskLogs(taskLogs)
+  const latestLogs = getLatestTaskLogs<TaskLogWithTask>(taskLogs)
 
   const processedTasks = processAllTasks(latestLogs)
 

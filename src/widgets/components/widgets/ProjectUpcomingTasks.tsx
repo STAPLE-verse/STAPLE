@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { useParam } from "@blitzjs/next"
-import { Status, Task, TaskLog } from "db"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetProjectUpcomingTaskDisplay } from "src/core/components/GetWidgetDisplay"
@@ -10,10 +9,7 @@ import moment from "moment"
 import { useQuery } from "@blitzjs/rpc"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
-
-type TaskLogWithTask = TaskLog & {
-  task: Task
-}
+import { TaskLogWithTask } from "src/core/types"
 
 const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }, ctx) => {
   // Get projectId from the route params
