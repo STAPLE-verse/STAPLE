@@ -1,51 +1,67 @@
-import { useQuery } from "@blitzjs/rpc"
-import { User } from "@prisma/client"
-import getProjectPrivilege from "src/projectprivileges/queries/getProjectPrivilege"
+import { Routes } from "@blitzjs/next"
+import Link from "next/link"
 import { getPrivilegeText } from "src/services/getPrivilegeText"
-import getTeamNames from "src/teams/queries/getTeamNames"
+import { MemberPrivileges, User } from "db"
 
-export const ContributorInformation = (contributorUser: User, projectId: number) => {
-  // Get contributor privilege
-  const [contributorPrivilege] = useQuery(getProjectPrivilege, {
-    where: { userId: contributorUser!.id, projectId: projectId },
-  })
+interface ContributorInformationProps {
+  contributorId: number
+  projectId: number
+  privilege: MemberPrivileges
+  teamNames: (string | null)[]
+  contributorPrivilege: MemberPrivileges
+  contributorUser: User
+}
 
-  // Get team memberships for the user
-  const [teamNames] = useQuery(getTeamNames, {
-    userId: contributorUser!.id,
-    projectId: projectId,
-  })
-
-  // Get contributor name
-  const contributorUsername =
+const ContributorInformation = ({
+  contributorId,
+  projectId,
+  privilege,
+  teamNames,
+  contributorPrivilege,
+  contributorUser,
+}: ContributorInformationProps) => {
+  const contributorName =
     contributorUser.firstName && contributorUser.lastName
       ? `${contributorUser.firstName} ${contributorUser.lastName}`
       : contributorUser.username
 
   return (
-    <>
-      <div className="card bg-base-300 w-full">
-        <div className="card-body">
-          <div className="card-title">{contributorUsername}</div>
-          {contributorUser!.firstName && contributorUser!.lastName ? (
-            <p>
-              <span className="font-semibold">Username:</span> {contributorUsername}
-            </p>
-          ) : null}
+    <div className="card bg-base-300 w-full">
+      <div className="card-body">
+        <div className="card-title">{contributorName}</div>
+        {contributorUser.firstName && contributorUser.lastName ? (
           <p>
-            <span className="font-semibold">Email:</span> {contributorUser!.email}
+            <span className="font-semibold">Username:</span> {contributorUser.username}
           </p>
-          <p>
-            <span className="font-semibold">Privilege:</span>{" "}
-            {getPrivilegeText(contributorPrivilege.privilege)}
-          </p>
+        ) : null}
+        <p>
+          <span className="font-semibold">Email:</span> {contributorUser.email}
+        </p>
+        <p>
+          <span className="font-semibold">Privilege:</span> {getPrivilegeText(contributorPrivilege)}
+        </p>
 
-          <p>
-            <span className="font-semibold">Team Membership:</span>{" "}
-            {teamNames.length > 0 ? teamNames.join(", ") : "No team memberships"}
-          </p>
-        </div>
+        <p>
+          <span className="font-semibold">Team Membership:</span>
+          {teamNames.length > 0 ? teamNames.join(", ") : "No team memberships"}
+        </p>
+
+        {privilege === MemberPrivileges.PROJECT_MANAGER && (
+          <div className="card-actions justify-end">
+            <Link
+              href={Routes.EditContributorPage({
+                projectId: projectId,
+                contributorId: contributorId,
+              })}
+              className="btn btn-primary"
+            >
+              Edit Contributor
+            </Link>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   )
 }
+
+export default ContributorInformation
