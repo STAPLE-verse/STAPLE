@@ -1,10 +1,10 @@
 import { MemberPrivileges } from "db"
-import { processRoleSimpleTableData } from "../tables/processing/processRoleSimpleTableData"
-import { RoleSimpleTableColumns } from "../tables/columns/RoleSimpleTableColumns"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import Card from "src/core/components/Card"
 import ProjectMemberRolesList from "src/projectmembers/components/ProjectMemberRolesList"
+import { ContributorRolesListColumns } from "../tables/columns/ContributorRolesListColumns"
+import { processContributorRolesList } from "../tables/processing/processContributorRolesList"
 
 interface ContributorRolesListProps {
   usersId: number[]
@@ -30,8 +30,8 @@ export const ContributorRolesList = ({
     <ProjectMemberRolesList
       usersId={usersId}
       projectId={projectId}
-      tableColumns={RoleSimpleTableColumns}
-      dataProcessor={processRoleSimpleTableData}
+      tableColumns={ContributorRolesListColumns}
+      dataProcessor={processContributorRolesList}
     />
   </Card>
 )

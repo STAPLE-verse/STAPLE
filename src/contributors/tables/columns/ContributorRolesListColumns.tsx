@@ -1,10 +1,10 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { RoleSimpleTableData } from "../processing/processRoleSimpleTableData"
+import { ContributorRolesListData } from "../processing/processContributorRolesList"
 
-const columnHelper = createColumnHelper<RoleSimpleTableData>()
+const columnHelper = createColumnHelper<ContributorRolesListData>()
 
 // ColumnDefs
-export const RoleSimpleTableColumns = [
+export const ContributorRolesListColumns = [
   columnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Role Name",
