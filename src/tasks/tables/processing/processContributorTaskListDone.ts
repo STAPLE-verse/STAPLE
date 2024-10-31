@@ -1,7 +1,7 @@
 import { TaskLogWithTaskCompleted } from "src/core/types"
 
 // Finshed tasks table
-export type FinishedTasksData = {
+type ContributorTaskListDone = {
   name: string
   roles: string
   completedOn: Date
@@ -11,7 +11,9 @@ export type FinishedTasksData = {
   }
 }
 
-export function processFinishedTasks(taskLogs: TaskLogWithTaskCompleted[]): FinishedTasksData[] {
+export function processContributorTaskListDone(
+  taskLogs: TaskLogWithTaskCompleted[]
+): ContributorTaskListDone[] {
   return taskLogs.map((taskLog) => {
     const task = taskLog.task
     const roleNames = task.roles?.length

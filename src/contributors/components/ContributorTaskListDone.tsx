@@ -1,10 +1,10 @@
 import { MemberPrivileges } from "db"
 import { FinishedTasksColumns } from "src/tasks/tables/columns/FinishedTasksColumns"
-import { processFinishedTasks } from "src/tasks/tables/processing/processFinishedTasks"
 import ProjectMemberTaskListDone from "src/projectmembers/components/ProjectMemberTaskListDone"
 import Card from "src/core/components/Card"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
+import { processContributorTaskListDone } from "src/tasks/tables/processing/processContributorTaskListDone"
 
 interface ContributorTaskListDoneProps {
   contributorId: number
@@ -31,7 +31,7 @@ export const ContributorTaskListDone = ({
     <ProjectMemberTaskListDone
       projectMemberId={contributorId}
       tableColumns={FinishedTasksColumns}
-      dataProcessor={processFinishedTasks}
+      dataProcessor={processContributorTaskListDone}
     />
   </Card>
 )

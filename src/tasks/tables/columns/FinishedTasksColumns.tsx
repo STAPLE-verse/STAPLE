@@ -4,7 +4,7 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
-import { FinishedTasksData } from "../processing/processFinishedTasks"
+import { FinishedTasksData } from "../processing/processContributorTaskListDone"
 
 // Column helper
 const columnHelperFinished = createColumnHelper<FinishedTasksData>()
