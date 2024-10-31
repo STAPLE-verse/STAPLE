@@ -14,7 +14,7 @@ export function useContributorsData(
   projectId: number
 ): ContributorTableData[] {
   // Fetch
-  const [contributors] = useQuery(getContributors, { projectId: projectId })
+  const [contributors] = useQuery(getContributors, { projectId: projectId, deleted: false })
 
   // Filter based on privilege
   const filteredContributors = useMemo(() => {

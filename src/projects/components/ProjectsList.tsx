@@ -18,6 +18,7 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
               some: { id: currentUser.id },
             },
             deleted: false,
+            name: null,
           },
         },
       },
@@ -46,7 +47,7 @@ export const ProjectsList = ({ searchTerm, currentUser, page }) => {
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
   })
-
+  console.log(projects)
   const goToPreviousPage = () => router.push({ query: { page: page - 1 } })
   const goToNextPage = () => router.push({ query: { page: page + 1 } })
 

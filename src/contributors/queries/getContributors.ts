@@ -8,15 +8,17 @@ export type ContributorWithUser = ProjectMember & {
 
 interface GetContributorsInput {
   projectId: number
+  deleted?: boolean
 }
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ projectId }: GetContributorsInput): Promise<ContributorWithUser[]> => {
+  async ({ projectId, deleted }: GetContributorsInput): Promise<ContributorWithUser[]> => {
     // Directly query the database for contributors
     const contributors = await db.projectMember.findMany({
       where: {
         projectId: projectId,
+        deleted: deleted,
         name: null, // Ensures we're only getting contributors (where name is null)
       },
       orderBy: { id: "asc" },

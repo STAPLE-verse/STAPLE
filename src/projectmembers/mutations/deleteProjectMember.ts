@@ -64,14 +64,10 @@ export default resolver.pipe(
       where: { id: projectPrivilege.id },
     })
 
-    // Delete associated task logs for this project member
-    await db.taskLog.deleteMany({
-      where: { assignedToId: projectMemberToDelete.id },
-    })
-
     // Delete the project member
-    const projectMember = await db.projectMember.delete({
+    const projectMember = await db.projectMember.update({
       where: { id: projectMemberToDelete.id },
+      data: { deleted: true },
     })
 
     return projectMember

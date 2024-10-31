@@ -15,6 +15,7 @@ export const AllTasksList = () => {
     where: {
       assignedTo: {
         users: { some: { id: currentUser?.id } },
+        deleted: false,
       },
     },
     include: {

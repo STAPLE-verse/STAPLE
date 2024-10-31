@@ -25,7 +25,8 @@ export default resolver.pipe(
             id: { not: undefined }, // Ensures there's at least one user
           },
         },
-        name: { equals: null }, // Ensures the name in ProjectMember is null
+        deleted: false,
+        name: null, // Ensures the name in ProjectMember is null
       },
     })
 

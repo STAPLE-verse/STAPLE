@@ -1,17 +1,15 @@
 import { TeamTaskListDoneColumns } from "../tables/columns/TeamTaskListDoneColumns"
-import { MemberPrivileges } from "db"
 import ProjectMemberTaskListDone from "src/projectmembers/components/ProjectMemberTaskListDone"
 import { processTeamTaskListDone } from "../tables/processing/processTeamTaskListDone"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { TaskLogWithTaskCompleted } from "src/core/types"
+import Card from "src/core/components/Card"
 
 interface TeamTaskListDoneProps {
   teamId: number
-  projectId: number
-  privilege: MemberPrivileges
 }
 
-export const TeamTaskListDone = ({ teamId, projectId, privilege }: TeamTaskListDoneProps) => {
+export const TeamTaskListDone = ({ teamId }: TeamTaskListDoneProps) => {
   const currentUser = useCurrentUser()
   const locale = currentUser?.language || "en-US"
 
@@ -19,14 +17,12 @@ export const TeamTaskListDone = ({ teamId, projectId, privilege }: TeamTaskListD
     processTeamTaskListDone(taskLogs, locale)
 
   return (
-    <ProjectMemberTaskListDone
-      projectMemberId={teamId}
-      projectId={projectId}
-      privilege={privilege}
-      tableColumns={TeamTaskListDoneColumns}
-      dataProcessor={localDataProcessor}
-      title="Team Tasks"
-      tooltipContent="Only completed tasks are included"
-    />
+    <Card title="Team Tasks" tooltipContent="Only completed tasks are included">
+      <ProjectMemberTaskListDone
+        projectMemberId={teamId}
+        tableColumns={TeamTaskListDoneColumns}
+        dataProcessor={localDataProcessor}
+      />
+    </Card>
   )
 }
