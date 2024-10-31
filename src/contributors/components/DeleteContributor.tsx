@@ -4,10 +4,10 @@ import { Routes } from "@blitzjs/next"
 import deleteProjectMember from "src/projectmembers/mutations/deleteProjectMember"
 import toast from "react-hot-toast"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { ContributorWithUser } from "../queries/getContributors"
+import { ProjectMemberWithUsers } from "src/core/types"
 
 interface DeleteContributorProps {
-  contributor: ContributorWithUser
+  contributor: ProjectMemberWithUsers
 }
 
 const DeleteContributor = ({ contributor }: DeleteContributorProps) => {

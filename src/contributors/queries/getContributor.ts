@@ -1,6 +1,6 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { ContributorWithUser } from "./getContributors"
+import { ProjectMemberWithUsers } from "src/core/types"
 
 interface GetContributorInput {
   contributorId: number
@@ -8,7 +8,7 @@ interface GetContributorInput {
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ contributorId }: GetContributorInput): Promise<ContributorWithUser | null> => {
+  async ({ contributorId }: GetContributorInput): Promise<ProjectMemberWithUsers | null> => {
     // Directly query the database for the specific contributor
     const contributor = await db.projectMember.findFirst({
       where: { id: contributorId, name: null }, // Ensures we're getting a contributor (where name is null)
@@ -27,6 +27,6 @@ export default resolver.pipe(
       throw new Error(`Contributor has ${contributor.users.length} users! Expected exactly 1.`)
     }
 
-    return contributor // This is automatically typed as ContributorWithUser
+    return contributor // This is automatically typed as ProjectMemberWithUsers
   }
 )

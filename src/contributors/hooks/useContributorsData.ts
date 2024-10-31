@@ -1,5 +1,5 @@
 import { useQuery } from "@blitzjs/rpc"
-import getContributors, { ContributorWithUser } from "src/contributors/queries/getContributors"
+import getContributors from "src/contributors/queries/getContributors"
 import {
   processContributor,
   ContributorTableData,
@@ -7,6 +7,7 @@ import {
 import { MemberPrivileges } from "@prisma/client"
 import { useMemo } from "react"
 import { CurrentUser } from "src/users/queries/getCurrentUser"
+import { ProjectMemberWithUsers } from "src/core/types"
 
 export function useContributorsData(
   privilege: MemberPrivileges,
@@ -20,7 +21,7 @@ export function useContributorsData(
   const filteredContributors = useMemo(() => {
     if (privilege === MemberPrivileges.CONTRIBUTOR) {
       return contributors.filter(
-        (contributor: ContributorWithUser) =>
+        (contributor: ProjectMemberWithUsers) =>
           contributor.users.length === 1 && contributor.users[0]?.id === currentUser.id
       )
     }
