@@ -11,7 +11,7 @@ import DeleteTeam from "src/teams/components/DeleteTeam"
 import TeamInformation from "src/teams/components/TeamInformation"
 import getTeam from "src/teams/queries/getTeam"
 
-export const ShowTeamPage = () => {
+export const TeamPage = () => {
   const projectId = useParam("projectId", "number")
   const { privilege } = useMemberPrivileges()
   const teamId = useParam("teamId", "number")
@@ -24,25 +24,33 @@ export const ShowTeamPage = () => {
   const userIds = team.users.map((user) => user.id)
 
   return (
+    <>
+      <Head>
+        <title>Team {team.name}</title>
+      </Head>
+
+      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+        <TeamInformation team={team} privilege={privilege!} />
+
+        <TeamRolesList usersId={userIds} projectId={projectId} />
+
+        <TeamTaskListDone teamId={teamId!} />
+
+        {privilege === MemberPrivileges.PROJECT_MANAGER && (
+          <div className="flex justify-end mt-4">
+            <DeleteTeam team={team} />
+          </div>
+        )}
+      </main>
+    </>
+  )
+}
+
+const ShowTeamPage = () => {
+  return (
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
-        <Head>
-          <title>Team {team.name}</title>
-        </Head>
-
-        <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-          <TeamInformation team={team} privilege={privilege!} />
-
-          <TeamRolesList usersId={userIds} projectId={projectId} />
-
-          <TeamTaskListDone teamId={teamId!} />
-
-          {privilege === MemberPrivileges.PROJECT_MANAGER && (
-            <div className="flex justify-end mt-4">
-              <DeleteTeam team={team} />
-            </div>
-          )}
-        </main>
+        <TeamPage />
       </Suspense>
     </Layout>
   )
