@@ -2,10 +2,10 @@ import { useState } from "react"
 import { Tooltip } from "react-tooltip"
 import JsonForm from "src/core/components/JsonForm"
 import Modal from "src/core/components/Modal"
-import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { useTaskContext } from "./TaskContext"
+import getJsonSchema from "src/forms/utils/getJsonSchema"
 
 export const TaskFormData = () => {
   const [openMetadataInspectModal, setOpenMetadataInspectModal] = useState(false)

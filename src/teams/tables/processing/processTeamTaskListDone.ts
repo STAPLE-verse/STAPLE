@@ -1,4 +1,4 @@
-import { getContributorName } from "src/services/getName"
+import { getContributorName } from "src/core/utils/getName"
 import { TaskLogWithTaskCompleted } from "src/core/types"
 
 export type TeamTaskListDoneData = {

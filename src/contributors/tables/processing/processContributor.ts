@@ -1,5 +1,5 @@
 import { ProjectMemberWithUsers } from "src/core/types"
-import { getContributorName } from "src/services/getName"
+import { getContributorName } from "src/core/utils/getName"
 
 // Define return type for the columns
 export type ContributorTableData = {

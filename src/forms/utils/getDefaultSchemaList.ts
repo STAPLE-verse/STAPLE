@@ -1,8 +1,5 @@
-import {
-  JsonProjectMember,
-  JsonProjectMemberUI,
-} from "src/services/jsonconverter/schema/projectMemberSchema"
-import { JsonFunder, JsonFunderUI } from "src/services/jsonconverter/schema/funderSchema"
+import { JsonProjectMember, JsonProjectMemberUI } from "src/forms/schema/projectMemberSchema"
+import { JsonFunder, JsonFunderUI } from "src/forms/schema/funderSchema"
 
 export function getDefaultSchemaLists() {
   const schemas = [JsonProjectMember, JsonFunder]

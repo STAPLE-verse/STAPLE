@@ -1,4 +1,4 @@
-export const getAssignmentStatusText = (status): string => {
+export const getStatusText = (status): string => {
   switch (status) {
     case "COMPLETED":
       return "Completed"

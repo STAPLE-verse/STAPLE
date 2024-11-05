@@ -4,9 +4,9 @@ import { CompletedAs as CompletedAsType } from "db"
 import { useState } from "react"
 import Modal from "src/core/components/Modal"
 import JsonForm from "../../core/components/JsonForm"
-import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import { useTaskContext } from "src/tasks/components/TaskContext"
 import updateTaskLog from "../mutations/updateTaskLog"
+import getJsonSchema from "src/forms/utils/getJsonSchema"
 
 const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => {
   // Setup

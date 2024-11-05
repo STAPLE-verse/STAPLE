@@ -1,6 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
-import { getPrivilegeText } from "src/services/getPrivilegeText"
+import { getPrivilegeText } from "src/core/utils/getPrivilegeText"
 import { MemberPrivileges, User } from "db"
 import Card from "src/core/components/Card"
 

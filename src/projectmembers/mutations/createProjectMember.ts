@@ -2,7 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateProjectMemberSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
-import { getPrivilegeText } from "src/services/getPrivilegeText"
+import { getPrivilegeText } from "src/core/utils/getPrivilegeText"
 
 export default resolver.pipe(
   resolver.zod(CreateProjectMemberSchema),

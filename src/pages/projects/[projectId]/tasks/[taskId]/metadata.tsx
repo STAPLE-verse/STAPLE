@@ -8,7 +8,6 @@ import { Routes } from "@blitzjs/next"
 import DownloadJSON from "src/forms/components/DownloadJSON"
 import DownloadXLSX from "src/forms/components/DownloadXLSX"
 import DownloadZIP from "src/forms/components/DownloadZIP"
-import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import TaskLayout from "src/core/layouts/TaskLayout"
@@ -16,6 +15,7 @@ import { extendSchema } from "src/forms/utils/extendSchema"
 import { processMetadata } from "src/forms/utils/processMetadata"
 import { metadataTable } from "src/forms/utils/metadataTable"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
+import getJsonSchema from "src/forms/utils/getJsonSchema"
 
 const MetadataContent = () => {
   // Ensure that only PM can edit a task
