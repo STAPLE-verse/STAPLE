@@ -10,6 +10,7 @@ import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import { Tooltip } from "react-tooltip"
 import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
+import AddRoleInput from "src/roles/components/AddRoleInput"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
@@ -36,48 +37,48 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
   // Check if the current user is the last project manager
   const isLastProjectManager = isEdit && pmIds.length === 1 && pmIds[0] === editedUserId
 
-  const [{ roles }] = useQuery(getRoles, {
-    where: {
-      userId: {
-        in: pmIds, // Filter roles where userId is in the list of PM IDs
-      },
-    },
-    include: {
-      projectMembers: true, // Optional: include projectMember data if needed
-      user: true,
-    },
-  })
+  // const [{ roles }] = useQuery(getRoles, {
+  //   where: {
+  //     userId: {
+  //       in: pmIds, // Filter roles where userId is in the list of PM IDs
+  //     },
+  //   },
+  //   include: {
+  //     projectMembers: true, // Optional: include projectMember data if needed
+  //     user: true,
+  //   },
+  // })
 
-  const roleMerged = roles.map((roles) => {
-    return {
-      pm: roles["user"]["username"],
-      role: roles["name"],
-      id: roles["id"],
-    }
-  })
+  // const roleMerged = roles.map((roles) => {
+  //   return {
+  //     pm: roles["user"]["username"],
+  //     role: roles["name"],
+  //     id: roles["id"],
+  //   }
+  // })
 
-  const extraData = roleMerged.map((item) => ({
-    pm: item.pm,
-  }))
+  // const extraData = roleMerged.map((item) => ({
+  //   pm: item.pm,
+  // }))
 
-  const roleOptions = roleMerged.map((item) => ({
-    label: item.role,
-    id: item.id,
-  }))
+  // const roleOptions = roleMerged.map((item) => ({
+  //   label: item.role,
+  //   id: item.id,
+  // }))
 
-  const extraColumns = [
-    {
-      id: "pm",
-      header: "Project Manager",
-      accessorKey: "pm",
-      cell: (info) => <span>{info.getValue()}</span>,
-    },
-  ]
+  // const extraColumns = [
+  //   {
+  //     id: "pm",
+  //     header: "Project Manager",
+  //     accessorKey: "pm",
+  //     cell: (info) => <span>{info.getValue()}</span>,
+  //   },
+  // ]
 
-  const [openRolesModal, setrolesModal] = useState(false)
-  const handleToggleRolesModal = () => {
-    setrolesModal((prev) => !prev)
-  }
+  // const [openRolesModal, setrolesModal] = useState(false)
+  // const handleToggleRolesModal = () => {
+  //   setrolesModal((prev) => !prev)
+  // }
 
   return (
     <Form<S> {...formProps}>
@@ -120,32 +121,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         disabled={isLastProjectManager}
       />
       <div className="mt-4">
-        <button
-          type="button"
-          className="btn btn-primary w-1/2"
-          data-tooltip-id="role-tooltip"
-          onClick={() => handleToggleRolesModal()}
-        >
-          Add Role
-        </button>
-        <Modal open={openRolesModal} size="w-7/8 max-w-xl">
-          <div className="">
-            <div className="flex justify-start mt-4">
-              <CheckboxFieldTable
-                name="rolesId"
-                options={roleOptions}
-                extraColumns={extraColumns}
-                extraData={extraData}
-              />
-            </div>
-            {/* closes the modal */}
-            <div className="modal-action flex justify-end mt-4">
-              <button type="button" className="btn btn-primary" onClick={handleToggleRolesModal}>
-                Close
-              </button>
-            </div>
-          </div>
-        </Modal>
+        <AddRoleInput projectManagerIds={pmIds} />
       </div>
     </Form>
   )

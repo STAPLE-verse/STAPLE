@@ -1,5 +1,9 @@
 import { ProjectMember, Role, Task, TaskLog, User } from "db"
 
+export type RoleWithUser = Role & {
+  user: User
+}
+
 export type TaskWithRoles = Task & {
   roles?: Role[]
 }
