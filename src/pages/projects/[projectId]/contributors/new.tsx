@@ -14,6 +14,7 @@ import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjec
 import { MemberPrivileges } from "db"
 import { createNewInvitation } from "integrations/emails"
 import { CreateProjectMemberFormSchema } from "src/projectmembers/schemas"
+import PageHeader from "src/core/components/PageHeader"
 
 function NewContributor() {
   const [createInviteMutation] = useMutation(createInvite)
@@ -71,7 +72,7 @@ function NewContributor() {
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="text-3xl">Invite New Contributor</h1>
+      <PageHeader title="Invite New Contributor" />
       <Suspense fallback={<div>Loading...</div>}>
         <p className="mt-2 mb-2 text-lg">
           Enter the email of the contributor you would like to add to the project. They will receive

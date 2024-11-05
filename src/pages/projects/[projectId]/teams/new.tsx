@@ -13,6 +13,7 @@ import toast from "react-hot-toast"
 import createTeam from "src/teams/mutations/createTeam"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
+import PageHeader from "src/core/components/PageHeader"
 
 const NewTeamPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
@@ -27,7 +28,7 @@ const NewTeamPage = () => {
         <title>Add New Team</title>
       </Head>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">Add New Team</h1>
+        <PageHeader title="Add New Team" />
         <Suspense fallback={<div>Loading...</div>}>
           <TeamForm
             projectId={projectId!}

@@ -13,8 +13,9 @@ import { TeamFormSchema } from "src/teams/schemas"
 import updateTeam from "src/teams/mutations/updateTeam"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
-import { ProjectMemberWithUsers } from ".."
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
+import PageHeader from "src/core/components/PageHeader"
+import { ProjectMemberWithUsers } from "src/core/types"
 
 export const EditTeam = () => {
   const [updateTeamMutation] = useMutation(updateTeam)
@@ -45,8 +46,7 @@ export const EditTeam = () => {
       </Head>
 
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">Edit {teamProjectMember.name}</h1>
-
+        <PageHeader title={`Edit ${teamProjectMember.name}`} />
         <Suspense fallback={<div>Loading...</div>}>
           <TeamForm
             projectId={projectId!}

@@ -11,6 +11,7 @@ import Layout from "src/core/layouts/Layout"
 import Head from "next/head"
 import toast from "react-hot-toast"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import PageHeader from "src/core/components/PageHeader"
 
 const NewTaskPage = () => {
   // Setup
@@ -31,7 +32,7 @@ const NewTaskPage = () => {
         <title>Create New Task</title>
       </Head>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">Create New Task</h1>
+        <PageHeader title="Create New Task" />
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
             className="flex flex-col"

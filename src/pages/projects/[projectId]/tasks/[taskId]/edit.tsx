@@ -16,6 +16,7 @@ import { MemberPrivileges } from "db"
 import { useTaskContext } from "src/tasks/components/TaskContext"
 import { responseSubmitted } from "src/tasklogs/utils/responseSubmitted"
 import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
+import PageHeader from "src/core/components/PageHeader"
 
 export const EditTask = () => {
   // Ensure that only PM can edit a task
@@ -93,7 +94,7 @@ export const EditTask = () => {
       </Head>
 
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">Edit {task.name}</h1>
+        <PageHeader title={`Edit ${task.name}`} />
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
             projectId={task.projectId}
