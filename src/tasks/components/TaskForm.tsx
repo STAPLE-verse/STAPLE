@@ -12,9 +12,9 @@ import { useState } from "react"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
 import DateField from "src/core/components/fields/DateField"
-import getRoles from "src/roles/queries/getRoles"
 import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 import { z } from "zod"
+import AddRoleInput from "src/roles/components/AddRoleInput"
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -57,42 +57,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     projectId: projectId!,
   })
 
-  const [{ roles }] = useQuery(getRoles, {
-    where: {
-      userId: { in: projectManagers?.map((pm) => pm.userId) || [] },
-    },
-    include: {
-      user: true,
-    },
-  })
-
-  // Assuming `roles` is an array of objects
-  const roleMerged = roles.map((role) => {
-    return {
-      pm: role["user"]["username"], // Accessing the nested username
-      label: role.name,
-      id: role.id,
-    }
-  })
-
-  // Use the mapped array directly
-  const extraData = roleMerged.map((item) => ({
-    pm: item.pm,
-  }))
-
-  const extraColumns = [
-    {
-      id: "pm",
-      header: "Project Manager",
-      accessorKey: "pm",
-      cell: (info) => <span>{info.getValue()}</span>,
-    },
-  ]
-
-  const roleOptions = roleMerged.map((item) => ({
-    label: item.label,
-    id: item.id,
-  }))
+  const pmIds = projectManagers.map((pm) => pm.userId)
 
   const projectMemberOptions = projectMembers.map((projectMember) => {
     return {
@@ -132,11 +97,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   const [openTeamsModal, setTeamsModal] = useState(false)
   const handleToggleTeamsModal = () => {
     setTeamsModal((prev) => !prev)
-  }
-
-  const [openRolesModal, setrolesModal] = useState(false)
-  const handleToggleRolesModal = () => {
-    setrolesModal((prev) => !prev)
   }
 
   return (
@@ -266,32 +226,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       )}
 
       <div className="mt-4">
-        <button
-          type="button"
-          className="btn btn-primary w-1/2"
-          onClick={() => handleToggleRolesModal()}
-        >
-          Assign Role(s)
-        </button>
-        <Modal open={openRolesModal} size="w-7/8 max-w-xl">
-          <div className="">
-            <h1 className="flex justify-center mb2 text-3xl">Select Roles</h1>
-            <div className="flex justify-start mt-4">
-              <CheckboxFieldTable
-                name="rolesId"
-                options={roleOptions}
-                extraColumns={extraColumns}
-                extraData={extraData}
-              />
-            </div>
-            {/* closes the modal */}
-            <div className="modal-action flex justify-end mt-4">
-              <button type="button" className="btn btn-primary" onClick={handleToggleRolesModal}>
-                Close
-              </button>
-            </div>
-          </div>
-        </Modal>
+        <AddRoleInput projectManagerIds={pmIds} buttonLabel="Add Role" />
       </div>
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>

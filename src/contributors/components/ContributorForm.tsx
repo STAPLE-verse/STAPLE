@@ -1,12 +1,9 @@
-import React, { useState } from "react"
+import React from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
 import { MemberPrivileges } from "@prisma/client"
-import getRoles from "src/roles/queries/getRoles"
-import Modal from "src/core/components/Modal"
-import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import { Tooltip } from "react-tooltip"
 import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
@@ -36,49 +33,6 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
 
   // Check if the current user is the last project manager
   const isLastProjectManager = isEdit && pmIds.length === 1 && pmIds[0] === editedUserId
-
-  // const [{ roles }] = useQuery(getRoles, {
-  //   where: {
-  //     userId: {
-  //       in: pmIds, // Filter roles where userId is in the list of PM IDs
-  //     },
-  //   },
-  //   include: {
-  //     projectMembers: true, // Optional: include projectMember data if needed
-  //     user: true,
-  //   },
-  // })
-
-  // const roleMerged = roles.map((roles) => {
-  //   return {
-  //     pm: roles["user"]["username"],
-  //     role: roles["name"],
-  //     id: roles["id"],
-  //   }
-  // })
-
-  // const extraData = roleMerged.map((item) => ({
-  //   pm: item.pm,
-  // }))
-
-  // const roleOptions = roleMerged.map((item) => ({
-  //   label: item.role,
-  //   id: item.id,
-  // }))
-
-  // const extraColumns = [
-  //   {
-  //     id: "pm",
-  //     header: "Project Manager",
-  //     accessorKey: "pm",
-  //     cell: (info) => <span>{info.getValue()}</span>,
-  //   },
-  // ]
-
-  // const [openRolesModal, setrolesModal] = useState(false)
-  // const handleToggleRolesModal = () => {
-  //   setrolesModal((prev) => !prev)
-  // }
 
   return (
     <Form<S> {...formProps}>
@@ -121,7 +75,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         disabled={isLastProjectManager}
       />
       <div className="mt-4">
-        <AddRoleInput projectManagerIds={pmIds} />
+        <AddRoleInput projectManagerIds={pmIds} buttonLabel="Add Role" />
       </div>
     </Form>
   )

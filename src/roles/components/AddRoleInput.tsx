@@ -8,9 +8,10 @@ import { RoleWithUser } from "src/core/types"
 
 interface AddRoleInputProps {
   projectManagerIds: number[]
+  buttonLabel: string
 }
 
-const AddRoleInput: React.FC<AddRoleInputProps> = ({ projectManagerIds }) => {
+const AddRoleInput: React.FC<AddRoleInputProps> = ({ projectManagerIds, buttonLabel }) => {
   const [openRolesModal, setRolesModal] = useState(false)
   const handleToggleRolesModal = () => setRolesModal((prev) => !prev)
 
@@ -61,7 +62,7 @@ const AddRoleInput: React.FC<AddRoleInputProps> = ({ projectManagerIds }) => {
         data-tooltip-id="role-tooltip"
         onClick={handleToggleRolesModal}
       >
-        Add Role
+        {buttonLabel}
       </button>
 
       <Modal open={openRolesModal} size="w-7/8 max-w-xl">
