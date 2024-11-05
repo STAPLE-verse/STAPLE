@@ -31,7 +31,6 @@ export const AddRoleModal = ({ rows, projectId, refetch, type }) => {
   }
 
   // Handle form submission
-  // Call both hooks unconditionally
   const { handleAddRole: handleAddContributorRole } = useAddRoleContributor(refetch)
   const { handleAddRole: handleAddTaskRole } = useAddRoleTask(refetch)
 
