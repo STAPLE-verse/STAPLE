@@ -23,7 +23,7 @@ function NewContributor() {
           teams until they accept their invitation.
         </p>
         <ContributorForm
-          projectId={projectId as number}
+          projectId={projectId!}
           className="flex flex-col"
           submitText="Add Contributor"
           schema={CreateProjectMemberFormSchema}

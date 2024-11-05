@@ -217,7 +217,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       </div>
 
       {formResponseSupplied ? (
-        <TaskSchemaInput projectManagers={projectManagers} />
+        <TaskSchemaInput projectManagerIds={pmIds} />
       ) : (
         <p className="mt-4 w-1/2 text-red-500">
           The task is already being completed by the contributors. Please, create a new task if you
@@ -226,7 +226,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       )}
 
       <div className="mt-4">
-        <AddRoleInput projectManagerIds={pmIds} buttonLabel="Add Role" />
+        <AddRoleInput projectManagerIds={pmIds} buttonLabel="Assign Role(s)" />
       </div>
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>

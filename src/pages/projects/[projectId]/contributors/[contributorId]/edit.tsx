@@ -11,14 +11,13 @@ import updateProjectMember from "src/projectmembers/mutations/updateProjectMembe
 import { ContributorForm } from "src/contributors/components/ContributorForm"
 import { FORM_ERROR } from "final-form"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
-import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
+import { MemberPrivileges } from "@prisma/client"
 import { getContributorName } from "src/core/utils/getName"
 import addProjectManagerWidgets from "src/widgets/mutations/addProjectManagerWidgets"
 import removeProjectManagerWidgets from "src/widgets/mutations/removeProjectManagerWidgets"
 import getProjectPrivilege from "src/projectprivileges/queries/getProjectPrivilege"
 import { UpdateProjectMemberFormSchema } from "src/projectmembers/schemas"
-
-type ProjectMemberWithUsers = ProjectMember & { users: User[] }
+import { ProjectMemberWithUsersAndRoles } from "src/core/types"
 
 export const EditContributor = () => {
   const [updateProjectMemberMutation] = useMutation(updateProjectMember)
@@ -29,7 +28,7 @@ export const EditContributor = () => {
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
 
-  const [projectMember, { refetch }] = useQuery(getProjectMember, {
+  const [fetchedProjectMember, { refetch }] = useQuery(getProjectMember, {
     where: { id: contributorId, project: { id: projectId! } },
     include: {
       roles: {
@@ -49,16 +48,15 @@ export const EditContributor = () => {
     },
   })
 
-  const typedProjectMember = projectMember as ProjectMemberWithUsers
+  const projectMember = fetchedProjectMember as ProjectMemberWithUsersAndRoles
 
-  const projectMemberUser = typedProjectMember.users[0]
+  const projectMemberUser = projectMember.users[0]
 
   const [projectMemberPrivilege] = useQuery(getProjectPrivilege, {
     where: { userId: projectMemberUser!.id, projectId: projectId },
   })
 
-  const rolesId =
-    projectMember["roles"] != undefined ? projectMember["roles"].map((role) => role.id) : []
+  const rolesId = projectMember.roles != undefined ? projectMember.roles.map((role) => role.id) : []
 
   // Set initial values
   const initialValues = {

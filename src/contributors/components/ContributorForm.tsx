@@ -23,16 +23,15 @@ export const MemberPrivilegesOptions = [
 export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
   const { projectId, isEdit = false, editedUserId, ...formProps } = props
 
-  // need all roles from all PMs for this project
-  // get all roles from all PMs
   const [projectManagers] = useQuery(getProjectManagers, {
     projectId: projectId!,
   })
 
-  const pmIds = projectManagers.map((pm) => pm.userId)
+  const projectManagerIds = projectManagers.map((pm) => pm.userId)
 
   // Check if the current user is the last project manager
-  const isLastProjectManager = isEdit && pmIds.length === 1 && pmIds[0] === editedUserId
+  const isLastProjectManager =
+    isEdit && projectManagerIds.length === 1 && projectManagerIds[0] === editedUserId
 
   return (
     <Form<S> {...formProps}>
@@ -43,13 +42,6 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
             ? "User is the last project manager on the project. The privilege cannot be changed."
             : "Project Managers can see and edit all parts of a project, while contributors can only complete tasks assigned to them."
         }
-        className="z-[1099] ourtooltips"
-        place="right"
-        opacity={1}
-      />
-      <Tooltip
-        id="role-tooltip"
-        content="Add roles to individual contributors (like administration)"
         className="z-[1099] ourtooltips"
         place="right"
         opacity={1}
@@ -75,7 +67,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         disabled={isLastProjectManager}
       />
       <div className="mt-4">
-        <AddRoleInput projectManagerIds={pmIds} buttonLabel="Add Role" />
+        <AddRoleInput projectManagerIds={projectManagerIds} buttonLabel="Add Role" />
       </div>
     </Form>
   )
