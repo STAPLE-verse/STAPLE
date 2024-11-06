@@ -8,11 +8,20 @@ import ProjectDashboard from "src/projects/components/ProjectDashboard"
 import { MemberPrivileges } from "db"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import AnnouncementModal from "src/projects/components/AnnouncementModal"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { useProjectWidgets } from "src/projects/hooks/useProjectWidgets"
 
 const ShowProjectContent = () => {
   const { privilege } = useMemberPrivileges()
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProject, { id: projectId })
+  const currentUser = useCurrentUser()
+
+  const { widgets, setWidgets, refreshWidgets } = useProjectWidgets({
+    userId: currentUser!.id,
+    projectId: projectId!,
+    privilege: privilege!,
+  })
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
@@ -20,9 +29,9 @@ const ShowProjectContent = () => {
         <title>Project {project.name}</title>
       </Head>
       {privilege == MemberPrivileges.PROJECT_MANAGER && (
-        <AnnouncementModal projectId={projectId!} />
+        <AnnouncementModal projectId={projectId!} refreshWidgets={refreshWidgets} />
       )}
-      <ProjectDashboard />
+      <ProjectDashboard widgets={widgets} setWidgets={setWidgets} />
     </main>
   )
 }

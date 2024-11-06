@@ -7,9 +7,10 @@ import { FormAnnouncementSchema } from "src/projects/schemas"
 
 interface AnnouncementModalProps {
   projectId: number
+  refreshWidgets: () => Promise<void>
 }
 
-const AnnouncementModal: React.FC<AnnouncementModalProps> = ({ projectId }) => {
+const AnnouncementModal: React.FC<AnnouncementModalProps> = ({ projectId, refreshWidgets }) => {
   const [openModal, setOpenModal] = useState(false)
   const [createAnnouncementMutation] = useMutation(createAnnouncement)
 
@@ -21,6 +22,7 @@ const AnnouncementModal: React.FC<AnnouncementModalProps> = ({ projectId }) => {
         projectId,
         announcementText: values.announcementText,
       })
+      await refreshWidgets()
       setOpenModal(false)
     } catch (error) {
       console.error("Error creating announcement:", error)

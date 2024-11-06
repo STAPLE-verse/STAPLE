@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import toast from "react-hot-toast"
 import getProjectWidgets from "src/widgets/queries/getProjectWidgets"
@@ -15,7 +15,12 @@ interface UseProjectWidgetsProps {
 export const useProjectWidgets = ({ userId, projectId, privilege }: UseProjectWidgetsProps) => {
   const [widgets, setWidgets] = useState<any[]>([])
   const [initializeWidgetsMutation] = useMutation(initializeProjectWidgets)
-  const [fetchedWidgets] = useQuery(getProjectWidgets, { userId, projectId })
+
+  const [fetchedWidgets, { refetch }] = useQuery(getProjectWidgets, { userId, projectId })
+
+  const refreshWidgets = useCallback(async () => {
+    await refetch()
+  }, [refetch])
 
   useEffect(() => {
     if (fetchedWidgets.length > 0) {
@@ -32,5 +37,5 @@ export const useProjectWidgets = ({ userId, projectId, privilege }: UseProjectWi
     }
   }, [fetchedWidgets, initializeWidgetsMutation, privilege, projectId, userId])
 
-  return { widgets, setWidgets }
+  return { widgets, setWidgets, refreshWidgets }
 }

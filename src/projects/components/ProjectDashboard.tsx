@@ -1,6 +1,4 @@
-import { useParam } from "@blitzjs/next"
 import { useMutation } from "@blitzjs/rpc"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import "react-circular-progressbar/dist/styles.css"
 import React from "react"
 import {
@@ -18,20 +16,10 @@ import useDashboardDragHandlers from "src/widgets/hooks/useDashboardDragHandlers
 import { useWidgetConstruction } from "src/widgets/hooks/useWidgetConstruction"
 import { WidgetContainer } from "src/widgets/components/WidgetContainer"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
-import { useProjectWidgets } from "../hooks/useProjectWidgets"
 
-const ProjectDashboard = () => {
+const ProjectDashboard = ({ widgets, setWidgets }) => {
   const [updateWidgetMutation] = useMutation(updateProjectWidgets)
-  const projectId = useParam("projectId", "number")
-  const currentUser = useCurrentUser()
-  const userId = currentUser?.id!
   const { privilege } = useMemberPrivileges()
-
-  const { widgets, setWidgets } = useProjectWidgets({
-    userId,
-    projectId: projectId!,
-    privilege: privilege!,
-  })
 
   const constructedWidgets = useWidgetConstruction({
     widgets,

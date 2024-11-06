@@ -1,7 +1,6 @@
 import React from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
-
 import { z } from "zod"
 
 export function AnnouncementForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
