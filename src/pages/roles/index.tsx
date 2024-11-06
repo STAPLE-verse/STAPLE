@@ -99,9 +99,9 @@ const RoleBuilderPage = () => {
     orderBy: { id: "asc" },
   })
 
-  const taxonomyList = roles
-    .map((role) => role.taxonomy || "")
-    .filter((value, index, self) => self.indexOf(value) === index)
+  const taxonomyList = Array.from(
+    new Set(roles.map((role) => (role.taxonomy || "").trim()).filter((taxonomy) => taxonomy !== ""))
+  )
 
   return (
     <Layout>

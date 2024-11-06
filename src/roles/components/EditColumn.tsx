@@ -76,9 +76,6 @@ export const EditColumn = ({ row }) => {
               onSubmit={handleEditRole}
               initialValues={initialValues}
               taxonomyList={taxonomyList}
-              // name={""}
-              // description={""}
-              // taxonomy={""}
             ></RoleForm>
           </div>
 
