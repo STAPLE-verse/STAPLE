@@ -48,7 +48,7 @@ const AddRoleInput: React.FC<AddRoleInputProps> = ({ projectManagerIds, buttonLa
   ]
 
   return (
-    <div>
+    <>
       <Tooltip
         id="role-tooltip"
         content="Add roles to individual contributors (like administration)"
@@ -82,7 +82,7 @@ const AddRoleInput: React.FC<AddRoleInputProps> = ({ projectManagerIds, buttonLa
           </div>
         </div>
       </Modal>
-    </div>
+    </>
   )
 }
 

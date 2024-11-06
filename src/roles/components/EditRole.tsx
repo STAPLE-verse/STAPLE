@@ -8,29 +8,38 @@ import { useState } from "react"
 import { RoleForm } from "./RoleForm"
 import { RoleFormSchema } from "../schemas"
 
-export const EditColumn = ({ row }) => {
-  const [updateRoleMutation] = useMutation(updateRole)
-  const {
-    name = "",
-    description = "",
-    taxonomy = "",
-    userId = null,
-    id = null,
-    onChangeCallback = null,
-    ...rest
-  } = { ...row }
+interface EditRoleProps {
+  id: number
+  name: string
+  description: string
+  taxonomy: string
+  userId: number
+  taxonomyList: string[]
+  onChangeCallback?: () => void
+}
 
+export const EditRole = ({
+  id,
+  name,
+  description,
+  taxonomy,
+  userId,
+  taxonomyList,
+  onChangeCallback,
+}: EditRoleProps) => {
+  const [updateRoleMutation] = useMutation(updateRole)
   const [openEditRoleModal, setOpenEditRoleModal] = useState(false)
-  const handleToggleEditRoleModal = () => {
-    setOpenEditRoleModal((prev) => !prev)
-  }
 
   const initialValues = {
     name: name,
     description: description,
     taxonomy: taxonomy,
   }
-  const taxonomyList = row.taxonomyList
+
+  // Handle events
+  const handleToggleEditRoleModal = () => {
+    setOpenEditRoleModal((prev) => !prev)
+  }
 
   const handleEditRole = async (values) => {
     try {
@@ -39,9 +48,11 @@ export const EditColumn = ({ row }) => {
         userId: userId,
         id: id,
       })
-      if (onChangeCallback != undefined) {
+
+      if (onChangeCallback) {
         onChangeCallback()
       }
+
       await toast.promise(Promise.resolve(updated), {
         loading: "Editing role...",
         success: "Role edited!",
@@ -57,12 +68,7 @@ export const EditColumn = ({ row }) => {
 
   return (
     <div>
-      <button
-        type="button"
-        /* button for popups */
-        className="btn btn-ghost"
-        onClick={handleToggleEditRoleModal}
-      >
+      <button type="button" className="btn btn-ghost" onClick={handleToggleEditRoleModal}>
         <PencilSquareIcon width={25} className="stroke-primary" />
       </button>
       <Modal open={openEditRoleModal} size="w-1/3 max-w-1/2">
@@ -81,12 +87,7 @@ export const EditColumn = ({ row }) => {
 
           {/* closes the modal */}
           <div className="modal-action flex justify-end mt-4">
-            <button
-              type="button"
-              /* button for popups */
-              className="btn btn-secondary"
-              onClick={handleToggleEditRoleModal}
-            >
+            <button type="button" className="btn btn-secondary" onClick={handleToggleEditRoleModal}>
               Close
             </button>
           </div>

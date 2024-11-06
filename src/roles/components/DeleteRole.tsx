@@ -4,19 +4,25 @@ import toast from "react-hot-toast"
 import { FORM_ERROR } from "final-form"
 import { XCircleIcon } from "@heroicons/react/24/outline"
 
-export const DeleteColumn = ({ row }) => {
-  const [deleteRoleMutation] = useMutation(deleteRole)
-  const { id = null, onChangeCallback = null, ...rest } = { ...row }
+interface DeleteRoleProps {
+  id: number
+  onChangeCallback?: () => void
+}
 
-  const handleDeleteRole = async (values) => {
+export const DeleteRole = ({ id, onChangeCallback }: DeleteRoleProps) => {
+  const [deleteRoleMutation] = useMutation(deleteRole)
+
+  const handleDeleteRole = async () => {
     if (window.confirm("This role will be permanently deleted. Are you sure to continue?")) {
       try {
         const updated = await deleteRoleMutation({
           id: id,
         })
-        if (onChangeCallback != undefined) {
+
+        if (onChangeCallback) {
           onChangeCallback()
         }
+
         await toast.promise(Promise.resolve(updated), {
           loading: "Deleting role...",
           success: "Role deleted!",
@@ -33,12 +39,7 @@ export const DeleteColumn = ({ row }) => {
 
   return (
     <div>
-      <button
-        type="button"
-        /* button for popups */
-        className="btn btn-ghost"
-        onClick={handleDeleteRole}
-      >
+      <button type="button" className="btn btn-ghost" onClick={handleDeleteRole}>
         <XCircleIcon width={25} className="stroke-primary" />
       </button>
     </div>

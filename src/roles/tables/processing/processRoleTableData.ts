@@ -3,6 +3,7 @@ export type RoleTableData = {
   description: string
   taxonomy: string
   id: number
+  userId: number
   onChangeCallback?: () => void
   taxonomyList: string[]
 }

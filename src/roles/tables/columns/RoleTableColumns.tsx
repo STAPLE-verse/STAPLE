@@ -1,6 +1,6 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { DeleteColumn } from "src/roles/components/DeleteColumn"
-import { EditColumn } from "src/roles/components/EditColumn"
+import { DeleteRole } from "src/roles/components/DeleteRole"
+import { EditRole } from "src/roles/components/EditRole"
 import { RoleTableData } from "../processing/processRoleTableData"
 
 const columnHelper = createColumnHelper<RoleTableData>()
@@ -24,13 +24,25 @@ export const RoleTableColumns = [
     header: "Edit",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <EditColumn row={info.row.original}></EditColumn>,
+    cell: (info) => (
+      <EditRole
+        id={info.getValue()}
+        name={info.row.original.name}
+        description={info.row.original.description}
+        taxonomy={info.row.original.taxonomy}
+        userId={info.row.original.userId}
+        taxonomyList={info.row.original.taxonomyList}
+        onChangeCallback={info.row.original.onChangeCallback}
+      />
+    ),
   }),
   columnHelper.accessor("id", {
     id: "delete",
     header: "Delete",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <DeleteColumn row={info.row.original}></DeleteColumn>,
+    cell: (info) => (
+      <DeleteRole id={info.getValue()} onChangeCallback={info.row.original.onChangeCallback} />
+    ),
   }),
 ]
