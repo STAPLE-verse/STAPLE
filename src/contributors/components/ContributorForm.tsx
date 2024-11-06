@@ -67,7 +67,11 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         disabled={isLastProjectManager}
       />
       <div className="mt-4">
-        <AddRoleInput projectManagerIds={projectManagerIds} buttonLabel="Add Role" />
+        <AddRoleInput
+          projectManagerIds={projectManagerIds}
+          buttonLabel="Add Role"
+          tooltipContent="Add roles to individual contributors (like administration)"
+        />
       </div>
     </Form>
   )

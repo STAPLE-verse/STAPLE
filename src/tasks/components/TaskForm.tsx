@@ -226,7 +226,11 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       )}
 
       <div className="mt-4">
-        <AddRoleInput projectManagerIds={pmIds} buttonLabel="Assign Role(s)" />
+        <AddRoleInput
+          projectManagerIds={pmIds}
+          buttonLabel="Assign Role(s)"
+          tooltipContent="Add roles to task"
+        />
       </div>
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
