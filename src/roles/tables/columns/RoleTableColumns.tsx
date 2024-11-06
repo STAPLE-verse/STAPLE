@@ -32,7 +32,7 @@ export const RoleTableColumns = [
         taxonomy={info.row.original.taxonomy}
         userId={info.row.original.userId}
         taxonomyList={info.row.original.taxonomyList}
-        onChangeCallback={info.row.original.onChangeCallback}
+        onRolesChanged={info.row.original.onRolesChanged}
       />
     ),
   }),
@@ -42,7 +42,7 @@ export const RoleTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
-      <DeleteRole id={info.getValue()} onChangeCallback={info.row.original.onChangeCallback} />
+      <DeleteRole id={info.getValue()} onRolesChanged={info.row.original.onRolesChanged} />
     ),
   }),
 ]

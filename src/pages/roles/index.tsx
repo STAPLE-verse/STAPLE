@@ -28,8 +28,8 @@ const RoleBuilderPage = () => {
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">All Roles</h1>
         <Suspense fallback={<div>Loading...</div>}>
-          <AllRolesList roles={roles} onChange={refetch} taxonomyList={taxonomyList} />
-          <NewRole taxonomyList={taxonomyList} onRoleCreated={refetch} />
+          <AllRolesList roles={roles} onRolesChanged={refetch} taxonomyList={taxonomyList} />
+          <NewRole taxonomyList={taxonomyList} onRolesChanged={refetch} />
         </Suspense>
       </main>
     </Layout>

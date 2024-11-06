@@ -15,7 +15,7 @@ interface EditRoleProps {
   taxonomy: string
   userId: number
   taxonomyList: string[]
-  onChangeCallback?: () => void
+  onRolesChanged?: () => void
 }
 
 export const EditRole = ({
@@ -25,16 +25,10 @@ export const EditRole = ({
   taxonomy,
   userId,
   taxonomyList,
-  onChangeCallback,
+  onRolesChanged,
 }: EditRoleProps) => {
   const [updateRoleMutation] = useMutation(updateRole)
   const [openEditRoleModal, setOpenEditRoleModal] = useState(false)
-
-  const initialValues = {
-    name: name,
-    description: description,
-    taxonomy: taxonomy,
-  }
 
   // Handle events
   const handleToggleEditRoleModal = () => {
@@ -49,8 +43,8 @@ export const EditRole = ({
         id: id,
       })
 
-      if (onChangeCallback) {
-        onChangeCallback()
+      if (onRolesChanged) {
+        onRolesChanged()
       }
 
       await toast.promise(Promise.resolve(updated), {
@@ -58,6 +52,8 @@ export const EditRole = ({
         success: "Role edited!",
         error: "Failed to edit the role...",
       })
+
+      handleToggleEditRoleModal()
     } catch (error: any) {
       console.error(error)
       return {
@@ -80,7 +76,7 @@ export const EditRole = ({
               submitText="Update Role"
               className="flex flex-col w-full"
               onSubmit={handleEditRole}
-              initialValues={initialValues}
+              initialValues={{ name, description, taxonomy }}
               taxonomyList={taxonomyList}
             ></RoleForm>
           </div>

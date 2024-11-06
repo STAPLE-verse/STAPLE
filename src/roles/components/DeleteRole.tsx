@@ -6,12 +6,13 @@ import { XCircleIcon } from "@heroicons/react/24/outline"
 
 interface DeleteRoleProps {
   id: number
-  onChangeCallback?: () => void
+  onRolesChanged?: () => void
 }
 
-export const DeleteRole = ({ id, onChangeCallback }: DeleteRoleProps) => {
+export const DeleteRole = ({ id, onRolesChanged }: DeleteRoleProps) => {
   const [deleteRoleMutation] = useMutation(deleteRole)
 
+  // Handle event
   const handleDeleteRole = async () => {
     if (window.confirm("This role will be permanently deleted. Are you sure to continue?")) {
       try {
@@ -19,8 +20,8 @@ export const DeleteRole = ({ id, onChangeCallback }: DeleteRoleProps) => {
           id: id,
         })
 
-        if (onChangeCallback) {
-          onChangeCallback()
+        if (onRolesChanged) {
+          onRolesChanged()
         }
 
         await toast.promise(Promise.resolve(updated), {

@@ -8,7 +8,12 @@ import Modal from "src/core/components/Modal"
 import { RoleForm } from "./RoleForm"
 import { RoleFormSchema } from "../schemas"
 
-export const NewRole = ({ taxonomyList, onRoleCreated }) => {
+interface NewRoleProps {
+  taxonomyList: string[]
+  onRolesChanged?: () => void
+}
+
+export const NewRole = ({ taxonomyList, onRolesChanged }: NewRoleProps) => {
   const [createRoleMutation] = useMutation(createRole)
   const currentUser = useCurrentUser()
   const [openNewRoleModal, setOpenNewRoleModal] = useState(false)
@@ -18,7 +23,7 @@ export const NewRole = ({ taxonomyList, onRoleCreated }) => {
     setOpenNewRoleModal((prev) => !prev)
   }
 
-  const handleCreateRole = async (values) => {
+  const handleNewRole = async (values) => {
     try {
       const role = await createRoleMutation({
         name: values.name,
@@ -27,7 +32,9 @@ export const NewRole = ({ taxonomyList, onRoleCreated }) => {
         taxonomy: values.taxonomy,
       })
 
-      await onRoleCreated()
+      if (onRolesChanged) {
+        onRolesChanged()
+      }
 
       await toast.promise(Promise.resolve(role), {
         loading: "Creating role...",
@@ -64,19 +71,14 @@ export const NewRole = ({ taxonomyList, onRoleCreated }) => {
               schema={RoleFormSchema}
               submitText="Create Role"
               className="flex flex-col w-full"
-              onSubmit={handleCreateRole}
+              onSubmit={handleNewRole}
               taxonomyList={taxonomyList}
-            ></RoleForm>
+            />
           </div>
 
           {/* closes the modal */}
           <div className="modal-action flex justify-end mt-4">
-            <button
-              type="button"
-              /* button for popups */
-              className="btn btn-secondary"
-              onClick={handleToggleNewRoleModal}
-            >
+            <button type="button" className="btn btn-secondary" onClick={handleToggleNewRoleModal}>
               Close
             </button>
           </div>

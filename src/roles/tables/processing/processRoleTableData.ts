@@ -4,30 +4,18 @@ export type RoleTableData = {
   taxonomy: string
   id: number
   userId: number
-  onChangeCallback?: () => void
+  onRolesChanged?: () => void
   taxonomyList: string[]
 }
 
-export function processRoleTableData(roles, onChange, taxonomyList): RoleTableData[] {
-  const roleChanged = async () => {
-    if (onChange != undefined) {
-      onChange()
-    }
-  }
-
-  return roles.map((role) => {
-    const name = role.name
-    const description = role.description || ""
-    const taxonomy = role.taxonomy || ""
-
-    return {
-      name: name,
-      description: description,
-      id: role.id,
-      taxonomy: taxonomy,
-      userId: role.userId,
-      onChangeCallback: roleChanged,
-      taxonomyList: taxonomyList,
-    }
-  })
+export function processRoleTableData(roles, onRolesChanged, taxonomyList): RoleTableData[] {
+  return roles.map((role) => ({
+    name: role.name,
+    description: role.description || "",
+    id: role.id,
+    taxonomy: role.taxonomy || "",
+    userId: role.userId,
+    onRolesChanged,
+    taxonomyList,
+  }))
 }
