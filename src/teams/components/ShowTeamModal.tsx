@@ -4,7 +4,7 @@ import { Tooltip } from "react-tooltip"
 import { TeamMembers, TeamMembersColumn } from "src/teams/tables/columns/TeamMembersColumn"
 import Table from "src/core/components/Table"
 
-export const ShowTeamModal = ({ projectMember }) => {
+export const ShowTeamModal = ({ projectMember, disabled }) => {
   const [openModal, setOpenModal] = useState(false)
 
   const teamMembers = projectMember.users.map((user) => {
@@ -26,6 +26,7 @@ export const ShowTeamModal = ({ projectMember }) => {
         data-tooltip-id="showTeamModalTooltip"
         data-testid="open-modal"
         onClick={() => handleToggle()}
+        disabled={disabled}
       >
         <span>{`${projectMember.name}`}</span>
       </button>

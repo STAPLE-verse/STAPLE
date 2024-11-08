@@ -10,7 +10,9 @@ const columnHelper = createColumnHelper<ProcessedTeamTaskLog>()
 // ColumnDefs
 export const TeamTaskLogFormColumns: ColumnDef<ProcessedTeamTaskLog>[] = [
   columnHelper.accessor("projectMember", {
-    cell: (info) => <ShowTeamModal projectMember={info.getValue()} />,
+    cell: (info) => (
+      <ShowTeamModal projectMember={info.getValue()} disabled={info.getValue().deleted} />
+    ),
     header: "Team Name",
   }),
   columnHelper.accessor("lastUpdate", {
