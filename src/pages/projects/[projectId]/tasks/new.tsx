@@ -23,17 +23,9 @@ const NewTaskPage = () => {
   const handleNewTask = async (values) => {
     try {
       const task = await createTaskMutation({
-        name: values.name,
-        description: values.description,
-        containerId: values.containerId,
+        ...values,
         projectId: projectId!,
-        deadline: values.deadline,
-        elementId: values.elementId,
         createdById: currentProjectMember!.id,
-        projectMembersId: values.projectMembersId,
-        teamsId: values.teamsId,
-        formVersionId: values.formVersionId,
-        rolesId: values.rolesId,
       })
 
       await toast.promise(Promise.resolve(task), {
