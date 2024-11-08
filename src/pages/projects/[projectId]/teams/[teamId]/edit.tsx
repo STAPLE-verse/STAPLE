@@ -22,6 +22,7 @@ export const EditTeam = () => {
   const router = useRouter()
   const teamId = useParam("teamId", "number")
   const projectId = useParam("projectId", "number")
+
   const [teamProjectMember, { setQueryData }] = useQuery(getProjectMember, {
     where: {
       id: teamId,
@@ -40,6 +41,34 @@ export const EditTeam = () => {
     projectMemberUserIds: userIds,
   }
 
+  // Handle events
+  const handleEditTeam = async (values) => {
+    try {
+      const updated = await updateTeamMutation({
+        name: values.name,
+        id: teamProjectMember.id,
+        userIds: values.projectMemberUserIds,
+      })
+      await toast.promise(Promise.resolve(updated), {
+        loading: "Updating team...",
+        success: "Team updated!",
+        error: "Failed to update team...",
+      })
+      await setQueryData(updated)
+      await router.push(
+        Routes.ShowTeamPage({
+          projectId: projectId!,
+          teamId: teamProjectMember.id,
+        })
+      )
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
   return (
     <>
       <Head>
@@ -54,32 +83,7 @@ export const EditTeam = () => {
             initialValues={initialValues}
             submitText="Update Team"
             schema={TeamFormSchema}
-            onSubmit={async (values) => {
-              try {
-                const updated = await updateTeamMutation({
-                  name: values.name,
-                  id: teamProjectMember.id,
-                  userIds: values.projectMemberUserIds,
-                })
-                await toast.promise(Promise.resolve(updated), {
-                  loading: "Updating team...",
-                  success: "Team updated!",
-                  error: "Failed to update team...",
-                })
-                await setQueryData(updated)
-                await router.push(
-                  Routes.ShowTeamPage({
-                    projectId: projectId!,
-                    teamId: teamProjectMember.id,
-                  })
-                )
-              } catch (error: any) {
-                console.error(error)
-                return {
-                  [FORM_ERROR]: error.toString(),
-                }
-              }
-            }}
+            onSubmit={handleEditTeam}
           />
 
           <Link
