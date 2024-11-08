@@ -1,7 +1,5 @@
-import { Status, TaskLog } from "db"
+import { TaskLogWithTaskAndProject } from "src/core/types"
 
-// Preprocessing tasks data for tables
-// All Tasks Table
 export type AllTasksData = {
   name: string
   projectName: string
@@ -13,31 +11,7 @@ export type AllTasksData = {
   }
 }
 
-type Project = {
-  id: number
-  name: string // Add other relevant fields as necessary
-}
-
-type Task = {
-  id: number
-  createdAt: Date
-  updatedAt: Date
-  createdById: number
-  deadline: Date | null
-  name: string
-  description: string | null
-  tags: string | null
-  containerTaskOrder: number
-  projectId: number
-  project?: Project // Include project as an optional field
-  status: Status
-}
-
-type TaskLogWithTask = TaskLog & {
-  task: Task
-}
-
-export function processAllTasks(latestTaskLog: TaskLogWithTask[]): AllTasksData[] {
+export function processAllTasks(latestTaskLog: TaskLogWithTaskAndProject[]): AllTasksData[] {
   const taskSummary: Record<number, { total: number; completed: number }> = {}
 
   // Initialize the summary for each taskLog

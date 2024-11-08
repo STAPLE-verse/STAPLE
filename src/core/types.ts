@@ -1,4 +1,4 @@
-import { ProjectMember, Role, Task, TaskLog, User } from "db"
+import { Project, ProjectMember, Role, Task, TaskLog, User } from "db"
 
 export type RoleWithUser = Role & {
   user: User
@@ -10,6 +10,12 @@ export type TaskWithRoles = Task & {
 
 export type TaskLogWithTask = TaskLog & {
   task: Task
+}
+
+export type TaskLogWithTaskAndProject = TaskLog & {
+  task: Task & {
+    project: Project
+  }
 }
 
 export type TaskLogWithTaskRoles = TaskLog & {
