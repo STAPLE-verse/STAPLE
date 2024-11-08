@@ -19,13 +19,13 @@ import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateP
 import PageHeader from "src/core/components/PageHeader"
 
 export const EditTask = () => {
-  // Ensure that only PM can edit a task
-  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
   //Setup
   const router = useRouter()
   const [updateTaskMutation] = useMutation(updateTask)
+
   // Get tasks and assignments
   const { task, projectMembers, refetchTaskData } = useTaskContext()
+
   const { individualProjectMembers, teamProjectMembers } =
     useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
 
@@ -119,6 +119,8 @@ export const EditTask = () => {
 }
 
 const EditTaskPage = () => {
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
+
   return (
     <Layout>
       <TaskLayout>
