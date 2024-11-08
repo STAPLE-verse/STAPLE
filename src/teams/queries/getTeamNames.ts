@@ -17,6 +17,7 @@ export default resolver.pipe(
         name: {
           not: null,
         },
+        deleted: false,
         users: {
           some: {
             id: userId, // Check if any user in the users array has the given userId

@@ -1,17 +1,17 @@
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
-import deleteProjectMember from "src/projectmembers/mutations/deleteProjectMember"
 import toast from "react-hot-toast"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { ProjectMemberWithUsers } from "src/core/types"
+import deleteContributor from "../mutations/deleteContributor"
 
 interface DeleteContributorProps {
   contributor: ProjectMemberWithUsers
 }
 
 const DeleteContributor = ({ contributor }: DeleteContributorProps) => {
-  const [deleteProjectMemberMutation] = useMutation(deleteProjectMember)
+  const [deleteContributorMutation] = useMutation(deleteContributor)
   const router = useRouter()
 
   const currentUser = useCurrentUser()
@@ -23,7 +23,7 @@ const DeleteContributor = ({ contributor }: DeleteContributorProps) => {
       window.confirm("This Contributor will be removed from the project. Are you sure to continue?")
     ) {
       try {
-        await deleteProjectMemberMutation({ id: contributor.id })
+        await deleteContributorMutation({ id: contributor.id })
 
         // Navigate based on whether the current user was deleted
         if (contributorUser?.id === currentUser?.id) {

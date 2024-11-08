@@ -22,6 +22,18 @@ const NotificationContent = () => {
           id: currentUser!.id,
         },
       },
+      // Only include notifications for projects where the contributor is not deleted
+      project: {
+        projectMembers: {
+          some: {
+            users: {
+              some: { id: currentUser!.id },
+            },
+            name: null, // Contributor (indicating it's not a team)
+            deleted: false, // Only include undeleted project members
+          },
+        },
+      },
     },
     orderBy: { createdAt: "desc" },
     include: { project: true },

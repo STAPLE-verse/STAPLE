@@ -30,6 +30,7 @@ export const AllTeamList = ({ privilege, projectId }: AllTeamListProps) => {
       users: {
         some: { id: { not: undefined } }, // Ensures there's at least one user
       },
+      deleted: false, // Do not show deleted teams
     },
     orderBy: { id: "asc" },
     include: {
