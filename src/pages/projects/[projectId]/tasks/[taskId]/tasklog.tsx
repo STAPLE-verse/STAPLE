@@ -5,7 +5,7 @@ import { TaskLogCompleteColumns } from "src/tasklogs/tabels/columns/TaskLogCompl
 import Table from "src/core/components/Table"
 import Link from "next/link"
 import TaskLayout from "src/core/layouts/TaskLayout"
-import { useTaskContext } from "src/tasks/components/TaskContext"
+import { ProjectMemberWithTaskLog, useTaskContext } from "src/tasks/components/TaskContext"
 import {
   processIndividualTaskLogs,
   processTeamTaskLogs,
@@ -18,7 +18,8 @@ import { TeamTaskLogCompleteColumns } from "src/tasklogs/tabels/columns/TeamTask
 const AssignmentsContent = () => {
   // Get values
   const { task, projectMembers } = useTaskContext()
-  const { individualProjectMembers, teamProjectMembers } = useSeparateProjectMembers(projectMembers)
+  const { individualProjectMembers, teamProjectMembers } =
+    useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
 
   // Preprocess assignments to include only the latest log
   const processedIndividualAssignments = processIndividualTaskLogs(individualProjectMembers)

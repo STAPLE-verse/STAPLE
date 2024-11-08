@@ -15,6 +15,10 @@ import DateField from "src/core/components/fields/DateField"
 import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 import { z } from "zod"
 import AddRoleInput from "src/roles/components/AddRoleInput"
+import ToggleModal from "src/core/components/ToggleModal"
+import ValidationErrorDisplay from "src/core/components/ValidationErrorDisplay"
+import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
+import { ProjectMemberWithUsers } from "src/core/types"
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -36,7 +40,14 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     where: { project: { id: projectId! } },
   })
 
-  // Contributors - get only individuals
+  // Project Managers
+  const [projectManagers] = useQuery(getProjectManagers, {
+    projectId: projectId!,
+  })
+
+  const pmIds = projectManagers.map((pm) => pm.userId)
+
+  // Get ProjectMembers
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: {
       projectId: projectId,
@@ -45,65 +56,35 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           id: { not: undefined }, // Ensures there's at least one user
         },
       },
-      name: { equals: null }, // Ensures the name in ProjectMember is null
     },
     include: {
       users: true,
     },
   })
 
-  // get all roles from all PMs
-  const [projectManagers] = useQuery(getProjectManagers, {
-    projectId: projectId!,
-  })
+  const { individualProjectMembers, teamProjectMembers } =
+    useSeparateProjectMembers<ProjectMemberWithUsers>(projectMembers as ProjectMemberWithUsers[])
 
-  const pmIds = projectManagers.map((pm) => pm.userId)
-
-  const projectMemberOptions = projectMembers.map((projectMember) => {
+  const contributorOptions = individualProjectMembers.map((contributor) => {
     return {
-      // will be only one user in this function
-      label: projectMember["users"][0].username,
-      id: projectMember["id"],
+      // there is only one user for contributors
+      label: contributor.users?.[0]?.username || "Unknown",
+      id: contributor.id,
     }
   })
 
-  // Teams
-  const [{ projectMembers: teams }] = useQuery(getProjectMembers, {
-    where: {
-      projectId: projectId,
-      name: { not: null }, // Ensures the name in ProjectMember is non-null
-      users: {
-        some: { id: { not: undefined } }, // Ensures there's at least one user
-      },
-    },
-    include: {
-      users: true,
-    },
-  })
-
-  const teamOptions = teams.map((team) => {
+  const teamOptions = teamProjectMembers.map((team) => {
     return {
       label: team.name ? team.name : "",
       id: team.id,
     }
   })
 
-  // Modal open logics
-  const [openProjectMembersModal, setProjectMembersModal] = useState(false)
-  const handleToggleProjectMembersModal = () => {
-    setProjectMembersModal((prev) => !prev)
-  }
-
-  const [openTeamsModal, setTeamsModal] = useState(false)
-  const handleToggleTeamsModal = () => {
-    setTeamsModal((prev) => !prev)
-  }
-
   return (
-    <Form<S> {...formProps} encType="multipart/form-data">
+    <Form<S> {...formProps} encType="multipart/form-data" className="mt-4 gap-4 flex flex-col">
       {/* Name */}
       <LabeledTextField
-        className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
+        className="input w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
         name="name"
         label="Task Name: (Required)"
         placeholder="Add Task Name"
@@ -112,7 +93,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Column */}
       <LabelSelectField
-        className="select mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
+        className="select w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="containerId"
         label="Current Column: (Required)"
         options={columns}
@@ -121,7 +102,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       />
       {/* Description */}
       <LabeledTextAreaField
-        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2"
+        className="textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2"
         name="description"
         label="Task Description:"
         placeholder="Add Description"
@@ -133,7 +114,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Elements */}
       <LabelSelectField
-        className="select mb-4 w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
+        className="select w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
         name="elementId"
         label="Assign Element:"
         options={elements}
@@ -143,96 +124,33 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       />
 
       {/* Contributors */}
-      {/* Button */}
-      <div className="mt-4">
-        <button
-          type="button"
-          className="btn btn-primary w-1/2"
-          onClick={() => handleToggleProjectMembersModal()}
-        >
-          Assign Contributor(s)
-        </button>
-        <FormSpy subscription={{ errors: true }}>
-          {({ form }) => {
-            const errors = form.getState().errors
-            return errors?.projectMembersId ? (
-              <div style={{ color: "red" }}>{errors.projectMembersId}</div>
-            ) : null
-          }}
-        </FormSpy>
-        {/* Modal */}
-        <Modal open={openProjectMembersModal} size="w-7/8 max-w-xl">
-          <div className="">
-            <h1 className="flex justify-center mb2 text-3xl">Select Contributors</h1>
-            <div className="flex justify-start mt-4">
-              <CheckboxFieldTable name="projectMembersId" options={projectMemberOptions} />
-            </div>
-            {/* closes the modal */}
-            <div className="modal-action flex justify-end mt-4">
-              <button
-                type="button"
-                /* button for popups */
-                className="btn btn-primary"
-                onClick={handleToggleProjectMembersModal}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </Modal>
-      </div>
+      <ToggleModal buttonLabel="Assign Contributor(s)" modalTitle="Select Contributors">
+        <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
+      </ToggleModal>
+      <ValidationErrorDisplay fieldName={"projectMembersId"} />
 
       {/* Teams */}
-      {/* Button */}
-      <div className="mt-4">
-        <button
-          type="button"
-          className="btn btn-primary w-1/2"
-          onClick={() => handleToggleTeamsModal()}
-        >
-          Assign Team(s)
-        </button>
-        <FormSpy subscription={{ errors: true }}>
-          {({ form }) => {
-            const errors = form.getState().errors
-            return errors?.projectMembersId ? (
-              <div style={{ color: "red" }}>{errors.projectMembersId}</div>
-            ) : null
-          }}
-        </FormSpy>
-        <Modal open={openTeamsModal} size="w-7/8 max-w-xl">
-          <div className="">
-            <h1 className="flex justify-center mb2 text-3xl">Select Teams</h1>
-            <div className="flex justify-start mt-4">
-              <CheckboxFieldTable name="teamsId" options={teamOptions} />
-            </div>
-            {/* closes the modal */}
-            <div className="modal-action flex justify-end mt-4">
-              <button type="button" className="btn btn-primary" onClick={handleToggleTeamsModal}>
-                Close
-              </button>
-            </div>
-          </div>
-        </Modal>
-      </div>
+      <ToggleModal buttonLabel="Assign Team(s)" modalTitle="Select Teams">
+        <CheckboxFieldTable name="teamsId" options={teamOptions} />
+      </ToggleModal>
+      <ValidationErrorDisplay fieldName={"projectMembersId"} />
 
+      {/* Form */}
       {formResponseSupplied ? (
         <TaskSchemaInput projectManagerIds={pmIds} />
       ) : (
-        <p className="mt-4 w-1/2 text-red-500">
+        <p className="w-1/2 text-red-500">
           The task is already being completed by the contributors. Please, create a new task if you
           would like to change the attached form.
         </p>
       )}
 
-      <div className="mt-4">
-        <AddRoleInput
-          projectManagerIds={pmIds}
-          buttonLabel="Assign Role(s)"
-          tooltipContent="Add roles to task"
-        />
-      </div>
-      {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
+      {/* Roles */}
+      <AddRoleInput
+        projectManagerIds={pmIds}
+        buttonLabel="Assign Role(s)"
+        tooltipContent="Add roles to task"
+      />
     </Form>
   )
 }

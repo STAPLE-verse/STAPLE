@@ -13,7 +13,7 @@ import toast from "react-hot-toast"
 import TaskLayout from "src/core/layouts/TaskLayout"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
-import { useTaskContext } from "src/tasks/components/TaskContext"
+import { ProjectMemberWithTaskLog, useTaskContext } from "src/tasks/components/TaskContext"
 import { responseSubmitted } from "src/tasklogs/utils/responseSubmitted"
 import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
 import PageHeader from "src/core/components/PageHeader"
@@ -26,7 +26,8 @@ export const EditTask = () => {
   const [updateTaskMutation] = useMutation(updateTask)
   // Get tasks and assignments
   const { task, projectMembers, refetchTaskData } = useTaskContext()
-  const { individualProjectMembers, teamProjectMembers } = useSeparateProjectMembers(projectMembers)
+  const { individualProjectMembers, teamProjectMembers } =
+    useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
 
   // Calculate individual projectMember ids
   const projectMembersId = individualProjectMembers

@@ -2,7 +2,7 @@ import { Tooltip } from "react-tooltip"
 import CompleteSchema from "./CompleteSchema"
 import CompleteToggle from "./CompleteToggle"
 import { CompletedAs } from "db"
-import { useTaskContext } from "src/tasks/components/TaskContext"
+import { ProjectMemberWithTaskLog, useTaskContext } from "src/tasks/components/TaskContext"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 import TaskLogHistoryModal from "./TaskLogHistoryModal"
@@ -11,7 +11,8 @@ import { filterLatestTaskLog } from "../utils/filterLatestTaskLog"
 
 export const TaskLogCompletion = () => {
   const { task, projectMembers } = useTaskContext()
-  const { individualProjectMembers, teamProjectMembers } = useSeparateProjectMembers(projectMembers)
+  const { individualProjectMembers, teamProjectMembers } =
+    useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
   const { projectMember: currentProjectMember } = useCurrentContributor(task.projectId)
   const currentUser = useCurrentUser()
 
