@@ -3,6 +3,14 @@ import { useQuery } from "@blitzjs/rpc"
 import Table from "src/core/components/Table"
 import { InviteColumns } from "../tables/columns/InviteColumns"
 
+export const InvitesListView = ({ invites }) => {
+  return (
+    <div>
+      <Table columns={InviteColumns} data={invites} addPagination={true} />
+    </div>
+  )
+}
+
 export const InvitesList = ({ currentUser }) => {
   // Get invitations
   const [invites] = useQuery(getInvites, {
@@ -11,11 +19,9 @@ export const InvitesList = ({ currentUser }) => {
     include: { project: true },
   })
 
-  //console.log(invites)
-
   return (
     <div>
-      <Table columns={InviteColumns} data={invites} addPagination={true} />
+      <InvitesListView invites={invites}></InvitesListView>
     </div>
   )
 }
