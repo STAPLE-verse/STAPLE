@@ -48,6 +48,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: {
       projectId: projectId,
+      deleted: false,
       users: {
         every: {
           id: { not: undefined }, // Ensures there's at least one user
