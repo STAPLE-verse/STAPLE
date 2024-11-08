@@ -37,6 +37,7 @@ export const EditTeam = () => {
 
   const initialValues = {
     name: teamProjectMember.name ? teamProjectMember.name : undefined,
+    projectMemberUserIds: userIds,
   }
 
   return (
@@ -50,21 +51,15 @@ export const EditTeam = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <TeamForm
             projectId={projectId!}
-            teamId={teamProjectMember.id}
-            currentProjectMemberUserIds={userIds}
             initialValues={initialValues}
             submitText="Update Team"
             schema={TeamFormSchema}
             onSubmit={async (values) => {
-              const teamMemberUserIds: number[] = values.projectMembers
-                .filter((el) => el.checked)
-                .map((val) => val.userId)
-
               try {
                 const updated = await updateTeamMutation({
                   name: values.name,
                   id: teamProjectMember.id,
-                  userIds: teamMemberUserIds,
+                  userIds: values.projectMemberUserIds,
                 })
                 await toast.promise(Promise.resolve(updated), {
                   loading: "Updating team...",

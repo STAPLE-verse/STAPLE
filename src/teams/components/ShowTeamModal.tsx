@@ -19,7 +19,7 @@ export const ShowTeamModal = ({ projectMember }) => {
   }
 
   return (
-    <div className="">
+    <div>
       <button
         type="button"
         className="btn btn-primary"

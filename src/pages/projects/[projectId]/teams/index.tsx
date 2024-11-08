@@ -23,7 +23,6 @@ interface AllTeamListProps {
 export const AllTeamList = ({ privilege, projectId }: AllTeamListProps) => {
   const currentUser = useCurrentUser()
 
-  // use this to get teams
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: {
       projectId: projectId,
