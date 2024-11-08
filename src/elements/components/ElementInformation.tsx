@@ -6,10 +6,10 @@ import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
 import { Element } from "@prisma/client"
 import DateFormat from "src/core/components/DateFormat"
-import { elementTasksTableColumns } from "src/tasks/components/TaskTable"
-import { processElementTasks } from "src/tasks/utils/processTasks"
 import { useState } from "react"
 import UpdateTasks from "./UpdateTasks"
+import { ElementTasksColumns } from "../tables/columns/ElementTasksColumns"
+import { processElementTasks } from "../tables/processing/processElementTasks"
 
 interface ElementInformationProps {
   element: Element
@@ -93,7 +93,7 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({
             className="z-[1099] ourtooltips"
           />
           <div className="overflow-x-auto">
-            <Table columns={elementTasksTableColumns} data={processedTasks} addPagination={true} />
+            <Table columns={ElementTasksColumns} data={processedTasks} addPagination={true} />
           </div>
         </div>
       </div>

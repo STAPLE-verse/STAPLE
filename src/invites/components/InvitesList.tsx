@@ -1,7 +1,15 @@
 import getInvites from "../queries/getInvites"
 import { useQuery } from "@blitzjs/rpc"
 import Table from "src/core/components/Table"
-import { inviteTableColumns } from "./InvitesTable"
+import { InviteColumns } from "../tables/columns/InviteColumns"
+
+export const InvitesListView = ({ invites }) => {
+  return (
+    <div>
+      <Table columns={InviteColumns} data={invites} addPagination={true} />
+    </div>
+  )
+}
 
 export const InvitesList = ({ currentUser }) => {
   // Get invitations
@@ -11,11 +19,9 @@ export const InvitesList = ({ currentUser }) => {
     include: { project: true },
   })
 
-  //console.log(invites)
-
   return (
     <div>
-      <Table columns={inviteTableColumns} data={invites} addPagination={true} />
+      <InvitesListView invites={invites}></InvitesListView>
     </div>
   )
 }

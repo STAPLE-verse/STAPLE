@@ -4,10 +4,10 @@ import Layout from "src/core/layouts/Layout"
 import getElement from "src/elements/queries/getElement"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import { ElementInformation } from "src/elements/components/ElementInformation"
-import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { ElementSummary } from "src/elements/components/ElementSummary"
 
 const ShowElementPage = () => {

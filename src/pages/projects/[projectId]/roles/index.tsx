@@ -1,19 +1,17 @@
-import { Suspense, useState } from "react"
+import { Suspense } from "react"
 import Head from "next/head"
 import { Tab } from "@headlessui/react"
 import Layout from "src/core/layouts/Layout"
 import TasksTab from "src/roles/components/TasksTab"
-import ProjectMembersTab from "src/roles/components/ProjectMembersTab"
-import useProjectMemberAuthorization from "src/projectmembers/hooks/UseProjectMemberAuthorization"
+import ContributorsTab from "src/roles/components/ContributorsTab"
+import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
 }
 
-export const CreditsTabs = () => {
-  //const [selectedIndex, setSelectedIndex] = useState(0)
-
+export const RolesTabs = () => {
   return (
     <Tab.Group defaultIndex={0}>
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
@@ -44,26 +42,26 @@ export const CreditsTabs = () => {
 
         {/* Tabpanel for Assign Contributors */}
         <Tab.Panel>
-          <ProjectMembersTab />
+          <ContributorsTab />
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>
   )
 }
 
-const CreditPage = () => {
+const RolesPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout>
       <Head>
-        <title>Assign Roles to Contributions</title>
+        <title>Assign Roles</title>
       </Head>
 
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         {
           <Suspense fallback={<div>Loading...</div>}>
-            <CreditsTabs />
+            <RolesTabs />
           </Suspense>
         }
       </main>
@@ -71,4 +69,4 @@ const CreditPage = () => {
   )
 }
 
-export default CreditPage
+export default RolesPage

@@ -1,0 +1,48 @@
+import { Suspense } from "react"
+import { Routes } from "@blitzjs/next"
+import Head from "next/head"
+import Link from "next/link"
+import { useParam } from "@blitzjs/next"
+import Layout from "src/core/layouts/Layout"
+import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
+import { MemberPrivileges } from "@prisma/client"
+import { AllInvitesList } from "src/invites/components/AllInvitesList"
+
+// issue 37
+const InvitesPagePM = () => {
+  const projectId = useParam("projectId", "number")
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
+
+  return (
+    <Layout>
+      <Head>
+        <title>Project Contributor Invitations</title>
+      </Head>
+
+      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+        <h1 className="flex justify-center mb-2 text-3xl">Invited Contributors</h1>
+
+        <Suspense fallback={<div>Loading...</div>}>
+          <AllInvitesList />
+        </Suspense>
+        <div>
+          <Link
+            className="btn btn-primary mb-4 mt-4"
+            href={Routes.NewContributorPage({ projectId: projectId! })}
+          >
+            Invite Contributor
+          </Link>
+
+          <Link
+            className="btn btn-secondary mx-2 mb-4 mt-4"
+            href={Routes.ContributorsPage({ projectId: projectId! })}
+          >
+            View Contributors
+          </Link>
+        </div>
+      </main>
+    </Layout>
+  )
+}
+
+export default InvitesPagePM

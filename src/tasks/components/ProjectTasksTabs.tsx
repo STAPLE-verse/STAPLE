@@ -5,7 +5,7 @@ import TaskBoard from "src/tasks/components/TaskBoard"
 import Link from "next/link"
 import { MemberPrivileges } from "@prisma/client"
 import { ProjectTasksList } from "src/tasks/components/ProjectTasksList"
-import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ")
@@ -14,9 +14,6 @@ function classNames(...classes) {
 export const ProjectTasksTabs = () => {
   const projectId = useParam("projectId", "number")
   const { privilege: projectPrivilege } = useMemberPrivileges()
-
-  // const { projectPrivilege } = useCurrentProjectPrivilege(projectId)
-  //const [selectedIndex, setSelectedIndex] = useState(0)
 
   return (
     <div>

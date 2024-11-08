@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Tooltip } from "react-tooltip"
-import JsonForm from "src/tasklogs/components/JsonForm"
+import JsonForm from "src/core/components/JsonForm"
 import Modal from "src/core/components/Modal"
 import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import Link from "next/link"

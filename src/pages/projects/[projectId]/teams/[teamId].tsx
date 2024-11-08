@@ -7,14 +7,13 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import deleteTeam from "src/teams/mutations/deleteTeam"
-import { ProjectMemberRolesList } from "src/roles/components/ProjectMemberRolesList"
 import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
-import { roleTableColumnsTeam } from "src/roles/components/RoleTable"
 import { MemberPrivileges } from "db"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { ProjectMemberWithUsers } from "."
-import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { Tooltip } from "react-tooltip"
+import { TeamRolesList } from "src/teams/components/TeamRolesList"
 
 export const ShowTeamPage = () => {
   const router = useRouter()
@@ -87,11 +86,7 @@ export const ShowTeamPage = () => {
                 className="z-[1099] ourtooltips"
               />
 
-              <ProjectMemberRolesList
-                usersId={userIds}
-                projectId={projectId}
-                columns={roleTableColumnsTeam}
-              />
+              <TeamRolesList usersId={userIds} projectId={projectId} />
             </div>
           </div>
 

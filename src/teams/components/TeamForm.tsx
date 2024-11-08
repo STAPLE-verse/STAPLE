@@ -2,52 +2,34 @@ import React, { useState } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { z } from "zod"
 import { useQuery } from "@blitzjs/rpc"
-import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
-import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import AssignTeamMembers, { TeamOption } from "./AssignTeamMembers"
 import { Field } from "react-final-form"
-import { ProjectMemberWithUsers } from "src/pages/projects/[projectId]/teams"
+import getContributors from "src/contributors/queries/getContributors"
 
 interface TeamFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
   teamId?: number
-  currentProjectMemberIds?: number[]
+  currentProjectMemberUserIds?: number[]
 }
 
 export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>) {
-  const { projectId, teamId, currentProjectMemberIds, ...formProps } = props
+  const { projectId, teamId, currentProjectMemberUserIds, ...formProps } = props
 
   // Get individual projectMembers only for the project
-  const [{ projectMembers }] = useQuery(getProjectMembers, {
-    where: {
-      projectId: projectId,
-      users: {
-        every: {
-          id: { not: undefined }, // Ensures there's at least one user
-        },
-      },
-      name: { equals: null }, // Ensures the name in ProjectMember is null
-    },
-    orderBy: { id: "asc" },
-    include: {
-      users: true,
-    },
-  })
-
-  const individualMembers = projectMembers as ProjectMemberWithUsers[]
+  const [contributors] = useQuery(getContributors, { projectId: projectId! })
 
   // Set initialValues of currentTeam projectMembers
-  const currentTeamOptions = individualMembers.map((projectMember) => {
+  const currentTeamOptions = contributors.map((contributor) => {
     let checked = false
-    if (teamId != undefined && currentProjectMemberIds != undefined) {
-      checked = currentProjectMemberIds.find((id) => id == projectMember.id) != undefined
+    if (teamId != undefined && currentProjectMemberUserIds != undefined) {
+      checked = currentProjectMemberUserIds.includes(contributor.users[0]!.id)
     }
     return {
       // TODO: ts does not recognize prisma include class
-      userName: projectMember.users[0]!.username,
-      userId: projectMember.users[0]!.id,
-      id: projectMember.id,
+      userName: contributor.users[0]!.username,
+      userId: contributor.users[0]!.id,
+      id: contributor.id,
       checked: checked,
       teamId: teamId,
     } as TeamOption

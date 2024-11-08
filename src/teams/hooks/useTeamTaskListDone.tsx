@@ -1,24 +1,10 @@
 import { useQuery } from "@blitzjs/rpc"
-import { Routes } from "@blitzjs/next"
-import Link from "next/link"
-import { createColumnHelper } from "@tanstack/react-table"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
-import { ProjectMember, Role, Status, Task, TaskLog } from "db"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { Role, Status, Task, TaskLog } from "db"
 import { ProjectMemberWithUsers } from "src/pages/projects/[projectId]/teams"
-
-// Define the type for the table data
-type TaskTableData = {
-  id: number
-  completedBy: string
-  taskName: string
-  roles: string | JSX.Element
-  latestUpdate: string
-  taskId: number
-  projectId: number
-}
+import { processTeamTaskListDone } from "../tables/processing/processTeamTaskListDone"
 
 type TaskWithRoles = Task & {
   roles: Role[] // Assuming roles is an array of Role
@@ -29,7 +15,7 @@ type TaskLogWithTask = TaskLog & {
 }
 
 // Define the TaskLogWithTaskCompleted type
-type TaskLogWithTaskCompleted = TaskLogWithTask & {
+export type TaskLogWithTaskCompleted = TaskLogWithTask & {
   completedBy: ProjectMemberWithUsers // Ensure this is included
 }
 
@@ -61,99 +47,10 @@ export const useTeamTaskListDone = (teamId: number) => {
     latestTaskLogs = (getLatestTaskLogs(taskLogs) as TaskLogWithTaskCompleted[]) || []
   }
 
-  // Create a user map for quick lookup and format the name
-  const userMap: { [key: number]: string } = {}
-  latestTaskLogs.forEach((taskLog) => {
-    const { completedBy } = taskLog
-    // If `completedBy` has users associated with it
-    completedBy.users.forEach((user) => {
-      const { id, firstName, lastName, username } = user
-      const fullName = firstName && lastName ? `${firstName} ${lastName}` : username
-      userMap[id] = fullName
-    })
-  })
-
   const currentUser = useCurrentUser()
   const locale = currentUser ? currentUser.language : "en-US"
 
-  // Transform tasks into the desired table format
-  const tableData: TaskTableData[] = latestTaskLogs.flatMap((taskLog) => {
-    // Ensure taskLog.task is an array; if it's a single task, wrap it in an array
-    const tasks = Array.isArray(taskLog.task) ? taskLog.task : [taskLog.task]
+  const teamTaskListDoneData = processTeamTaskListDone(latestTaskLogs, locale)
 
-    return tasks.map((task) => {
-      return {
-        id: task.id,
-        // Completed by username
-        completedBy: userMap[taskLog.completedBy?.id] || "Not Completed", // Use completedBy directly
-        // Task name
-        taskName: task.name,
-        // Roles
-        roles:
-          task.roles?.length > 0
-            ? task.roles.map((role) => role.name).join(", ")
-            : "No roles assigned",
-        // Date
-        latestUpdate:
-          taskLog.createdAt?.toLocaleDateString(locale, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false,
-          }) || "Unknown",
-        // View
-        taskId: task.id,
-        projectId: task.projectId,
-      }
-    })
-  })
-
-  // Define columns
-  // TODO: Define proper type for completedTasks
-  const columnHelper = createColumnHelper<TaskTableData>()
-
-  const columns = [
-    columnHelper.accessor("completedBy", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Completed By",
-      id: "completedBy",
-    }),
-    columnHelper.accessor("taskName", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Task Name",
-      id: "taskName",
-    }),
-    columnHelper.accessor("roles", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Roles",
-      id: "roles",
-    }),
-    columnHelper.accessor("latestUpdate", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Latest Update",
-      id: "lastestUpdate",
-    }),
-    columnHelper.accessor("taskId", {
-      id: "view",
-      header: "View",
-      enableColumnFilter: false,
-      enableSorting: false,
-      cell: (info) => (
-        <Link
-          className="btn btn-ghost"
-          href={Routes.ShowTaskPage({
-            projectId: info.row.original.projectId,
-            taskId: info.getValue(),
-          })}
-        >
-          <MagnifyingGlassIcon width={25} className="stroke-primary" />
-        </Link>
-      ),
-    }),
-  ]
-
-  return { data: tableData, columns }
+  return { teamTaskListDoneData }
 }

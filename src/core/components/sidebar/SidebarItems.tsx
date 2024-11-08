@@ -55,7 +55,7 @@ export const ProjectSidebarItems = (projectId: number): SidebarItemProps[] => {
     {
       icon: UsersIcon,
       text: "Contributors",
-      route: Routes.ProjectMembersPage({ projectId: projectId }),
+      route: Routes.ContributorsPage({ projectId: projectId }),
       tooltipId: "project-projectMembers-tooltip",
       privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
     },
@@ -83,7 +83,7 @@ export const ProjectSidebarItems = (projectId: number): SidebarItemProps[] => {
     {
       icon: CheckCircleIcon,
       text: "Roles",
-      route: Routes.CreditPage({ projectId: projectId }),
+      route: Routes.RolesPage({ projectId: projectId }),
       tooltipId: "project-credit-tooltip",
       privilege: [MemberPrivileges.PROJECT_MANAGER],
     },

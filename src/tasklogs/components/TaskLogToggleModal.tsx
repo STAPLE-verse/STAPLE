@@ -3,12 +3,12 @@ import CompleteToggle from "./CompleteToggle"
 import { useState } from "react"
 import { useParam } from "@blitzjs/next"
 import { CompletedAs } from "db"
-import { useCurrentProjectMember } from "src/projectmembers/hooks/useCurrentProjectMember"
+import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
 export const TaskLogToggleModal = ({ taskLog }) => {
   const [openModal, setOpenModal] = useState(false)
   const projectId = useParam("projectId", "number")
-  const { projectMember: currentProjectMember } = useCurrentProjectMember(projectId)
+  const { projectMember: currentProjectMember } = useCurrentContributor(projectId)
 
   // Handle events
   const handleToggle = () => {

@@ -2,13 +2,19 @@ import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-import { TaskWithFormVersion, projectFormsTableColumns } from "./ProjectFormsTable"
+import { ProjectFormsColumns } from "../tables/columns/ProjectFormsColumns"
+import { processProjectForms } from "../tables/processing/processProjectForms"
+import { FormVersion, Task } from "db"
+
+export interface TaskWithFormVersion extends Task {
+  formVersion: FormVersion | null
+}
 
 export const ProjectFormsList = () => {
   // Setup
   const projectId = useParam("projectId", "number")
 
-  // Get tasks with latest FormVersion
+  // Get tasks with FormVersion
   const [{ tasks }] = useQuery(getTasks, {
     where: {
       project: { id: projectId! },
@@ -22,15 +28,11 @@ export const ProjectFormsList = () => {
     orderBy: { id: "asc" },
   })
 
-  //console.log(tasks)
+  const projectFormsTableData = processProjectForms(tasks as TaskWithFormVersion[])
 
   return (
     <div>
-      <Table
-        data={tasks as TaskWithFormVersion[]}
-        columns={projectFormsTableColumns}
-        addPagination={true}
-      />
+      <Table data={projectFormsTableData} columns={ProjectFormsColumns} addPagination={true} />
     </div>
   )
 }

@@ -10,7 +10,7 @@ import createAnnouncement from "src/notifications/mutations/createAnnouncement"
 import { MemberPrivileges } from "db"
 import { AnnouncementForm } from "src/projects/components/AnnouncementForm"
 import { FormAnnouncementSchema } from "src/projects/schemas"
-import { useMemberPrivileges } from "src/projectmembers/components/MemberPrivilegesContext"
+import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 
 interface ShowProjectContentProps {
   projectId: number
