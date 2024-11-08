@@ -16,6 +16,10 @@ export default resolver.pipe(
     await db.projectMember.deleteMany({ where: { projectId: id } })
     // Delete project privileges
     await db.projectPrivilege.deleteMany({ where: { projectId: id } })
+    // Dekete the notifications related to the project
+    await db.notification.deleteMany({
+      where: { projectId: id },
+    })
     // Delete the project itself
     const project = await db.project.deleteMany({ where: { id } })
 
