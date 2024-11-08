@@ -21,8 +21,11 @@ export const TaskLogCompletion = () => {
     projectMember.users.some((user) => user.id === currentUser?.id)
   )[0]
 
-  const filteredTeamProjectMembers = teamProjectMembers.filter((projectMember) =>
-    projectMember.users.some((user) => user.id === currentUser?.id)
+  const filteredTeamProjectMembers = teamProjectMembers.filter(
+    (projectMember) =>
+      !projectMember.deleted && // Filter out deleted teams
+      // Find assignments of the current user to the task
+      projectMember.users.some((user) => user.id === currentUser?.id)
   )
 
   return (
