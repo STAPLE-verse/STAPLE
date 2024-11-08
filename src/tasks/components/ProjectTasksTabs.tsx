@@ -9,7 +9,7 @@ import clsx from "clsx"
 export const ProjectTasksTabs = ({ projectPrivilege, projectId }) => {
   return (
     <>
-      <Tab.Group defaultIndex={1}>
+      <Tab.Group defaultIndex={0}>
         <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
           {/* Tablink for board view */}
           {projectPrivilege === MemberPrivileges.PROJECT_MANAGER && (

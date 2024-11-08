@@ -17,6 +17,7 @@ import useTaskBoardData from "../hooks/useTaskBoardData"
 import { findContainerTitle, findContainerItems, findItemValue } from "../utils/findHelpers"
 import useDragHandlers from "../hooks/useDragHandlers"
 import { useParam } from "@blitzjs/next"
+import { Tooltip } from "react-tooltip"
 
 const TaskBoard = () => {
   // Setup
@@ -37,7 +38,18 @@ const TaskBoard = () => {
 
   return (
     <div className="mx-auto max-w-7xl py-10">
-      <AddContainer projectId={projectId} refetch={refetch}></AddContainer>
+      <div className="flex items-center justify-between gap-y-2">
+        <h1 className="text-3xl font-bold" data-tooltip-id="kanban-tooltip">
+          Project Tasks
+        </h1>
+        <Tooltip
+          id="kanban-tooltip"
+          content="Completed tasks appear in a shade of green"
+          className="z-[1099] ourtooltips"
+        />
+        <AddContainer projectId={projectId} refetch={refetch}></AddContainer>
+      </div>
+
       <div className="mt-10">
         <div className="grid grid-cols-3 gap-6">
           <DndContext

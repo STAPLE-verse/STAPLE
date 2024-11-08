@@ -2,7 +2,6 @@ import { useMutation } from "@blitzjs/rpc"
 import createColumn from "src/tasks/mutations/createColumn"
 import { useState } from "react"
 import TaskInput from "./TaskInput"
-import { Tooltip } from "react-tooltip"
 import Modal from "src/core/components/Modal"
 
 const AddContainer = ({ projectId, refetch }) => {
@@ -25,6 +24,14 @@ const AddContainer = ({ projectId, refetch }) => {
 
   return (
     <>
+      <button
+        type="button"
+        className="btn btn-primary"
+        onClick={() => setShowAddContainerModal(true)}
+      >
+        Add Column
+      </button>
+
       <Modal open={showAddContainerModal}>
         <h1 className="flex justify-center mb-2 text-3xl">Add Column</h1>
         <TaskInput
@@ -47,24 +54,6 @@ const AddContainer = ({ projectId, refetch }) => {
           </button>
         </div>
       </Modal>
-
-      <div className="flex items-center justify-between gap-y-2">
-        <h1 className="text-3xl font-bold" data-tooltip-id="kanban-tooltip">
-          Project Tasks
-        </h1>
-        <Tooltip
-          id="kanban-tooltip"
-          content="Completed tasks appear in a shade of green"
-          className="z-[1099] ourtooltips"
-        />
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => setShowAddContainerModal(true)}
-        >
-          Add Column
-        </button>
-      </div>
     </>
   )
 }
