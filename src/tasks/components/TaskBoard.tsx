@@ -8,8 +8,6 @@ import {
   useSensors,
 } from "@dnd-kit/core"
 import { SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
-import { HTMLAttributes, ClassAttributes } from "react"
-
 // get specific components for this board
 import TaskContainer from "src/tasks/components/TaskContainer"
 import TaskItems from "src/tasks/components/TaskItems"
@@ -18,14 +16,11 @@ import useTaskBoardData from "../hooks/useTaskBoardData"
 // Get helper functions
 import { findContainerTitle, findContainerItems, findItemValue } from "../utils/findHelpers"
 import useDragHandlers from "../hooks/useDragHandlers"
+import { useParam } from "@blitzjs/next"
 
-//interface
-interface TaskBoardProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
-  projectId: number
-}
-
-const TaskBoard = ({ projectId }: TaskBoardProps) => {
+const TaskBoard = () => {
   // Setup
+  const projectId = useParam("projectId", "number")
   const { containers, refetch, updateContainers } = useTaskBoardData(projectId)
   const { handleDragStart, handleDragMove, handleDragEnd, activeId } = useDragHandlers({
     containers,
@@ -62,7 +57,7 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
                           title={i.title}
                           id={i.id}
                           key={i.id}
-                          projectId={projectId}
+                          projectId={projectId!}
                           completed={i.completed}
                         />
                       ))}
@@ -79,7 +74,7 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
                   id={activeId}
                   title={findItemValue(activeId, containers, "title") || ""}
                   completed={findItemValue(activeId, containers, "completed") || false}
-                  projectId={projectId}
+                  projectId={projectId!}
                 />
               )}
               {/* Drag Overlay For Container */}
@@ -91,7 +86,7 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
                       title={i.title}
                       id={i.id}
                       completed={i.completed}
-                      projectId={projectId}
+                      projectId={projectId!}
                     />
                   ))}
                 </TaskContainer>
