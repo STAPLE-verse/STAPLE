@@ -16,7 +16,7 @@ const Card = ({ title, children, tooltipContent, actions, className }: CardProps
   const tooltipId = tooltipContent ? uuidv4() : undefined
 
   return (
-    <div className={clsx("card bg-base-300 w-full mt-2", className)}>
+    <div className={clsx("card bg-base-300 mt-2", className)}>
       <div className="card-body">
         <div className="card-title" data-tooltip-id={tooltipId}>
           {title}

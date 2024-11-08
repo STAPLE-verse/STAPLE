@@ -15,6 +15,7 @@ const TeamInformation = ({ team, privilege }: TeamInformationProps) => {
   return (
     <Card
       title={team.name!}
+      className="w-full"
       actions={
         privilege === MemberPrivileges.PROJECT_MANAGER ? (
           <Link

@@ -7,6 +7,7 @@ export const TeamRolesList = ({ usersId, projectId }) => {
   return (
     <Card
       title={"Team Member Roles"}
+      className="w-full"
       tooltipContent="All individual member assigned roles are shown"
     >
       <ProjectMemberRolesList

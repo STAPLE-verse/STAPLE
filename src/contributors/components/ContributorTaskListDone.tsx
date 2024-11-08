@@ -19,6 +19,7 @@ export const ContributorTaskListDone = ({
 }: ContributorTaskListDoneProps) => (
   <Card
     title="Contributor Tasks"
+    className="w-full"
     tooltipContent="Only completed tasks are included"
     actions={
       privilege === MemberPrivileges.PROJECT_MANAGER && (

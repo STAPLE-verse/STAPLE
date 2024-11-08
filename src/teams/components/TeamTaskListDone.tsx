@@ -17,7 +17,7 @@ export const TeamTaskListDone = ({ teamId }: TeamTaskListDoneProps) => {
     processTeamTaskListDone(taskLogs, locale)
 
   return (
-    <Card title="Team Tasks" tooltipContent="Only completed tasks are included">
+    <Card title="Team Tasks" tooltipContent="Only completed tasks are included" className="w-full">
       <ProjectMemberTaskListDone
         projectMemberId={teamId}
         tableColumns={TeamTaskListDoneColumns}

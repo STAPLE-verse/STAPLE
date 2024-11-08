@@ -29,6 +29,7 @@ const ContributorInformation = ({
   return (
     <Card
       title={contributorName}
+      className="w-full"
       actions={
         privilege === MemberPrivileges.PROJECT_MANAGER ? (
           <Link

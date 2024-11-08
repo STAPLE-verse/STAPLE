@@ -19,6 +19,7 @@ export const ContributorRolesList = ({
 }: ContributorRolesListProps) => (
   <Card
     title={"Contributor Roles"}
+    className="w-full"
     actions={
       privilege === MemberPrivileges.PROJECT_MANAGER && (
         <Link className="btn btn-primary" href={Routes.RolesPage({ projectId: projectId! })}>
