@@ -4,6 +4,14 @@ import getInvites from "../queries/getInvites"
 import Table from "src/core/components/Table"
 import { InvitePMColumns } from "../tables/columns/InvitePMColumns"
 
+export const AllInvitesListView = ({ invites }) => {
+  return (
+    <div>
+      <Table columns={InvitePMColumns} data={invites} addPagination={true} />
+    </div>
+  )
+}
+
 export const AllInvitesList = () => {
   const projectId = useParam("projectId", "number")
 
@@ -14,7 +22,7 @@ export const AllInvitesList = () => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <Table columns={InvitePMColumns} data={invites} addPagination={true} />
+      <AllInvitesListView invites={invites}></AllInvitesListView>
     </main>
   )
 }
