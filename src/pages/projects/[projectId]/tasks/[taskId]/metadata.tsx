@@ -11,7 +11,6 @@ import DownloadZIP from "src/forms/components/DownloadZIP"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import TaskLayout from "src/core/layouts/TaskLayout"
-import { extendSchema } from "src/forms/utils/extendSchema"
 import { processMetadata } from "src/forms/utils/processMetadata"
 import { metadataTable } from "src/forms/utils/metadataTable"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
@@ -51,7 +50,7 @@ const MetadataContent = () => {
 
                 <Link
                   className="btn btn-secondary mx-2"
-                  href={Routes.AssignmentsPage({
+                  href={Routes.TaskLogsPage({
                     projectId: task.projectId,
                     taskId: task.id,
                   })}

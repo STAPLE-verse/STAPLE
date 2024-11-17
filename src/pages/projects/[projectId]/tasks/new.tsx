@@ -18,14 +18,14 @@ const NewTaskPage = () => {
   const [createTaskMutation] = useMutation(createTask)
 
   const projectId = useParam("projectId", "number")
-  const { projectMember: currentProjectMember } = useCurrentContributor(projectId)
+  const { projectMember: currentContributor } = useCurrentContributor(projectId)
 
   const handleNewTask = async (values) => {
     try {
       const task = await createTaskMutation({
         ...values,
         projectId: projectId!,
-        createdById: currentProjectMember!.id,
+        createdById: currentContributor!.id,
       })
 
       await toast.promise(Promise.resolve(task), {

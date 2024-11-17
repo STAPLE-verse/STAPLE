@@ -29,12 +29,12 @@ export const EditTask = () => {
   const { individualProjectMembers, teamProjectMembers } =
     useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
 
-  // Calculate individual projectMember ids
+  // Get individual projectMember ids
   const projectMembersId = individualProjectMembers
     .map((projectMember) => projectMember.id)
     .filter((id): id is number => id !== null)
 
-  // Calculate team member projectMember ids
+  // Get team member projectMember ids
   const teamsId = teamProjectMembers
     .map((projectMember) => projectMember.id)
     .filter((id): id is number => id !== null)
@@ -105,7 +105,6 @@ export const EditTask = () => {
             initialValues={initialValues}
             onSubmit={handleSubmit}
           />
-
           <Link
             className="btn self-end mt-4 btn-error"
             href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}

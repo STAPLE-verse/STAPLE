@@ -15,13 +15,13 @@ import { TaskLogFormColumns } from "src/tasklogs/tabels/columns/TaskLogFormColum
 import { TeamTaskLogFormColumns } from "src/tasklogs/tabels/columns/TeamTaskLogFormColumns"
 import { TeamTaskLogCompleteColumns } from "src/tasklogs/tabels/columns/TeamTaskLogCompleteColumns"
 
-const AssignmentsContent = () => {
+const TaskLogContent = () => {
   // Get values
   const { task, projectMembers } = useTaskContext()
   const { individualProjectMembers, teamProjectMembers } =
     useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
 
-  // Preprocess assignments to include only the latest log
+  // Preprocess taskLogs to include only the latest log
   const processedIndividualAssignments = processIndividualTaskLogs(individualProjectMembers)
   const processedTeamAssignments = processTeamTaskLogs(teamProjectMembers)
 
@@ -103,18 +103,18 @@ const AssignmentsContent = () => {
   )
 }
 
-export const AssignmentsPage = () => {
+export const TaskLogsPage = () => {
   return (
     <Layout>
       <TaskLayout>
         <Suspense fallback={<div>Loading...</div>}>
-          <AssignmentsContent />
+          <TaskLogContent />
         </Suspense>
       </TaskLayout>
     </Layout>
   )
 }
 
-AssignmentsPage.authenticate = true
+TaskLogsPage.authenticate = true
 
-export default AssignmentsPage
+export default TaskLogsPage

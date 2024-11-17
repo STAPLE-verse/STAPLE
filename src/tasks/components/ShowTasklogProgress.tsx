@@ -21,7 +21,7 @@ const ShowTasklogProgress = () => {
       description={
         <Link
           className="btn btn-primary"
-          href={Routes.AssignmentsPage({ projectId: task.projectId, taskId: task.id })}
+          href={Routes.TaskLogsPage({ projectId: task.projectId, taskId: task.id })}
         >
           Edit Responses
         </Link>
