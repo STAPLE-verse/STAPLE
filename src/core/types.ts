@@ -26,6 +26,12 @@ export type ProjectMemberWithUsers = ProjectMember & {
   users: User[]
 }
 
+export type ProjectMemberWithUsername = ProjectMember & {
+  users: {
+    username: string
+  }
+}
+
 export type ProjectMemberWithUsersAndRoles = ProjectMember & {
   users: Array<Pick<User, "id" | "firstName" | "lastName" | "username">>
   roles: Array<Pick<Role, "id" | "name">>

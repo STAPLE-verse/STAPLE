@@ -2,19 +2,14 @@ import { useQuery } from "@blitzjs/rpc"
 import { useContext } from "react"
 import { TaskContext } from "./TaskContext"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
-import { ProjectMember } from "@prisma/client"
 import DateFormat from "src/core/components/DateFormat"
 import Card from "src/core/components/Card"
-
-interface ProjectMemberWithUsername extends ProjectMember {
-  users: {
-    username: string
-  }
-}
+import { ProjectMemberWithUsername } from "src/core/types"
 
 export const TaskInformation = () => {
   const taskContext = useContext(TaskContext)
   const task = taskContext?.task
+
   const [pmData] = useQuery(getProjectMember, {
     where: { id: task?.createdById },
     include: { users: { select: { username: true } } },
