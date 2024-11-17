@@ -1,7 +1,6 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import { ProcessedTaskLogHistory } from "../processing/processTaskLogs"
-import { noSubmitButton } from "src/forms/utils/extendSchema"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedTaskLogHistory>()
@@ -30,9 +29,10 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistory>[] = [
           <JsonFormModal
             metadata={info.getValue()?.metadata}
             schema={info.getValue()!.schema}
-            uiSchema={noSubmitButton(info.getValue()!.ui)}
+            uiSchema={info.getValue()!.ui}
             label="View Form Data"
             classNames="btn-primary"
+            submittable={false}
           />
         ) : (
           <span>No metadata provided</span>

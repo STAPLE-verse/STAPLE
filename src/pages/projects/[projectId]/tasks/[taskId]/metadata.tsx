@@ -24,16 +24,6 @@ const MetadataContent = () => {
   // Get tasks
   const { task, projectMembers } = useTaskContext()
 
-  // Extend uiSchema so submit button is not shown
-  const extendedUiSchema = extendSchema({
-    schema: task.formVersion?.uiSchema || {},
-    extension: {
-      "ui:submitButtonOptions": {
-        norender: true,
-      },
-    },
-  })
-
   // Prepare data for the metadatatable
   const processedMetadata = processMetadata(projectMembers)
 
@@ -53,9 +43,10 @@ const MetadataContent = () => {
               <div className="flex justify-center">
                 <JsonFormModal
                   schema={getJsonSchema(task.formVersion?.schema)}
-                  uiSchema={extendedUiSchema}
+                  uiSchema={task.formVersion?.uiSchema || {}}
                   label="Form Requirements"
                   classNames="btn-primary"
+                  submittable={false}
                 />
 
                 <Link
