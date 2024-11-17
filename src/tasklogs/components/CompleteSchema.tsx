@@ -7,6 +7,7 @@ import JsonForm from "../../core/components/JsonForm"
 import { useTaskContext } from "src/tasks/components/TaskContext"
 import updateTaskLog from "../mutations/updateTaskLog"
 import getJsonSchema from "src/forms/utils/getJsonSchema"
+import { JsonFormModal } from "src/core/components/JsonFormModal"
 
 const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => {
   // Setup
@@ -15,12 +16,6 @@ const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => 
   const [assignmentMetadata, setAssignmentMetadata] = useState(taskLog.metadata)
   // Get refecth from taskContext
   const { refetchTaskData } = useTaskContext()
-
-  // Handle metadata form open toggle
-  const [openAssignmentModal, setOpenAssignmentModal] = useState(false)
-  const handleToggle = () => {
-    setOpenAssignmentModal((prev) => !prev)
-  }
 
   // Handle assignment metadata
   const handleJsonFormSubmit = async (data) => {
@@ -34,8 +29,7 @@ const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => 
 
     setAssignmentMetadata(data.formData)
 
-    // Close modal
-    setOpenAssignmentModal(false)
+    // TODO: Add handler to close modal
 
     await refetchTaskData()
   }
@@ -57,54 +51,33 @@ const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => 
 
     setAssignmentMetadata({})
 
-    // Close modal
-    setOpenAssignmentModal(false)
+    // TODO: Add handler to close modal
 
     // Refetch the data
     await refetchTaskData()
   }
 
+  const buttonLabel =
+    completedAs === CompletedAsType.TEAM
+      ? `${taskLog.status === Status.COMPLETED ? "Update" : "Provide"} ${
+          taskLog.assignedTo.name
+        } Data`
+      : `${taskLog.status === Status.COMPLETED ? "Update" : "Provide"} Individual Data`
+
   return (
     <div>
       {taskLog ? (
-        <div>
-          <button className="btn btn-primary" onClick={() => handleToggle()}>
-            {/* TODO: rewrite */}
-            {completedAs === CompletedAsType.TEAM &&
-              taskLog.status === Status.COMPLETED &&
-              `Update ${taskLog.assignedTo.name} Data`}
-            {completedAs === CompletedAsType.TEAM &&
-              taskLog.status === Status.NOT_COMPLETED &&
-              `Provide ${taskLog.assignedTo.name} Data`}
-            {completedAs === CompletedAsType.INDIVIDUAL &&
-              taskLog.status === Status.COMPLETED &&
-              `Update Individual Data`}
-            {completedAs === CompletedAsType.INDIVIDUAL &&
-              taskLog.status === Status.NOT_COMPLETED &&
-              `Provide Individual Data`}
-          </button>
-          <Modal open={openAssignmentModal} size="w-11/12 max-w-5xl">
-            <div className="font-sans">
-              {
-                <JsonForm
-                  formData={assignmentMetadata}
-                  onSubmit={handleJsonFormSubmit}
-                  schema={getJsonSchema(schema)}
-                  onError={handleJsonFormError}
-                  uiSchema={ui}
-                />
-              }
-            </div>
-            <div className="modal-action">
-              <button className="btn btn-primary" onClick={handleToggle}>
-                Close
-              </button>
-              <button className="btn btn-secondary ml-2" onClick={handleResetMetadata}>
-                Reset Form Data
-              </button>
-            </div>
-          </Modal>
-        </div>
+        <JsonFormModal
+          schema={getJsonSchema(schema)}
+          uiSchema={ui}
+          metadata={assignmentMetadata}
+          label={buttonLabel}
+          classNames="btn-primary"
+          onSubmit={handleJsonFormSubmit}
+          onError={handleJsonFormError}
+          resetHandler={handleResetMetadata}
+          modalSize="w-11/12 max-w-5xl"
+        />
       ) : (
         <p>Loading...</p>
       )}
