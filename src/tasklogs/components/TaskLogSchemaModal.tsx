@@ -11,14 +11,12 @@ export const TaskLogSchemaModal = ({ taskLog }) => {
   const { task } = useTaskContext()
 
   return (
-    <>
-      <CompleteSchema
-        taskLog={taskLog}
-        completedById={currentProjectMember!.id}
-        completedAs={taskLog.name ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
-        schema={task.formVersion?.schema}
-        ui={task.formVersion?.uiSchema}
-      />
-    </>
+    <CompleteSchema
+      taskLog={taskLog}
+      completedById={currentProjectMember!.id}
+      completedAs={taskLog.name ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
+      schema={task.formVersion?.schema}
+      ui={task.formVersion?.uiSchema}
+    />
   )
 }
