@@ -24,13 +24,9 @@ export const TaskLogCompleteColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
     id: "status",
   }),
   columnHelper.accessor("taskLog", {
-    cell: (info) => {
-      return (
-        <>
-          <TaskLogToggleModal taskLog={info.getValue()} />
-        </>
-      )
-    },
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => <TaskLogToggleModal taskLog={info.getValue()} />,
     header: "Change status",
     id: "updateStatus",
   }),

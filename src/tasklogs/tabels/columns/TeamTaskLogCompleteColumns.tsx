@@ -26,6 +26,8 @@ export const TeamTaskLogCompleteColumns: ColumnDef<ProcessedTeamTaskLog>[] = [
     id: "status",
   }),
   columnHelper.accessor("taskLog", {
+    enableColumnFilter: false,
+    enableSorting: false,
     cell: (info) => <TaskLogToggleModal taskLog={info.getValue()} />,
     header: "Change status",
     id: "updateStatus",
