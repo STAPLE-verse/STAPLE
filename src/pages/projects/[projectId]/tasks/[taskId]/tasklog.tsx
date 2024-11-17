@@ -14,6 +14,17 @@ import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateP
 import { TaskLogFormColumns } from "src/tasklogs/tabels/columns/TaskLogFormColumns"
 import { TeamTaskLogFormColumns } from "src/tasklogs/tabels/columns/TeamTaskLogFormColumns"
 import { TeamTaskLogCompleteColumns } from "src/tasklogs/tabels/columns/TeamTaskLogCompleteColumns"
+import Card from "src/core/components/Card"
+
+const TaskLogSection = ({ title, data, columns, fallbackMessage }: any) => (
+  <Card title={title} className="w-full overflow-x-auto">
+    {data.length > 0 ? (
+      <Table columns={columns} data={data} addPagination={true} />
+    ) : (
+      <span>{fallbackMessage}</span>
+    )}
+  </Card>
+)
 
 const TaskLogContent = () => {
   // Get values
@@ -70,35 +81,21 @@ const TaskLogContent = () => {
         </div>
       </div>
 
-      <div className="flex flex-row justify-center mt-2">
-        <div className="card bg-base-300 w-full">
-          <div className="card-body overflow-x-auto">
-            <div className="card-title">Individual Contributors</div>
-            {processedIndividualAssignments.length > 0 ? (
-              <Table
-                columns={individualColumns}
-                data={processedIndividualAssignments}
-                addPagination={true}
-              />
-            ) : (
-              <span>This task does not have individual contributors </span>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Individual Contributors */}
+      <TaskLogSection
+        title="Individual Contributors"
+        data={processedIndividualAssignments}
+        columns={individualColumns}
+        fallbackMessage="This task does not have individual contributors"
+      />
 
-      <div className="flex flex-row justify-center mt-2">
-        <div className="card bg-base-300 w-full">
-          <div className="card-body overflow-x-auto">
-            <div className="card-title">Team Contributors</div>
-            {processedTeamAssignments.length > 0 ? (
-              <Table columns={teamColumns} data={processedTeamAssignments} addPagination={true} />
-            ) : (
-              <span>This task does not have teams of contributors</span>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Team Contributors */}
+      <TaskLogSection
+        title="Team Contributors"
+        data={processedTeamAssignments}
+        columns={teamColumns}
+        fallbackMessage="This task does not have teams of contributors"
+      />
     </main>
   )
 }
