@@ -1,12 +1,9 @@
-//imports
-import { useMutation } from "@blitzjs/rpc"
-import deleteTask from "src/tasks/mutations/deleteTask"
 import ShowTasklogProgress from "src/tasks/components/ShowTasklogProgress"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
-import { useRouter } from "next/router"
 import { CompleteTaskToggle } from "./CompleteTaskToggle"
 import { TaskFormData } from "./TaskFormData"
+import DeleteTask from "./DeleteTask"
 
 // Interface
 interface TaskSummaryProps {
@@ -16,17 +13,6 @@ interface TaskSummaryProps {
 
 // Create task summary for the PM
 export const TaskSummary = ({ taskId, projectId }: TaskSummaryProps) => {
-  // Setup
-  const router = useRouter()
-  const [deleteTaskMutation] = useMutation(deleteTask)
-  // Handle events
-  const handleDelete = async () => {
-    if (window.confirm("The task will be permanently deleted. Are you sure to continue?")) {
-      await deleteTaskMutation({ id: taskId })
-      await router.push(Routes.TasksPage({ projectId: projectId }))
-    }
-  }
-
   return (
     <div className="flex flex-row justify-center m-2">
       {/* overall project information */}
@@ -52,9 +38,7 @@ export const TaskSummary = ({ taskId, projectId }: TaskSummaryProps) => {
                 </Link>
               </div>
               <div className="stat-value">
-                <button type="button" className="btn btn-secondary" onClick={handleDelete}>
-                  Delete task
-                </button>
+                <DeleteTask taskId={taskId} projectId={projectId} />
               </div>
             </div>
           </div>
