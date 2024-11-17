@@ -19,7 +19,6 @@ export const CompleteRow = ({ taskLogs, completedById, completedAs, schema, ui, 
       ) : (
         <CompleteToggle
           taskLog={latestTaskLog}
-          completedRole="Completed"
           completedById={completedById}
           completedAs={completedAs}
         />

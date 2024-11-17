@@ -1,12 +1,7 @@
-import CompleteSchema from "./CompleteSchema"
-import CompleteToggle from "./CompleteToggle"
 import { CompletedAs } from "db"
-import { ProjectMemberWithTaskLog, useTaskContext } from "src/tasks/components/TaskContext"
+import { useTaskContext } from "src/tasks/components/TaskContext"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
-import TaskLogHistoryModal from "./TaskLogHistoryModal"
-import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
-import { filterLatestTaskLog } from "../utils/filterLatestTaskLog"
 import Card from "src/core/components/Card"
 import { CompleteRow } from "./CompleteRow"
 

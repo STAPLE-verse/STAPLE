@@ -28,7 +28,6 @@ export const TaskLogToggleModal = ({ taskLog }) => {
           <div className="modal-action justify-between">
             <CompleteToggle
               taskLog={taskLog}
-              completedRole="Completed"
               completedById={currentProjectMember!.id}
               completedAs={taskLog.name ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
             />
