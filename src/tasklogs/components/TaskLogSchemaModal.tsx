@@ -14,7 +14,7 @@ export const TaskLogSchemaModal = ({ taskLog }) => {
     <CompleteSchema
       taskLog={taskLog}
       completedById={currentProjectMember!.id}
-      completedAs={taskLog.name ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
+      completedAs={taskLog.assignedTo.name ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
       schema={task.formVersion?.schema}
       ui={task.formVersion?.uiSchema}
     />
