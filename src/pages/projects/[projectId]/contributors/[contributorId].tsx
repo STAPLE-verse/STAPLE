@@ -2,11 +2,9 @@ import { Suspense } from "react"
 import Head from "next/head"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
-import { MemberPrivileges } from "db"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { ContributorTaskListDone } from "src/contributors/components/ContributorTaskListDone"
 import { ContributorRolesList } from "src/contributors/components/ContributorRolesList"
-import DeleteContributor from "src/contributors/components/DeleteContributor"
 import ContributorInformation from "src/contributors/components/ContributorInformation"
 import { useContributorData } from "src/contributors/hooks/useContributorData"
 
@@ -15,7 +13,7 @@ export const ContributorPage = () => {
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
 
-  const { contributor, contributorUser, contributorPrivilege, teamNames } = useContributorData(
+  const { contributorUser, contributorPrivilege, teamNames } = useContributorData(
     contributorId!,
     projectId!
   )
@@ -47,12 +45,6 @@ export const ContributorPage = () => {
           projectId={projectId!}
           privilege={privilege!}
         />
-
-        {privilege === MemberPrivileges.PROJECT_MANAGER && (
-          <div className="flex justify-end">
-            <DeleteContributor contributor={contributor!} />
-          </div>
-        )}
       </main>
     </>
   )

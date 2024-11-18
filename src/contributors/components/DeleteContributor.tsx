@@ -3,30 +3,34 @@ import { useMutation } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
 import toast from "react-hot-toast"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { ProjectMemberWithUsers } from "src/core/types"
 import deleteContributor from "../mutations/deleteContributor"
+import { User } from "db"
 
 interface DeleteContributorProps {
-  contributor: ProjectMemberWithUsers
+  projectId: number
+  contributorUser: User
+  contributorId: number
 }
 
-const DeleteContributor = ({ contributor }: DeleteContributorProps) => {
+const DeleteContributor = ({
+  projectId,
+  contributorUser,
+  contributorId,
+}: DeleteContributorProps) => {
   const [deleteContributorMutation] = useMutation(deleteContributor)
   const router = useRouter()
 
   const currentUser = useCurrentUser()
-  const projectId = contributor.projectId
-  const contributorUser = contributor?.users[0]
 
   const handleDelete = async () => {
     if (
       window.confirm("This Contributor will be removed from the project. Are you sure to continue?")
     ) {
       try {
-        await deleteContributorMutation({ id: contributor.id })
+        await deleteContributorMutation({ id: contributorId })
 
         // Navigate based on whether the current user was deleted
-        if (contributorUser?.id === currentUser?.id) {
+        if (contributorUser.id === currentUser?.id) {
           await router.push(Routes.ProjectsPage())
         } else {
           await router.push(Routes.ContributorsPage({ projectId }))
@@ -40,7 +44,7 @@ const DeleteContributor = ({ contributor }: DeleteContributorProps) => {
   }
 
   return (
-    <button className="btn btn-secondary mt-4" onClick={handleDelete}>
+    <button className="btn btn-secondary" onClick={handleDelete}>
       Delete Contributor
     </button>
   )

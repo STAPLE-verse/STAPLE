@@ -18,6 +18,8 @@ import removeProjectManagerWidgets from "src/widgets/mutations/removeProjectMana
 import getProjectPrivilege from "src/projectprivileges/queries/getProjectPrivilege"
 import { UpdateProjectMemberFormSchema } from "src/projectmembers/schemas"
 import { ProjectMemberWithUsersAndRoles } from "src/core/types"
+import DeleteContributor from "src/contributors/components/DeleteContributor"
+import PageHeader from "src/core/components/PageHeader"
 
 export const EditContributor = () => {
   const [updateProjectMemberMutation] = useMutation(updateProjectMember)
@@ -28,7 +30,7 @@ export const EditContributor = () => {
   const contributorId = useParam("contributorId", "number")
   const projectId = useParam("projectId", "number")
 
-  const [fetchedProjectMember, { refetch }] = useQuery(getProjectMember, {
+  const [fetchedContributor, { refetch }] = useQuery(getProjectMember, {
     where: { id: contributorId, project: { id: projectId! } },
     include: {
       roles: {
@@ -37,30 +39,23 @@ export const EditContributor = () => {
           id: true,
         },
       },
-      users: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          username: true,
-        },
-      },
+      users: true,
     },
   })
 
-  const projectMember = fetchedProjectMember as ProjectMemberWithUsersAndRoles
+  const contributor = fetchedContributor as ProjectMemberWithUsersAndRoles
 
-  const projectMemberUser = projectMember.users[0]
+  const contributorUser = contributor.users[0]
 
-  const [projectMemberPrivilege] = useQuery(getProjectPrivilege, {
-    where: { userId: projectMemberUser!.id, projectId: projectId },
+  const [contributorPrivilege] = useQuery(getProjectPrivilege, {
+    where: { userId: contributorUser!.id, projectId: projectId },
   })
 
-  const rolesId = projectMember.roles != undefined ? projectMember.roles.map((role) => role.id) : []
+  const rolesId = contributor.roles != undefined ? contributor.roles.map((role) => role.id) : []
 
   // Set initial values
   const initialValues = {
-    privilege: projectMemberPrivilege.privilege,
+    privilege: contributorPrivilege.privilege,
     rolesId: rolesId,
   }
 
@@ -77,9 +72,9 @@ export const EditContributor = () => {
   const handleSubmit = async (values) => {
     try {
       const updated = await updateProjectMemberMutation({
-        id: projectMember.id,
+        id: contributor.id,
         projectId: projectId!,
-        userId: projectMemberUser!.id,
+        userId: contributorUser!.id,
         privilege: values.privilege,
         rolesId: values.rolesId,
       })
@@ -93,18 +88,18 @@ export const EditContributor = () => {
       await refetch()
 
       // Check if the privilege has changed
-      if (projectMemberPrivilege.privilege !== values.privilege) {
+      if (contributorPrivilege.privilege !== values.privilege) {
         // Add or remove widgets based on privilege change
         if (values.privilege === "PROJECT_MANAGER") {
           // Add widgets for project manager
           await addProjectManagerWidgetsMutation({
-            userId: projectMemberUser!.id,
+            userId: contributorUser!.id,
             projectId: projectId!,
           })
         } else if (values.privilege === "CONTRIBUTOR") {
           // Remove widgets exclusive to project manager
           await removeProjectManagerWidgetsMutation({
-            userId: projectMemberUser!.id,
+            userId: contributorUser!.id,
             projectId: projectId!,
           })
         }
@@ -126,12 +121,12 @@ export const EditContributor = () => {
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="text-3xl mb-2">Edit Contributor {getContributorName(projectMember)}</h1>
+      <PageHeader className="mb-2" title={`Edit Contributor ${getContributorName(contributor)}`} />
       <Suspense fallback={<div>Loading...</div>}>
         <ContributorForm
           submitText="Update Contributor"
           projectId={projectId!}
-          editedUserId={projectMemberUser!.id}
+          editedUserId={contributorUser!.id}
           isEdit={true}
           schema={UpdateProjectMemberFormSchema}
           initialValues={initialValues}
@@ -139,6 +134,13 @@ export const EditContributor = () => {
           onCancel={handleCancel}
           onSubmit={handleSubmit}
         />
+        <div className="flex justify-end mt-2">
+          <DeleteContributor
+            projectId={projectId!}
+            contributorUser={contributorUser!}
+            contributorId={contributorId!}
+          />
+        </div>
       </Suspense>
     </main>
   )

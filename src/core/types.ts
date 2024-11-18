@@ -33,7 +33,7 @@ export type ProjectMemberWithUsername = ProjectMember & {
 }
 
 export type ProjectMemberWithUsersAndRoles = ProjectMember & {
-  users: Array<Pick<User, "id" | "firstName" | "lastName" | "username">>
+  users: User[]
   roles: Array<Pick<Role, "id" | "name">>
 }
 

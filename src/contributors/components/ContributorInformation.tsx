@@ -3,6 +3,7 @@ import Link from "next/link"
 import { getPrivilegeText } from "src/core/utils/getPrivilegeText"
 import { MemberPrivileges, User } from "db"
 import Card from "src/core/components/Card"
+import DeleteContributor from "./DeleteContributor"
 
 interface ContributorInformationProps {
   contributorId: number
@@ -32,15 +33,22 @@ const ContributorInformation = ({
       className="w-full"
       actions={
         privilege === MemberPrivileges.PROJECT_MANAGER ? (
-          <Link
-            href={Routes.EditContributorPage({
-              projectId: projectId,
-              contributorId: contributorId,
-            })}
-            className="btn btn-primary"
-          >
-            Edit Contributor
-          </Link>
+          <div className="flex flex-row gap-2">
+            <Link
+              href={Routes.EditContributorPage({
+                projectId: projectId,
+                contributorId: contributorId,
+              })}
+              className="btn btn-primary"
+            >
+              Edit Contributor
+            </Link>
+            <DeleteContributor
+              projectId={projectId}
+              contributorUser={contributorUser}
+              contributorId={0}
+            />
+          </div>
         ) : null
       }
     >
