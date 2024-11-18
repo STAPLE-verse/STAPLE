@@ -9,13 +9,13 @@ import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
 import DateField from "src/core/components/fields/DateField"
-import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 import { z } from "zod"
 import AddRoleInput from "src/roles/components/AddRoleInput"
 import ToggleModal from "src/core/components/ToggleModal"
 import ValidationErrorDisplay from "src/core/components/ValidationErrorDisplay"
 import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
 import { ProjectMemberWithUsers } from "src/core/types"
+import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManagerUserIds"
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -38,11 +38,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // Project Managers
-  const [projectManagers] = useQuery(getProjectManagers, {
+  const [projectManagerUserIds] = useQuery(getProjectManagerUserIds, {
     projectId: projectId!,
   })
-
-  const pmIds = projectManagers.map((pm) => pm.userId)
 
   // Get ProjectMembers
   const [{ projectMembers }] = useQuery(getProjectMembers, {
@@ -135,7 +133,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Form */}
       {formResponseSupplied ? (
-        <TaskSchemaInput projectManagerIds={pmIds} />
+        <TaskSchemaInput projectManagerIds={projectManagerUserIds} />
       ) : (
         <p className="w-1/2 text-red-500">
           The task is already being completed by the contributors. Please, create a new task if you
@@ -145,7 +143,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
       {/* Roles */}
       <AddRoleInput
-        projectManagerIds={pmIds}
+        projectManagerIds={projectManagerUserIds}
         buttonLabel="Assign Role(s)"
         tooltipContent="Add roles to task"
       />

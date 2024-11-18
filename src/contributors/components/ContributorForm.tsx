@@ -6,8 +6,8 @@ import { useQuery } from "@blitzjs/rpc"
 import { MemberPrivileges } from "@prisma/client"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import { Tooltip } from "react-tooltip"
-import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 import AddRoleInput from "src/roles/components/AddRoleInput"
+import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManagerUserIds"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
@@ -23,15 +23,13 @@ export const MemberPrivilegesOptions = [
 export function ContributorForm<S extends z.ZodType<any, any>>(props: ContributorFormProps<S>) {
   const { projectId, isEdit = false, editedUserId, ...formProps } = props
 
-  const [projectManagers] = useQuery(getProjectManagers, {
+  const [projectManagerUserIds] = useQuery(getProjectManagerUserIds, {
     projectId: projectId!,
   })
 
-  const projectManagerIds = projectManagers.map((pm) => pm.userId)
-
   // Check if the current user is the last project manager
   const isLastProjectManager =
-    isEdit && projectManagerIds.length === 1 && projectManagerIds[0] === editedUserId
+    isEdit && projectManagerUserIds.length === 1 && projectManagerUserIds[0] === editedUserId
 
   return (
     <Form<S> {...formProps}>
@@ -68,7 +66,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
       />
       <div className="mt-4">
         <AddRoleInput
-          projectManagerIds={projectManagerIds}
+          projectManagerIds={projectManagerUserIds}
           buttonLabel="Add Role"
           tooltipContent="Add roles to individual contributors (like administration)"
         />

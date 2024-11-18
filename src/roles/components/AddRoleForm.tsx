@@ -1,8 +1,8 @@
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { useQuery } from "@blitzjs/rpc"
 import { z } from "zod"
-import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
 import RoleSelect from "./RoleSelect"
+import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManagerUserIds"
 
 interface AddRoleFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -14,16 +14,14 @@ export function AddRoleForm<S extends z.ZodType<any, any>>(props: AddRoleFormPro
   const { projectId, type, tasksId, ...formProps } = props
 
   // Get all roles from all PMs
-  const [projectManagers] = useQuery(getProjectManagers, {
+  const [projectManagerUserIds] = useQuery(getProjectManagerUserIds, {
     projectId: projectId!,
   })
-
-  const projectManagerIds = projectManagers.map((pm) => pm.userId)
 
   return (
     <Form<S> {...formProps} encType="multipart/form-data">
       <div className="flex justify-start mt-4">
-        <RoleSelect projectManagerIds={projectManagerIds} />
+        <RoleSelect projectManagerIds={projectManagerUserIds} />
       </div>
     </Form>
   )
