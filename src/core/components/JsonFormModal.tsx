@@ -38,6 +38,9 @@ export const JsonFormModal = ({
   // Extend uiSchema to hide the submit button if submittable is false
   const extendedUiSchema = submittable ? uiSchema : noSubmitButton(uiSchema)
 
+  // Check if form "completed"
+  const isCompleted = metadata && Object.keys(metadata).length > 0
+
   return (
     <>
       <button
@@ -51,19 +54,21 @@ export const JsonFormModal = ({
 
       <Modal open={isOpen} size={modalSize}>
         <div className="font-sans">
-          {
-            <JsonForm
-              schema={schema}
-              uiSchema={extendedUiSchema}
-              formData={metadata}
-              onSubmit={submittable ? onSubmit : undefined}
-              onError={onError}
-            />
-          }
+          <JsonForm
+            schema={schema}
+            uiSchema={extendedUiSchema}
+            formData={metadata}
+            onSubmit={submittable ? onSubmit : undefined}
+            onError={onError}
+          />
         </div>
         <div className="modal-action flex justify-end">
           {resetHandler && (
-            <button className="btn btn-secondary mr-2" onClick={resetHandler}>
+            <button
+              className="btn btn-secondary mr-2"
+              onClick={resetHandler}
+              disabled={!isCompleted}
+            >
               Reset Form Data
             </button>
           )}

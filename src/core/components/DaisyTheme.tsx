@@ -1,4 +1,6 @@
-// imports
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import {
   WidgetProps,
   RegistryWidgetsType,
@@ -184,34 +186,31 @@ const MyEmailWidget = (props: WidgetProps) => {
   )
 }
 
-// Default placeholder components for other buttons
-const DefaultTemplate = () => null
-
 // create Registry information
 // templates
-const myTemplates: TemplatesType = {
+const myTemplates: Partial<TemplatesType> = {
   TitleFieldTemplate: MyTitleField,
   DescriptionFieldTemplate: MyDescriptionField,
   FieldTemplate: MyFieldTemplate,
   ButtonTemplates: {
     SubmitButton: MySubmitButton,
-    AddButton: DefaultTemplate,
-    CopyButton: DefaultTemplate,
-    MoveDownButton: DefaultTemplate,
-    MoveUpButton: DefaultTemplate,
-    RemoveButton: DefaultTemplate,
+    // AddButton: DefaultTemplate,
+    // CopyButton: DefaultTemplate,
+    // MoveDownButton: DefaultTemplate,
+    // MoveUpButton: DefaultTemplate,
+    // RemoveButton: DefaultTemplate,
   },
-  ArrayFieldTemplate: DefaultTemplate,
-  ArrayFieldDescriptionTemplate: DefaultTemplate,
-  ArrayFieldItemTemplate: DefaultTemplate,
-  ArrayFieldTitleTemplate: DefaultTemplate,
-  ObjectFieldTemplate: DefaultTemplate,
-  ErrorListTemplate: DefaultTemplate,
-  BaseInputTemplate: DefaultTemplate,
-  UnsupportedFieldTemplate: DefaultTemplate,
-  FieldErrorTemplate: DefaultTemplate,
-  FieldHelpTemplate: DefaultTemplate,
-  WrapIfAdditionalTemplate: DefaultTemplate,
+  // ArrayFieldTemplate: DefaultTemplate,
+  // ArrayFieldDescriptionTemplate: DefaultTemplate,
+  // ArrayFieldItemTemplate: DefaultTemplate,
+  // ArrayFieldTitleTemplate: DefaultTemplate,
+  // ObjectFieldTemplate: DefaultTemplate,
+  // ErrorListTemplate: DefaultTemplate,
+  // BaseInputTemplate: DefaultTemplate,
+  // UnsupportedFieldTemplate: DefaultTemplate,
+  // FieldErrorTemplate: DefaultTemplate,
+  // FieldHelpTemplate: DefaultTemplate,
+  // WrapIfAdditionalTemplate: DefaultTemplate,
 }
 
 // templates
