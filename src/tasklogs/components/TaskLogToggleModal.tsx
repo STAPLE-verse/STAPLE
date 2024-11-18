@@ -1,6 +1,4 @@
-import Modal from "src/core/components/Modal"
 import CompleteToggle from "./CompleteToggle"
-import { useState } from "react"
 import { useParam } from "@blitzjs/next"
 import { CompletedAs } from "db"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
