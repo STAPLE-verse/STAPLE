@@ -55,7 +55,7 @@ export const AddRoleModal = ({ rows, projectId, refetch, type }) => {
         Add Role
       </button>
       <Modal open={openModal} size="w-7/8 max-w-xl">
-        <div className="">
+        <div>
           <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
           <div className="flex justify-start mt-4">
             <AddRoleForm
