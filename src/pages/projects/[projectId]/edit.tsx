@@ -4,7 +4,6 @@ import Head from "next/head"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
-
 import Layout from "src/core/layouts/Layout"
 import deleteProject from "src/projects/mutations/deleteProject"
 import { FormProjectSchema } from "src/projects/schemas"
@@ -13,6 +12,8 @@ import updateProject from "src/projects/mutations/updateProject"
 import { ProjectForm } from "src/projects/components/ProjectForm"
 import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
+import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
+import { MemberPrivileges } from "db"
 
 export const EditProject = () => {
   // Setup
@@ -115,6 +116,8 @@ export const EditProject = () => {
 }
 
 const EditProjectPage = () => {
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
+
   return (
     <Layout>
       <Suspense fallback={<div>Loading...</div>}>
