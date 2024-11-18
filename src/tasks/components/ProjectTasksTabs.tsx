@@ -26,12 +26,12 @@ export const ProjectTasksTabs = ({ projectPrivilege, projectId }) => {
         <Tab.Panels>
           {/* Tabpanel for kanban board */}
           {projectPrivilege === MemberPrivileges.PROJECT_MANAGER && (
-            <Tab.Panel>
+            <Tab.Panel unmount={false}>
               <TaskBoard />
             </Tab.Panel>
           )}
           {/* Tabpanel for table view */}
-          <Tab.Panel>
+          <Tab.Panel unmount={false}>
             <ProjectTasksList />
           </Tab.Panel>
         </Tab.Panels>
