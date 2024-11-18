@@ -6,6 +6,7 @@ interface ToggleModalProps {
   modalTitle: string
   children: React.ReactNode
   modalSize?: string
+  buttonClassName?: string
 }
 
 const ToggleModal = ({
@@ -13,13 +14,14 @@ const ToggleModal = ({
   modalTitle,
   children,
   modalSize = "w-7/8 max-w-xl",
+  buttonClassName = "",
 }: ToggleModalProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const toggleModal = () => setIsOpen((prev) => !prev)
 
   return (
     <div>
-      <button type="button" className="btn btn-primary" onClick={toggleModal}>
+      <button type="button" className={`btn btn-primary ${buttonClassName}`} onClick={toggleModal}>
         {buttonLabel}
       </button>
       <Modal open={isOpen} size={modalSize}>
