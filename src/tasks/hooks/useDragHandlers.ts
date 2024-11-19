@@ -113,7 +113,7 @@ const useDragHandlers = ({ containers, updateContainers }: DragHandlersProps) =>
           const updateTasksList = newContainers.flatMap((container) =>
             container.items.map((item, itemIdx) => ({
               taskId: parseInt(item.id.replace("item-", "")),
-              containerId: parseInt(container.id.replace("container-", "")),
+              containerId: parseInt(String(container.id).replace("container-", "")),
               containerTaskOrder: itemIdx,
             }))
           )

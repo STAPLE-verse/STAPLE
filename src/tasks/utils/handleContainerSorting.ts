@@ -39,7 +39,7 @@ const handleContainerSorting = (
 
   // Update column order
   const newColumnOrder = newContainers.map((container) =>
-    parseInt(container.id.replace("container-", ""))
+    parseInt(String(container.id).replace("container-", ""))
   )
 
   // Return updated state
