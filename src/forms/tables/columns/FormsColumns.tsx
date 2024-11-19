@@ -25,19 +25,16 @@ export const FormsColumns = [
     id: "view",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => {
-      return (
-        <>
-          <JsonFormModal
-            schema={info.row.original.schema}
-            uiSchema={info.row.original.uiSchema}
-            metadata={{}} // Adjust metadata as needed
-            label={<MagnifyingGlassIcon width={25} className="stroke-primary" />}
-            classNames="btn-ghost"
-          />
-        </>
-      )
-    },
+    cell: (info) => (
+      <JsonFormModal
+        schema={info.row.original.schema}
+        uiSchema={info.row.original.uiSchema}
+        metadata={{}} // Adjust metadata as needed
+        label={<MagnifyingGlassIcon width={25} className="stroke-primary" />}
+        classNames="btn-ghost"
+        submittable={false}
+      />
+    ),
     header: "View",
   }),
   columnHelper.accessor("id", {

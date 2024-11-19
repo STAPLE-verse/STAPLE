@@ -1,12 +1,13 @@
 import { useMutation } from "@blitzjs/rpc"
 import { Status } from "db"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import updateStatus from "../mutations/updateStatus"
 import toast from "react-hot-toast"
 import { Tooltip } from "react-tooltip"
 import Modal from "src/core/components/Modal"
 import { useTaskContext } from "./TaskContext"
 import useTaskLogProgress from "src/tasklogs/hooks/useTaskLogProgress"
+import Stat from "src/core/components/Stat"
 
 export const CompleteTaskToggle = () => {
   const [updateStatusMutation] = useMutation(updateStatus)
@@ -17,6 +18,10 @@ export const CompleteTaskToggle = () => {
   const taskLogProgress = useTaskLogProgress(projectMembers)
 
   const [status, setStatus] = useState(task?.status || Status.NOT_COMPLETED)
+
+  useEffect(() => {
+    setStatus(task?.status || Status.NOT_COMPLETED)
+  }, [task?.status])
 
   const handleStatus = async () => {
     if (taskLogProgress.completed !== taskLogProgress.all && status === Status.NOT_COMPLETED) {
@@ -49,16 +54,13 @@ export const CompleteTaskToggle = () => {
   }
 
   return (
-    <div className="stat place-items-center">
-      <div className="stat-title text-2xl text-inherit" data-tooltip-id="status-tool">
-        Task Status
-      </div>
-      <Tooltip
-        id="status-tool"
-        content="Complete the entire task even if not all contributors have finished"
-        className="z-[1099] ourtooltips"
-      />
-      <div>
+    <Stat
+      title="Task Status"
+      tooltipContent="Complete the entire task even if not all contributors have finished"
+      description={status === Status.COMPLETED ? "Completed" : "Not Completed"}
+      className="place-items-center"
+    >
+      <>
         <input
           type="checkbox"
           checked={status === Status.COMPLETED}
@@ -81,10 +83,7 @@ export const CompleteTaskToggle = () => {
             </div>
           </div>
         </Modal>
-      </div>
-      <div className="stat-desc text-lg text-inherit">
-        {status === "COMPLETED" ? "Completed" : "Not Completed"}
-      </div>
-    </div>
+      </>
+    </Stat>
   )
 }

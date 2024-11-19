@@ -1,4 +1,4 @@
-import { getContributorName } from "src/services/getName"
+import { getContributorName } from "src/core/utils/getName"
 import { ExtendedTaskLog } from "../../hooks/useTaskLogData"
 import { Prisma } from "@prisma/client"
 import { ProjectMemberWithTaskLog } from "src/tasks/components/TaskContext"

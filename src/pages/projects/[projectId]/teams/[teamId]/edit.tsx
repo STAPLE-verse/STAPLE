@@ -13,14 +13,16 @@ import { TeamFormSchema } from "src/teams/schemas"
 import updateTeam from "src/teams/mutations/updateTeam"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
-import { ProjectMemberWithUsers } from ".."
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
+import PageHeader from "src/core/components/PageHeader"
+import { ProjectMemberWithUsers } from "src/core/types"
 
 export const EditTeam = () => {
   const [updateTeamMutation] = useMutation(updateTeam)
   const router = useRouter()
   const teamId = useParam("teamId", "number")
   const projectId = useParam("projectId", "number")
+
   const [teamProjectMember, { setQueryData }] = useQuery(getProjectMember, {
     where: {
       id: teamId,
@@ -36,6 +38,35 @@ export const EditTeam = () => {
 
   const initialValues = {
     name: teamProjectMember.name ? teamProjectMember.name : undefined,
+    projectMemberUserIds: userIds,
+  }
+
+  // Handle events
+  const handleEditTeam = async (values) => {
+    try {
+      const updated = await updateTeamMutation({
+        name: values.name,
+        id: teamProjectMember.id,
+        userIds: values.projectMemberUserIds,
+      })
+      await toast.promise(Promise.resolve(updated), {
+        loading: "Updating team...",
+        success: "Team updated!",
+        error: "Failed to update team...",
+      })
+      await setQueryData(updated)
+      await router.push(
+        Routes.ShowTeamPage({
+          projectId: projectId!,
+          teamId: teamProjectMember.id,
+        })
+      )
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
   }
 
   return (
@@ -45,46 +76,14 @@ export const EditTeam = () => {
       </Head>
 
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">Edit {teamProjectMember.name}</h1>
-
+        <PageHeader title={`Edit ${teamProjectMember.name}`} />
         <Suspense fallback={<div>Loading...</div>}>
           <TeamForm
             projectId={projectId!}
-            teamId={teamProjectMember.id}
-            currentProjectMemberUserIds={userIds}
             initialValues={initialValues}
             submitText="Update Team"
             schema={TeamFormSchema}
-            onSubmit={async (values) => {
-              const teamMemberUserIds: number[] = values.projectMembers
-                .filter((el) => el.checked)
-                .map((val) => val.userId)
-
-              try {
-                const updated = await updateTeamMutation({
-                  name: values.name,
-                  id: teamProjectMember.id,
-                  userIds: teamMemberUserIds,
-                })
-                await toast.promise(Promise.resolve(updated), {
-                  loading: "Updating team...",
-                  success: "Team updated!",
-                  error: "Failed to update team...",
-                })
-                await setQueryData(updated)
-                await router.push(
-                  Routes.ShowTeamPage({
-                    projectId: projectId!,
-                    teamId: teamProjectMember.id,
-                  })
-                )
-              } catch (error: any) {
-                console.error(error)
-                return {
-                  [FORM_ERROR]: error.toString(),
-                }
-              }
-            }}
+            onSubmit={handleEditTeam}
           />
 
           <Link

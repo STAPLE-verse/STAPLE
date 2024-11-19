@@ -5,7 +5,7 @@ import { TaskLogCompleteColumns } from "src/tasklogs/tabels/columns/TaskLogCompl
 import Table from "src/core/components/Table"
 import Link from "next/link"
 import TaskLayout from "src/core/layouts/TaskLayout"
-import { useTaskContext } from "src/tasks/components/TaskContext"
+import { ProjectMemberWithTaskLog, useTaskContext } from "src/tasks/components/TaskContext"
 import {
   processIndividualTaskLogs,
   processTeamTaskLogs,
@@ -14,13 +14,25 @@ import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateP
 import { TaskLogFormColumns } from "src/tasklogs/tabels/columns/TaskLogFormColumns"
 import { TeamTaskLogFormColumns } from "src/tasklogs/tabels/columns/TeamTaskLogFormColumns"
 import { TeamTaskLogCompleteColumns } from "src/tasklogs/tabels/columns/TeamTaskLogCompleteColumns"
+import Card from "src/core/components/Card"
 
-const AssignmentsContent = () => {
+const TaskLogSection = ({ title, data, columns, fallbackMessage }: any) => (
+  <Card title={title} className="w-full overflow-x-auto">
+    {data.length > 0 ? (
+      <Table columns={columns} data={data} addPagination={true} />
+    ) : (
+      <span>{fallbackMessage}</span>
+    )}
+  </Card>
+)
+
+const TaskLogContent = () => {
   // Get values
   const { task, projectMembers } = useTaskContext()
-  const { individualProjectMembers, teamProjectMembers } = useSeparateProjectMembers(projectMembers)
+  const { individualProjectMembers, teamProjectMembers } =
+    useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
 
-  // Preprocess assignments to include only the latest log
+  // Preprocess taskLogs to include only the latest log
   const processedIndividualAssignments = processIndividualTaskLogs(individualProjectMembers)
   const processedTeamAssignments = processTeamTaskLogs(teamProjectMembers)
 
@@ -69,51 +81,37 @@ const AssignmentsContent = () => {
         </div>
       </div>
 
-      <div className="flex flex-row justify-center mt-2">
-        <div className="card bg-base-300 w-full">
-          <div className="card-body overflow-x-auto">
-            <div className="card-title">Individual Contributors</div>
-            {processedIndividualAssignments.length > 0 ? (
-              <Table
-                columns={individualColumns}
-                data={processedIndividualAssignments}
-                addPagination={true}
-              />
-            ) : (
-              <span>This task does not have individual contributors </span>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Individual Contributors */}
+      <TaskLogSection
+        title="Individual Contributors"
+        data={processedIndividualAssignments}
+        columns={individualColumns}
+        fallbackMessage="This task does not have individual contributors"
+      />
 
-      <div className="flex flex-row justify-center mt-2">
-        <div className="card bg-base-300 w-full">
-          <div className="card-body overflow-x-auto">
-            <div className="card-title">Team Contributors</div>
-            {processedTeamAssignments.length > 0 ? (
-              <Table columns={teamColumns} data={processedTeamAssignments} addPagination={true} />
-            ) : (
-              <span>This task does not have teams of contributors</span>
-            )}
-          </div>
-        </div>
-      </div>
+      {/* Team Contributors */}
+      <TaskLogSection
+        title="Team Contributors"
+        data={processedTeamAssignments}
+        columns={teamColumns}
+        fallbackMessage="This task does not have teams of contributors"
+      />
     </main>
   )
 }
 
-export const AssignmentsPage = () => {
+export const TaskLogsPage = () => {
   return (
     <Layout>
       <TaskLayout>
         <Suspense fallback={<div>Loading...</div>}>
-          <AssignmentsContent />
+          <TaskLogContent />
         </Suspense>
       </TaskLayout>
     </Layout>
   )
 }
 
-AssignmentsPage.authenticate = true
+TaskLogsPage.authenticate = true
 
-export default AssignmentsPage
+export default TaskLogsPage

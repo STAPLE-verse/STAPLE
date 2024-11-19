@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { Prisma, ProjectPrivilege } from "db"
+import db, { Prisma } from "db"
 
 interface GetProjectManagersInput
   extends Pick<Prisma.ProjectPrivilegeFindManyArgs, "orderBy" | "include"> {

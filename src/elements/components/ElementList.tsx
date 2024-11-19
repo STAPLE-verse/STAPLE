@@ -4,20 +4,19 @@ import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import getElements from "../queries/getElements"
 import ElementItem from "./ElementItem"
 import getTasks from "src/tasks/queries/getTasks"
+import PaginationControls from "src/core/components/PaginationControls"
 
 interface ElementsListProps {
   searchTerm: string
 }
 
+const ITEMS_PER_PAGE = 7
+
 export const ElementsList: React.FC<ElementsListProps> = ({ searchTerm }) => {
   // Setup
   const router = useRouter()
-  const ITEMS_PER_PAGE = 7
   const page = Number(router.query.page) || 0
   const projectId = useParam("projectId", "number")
-
-  const goToPreviousPage = () => router.push({ query: { projectId: projectId, page: page - 1 } })
-  const goToNextPage = () => router.push({ query: { projectId: projectId, page: page + 1 } })
 
   // Get elements data
   const [{ elements, hasMore }] = usePaginatedQuery(getElements, {
@@ -69,18 +68,7 @@ export const ElementsList: React.FC<ElementsListProps> = ({ searchTerm }) => {
         />
       ))}
       {/* Previous and next page btns */}
-      <div className="join grid grid-cols-2 mt-4">
-        <button
-          className="join-item btn btn-secondary"
-          disabled={page === 0}
-          onClick={goToPreviousPage}
-        >
-          Previous
-        </button>
-        <button className="join-item btn btn-secondary" disabled={!hasMore} onClick={goToNextPage}>
-          Next
-        </button>
-      </div>
+      <PaginationControls page={page} hasMore={hasMore} />
     </div>
   )
 }

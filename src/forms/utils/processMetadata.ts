@@ -1,5 +1,5 @@
 import { Prisma } from "db"
-import { getContributorName } from "src/services/getName"
+import { getContributorName } from "src/core/utils/getName"
 import { ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
 import { filterLatestTaskLog } from "src/tasklogs/utils/filterLatestTaskLog"
 

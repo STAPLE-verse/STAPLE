@@ -2,18 +2,12 @@ import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Head from "next/head"
 import Link from "next/link"
-import { useRouter } from "next/router"
 import Layout from "src/core/layouts/Layout"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import ProjectsList from "src/projects/components/ProjectsList"
 import SearchButton from "src/core/components/SearchButton"
 
 const ProjectsPage = () => {
   const [searchTerm, setSearchTerm] = useState("")
-
-  const router = useRouter()
-  const currentUser = useCurrentUser()
-  const page = Number(router.query.page) || 0
 
   const handleSearch = (currentSearch) => {
     setSearchTerm(currentSearch)
@@ -31,7 +25,7 @@ const ProjectsPage = () => {
         <SearchButton onChange={handleSearch}></SearchButton>
         <div>
           <Suspense fallback={<div>Loading...</div>}>
-            <ProjectsList searchTerm={searchTerm} currentUser={currentUser} page={page} />
+            <ProjectsList searchTerm={searchTerm} />
           </Suspense>
         </div>
         <div>

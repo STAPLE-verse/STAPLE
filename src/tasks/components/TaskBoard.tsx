@@ -1,8 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-// see here https://github.com/microsoft/TypeScript/issues/49613
-
-//packages
 import {
   DndContext,
   DragOverlay,
@@ -13,8 +8,6 @@ import {
   useSensors,
 } from "@dnd-kit/core"
 import { SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
-import { HTMLAttributes, ClassAttributes } from "react"
-
 // get specific components for this board
 import TaskContainer from "src/tasks/components/TaskContainer"
 import TaskItems from "src/tasks/components/TaskItems"
@@ -23,14 +16,12 @@ import useTaskBoardData from "../hooks/useTaskBoardData"
 // Get helper functions
 import { findContainerTitle, findContainerItems, findItemValue } from "../utils/findHelpers"
 import useDragHandlers from "../hooks/useDragHandlers"
+import { useParam } from "@blitzjs/next"
+import { Tooltip } from "react-tooltip"
 
-//interface
-interface TaskBoardProps extends HTMLAttributes<HTMLElement>, ClassAttributes<HTMLElement> {
-  projectId: number
-}
-
-const TaskBoard = ({ projectId }: TaskBoardProps) => {
+const TaskBoard = () => {
   // Setup
+  const projectId = useParam("projectId", "number")
   const { containers, refetch, updateContainers } = useTaskBoardData(projectId)
   const { handleDragStart, handleDragMove, handleDragEnd, activeId } = useDragHandlers({
     containers,
@@ -47,7 +38,18 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
 
   return (
     <div className="mx-auto max-w-7xl py-10">
-      <AddContainer projectId={projectId} refetch={refetch}></AddContainer>
+      <div className="flex items-center justify-between gap-y-2">
+        <h1 className="text-3xl font-bold" data-tooltip-id="kanban-tooltip">
+          Project Tasks
+        </h1>
+        <Tooltip
+          id="kanban-tooltip"
+          content="Completed tasks appear in a shade of green"
+          className="z-[1099] ourtooltips"
+        />
+        <AddContainer projectId={projectId} refetch={refetch}></AddContainer>
+      </div>
+
       <div className="mt-10">
         <div className="grid grid-cols-3 gap-6">
           <DndContext
@@ -67,7 +69,7 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
                           title={i.title}
                           id={i.id}
                           key={i.id}
-                          projectId={projectId}
+                          projectId={projectId!}
                           completed={i.completed}
                         />
                       ))}
@@ -82,15 +84,22 @@ const TaskBoard = ({ projectId }: TaskBoardProps) => {
               {activeId && activeId.toString().includes("item") && (
                 <TaskItems
                   id={activeId}
-                  title={findItemValue(activeId, containers, "title")}
-                  completed={findItemValue(activeId, containers, "completed")}
+                  title={findItemValue(activeId, containers, "title") || ""}
+                  completed={findItemValue(activeId, containers, "completed") || false}
+                  projectId={projectId!}
                 />
               )}
               {/* Drag Overlay For Container */}
               {activeId && activeId.toString().includes("container") && (
                 <TaskContainer id={activeId} title={findContainerTitle(activeId, containers)}>
                   {findContainerItems(activeId, containers).map((i) => (
-                    <TaskItems key={i.id} title={i.title} id={i.id} completed={i.completed} />
+                    <TaskItems
+                      key={i.id}
+                      title={i.title}
+                      id={i.id}
+                      completed={i.completed}
+                      projectId={projectId!}
+                    />
                   ))}
                 </TaskContainer>
               )}

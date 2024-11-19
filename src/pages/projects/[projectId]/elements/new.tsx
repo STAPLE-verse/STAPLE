@@ -12,6 +12,7 @@ import { useParam } from "@blitzjs/next"
 import toast from "react-hot-toast"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
+import PageHeader from "src/core/components/PageHeader"
 
 const NewElementPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
@@ -25,7 +26,7 @@ const NewElementPage = () => {
         <title>Create New Element</title>
       </Head>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">Create New Element</h1>
+        <PageHeader title="Create New Element" />
         <Suspense fallback={<div>Loading...</div>}>
           <ElementForm
             submitText="Create Element"

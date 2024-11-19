@@ -1,5 +1,5 @@
 import { MemberPrivileges } from "db"
-import { ProjectMemberWithUsers } from "src/pages/projects/[projectId]/teams"
+import { ProjectMemberWithUsers } from "src/core/types"
 
 export type TeamData = {
   name: string

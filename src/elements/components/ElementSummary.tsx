@@ -11,6 +11,7 @@ import { CircularPercentageWidget } from "src/widgets/components/CircularPercent
 import getTasks from "src/tasks/queries/getTasks"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
+import { TaskLogWithTask } from "src/core/types"
 
 interface ElementSummaryProps {
   element: Element
@@ -34,20 +35,24 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
   })
 
   // get taskLogs for those tasks
-  const [taskLogs] = useQuery(getTaskLogs, {
+  const [fetchedTaskLogs] = useQuery(getTaskLogs, {
     where: {
       taskId: { in: tasks.map((task) => task.id) },
     },
     include: {
       task: true,
     },
-  })
+  }) as unknown as TaskLogWithTask[]
+
+  // Cast and handle the possibility of `undefined`
+  const taskLogs: TaskLogWithTask[] = (fetchedTaskLogs ?? []) as TaskLogWithTask[]
+
   // only the latest task log
-  const allTaskLogs = getLatestTaskLogs(taskLogs)
+  const allTaskLogs = getLatestTaskLogs<TaskLogWithTask>(taskLogs)
 
   // Calculate summary data
-  const taskPercent = completedTaskPercentage(tasks)
   const formPercent = completedFormPercentage(allTaskLogs)
+  const taskPercent = completedTaskPercentage(tasks)
   const rolePercent = completedRolePercentage(tasks)
 
   // Delete event

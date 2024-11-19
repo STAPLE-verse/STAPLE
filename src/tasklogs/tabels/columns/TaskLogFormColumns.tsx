@@ -24,13 +24,7 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
     id: "status",
   }),
   columnHelper.accessor("taskLog", {
-    cell: (info) => {
-      return (
-        <>
-          <TaskLogSchemaModal taskLog={info.getValue()} />
-        </>
-      )
-    },
+    cell: (info) => <TaskLogSchemaModal taskLog={info.getValue()} />,
     header: "Form Data",
   }),
 ]

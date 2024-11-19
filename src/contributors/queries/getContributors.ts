@@ -1,22 +1,20 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { ProjectMember, User } from "db"
-
-export type ContributorWithUser = ProjectMember & {
-  users: User[]
-}
+import { ProjectMemberWithUsers } from "src/core/types"
 
 interface GetContributorsInput {
   projectId: number
+  deleted?: boolean
 }
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ projectId }: GetContributorsInput): Promise<ContributorWithUser[]> => {
+  async ({ projectId, deleted }: GetContributorsInput): Promise<ProjectMemberWithUsers[]> => {
     // Directly query the database for contributors
     const contributors = await db.projectMember.findMany({
       where: {
         projectId: projectId,
+        deleted: deleted,
         name: null, // Ensures we're only getting contributors (where name is null)
       },
       orderBy: { id: "asc" },
@@ -34,6 +32,6 @@ export default resolver.pipe(
       }
     })
 
-    return contributors // This is automatically typed as ContributorWithUser[]
+    return contributors // This is automatically typed as ProjectMemberWithUsers[]
   }
 )

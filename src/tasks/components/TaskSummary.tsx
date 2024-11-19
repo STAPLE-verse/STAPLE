@@ -1,12 +1,10 @@
-//imports
-import { useMutation } from "@blitzjs/rpc"
-import deleteTask from "src/tasks/mutations/deleteTask"
-import ShowAssignmentProgress from "src/tasks/components/ShowAssignmentProgress"
+import ShowTasklogProgress from "src/tasks/components/ShowTasklogProgress"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
-import { useRouter } from "next/router"
 import { CompleteTaskToggle } from "./CompleteTaskToggle"
 import { TaskFormData } from "./TaskFormData"
+import DeleteTask from "./DeleteTask"
+import Card from "src/core/components/Card"
 
 // Interface
 interface TaskSummaryProps {
@@ -16,50 +14,33 @@ interface TaskSummaryProps {
 
 // Create task summary for the PM
 export const TaskSummary = ({ taskId, projectId }: TaskSummaryProps) => {
-  // Setup
-  const router = useRouter()
-  const [deleteTaskMutation] = useMutation(deleteTask)
-  // Handle events
-  const handleDelete = async () => {
-    if (window.confirm("The task will be permanently deleted. Are you sure to continue?")) {
-      await deleteTaskMutation({ id: taskId })
-      await router.push(Routes.TasksPage({ projectId: projectId }))
-    }
-  }
-
   return (
     <div className="flex flex-row justify-center m-2">
       {/* overall project information */}
-      <div className="card bg-base-300 mx-2 w-full">
-        <div className="card-body">
-          <div className="card-title">Project Manager Information</div>
-
-          <div className="stats bg-base-300 text-lg font-bold">
-            {/* Complete task widget */}
-            <CompleteTaskToggle />
-            {/* Task form data widget */}
-            <TaskFormData />
-            {/* Assignment Progress widget */}
-            <ShowAssignmentProgress />
-            {/* Task edit buttons */}
-            <div className="stat place-items-center">
-              <div className="stat-title text-2xl text-inherit">
-                <Link
-                  className="btn btn-primary"
-                  href={Routes.EditTaskPage({ projectId: projectId, taskId: taskId })}
-                >
-                  Update task
-                </Link>
-              </div>
-              <div className="stat-value">
-                <button type="button" className="btn btn-secondary" onClick={handleDelete}>
-                  Delete task
-                </button>
-              </div>
+      <Card title="Project Manager Information" className="w-full">
+        <div className="stats bg-base-300 text-lg font-bold">
+          {/* Complete task widget */}
+          <CompleteTaskToggle />
+          {/* Task form data widget */}
+          <TaskFormData />
+          {/* Assignment Progress widget */}
+          <ShowTasklogProgress />
+          {/* Task edit buttons */}
+          <div className="stat place-items-center">
+            <div className="stat-title text-2xl text-inherit">
+              <Link
+                className="btn btn-primary"
+                href={Routes.EditTaskPage({ projectId: projectId, taskId: taskId })}
+              >
+                Update task
+              </Link>
+            </div>
+            <div className="stat-value">
+              <DeleteTask taskId={taskId} projectId={projectId} />
             </div>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }

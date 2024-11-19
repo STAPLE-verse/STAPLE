@@ -9,15 +9,16 @@ export interface FormWithVersionAndUser extends FormWithFormVersion {
   user: User | null
 }
 
-export const TaskSchemaInput = ({ projectManagers }) => {
+interface TaskSchemaInputProps {
+  projectManagerIds: number[]
+}
+
+export const TaskSchemaInput = ({ projectManagerIds }: TaskSchemaInputProps) => {
   const [openSchemaModal, setOpenSchemaModal] = useState(false)
   const handleToggleSchemaUpload = () => setOpenSchemaModal((prev) => !prev)
 
-  // Get forms data
-  const pmList = projectManagers.map((pm) => pm.userId)
-
   const [pmForms] = useQuery(getForms, {
-    where: { userId: { in: pmList }, archived: false },
+    where: { userId: { in: projectManagerIds }, archived: false },
     include: { user: true },
   })
 

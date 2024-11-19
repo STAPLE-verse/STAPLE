@@ -11,18 +11,36 @@ import Layout from "src/core/layouts/Layout"
 import Head from "next/head"
 import toast from "react-hot-toast"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import PageHeader from "src/core/components/PageHeader"
 
 const NewTaskPage = () => {
-  // Setup
   const router = useRouter()
   const [createTaskMutation] = useMutation(createTask)
 
   const projectId = useParam("projectId", "number")
-  const { projectMember: currentProjectMember } = useCurrentContributor(projectId)
+  const { projectMember: currentContributor } = useCurrentContributor(projectId)
 
-  const initialValues = {
-    // Making sure that conributorsId always returns an empty array even if it is not touched
-    projectMembersId: [],
+  const handleNewTask = async (values) => {
+    try {
+      const task = await createTaskMutation({
+        ...values,
+        projectId: projectId!,
+        createdById: currentContributor!.id,
+      })
+
+      await toast.promise(Promise.resolve(task), {
+        loading: "Creating task...",
+        success: "Task created!",
+        error: "Failed to create the task...",
+      })
+
+      await router.push(Routes.ShowTaskPage({ projectId: projectId!, taskId: task.id }))
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
   }
 
   return (
@@ -31,46 +49,14 @@ const NewTaskPage = () => {
         <title>Create New Task</title>
       </Head>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">Create New Task</h1>
+        <PageHeader title="Create New Task" />
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
             className="flex flex-col"
             projectId={projectId}
             submitText="Create Task"
             schema={FormTaskSchema}
-            // TODO: if I add initial values there is a lag in task creation
-            // initialValues={initialValues}
-            onSubmit={async (values) => {
-              // Create new task
-              try {
-                const task = await createTaskMutation({
-                  name: values.name,
-                  description: values.description,
-                  containerId: values.containerId,
-                  projectId: projectId!,
-                  deadline: values.deadline,
-                  elementId: values.elementId,
-                  createdById: currentProjectMember!.id,
-                  projectMembersId: values.projectMembersId,
-                  teamsId: values.teamsId,
-                  formVersionId: values.formVersionId,
-                  rolesId: values.rolesId,
-                })
-
-                await toast.promise(Promise.resolve(task), {
-                  loading: "Creating task...",
-                  success: "Task created!",
-                  error: "Failed to create the task...",
-                })
-
-                await router.push(Routes.ShowTaskPage({ projectId: projectId!, taskId: task.id }))
-              } catch (error: any) {
-                console.error(error)
-                return {
-                  [FORM_ERROR]: error.toString(),
-                }
-              }
-            }}
+            onSubmit={handleNewTask}
           />
         </Suspense>
       </main>

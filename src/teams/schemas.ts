@@ -2,7 +2,9 @@ import { z } from "zod"
 
 export const TeamFormSchema = z.object({
   name: z.string(),
-  projectMembers: z.array(z.any()).nonempty(),
+  projectMemberUserIds: z.array(z.any()).refine((arr) => arr.length > 0, {
+    message: "Select at least one team member",
+  }),
 })
 
 export const CreateTeamSchema = z.object({
