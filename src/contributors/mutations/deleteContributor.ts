@@ -88,9 +88,32 @@ export default resolver.pipe(
     }
 
     // Delete the notifications related to the project
-    await db.notification.deleteMany({
-      where: { projectId: contributorToDelete.projectId },
+    const notificationsToUpdate = await db.notification.findMany({
+      where: {
+        projectId: contributorToDelete.projectId,
+        recipients: {
+          some: {
+            id: userId, // Match notifications where this user is a recipient
+          },
+        },
+      },
     })
+
+    // Disconnect the user from each notification
+    await db.$transaction(
+      notificationsToUpdate.map((notification) =>
+        db.notification.update({
+          where: { id: notification.id },
+          data: {
+            recipients: {
+              disconnect: {
+                id: userId,
+              },
+            },
+          },
+        })
+      )
+    )
 
     // Mark the project member as deleted
     const projectMember = await db.projectMember.update({
