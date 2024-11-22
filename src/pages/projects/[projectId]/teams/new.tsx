@@ -62,10 +62,7 @@ const NewTeamPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
-    <Layout>
-      <Head>
-        <title>Add New Team</title>
-      </Head>
+    <Layout title="Add New Team">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <PageHeader title="Add New Team" />
         <Suspense fallback={<div>Loading...</div>}>

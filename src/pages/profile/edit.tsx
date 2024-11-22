@@ -14,7 +14,7 @@ const EditProfilePage = () => {
 
 EditProfilePage.authenticate = true
 EditProfilePage.getLayout = (page) => {
-  return <Layout>{page}</Layout>
+  return <Layout title="Edit Profile">{page}</Layout>
 }
 
 export default EditProfilePage

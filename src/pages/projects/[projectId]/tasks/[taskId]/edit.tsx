@@ -90,10 +90,6 @@ export const EditTask = () => {
 
   return (
     <>
-      <Head>
-        <title>Edit {task.name}</title>
-      </Head>
-
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <PageHeader title={`Edit ${task.name}`} />
         <Suspense fallback={<div>Loading...</div>}>
@@ -121,7 +117,7 @@ const EditTaskPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
-    <Layout>
+    <Layout title="Edit Task Page">
       <TaskLayout>
         <Suspense fallback={<div>Loading...</div>}>
           <EditTask />

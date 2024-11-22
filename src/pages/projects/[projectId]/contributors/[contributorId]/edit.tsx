@@ -150,10 +150,7 @@ const EditContributorPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
-    <Layout>
-      <Head>
-        <title>Edit Contributor</title>
-      </Head>
+    <Layout title="Edit Contributor">
       <Suspense fallback={<div>Loading...</div>}>
         <EditContributor />
       </Suspense>

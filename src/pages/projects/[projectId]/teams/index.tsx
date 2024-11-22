@@ -63,11 +63,7 @@ const TeamsPage = () => {
   const { privilege } = useMemberPrivileges()
 
   return (
-    <Layout>
-      <Head>
-        <title>All Teams</title>
-      </Head>
-
+    <Layout title="All Teams">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Teams</h1>
         <Suspense fallback={<div>Loading...</div>}>

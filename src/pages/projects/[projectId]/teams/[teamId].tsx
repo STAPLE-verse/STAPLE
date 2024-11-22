@@ -25,10 +25,6 @@ export const TeamPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Team {team.name}</title>
-      </Head>
-
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <TeamInformation team={team} privilege={privilege!} />
 
@@ -48,7 +44,7 @@ export const TeamPage = () => {
 
 const ShowTeamPage = () => {
   return (
-    <Layout>
+    <Layout title="Team Page">
       <Suspense fallback={<div>Loading...</div>}>
         <TeamPage />
       </Suspense>

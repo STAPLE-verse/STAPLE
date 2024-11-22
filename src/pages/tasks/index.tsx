@@ -6,11 +6,7 @@ import PageHeader from "src/core/components/PageHeader"
 
 const AllTasksPage = () => {
   return (
-    <Layout>
-      <Head>
-        <title>All Tasks</title>
-      </Head>
-
+    <Layout title="All Tasks">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <PageHeader className="flex justify-center mb-2" title="All Tasks" />
         <Suspense fallback={<div>Loading...</div>}>

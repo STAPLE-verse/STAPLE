@@ -71,10 +71,6 @@ export const EditTeam = () => {
 
   return (
     <>
-      <Head>
-        <title>Edit {teamProjectMember.name}</title>
-      </Head>
-
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <PageHeader title={`Edit ${teamProjectMember.name}`} />
         <Suspense fallback={<div>Loading...</div>}>
@@ -102,7 +98,7 @@ const EditTeamPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
-    <Layout>
+    <Layout title="Edit Team Page">
       <Suspense fallback={<div>Loading...</div>}>
         <EditTeam />
       </Suspense>

@@ -44,10 +44,7 @@ const NewTaskPage = () => {
   }
 
   return (
-    <Layout>
-      <Head>
-        <title>Create New Task</title>
-      </Head>
+    <Layout title="Create New Task">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <PageHeader title="Create New Task" />
         <Suspense fallback={<div>Loading...</div>}>

@@ -31,9 +31,6 @@ const MetadataContent = () => {
 
   return (
     <>
-      <Head>
-        <title>Form Data for {task.name}</title>
-      </Head>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         {/* Header */}
         <div className="flex flex-row justify-center">
@@ -92,7 +89,7 @@ const MetadataContent = () => {
 
 export const ShowMetadataPage = () => {
   return (
-    <Layout>
+    <Layout title="Form Data Page">
       <Suspense fallback={<div>Loading...</div>}>
         <TaskLayout>
           <MetadataContent />

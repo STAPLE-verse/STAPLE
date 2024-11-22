@@ -21,10 +21,7 @@ const NewElementPage = () => {
   const [createElementMutation] = useMutation(createElement)
 
   return (
-    <Layout>
-      <Head>
-        <title>Create New Element</title>
-      </Head>
+    <Layout title="Create New Element">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <PageHeader title="Create New Element" />
         <Suspense fallback={<div>Loading...</div>}>
