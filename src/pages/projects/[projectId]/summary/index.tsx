@@ -118,25 +118,6 @@ const Summary = () => {
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center mb-2 text-3xl">Project Summary</h1>
 
-      {/* Select organization */}
-      <div className="flex flex-row justify-center m-2">
-        {/* A dropdown menu here for organization: By Date, By Task, By Contributor, By Role, By
-            Element */}
-        <select
-          className="select select-info w-full max-w-xs"
-          onChange={(e) => handleOrganizationChanged(e.target.value)}
-        >
-          <option disabled selected value="none">
-            Organize project by:
-          </option>
-          <option value="date">Organize project by Date</option>
-          <option value="task">Organize project by Task</option>
-          <option value="projectMember">Organize project by Contributor </option>
-          <option value="role">Organize project by Role</option>
-          <option value="element">Organize project by Element</option>
-        </select>
-      </div>
-
       {/* Project  information */}
       <div className="flex flex-row justify-center m-2">
         <div className="card bg-base-300 mx-2 w-full">
@@ -169,7 +150,7 @@ const Summary = () => {
               />
 
               <Link
-                className="btn btn-primary"
+                className="btn btn-secondary"
                 href={Routes.EditProjectPage({ projectId: projectId! })}
               >
                 Edit
