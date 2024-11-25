@@ -19,6 +19,7 @@ import { MemberPrivileges } from "db"
 import DateFormat from "src/core/components/DateFormat"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import getProjectManagers from "src/projectmembers/queries/getProjectManagers"
+import DownloadJSON from "src/forms/components/DownloadJSON"
 
 const Summary = () => {
   // Setup
@@ -161,6 +162,12 @@ const Summary = () => {
             <br />
             Identifier: {project.identifier}
             <div className="card-actions justify-end">
+              <DownloadJSON
+                data={project}
+                fileName={`${project.name}`}
+                className="btn btn-primary"
+              />
+
               <Link
                 className="btn btn-primary"
                 href={Routes.EditProjectPage({ projectId: projectId! })}
