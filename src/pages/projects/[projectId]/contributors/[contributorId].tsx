@@ -20,10 +20,6 @@ export const ContributorPage = () => {
 
   return (
     <>
-      <Head>
-        <title>{contributorUser!.username} Contributions</title>
-      </Head>
-
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <ContributorInformation
           projectId={projectId!}
@@ -52,7 +48,7 @@ export const ContributorPage = () => {
 
 const ShowContributorPage = () => {
   return (
-    <Layout>
+    <Layout title="Contributions">
       <Suspense fallback={<div>Loading...</div>}>
         <ContributorPage />
       </Suspense>

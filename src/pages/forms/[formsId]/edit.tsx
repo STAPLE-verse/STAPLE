@@ -30,11 +30,7 @@ const FormEditPage = () => {
   }
 
   return (
-    <Layout>
-      <Head>
-        <title>Form Builder</title>
-      </Head>
-
+    <Layout title="Form Builder">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <Suspense fallback={<div>Loading...</div>}>
           <FormPlayground

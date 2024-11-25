@@ -38,9 +38,6 @@ const NotificationContent = () => {
 
   return (
     <>
-      <Head>
-        <title>Project Notifications</title>
-      </Head>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Project Notifications</h1>
         <Table columns={columns} data={projectNotificationTableData} addPagination={true} />
@@ -51,7 +48,7 @@ const NotificationContent = () => {
 
 const ProjectNotificationsPage = () => {
   return (
-    <Layout>
+    <Layout title="Project Notifications">
       <Suspense fallback={<div>Loading...</div>}>
         <NotificationContent />
       </Suspense>

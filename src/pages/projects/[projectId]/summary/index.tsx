@@ -188,10 +188,7 @@ const SummaryPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
-    <Layout>
-      <Head>
-        <title>Project Summary</title>
-      </Head>
+    <Layout title="Project Summary">
       <Suspense fallback={<div>Loading...</div>}>
         <Summary />
       </Suspense>

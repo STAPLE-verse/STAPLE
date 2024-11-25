@@ -28,11 +28,7 @@ const AllFormsPage = () => {
   })
 
   return (
-    <Layout>
-      <Head>
-        <title>All Forms</title>
-      </Head>
-
+    <Layout title="All Forms">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <Suspense fallback={<div>Loading...</div>}>
           <FormsList forms={forms} addPagination={true} />

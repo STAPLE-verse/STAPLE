@@ -88,10 +88,6 @@ export const EditProject = () => {
 
   return (
     <>
-      <Head>
-        <title>Edit {project.name}</title>
-      </Head>
-
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Project Settings</h1>
         <Suspense fallback={<div>Loading...</div>}>
@@ -119,7 +115,7 @@ const EditProjectPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
-    <Layout>
+    <Layout title="Edit Project">
       <Suspense fallback={<div>Loading...</div>}>
         <EditProject />
       </Suspense>

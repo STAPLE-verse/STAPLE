@@ -74,10 +74,7 @@ const MainContent = () => {
 }
 
 export const MainPage = () => (
-  <Layout>
-    <Head>
-      <title>Home</title>
-    </Head>
+  <Layout title="Home">
     <Suspense fallback={<div>Loading...</div>}>
       <MainContent />
     </Suspense>

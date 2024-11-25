@@ -38,11 +38,7 @@ export const EditElement = () => {
   }
 
   return (
-    <Layout>
-      <Head>
-        <title>Edit Element {element.id}</title>
-      </Head>
-
+    <Layout title="Edit Element Page">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <PageHeader title={`Edit ${element.name}`} />
         <Suspense fallback={<div>Loading...</div>}>

@@ -25,9 +25,6 @@ const ShowProjectContent = () => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <Head>
-        <title>Project {project.name}</title>
-      </Head>
       {privilege == MemberPrivileges.PROJECT_MANAGER && (
         <AnnouncementModal projectId={projectId!} refreshWidgets={refreshWidgets} />
       )}
@@ -38,7 +35,7 @@ const ShowProjectContent = () => {
 
 export const ShowProjectPage = () => {
   return (
-    <Layout>
+    <Layout title="Project page">
       <Suspense fallback={<div>Loading...</div>}>
         <ShowProjectContent />
       </Suspense>

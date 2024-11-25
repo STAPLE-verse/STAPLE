@@ -18,10 +18,6 @@ export const EditPassword = () => {
 
   return (
     <>
-      <Head>
-        <title>Edit Password</title>
-      </Head>
-
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="text-3xl flex mb-2">Edit Password</h1>
         <Suspense fallback={<div>Loading...</div>}>
