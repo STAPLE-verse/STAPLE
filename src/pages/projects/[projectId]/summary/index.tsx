@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
-import getProject from "src/projects/queries/getProject"
+import getProjectData from "src/summary/queries/getProjectData"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import DateFormat from "src/core/components/DateFormat"
@@ -14,7 +14,7 @@ const Summary = () => {
   // Get data
   // Get projects
   const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
+  const [project] = useQuery(getProjectData, { id: projectId })
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
