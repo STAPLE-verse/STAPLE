@@ -264,3 +264,33 @@ staple.helpdesk@gmail.com
     `,
   }
 }
+
+export function createDailyNotification(email, notificationContent) {
+  const html_message = `
+    <html>
+      <body>
+        <center>
+          <img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+            alt="STAPLE Logo" height="200">
+        </center>
+
+        <h3>STAPLE Daily Notifications</h3>
+
+        <p>
+          This email is to notify you about recent updates to your project.
+          Here are new announcements, tasks, and other project updates:
+        </p>
+
+        ${notificationContent}
+      </body>
+    </html>
+  `
+
+  return {
+    from: "STAPLE <app@staple.science>",
+    to: email,
+    subject: "STAPLE Daily Notifications",
+    replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
+    html: html_message,
+  }
+}
