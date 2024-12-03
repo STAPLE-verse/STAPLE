@@ -1,17 +1,14 @@
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
-
 import { z } from "zod"
 
 interface RoleFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
-  userId?: number
   taxonomyList: string[]
 }
 
 export function RoleForm<S extends z.ZodType<any, any>>(props: RoleFormProps<S>) {
   const { taxonomyList, ...formProps } = props
-
   return (
     <Form<S> {...formProps}>
       {/* Name */}
@@ -22,7 +19,6 @@ export function RoleForm<S extends z.ZodType<any, any>>(props: RoleFormProps<S>)
         placeholder="Add Role Name"
         type="text"
       />
-
       {/* Description */}
       <LabeledTextAreaField
         className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg bg-base-300 border-2 w-full"

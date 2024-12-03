@@ -15,9 +15,6 @@ const TaskContent = () => {
 
   return (
     <>
-      <Head>
-        <title>Task {task.name}</title>
-      </Head>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <div className="flex flex-row justify-center m-2">
           <TaskInformation />
@@ -33,7 +30,7 @@ const TaskContent = () => {
 
 // Show the task page
 export const ShowTaskPage = () => (
-  <Layout>
+  <Layout title="Task Page">
     <TaskLayout>
       <Suspense fallback={<div>Loading...</div>}>
         <TaskContent />

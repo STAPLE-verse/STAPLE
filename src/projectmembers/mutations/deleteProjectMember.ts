@@ -65,8 +65,9 @@ export default resolver.pipe(
     })
 
     // Delete the project member
-    const projectMember = await db.projectMember.delete({
+    const projectMember = await db.projectMember.update({
       where: { id: projectMemberToDelete.id },
+      data: { deleted: true },
     })
 
     return projectMember

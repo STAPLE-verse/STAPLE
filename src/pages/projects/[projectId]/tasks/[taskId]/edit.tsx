@@ -13,26 +13,28 @@ import toast from "react-hot-toast"
 import TaskLayout from "src/core/layouts/TaskLayout"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
-import { useTaskContext } from "src/tasks/components/TaskContext"
+import { ProjectMemberWithTaskLog, useTaskContext } from "src/tasks/components/TaskContext"
 import { responseSubmitted } from "src/tasklogs/utils/responseSubmitted"
 import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
+import PageHeader from "src/core/components/PageHeader"
 
 export const EditTask = () => {
-  // Ensure that only PM can edit a task
-  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
   //Setup
   const router = useRouter()
   const [updateTaskMutation] = useMutation(updateTask)
+
   // Get tasks and assignments
   const { task, projectMembers, refetchTaskData } = useTaskContext()
-  const { individualProjectMembers, teamProjectMembers } = useSeparateProjectMembers(projectMembers)
 
-  // Calculate individual projectMember ids
+  const { individualProjectMembers, teamProjectMembers } =
+    useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
+
+  // Get individual projectMember ids
   const projectMembersId = individualProjectMembers
     .map((projectMember) => projectMember.id)
     .filter((id): id is number => id !== null)
 
-  // Calculate team member projectMember ids
+  // Get team member projectMember ids
   const teamsId = teamProjectMembers
     .map((projectMember) => projectMember.id)
     .filter((id): id is number => id !== null)
@@ -88,12 +90,8 @@ export const EditTask = () => {
 
   return (
     <>
-      <Head>
-        <title>Edit {task.name}</title>
-      </Head>
-
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">Edit {task.name}</h1>
+        <PageHeader title={`Edit ${task.name}`} />
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
             projectId={task.projectId}
@@ -103,7 +101,6 @@ export const EditTask = () => {
             initialValues={initialValues}
             onSubmit={handleSubmit}
           />
-
           <Link
             className="btn self-end mt-4 btn-error"
             href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
@@ -117,8 +114,10 @@ export const EditTask = () => {
 }
 
 const EditTaskPage = () => {
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
+
   return (
-    <Layout>
+    <Layout title="Edit Task Page">
       <TaskLayout>
         <Suspense fallback={<div>Loading...</div>}>
           <EditTask />

@@ -25,7 +25,8 @@ export default resolver.pipe(
             id: { not: undefined }, // Ensures there's at least one user
           },
         },
-        name: { equals: null }, // Ensures the name in ProjectMember is null
+        deleted: false,
+        name: null, // Ensures the name in ProjectMember is null
       },
     })
 
@@ -60,8 +61,6 @@ export default resolver.pipe(
         formVersionId: { not: null },
       },
     })
-
-    // console.log(taskForms)
 
     // grab the last task log for each projectMember + task
     const taskLogForms = await Promise.all(

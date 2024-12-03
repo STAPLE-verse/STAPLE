@@ -3,7 +3,6 @@ import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
-
 import { TeamForm } from "src/teams/components/TeamForm"
 import { FORM_ERROR } from "final-form"
 import { TeamFormSchema } from "src/teams/schemas"
@@ -13,58 +12,61 @@ import toast from "react-hot-toast"
 import createTeam from "src/teams/mutations/createTeam"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
+import PageHeader from "src/core/components/PageHeader"
 
-const NewTeamPage = () => {
-  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
-
+const NewTeamContent = () => {
   const router = useRouter()
   const projectId = useParam("projectId", "number")
   const [createTeamMutation] = useMutation(createTeam)
 
-  return (
-    <Layout>
-      <Head>
-        <title>Add New Team</title>
-      </Head>
-      <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">Add New Team</h1>
-        <Suspense fallback={<div>Loading...</div>}>
-          <TeamForm
-            projectId={projectId!}
-            className="flex flex-col"
-            submitText="Add Team"
-            schema={TeamFormSchema}
-            onSubmit={async (values) => {
-              const teamMemberUserIds: number[] = values.projectMembers
-                .filter((el) => el.checked)
-                .map((val) => val.userId)
-              try {
-                //get this after team is created
-                const team = await createTeamMutation({
-                  name: values.name,
-                  projectId: projectId!,
-                  userIds: teamMemberUserIds,
-                })
-                await toast.promise(Promise.resolve(team), {
-                  loading: "Adding team...",
-                  success: "Team added to the project!",
-                  error: "Failed to create the team...",
-                })
+  const handleNewTeam = async (values) => {
+    try {
+      //get this after team is created
+      const team = await createTeamMutation({
+        name: values.name,
+        projectId: projectId!,
+        userIds: values.projectMemberUserIds,
+      })
+      await toast.promise(Promise.resolve(team), {
+        loading: "Adding team...",
+        success: "Team added to the project!",
+        error: "Failed to create the team...",
+      })
 
-                await router.push(
-                  Routes.ShowTeamPage({
-                    projectId: projectId!,
-                    teamId: team.id,
-                  })
-                )
-              } catch (error: any) {
-                console.error(error)
-                return {
-                  [FORM_ERROR]: error.toString(),
-                }
-              }
-            }}
-          />
+      await router.push(
+        Routes.ShowTeamPage({
+          projectId: projectId!,
+          teamId: team.id,
+        })
+      )
+    } catch (error: any) {
+      console.error(error)
+      return {
+        [FORM_ERROR]: error.toString(),
+      }
+    }
+  }
+
+  return (
+    <TeamForm
+      projectId={projectId!}
+      className="flex flex-col"
+      submitText="Add Team"
+      schema={TeamFormSchema}
+      onSubmit={handleNewTeam}
+    />
+  )
+}
+
+const NewTeamPage = () => {
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
+
+  return (
+    <Layout title="Add New Team">
+      <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
+        <PageHeader title="Add New Team" />
+        <Suspense fallback={<div>Loading...</div>}>
+          <NewTeamContent />
         </Suspense>
       </main>
     </Layout>

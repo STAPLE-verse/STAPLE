@@ -2,7 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateTaskLogSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
-import { getAssignmentStatusText } from "src/services/getAssignmentStatusText"
+import { getStatusText } from "src/core/utils/getStatusText"
 
 export default resolver.pipe(
   resolver.zod(CreateTaskLogSchema),
@@ -60,7 +60,7 @@ export default resolver.pipe(
         data: {
           taskName: task!.name,
           completedBy: completedByUsername,
-          assignmentStatus: getAssignmentStatusText(status),
+          assignmentStatus: getStatusText(status),
         },
         projectId: task!.projectId,
       },

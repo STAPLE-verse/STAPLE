@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowsUpDownLeftRight } from "@fortawesome/free-solid-svg-icons"
 
 type ItemsType = {
-  id: string
+  id: string | number
   title: string
   completed: boolean
   projectId: number
@@ -23,7 +23,7 @@ const TaskItems = ({ id, title, completed, projectId }: ItemsType) => {
     },
   })
 
-  const taskId = parseInt(id.replace("item-", ""))
+  const taskId = typeof id === "string" ? parseInt(id.replace("item-", "")) : id
 
   return (
     <div

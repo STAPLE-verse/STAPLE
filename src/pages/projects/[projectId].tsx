@@ -1,77 +1,43 @@
-import { Suspense, useState } from "react"
+import { Suspense } from "react"
 import Head from "next/head"
-import { useMutation, useQuery } from "@blitzjs/rpc"
+import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import getProject from "src/projects/queries/getProject"
 import ProjectDashboard from "src/projects/components/ProjectDashboard"
-import Modal from "src/core/components/Modal"
-import createAnnouncement from "src/notifications/mutations/createAnnouncement"
 import { MemberPrivileges } from "db"
-import { AnnouncementForm } from "src/projects/components/AnnouncementForm"
-import { FormAnnouncementSchema } from "src/projects/schemas"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
+import AnnouncementModal from "src/projects/components/AnnouncementModal"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { useProjectWidgets } from "src/projects/hooks/useProjectWidgets"
 
-interface ShowProjectContentProps {
-  projectId: number
-}
-
-const ShowProjectContent = ({ projectId }: ShowProjectContentProps) => {
+const ShowProjectContent = () => {
   const { privilege } = useMemberPrivileges()
-  const [openModal, setOpenModal] = useState(false)
+  const projectId = useParam("projectId", "number")
+  const [project] = useQuery(getProject, { id: projectId })
+  const currentUser = useCurrentUser()
 
-  const handleToggle = () => {
-    setOpenModal((prev) => !prev)
-  }
-
-  const [createAnnouncementMutation] = useMutation(createAnnouncement)
-
-  const handleSubmit = async (values) => {
-    try {
-      await createAnnouncementMutation({
-        projectId: projectId!,
-        announcementText: values.announcementText,
-      })
-      setOpenModal(false)
-    } catch (error) {
-      console.error("Error creating announcement:", error)
-    }
-  }
+  const { widgets, setWidgets, refreshWidgets } = useProjectWidgets({
+    userId: currentUser!.id,
+    projectId: projectId!,
+    privilege: privilege!,
+  })
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       {privilege == MemberPrivileges.PROJECT_MANAGER && (
-        <>
-          <button type="button" className="btn btn-primary mb-4" onClick={handleToggle}>
-            Create Announcement
-          </button>
-          <Modal open={openModal} size="w-1/3">
-            {/* Modal content */}
-            <AnnouncementForm
-              submitText="Send Announcement"
-              schema={FormAnnouncementSchema}
-              cancelText="Cancel"
-              onSubmit={handleSubmit}
-              onCancel={handleToggle}
-            ></AnnouncementForm>
-          </Modal>
-        </>
+        <AnnouncementModal projectId={projectId!} refreshWidgets={refreshWidgets} />
       )}
-      <ProjectDashboard />
+      <ProjectDashboard widgets={widgets} setWidgets={setWidgets} />
     </main>
   )
 }
 
 export const ShowProjectPage = () => {
-  const projectId = useParam("projectId", "number")
-  const [project] = useQuery(getProject, { id: projectId })
   return (
-    <Layout>
+    <Layout title="Project page">
       <Suspense fallback={<div>Loading...</div>}>
-        <Head>
-          <title>Project {project.name}</title>
-        </Head>
-        <ShowProjectContent projectId={projectId!} />
+        <ShowProjectContent />
       </Suspense>
     </Layout>
   )

@@ -22,6 +22,18 @@ const NotificationContent = () => {
           id: currentUser!.id,
         },
       },
+      // Only include notifications for projects where the contributor is not deleted
+      project: {
+        projectMembers: {
+          some: {
+            users: {
+              some: { id: currentUser!.id },
+            },
+            name: null, // Contributor (indicating it's not a team)
+            deleted: false, // Only include undeleted project members
+          },
+        },
+      },
     },
     orderBy: { createdAt: "desc" },
     include: { project: true },
@@ -37,9 +49,6 @@ const NotificationContent = () => {
 
   return (
     <>
-      <Head>
-        <title>All Notifications</title>
-      </Head>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">All Notifications</h1>
         <Table columns={columns} data={notificationTableData} addPagination={true} />
@@ -49,7 +58,7 @@ const NotificationContent = () => {
 }
 const NotificationsPage = () => {
   return (
-    <Layout>
+    <Layout title="All Notifications">
       <Suspense fallback={<div>Loading...</div>}>
         <NotificationContent />
       </Suspense>

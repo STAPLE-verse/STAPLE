@@ -1,8 +1,7 @@
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import LabelSelectField from "src/core/components/fields/LabelSelectField"
-
-import { getDateLanguageLocales } from "src/services/getDateLanguageLocales"
+import { getDateLanguageLocales } from "src/core/utils/getDateLanguageLocales"
 import { z } from "zod"
 
 export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {

@@ -1,15 +1,13 @@
 import { useMemo } from "react"
-import { ProjectMemberWithTaskLog } from "src/tasks/components/TaskContext"
 
-// Hook to separate project members into individual and team based on the number of referenced users
-export function useSeparateProjectMembers(projectMembers: ProjectMemberWithTaskLog[]) {
+// Generic hook to separate project members into individual and team based on a condition
+export function useSeparateProjectMembers<T extends { name: string | null }>(projectMembers: T[]) {
   // Use useMemo to avoid recalculating on every render
   const { individualProjectMembers, teamProjectMembers } = useMemo(() => {
-    const individualProjectMembers: ProjectMemberWithTaskLog[] = []
-    const teamProjectMembers: ProjectMemberWithTaskLog[] = []
+    const individualProjectMembers: T[] = []
+    const teamProjectMembers: T[] = []
 
-    // Iterate through the project members and separate them based on
-    // team name being null since teams can be one person
+    // Iterate through the project members and separate them based on the `name` property
     projectMembers.forEach((member) => {
       if (member.name === null) {
         individualProjectMembers.push(member)

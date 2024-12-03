@@ -1,59 +1,63 @@
 import { useMutation } from "@blitzjs/rpc"
 import createColumn from "src/tasks/mutations/createColumn"
 import { useState } from "react"
-import TaskModal from "./TaskModal"
-import TaskInput from "./TaskInput"
-import { Tooltip } from "react-tooltip"
+import Modal from "src/core/components/Modal"
+import LabeledTextField from "src/core/components/fields/LabeledTextField"
+import Form from "src/core/components/fields/Form"
+import { FORM_ERROR } from "final-form"
+import { z } from "zod"
+
+const AddContainerSchema = z.object({
+  containerName: z.string(),
+})
 
 const AddContainer = ({ projectId, refetch }) => {
   const [createColumnMutation] = useMutation(createColumn)
-
   const [showAddContainerModal, setShowAddContainerModal] = useState(false)
-  const [containerName, setContainerName] = useState("")
 
-  const onAddContainer = async () => {
-    if (!containerName) return
-    await createColumnMutation({ projectId: projectId, name: containerName })
-    setContainerName("")
-    setShowAddContainerModal(false)
-    refetch()
+  const handleToggleContainerModal = () => {
+    setShowAddContainerModal((prev) => !prev)
+  }
+
+  const onAddContainer = async (values) => {
+    try {
+      await createColumnMutation({ projectId, name: values.containerName })
+      handleToggleContainerModal()
+      refetch()
+    } catch (error) {
+      console.error("Failed to create column:", error)
+      return { [FORM_ERROR]: error.toString() }
+    }
   }
 
   return (
     <>
-      <TaskModal showModal={showAddContainerModal} setShowModal={setShowAddContainerModal}>
-        <div className="flex flex-col w-full items-start gap-y-4 bg-base-300">
-          <h1 className="text-3xl font-bold">Add Column</h1>
-          <TaskInput
-            type="text"
-            placeholder="Container Title"
-            name="containername"
-            value={containerName}
-            onChange={(e) => setContainerName(e.target.value)}
-          />
-          <button type="button" className="btn btn-primary" onClick={onAddContainer}>
-            Add Column
-          </button>
-        </div>
-      </TaskModal>
+      <button
+        type="button"
+        className="btn btn-primary"
+        onClick={() => setShowAddContainerModal(true)}
+      >
+        Add Column
+      </button>
 
-      <div className="flex items-center justify-between gap-y-2">
-        <h1 className="text-3xl font-bold" data-tooltip-id="kanban-tooltip">
-          Project Tasks
-        </h1>
-        <Tooltip
-          id="kanban-tooltip"
-          content="Completed tasks appear in a shade of green"
-          className="z-[1099] ourtooltips"
-        />
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => setShowAddContainerModal(true)}
+      <Modal open={showAddContainerModal}>
+        <h1 className="flex justify-center mb-2 text-3xl">Add Column</h1>
+        <Form
+          schema={AddContainerSchema}
+          onSubmit={onAddContainer}
+          submitText="Add Column"
+          cancelText="Close"
+          onCancel={handleToggleContainerModal}
         >
-          Add Column
-        </button>
-      </div>
+          <LabeledTextField
+            className="input text-primary input-primary input-bordered border-2 bg-base-300"
+            name="containerName"
+            label="Container Title: (Required)"
+            placeholder="Enter container title..."
+            type="text"
+          />
+        </Form>
+      </Modal>
     </>
   )
 }

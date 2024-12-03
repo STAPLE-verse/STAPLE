@@ -1,9 +1,6 @@
-import { useEffect } from "react"
-import { useParam } from "@blitzjs/next"
-import { useMutation, useQuery } from "@blitzjs/rpc"
-import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { useMutation } from "@blitzjs/rpc"
 import "react-circular-progressbar/dist/styles.css"
-import React, { useState } from "react"
+import React from "react"
 import {
   DndContext,
   KeyboardSensor,
@@ -15,46 +12,14 @@ import {
 } from "@dnd-kit/core"
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import updateProjectWidgets from "src/widgets/mutations/updateProjectWidgets"
-import getProjectWidgets from "src/widgets/queries/getProjectWidgets"
-import toast from "react-hot-toast"
 import useDashboardDragHandlers from "src/widgets/hooks/useDashboardDragHandlers"
-import initializeProjectWidgets from "src/widgets/mutations/initializeProjectWidgets"
 import { useWidgetConstruction } from "src/widgets/hooks/useWidgetConstruction"
-import { sortWidgets } from "src/widgets/utils/sortWidgets"
 import { WidgetContainer } from "src/widgets/components/WidgetContainer"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 
-const ProjectDashboard = () => {
+const ProjectDashboard = ({ widgets, setWidgets }) => {
   const [updateWidgetMutation] = useMutation(updateProjectWidgets)
-  const [initializeWidgetsMutation] = useMutation(initializeProjectWidgets)
-
-  const projectId = useParam("projectId", "number")
-  const currentUser = useCurrentUser()
-  const userId = currentUser?.id!
   const { privilege } = useMemberPrivileges()
-
-  const [widgets, setWidgets] = useState<any[]>([])
-
-  const [fetchedWidgets] = useQuery(getProjectWidgets, {
-    userId: userId,
-    projectId: projectId!,
-  })
-
-  useEffect(() => {
-    if (fetchedWidgets.length > 0) {
-      const sortedWidgets = sortWidgets(fetchedWidgets)
-      setWidgets(sortedWidgets)
-    } else {
-      initializeWidgetsMutation({ userId: userId, projectId: projectId!, privilege: privilege! })
-        .then((createdWidgets) => {
-          setWidgets(createdWidgets)
-          toast.success(`Dashboard added successfully!`)
-        })
-        .catch(() => {
-          toast.error(`Issue with dashboard, please contact help.`)
-        })
-    }
-  }, [fetchedWidgets, initializeWidgetsMutation, privilege, projectId, userId])
 
   const constructedWidgets = useWidgetConstruction({
     widgets,

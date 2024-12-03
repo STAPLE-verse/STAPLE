@@ -4,7 +4,7 @@ import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import Form from "src/core/components/fields/Form"
 import { useMutation } from "@blitzjs/rpc"
 import { AddFormTemplatesSchema } from "../schemas"
-import { getDefaultSchemaLists } from "src/services/jsonconverter/getDefaultSchemaList"
+import { getDefaultSchemaLists } from "src/forms/utils/getDefaultSchemaList"
 import createForm from "src/forms/mutations/createForm"
 import { CurrentUser } from "src/users/queries/getCurrentUser"
 

@@ -9,8 +9,7 @@ import updateUser from "src/users/mutations/updateUser"
 import { FormProfileSchema } from "src/users/schemas"
 import { Routes } from "@blitzjs/next"
 import logout from "src/auth/mutations/logout"
-import Link from "next/link"
-import { getDateLocale } from "src/services/getDateLanguageLocales"
+import { getDateLocale } from "src/core/utils/getDateLanguageLocales"
 import { ProfileForm } from "./ProfileForm"
 import { createEditProfileMsg } from "integrations/emails"
 
@@ -39,10 +38,6 @@ export const EditProfile = () => {
 
   return (
     <>
-      <Head>
-        <title>Edit Profile</title>
-      </Head>
-
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="text-3xl flex mb-2">Edit Profile</h1>
         <Suspense fallback={<div>Loading...</div>}>

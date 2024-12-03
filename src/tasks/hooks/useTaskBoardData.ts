@@ -10,7 +10,7 @@ interface ColumnWithTasks extends KanbanBoard {
 // Define type for dnd-kit
 export type DNDType = {
   // containers (columns)
-  id: string
+  id: string | number
   title: string
   // items (tasks)
   items: {

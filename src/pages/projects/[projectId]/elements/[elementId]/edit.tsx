@@ -16,6 +16,7 @@ import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
+import PageHeader from "src/core/components/PageHeader"
 
 export const EditElement = () => {
   const [updateElementMutation] = useMutation(updateElement)
@@ -37,14 +38,9 @@ export const EditElement = () => {
   }
 
   return (
-    <Layout>
-      <Head>
-        <title>Edit Element {element.id}</title>
-      </Head>
-
+    <Layout title="Edit Element Page">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl">Edit {element.name}</h1>
-        {/* <pre>{JSON.stringify(element, null, 2)}</pre> */}
+        <PageHeader title={`Edit ${element.name}`} />
         <Suspense fallback={<div>Loading...</div>}>
           <ElementForm
             submitText="Update Element"

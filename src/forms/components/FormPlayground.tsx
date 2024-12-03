@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { Tab } from "@headlessui/react"
 import classNames from "classnames"
-import PreviewTab from "./PreviewTab"
 import VisualBuilderTab from "./VisualBuilderTab"
 import JSONBuilderTab from "./JSONBuilderTab"
+import validator from "@rjsf/validator-ajv8"
+import JsonForm from "src/core/components/JsonForm"
 
 interface FormPlaygroundProps {
   initialSchema?: string
@@ -94,7 +95,12 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
         </Tab.Panel>
 
         <Tab.Panel>
-          <PreviewTab schema={state.schema} uiSchema={state.uischema} formData={state.formData} />
+          <JsonForm
+            schema={state.schema}
+            uiSchema={state.uischema}
+            formData={state.formData}
+            validator={validator}
+          />
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>

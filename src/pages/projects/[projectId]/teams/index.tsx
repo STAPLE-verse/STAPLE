@@ -9,24 +9,20 @@ import { ContributorTeamColumns } from "src/teams/tables/columns/ContributorTeam
 import { PmTeamColumns } from "src/teams/tables/columns/PmTeamColumns"
 import Table from "src/core/components/Table"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
-import { MemberPrivileges, ProjectMember, User } from "@prisma/client"
+import { MemberPrivileges } from "@prisma/client"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { processTeam } from "src/teams/tables/processing/processTeam"
+import { ProjectMemberWithUsers } from "src/core/types"
 
 interface AllTeamListProps {
   privilege: MemberPrivileges
   projectId: number | undefined
 }
 
-export type ProjectMemberWithUsers = ProjectMember & {
-  users: User[]
-}
-
 export const AllTeamList = ({ privilege, projectId }: AllTeamListProps) => {
   const currentUser = useCurrentUser()
 
-  // use this to get teams
   const [{ projectMembers }] = useQuery(getProjectMembers, {
     where: {
       projectId: projectId,
@@ -34,6 +30,7 @@ export const AllTeamList = ({ privilege, projectId }: AllTeamListProps) => {
       users: {
         some: { id: { not: undefined } }, // Ensures there's at least one user
       },
+      deleted: false, // Do not show deleted teams
     },
     orderBy: { id: "asc" },
     include: {
@@ -66,11 +63,7 @@ const TeamsPage = () => {
   const { privilege } = useMemberPrivileges()
 
   return (
-    <Layout>
-      <Head>
-        <title>All Teams</title>
-      </Head>
-
+    <Layout title="All Teams">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Teams</h1>
         <Suspense fallback={<div>Loading...</div>}>

@@ -8,14 +8,13 @@ import { Routes } from "@blitzjs/next"
 import DownloadJSON from "src/forms/components/DownloadJSON"
 import DownloadXLSX from "src/forms/components/DownloadXLSX"
 import DownloadZIP from "src/forms/components/DownloadZIP"
-import getJsonSchema from "src/services/jsonconverter/getJsonSchema"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import TaskLayout from "src/core/layouts/TaskLayout"
-import { extendSchema } from "src/forms/utils/extendSchema"
 import { processMetadata } from "src/forms/utils/processMetadata"
 import { metadataTable } from "src/forms/utils/metadataTable"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
+import getJsonSchema from "src/forms/utils/getJsonSchema"
 
 const MetadataContent = () => {
   // Ensure that only PM can edit a task
@@ -23,16 +22,6 @@ const MetadataContent = () => {
 
   // Get tasks
   const { task, projectMembers } = useTaskContext()
-
-  // Extend uiSchema so submit button is not shown
-  const extendedUiSchema = extendSchema({
-    schema: task.formVersion?.uiSchema || {},
-    extension: {
-      "ui:submitButtonOptions": {
-        norender: true,
-      },
-    },
-  })
 
   // Prepare data for the metadatatable
   const processedMetadata = processMetadata(projectMembers)
@@ -42,9 +31,6 @@ const MetadataContent = () => {
 
   return (
     <>
-      <Head>
-        <title>Form Data for {task.name}</title>
-      </Head>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         {/* Header */}
         <div className="flex flex-row justify-center">
@@ -53,14 +39,15 @@ const MetadataContent = () => {
               <div className="flex justify-center">
                 <JsonFormModal
                   schema={getJsonSchema(task.formVersion?.schema)}
-                  uiSchema={extendedUiSchema}
+                  uiSchema={task.formVersion?.uiSchema || {}}
                   label="Form Requirements"
                   classNames="btn-primary"
+                  submittable={false}
                 />
 
                 <Link
                   className="btn btn-secondary mx-2"
-                  href={Routes.AssignmentsPage({
+                  href={Routes.TaskLogsPage({
                     projectId: task.projectId,
                     taskId: task.id,
                   })}
@@ -102,7 +89,7 @@ const MetadataContent = () => {
 
 export const ShowMetadataPage = () => {
   return (
-    <Layout>
+    <Layout title="Form Data Page">
       <Suspense fallback={<div>Loading...</div>}>
         <TaskLayout>
           <MetadataContent />

@@ -21,10 +21,7 @@ const ShowElementPage = () => {
   const [element, { refetch }] = useQuery(getElement, { id: elementId })
 
   return (
-    <Layout>
-      <Head>
-        <title>Element {element.id}</title>
-      </Head>
+    <Layout title="Element Page">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <div>
           <Suspense fallback={<div>Loading...</div>}>

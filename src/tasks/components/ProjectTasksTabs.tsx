@@ -1,56 +1,37 @@
 import { Tab } from "@headlessui/react"
 import { Routes } from "@blitzjs/next"
-import { useParam } from "@blitzjs/next"
 import TaskBoard from "src/tasks/components/TaskBoard"
 import Link from "next/link"
 import { MemberPrivileges } from "@prisma/client"
 import { ProjectTasksList } from "src/tasks/components/ProjectTasksList"
-import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
+import clsx from "clsx"
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ")
-}
-
-export const ProjectTasksTabs = () => {
-  const projectId = useParam("projectId", "number")
-  const { privilege: projectPrivilege } = useMemberPrivileges()
-
+export const ProjectTasksTabs = ({ projectPrivilege, projectId }) => {
   return (
-    <div>
+    <>
       <Tab.Group defaultIndex={0}>
         <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
           {/* Tablink for board view */}
           {projectPrivilege === MemberPrivileges.PROJECT_MANAGER && (
-            <Tab
-              className={({ selected }) =>
-                classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
-              }
-              onClick={() => console.log("Board tab clicked")}
-            >
+            <Tab as="button" className={({ selected }) => clsx("tab", selected && "tab-active")}>
               Board
             </Tab>
           )}
           {/* TabLink for table view */}
-          <Tab
-            className={({ selected }) =>
-              classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
-            }
-            onClick={() => console.log("Table tab clicked")}
-          >
+          <Tab as="button" className={({ selected }) => clsx("tab", selected && "tab-active")}>
             Table
           </Tab>
-          {/* TODO: First click on board does not change it after init */}
         </Tab.List>
 
         <Tab.Panels>
           {/* Tabpanel for kanban board */}
           {projectPrivilege === MemberPrivileges.PROJECT_MANAGER && (
-            <Tab.Panel>
-              <TaskBoard projectId={projectId!} />
+            <Tab.Panel unmount={false}>
+              <TaskBoard />
             </Tab.Panel>
           )}
           {/* Tabpanel for table view */}
-          <Tab.Panel>
+          <Tab.Panel unmount={false}>
             <ProjectTasksList />
           </Tab.Panel>
         </Tab.Panels>
@@ -67,6 +48,6 @@ export const ProjectTasksTabs = () => {
           </Link>
         </p>
       )}
-    </div>
+    </>
   )
 }

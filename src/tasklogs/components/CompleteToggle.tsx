@@ -7,7 +7,6 @@ import updateTaskLog from "../mutations/updateTaskLog"
 const CompleteToggle = ({
   // refetch,
   taskLog,
-  completedRole,
   completedById,
   completedAs,
 }) => {
@@ -56,7 +55,7 @@ const CompleteToggle = ({
               checked={isChecked}
               onChange={handleAssignmentStatusToggle}
             />
-            <span className="ml-2">{completedRole}</span>
+            <span className="ml-2">Completed</span>
           </label>
         </div>
       ) : (
