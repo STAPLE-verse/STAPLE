@@ -41,7 +41,7 @@ export default resolver.pipe(
     })
 
     // Create project member row for "individuals"
-    await db.projectMember.create({
+    const projectMember = await db.projectMember.create({
       data: {
         projectId: project.id,
         users: {
@@ -55,6 +55,40 @@ export default resolver.pipe(
       data: {
         projectId: project.id,
         userId: userId,
+      },
+    })
+
+    const firstContainerId = project.containers
+      .filter((container) => container.projectId === project.id) // Ensure it's tied to the created project
+      .find((container) => container.containerOrder === 0)?.id
+
+    // Create a do this task
+    const task = await db.task.create({
+      data: {
+        name: "Complete Project Description Form",
+        project: {
+          connect: { id: project.id },
+        },
+        containerTaskOrder: 0, // has to be first only one
+        container: {
+          connect: { id: firstContainerId }, // put it in default to do
+        },
+        description: "Here's a real description to come",
+        createdBy: {
+          connect: { id: projectMember.id },
+        },
+        assignedMembers: {
+          connect: { id: projectMember.id },
+        },
+      },
+    })
+
+    // create the task log or you will blow this up
+    await db.taskLog.create({
+      data: {
+        task: { connect: { id: task.id } },
+        assignedTo: { connect: { id: projectMember.id } },
+        completedAs: "INDIVIDUAL",
       },
     })
 
