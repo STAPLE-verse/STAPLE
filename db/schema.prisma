@@ -149,8 +149,8 @@ model Project {
   ProjectPrivilege ProjectPrivilege[]
   invitations      Invitation[]
   metadata         Json? // Add metadata field
-  forms            Form[] // Add relation to forms
   formVersions     FormVersion[] // Add relation to form versions
+  formVersionId    Int?
 }
 
 enum Status {
@@ -243,8 +243,6 @@ model Form {
   user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   versions  FormVersion[]
   archived  Boolean       @default(false)
-  Project   Project?      @relation(fields: [projectId], references: [id])
-  projectId Int?
 }
 
 model FormVersion {
