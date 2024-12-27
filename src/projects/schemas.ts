@@ -3,11 +3,7 @@ import { z } from "zod"
 export const FormProjectSchema = z.object({
   name: z.string(),
   description: z.string().optional().nullable(),
-  abstract: z.string().optional().nullable(),
-  keywords: z.string().optional().nullable(),
-  citation: z.string().optional().nullable(),
-  publisher: z.string().optional().nullable(),
-  identifier: z.string().optional().nullable(),
+  formVersionId: z.number().optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
 })
 
