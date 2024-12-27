@@ -51,7 +51,7 @@ const AddFormTemplates: React.FC<AddFormTemplatesProps> = ({
 
   return (
     <Modal open={open} size="large">
-      <h2>Select Form Templates</h2>
+      <h2 className="flex justify-center mb-2 text-3xl">Select Form Templates</h2>
       {open && (
         <Form
           schema={AddFormTemplatesSchema}
