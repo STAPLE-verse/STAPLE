@@ -149,7 +149,7 @@ model Project {
   ProjectPrivilege ProjectPrivilege[]
   invitations      Invitation[]
   metadata         Json? // Add metadata field
-  formVersions     FormVersion[] // Add relation to form versions
+  formVersion      FormVersion?       @relation(fields: [formVersionId], references: [id])
   formVersionId    Int?
 }
 
@@ -246,17 +246,16 @@ model Form {
 }
 
 model FormVersion {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
   formId    Int
   version   Int
   schema    Json
   uiSchema  Json?
-  createdAt DateTime @default(now())
-  form      Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  form      Form      @relation(fields: [formId], references: [id], onDelete: Cascade)
   tasks     Task[]
-  Project   Project? @relation(fields: [projectId], references: [id])
-  projectId Int?
+  projects  Project[]
 
   @@index([formId, version], name: "formVersionIndex")
 }
