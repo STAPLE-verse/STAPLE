@@ -5,12 +5,18 @@ import { CreateProjectSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(CreateProjectSchema),
   resolver.authorize(),
-  async (input, ctx) => {
+  async ({ name, description, formVersionId }, ctx) => {
     const userId = ctx.session.userId
     const project = await db.project.create({
       data: {
         // Inputs from project creation form
-        ...input,
+        name,
+        description,
+        formVersion: formVersionId
+          ? {
+              connect: { id: formVersionId },
+            }
+          : undefined,
         // Initialize project with "To Do", "In Progress", "Done" kanban board columns
         containers: {
           create: [
