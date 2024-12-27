@@ -41,10 +41,16 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: ProjectFormPro
           <button>download</button>
         </div>
       ) : (
-        // add button to download here
+        <div className="mt-4">
+          <p className="text-lg">
+            Not sure what to use? Use the suggested default (can be updated later):
+          </p>
+          <button type="button" className="btn btn-primary w-1/2 mt-2">
+            Use Default Form
+          </button>
+        </div>
 
         // add the default button if not selected
-        <button>default</button>
       )}
     </Form>
   )
