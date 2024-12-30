@@ -61,7 +61,7 @@ export const ProjectSchemaInput = ({ userId }: ProjectSchemaInputProps) => {
               className="btn btn-primary self-end"
               onClick={handleToggleSchemaUpload}
             >
-              Close
+              Save
             </button>
           </div>
         </div>
