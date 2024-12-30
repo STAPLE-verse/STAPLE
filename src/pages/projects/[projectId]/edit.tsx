@@ -1,6 +1,5 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
-import Head from "next/head"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
@@ -14,6 +13,9 @@ import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import DownloadJSON from "src/forms/components/DownloadJSON"
+import DownloadXLSX from "src/forms/components/DownloadXLSX"
 
 export const EditProject = () => {
   // Setup
@@ -86,19 +88,57 @@ export const EditProject = () => {
     }
   }
 
+  // get current user for metadata forms
+  const currentUser = useCurrentUser()
+  if (!currentUser) {
+    throw new Error("You must be logged in to access this page.")
+  }
+
   return (
     <>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Project Settings</h1>
         <Suspense fallback={<div>Loading...</div>}>
-          <ProjectForm
-            submitText="Update Project"
-            schema={FormProjectSchema}
-            initialValues={initialValues}
-            cancelText="Cancel"
-            onCancel={handleCancel}
-            onSubmit={handleSubmit}
-          />
+          <div className="flex flex-row justify-center m-2">
+            <div className="card bg-base-300 mx-2 w-full">
+              <div className="card-body">
+                <div className="card-title">Edit Settings</div>
+                <ProjectForm
+                  submitText="Update Project"
+                  schema={FormProjectSchema}
+                  initialValues={initialValues}
+                  cancelText="Cancel"
+                  onCancel={handleCancel}
+                  onSubmit={handleSubmit}
+                  userId={currentUser.id}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-row justify-center m-2">
+            <div className="card bg-base-300 mx-2 w-full">
+              <div className="card-body">
+                <div className="card-title">View and Edit Form Data</div>
+                <div className="flex flex-row justify-center mt-2">
+                  <DownloadJSON
+                    data={project.metadata}
+                    fileName={project.name}
+                    className="btn btn-primary"
+                    type="button"
+                  />
+                  <DownloadXLSX
+                    data={project.metadata}
+                    fileName={project.name}
+                    className="btn btn-secondary mx-2"
+                    type="button"
+                  />
+                  <button className="btn btn-accent">Edit Form Data</button>
+                </div>
+                display form data here
+              </div>
+            </div>
+          </div>
 
           <div className="flex justify-end mt-4">
             <button type="button" className="btn btn-warning" onClick={handleDelete}>
