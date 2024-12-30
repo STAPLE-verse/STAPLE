@@ -30,6 +30,9 @@ export default resolver.pipe(
           },
         },
       },
+      include: {
+        versions: true, // Include related formVersion in the return
+      },
     })
 
     return form

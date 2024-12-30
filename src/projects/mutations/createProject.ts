@@ -62,6 +62,8 @@ export default resolver.pipe(
       .filter((container) => container.projectId === project.id) // Ensure it's tied to the created project
       .find((container) => container.containerOrder === 0)?.id
 
+    // only if they pick a form metadata
+
     // Create a do this task
     const task = await db.task.create({
       data: {

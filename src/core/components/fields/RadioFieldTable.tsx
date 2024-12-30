@@ -7,6 +7,8 @@ interface RadioFieldTableProps<T> {
   options: { id: number; label: string }[]
   extraData?: T[]
   extraColumns?: any[]
+  value?: number | null // New prop for pre-selected value
+  onChange?: (selectedId: number) => void // Callback for when a radio button is selected
 }
 
 const RadioFieldTable = <T,>({
@@ -14,17 +16,29 @@ const RadioFieldTable = <T,>({
   options,
   extraData = [],
   extraColumns = [],
+  value, // Receive the pre-selected value
+  onChange, // Receive the onChange callback
 }: RadioFieldTableProps<T>) => {
   const {
     input: { value: selectedId, onChange: setSelectedId },
     meta,
   } = useField(name, { subscription: { value: true, touched: true, error: true } })
 
+  // Ensure the selected ID is initialized with the provided value
+  React.useEffect(() => {
+    if (value && value !== selectedId) {
+      setSelectedId(value)
+    }
+  }, [value, selectedId, setSelectedId])
+
   const handleSelection = useCallback(
     (id) => {
       setSelectedId(id)
+      if (onChange) {
+        onChange(id) // Trigger the parent callback when a selection is made
+      }
     },
-    [setSelectedId]
+    [setSelectedId, onChange]
   )
 
   const columns = React.useMemo(

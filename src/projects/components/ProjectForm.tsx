@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
@@ -8,12 +8,46 @@ import ProjectSchemaInput from "./ProjectSchemaInput"
 interface ProjectFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   formResponseSupplied?: boolean
   userId: number
+  initialValues?: {
+    selectedFormVersionId?: number | null
+    [key: string]: any // Allows flexibility for additional form values
+  }
 }
 
 export function ProjectForm<S extends z.ZodType<any, any>>(props: ProjectFormProps<S>) {
-  const { formResponseSupplied = true, userId, ...formProps } = props
+  const {
+    formResponseSupplied = true,
+    userId,
+    initialValues = { selectedFormVersionId: null }, // Default value for new projects
+    ...formProps
+  } = props
+
+  const [formVersionId, setFormVersionId] = useState<number | null>(
+    initialValues.selectedFormVersionId ?? null // Use null if undefined
+  )
+
+  //console.log("Current formVersionId:", formVersionId)
+  //console.log("Initial values:", initialValues)
+
+  // Callback to handle default form creation
+  const handleDefaultFormCreated = (newFormVersionId: number) => {
+    //console.log("Default form version created with ID:", newFormVersionId)
+    setFormVersionId(newFormVersionId) // Update state with the new form version ID
+  }
+
+  // Override onSubmit to include formVersionId
+  const handleSubmit = async (values: S, form: any, callback?: any) => {
+    const updatedValues = { ...values, formVersionId } // Add formVersionId to the submission
+    //console.log("Submitting form with values:", updatedValues)
+
+    // Call the original onSubmit passed via props with all required arguments
+    if (formProps.onSubmit) {
+      await formProps.onSubmit(updatedValues, form, callback)
+    }
+  }
+
   return (
-    <Form<S> {...formProps} encType="multipart/form-data">
+    <Form<S> {...formProps} onSubmit={handleSubmit} encType="multipart/form-data">
       <LabeledTextField
         name="name"
         label="Name: (Required)"
@@ -29,29 +63,30 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: ProjectFormPro
         placeholder="Description"
       />
 
-      <ProjectSchemaInput userId={userId} />
+      <label>Project Details: </label>
 
       {formResponseSupplied ? (
         <div className="mt-4">
-          <p className="w-1/2 text-red-500">
+          <p className="w-1/2 text-lg">
             You have previously selected a form to describe this project. If you change forms, you
             will lose your previously saved information. Download the previously stored data first
             as a backup!
           </p>
-          <button>download</button>
         </div>
       ) : (
-        <div className="mt-4">
+        <div className="mt-4 w-1/2">
           <p className="text-lg">
-            Not sure what to use? Use the suggested default (can be updated later):
+            Add project details by adding a form. Not sure where to start? Click Add Form and select
+            the default. You can change this later under settings.
           </p>
-          <button type="button" className="btn btn-primary w-1/2 mt-2">
-            Use Default Form
-          </button>
         </div>
-
-        // add the default button if not selected
       )}
+
+      <ProjectSchemaInput
+        userId={userId}
+        onDefaultFormCreated={handleDefaultFormCreated}
+        selectedFormVersionId={formVersionId ?? null}
+      />
     </Form>
   )
 }

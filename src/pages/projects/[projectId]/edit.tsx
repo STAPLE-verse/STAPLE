@@ -38,11 +38,7 @@ export const EditProject = () => {
   const initialValues = {
     name: project.name,
     description: project.description!,
-    abstract: project.abstract!,
-    keywords: project.keywords!,
-    citation: project.citation!,
-    publisher: project.publisher!,
-    identifier: project.identifier!,
+    selectedFormVersionId: project.formVersionId,
   }
 
   // Handle events
@@ -111,6 +107,7 @@ export const EditProject = () => {
                   onCancel={handleCancel}
                   onSubmit={handleSubmit}
                   userId={currentUser.id}
+                  formResponseSupplied={initialValues.selectedFormVersionId ? true : false}
                 />
               </div>
             </div>
