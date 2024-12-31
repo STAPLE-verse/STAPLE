@@ -9,6 +9,7 @@ import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjec
 import { MemberPrivileges } from "db"
 import DateFormat from "src/core/components/DateFormat"
 import DownloadJSON from "src/forms/components/DownloadJSON"
+import { MetadataDisplay } from "src/summary/components/MetaDataDisplay"
 
 const Summary = () => {
   // Get data
@@ -25,34 +26,22 @@ const Summary = () => {
         <div className="card bg-base-300 mx-2 w-full">
           <div className="card-body">
             <div className="card-title">Project Metadata</div>
-            {/* <br /> WORD IN CAPS IS THE DATABASE COLUMN */}
             <br />
             Name: {project.name}
             <br />
             Created: <DateFormat date={project.createdAt}></DateFormat>
             <br />
-            Update: <DateFormat date={project.updatedAt}></DateFormat>
+            Last Update: <DateFormat date={project.updatedAt}></DateFormat>
             <br />
             Description: {project.description}
-            <br />
-            Abstract: {project.abstract}
-            <br />
-            Keywords: {project.keywords}
-            <br />
-            Citation: {project.citation}
-            <br />
-            Publisher: {project.publisher}
-            <br />
-            Identifier: {project.identifier}
+            {project.metadata ? (
+              <MetadataDisplay metadata={project.metadata} />
+            ) : (
+              <>No metadata available for this project.</>
+            )}
             <div className="card-actions justify-end">
-              <DownloadJSON
-                data={project}
-                fileName={`${project.name}`}
-                className="btn btn-primary"
-              />
-
               <Link
-                className="btn btn-secondary"
+                className="btn btn-primary"
                 href={Routes.EditProjectPage({ projectId: projectId! })}
               >
                 Edit
@@ -66,7 +55,16 @@ const Summary = () => {
       <div className="flex flex-row justify-center m-2">
         <div className="card bg-base-300 mx-2 w-full">
           <div className="card-body">
-            <div className="card-title">Organized Metadata (under construction)</div>
+            <div className="card-title">Summary Stats</div>
+            <div className="w-full flex flex-row justify-center">
+              <DownloadJSON
+                data={project}
+                fileName={`${project.name}`}
+                className="btn btn-primary"
+              />
+
+              <button className="btn btn-secondary mx-2">Launch Viewer (coming soon)</button>
+            </div>
           </div>
         </div>
       </div>
