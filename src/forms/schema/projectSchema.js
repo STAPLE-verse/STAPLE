@@ -15,12 +15,12 @@ export const JsonProject = `
     },
     "keywords": {
       "type": "string",
-      "title": "Keywords:"
+      "title": "Keywords:",
+      "description": "Keywords separated by commas."
     },
     "publisher": {
       "type": "string",
-      "title": "Publisher:",
-      "description": "Keywords separated by commas."
+      "title": "Publisher:"
     },
     "identifier": {
       "type": "string",
