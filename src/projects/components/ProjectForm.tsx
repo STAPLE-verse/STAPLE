@@ -47,7 +47,12 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: ProjectFormPro
   }
 
   return (
-    <Form<S> {...formProps} onSubmit={handleSubmit} encType="multipart/form-data">
+    <Form<S>
+      {...formProps}
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      encType="multipart/form-data"
+    >
       <LabeledTextField
         name="name"
         label="Name: (Required)"
