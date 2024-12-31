@@ -99,14 +99,28 @@ export const EditProject = () => {
   const handleJsonFormSubmit = async (data) => {
     console.log("Submitting form data:", data) // Debug log
     try {
-      await updateProjectMutation({
+      const updatedProject = await updateProjectMutation({
         id: project.id,
         name: project.name,
         metadata: data.formData,
       })
 
-      //console.log("Project updated successfully") // Debug log
+      // Update local state
       setAssignmentMetadata(data.formData)
+
+      // Update the query data to refresh the background
+      await setQueryData((prevData) => {
+        if (!prevData) {
+          throw new Error("No previous data found")
+        }
+
+        return {
+          ...prevData,
+          metadata: updatedProject.metadata,
+          formVersion: prevData.formVersion ?? null, // Ensure formVersion is explicitly null if undefined
+        }
+      })
+
       toast.success("Form data has been successfully saved!")
     } catch (error) {
       console.error("Failed to save form data:", error)
