@@ -1,6 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateProjectSchema } from "../schemas"
+import sendNotification from "src/notifications/mutations/sendNotification"
 
 export default resolver.pipe(
   resolver.zod(CreateProjectSchema),
@@ -63,36 +64,52 @@ export default resolver.pipe(
       .find((container) => container.containerOrder === 0)?.id
 
     // only if they pick a form metadata
+    if (formVersionId) {
+      // Create a do this task
+      const task = await db.task.create({
+        data: {
+          name: "Complete Project Description Form",
+          project: {
+            connect: { id: project.id },
+          },
+          containerTaskOrder: 0, // has to be first only one
+          container: {
+            connect: { id: firstContainerId }, // put it in default to do
+          },
+          description:
+            "You added a description form to your project. You can complete that form by going to the project > clicking on settings in the left hand menu > and then edit form data.",
+          createdBy: {
+            connect: { id: projectMember.id },
+          },
+          assignedMembers: {
+            connect: { id: projectMember.id },
+          },
+        },
+      })
 
-    // Create a do this task
-    const task = await db.task.create({
-      data: {
-        name: "Complete Project Description Form",
-        project: {
-          connect: { id: project.id },
+      // create the task log or you will blow this up
+      await db.taskLog.create({
+        data: {
+          task: { connect: { id: task.id } },
+          assignedTo: { connect: { id: projectMember.id } },
+          completedAs: "INDIVIDUAL",
         },
-        containerTaskOrder: 0, // has to be first only one
-        container: {
-          connect: { id: firstContainerId }, // put it in default to do
-        },
-        description: "Here's a real description to come",
-        createdBy: {
-          connect: { id: projectMember.id },
-        },
-        assignedMembers: {
-          connect: { id: projectMember.id },
-        },
-      },
-    })
+      })
 
-    // create the task log or you will blow this up
-    await db.taskLog.create({
-      data: {
-        task: { connect: { id: task.id } },
-        assignedTo: { connect: { id: projectMember.id } },
-        completedAs: "INDIVIDUAL",
-      },
-    })
+      // create announcement
+      await sendNotification(
+        {
+          templateId: "taskAssigned",
+          recipients: [userId],
+          data: {
+            taskName: "Complete Project Description Form",
+            createdBy: "STAPLE Admin",
+          },
+          projectId: project.id,
+        },
+        ctx
+      )
+    }
 
     return project
   }
