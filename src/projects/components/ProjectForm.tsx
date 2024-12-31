@@ -73,9 +73,10 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: ProjectFormPro
       {formResponseSupplied ? (
         <div className="mt-4">
           <p className="w-1/2 text-lg">
-            You have previously selected a form to describe this project. If you change forms, you
-            will lose your previously saved information. Download the previously stored data first
-            as a backup!
+            You have previously selected a form to describe this project. If you change to a new
+            form, you will retain the old information, and it will be transferred to the new form as
+            long as the object names (question labels) match. The non-matches are kept in the
+            background, and if you want to clear it out, please reset the form data under Edit Form.
           </p>
         </div>
       ) : (
