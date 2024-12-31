@@ -1,9 +1,9 @@
 import React from "react"
 import { invoke } from "@blitzjs/rpc"
 import { toast } from "react-hot-toast"
-import { createDefaultFormsForUsers } from "../migrations/20250101_01_defaultform"
-import { linkDefaultFormToProjects } from "../migrations/20250101_02_linkdefaultform"
-import { migrateColumnsToMetadata } from "../migrations/20250101_03_createmetadata"
+import createDefaultFormsForUsers from "../queries/20250101_01_defaultform"
+import linkDefaultFormToProjects from "../queries/20250101_02_linkdefaultform"
+import migrateColumnsToMetadata from "../queries/20250101_03_createmetadata"
 
 export const TriggerDefaultForms = () => {
   const handleCreateDefaultForms = async () => {
@@ -52,10 +52,10 @@ export const CreateMetadata = () => {
     try {
       // Call the backend function
       await invoke(migrateColumnsToMetadata, {})
-      toast.success("Default forms linked to all users!")
+      toast.success("Migrated metadata for all projects!")
     } catch (error) {
-      console.error("Error linking default forms:", error)
-      toast.error("Failed to link default forms. Check console for details.")
+      console.error("Error migrating data:", error)
+      toast.error("Failed to migrate data. Check console for details.")
     }
   }
 

@@ -1,7 +1,10 @@
+import { Ctx } from "@blitzjs/next"
 import db from "db"
 import { getDefaultSchemaLists } from "src/forms/utils/getDefaultSchemaList"
 
-export const createDefaultFormsForUsers = async () => {
+export default async function createDefaultFormsForUsers(_: unknown, ctx: Ctx) {
+  ctx.session.$authorize() // Authorize the user
+
   try {
     console.log("Fetching users...")
     const users = await db.user.findMany()

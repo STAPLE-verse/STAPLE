@@ -1,6 +1,9 @@
+import { Ctx } from "@blitzjs/next"
 import db from "db"
 
-export const linkDefaultFormToProjects = async () => {
+export default async function linkDefaultFormToProjects(_: unknown, ctx: Ctx) {
+  ctx.session.$authorize() // Authorize the user
+
   const projects = await db.project.findMany({
     include: {
       projectMembers: {
@@ -28,6 +31,9 @@ export const linkDefaultFormToProjects = async () => {
               },
             },
           },
+        },
+        orderBy: {
+          createdAt: "desc", // Newest first
         },
         include: { versions: true },
       })
