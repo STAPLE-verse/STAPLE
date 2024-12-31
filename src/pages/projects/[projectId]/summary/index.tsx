@@ -37,7 +37,7 @@ const Summary = () => {
             {project.metadata ? (
               <MetadataDisplay metadata={project.metadata} />
             ) : (
-              <>No metadata available for this project.</>
+              <div>No metadata available for this project.</div>
             )}
             <div className="card-actions justify-end">
               <Link

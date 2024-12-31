@@ -18,6 +18,7 @@ import DownloadJSON from "src/forms/components/DownloadJSON"
 import DownloadXLSX from "src/forms/components/DownloadXLSX"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import getJsonSchema from "src/forms/utils/getJsonSchema"
+import { MetadataDisplay } from "src/summary/components/MetaDataDisplay"
 
 export const EditProject = () => {
   // Setup
@@ -179,30 +180,36 @@ export const EditProject = () => {
               <div className="card-body">
                 <div className="card-title">View and Edit Form Data</div>
                 {project.formVersion ? (
-                  <div className="flex flex-row justify-center mt-2">
-                    <DownloadJSON
-                      data={project.metadata}
-                      fileName={project.name}
-                      className="btn btn-primary"
-                      type="button"
-                    />
-                    <DownloadXLSX
-                      data={project.metadata}
-                      fileName={project.name}
-                      className="btn btn-secondary mx-2"
-                      type="button"
-                    />
-                    <JsonFormModal
-                      schema={getJsonSchema(project.formVersion?.schema)}
-                      uiSchema={getJsonSchema(project.formVersion?.uiSchema)}
-                      metadata={project.metadata ? project.metadata : {}}
-                      label={"Edit Form Data"}
-                      classNames="btn-info"
-                      onSubmit={handleJsonFormSubmit}
-                      onError={handleJsonFormError}
-                      resetHandler={handleResetMetadata}
-                      modalSize="w-11/12 max-w-5xl"
-                    />
+                  <div>
+                    <div className="flex flex-row justify-center mt-2">
+                      <DownloadJSON
+                        data={project.metadata}
+                        fileName={project.name}
+                        className="btn btn-primary"
+                        type="button"
+                      />
+                      <DownloadXLSX
+                        data={project.metadata}
+                        fileName={project.name}
+                        className="btn btn-secondary mx-2"
+                        type="button"
+                      />
+                      <JsonFormModal
+                        schema={getJsonSchema(project.formVersion?.schema)}
+                        uiSchema={getJsonSchema(project.formVersion?.uiSchema)}
+                        metadata={project.metadata ? project.metadata : {}}
+                        label={"Edit Form Data"}
+                        classNames="btn-info"
+                        onSubmit={handleJsonFormSubmit}
+                        onError={handleJsonFormError}
+                        resetHandler={handleResetMetadata}
+                        modalSize="w-11/12 max-w-5xl"
+                      />
+                    </div>
+
+                    <div>
+                      <MetadataDisplay metadata={project.metadata} />
+                    </div>
                   </div>
                 ) : (
                   <p className="text-center text-gray-500 mt-4">
