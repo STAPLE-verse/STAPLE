@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
@@ -16,6 +16,8 @@ import { MemberPrivileges } from "db"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import DownloadJSON from "src/forms/components/DownloadJSON"
 import DownloadXLSX from "src/forms/components/DownloadXLSX"
+import { JsonFormModal } from "src/core/components/JsonFormModal"
+import getJsonSchema from "src/forms/utils/getJsonSchema"
 
 export const EditProject = () => {
   // Setup
@@ -90,6 +92,65 @@ export const EditProject = () => {
     throw new Error("You must be logged in to access this page.")
   }
 
+  // State to store metadata
+  const [assignmentMetadata, setAssignmentMetadata] = useState(project.metadata)
+
+  const handleJsonFormSubmit = async (data) => {
+    console.log("Submitting form data:", data) // Debug log
+    try {
+      await updateProjectMutation({
+        id: project.id,
+        name: project.name,
+        metadata: data.formData,
+      })
+
+      //console.log("Project updated successfully") // Debug log
+      setAssignmentMetadata(data.formData)
+      toast.success("Form data has been successfully saved!")
+    } catch (error) {
+      console.error("Failed to save form data:", error)
+      toast.error("Failed to save form data. Please try again.")
+    }
+  }
+
+  const handleJsonFormError = (errors) => {
+    console.log(errors)
+  }
+  // Handle reset metadata
+  // Using hard reset to bypass validation
+  const handleResetMetadata = async () => {
+    try {
+      // Reset the metadata to an empty object
+      await updateProjectMutation({
+        id: project.id,
+        name: project.name,
+        metadata: {}, // Reset metadata to an empty object
+      })
+
+      // Update local state
+      setAssignmentMetadata({})
+
+      // Show a success toast
+      toast.success("Metadata has been successfully reset!")
+
+      // Refresh the form data
+      await setQueryData((prevData) => {
+        if (!prevData) {
+          throw new Error("No previous data found")
+        }
+
+        return {
+          ...prevData,
+          metadata: {}, // Reset metadata to an empty object
+          formVersion: prevData.formVersion ?? null, // Ensure formVersion is explicitly null if undefined
+        }
+      })
+    } catch (error) {
+      console.error("Failed to reset metadata:", error)
+      toast.error("Failed to reset metadata. Please try again.")
+    }
+  }
+
   return (
     <>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
@@ -117,22 +178,37 @@ export const EditProject = () => {
             <div className="card bg-base-300 mx-2 w-full">
               <div className="card-body">
                 <div className="card-title">View and Edit Form Data</div>
-                <div className="flex flex-row justify-center mt-2">
-                  <DownloadJSON
-                    data={project.metadata}
-                    fileName={project.name}
-                    className="btn btn-primary"
-                    type="button"
-                  />
-                  <DownloadXLSX
-                    data={project.metadata}
-                    fileName={project.name}
-                    className="btn btn-secondary mx-2"
-                    type="button"
-                  />
-                  <button className="btn btn-accent">Edit Form Data</button>
-                </div>
-                display form data here
+                {project.formVersion ? (
+                  <div className="flex flex-row justify-center mt-2">
+                    <DownloadJSON
+                      data={project.metadata}
+                      fileName={project.name}
+                      className="btn btn-primary"
+                      type="button"
+                    />
+                    <DownloadXLSX
+                      data={project.metadata}
+                      fileName={project.name}
+                      className="btn btn-secondary mx-2"
+                      type="button"
+                    />
+                    <JsonFormModal
+                      schema={getJsonSchema(project.formVersion?.schema)}
+                      uiSchema={getJsonSchema(project.formVersion?.uiSchema)}
+                      metadata={project.metadata ? project.metadata : {}}
+                      label={"Edit Form Data"}
+                      classNames="btn-info"
+                      onSubmit={handleJsonFormSubmit}
+                      onError={handleJsonFormError}
+                      resetHandler={handleResetMetadata}
+                      modalSize="w-11/12 max-w-5xl"
+                    />
+                  </div>
+                ) : (
+                  <p className="text-center text-gray-500 mt-4">
+                    No form has been created for this project yet.
+                  </p>
+                )}
               </div>
             </div>
           </div>
