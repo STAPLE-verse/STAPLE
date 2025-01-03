@@ -1,6 +1,5 @@
 import { TaskSummary } from "src/tasks/components/TaskSummary"
 import { Suspense } from "react"
-import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import { MemberPrivileges } from "@prisma/client"
 import { TaskInformation } from "src/tasks/components/TaskInformation"
@@ -16,13 +15,17 @@ const TaskContent = () => {
   return (
     <>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <div className="flex flex-row justify-center m-2">
-          <TaskInformation />
-          <TaskLogCompletion />
-        </div>
         {privilege == MemberPrivileges.PROJECT_MANAGER && (
           <TaskSummary taskId={task.id} projectId={task.projectId} />
         )}
+        <div className="flex flex-row justify-center m-2">
+          <TaskInformation />
+        </div>
+        <div className="flex flex-row justify-center m-2">
+          <TaskLogCompletion />
+        </div>
+
+        <div className="flex flex-row justify-center m-2">HEY PUT COMMENTS HERE IN A CARD</div>
       </main>
     </>
   )

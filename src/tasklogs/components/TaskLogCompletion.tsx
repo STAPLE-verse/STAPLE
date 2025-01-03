@@ -21,7 +21,7 @@ export const TaskLogCompletion = () => {
     <Card
       title="Complete Task"
       tooltipContent="Complete your individual or team task and view completion history"
-      className="w-2/3"
+      className="w-full"
     >
       {filteredProjectMembers.map((projectMember) => (
         <CompleteRow
