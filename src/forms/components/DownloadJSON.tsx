@@ -1,6 +1,13 @@
 import React from "react"
 
-const DownloadJSON = ({ data, fileName, className }) => {
+interface DownloadJSONProps {
+  data: any
+  fileName: string
+  type?: "button" | "submit" | "reset" // Match the allowed types
+  className?: string
+}
+
+const DownloadJSON = ({ data, fileName, type = "button", className }: DownloadJSONProps) => {
   const downloadJSON = () => {
     const jsonData = new Blob([JSON.stringify(data)], { type: "application/json" })
     const jsonURL = URL.createObjectURL(jsonData)
@@ -13,7 +20,7 @@ const DownloadJSON = ({ data, fileName, className }) => {
   }
 
   return (
-    <button className={className} onClick={downloadJSON}>
+    <button type={type} className={className} onClick={downloadJSON}>
       Download JSON
     </button>
   )

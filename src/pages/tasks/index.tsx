@@ -1,6 +1,5 @@
 import Layout from "src/core/layouts/Layout"
 import { AllTasksList } from "src/tasks/components/AllTaskList"
-import Head from "next/head"
 import { Suspense } from "react"
 import PageHeader from "src/core/components/PageHeader"
 

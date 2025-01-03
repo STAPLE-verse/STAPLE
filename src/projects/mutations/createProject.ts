@@ -1,16 +1,23 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateProjectSchema } from "../schemas"
+import sendNotification from "src/notifications/mutations/sendNotification"
 
 export default resolver.pipe(
   resolver.zod(CreateProjectSchema),
   resolver.authorize(),
-  async (input, ctx) => {
+  async ({ name, description, formVersionId }, ctx) => {
     const userId = ctx.session.userId
     const project = await db.project.create({
       data: {
         // Inputs from project creation form
-        ...input,
+        name,
+        description,
+        formVersion: formVersionId
+          ? {
+              connect: { id: formVersionId },
+            }
+          : undefined,
         // Initialize project with "To Do", "In Progress", "Done" kanban board columns
         containers: {
           create: [
@@ -35,7 +42,7 @@ export default resolver.pipe(
     })
 
     // Create project member row for "individuals"
-    await db.projectMember.create({
+    const projectMember = await db.projectMember.create({
       data: {
         projectId: project.id,
         users: {
@@ -51,6 +58,58 @@ export default resolver.pipe(
         userId: userId,
       },
     })
+
+    const firstContainerId = project.containers
+      .filter((container) => container.projectId === project.id) // Ensure it's tied to the created project
+      .find((container) => container.containerOrder === 0)?.id
+
+    // only if they pick a form metadata
+    if (formVersionId) {
+      // Create a do this task
+      const task = await db.task.create({
+        data: {
+          name: "Complete Project Description Form",
+          project: {
+            connect: { id: project.id },
+          },
+          containerTaskOrder: 0, // has to be first only one
+          container: {
+            connect: { id: firstContainerId }, // put it in default to do
+          },
+          description:
+            "You added a description form to your project. You can complete that form by going to the project > clicking on settings in the left hand menu > and then edit form data.",
+          createdBy: {
+            connect: { id: projectMember.id },
+          },
+          assignedMembers: {
+            connect: { id: projectMember.id },
+          },
+        },
+      })
+
+      // create the task log or you will blow this up
+      await db.taskLog.create({
+        data: {
+          task: { connect: { id: task.id } },
+          assignedTo: { connect: { id: projectMember.id } },
+          completedAs: "INDIVIDUAL",
+        },
+      })
+
+      // create announcement
+      await sendNotification(
+        {
+          templateId: "taskAssigned",
+          recipients: [userId],
+          data: {
+            taskName: "Complete Project Description Form",
+            createdBy: "STAPLE Admin",
+          },
+          projectId: project.id,
+        },
+        ctx
+      )
+    }
 
     return project
   }
