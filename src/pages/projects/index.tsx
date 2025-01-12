@@ -1,6 +1,5 @@
 import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
-import Head from "next/head"
 import Link from "next/link"
 import Layout from "src/core/layouts/Layout"
 import ProjectsList from "src/projects/components/ProjectsList"
@@ -14,11 +13,7 @@ const ProjectsPage = () => {
   }
 
   return (
-    <Layout>
-      <Head>
-        <title>Projects</title>
-      </Head>
-
+    <Layout title="Projects">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">All Projects</h1>
 

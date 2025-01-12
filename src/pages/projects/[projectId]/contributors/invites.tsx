@@ -14,11 +14,7 @@ const InvitesPagePM = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
-    <Layout>
-      <Head>
-        <title>Project Contributor Invitations</title>
-      </Head>
-
+    <Layout title="Project Contributor Invitations">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Invited Contributors</h1>
 

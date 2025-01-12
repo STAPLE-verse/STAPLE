@@ -8,7 +8,6 @@ import { TaskForm } from "src/tasks/components/TaskForm"
 import { FORM_ERROR } from "final-form"
 import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
-import Head from "next/head"
 import toast from "react-hot-toast"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 import PageHeader from "src/core/components/PageHeader"
@@ -44,10 +43,7 @@ const NewTaskPage = () => {
   }
 
   return (
-    <Layout>
-      <Head>
-        <title>Create New Task</title>
-      </Head>
+    <Layout title="Create New Task">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <PageHeader title="Create New Task" />
         <Suspense fallback={<div>Loading...</div>}>

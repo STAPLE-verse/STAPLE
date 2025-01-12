@@ -148,6 +148,9 @@ model Project {
   notifications    Notification[]
   ProjectPrivilege ProjectPrivilege[]
   invitations      Invitation[]
+  metadata         Json? // Add metadata field
+  formVersion      FormVersion?       @relation(fields: [formVersionId], references: [id])
+  formVersionId    Int?
 }
 
 enum Status {
@@ -243,15 +246,16 @@ model Form {
 }
 
 model FormVersion {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
   formId    Int
   version   Int
   schema    Json
   uiSchema  Json?
-  createdAt DateTime @default(now())
-  form      Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  form      Form      @relation(fields: [formId], references: [id], onDelete: Cascade)
   tasks     Task[]
+  projects  Project[]
 
   @@index([formId, version], name: "formVersionIndex")
 }

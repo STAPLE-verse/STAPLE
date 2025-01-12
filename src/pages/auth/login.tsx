@@ -13,10 +13,14 @@ const LoginPage: BlitzPage = () => {
       </Head>
       <main className="flex flex-col h-screen">
         <LoginForm
-          onSuccess={(_user) => {
+          onSuccess={async (_user) => {
             const next = router.query.next
               ? decodeURIComponent(router.query.next as string)
               : "/main"
+
+            // Sleep for .1 seconds to prevent too fast navigation
+            await new Promise((resolve) => setTimeout(resolve, 100))
+
             return router.push(next)
           }}
         />

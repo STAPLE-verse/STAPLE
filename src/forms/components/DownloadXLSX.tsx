@@ -2,7 +2,14 @@ import React from "react"
 import * as XLSX from "xlsx"
 import { saveAs } from "file-saver"
 
-function DownloadXLSX({ data, fileName, className }) {
+interface DownloadXLSXProps {
+  data: any
+  fileName: string
+  type?: "button" | "submit" | "reset" // Match the allowed types
+  className?: string
+}
+
+function DownloadXLSX({ data, fileName, type = "button", className }: DownloadXLSXProps) {
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(data)
     const workbook = XLSX.utils.book_new()
@@ -18,7 +25,7 @@ function DownloadXLSX({ data, fileName, className }) {
   }
 
   return (
-    <button className={className} onClick={exportToExcel}>
+    <button type={type} className={className} onClick={exportToExcel}>
       Download XLSX
     </button>
   )

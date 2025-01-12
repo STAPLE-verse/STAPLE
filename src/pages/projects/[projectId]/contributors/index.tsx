@@ -43,11 +43,7 @@ const ContributorsPage = () => {
   const currentUser = useCurrentUser()
 
   return (
-    <Layout>
-      <Head>
-        <title>All Contributors</title>
-      </Head>
-
+    <Layout title="All Contributors">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Contributors</h1>
         <Suspense fallback={<Loading />}>

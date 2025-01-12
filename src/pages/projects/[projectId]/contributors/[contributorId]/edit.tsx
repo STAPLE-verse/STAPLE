@@ -1,6 +1,5 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
-import Head from "next/head"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
@@ -150,10 +149,7 @@ const EditContributorPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
-    <Layout>
-      <Head>
-        <title>Edit Contributor</title>
-      </Head>
+    <Layout title="Edit Contributor">
       <Suspense fallback={<div>Loading...</div>}>
         <EditContributor />
       </Suspense>

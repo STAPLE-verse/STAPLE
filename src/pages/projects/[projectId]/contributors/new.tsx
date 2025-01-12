@@ -39,10 +39,7 @@ const NewContributorPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
-    <Layout>
-      <Head>
-        <title>Invite New Contributor</title>
-      </Head>
+    <Layout title="Invite New Contributor">
       <Suspense fallback={<div>Loading...</div>}>
         <NewContributor />
       </Suspense>

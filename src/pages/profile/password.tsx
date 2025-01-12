@@ -14,7 +14,7 @@ const EditPasswordPage = () => {
 
 EditPasswordPage.authenticate = true
 EditPasswordPage.getLayout = (page) => {
-  return <Layout>{page}</Layout>
+  return <Layout title="Edit Password">{page}</Layout>
 }
 
 export default EditPasswordPage

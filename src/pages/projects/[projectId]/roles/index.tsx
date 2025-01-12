@@ -53,11 +53,7 @@ const RolesPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
-    <Layout>
-      <Head>
-        <title>Assign Roles</title>
-      </Head>
-
+    <Layout title="Assign Roles">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         {
           <Suspense fallback={<div>Loading...</div>}>

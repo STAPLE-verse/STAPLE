@@ -57,3 +57,4 @@ lib-cov
 .Rhistory
 .Rproj.user
 STAPLE.Rproj
+/db/migrations/erin_migrations
