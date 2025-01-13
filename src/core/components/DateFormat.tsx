@@ -9,7 +9,7 @@ export default function DateFormat({ date }: DateFormatProps) {
   const locale = currentUser ? currentUser.language : "en-US"
 
   return (
-    <span data-testid="dateformat-id">
+    <>
       {" "}
       {date
         ? date.toLocaleDateString(locale, {
@@ -22,6 +22,6 @@ export default function DateFormat({ date }: DateFormatProps) {
             hour12: false, // Use 24-hour format
           })
         : ""}
-    </span>
+    </>
   )
 }

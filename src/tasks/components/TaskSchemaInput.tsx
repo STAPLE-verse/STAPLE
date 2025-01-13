@@ -77,7 +77,7 @@ export const TaskSchemaInput = ({ projectManagerIds }: TaskSchemaInputProps) => 
               className="btn btn-primary self-end"
               onClick={handleToggleSchemaUpload}
             >
-              Close
+              Save
             </button>
           </div>
         </div>
