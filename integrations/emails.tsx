@@ -160,6 +160,63 @@ staple.helpdesk@gmail.com
   }
 }
 
+export function createReassignmentInvitation(values, currentUser, projectMember) {
+  return {
+    from: "STAPLE <app@staple.science>",
+    to: values.email,
+    subject: "STAPLE Project Reassignment Invitation",
+    replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
+    html: `
+    <html>
+    <body>
+    <center><img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+alt="STAPLE Logo" height="200"></center>
+
+    <h3>STAPLE Project Reassignment Invitation</h3>
+
+        Hello,
+        <p>
+        You've been invited to rejoin a STAPLE project by ${
+          currentUser!.username
+        }. This project was previously associated with your account but has since been marked as inactive.
+        <p>
+        If you'd like to rejoin the project, please log in at: https://app.staple.science/.
+        You can find this invitation in the "Invitations" section of the sidebar menu and either accept or decline the reassignment.
+        <p>
+        If you need more help, you can reply to this email to create a support ticket.
+        <p>
+        Thanks,
+        <br>
+        STAPLE HelpDesk
+
+        <div style='mso-element:para-border-div;border:none;border-bottom:solid #BFC3C8 1.0pt;
+mso-border-bottom-alt:solid #BFC3C8 .75pt;padding:0in 0in 0in 0in'>
+
+<p class=MsoNormal style='margin-top:6.0pt;margin-right:0in;margin-bottom:6.0pt;
+margin-left:0in;line-height:0%;border:none;mso-border-bottom-alt:solid #BFC3C8 .75pt;
+padding:0in;mso-padding-alt:0in 0in 0in 0in'><o:p>&nbsp;</o:p></p>
+
+</div>
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+STAPLE: Science Tracking Across Project Lifespans
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+https://staple.science
+
+<p style='margin-top:6.0pt;margin-right:0in;
+margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
+staple.helpdesk@gmail.com
+
+</div>
+</body>
+</html>
+      `,
+  }
+}
+
 export function createEditPasswordMsg(currentUser) {
   return {
     from: "STAPLE <app@staple.science>",

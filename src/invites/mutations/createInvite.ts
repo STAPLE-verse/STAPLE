@@ -16,25 +16,22 @@ export default resolver.pipe(
   resolver.authorize(),
   async (input) => {
     let textResult
-    // check to make sure email not already there
-    const findprojectmember = await db.projectMember.findFirst({
+
+    // Check if the user is already a soft-deleted project member
+    const softDeletedProjectMember = await db.projectMember.findFirst({
       where: {
         projectId: input.projectId,
         name: null,
+        deleted: true,
         users: {
-          some: { email: input.email }, // Use `some` to query an array field
+          some: { email: input.email }, // Match by email
         },
       },
     })
 
-    if (findprojectmember) {
-      textResult = {
-        code: "already_added",
-        findprojectmember,
-      }
-    } else {
-      // Create projectmember
-      const projectmember = await db.invitation.create({
+    if (softDeletedProjectMember) {
+      // Create a reassignment invitation
+      await db.invitation.create({
         data: {
           projectId: input.projectId,
           privilege: input.privilege,
@@ -44,12 +41,51 @@ export default resolver.pipe(
           roles: {
             connect: input.rolesId?.map((c) => ({ id: c })) || [],
           },
+          reassignmentFor: softDeletedProjectMember.id, // Link to the soft-deleted project member
         },
       })
 
+      // Return a flag to indicate this user can be restored
       textResult = {
-        code: "invite_sent",
-        projectmember,
+        code: "restore_possible",
+        projectmember: softDeletedProjectMember,
+      }
+    } else {
+      // Check if the user is already an active project member
+      const activeProjectMember = await db.projectMember.findFirst({
+        where: {
+          projectId: input.projectId,
+          name: null,
+          users: {
+            some: { email: input.email }, // Use `some` to query an array field
+          },
+        },
+      })
+
+      if (activeProjectMember) {
+        textResult = {
+          code: "already_added",
+          projectmember: activeProjectMember,
+        }
+      } else {
+        // Create a new intivation
+        const projectmember = await db.invitation.create({
+          data: {
+            projectId: input.projectId,
+            privilege: input.privilege,
+            email: input.email,
+            invitationCode: generateToken(20),
+            addedBy: input.addedBy,
+            roles: {
+              connect: input.rolesId?.map((c) => ({ id: c })) || [],
+            },
+          },
+        })
+
+        textResult = {
+          code: "invite_sent",
+          projectmember,
+        }
       }
     }
 
