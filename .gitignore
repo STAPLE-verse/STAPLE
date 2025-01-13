@@ -59,4 +59,4 @@ lib-cov
 STAPLE.Rproj
 
 # local migrations
-/migrations/local/*
+db/migrations/local/
