@@ -20,8 +20,8 @@ const ContributorsTab = () => {
           id: { not: undefined }, // Ensures there's at least one user
         },
       },
+      deleted: undefined,
       name: { equals: null }, // Ensures ProjectMember is contributor and not team
-      // deleted: { equals: false }, // Ensures contributor is not deleted
     },
     include: { users: true, roles: true },
     orderBy: { id: "asc" },
