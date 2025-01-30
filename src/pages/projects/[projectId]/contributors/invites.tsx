@@ -1,6 +1,5 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
-import Head from "next/head"
 import Link from "next/link"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
@@ -11,7 +10,7 @@ import { AllInvitesList } from "src/invites/components/AllInvitesList"
 // issue 37
 const InvitesPagePM = () => {
   const projectId = useParam("projectId", "number")
-  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  useUserAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout title="Project Contributor Invitations">
