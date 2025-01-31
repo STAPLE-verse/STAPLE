@@ -592,3 +592,7 @@ span.arrow.tooltip-arrow {
   color: oklch(var(--n)) !important;
   font-weight: bold;
 }
+
+.input-sm {
+  line-height: 1rem !important;
+}
