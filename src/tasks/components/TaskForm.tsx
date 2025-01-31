@@ -16,6 +16,14 @@ import ValidationErrorDisplay from "src/core/components/ValidationErrorDisplay"
 import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
 import { ProjectMemberWithUsers } from "src/core/types"
 import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManagerUserIds"
+import { useState } from "react"
+import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
+
+type Tag = {
+  id: string
+  className: string
+  [key: string]: string
+}
 
 interface TaskFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId?: number
@@ -76,8 +84,67 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     }
   })
 
+  // State for tags
+  const [tags, setTags] = useState<Tag[]>([])
+
+  const handleDelete = (index: number) => {
+    setTags(tags.filter((_, i) => i !== index))
+  }
+
+  const onTagUpdate = (index: number, newTag: Tag) => {
+    const updatedTags = [...tags]
+    updatedTags.splice(index, 1, newTag)
+    setTags(updatedTags)
+  }
+
+  const handleAddition = (tag: Tag) => {
+    setTags((prevTags) => {
+      return [...prevTags, tag]
+    })
+  }
+
+  const handleDrag = (tag: Tag, currPos: number, newPos: number) => {
+    const newTags = tags.slice()
+
+    newTags.splice(currPos, 1)
+    newTags.splice(newPos, 0, tag)
+
+    // re-render
+    setTags(newTags)
+  }
+
+  const handleTagClick = (index: number) => {
+    console.log("The tag at index " + index + " was clicked")
+  }
+
+  const onClearAll = () => {
+    setTags([])
+  }
+
   return (
-    <Form<S> {...formProps} encType="multipart/form-data" className="mt-4 gap-4 flex flex-col">
+    <Form<S>
+      {...formProps}
+      encType="multipart/form-data"
+      className="mt-4 gap-4 flex flex-col"
+      onSubmit={(values, form, callback) => {
+        return formProps.onSubmit(
+          {
+            ...values,
+            tags: tags.map((tag) => ({
+              key: tag.id,
+              value: tag.text,
+            })),
+          },
+          form,
+          callback
+        )
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault() // Prevent form submission on Enter
+        }
+      }}
+    >
       {/* Name */}
       <LabeledTextField
         className="input w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
@@ -96,6 +163,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         optionText="name"
         optionValue="id"
       />
+
       {/* Description */}
       <LabeledTextAreaField
         className="textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2"
@@ -118,6 +186,40 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         optionValue="id"
         disableFirstOption={false}
       />
+
+      {/* Tag Input */}
+      <div className="w-1/2">
+        <label className="text-base-content">Tags:</label>
+        <i>Use a comma, semicolon, enter, or tab to create separate tags.</i>
+        <ReactTags
+          tags={tags}
+          name="tags"
+          separators={[SEPARATORS.TAB, SEPARATORS.COMMA, SEPARATORS.ENTER, SEPARATORS.SEMICOLON]}
+          handleDelete={handleDelete}
+          handleAddition={handleAddition}
+          handleDrag={handleDrag}
+          handleTagClick={handleTagClick}
+          onTagUpdate={onTagUpdate}
+          inputFieldPosition="inline"
+          editable
+          clearAll
+          onClearAll={onClearAll}
+          classNames={{
+            tags: "tags-container",
+            tagInput: "input input-bordered w-full text-primary",
+            tagInputField: "input-field-class",
+            selected: "selected-tag",
+            tag: "tag-item",
+            remove: "tag-remove",
+            suggestions: "suggestions-dropdown",
+            activeSuggestion: "active-suggestion-class",
+            editTagInput: "edit-tag-input",
+            editTagInputField: "edit-tag-input-field",
+            clearAll: "clear-all-class",
+          }}
+          placeholder="Add new tags..."
+        />
+      </div>
 
       {/* Contributors */}
       <ToggleModal

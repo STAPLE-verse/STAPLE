@@ -58,7 +58,7 @@ export const TaskSchemaInput = ({ projectManagerIds }: TaskSchemaInputProps) => 
   ]
 
   return (
-    <div className="mt-4">
+    <div>
       <button type="button" className="btn btn-primary w-1/2" onClick={handleToggleSchemaUpload}>
         Assign Form
       </button>
