@@ -6,8 +6,12 @@ import {
   LinkDefaultForms,
   TriggerDefaultForms,
 } from "src/updates/component/2025_01_migration"
+import useUserAuthorization from "src/userprivileges/hooks/useUserAuthorization"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 const UpdatesPage = () => {
+  const user = useCurrentUser()
+  useUserAuthorization([user!.role])
   return (
     <Layout title="Updates">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">

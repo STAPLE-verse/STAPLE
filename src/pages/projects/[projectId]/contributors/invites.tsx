@@ -10,7 +10,7 @@ import { AllInvitesList } from "src/invites/components/AllInvitesList"
 // issue 37
 const InvitesPagePM = () => {
   const projectId = useParam("projectId", "number")
-  useUserAuthorization([MemberPrivileges.PROJECT_MANAGER])
+  useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Layout title="Project Contributor Invitations">
