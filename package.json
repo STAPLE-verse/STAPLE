@@ -76,6 +76,7 @@
     "react-json-editor-ajrm": "2.5.14",
     "react-json-view": "1.21.3",
     "react-overlays": "5.2.1",
+    "react-tag-input": "6.10.3",
     "react-tooltip": "5.26.0",
     "reactflow": "11.9.2",
     "resend": "4.0.0",

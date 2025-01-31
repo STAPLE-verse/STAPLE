@@ -87,6 +87,7 @@ model ProjectMember {
   deleted            Boolean   @default(false)
   taskLogAssignedTo  TaskLog[] @relation("assignedTo")
   taskLogCompletedBy TaskLog[] @relation("completedBy")
+  tags               Json?
 }
 
 model ProjectPrivilege {
@@ -168,7 +169,7 @@ model Task {
   deadline           DateTime?
   name               String
   description        String?
-  tags               String?
+  tags               Json?
   // kanban coding
   containerTaskOrder Int //tells you what order the tasks are in for that container
   containerId        Int //tells you which container it is in
@@ -233,6 +234,7 @@ model Element {
   task        Task[]
   parents     Element[] @relation("ElementToElement")
   children    Element[] @relation("ElementToElement")
+  tags        Json?
 }
 
 model Form {
