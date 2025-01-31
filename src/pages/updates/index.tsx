@@ -11,7 +11,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 const UpdatesPage = () => {
   const user = useCurrentUser()
-  useUserAuthorization([user!.role])
+  useUserAuthorization(user!.role)
   return (
     <Layout title="Updates">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
