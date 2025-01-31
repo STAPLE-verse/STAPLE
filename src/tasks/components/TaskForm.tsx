@@ -87,8 +87,15 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   // State for tags
   const [tags, setTags] = useState<Tag[]>([])
 
-  const handleDelete = (index: number) => {
-    setTags(tags.filter((_, i) => i !== index))
+  console.log(tags)
+
+  const handleDelete = (index: number, event?: React.MouseEvent) => {
+    if (event) event.preventDefault() // Stop the event from triggering internal logic
+    try {
+      setTags((prevTags) => prevTags.filter((_, i) => i !== index))
+    } catch (error) {
+      console.warn("Handled React Tags delete button error:", error)
+    }
   }
 
   const onTagUpdate = (index: number, newTag: Tag) => {
@@ -190,12 +197,15 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       {/* Tag Input */}
       <div className="w-1/2">
         <label className="text-base-content">Tags:</label>
-        <i>Use a comma, semicolon, enter, or tab to create separate tags.</i>
+        <i>
+          Use a comma, semicolon, enter, or tab to create separate tags. To edit a tag, click on it,
+          and then hit the enter key when you are finished.
+        </i>
         <ReactTags
           tags={tags}
           name="tags"
           separators={[SEPARATORS.TAB, SEPARATORS.COMMA, SEPARATORS.ENTER, SEPARATORS.SEMICOLON]}
-          handleDelete={handleDelete}
+          handleDelete={(index, event) => handleDelete(index, event)}
           handleAddition={handleAddition}
           handleDrag={handleDrag}
           handleTagClick={handleTagClick}
@@ -205,19 +215,22 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           clearAll
           onClearAll={onClearAll}
           classNames={{
-            tags: "tags-container",
-            tagInput: "input input-bordered w-full text-primary",
-            tagInputField: "input-field-class",
-            selected: "selected-tag",
-            tag: "tag-item",
-            remove: "tag-remove",
+            tags: "mt-2 p-2 rounded-md bg-base-300 react-tags-wrapper", // entire box for tags
+            tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 mb-2 text-lg",
+            remove: "ml-3 text-primary-content font-bold cursor-pointer remove",
+            tagInput: "bg-base-300", // whole div around
+            tagInputField:
+              "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4", // just input field
+
+            selected: "bg-base-300",
+            editTagInput: "bg-base-3000",
+            editTagInputField:
+              "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4 mb-4",
+            clearAll: "font-bold ml-3",
             suggestions: "suggestions-dropdown",
             activeSuggestion: "active-suggestion-class",
-            editTagInput: "edit-tag-input",
-            editTagInputField: "edit-tag-input-field",
-            clearAll: "clear-all-class",
           }}
-          placeholder="Add new tags..."
+          placeholder="Add tags"
         />
       </div>
 
