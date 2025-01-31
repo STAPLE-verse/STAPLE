@@ -15,6 +15,7 @@ import {
   QuestionMarkCircleIcon,
   EnvelopeIcon,
   WrenchIcon,
+  HomeIcon,
 } from "@heroicons/react/24/outline"
 import { Routes } from "@blitzjs/next"
 import { MemberPrivileges } from "db"
@@ -33,6 +34,13 @@ export interface SidebarItemProps {
 
 export const ProjectSidebarItems = (projectId: number): SidebarItemProps[] => {
   return [
+    {
+      icon: HomeIcon,
+      text: "Home",
+      route: Routes.MainPage(),
+      tooltipId: "project-home-tooltip",
+      privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
+    },
     {
       icon: RectangleGroupIcon,
       text: "Dashboard",
