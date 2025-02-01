@@ -9,7 +9,8 @@
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "patch-package"
   },
   "prisma": {
     "schema": "db/schema.prisma"
@@ -67,6 +68,7 @@
     "node-fetch": "3.3.2",
     "nodemailer": "6.9.14",
     "passport-orcid": "0.0.4",
+    "patch-package": "8.0.0",
     "postcss": "8.4.27",
     "react": "18.2.0",
     "react-circular-progressbar": "2.1.0",

@@ -1,0 +1,22 @@
+diff --git a/node_modules/react-tag-input/dist/index.js b/node_modules/react-tag-input/dist/index.js
+index caaac94..7e065b8 100644
+--- a/node_modules/react-tag-input/dist/index.js
++++ b/node_modules/react-tag-input/dist/index.js
+@@ -1743,14 +1743,14 @@ var ReactTags = (props) => {
+     if (!reactTagsRef?.current) {
+       return;
+     }
+-    const tagRemoveButtons = reactTagsRef.current.querySelectorAll(".ReactTags__remove");
++    //const tagRemoveButtons = reactTagsRef.current.querySelectorAll(".ReactTags__remove");
+     let ariaLiveStatus2 = "";
+     if (index === 0 && tags2.length > 1) {
+       ariaLiveStatus2 = `Tag at index ${index} with value ${tags2[index].id} deleted. Tag at index 0 with value ${tags2[1].id} focussed. Press backspace to remove`;
+-      tagRemoveButtons[0].focus();
++      //tagRemoveButtons[0].focus();
+     } else if (index > 0) {
+       ariaLiveStatus2 = `Tag at index ${index} with value ${tags2[index].id} deleted. Tag at index ${index - 1} with value ${tags2[index - 1].id} focussed. Press backspace to remove`;
+-      tagRemoveButtons[index - 1].focus();
++      //tagRemoveButtons[index - 1].focus();
+     } else {
+       ariaLiveStatus2 = `Tag at index ${index} with value ${tags2[index].id} deleted. Input focussed. Press enter to add a new tag`;
+       textInput.current?.focus();

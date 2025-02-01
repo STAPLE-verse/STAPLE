@@ -84,18 +84,11 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     }
   })
 
-  // State for tags
-  const [tags, setTags] = useState<Tag[]>([])
+  // information for tags
+  const [tags, setTags] = useState<Array<Tag>>([])
 
-  console.log(tags)
-
-  const handleDelete = (index: number, event?: React.MouseEvent) => {
-    if (event) event.preventDefault() // Stop the event from triggering internal logic
-    try {
-      setTags((prevTags) => prevTags.filter((_, i) => i !== index))
-    } catch (error) {
-      console.warn("Handled React Tags delete button error:", error)
-    }
+  const handleDelete = (index: number) => {
+    setTags(tags.filter((_, i) => i !== index))
   }
 
   const onTagUpdate = (index: number, newTag: Tag) => {
@@ -205,7 +198,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           tags={tags}
           name="tags"
           separators={[SEPARATORS.TAB, SEPARATORS.COMMA, SEPARATORS.ENTER, SEPARATORS.SEMICOLON]}
-          handleDelete={(index, event) => handleDelete(index, event)}
+          handleDelete={handleDelete}
           handleAddition={handleAddition}
           handleDrag={handleDrag}
           handleTagClick={handleTagClick}
