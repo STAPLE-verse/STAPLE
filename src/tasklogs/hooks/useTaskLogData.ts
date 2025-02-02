@@ -1,4 +1,4 @@
-import { TaskLog, ProjectMember, User } from "db"
+import { TaskLog, ProjectMember, User, Comment } from "db"
 import { ExtendedTask } from "src/tasks/components/TaskContext"
 
 // TODO: Possible that the function can be factored out or refactored due to the new schema structure
@@ -10,6 +10,7 @@ export type ExtendedProjectMember = ProjectMember & {
 
 export type ExtendedTaskLog = TaskLog & {
   completedBy: ExtendedProjectMember
+  comments?: Comment[]
 }
 
 type useTaskLogDataType = {

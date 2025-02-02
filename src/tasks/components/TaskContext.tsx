@@ -67,6 +67,7 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
                   users: true,
                 },
               },
+              comments: true,
             },
             orderBy: {
               createdAt: "desc",

@@ -1,4 +1,4 @@
-import { Project, ProjectMember, Role, Task, TaskLog, User } from "db"
+import { Project, ProjectMember, Role, Task, TaskLog, User, Comment } from "db"
 
 export type RoleWithUser = Role & {
   user: User

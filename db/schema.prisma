@@ -87,6 +87,7 @@ model ProjectMember {
   deleted            Boolean   @default(false)
   taskLogAssignedTo  TaskLog[] @relation("assignedTo")
   taskLogCompletedBy TaskLog[] @relation("completedBy")
+  comments           Comment[]
 }
 
 model ProjectPrivilege {
@@ -204,6 +205,18 @@ model TaskLog {
   // what is the task this is tied to
   taskId        Int
   task          Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  comments      Comment[]
+}
+
+model Comment {
+  id        Int           @id @default(autoincrement())
+  createdAt DateTime      @default(now()) // When the comment was created
+  updatedAt DateTime      @updatedAt // Auto-update on edits
+  content   String // The comment text
+  taskLogId Int
+  taskLog   TaskLog       @relation(fields: [taskLogId], references: [id], onDelete: Cascade)
+  authorId  Int
+  author    ProjectMember @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 
 enum CompletedAs {
