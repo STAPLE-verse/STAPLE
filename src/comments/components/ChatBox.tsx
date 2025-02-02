@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react"
-import { Comment } from "db"
 import { useMutation } from "@blitzjs/rpc"
 import addComment from "../mutations/addComment"
+import { CommentWithAuthor } from "src/tasks/components/TaskContext"
 
 interface ChatBoxProps {
-  initialComments?: Comment[]
+  initialComments?: CommentWithAuthor[]
   taskLogId: number
   currentContributorId: number
 }
@@ -14,7 +14,7 @@ export default function ChatBox({
   taskLogId,
   currentContributorId,
 }: ChatBoxProps) {
-  const [comments, setComments] = useState<Comment[]>(initialComments)
+  const [comments, setComments] = useState<CommentWithAuthor[]>(initialComments)
   const [newComment, setNewComment] = useState("")
   const chatRef = useRef<HTMLDivElement>(null)
   const [addCommentMutation] = useMutation(addComment)

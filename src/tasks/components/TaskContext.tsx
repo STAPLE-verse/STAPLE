@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
-import { Task, KanbanBoard, Element, FormVersion, ProjectMember, User, TaskLog } from "db"
+import { Task, KanbanBoard, Element, FormVersion, ProjectMember, User, TaskLog, Comment } from "db"
 import { ExtendedProjectMember, ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
 import { useSanitizedProjectMembers } from "src/projectmembers/hooks/useSanitizedProjectMembers"
 
@@ -10,10 +10,17 @@ export type ProjectMemberWithTaskLog = ProjectMember & {
   users: Pick<User, "id" | "username">[]
 }
 
+export type CommentWithAuthor = Comment & {
+  author: ProjectMember & {
+    users: Pick<User, "id" | "username" | "firstName" | "lastName">[]
+  }
+}
+
 // Creating custom types
 type TaskLogWithCompletedBy = TaskLog & {
   completedBy: ExtendedProjectMember
   assignedTo: ExtendedProjectMember
+  comments: CommentWithAuthor[]
 }
 
 export type ExtendedTask = Task & {
@@ -67,7 +74,22 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
                   users: true,
                 },
               },
-              comments: true,
+              comments: {
+                include: {
+                  author: {
+                    include: {
+                      users: {
+                        select: {
+                          id: true,
+                          username: true,
+                          firstName: true,
+                          lastName: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             },
             orderBy: {
               createdAt: "desc",
