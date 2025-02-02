@@ -219,7 +219,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
               "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4", // just input field
 
             selected: "bg-base-300",
-            editTagInput: "bg-base-3000",
+            editTagInput: "bg-base-300",
             editTagInputField:
               "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4 mb-4",
             clearAll: "font-bold ml-3",
