@@ -18,8 +18,9 @@ import { ProjectMemberWithUsers } from "src/core/types"
 import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManagerUserIds"
 import { useState } from "react"
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
+import classNames from "classnames"
 
-type Tag = {
+export type Tag = {
   id: string
   className: string
   [key: string]: string
@@ -85,7 +86,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   })
 
   // information for tags
-  const [tags, setTags] = useState<Array<Tag>>([])
+  const initialTags = formProps.initialValues?.tags ?? []
+
+  const [tags, setTags] = useState<Array<Tag>>(initialTags)
 
   const handleDelete = (index: number) => {
     setTags(tags.filter((_, i) => i !== index))
