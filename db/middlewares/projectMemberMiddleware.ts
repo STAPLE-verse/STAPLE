@@ -15,12 +15,6 @@ export default function projectMemberMiddleware(prisma) {
           ...params.args.where,
           deleted: false, // ✅ Always filter out soft-deleted members
         }
-
-        if (params.action === "delete") {
-          throw new Error(
-            "Direct deletion of ProjectMember is not allowed. Use soft delete instead."
-          )
-        }
       }
     }
 
