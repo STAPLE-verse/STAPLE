@@ -3,7 +3,6 @@ import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
 import { Task, KanbanBoard, Element, FormVersion, ProjectMember, User, TaskLog } from "db"
 import { ExtendedProjectMember, ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
-import { useSanitizedProjectMembers } from "src/projectmembers/hooks/useSanitizedProjectMembers"
 
 export type ProjectMemberWithTaskLog = ProjectMember & {
   taskLogAssignedTo: ExtendedTaskLog[]
@@ -83,14 +82,10 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
     },
   }) as [ExtendedTask, any]
 
-  const sanitizedProjectMembers = useSanitizedProjectMembers<ProjectMemberWithTaskLog>(
-    task.assignedMembers
-  )
-
   // Set context value
   const contextValue = {
     task,
-    projectMembers: sanitizedProjectMembers,
+    projectMembers: task.assignedMembers,
     refetchTaskData,
   }
 
