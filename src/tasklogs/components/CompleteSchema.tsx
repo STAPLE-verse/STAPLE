@@ -55,13 +55,6 @@ const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => 
     await refetchTaskData()
   }
 
-  const buttonLabel =
-    completedAs === CompletedAsType.TEAM
-      ? `${taskLog.status === Status.COMPLETED ? "Update" : "Provide"} ${
-          taskLog.assignedTo.name
-        } Data`
-      : `${taskLog.status === Status.COMPLETED ? "Update" : "Provide"} Individual Data`
-
   return (
     <div>
       {taskLog ? (
@@ -69,7 +62,7 @@ const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => 
           schema={getJsonSchema(schema)}
           uiSchema={ui}
           metadata={assignmentMetadata}
-          label={buttonLabel}
+          label="Provide Data"
           classNames="btn-primary"
           onSubmit={handleJsonFormSubmit}
           onError={handleJsonFormError}

@@ -43,10 +43,6 @@ const CompleteToggle = ({
     <div>
       {taskLog ? (
         <div className="flex items-center space-x-2">
-          <span className="font-semibold">
-            {completedAs == CompletedAs.INDIVIDUAL && "Individual: "}
-            {completedAs == CompletedAs.TEAM && teamName && `${teamName}:`}
-          </span>
           <span>Not Completed</span>
           <label className="flex items-center cursor-pointer">
             <input

@@ -24,8 +24,6 @@ const TaskContent = () => {
         <div className="flex flex-row justify-center m-2">
           <TaskLogCompletion />
         </div>
-
-        <div className="flex flex-row justify-center m-2">HEY PUT COMMENTS HERE IN A CARD</div>
       </main>
     </>
   )

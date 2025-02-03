@@ -46,25 +46,36 @@ export default function ChatBox({
   }
 
   return (
-    <div className="flex flex-col h-96 bg-base-200 rounded-lg p-4">
+    <div className="flex flex-col h-96 w-full bg-base-100 border border-base-300 rounded-lg p-4">
       <div ref={chatRef} className="flex-1 overflow-y-auto">
         {comments.length > 0 ? (
-          comments.map((comment) => (
-            <div
-              key={comment.id}
-              className={`chat ${
-                comment.authorId === currentContributor!.id ? "chat-end" : "chat-start"
-              }`}
-            >
-              <div className="chat-header">
-                {getContributorName(comment.author) || "Unknown"}
-                <time className="text-xs opacity-50 ml-2">
-                  {comment.createdAt ? new Date(comment.createdAt).toLocaleTimeString() : "N/A"}
-                </time>
+          comments.map((comment) => {
+            const isCurrentContributor = comment.authorId === currentContributor!.id
+            return (
+              <div
+                key={comment.id}
+                className={`chat ${
+                  comment.authorId === currentContributor!.id ? "chat-end" : "chat-start"
+                }`}
+              >
+                <div className="chat-header">
+                  {getContributorName(comment.author) || "Unknown"}
+                  <time className="text-xs opacity-50 ml-2">
+                    {comment.createdAt ? new Date(comment.createdAt).toLocaleTimeString() : "N/A"}
+                  </time>
+                </div>
+                <div
+                  className={`chat-bubble ${
+                    isCurrentContributor
+                      ? "bg-accent text-accent-content"
+                      : "bg-secondary text-secondary-content"
+                  }`}
+                >
+                  {comment.content || "[No Content]"}
+                </div>
               </div>
-              <div className="chat-bubble">{comment.content || "[No Content]"}</div>
-            </div>
-          ))
+            )
+          })
         ) : (
           <p className="text-center text-gray-400 italic">No comments yet...</p>
         )}
