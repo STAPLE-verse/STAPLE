@@ -1,11 +1,9 @@
 import { getContributorName } from "src/core/utils/getName"
 import { ExtendedTaskLog } from "src/core/types"
 import { Prisma } from "@prisma/client"
-import { ProjectMemberWithTaskLog } from "src/tasks/components/TaskContext"
+import { ProjectMemberWithTaskLog } from "src/core/types"
 import { filterLatestTaskLog } from "../../utils/filterLatestTaskLog"
 import { filterFirstTaskLog } from "src/tasklogs/utils/filterFirstTaskLog"
-import { useQuery } from "@blitzjs/rpc"
-import getComments from "src/comments/queries/getComments"
 import { CommentWithAuthor } from "src/core/types"
 
 export type ProcessedIndividualTaskLog = {

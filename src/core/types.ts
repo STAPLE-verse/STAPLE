@@ -1,4 +1,14 @@
-import { Project, ProjectMember, Role, Task, TaskLog, User, Comment } from "db"
+import {
+  Project,
+  ProjectMember,
+  Role,
+  Task,
+  TaskLog,
+  User,
+  Comment,
+  KanbanBoard,
+  FormVersion,
+} from "db"
 
 export type RoleWithUser = Role & {
   user: User
@@ -56,4 +66,23 @@ export type ExtendedProjectMember = ProjectMember & {
 export type ExtendedTaskLog = TaskLog & {
   completedBy: ExtendedProjectMember
   comments?: Comment[]
+}
+
+export type ProjectMemberWithTaskLog = ProjectMember & {
+  taskLogAssignedTo: ExtendedTaskLog[]
+  users: Pick<User, "id" | "username">[]
+}
+
+export type TaskLogWithCompletedBy = TaskLog & {
+  completedBy: ExtendedProjectMember
+  assignedTo: ExtendedProjectMember
+}
+
+export type ExtendedTask = Task & {
+  container: KanbanBoard
+  element: Element | null
+  formVersion: FormVersion | null
+  roles: []
+  assignedMembers: ProjectMemberWithTaskLog[]
+  taskLogs: TaskLogWithCompletedBy[]
 }

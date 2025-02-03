@@ -5,7 +5,8 @@ import { TaskLogCompleteColumns } from "src/tasklogs/tabels/columns/TaskLogCompl
 import Table from "src/core/components/Table"
 import Link from "next/link"
 import TaskLayout from "src/core/layouts/TaskLayout"
-import { ProjectMemberWithTaskLog, useTaskContext } from "src/tasks/components/TaskContext"
+import { useTaskContext } from "src/tasks/components/TaskContext"
+import { ProjectMemberWithTaskLog } from "src/core/types"
 import {
   processIndividualTaskLogs,
   processTeamTaskLogs,
