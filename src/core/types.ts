@@ -66,6 +66,7 @@ export type ExtendedProjectMember = ProjectMember & {
 export type ExtendedTaskLog = TaskLog & {
   completedBy: ExtendedProjectMember
   comments?: Comment[]
+  assignedTo: ExtendedProjectMember
 }
 
 export type ProjectMemberWithTaskLog = ProjectMember & {
