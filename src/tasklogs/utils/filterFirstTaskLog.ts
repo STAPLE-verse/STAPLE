@@ -1,4 +1,4 @@
-import { ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
+import { ExtendedTaskLog } from "src/core/types"
 
 // Function to get the first task log from an array of task logs based on the createdAt date
 export function filterFirstTaskLog(taskLogs: ExtendedTaskLog[]): ExtendedTaskLog | undefined {

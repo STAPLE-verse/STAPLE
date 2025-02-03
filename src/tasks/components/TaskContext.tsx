@@ -1,8 +1,8 @@
 import React, { createContext, ReactNode, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
-import { Task, KanbanBoard, Element, FormVersion, ProjectMember, User, TaskLog, Comment } from "db"
-import { ExtendedProjectMember, ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
+import { Task, KanbanBoard, Element, FormVersion, ProjectMember, User, TaskLog } from "db"
+import { ExtendedProjectMember, ExtendedTaskLog } from "src/core/types"
 import { useSanitizedProjectMembers } from "src/projectmembers/hooks/useSanitizedProjectMembers"
 
 export type ProjectMemberWithTaskLog = ProjectMember & {

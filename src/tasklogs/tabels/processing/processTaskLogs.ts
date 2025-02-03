@@ -1,5 +1,5 @@
 import { getContributorName } from "src/core/utils/getName"
-import { ExtendedTaskLog } from "../../hooks/useTaskLogData"
+import { ExtendedTaskLog } from "src/core/types"
 import { Prisma } from "@prisma/client"
 import { ProjectMemberWithTaskLog } from "src/tasks/components/TaskContext"
 import { filterLatestTaskLog } from "../../utils/filterLatestTaskLog"

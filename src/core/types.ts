@@ -48,3 +48,12 @@ export type TaskLogWithTaskCompleted = TaskLog & {
   task: TaskWithRoles
   completedBy: ProjectMemberWithUsers
 }
+
+export type ExtendedProjectMember = ProjectMember & {
+  users: Pick<User, "id" | "username">[]
+}
+
+export type ExtendedTaskLog = TaskLog & {
+  completedBy: ExtendedProjectMember
+  comments?: Comment[]
+}
