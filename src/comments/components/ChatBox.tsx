@@ -1,23 +1,27 @@
 import { useEffect, useRef, useState } from "react"
 import { useMutation } from "@blitzjs/rpc"
 import addComment from "../mutations/addComment"
-import { CommentWithAuthor } from "src/tasks/components/TaskContext"
+import { CommentWithAuthor } from "src/core/types"
+import { getContributorName } from "src/core/utils/getName"
+import { useParam } from "@blitzjs/next"
+import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
 interface ChatBoxProps {
   initialComments?: CommentWithAuthor[]
   taskLogId: number
-  currentContributorId: number
 }
 
 export default function ChatBox({
   initialComments = [], // Ensure default value as empty array
   taskLogId,
-  currentContributorId,
 }: ChatBoxProps) {
   const [comments, setComments] = useState<CommentWithAuthor[]>(initialComments)
   const [newComment, setNewComment] = useState("")
   const chatRef = useRef<HTMLDivElement>(null)
   const [addCommentMutation] = useMutation(addComment)
+
+  const projectId = useParam("projectId", "number")
+  const { projectMember: currentContributor } = useCurrentContributor(projectId)
 
   useEffect(() => {
     if (chatRef.current) {
@@ -31,7 +35,7 @@ export default function ChatBox({
     try {
       const createdComment = await addCommentMutation({
         taskLogId: taskLogId,
-        projectMemberId: currentContributorId,
+        projectMemberId: currentContributor!.id,
         content: newComment,
       })
       setComments((prev) => [...prev, createdComment]) // Update state directly
@@ -49,11 +53,11 @@ export default function ChatBox({
             <div
               key={comment.id}
               className={`chat ${
-                comment.authorId === currentContributorId ? "chat-end" : "chat-start"
+                comment.authorId === currentContributor!.id ? "chat-end" : "chat-start"
               }`}
             >
               <div className="chat-header">
-                {comment.authorId || "Unknown"}
+                {getContributorName(comment.author) || "Unknown"}
                 <time className="text-xs opacity-50 ml-2">
                   {comment.createdAt ? new Date(comment.createdAt).toLocaleTimeString() : "N/A"}
                 </time>

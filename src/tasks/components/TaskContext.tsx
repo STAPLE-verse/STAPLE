@@ -10,17 +10,10 @@ export type ProjectMemberWithTaskLog = ProjectMember & {
   users: Pick<User, "id" | "username">[]
 }
 
-export type CommentWithAuthor = Comment & {
-  author: ProjectMember & {
-    users: Pick<User, "id" | "username" | "firstName" | "lastName">[]
-  }
-}
-
 // Creating custom types
 type TaskLogWithCompletedBy = TaskLog & {
   completedBy: ExtendedProjectMember
   assignedTo: ExtendedProjectMember
-  comments: CommentWithAuthor[]
 }
 
 export type ExtendedTask = Task & {
@@ -72,22 +65,6 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
               assignedTo: {
                 include: {
                   users: true,
-                },
-              },
-              comments: {
-                include: {
-                  author: {
-                    include: {
-                      users: {
-                        select: {
-                          id: true,
-                          username: true,
-                          firstName: true,
-                          lastName: true,
-                        },
-                      },
-                    },
-                  },
                 },
               },
             },

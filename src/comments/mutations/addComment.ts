@@ -15,7 +15,7 @@ export default resolver.pipe(
     const userId = ctx.session.userId
     if (!userId) throw new Error("User not authenticated")
 
-    // Create a new comment
+    // Create a new comment and ensure the author includes users
     const comment = await db.comment.create({
       data: {
         taskLogId,
@@ -23,7 +23,18 @@ export default resolver.pipe(
         content,
       },
       include: {
-        author: true,
+        author: {
+          include: {
+            users: {
+              select: {
+                id: true,
+                username: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
       },
     })
 

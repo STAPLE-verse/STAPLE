@@ -32,6 +32,12 @@ export type ProjectMemberWithUsername = ProjectMember & {
   }
 }
 
+export type CommentWithAuthor = Comment & {
+  author: ProjectMember & {
+    users: Pick<User, "id" | "username" | "firstName" | "lastName">[]
+  }
+}
+
 export type ProjectMemberWithUsersAndRoles = ProjectMember & {
   users: User[]
   roles: Array<Pick<Role, "id" | "name">>

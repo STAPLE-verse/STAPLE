@@ -3,6 +3,8 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { TaskLogToggleModal } from "../../components/TaskLogToggleModal"
 import { ProcessedTeamTaskLog } from "../processing/processTaskLogs"
 import { ShowTeamModal } from "src/teams/components/ShowTeamModal"
+import ToggleModal from "src/core/components/ToggleModal"
+import ChatBox from "src/comments/components/ChatBox"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedTeamTaskLog>()
@@ -31,5 +33,16 @@ export const TeamTaskLogCompleteColumns: ColumnDef<ProcessedTeamTaskLog>[] = [
     cell: (info) => <TaskLogToggleModal taskLog={info.getValue()} />,
     header: "Change status",
     id: "updateStatus",
+  }),
+  columnHelper.accessor("firstLogId", {
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <ToggleModal buttonLabel={"Open"} modalTitle={"Team Task Comments"}>
+        <ChatBox taskLogId={info.getValue()!} initialComments={info.row.original.comments} />
+      </ToggleModal>
+    ),
+    header: "Comments",
+    id: "chat",
   }),
 ]
