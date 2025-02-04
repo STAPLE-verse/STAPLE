@@ -1,14 +1,13 @@
-import { createNewInvitation } from "integrations/emails"
-
-export async function sendInvitationEmail(values: any, currentUser: any, projectMember: any) {
+export async function sendInvitationEmail(emailData) {
   try {
     const response = await fetch("/api/send-email", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(createNewInvitation(values, currentUser, projectMember)),
+      body: JSON.stringify(emailData),
     })
+
     return response.ok
   } catch (error) {
     console.error("Failed to send email:", error)

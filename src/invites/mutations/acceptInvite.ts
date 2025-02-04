@@ -15,6 +15,27 @@ export default resolver.pipe(
     })
     if (!invite) throw new Error("Invitation not found")
 
+    let projectMember
+
+    // Check if this is a reassignment invitation
+    if (invite.reassignmentFor) {
+      // Restore the soft-deleted ProjectMember
+      projectMember = await db.projectMember.update({
+        where: { id: invite.reassignmentFor },
+        data: { deleted: false },
+      })
+    } else {
+      // Create a new ProjectMember for fresh invitations
+      projectMember = await db.projectMember.create({
+        data: {
+          users: {
+            connect: { id: userId },
+          },
+          projectId: invite.projectId,
+        },
+      })
+    }
+
     // Create the project privilege
     const projectPrivilege = await db.projectPrivilege.create({
       data: {
@@ -24,20 +45,10 @@ export default resolver.pipe(
       },
     })
 
-    // Create the project member
-    const projectmember = await db.projectMember.create({
-      data: {
-        users: {
-          connect: { id: userId },
-        },
-        projectId: invite!.projectId,
-      },
-    })
-
     // Assign roles to the project member
     if (invite.roles && invite.roles.length > 0) {
       await db.projectMember.update({
-        where: { id: projectmember.id },
+        where: { id: projectMember.id },
         data: {
           roles: {
             connect: invite.roles.map((role) => ({ id: role.id })),

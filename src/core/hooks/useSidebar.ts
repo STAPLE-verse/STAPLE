@@ -9,6 +9,7 @@ import {
 } from "../components/sidebar/SidebarItems"
 import { MemberPrivileges, Project } from "db"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 export interface SidebarState {
   sidebarTitle: string
@@ -17,7 +18,8 @@ export interface SidebarState {
 
 export const getSidebarState = (
   project: Project | undefined,
-  privilege: MemberPrivileges | null | undefined
+  privilege: MemberPrivileges | null | undefined,
+  userPrivilege: string | null | undefined
 ): SidebarState => {
   if (project && privilege) {
     const sidebarItems = ProjectSidebarItems(project.id).filter((item) => {
@@ -31,10 +33,22 @@ export const getSidebarState = (
       sidebarTitle: project.name,
       sidebarItems,
     }
+  } else if (userPrivilege) {
+    const sidebarItems = HomeSidebarItems().filter((item) => {
+      return (
+        !item.userPrivilege ||
+        !userPrivilege ||
+        item.userPrivilege.some((itemPrivilege) => itemPrivilege === userPrivilege)
+      )
+    })
+    return {
+      sidebarTitle: "Home",
+      sidebarItems,
+    }
   } else {
     return {
       sidebarTitle: "Home",
-      sidebarItems: HomeSidebarItems(),
+      sidebarItems: HomeSidebarItems().filter((_, index) => index !== 7),
     }
   }
 }
@@ -43,10 +57,12 @@ const useSidebar = (): SidebarState => {
   const projectId = useParam("projectId", "number")
   const { privilege } = useMemberPrivileges()
   const [project] = useQuery(getProject, { id: projectId }, { enabled: !!projectId })
+  const user = useCurrentUser()
+  const userPrivilege = user ? user!.role : "USER"
 
   const sidebarState = useMemo(() => {
-    return getSidebarState(project, privilege)
-  }, [project, privilege])
+    return getSidebarState(project, privilege, userPrivilege)
+  }, [project, privilege, userPrivilege])
 
   return sidebarState
 }

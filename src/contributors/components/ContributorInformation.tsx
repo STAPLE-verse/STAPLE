@@ -46,7 +46,7 @@ const ContributorInformation = ({
             <DeleteContributor
               projectId={projectId}
               contributorUser={contributorUser}
-              contributorId={0}
+              contributorId={contributorId}
             />
           </div>
         ) : null

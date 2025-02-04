@@ -74,20 +74,21 @@ enum MemberPrivileges {
 }
 
 model ProjectMember {
-  id                 Int       @id @default(autoincrement())
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-  projectId          Int
-  project            Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  name               String?
-  users              User[]
-  createdTasks       Task[]    @relation("CreatedTasks")
-  assignedTasks      Task[]    @relation("AssignedTasks")
-  roles              Role[]
-  deleted            Boolean   @default(false)
-  taskLogAssignedTo  TaskLog[] @relation("assignedTo")
-  taskLogCompletedBy TaskLog[] @relation("completedBy")
-  comments           Comment[]
+  id                      Int          @id @default(autoincrement())
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+  projectId               Int
+  project                 Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name                    String?
+  users                   User[]
+  createdTasks            Task[]       @relation("CreatedTasks")
+  assignedTasks           Task[]       @relation("AssignedTasks")
+  roles                   Role[]
+  deleted                 Boolean      @default(false)
+  taskLogAssignedTo       TaskLog[]    @relation("assignedTo")
+  taskLogCompletedBy      TaskLog[]    @relation("completedBy")
+  reassignmentInvitations Invitation[]
+  comments                Comment[]
 }
 
 model ProjectPrivilege {
@@ -102,15 +103,17 @@ model ProjectPrivilege {
 
 // Invites
 model Invitation {
-  createdAt      DateTime         @default(now())
-  id             Int              @id @default(autoincrement())
-  projectId      Int
-  project        Project          @relation(fields: [projectId], references: [id])
-  invitationCode String
-  roles          Role[] // will change to roles
-  email          String
-  privilege      MemberPrivileges @default(CONTRIBUTOR)
-  addedBy        String
+  createdAt       DateTime         @default(now())
+  id              Int              @id @default(autoincrement())
+  projectId       Int
+  project         Project          @relation(fields: [projectId], references: [id])
+  invitationCode  String
+  roles           Role[] // will change to roles
+  email           String
+  privilege       MemberPrivileges @default(CONTRIBUTOR)
+  addedBy         String
+  reassignmentFor Int? // Foreign key to ProjectMember
+  projectMember   ProjectMember?   @relation(fields: [reassignmentFor], references: [id]) // Relation to ProjectMember
 }
 
 model Role {
