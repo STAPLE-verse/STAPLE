@@ -14,6 +14,7 @@ import {
   CheckCircleIcon,
   QuestionMarkCircleIcon,
   EnvelopeIcon,
+  WrenchIcon,
 } from "@heroicons/react/24/outline"
 import { Routes } from "@blitzjs/next"
 import { MemberPrivileges } from "db"
@@ -27,6 +28,7 @@ export interface SidebarItemProps {
   alert?: boolean
   tooltipId: string
   privilege?: MemberPrivileges[]
+  userPrivilege?: string[]
 }
 
 export const ProjectSidebarItems = (projectId: number): SidebarItemProps[] => {
@@ -112,48 +114,63 @@ export const HomeSidebarItems = (): SidebarItemProps[] => {
       text: "Dashboard",
       route: Routes.MainPage(),
       tooltipId: "dashboard-tooltip",
+      userPrivilege: ["USER", "ADMIN"],
     },
     {
       icon: ArchiveBoxIcon,
       text: "Projects",
       route: Routes.ProjectsPage(),
       tooltipId: "projects-tooltip",
+      userPrivilege: ["USER", "ADMIN"],
     },
     {
       icon: EnvelopeIcon,
       text: "Invitations",
       route: Routes.InvitesPage(),
       tooltipId: "invite-tooltip",
+      userPrivilege: ["USER", "ADMIN"],
     },
     {
       icon: ClipboardDocumentListIcon,
       text: "Tasks",
       route: Routes.AllTasksPage(),
       tooltipId: "tasks-tooltip",
+      userPrivilege: ["USER", "ADMIN"],
     },
     {
       icon: BellIcon,
       text: "Notifications",
       route: Routes.NotificationsPage(),
       tooltipId: "notifications-tooltip",
+      userPrivilege: ["USER", "ADMIN"],
     },
     {
       icon: BeakerIcon,
       text: "Forms",
       route: Routes.AllFormsPage(),
       tooltipId: "forms-tooltip",
+      userPrivilege: ["USER", "ADMIN"],
     },
     {
       icon: TagIcon,
       text: "Roles",
       route: Routes.RoleBuilderPage(),
       tooltipId: "roles-tooltip",
+      userPrivilege: ["USER", "ADMIN"],
+    },
+    {
+      icon: WrenchIcon,
+      text: "Admin",
+      route: Routes.UpdatesPage(),
+      tooltipId: "help-tooltip",
+      userPrivilege: ["ADMIN"],
     },
     {
       icon: QuestionMarkCircleIcon,
       text: "Help",
       route: Routes.HelpPage(),
       tooltipId: "help-tooltip",
+      userPrivilege: ["USER", "ADMIN"],
     },
   ]
 }

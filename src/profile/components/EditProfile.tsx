@@ -1,6 +1,5 @@
 import { useRouter } from "next/router"
 import React, { Suspense } from "react"
-import Head from "next/head"
 import getCurrentUser from "src/users/queries/getCurrentUser"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import deleteUser from "src/users/mutations/deleteUser"
