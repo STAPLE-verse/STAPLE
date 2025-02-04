@@ -87,7 +87,7 @@ export default resolver.pipe(
       })
     }
 
-    // Delete the notifications related to the project
+    // Disconnect the notifications related to the project
     const notificationsToUpdate = await db.notification.findMany({
       where: {
         projectId: contributorToDelete.projectId,
