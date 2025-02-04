@@ -12,7 +12,7 @@ export const TaskInformation = () => {
 
   const [pmData] = useQuery(getProjectMember, {
     where: { id: task?.createdById },
-    include: { users: { select: { username: true } } },
+    include: { users: { select: { username: true, firstName: true, lastName: true } } },
   })
 
   const pm = pmData as ProjectMemberWithUsername
@@ -24,7 +24,7 @@ export const TaskInformation = () => {
   return (
     <Card
       title="Task Information"
-      className="mx-2 w-1/3"
+      className="mx-2 w-full"
       tooltipContent="Overall information about this task"
     >
       <p>
@@ -51,7 +51,10 @@ export const TaskInformation = () => {
       </p>
 
       <p>
-        <span className="font-semibold">Created by:</span> {pm.users[0].username}
+        <span className="font-semibold">Created by: </span>
+        {pm.users[0].firstName
+          ? `${pm.users[0].firstName} ${pm.users[0].lastName}`
+          : `${pm.users[0].username}`}{" "}
       </p>
 
       <p className="italic">

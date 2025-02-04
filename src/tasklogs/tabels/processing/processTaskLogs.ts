@@ -1,21 +1,30 @@
 import { getContributorName } from "src/core/utils/getName"
-import { ExtendedTaskLog } from "../../hooks/useTaskLogData"
+import { ExtendedTaskLog } from "src/core/types"
 import { Prisma } from "@prisma/client"
-import { ProjectMemberWithTaskLog } from "src/tasks/components/TaskContext"
+import { ProjectMemberWithTaskLog } from "src/core/types"
 import { filterLatestTaskLog } from "../../utils/filterLatestTaskLog"
+import { filterFirstTaskLog } from "src/tasklogs/utils/filterFirstTaskLog"
+import { CommentWithAuthor } from "src/core/types"
 
 export type ProcessedIndividualTaskLog = {
   projectMemberName: string
   lastUpdate: string
   status: string
   taskLog: ExtendedTaskLog | undefined
+  firstLogId: number | undefined
+  comments: CommentWithAuthor[]
 }
 
 export function processIndividualTaskLogs(
-  projectMembers: ProjectMemberWithTaskLog[]
+  projectMembers: ProjectMemberWithTaskLog[],
+  comments: CommentWithAuthor[]
 ): ProcessedIndividualTaskLog[] {
   return projectMembers.map((projectMember) => {
     const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
+    const firstLog = filterFirstTaskLog(projectMember.taskLogAssignedTo)
+    // Find comments for this taskLog
+    const taskLogComments = comments.filter((c) => c.taskLogId === firstLog?.id)
+
     return {
       projectMemberName: getContributorName(projectMember),
       lastUpdate: latestLog
@@ -35,6 +44,8 @@ export function processIndividualTaskLogs(
           : "Not Completed"
         : "Unknown",
       taskLog: latestLog,
+      firstLogId: firstLog?.id,
+      comments: taskLogComments,
     }
   })
 }
@@ -44,10 +55,13 @@ export type ProcessedTeamTaskLog = {
   lastUpdate: string
   status: string
   taskLog: ExtendedTaskLog | undefined
+  firstLogId: number | undefined
+  comments: CommentWithAuthor[]
 }
 
 export function processTeamTaskLogs(
-  projectMembers: ProjectMemberWithTaskLog[]
+  projectMembers: ProjectMemberWithTaskLog[],
+  comments: CommentWithAuthor[]
 ): ProcessedTeamTaskLog[] {
   return projectMembers.map((projectMember) => {
     // Function fails if does not recieve assignment data for teams
@@ -56,6 +70,11 @@ export function processTeamTaskLogs(
     }
 
     const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
+    const firstLog = filterFirstTaskLog(projectMember.taskLogAssignedTo)
+
+    // Find comments for this team's task log
+    const taskLogComments = comments.filter((c) => c.taskLogId === firstLog?.id)
+
     return {
       projectMember: projectMember,
       lastUpdate: latestLog
@@ -76,6 +95,8 @@ export function processTeamTaskLogs(
         : "Unknown",
       taskLog: latestLog,
       users: projectMember.users,
+      firstLogId: firstLog?.id,
+      comments: taskLogComments,
     }
   })
 }

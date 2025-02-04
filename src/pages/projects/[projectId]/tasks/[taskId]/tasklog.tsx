@@ -5,7 +5,8 @@ import { TaskLogCompleteColumns } from "src/tasklogs/tabels/columns/TaskLogCompl
 import Table from "src/core/components/Table"
 import Link from "next/link"
 import TaskLayout from "src/core/layouts/TaskLayout"
-import { ProjectMemberWithTaskLog, useTaskContext } from "src/tasks/components/TaskContext"
+import { useTaskContext } from "src/tasks/components/TaskContext"
+import { ProjectMemberWithTaskLog } from "src/core/types"
 import {
   processIndividualTaskLogs,
   processTeamTaskLogs,
@@ -15,6 +16,9 @@ import { TaskLogFormColumns } from "src/tasklogs/tabels/columns/TaskLogFormColum
 import { TeamTaskLogFormColumns } from "src/tasklogs/tabels/columns/TeamTaskLogFormColumns"
 import { TeamTaskLogCompleteColumns } from "src/tasklogs/tabels/columns/TeamTaskLogCompleteColumns"
 import Card from "src/core/components/Card"
+import { filterFirstTaskLog } from "src/tasklogs/utils/filterFirstTaskLog"
+import { useQuery } from "@blitzjs/rpc"
+import getComments from "src/comments/queries/getComments"
 
 const TaskLogSection = ({ title, data, columns, fallbackMessage }: any) => (
   <Card title={title} className="w-full overflow-x-auto">
@@ -32,9 +36,23 @@ const TaskLogContent = () => {
   const { individualProjectMembers, teamProjectMembers } =
     useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
 
+  // Fetch all comments for task logs
+  // Fetch all first task log IDs for teams
+  const firstTaskLogIds = [
+    ...individualProjectMembers.map((member) => filterFirstTaskLog(member.taskLogAssignedTo)?.id),
+    ...teamProjectMembers.map((team) => filterFirstTaskLog(team.taskLogAssignedTo)?.id),
+  ].filter((id): id is number => id !== undefined) // Remove undefined values
+
+  const [comments] = useQuery(getComments, {
+    where: { taskLogId: { in: firstTaskLogIds } },
+  })
+
   // Preprocess taskLogs to include only the latest log
-  const processedIndividualAssignments = processIndividualTaskLogs(individualProjectMembers)
-  const processedTeamAssignments = processTeamTaskLogs(teamProjectMembers)
+  const processedIndividualAssignments = processIndividualTaskLogs(
+    individualProjectMembers,
+    comments
+  )
+  const processedTeamAssignments = processTeamTaskLogs(teamProjectMembers, comments)
 
   // Get columns definitions for tables
   const individualColumns = task.formVersionId ? TaskLogFormColumns : TaskLogCompleteColumns
