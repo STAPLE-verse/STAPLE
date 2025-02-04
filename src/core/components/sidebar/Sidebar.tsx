@@ -31,7 +31,7 @@ export default function Sidebar({
         >
           {sidebarTitle ? sidebarTitle : "Home"}
         </h2>
-        <button onClick={toggleExpand} className="p-1.5 rounded-lg hover:bg-indigo-50">
+        <button onClick={toggleExpand} className="p-1.5 rounded-lg hover:bg-primary/50">
           {expanded ? (
             <ChevronLeftIcon className="w-6 h-6" />
           ) : (
@@ -74,8 +74,8 @@ export function SidebarItem({
       data-tooltip-id={tooltipId}
       className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
         router.pathname === route.pathname
-          ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
-          : "hover:bg-indigo-50 text-gray-400"
+          ? "bg-gradient-to-tr from-primary/30 to-primary/40 text-primary-800"
+          : "hover:bg-primary/20 text-primary-400" //covers the hover on the sidebar
       }`}
       onClick={handleClick}
     >
@@ -86,13 +86,13 @@ export function SidebarItem({
       </span>
       {alert && (
         <div
-          className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${expanded ? "" : "top-2"}`}
+          className={`absolute right-2 w-2 h-2 rounded bg-primary/200 ${expanded ? "" : "top-2"}`}
         />
       )}
 
       {!expanded && (
         <div
-          className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-indigo-100 text-indigo-800 text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`}
+          className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-primary/100 text-primary-800 text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`}
         >
           {text}
         </div>

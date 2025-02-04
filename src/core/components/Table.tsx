@@ -208,7 +208,7 @@ const Table = <TData,>({
               onChange={(e) => {
                 table.setPageSize(Number(e.target.value))
               }}
-              className={`text-secondary input-secondary input-bordered border-2 bg-base-300 rounded input-sm mt-2 ${
+              className={`text-secondary input-secondary input-bordered border-2 bg-base-300 rounded input-sm ${
                 classNames?.pageSizeSelect || ""
               }`}
             >

@@ -1,6 +1,6 @@
 import { useParam } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
-import { useEffect, useMemo } from "react"
+import { useMemo } from "react"
 import getProject from "src/projects/queries/getProject"
 import {
   HomeSidebarItems,
@@ -9,8 +9,6 @@ import {
 } from "../components/sidebar/SidebarItems"
 import { MemberPrivileges, Project } from "db"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
-import { useUserPrivileges } from "src/userprivileges/components/UserPrivilegesContext"
-import getCurrentUser from "src/users/queries/getCurrentUser"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 export interface SidebarState {
