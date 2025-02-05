@@ -8,6 +8,7 @@ import {
   Comment,
   KanbanBoard,
   FormVersion,
+  Element,
 } from "db"
 
 export type RoleWithUser = Role & {

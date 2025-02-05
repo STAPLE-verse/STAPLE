@@ -4,11 +4,11 @@ import { TaskContext } from "./TaskContext"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import DateFormat from "src/core/components/DateFormat"
 import Card from "src/core/components/Card"
-import { ProjectMemberWithUsername } from "src/core/types"
+import { ExtendedTask, ProjectMemberWithUsername } from "src/core/types"
 
 export const TaskInformation = () => {
   const taskContext = useContext(TaskContext)
-  const task = taskContext?.task
+  const task = taskContext?.task as ExtendedTask
 
   const [pmData] = useQuery(getProjectMember, {
     where: { id: task?.createdById },
@@ -20,6 +20,8 @@ export const TaskInformation = () => {
   if (!taskContext || !task) {
     return <div>Loading...</div>
   }
+
+  console.log(task)
 
   return (
     <Card
@@ -47,7 +49,7 @@ export const TaskInformation = () => {
 
       <p>
         <span className="font-semibold">Element:</span>{" "}
-        {task["element"] ? task["element"].name : "No element"}
+        {task["element"] ? task["element"]!.name : "No element"}
       </p>
 
       <p>
