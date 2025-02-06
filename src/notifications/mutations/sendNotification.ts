@@ -4,17 +4,23 @@ import { getDynamicSchema } from "../schemas"
 import db from "db"
 import { compileTemplate } from "../utils/compileTemplate"
 
+const routeDataSchema = z.object({
+  path: z.string(), // Required path to the page
+  params: z.record(z.any()).optional(), // Optional route parameters
+})
+
 const sendNotificationSchema = z.object({
   templateId: z.string(),
   recipients: z.array(z.number()),
   projectId: z.number().optional(),
   data: z.any(), // This will be validated dynamically based on the notification template that is being used
+  routeData: routeDataSchema.optional(), // Dynamic routing data for the notification
 })
 
 export default resolver.pipe(
   resolver.zod(sendNotificationSchema),
   resolver.authorize(),
-  async ({ templateId, data, recipients, projectId }) => {
+  async ({ templateId, data, routeData, recipients, projectId }) => {
     try {
       // Validate the data against the dynamic schema
       const dynamicSchema = getDynamicSchema(templateId)
@@ -39,6 +45,7 @@ export default resolver.pipe(
             connect: recipients.map((id) => ({ id })),
           },
           ...(projectId ? { projectId } : {}),
+          routeData,
         },
       })
 

@@ -18,6 +18,7 @@ export const changedAssignmentSchema = z.object({
   assignmentStatus: z.string(),
   completedBy: z.string(),
 })
+
 // Map template names to their corresponding Zod schemas
 export const templateToSchemaMap: Record<string, z.ZodSchema> = {
   taskAssigned: taskAssignedSchema,

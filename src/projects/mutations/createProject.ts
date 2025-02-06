@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateProjectSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
+import { Routes } from "@blitzjs/next"
 
 export default resolver.pipe(
   resolver.zod(CreateProjectSchema),
@@ -106,6 +107,12 @@ export default resolver.pipe(
             createdBy: "STAPLE Admin",
           },
           projectId: project.id,
+          routeData: {
+            path: Routes.ShowTaskPage({
+              projectId: project.id,
+              taskId: task.id,
+            }).pathname,
+          },
         },
         ctx
       )

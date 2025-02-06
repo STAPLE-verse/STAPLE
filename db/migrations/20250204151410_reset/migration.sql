@@ -91,6 +91,7 @@ CREATE TABLE "Invitation" (
     "email" TEXT NOT NULL,
     "privilege" "MemberPrivileges" NOT NULL DEFAULT 'CONTRIBUTOR',
     "addedBy" TEXT NOT NULL,
+    "reassignmentFor" INTEGER,
 
     CONSTRAINT "Invitation_pkey" PRIMARY KEY ("id")
 );
@@ -379,6 +380,9 @@ ALTER TABLE "ProjectPrivilege" ADD CONSTRAINT "ProjectPrivilege_projectId_fkey" 
 
 -- AddForeignKey
 ALTER TABLE "Invitation" ADD CONSTRAINT "Invitation_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Invitation" ADD CONSTRAINT "Invitation_reassignmentFor_fkey" FOREIGN KEY ("reassignmentFor") REFERENCES "ProjectMember"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Role" ADD CONSTRAINT "Role_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
