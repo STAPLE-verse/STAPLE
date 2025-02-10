@@ -2,6 +2,7 @@ import { stripHtmlTags } from "src/notifications/utils/stripHtmlTags"
 import { ExtendedNotification } from "./processNotification"
 
 export type ProjectNotificationData = {
+  id: number
   createdAt: Date
   cleanMessage: string
   rawMessage: string
@@ -15,6 +16,7 @@ export function processProjectNotification(
     const cleanMessage = stripHtmlTags(notification.message || "")
 
     return {
+      id: notification.id,
       createdAt: notification.createdAt,
       cleanMessage: cleanMessage,
       rawMessage: notification.message || "",
