@@ -76,14 +76,11 @@ export default resolver.pipe(
 
     // Send notification
     const assignedUserIds = taskLog.assignedTo.users.map((user) => user.id)
-    const projectManagerIds = projectManagers.map((manager) => manager.user.id)
-
-    const uniqueRecipientIds = Array.from(new Set([...assignedUserIds, ...projectManagerIds]))
 
     await sendNotification(
       {
         templateId: "commentMade",
-        recipients: uniqueRecipientIds,
+        recipients: assignedUserIds,
         data: {
           taskName: taskLog.task.name,
           createdBy: comment.author.users[0]?.username || "Unknown",
@@ -91,6 +88,27 @@ export default resolver.pipe(
         projectId: projectId,
         routeData: {
           path: Routes.ShowTaskPage({
+            projectId: projectId,
+            taskId: taskLog.task.id,
+          }).href,
+        },
+      },
+      ctx
+    )
+
+    const projectManagerIds = projectManagers.map((manager) => manager.user.id)
+
+    await sendNotification(
+      {
+        templateId: "commentMade",
+        recipients: projectManagerIds,
+        data: {
+          taskName: taskLog.task.name,
+          createdBy: comment.author.users[0]?.username || "Unknown",
+        },
+        projectId: projectId,
+        routeData: {
+          path: Routes.TaskLogsPage({
             projectId: projectId,
             taskId: taskLog.task.id,
           }).href,
