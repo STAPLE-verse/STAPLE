@@ -87,3 +87,8 @@ export type ExtendedTask = Task & {
   assignedMembers: ProjectMemberWithTaskLog[]
   taskLogs: TaskLogWithCompletedBy[]
 }
+
+export type RouteData = {
+  path: string
+  params?: Record<string, any>
+}

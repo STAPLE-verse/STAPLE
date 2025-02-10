@@ -1,4 +1,5 @@
 import { Project, Notification } from "db"
+import { RouteData } from "src/core/types"
 import { stripHtmlTags } from "src/notifications/utils/stripHtmlTags"
 
 // Type for notifications with project included
@@ -12,6 +13,7 @@ export type NotificationTableData = {
   cleanMessage: string
   rawMessage: string
   notification: ExtendedNotification
+  routeData: RouteData | null
 }
 
 export function processNotification(
@@ -26,6 +28,7 @@ export function processNotification(
       cleanMessage: cleanMessage,
       rawMessage: notification.message || "",
       notification: notification,
+      routeData: notification.routeData as RouteData,
     }
   })
 }

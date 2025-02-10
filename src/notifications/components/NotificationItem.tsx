@@ -1,11 +1,11 @@
-import Link from "next/link"
 import DOMPurify from "dompurify"
-import { isRouteData } from "../utils/isRouteData"
+import NotificationMessage from "./NotificationMessage"
+import { RouteData } from "src/core/types"
 
 interface Notification {
   id: number
   message: string
-  routeData?: any // Stored as JSON in the DB
+  routeData: RouteData | null
 }
 
 interface NotificationItemProps {
@@ -17,19 +17,7 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
 
   return (
     <div key={notification.id} className="p-4 rounded-lg shadow-md">
-      {isRouteData(notification.routeData) ? (
-        <Link
-          href={{
-            pathname: notification.routeData.path,
-            query: notification.routeData.params,
-          }}
-          className="hover:underline text-primary"
-        >
-          <div dangerouslySetInnerHTML={{ __html: cleanMessage }}></div>
-        </Link>
-      ) : (
-        <div dangerouslySetInnerHTML={{ __html: cleanMessage }}></div>
-      )}
+      <NotificationMessage message={notification.message} routeData={notification.routeData} />
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import DateFormat from "src/core/components/DateFormat"
 import ReadToggle from "src/notifications/components/ReadToggle"
 import { NotificationTableData } from "../processing/processNotification"
-import HtmlFormat from "src/notifications/components/HtmlFormat"
+import NotificationMessage from "src/notifications/components/NotificationMessage"
 
 // Column helper
 const columnHelper = createColumnHelper<NotificationTableData>()
@@ -27,7 +27,12 @@ export const useNotificationTableColumns = (refetch: () => void) => {
         header: "Notification Message",
         enableColumnFilter: true,
         enableSorting: true,
-        cell: (info) => <HtmlFormat html={info.row.original.rawMessage} />,
+        cell: (info) => (
+          <NotificationMessage
+            message={info.row.original.rawMessage}
+            routeData={info.row.original.routeData}
+          />
+        ),
         meta: {
           filterVariant: "text",
           isHtml: true,
