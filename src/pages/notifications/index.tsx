@@ -11,10 +11,11 @@ import {
 } from "src/notifications/tables/processing/processNotification"
 import { MultiSelectProvider, useMultiSelect } from "src/core/components/fields/MultiSelectContext"
 import { DeleteNotificationButton } from "src/notifications/components/DeleteNotificationButton"
+import { MultiReadToggleButton } from "src/notifications/components/MultiReadToggleButton"
 
 const NotificationContent = () => {
   const currentUser = useCurrentUser()
-  const { selectedIds } = useMultiSelect()
+  const { selectedIds, resetSelection } = useMultiSelect()
 
   // Get notifications
   const [{ notifications }, { refetch }] = usePaginatedQuery(getNotifications, {
@@ -49,12 +50,19 @@ const NotificationContent = () => {
   // Get columns and pass refetch
   const columns = useNotificationTableColumns(refetch)
 
+  const selectedNotifications = extendedNotifications.filter((n) => selectedIds.includes(n.id))
+
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center mb-2 text-3xl">All Notifications</h1>
       <Table columns={columns} data={notificationTableData} addPagination={true} />
-      <div className="flex justify-end mt-4">
+      <div className="flex justify-end mt-4 gap-4">
         <DeleteNotificationButton ids={selectedIds} />
+        <MultiReadToggleButton
+          notifications={selectedNotifications}
+          refetch={refetch}
+          resetSelection={resetSelection}
+        />
       </div>
     </main>
   )
