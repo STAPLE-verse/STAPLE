@@ -8,6 +8,7 @@ export type ExtendedNotification = Notification & {
 }
 
 export type NotificationTableData = {
+  id: number
   projectName: string
   createdAt: Date
   cleanMessage: string
@@ -23,6 +24,7 @@ export function processNotification(
     const cleanMessage = stripHtmlTags(notification.message || "")
 
     return {
+      id: notification.id,
       projectName: notification.project ? notification.project.name.substring(0, 20) : "",
       createdAt: notification.createdAt,
       cleanMessage: cleanMessage,
