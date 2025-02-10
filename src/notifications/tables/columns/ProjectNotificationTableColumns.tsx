@@ -13,7 +13,7 @@ export const useProjectNotificationTableColumns = (refetch: () => void) => {
   return useMemo(
     () => [
       columnHelper.accessor("createdAt", {
-        cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
+        cell: (info) => <DateFormat date={info.getValue()} />,
         header: "Date",
       }),
       columnHelper.accessor("cleanMessage", {

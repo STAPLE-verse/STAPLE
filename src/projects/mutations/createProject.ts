@@ -111,7 +111,7 @@ export default resolver.pipe(
             path: Routes.ShowTaskPage({
               projectId: project.id,
               taskId: task.id,
-            }).pathname,
+            }).href,
           },
         },
         ctx

@@ -1,14 +1,14 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { DeleteElementSchema } from "../schemas"
+import { DeleteNotificationSchema } from "../schemas"
 
 export default resolver.pipe(
-  resolver.zod(DeleteElementSchema),
+  resolver.zod(DeleteNotificationSchema),
   resolver.authorize(),
   async ({ id }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const element = await db.element.deleteMany({ where: { id } })
+    const notification = await db.notification.deleteMany({ where: { id } })
 
-    return element
+    return notification
   }
 )

@@ -72,7 +72,7 @@ export default resolver.pipe(
           },
           projectId: projectMember.projectId,
           routeData: {
-            path: Routes.ShowProjectPage({ projectId: projectInvite.projectId }).pathname,
+            path: Routes.ShowProjectPage({ projectId: projectInvite.projectId }).href,
           },
         },
         ctx

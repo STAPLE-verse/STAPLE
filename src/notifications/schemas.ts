@@ -35,3 +35,7 @@ export const getDynamicSchema = (templateId: string): z.ZodSchema<any> => {
   }
   return schema
 }
+
+export const DeleteNotificationSchema = z.object({
+  id: z.number(),
+})

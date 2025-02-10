@@ -74,7 +74,7 @@ export default resolver.pipe(
         },
         projectId: project.id,
         routeData: {
-          path: Routes.InvitesPage().pathname,
+          path: Routes.InvitesPage().href,
         },
       },
       ctx
