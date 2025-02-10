@@ -5,12 +5,15 @@ import ReadToggle from "src/notifications/components/ReadToggle"
 import { NotificationTableData } from "../processing/processNotification"
 import NotificationMessage from "src/notifications/components/NotificationMessage"
 import { MultiSelectCheckbox } from "src/core/components/fields/MultiSelectCheckbox"
+import { SelectAllCheckbox } from "src/core/components/fields/SelectAllCheckbox"
 
 // Column helper
 const columnHelper = createColumnHelper<NotificationTableData>()
 
 // ColumnDefs
-export const useNotificationTableColumns = (refetch: () => void) => {
+export const useNotificationTableColumns = (refetch: () => void, data: NotificationTableData[]) => {
+  const allIds = data.map((item) => item.id)
+
   return useMemo(
     () => [
       columnHelper.accessor("createdAt", {
@@ -50,9 +53,9 @@ export const useNotificationTableColumns = (refetch: () => void) => {
         enableColumnFilter: false,
         enableSorting: false,
         cell: (info) => <MultiSelectCheckbox id={info.getValue()} />,
-        header: "Select",
+        header: () => <SelectAllCheckbox allIds={allIds} />,
       }),
     ],
-    [refetch]
+    [refetch, allIds]
   )
 }

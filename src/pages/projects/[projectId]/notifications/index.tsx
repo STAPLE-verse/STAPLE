@@ -37,7 +37,7 @@ const NotificationContent = () => {
   const projectNotificationTableData = processProjectNotification(extendedNotifications)
 
   // Get columns and pass refetch
-  const columns = useProjectNotificationTableColumns(refetch)
+  const columns = useProjectNotificationTableColumns(refetch, projectNotificationTableData)
 
   const selectedNotifications = extendedNotifications.filter((n) => selectedIds.includes(n.id))
 
