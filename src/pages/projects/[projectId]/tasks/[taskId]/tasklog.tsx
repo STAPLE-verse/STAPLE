@@ -60,7 +60,7 @@ const TaskLogContent = () => {
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="flex justify-center mb-2 text-3xl">Review and Complete Tasks</h1>
+      <h1 className="flex justify-center mb-2 text-3xl">Review Responses</h1>
 
       <div className="flex flex-row justify-center">
         <div className="card bg-base-300 w-full">

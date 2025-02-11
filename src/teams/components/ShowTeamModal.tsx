@@ -10,6 +10,8 @@ export const ShowTeamModal = ({ projectMember, disabled }) => {
   const teamMembers = projectMember.users.map((user) => {
     return {
       username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
     } as TeamMembers
   })
 
@@ -17,6 +19,8 @@ export const ShowTeamModal = ({ projectMember, disabled }) => {
   const handleToggle = () => {
     setOpenModal((prev) => !prev)
   }
+
+  console.log(projectMember)
 
   return (
     <div>
@@ -38,7 +42,7 @@ export const ShowTeamModal = ({ projectMember, disabled }) => {
 
       <Modal open={openModal} size="w-7/6 max-w-1xl">
         <div className="flex flex-col justify-start mt-4">
-          <h3>Team Members</h3>
+          <h3 className="flex justify-center mb-2 text-3xl">Team Members</h3>
           <Table columns={TeamMembersColumn} data={teamMembers} addPagination={true} />
         </div>
         <div className="modal-action flex justify-end mt-4">

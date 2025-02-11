@@ -3,12 +3,12 @@ import { useContext } from "react"
 import { TaskContext } from "./TaskContext"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import DateFormat from "src/core/components/DateFormat"
-import Card from "src/core/components/Card"
-import { ProjectMemberWithUsername } from "src/core/types"
+import CollapseCard from "src/core/components/CollapseCard"
+import { ExtendedTask, ProjectMemberWithUsername } from "src/core/types"
 
 export const TaskInformation = () => {
   const taskContext = useContext(TaskContext)
-  const task = taskContext?.task
+  const task = taskContext?.task as ExtendedTask
 
   const [pmData] = useQuery(getProjectMember, {
     where: { id: task?.createdById },
@@ -21,8 +21,10 @@ export const TaskInformation = () => {
     return <div>Loading...</div>
   }
 
+  console.log(task)
+
   return (
-    <Card
+    <CollapseCard
       title="Task Information"
       className="mx-2 w-full"
       tooltipContent="Overall information about this task"
@@ -42,12 +44,12 @@ export const TaskInformation = () => {
       </p>
 
       <p>
-        <span className="font-semibold">Column:</span> {task["container"]?.name}
+        <span className="font-semibold">Status:</span> {task["container"]?.name}
       </p>
 
       <p>
         <span className="font-semibold">Element:</span>{" "}
-        {task["element"] ? task["element"].name : "No element"}
+        {task["element"] ? task["element"]!.name : "No element"}
       </p>
 
       <p>
@@ -60,6 +62,6 @@ export const TaskInformation = () => {
       <p className="italic">
         Last update: <DateFormat date={task.updatedAt}></DateFormat>
       </p>
-    </Card>
+    </CollapseCard>
   )
 }
