@@ -11,8 +11,6 @@ interface AssignTeamMembersProps {
 const AssignTeamMembers: React.FC<AssignTeamMembersProps> = ({ projectId }) => {
   const [contributors] = useQuery(getContributors, { projectId, deleted: false })
 
-  console.log(contributors)
-
   const options = contributors.map((contributor) => ({
     id: contributor.users[0]!.id,
     label: contributor.users[0]?.firstName
