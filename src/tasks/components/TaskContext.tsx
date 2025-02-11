@@ -54,6 +54,8 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
             select: {
               id: true,
               username: true,
+              firstName: true,
+              lastName: true,
             },
           },
         },
