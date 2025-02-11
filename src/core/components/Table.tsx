@@ -197,7 +197,7 @@ const Table = <TData,>({
                   const page = e.target.value ? Number(e.target.value) - 1 : 0
                   table.setPageIndex(page)
                 }}
-                className="text-secondary input-secondary input-bordered border-2 bg-base-300 rounded input-sm w-20"
+                className="text-secondary input-secondary input-bordered border-2 bg-base-300 rounded input-sm w-20 mt-0"
                 min={1}
                 max={table.getPageCount()}
               />
@@ -208,7 +208,7 @@ const Table = <TData,>({
               onChange={(e) => {
                 table.setPageSize(Number(e.target.value))
               }}
-              className={`text-secondary input-secondary input-bordered border-2 bg-base-300 rounded input-sm leading-normal ${
+              className={`text-secondary input-secondary input-bordered border-2 bg-base-300 rounded input-sm leading-normal mt-0 ${
                 classNames?.pageSizeSelect || ""
               }`}
             >

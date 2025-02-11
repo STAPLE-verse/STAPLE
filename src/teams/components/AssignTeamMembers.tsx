@@ -19,9 +19,7 @@ const AssignTeamMembers: React.FC<AssignTeamMembersProps> = ({ projectId }) => {
   return (
     <div>
       <label>Add Team Members: (Required)</label>
-      <Card title="" className="w-full">
-        <CheckboxFieldTable name="projectMemberUserIds" options={options} />
-      </Card>
+      <CheckboxFieldTable name="projectMemberUserIds" options={options} />
     </div>
   )
 }
