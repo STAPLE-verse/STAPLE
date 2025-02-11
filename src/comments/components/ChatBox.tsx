@@ -46,7 +46,7 @@ export default function ChatBox({
   }
 
   return (
-    <div className="flex flex-col h-96 w-full bg-base-100 border border-base-300 rounded-lg p-4">
+    <div className="flex flex-col max-h-96 w-full rounded-lg">
       <div ref={chatRef} className="flex-1 overflow-y-auto">
         {comments.length > 0 ? (
           comments.map((comment) => {
@@ -85,7 +85,7 @@ export default function ChatBox({
       <div className="flex items-center mt-4 gap-2">
         <input
           type="text"
-          className="input input-bordered flex-1"
+          className="input w-full text-primary input-primary input-bordered border-2 bg-base-300 flex-1"
           placeholder="Type a message..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
