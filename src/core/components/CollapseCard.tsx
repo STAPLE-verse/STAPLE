@@ -22,12 +22,10 @@ const CollapseCard = ({
   const tooltipId = tooltipContent ? uuidv4() : undefined
 
   return (
-    <div className={clsx("collapse collapse-arrow bg-base-300 p-2", className)}>
-      <input type="checkbox" />
+    <div className={clsx("collapse collapse-arrow bg-base-300 p-2 overflow-visible", className)}>
+      <input type="checkbox" data-tooltip-id={tooltipId} />
       <div className="collapse-title text-xl font-medium">
-        <div className="card-title" data-tooltip-id={tooltipId}>
-          {title}
-        </div>
+        <div className="card-title">{title}</div>
         {tooltipContent && (
           <Tooltip id={tooltipId} content={tooltipContent} className="z-[1099] ourtooltips" />
         )}
