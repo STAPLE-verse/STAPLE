@@ -32,7 +32,16 @@ const NotificationsMenu = () => {
 
           {latestUnreadNotifications.length > 0 ? (
             latestUnreadNotifications.map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} />
+              <NotificationItem
+                key={notification.id}
+                notification={{
+                  ...notification,
+                  routeData:
+                    typeof notification.routeData === "string"
+                      ? JSON.parse(notification.routeData)
+                      : notification.routeData,
+                }}
+              />
             ))
           ) : (
             <span className="text-info">No new notifications.</span>

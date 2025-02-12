@@ -17,7 +17,7 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
 
   return (
     <div key={notification.id} className="p-4 rounded-lg shadow-md">
-      <NotificationMessage message={notification.message} routeData={notification.routeData} />
+      <NotificationMessage message={cleanMessage} routeData={notification.routeData} />
     </div>
   )
 }
