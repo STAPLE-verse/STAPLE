@@ -50,10 +50,10 @@ const AddContainer = ({ projectId, refetch }) => {
           onCancel={handleToggleContainerModal}
         >
           <LabeledTextField
-            className="input text-primary input-primary input-bordered border-2 bg-base-300"
+            className="input w-full text-primary input-primary input-bordered border-2 bg-base-300"
             name="containerName"
-            label="Container Title: (Required)"
-            placeholder="Enter container title..."
+            label="Column Title:"
+            placeholder="Type column title here..."
             type="text"
           />
         </Form>

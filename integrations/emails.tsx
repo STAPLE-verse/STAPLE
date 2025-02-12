@@ -101,6 +101,10 @@ staple.helpdesk@gmail.com
 }
 
 export function createNewInvitation(values, currentUser, projectmember) {
+  const name = currentUser!.firstName
+    ? `${currentUser?.firstName} ${currentUser?.lastName} (${currentUser!.username})`
+    : currentUser!.username
+
   return {
     from: "STAPLE <app@staple.science>",
     to: values.email,
@@ -115,7 +119,7 @@ alt="STAPLE Logo" height="200"></center>
     <h3>STAPLE Project Invitation</h3>
 
         You've been invited to collaborate on a STAPLE project by
-        ${currentUser!.username}. STAPLE is project management software that
+        ${name}. STAPLE is project management software that
         allows you to document your research project to improve transparency. If you
         wish to join the project, please log in at: https://app.staple.science/. You
         can join the project by clicking on Invitations on the sidebar menu and click "Accept"

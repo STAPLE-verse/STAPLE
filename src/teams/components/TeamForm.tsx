@@ -21,7 +21,7 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
         className="w-1/2 input mb-4 text-primary input-primary input-bordered border-2 bg-base-300"
       />
       {/* Team Members Selection */}
-      <div className="flex justify-start mt-4">
+      <div className="flex justify-start">
         <AssignTeamMembers projectId={projectId} />
       </div>
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}

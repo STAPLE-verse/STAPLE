@@ -18,7 +18,7 @@ import DownloadJSON from "src/forms/components/DownloadJSON"
 import DownloadXLSX from "src/forms/components/DownloadXLSX"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import getJsonSchema from "src/forms/utils/getJsonSchema"
-import { MetadataDisplay } from "src/summary/components/MetaDataDisplay"
+import { MetadataDisplay } from "src/projects/components/MetaDataDisplay"
 
 export const EditProject = () => {
   // Setup

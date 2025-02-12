@@ -70,7 +70,7 @@ const InvitesPage = () => {
                     <InviteForm
                       schema={InviteFormSchema}
                       submitText="Add Project"
-                      className="flex flex-col"
+                      className="flex flex-col w-full"
                       onSubmit={(data) => handleInviteCode({ ...data, userId: currentUser?.id })}
                       userId={currentUser!.id}
                     ></InviteForm>

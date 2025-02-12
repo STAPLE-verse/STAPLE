@@ -62,7 +62,7 @@ export const AddRoleModal = ({ rows, projectId, refetch, type }) => {
               projectId={projectId}
               schema={RoleIdsFormSchema}
               submitText="Update Role"
-              className="flex flex-col"
+              className="flex flex-col w-full"
               onSubmit={onSubmit}
               initialValues={initialValues}
             />
