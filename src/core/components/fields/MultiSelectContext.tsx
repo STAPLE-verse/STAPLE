@@ -3,8 +3,9 @@ import React, { createContext, useContext, useState, ReactNode } from "react"
 // Define the shape of our context
 interface MultiSelectContextType {
   selectedIds: number[]
-  handleSelection: (selectedId: number) => void
+  toggleSelection: (selectedId: number) => void
   resetSelection: () => void
+  handleBulkSelection: (selectedIds: number[], isSelectAll: boolean) => void
 }
 
 // Create the context
@@ -14,23 +15,26 @@ const MultiSelectContext = createContext<MultiSelectContextType | undefined>(und
 export const MultiSelectProvider = ({ children }: { children: ReactNode }) => {
   const [selectedIds, setSelectedIds] = useState<number[]>([])
 
-  const handleSelection = (selectedId: number) => {
-    const isSelected = selectedIds.includes(selectedId)
-    const newSelectedIds = isSelected
-      ? selectedIds.filter((id) => id !== selectedId)
-      : [...selectedIds, selectedId]
+  // Toggle individual selection
+  const toggleSelection = (selectedId: number) => {
+    setSelectedIds((prev) =>
+      prev.includes(selectedId) ? prev.filter((item) => item !== selectedId) : [...prev, selectedId]
+    )
+  }
 
-    setSelectedIds(newSelectedIds)
+  // Handle bulk selection (select/deselect all)
+  const handleBulkSelection = (selectedIds: number[], isSelectAll: boolean) => {
+    setSelectedIds((prev) => (isSelectAll ? [...new Set([...prev, ...selectedIds])] : []))
   }
 
   // Add resetSelection to clear all selected IDs
-  const resetSelection = () => {
-    setSelectedIds([])
-  }
+  const resetSelection = () => setSelectedIds([])
 
   // Provide the selectedIds and the handler to children components
   return (
-    <MultiSelectContext.Provider value={{ selectedIds, handleSelection, resetSelection }}>
+    <MultiSelectContext.Provider
+      value={{ selectedIds, toggleSelection, resetSelection, handleBulkSelection }}
+    >
       {children}
     </MultiSelectContext.Provider>
   )

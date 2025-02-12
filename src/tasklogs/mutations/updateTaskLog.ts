@@ -3,6 +3,7 @@ import db from "db"
 import { CreateTaskLogSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
 import { getStatusText } from "src/core/utils/getStatusText"
+import { Routes } from "@blitzjs/next"
 
 export default resolver.pipe(
   resolver.zod(CreateTaskLogSchema),
@@ -63,6 +64,12 @@ export default resolver.pipe(
           assignmentStatus: getStatusText(status),
         },
         projectId: task!.projectId,
+        routeData: {
+          path: Routes.ShowTaskPage({
+            projectId: task!.projectId,
+            taskId: task!.id,
+          }).href,
+        },
       },
       ctx
     )

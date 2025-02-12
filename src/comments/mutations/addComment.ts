@@ -1,5 +1,7 @@
+import { Routes } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
+import sendNotification from "src/notifications/mutations/sendNotification"
 import { z } from "zod"
 
 const AddCommentSchema = z.object({
@@ -37,6 +39,83 @@ export default resolver.pipe(
         },
       },
     })
+
+    // Fetch TaskLog with Assigned Members & Project Info
+    const taskLog = await db.taskLog.findUnique({
+      where: { id: taskLogId },
+      include: {
+        assignedTo: {
+          include: {
+            users: { select: { id: true } },
+          },
+        },
+        task: {
+          select: {
+            id: true,
+            name: true,
+            projectId: true,
+          },
+        },
+      },
+    })
+
+    if (!taskLog) throw new Error("TaskLog not found")
+
+    const projectId = taskLog.task.projectId
+
+    // Fetch Project Managers
+    const projectManagers = await db.projectPrivilege.findMany({
+      where: {
+        projectId: projectId,
+        privilege: "PROJECT_MANAGER",
+      },
+      include: {
+        user: { select: { id: true } },
+      },
+    })
+
+    // Send notification
+    const assignedUserIds = taskLog.assignedTo.users.map((user) => user.id)
+
+    await sendNotification(
+      {
+        templateId: "commentMade",
+        recipients: assignedUserIds,
+        data: {
+          taskName: taskLog.task.name,
+          createdBy: comment.author.users[0]?.username || "Unknown",
+        },
+        projectId: projectId,
+        routeData: {
+          path: Routes.ShowTaskPage({
+            projectId: projectId,
+            taskId: taskLog.task.id,
+          }).href,
+        },
+      },
+      ctx
+    )
+
+    const projectManagerIds = projectManagers.map((manager) => manager.user.id)
+
+    await sendNotification(
+      {
+        templateId: "commentMade",
+        recipients: projectManagerIds,
+        data: {
+          taskName: taskLog.task.name,
+          createdBy: comment.author.users[0]?.username || "Unknown",
+        },
+        projectId: projectId,
+        routeData: {
+          path: Routes.TaskLogsPage({
+            projectId: projectId,
+            taskId: taskLog.task.id,
+          }).href,
+        },
+      },
+      ctx
+    )
 
     return comment
   }

@@ -3,6 +3,7 @@ import db from "db"
 import { AcceptInviteSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
 import { getPrivilegeText } from "src/core/utils/getPrivilegeText"
+import { Routes } from "@blitzjs/next"
 
 export default resolver.pipe(
   resolver.zod(AcceptInviteSchema),
@@ -72,6 +73,9 @@ export default resolver.pipe(
           privilege: getPrivilegeText(projectPrivilege.privilege),
         },
         projectId: project.id,
+        routeData: {
+          path: Routes.InvitesPage().href,
+        },
       },
       ctx
     )
