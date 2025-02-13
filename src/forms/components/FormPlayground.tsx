@@ -5,6 +5,7 @@ import VisualBuilderTab from "./VisualBuilderTab"
 import JSONBuilderTab from "./JSONBuilderTab"
 import validator from "@rjsf/validator-ajv8"
 import JsonForm from "src/core/components/JsonForm"
+import { noSubmitButton } from "../utils/extendSchema"
 
 interface FormPlaygroundProps {
   initialSchema?: string
@@ -16,6 +17,7 @@ interface FormState {
   schema: object
   uischema: object
   formData: object
+  extendedUiSchema: object
 }
 
 const FormPlayground: React.FC<FormPlaygroundProps> = ({
@@ -26,6 +28,7 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   const [state, setState] = useState<FormState>({
     schema: JSON.parse(initialSchema),
     uischema: JSON.parse(initialUiSchema),
+    extendedUiSchema: noSubmitButton(JSON.parse(initialUiSchema)),
     formData: {},
   })
   const [render, setRender] = useState(false)
@@ -46,6 +49,7 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
       schema: newSchema,
       uischema: newUiSchema,
       formData: state.formData,
+      extendedUiSchema: noSubmitButton(newUiSchema),
     })
   }
 
@@ -97,7 +101,7 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
         <Tab.Panel>
           <JsonForm
             schema={state.schema}
-            uiSchema={state.uischema}
+            uiSchema={state.extendedUiSchema}
             formData={state.formData}
             validator={validator}
           />

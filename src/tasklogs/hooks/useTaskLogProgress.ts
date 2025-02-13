@@ -1,4 +1,4 @@
-import { ProjectMemberWithTaskLog } from "src/tasks/components/TaskContext"
+import { ProjectMemberWithTaskLog } from "src/core/types"
 import { filterLatestTaskLog } from "../utils/filterLatestTaskLog"
 
 export default function useTaskLogProgress(projectMembers: ProjectMemberWithTaskLog[]) {

@@ -3,6 +3,7 @@ import db from "db"
 import { CreateProjectMemberSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
 import { getPrivilegeText } from "src/core/utils/getPrivilegeText"
+import { Routes } from "@blitzjs/next"
 
 export default resolver.pipe(
   resolver.zod(CreateProjectMemberSchema),
@@ -70,6 +71,9 @@ export default resolver.pipe(
             privilege: getPrivilegeText(projectInvite.privilege),
           },
           projectId: projectMember.projectId,
+          routeData: {
+            path: Routes.ShowProjectPage({ projectId: projectInvite.projectId }).href,
+          },
         },
         ctx
       )

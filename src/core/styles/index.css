@@ -592,3 +592,10 @@ span.arrow.tooltip-arrow {
   color: oklch(var(--n)) !important;
   font-weight: bold;
 }
+
+/* focus for inputs overall */
+input:focus {
+  outline-color: oklch(var(--s)) !important;
+  outline-offset: 0;
+  outline-width: 3px !important;
+}

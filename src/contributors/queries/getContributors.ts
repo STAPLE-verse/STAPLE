@@ -1,6 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { ProjectMemberWithUsers } from "src/core/types"
+import { anonymizeNestedUsers } from "src/core/utils/anonymizeNestedUsers"
 
 interface GetContributorsInput {
   projectId: number
@@ -19,7 +20,7 @@ export default resolver.pipe(
       },
       orderBy: { id: "asc" },
       include: {
-        users: true, // Include the related users
+        users: true, // Include the related user
       },
     })
 
@@ -32,6 +33,6 @@ export default resolver.pipe(
       }
     })
 
-    return contributors // This is automatically typed as ProjectMemberWithUsers[]
+    return anonymizeNestedUsers(contributors) // This is automatically typed as ProjectMemberWithUsers[]
   }
 )

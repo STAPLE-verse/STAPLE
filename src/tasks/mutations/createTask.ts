@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateTaskSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
+import { Routes } from "@blitzjs/next"
 
 export default resolver.pipe(
   resolver.zod(CreateTaskSchema),
@@ -129,6 +130,12 @@ export default resolver.pipe(
           recipients: uniqueUserIds,
           data: { taskName: name, createdBy: createdByUsername, deadline: deadline },
           projectId: projectId,
+          routeData: {
+            path: Routes.ShowTaskPage({
+              projectId: projectId,
+              taskId: task.id,
+            }).href,
+          },
         },
         ctx
       )

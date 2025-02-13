@@ -74,19 +74,21 @@ enum MemberPrivileges {
 }
 
 model ProjectMember {
-  id                 Int       @id @default(autoincrement())
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-  projectId          Int
-  project            Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  name               String?
-  users              User[]
-  createdTasks       Task[]    @relation("CreatedTasks")
-  assignedTasks      Task[]    @relation("AssignedTasks")
-  roles              Role[]
-  deleted            Boolean   @default(false)
-  taskLogAssignedTo  TaskLog[] @relation("assignedTo")
-  taskLogCompletedBy TaskLog[] @relation("completedBy")
+  id                      Int          @id @default(autoincrement())
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+  projectId               Int
+  project                 Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  name                    String?
+  users                   User[]
+  createdTasks            Task[]       @relation("CreatedTasks")
+  assignedTasks           Task[]       @relation("AssignedTasks")
+  roles                   Role[]
+  deleted                 Boolean      @default(false)
+  taskLogAssignedTo       TaskLog[]    @relation("assignedTo")
+  taskLogCompletedBy      TaskLog[]    @relation("completedBy")
+  reassignmentInvitations Invitation[]
+  comments                Comment[]
 }
 
 model ProjectPrivilege {
@@ -101,15 +103,17 @@ model ProjectPrivilege {
 
 // Invites
 model Invitation {
-  createdAt      DateTime         @default(now())
-  id             Int              @id @default(autoincrement())
-  projectId      Int
-  project        Project          @relation(fields: [projectId], references: [id])
-  invitationCode String
-  roles          Role[] // will change to roles
-  email          String
-  privilege      MemberPrivileges @default(CONTRIBUTOR)
-  addedBy        String
+  createdAt       DateTime         @default(now())
+  id              Int              @id @default(autoincrement())
+  projectId       Int
+  project         Project          @relation(fields: [projectId], references: [id])
+  invitationCode  String
+  roles           Role[] // will change to roles
+  email           String
+  privilege       MemberPrivileges @default(CONTRIBUTOR)
+  addedBy         String
+  reassignmentFor Int? // Foreign key to ProjectMember
+  projectMember   ProjectMember?   @relation(fields: [reassignmentFor], references: [id]) // Relation to ProjectMember
 }
 
 model Role {
@@ -148,6 +152,9 @@ model Project {
   notifications    Notification[]
   ProjectPrivilege ProjectPrivilege[]
   invitations      Invitation[]
+  metadata         Json? // Add metadata field
+  formVersion      FormVersion?       @relation(fields: [formVersionId], references: [id])
+  formVersionId    Int?
 }
 
 enum Status {
@@ -201,6 +208,18 @@ model TaskLog {
   // what is the task this is tied to
   taskId        Int
   task          Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  comments      Comment[]
+}
+
+model Comment {
+  id        Int           @id @default(autoincrement())
+  createdAt DateTime      @default(now()) // When the comment was created
+  updatedAt DateTime      @updatedAt // Auto-update on edits
+  content   String // The comment text
+  taskLogId Int
+  taskLog   TaskLog       @relation(fields: [taskLogId], references: [id], onDelete: Cascade)
+  authorId  Int
+  author    ProjectMember @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 
 enum CompletedAs {
@@ -243,15 +262,16 @@ model Form {
 }
 
 model FormVersion {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
   formId    Int
   version   Int
   schema    Json
   uiSchema  Json?
-  createdAt DateTime @default(now())
-  form      Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  form      Form      @relation(fields: [formId], references: [id], onDelete: Cascade)
   tasks     Task[]
+  projects  Project[]
 
   @@index([formId, version], name: "formVersionIndex")
 }
@@ -265,6 +285,7 @@ model Notification {
   announcement Boolean  @default(false)
   projectId    Int?     @map("project_id")
   project      Project? @relation(fields: [projectId], references: [id])
+  routeData    Json? // Flexible JSON field to store dynamic routing data
 }
 
 enum WidgetSize {

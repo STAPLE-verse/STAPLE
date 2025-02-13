@@ -19,7 +19,6 @@ const DeleteContributor = ({
 }: DeleteContributorProps) => {
   const [deleteContributorMutation] = useMutation(deleteContributor)
   const router = useRouter()
-
   const currentUser = useCurrentUser()
 
   const handleDelete = async () => {

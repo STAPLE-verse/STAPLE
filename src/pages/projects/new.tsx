@@ -8,10 +8,13 @@ import { ProjectForm } from "src/projects/components/ProjectForm"
 import { FORM_ERROR } from "final-form"
 import { Suspense } from "react"
 import toast from "react-hot-toast"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 const NewProjectPage = () => {
   const router = useRouter()
   const [createProjectMutation] = useMutation(createProject)
+  const currentUser = useCurrentUser()
+  const userId = currentUser?.id!
 
   return (
     <Layout>
@@ -20,7 +23,9 @@ const NewProjectPage = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <ProjectForm
             submitText="Create Project"
+            userId={userId}
             schema={FormProjectSchema}
+            formResponseSupplied={false}
             cancelText="Cancel"
             onCancel={() => router.push(Routes.ProjectsPage())}
             onSubmit={async (values) => {

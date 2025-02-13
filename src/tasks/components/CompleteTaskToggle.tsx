@@ -70,7 +70,7 @@ export const CompleteTaskToggle = () => {
         <Modal open={isConfirmModalOpen} size="w-11/12 max-w-3xl">
           <div className="flex flex-col justify-center items-center space-y-4">
             <p>
-              Are you sure you want to update the task status since not all assignments are
+              Are you sure you want to update the task status since not all individual tasks are
               completed?
             </p>
             <div className="flex flex-row space-x-4">

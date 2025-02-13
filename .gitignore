@@ -57,3 +57,6 @@ lib-cov
 .Rhistory
 .Rproj.user
 STAPLE.Rproj
+
+# local migrations
+db/migrations/local/

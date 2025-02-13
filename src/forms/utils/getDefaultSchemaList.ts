@@ -1,9 +1,10 @@
 import { JsonProjectMember, JsonProjectMemberUI } from "src/forms/schema/projectMemberSchema"
 import { JsonFunder, JsonFunderUI } from "src/forms/schema/funderSchema"
+import { JsonProject, JsonProjectUI } from "src/forms/schema/projectSchema"
 
 export function getDefaultSchemaLists() {
-  const schemas = [JsonProjectMember, JsonFunder]
-  const uis = [JsonProjectMemberUI, JsonFunderUI]
+  const schemas = [JsonProjectMember, JsonFunder, JsonProject]
+  const uis = [JsonProjectMemberUI, JsonFunderUI, JsonProjectUI]
 
   const restructured = schemas.map((schema, index) => {
     const parsed = JSON.parse(schema)
