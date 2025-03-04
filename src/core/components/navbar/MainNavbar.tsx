@@ -5,7 +5,6 @@ import logout from "src/auth/mutations/logout"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { getInitials } from "src/core/utils/getInitials"
 import { HomeIcon } from "@heroicons/react/24/outline"
 import NotificationsMenu from "src/notifications/components/NotificationMenu"
 import Image from "next/image"
@@ -117,7 +116,7 @@ const Navbar = () => {
                 className="z-[1099] ourtooltips"
                 place="left"
               />
-              <Gravatar email={gravatar_email} style={{ borderRadius: "50%" }} />
+              <Gravatar email={gravatar_email} style={{ borderRadius: "50%" }} default="retro" />
             </div>
           </label>
           <ul
