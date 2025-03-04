@@ -13,7 +13,7 @@ export interface LabeledCheckboxFieldProps extends ComponentPropsWithoutRef<"inp
 }
 
 export const LabeledCheckboxField = React.forwardRef<HTMLInputElement, LabeledCheckboxFieldProps>(
-  ({ name, label, outerProps, fieldProps, labelProps, className, ...props }, ref) => {
+  ({ name, label, outerProps, fieldProps, labelProps = {}, className, ...props }, ref) => {
     const {
       input,
       meta: { touched, error, submitError, submitting },
@@ -40,7 +40,7 @@ export const LabeledCheckboxField = React.forwardRef<HTMLInputElement, LabeledCh
               {...props}
             />
           </div>
-          <label htmlFor={id} {...labelProps}>
+          <label htmlFor={id} className={labelProps.className} {...labelProps}>
             {label}
             <div role="alert" className="text-red-700 text-sm mt-1 font-bold">
               {showError && normalizedError}
