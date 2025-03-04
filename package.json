@@ -72,6 +72,7 @@
     "react-circular-progressbar": "2.1.0",
     "react-dom": "18.2.0",
     "react-final-form": "6.5.9",
+    "react-gravatar": "2.6.3",
     "react-hot-toast": "2.4.1",
     "react-json-editor-ajrm": "2.5.14",
     "react-json-view": "1.21.3",

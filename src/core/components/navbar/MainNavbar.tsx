@@ -10,6 +10,7 @@ import { HomeIcon } from "@heroicons/react/24/outline"
 import NotificationsMenu from "src/notifications/components/NotificationMenu"
 import Image from "next/image"
 import { Tooltip } from "react-tooltip"
+import Gravatar from "react-gravatar"
 
 type LogoProps = {
   theme: string
@@ -43,9 +44,10 @@ const Navbar = () => {
   const currentUser = useCurrentUser()
 
   // Get initials for avatar
-  const initial = currentUser
-    ? getInitials(currentUser!.firstName || "", currentUser!.lastName || "")
-    : ""
+  //const gravatar_email = currentUser ? currentUser.gravatar : currentUser!.email
+  const gravatar_email = currentUser!.email
+
+  console.log(gravatar_email)
 
   // Logout
   const [logoutMutation] = useMutation(logout)
@@ -111,11 +113,11 @@ const Navbar = () => {
             >
               <Tooltip
                 id="profile-tooltip"
-                content="Go to Profile update your information."
+                content="Update your profile"
                 className="z-[1099] ourtooltips"
                 place="left"
               />
-              <span className="text-1xl">{initial ? initial : "?"}</span>
+              <Gravatar email={gravatar_email} style={{ borderRadius: "50%" }} />
             </div>
           </label>
           <ul
