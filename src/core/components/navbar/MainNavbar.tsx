@@ -42,11 +42,10 @@ const Navbar = () => {
   // Get current user data
   const currentUser = useCurrentUser()
 
-  // Get initials for avatar
-  //const gravatar_email = currentUser ? currentUser.gravatar : currentUser!.email
-  const gravatar_email = currentUser!.email
-
-  console.log(gravatar_email)
+  const gravatar_email =
+    currentUser?.gravatar && currentUser.gravatar.trim() !== ""
+      ? currentUser.gravatar
+      : currentUser?.email // Fallback to last known valid email
 
   // Logout
   const [logoutMutation] = useMutation(logout)
