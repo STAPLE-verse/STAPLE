@@ -104,11 +104,17 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         buttonLabel="Assign Contributor(s)"
         modalTitle="Select Contributors"
         buttonClassName="w-1/2"
+        saveButton={true}
       >
         <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
       </ToggleModal>
       {/* Teams */}
-      <ToggleModal buttonLabel="Assign Team(s)" modalTitle="Select Teams" buttonClassName="w-1/2">
+      <ToggleModal
+        buttonLabel="Assign Team(s)"
+        modalTitle="Select Teams"
+        buttonClassName="w-1/2"
+        saveButton={true}
+      >
         <CheckboxFieldTable name="teamsId" options={teamOptions} />
       </ToggleModal>
       Optional: you can do this later
