@@ -11,6 +11,7 @@ import NotificationsMenu from "src/notifications/components/NotificationMenu"
 import Image from "next/image"
 import { Tooltip } from "react-tooltip"
 import ThemeSelect from "../ThemeSelect"
+import { Breadcrumbs } from "../BreadCrumbs"
 
 type LogoProps = {
   theme: string
@@ -60,10 +61,14 @@ const Navbar = () => {
     <div className="navbar bg-base-100 sticky z-[1030] top-0 left-0 right-0 w-full border-b border-gray-300 sm:px-4 md:px-6 lg:px-8 xl:px-10">
       {/* Tabs */}
       {/* On the left */}
-      <div className="flex-1">{StapleLogo({ theme: currentTheme })}</div>
+      <div className="flex-1 space-x-10">
+        {StapleLogo({ theme: currentTheme })}
+        <Breadcrumbs />
+      </div>
       {/* On the right */}
       <div className="flex space-x-5">
         {/* Home tab */}
+        {/* In the middle */}
         <label
           tabIndex={0}
           className="btn btn-ghost btn-circle"
