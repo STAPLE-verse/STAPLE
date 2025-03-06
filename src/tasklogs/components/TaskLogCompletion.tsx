@@ -4,6 +4,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 import Card from "src/core/components/Card"
 import { CompleteRow } from "./CompleteRow"
+import ICSDownloadButton from "src/core/components/IcsDownload"
 
 export const TaskLogCompletion = () => {
   const { task, projectMembers } = useTaskContext()
@@ -23,6 +24,7 @@ export const TaskLogCompletion = () => {
       tooltipContent="Complete your individual or team task and view completion history"
       className="w-full"
     >
+      <ICSDownloadButton task={task} />
       {filteredProjectMembers.map((projectMember) => (
         <CompleteRow
           key={projectMember.id}

@@ -21,8 +21,6 @@ export const TaskInformation = () => {
     return <div>Loading...</div>
   }
 
-  console.log(task)
-
   return (
     <CollapseCard
       title="Task Information"

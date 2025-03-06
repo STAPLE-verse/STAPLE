@@ -32,7 +32,7 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
         input.onChange(null)
       } else {
         // Ensure the date is stored as midnight in local time
-        const localDate = moment(value).startOf("day") // Sets to local midnight (00:00)
+        const localDate = moment(value).endOf("day") // Sets to local midnight (00:00)
         setDateInputValue(localDate.format("YYYY-MM-DD")) // Keep input display clean
         input.onChange(localDate.toDate()) // Ensure it saves correctly in the DB
       }
