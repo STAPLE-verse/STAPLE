@@ -40,7 +40,7 @@ const TaskContainer = ({ id, children, title, description }: ContainerProps) => 
         </div>
         <FontAwesomeIcon
           icon={faArrowsUpDownLeftRight}
-          className="w-6 h-6 text-base-content border-transparent rounded-2xl hover:opacity-50"
+          className="w-6 h-6 text-base-content border-transparent rounded-2xl hover:opacity-50 draggable"
           {...listeners}
         />
       </div>

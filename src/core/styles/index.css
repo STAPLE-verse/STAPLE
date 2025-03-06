@@ -599,3 +599,11 @@ input:focus {
   outline-offset: 0;
   outline-width: 3px !important;
 }
+
+.draggable {
+  cursor: grab;
+}
+
+.draggable:active {
+  cursor: grabbing;
+}
