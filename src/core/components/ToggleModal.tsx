@@ -29,6 +29,9 @@ const ToggleModal = ({
           <h1 className="flex justify-center mb-2 text-3xl">{modalTitle}</h1>
           <div className="flex justify-start mt-4">{children}</div>
           <div className="modal-action flex justify-end mt-4">
+            <button type="button" className="btn btn-primary" onClick={toggleModal}>
+              Save
+            </button>
             <button type="button" className="btn btn-secondary" onClick={toggleModal}>
               Close
             </button>
