@@ -2,8 +2,6 @@ import React from "react"
 import { Tooltip } from "react-tooltip"
 
 const tooltipContents = [
-  { id: "project-home-tooltip", content: "Go back home to all projects" },
-
   { id: "project-dashboard-tooltip", content: "See overall project information dashboard" },
   { id: "project-tasks-tooltip", content: "View, add, edit, and complete project specific tasks" },
   { id: "project-elements-tooltip", content: "Elements help you organize tasks into buckets" },
