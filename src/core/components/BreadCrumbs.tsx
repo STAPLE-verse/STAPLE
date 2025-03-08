@@ -17,13 +17,11 @@ export const Breadcrumbs = () => {
   const fetchNameIfNeeded = useCallback(
     async (type: "project" | "task" | "element" | "team" | "contributor", id: string) => {
       if (namesCache[id]) {
-        console.log(`[CACHE] Using cached ${type} name for ID ${id}:`, namesCache[id])
         return // Use cached name if available
       }
 
       try {
         let data
-        console.log(`[FETCH] Requesting ${type} name for ID ${id}`)
 
         if (type === "project") {
           data = await invoke(getProject, { id: parseInt(id, 10) }) // No ctx needed
@@ -94,15 +92,15 @@ export const Breadcrumbs = () => {
 
     let label = decodeURIComponent(segment).replace(/[-_]/g, " ")
     if (prevSegment === "projects" && namesCache[segment]) {
-      label = namesCache[segment] // Use cached project name
+      label = namesCache[segment] ?? "" // Use cached project name
     } else if (prevSegment === "tasks" && namesCache[segment]) {
-      label = namesCache[segment] // Use cached task name
+      label = namesCache[segment] ?? "" // Use cached task name
     } else if (prevSegment === "elements" && namesCache[segment]) {
-      label = namesCache[segment] // Use cached task name
+      label = namesCache[segment] ?? "" // Use cached task name
     } else if (prevSegment === "teams" && namesCache[segment]) {
-      label = namesCache[segment] // Use cached task name
+      label = namesCache[segment] ?? "" // Use cached task name
     } else if (prevSegment === "contributors" && namesCache[segment]) {
-      label = namesCache[segment] // Use cached task name
+      label = namesCache[segment] ?? "" // Use cached task name
     } else {
       label = label.replace(/\b\w/g, (char) => char.toUpperCase()) // Proper Case
     }
