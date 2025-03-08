@@ -9,6 +9,8 @@ import { HomeIcon } from "@heroicons/react/24/outline"
 import NotificationsMenu from "src/notifications/components/NotificationMenu"
 import Image from "next/image"
 import { Tooltip } from "react-tooltip"
+import ThemeSelect from "../ThemeSelect"
+import { Breadcrumbs } from "../BreadCrumbs"
 import Gravatar from "react-gravatar"
 
 type LogoProps = {
@@ -51,41 +53,22 @@ const Navbar = () => {
   const [logoutMutation] = useMutation(logout)
   const router = useRouter()
 
-  // store themes
-  const [theme, setTheme] = React.useState(() => {
-    const initialTheme = localStorage.getItem("theme")
-    return initialTheme ? initialTheme : "light"
-  })
-
-  function getThemeFromLocalStorage() {
-    const savedTheme = localStorage.getItem("theme")
-    if (savedTheme) {
-      setTheme(savedTheme)
-    }
-  }
-
-  function toggleTheme(e) {
-    localStorage.setItem("theme", e.target.value)
-    setTheme(e.target.value)
-  }
-
-  React.useEffect(() => {
-    getThemeFromLocalStorage()
-    const htmlElement = document.querySelector("html")
-    if (htmlElement) {
-      htmlElement.setAttribute("data-theme", theme)
-    }
-  }, [theme])
+  // Themes
+  const currentTheme = localStorage.getItem("theme") || "light"
 
   // return pages
   return (
     <div className="navbar bg-base-100 sticky z-[1030] top-0 left-0 right-0 w-full border-b border-gray-300 sm:px-4 md:px-6 lg:px-8 xl:px-10">
       {/* Tabs */}
       {/* On the left */}
-      <div className="flex-1">{StapleLogo({ theme })}</div>
+      <div className="flex-1 space-x-10">
+        {StapleLogo({ theme: currentTheme })}
+        <Breadcrumbs />
+      </div>
       {/* On the right */}
       <div className="flex space-x-5">
         {/* Home tab */}
+        {/* In the middle */}
         <label
           tabIndex={0}
           className="btn btn-ghost btn-circle"
@@ -139,46 +122,8 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-        {/* Light switch tab*/}
-
-        <select
-          id="dropdown"
-          className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box"
-          onChange={toggleTheme}
-          title="ChangeTheme"
-        >
-          <option value="">Theme</option>
-          <option value="light">☼ Light</option>
-          <option value="dark">☾ Dark</option>
-          <option value="retro">🪩 Retro</option>
-          <option value="dracula">🧛🏽 Dracula</option>
-          <option value="cyberpunk">🤖 Cyberpunk</option>
-          <option value="cupcake">🧁 Cupcake</option>
-          <option value="bumblebee">🐝 Bumblebee</option>
-          <option value="emerald">💚 Emerald</option>
-          <option value="corporate">👔 Corporate</option>
-          <option value="halloween">🎃 Halloween</option>
-          <option value="garden">🌿 Garden</option>
-          <option value="forest">🌲 Forest</option>
-          <option value="aqua">🐠 Aqua</option>
-          <option value="lofi">😎 Lofi</option>
-          <option value="pastel">🌸 Pastel</option>
-          <option value="fantasy">🐉 Fantasy</option>
-          <option value="wireframe">🖼️ Wireframe</option>
-          <option value="black">◼️ Black</option>
-          <option value="luxury">💰 Luxury</option>
-          <option value="cmyk">🎨 CMYK</option>
-          <option value="autumn">🍁 Autumn</option>
-          <option value="business">💼 Business</option>
-          <option value="acid">🏜️ Acid</option>
-          <option value="lemonade">🍋 Lemonade</option>
-          <option value="night">🌃 Night</option>
-          <option value="coffee">☕ Coffee</option>
-          <option value="winter">❄️ Winter</option>
-          <option value="dim">🔅 Dim</option>
-          <option value="nord">🐺 Nord</option>
-          <option value="sunset">🌇 Sunset</option>
-        </select>
+        {/* Theme Selector */}
+        <ThemeSelect />
       </div>
     </div>
   )
