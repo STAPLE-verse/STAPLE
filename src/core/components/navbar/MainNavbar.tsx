@@ -5,13 +5,13 @@ import logout from "src/auth/mutations/logout"
 import { useMutation } from "@blitzjs/rpc"
 import { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { getInitials } from "src/core/utils/getInitials"
 import { HomeIcon } from "@heroicons/react/24/outline"
 import NotificationsMenu from "src/notifications/components/NotificationMenu"
 import Image from "next/image"
 import { Tooltip } from "react-tooltip"
 import ThemeSelect from "../ThemeSelect"
 import { Breadcrumbs } from "../BreadCrumbs"
+import Gravatar from "react-gravatar"
 
 type LogoProps = {
   theme: string
@@ -44,10 +44,10 @@ const Navbar = () => {
   // Get current user data
   const currentUser = useCurrentUser()
 
-  // Get initials for avatar
-  const initial = currentUser
-    ? getInitials(currentUser!.firstName || "", currentUser!.lastName || "")
-    : ""
+  const gravatar_email =
+    currentUser?.gravatar && currentUser.gravatar.trim() !== ""
+      ? currentUser.gravatar
+      : currentUser?.email // Fallback to last known valid email
 
   // Logout
   const [logoutMutation] = useMutation(logout)
@@ -94,11 +94,11 @@ const Navbar = () => {
             >
               <Tooltip
                 id="profile-tooltip"
-                content="Go to Profile update your information."
+                content="Update your profile"
                 className="z-[1099] ourtooltips"
                 place="left"
               />
-              <span className="text-1xl">{initial ? initial : "?"}</span>
+              <Gravatar email={gravatar_email} style={{ borderRadius: "50%" }} default="retro" />
             </div>
           </label>
           <ul

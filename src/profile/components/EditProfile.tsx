@@ -33,6 +33,7 @@ export const EditProfile = () => {
     institution: user!.institution,
     username: user!.username,
     language: initialLanguageOption["id"] as string,
+    gravatar: user!.gravatar,
   }
 
   return (

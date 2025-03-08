@@ -37,7 +37,7 @@ const ShowTasklogProgress = () => {
             textSize: "16px",
             pathTransitionDuration: 0,
             pathColor: "oklch(var(--p))",
-            textColor: "oklch(var(--s))",
+            textColor: "oklch(var(--p))",
             trailColor: "oklch(var(--pc))",
             backgroundColor: "oklch(var(--b3))",
           })}

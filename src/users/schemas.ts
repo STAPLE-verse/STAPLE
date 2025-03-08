@@ -12,6 +12,11 @@ export const FormProfileSchema = z.object({
   institution: z.string().nullable(),
   username: z.string().min(3),
   language: z.string(),
+  gravatar: z
+    .string()
+    .email()
+    .transform((str) => str.toLowerCase().trim())
+    .nullable(),
 })
 
 export const UpdateUserSchema = z.object({
@@ -21,4 +26,9 @@ export const UpdateUserSchema = z.object({
   institution: z.string().nullable(),
   username: z.string().min(3),
   language: z.string(),
+  gravatar: z
+    .string()
+    .email()
+    .transform((str) => str.toLowerCase().trim())
+    .nullable(),
 })

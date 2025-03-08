@@ -6,7 +6,7 @@ import { UpdateUserSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(UpdateUserSchema),
   resolver.authorize(),
-  async ({ email, firstName, lastName, institution, username, language }, ctx: Ctx) => {
+  async ({ email, firstName, lastName, institution, username, language, gravatar }, ctx: Ctx) => {
     const user = await db.user.findFirst({ where: { id: ctx.session.userId! } })
 
     if (!user) throw new NotFoundError()
@@ -20,6 +20,7 @@ export default resolver.pipe(
         institution: institution,
         username: username,
         language: language,
+        gravatar: gravatar,
       },
     })
 

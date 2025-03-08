@@ -15,7 +15,7 @@ const NotificationsMenu = () => {
           <BellIcon className="w-5 h-5" data-tooltip-id="notifications-top-tooltip" />
           <Tooltip
             id="notifications-top-tooltip"
-            content="View all notifications across projects."
+            content="View all notifications"
             className="z-[1099] ourtooltips"
             place="left"
           />

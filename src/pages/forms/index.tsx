@@ -31,22 +31,22 @@ const AllFormsPage = () => {
     <Layout title="All Forms">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <Suspense fallback={<div>Loading...</div>}>
+          <div className="flex flex-row justify-start items-center">
+            <Link className="btn btn-primary mr-4" href={Routes.FormBuilderPage()}>
+              Create New Form
+            </Link>
+            <button className="btn btn-secondary" onClick={openModal}>
+              Add Form Templates
+            </button>
+            <AddFormTemplates
+              open={isModalOpen}
+              onClose={closeModal}
+              currentUser={currentUser!}
+              onFormsUpdated={refetch}
+            />
+          </div>
           <FormsList forms={forms} addPagination={true} />
         </Suspense>
-        <div className="flex justify-start gap-4 mt-4">
-          <Link className="btn btn-primary" href={Routes.FormBuilderPage()}>
-            Create New Form
-          </Link>
-          <button className="btn btn-secondary" onClick={openModal}>
-            Add Form Templates
-          </button>
-          <AddFormTemplates
-            open={isModalOpen}
-            onClose={closeModal}
-            currentUser={currentUser!}
-            onFormsUpdated={refetch}
-          />
-        </div>
       </main>
     </Layout>
   )

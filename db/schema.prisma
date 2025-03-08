@@ -33,6 +33,7 @@ model User {
   lastName         String?
   email            String             @unique
   language         String             @default("en-US")
+  gravatar         String?
   // relational information
   projects         ProjectMember[]
   forms            Form[]

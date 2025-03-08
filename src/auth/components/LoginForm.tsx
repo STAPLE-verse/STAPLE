@@ -29,7 +29,7 @@ export const LoginForm = (props: LoginFormProps) => {
   }
 
   return (
-    <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
+    <div className="flex flex-col max-w-3xl mx-auto w-full justify-center flex-grow">
       <div className="flex justify-center items-center w-full">
         <picture>
           <source
@@ -41,9 +41,7 @@ export const LoginForm = (props: LoginFormProps) => {
           <img src="/logo_black_big.png" alt="STAPLE Logo" width={200} />
         </picture>
       </div>
-
       <h1 className="text-center text-3xl">Log In</h1>
-
       <Form
         submitText="Log In"
         schema={Login}
@@ -81,20 +79,17 @@ export const LoginForm = (props: LoginFormProps) => {
         />
       </Form>
 
-      <div className="flex flex-row justify-end mt-4">
-        <Link className="btn btn-warning" href={Routes.ForgotPasswordPage()}>
+      <div className="divider pt-4 pb-4"></div>
+      <div className="flex flex-row justify-center">
+        <Link className="btn btn-warning ml-2" href={Routes.ForgotPasswordPage()}>
           Forgot Password
         </Link>
-      </div>
 
-      <div className="flex flex-row justify-end mt-4">
-        <Link className="btn btn-info" href={Routes.SignupPage()}>
+        <Link className="btn btn-info ml-2" href={Routes.SignupPage()}>
           Register
         </Link>
-      </div>
 
-      <div className="flex flex-row justify-end mt-4">
-        <Link className="btn btn-secondary" href={Routes.Home()}>
+        <Link className="btn btn-secondary ml-2" href={Routes.Home()}>
           Go Back Home
         </Link>
       </div>

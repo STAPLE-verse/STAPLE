@@ -85,13 +85,13 @@ export default function ChatBox({
       <div className="flex items-center mt-4 gap-2">
         <input
           type="text"
-          className="input w-full text-primary input-primary input-bordered border-2 bg-base-300 flex-1"
+          className="input w-full text-primary input-primary input-bordered border-2 bg-base-300 flex-1 mr-2"
           placeholder="Type a message..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSendComment()} // Send on Enter key press
         />
-        <button className="btn btn-primary" onClick={handleSendComment}>
+        <button className="btn btn-secondary" onClick={handleSendComment}>
           Send
         </button>
       </div>

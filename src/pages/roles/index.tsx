@@ -6,6 +6,7 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getRoles from "src/roles/queries/getRoles"
 import { AllRolesList } from "src/roles/components/AllRolesList"
 import { NewRole } from "src/roles/components/NewRole"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
 
 const RoleBuilderPage = () => {
   const currentUser = useCurrentUser()
@@ -22,7 +23,10 @@ const RoleBuilderPage = () => {
   return (
     <Layout title="Contribution Roles">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2 text-3xl">All Roles</h1>
+        <h1 className="flex justify-center mb-2 text-3xl items-center">
+          All Roles <InformationCircleIcon className="h-6 w-6 ml-2 text-info stroke-2" />
+        </h1>
+
         <Suspense fallback={<div>Loading...</div>}>
           <AllRolesList roles={roles} onRolesChanged={refetch} taxonomyList={taxonomyList} />
           <NewRole taxonomyList={taxonomyList} onRolesChanged={refetch} />
