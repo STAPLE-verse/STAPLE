@@ -88,10 +88,6 @@ export const LoginForm = (props: LoginFormProps) => {
         <Link className="btn btn-info ml-2" href={Routes.SignupPage()}>
           Register
         </Link>
-
-        <Link className="btn btn-secondary ml-2" href={Routes.Home()}>
-          Go Back Home
-        </Link>
       </div>
     </div>
   )
