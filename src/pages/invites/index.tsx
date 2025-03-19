@@ -12,6 +12,7 @@ import createProjectMember from "src/projectmembers/mutations/createProjectMembe
 import { useMutation } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import Card from "src/core/components/Card"
 
 const InvitesPage = () => {
   const currentUser = useCurrentUser()
@@ -55,7 +56,7 @@ const InvitesPage = () => {
           Project Invitations <InformationCircleIcon className="h-6 w-6 ml-2 text-info stroke-2" />
         </h1>
 
-        <div className="mt-4">
+        <div className="m-4 justify-center flex flex-row">
           <button type="button" className="btn btn-primary" onClick={handleToggleNewInviteModal}>
             Accept by Code
           </button>
@@ -90,7 +91,9 @@ const InvitesPage = () => {
 
         <div>
           <Suspense fallback={<div>Loading...</div>}>
-            <InvitesList currentUser={currentUser} />
+            <Card title={""}>
+              <InvitesList currentUser={currentUser} />
+            </Card>
           </Suspense>
         </div>
       </main>
