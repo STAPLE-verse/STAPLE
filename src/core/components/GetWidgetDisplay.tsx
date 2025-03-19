@@ -6,7 +6,7 @@ import {
   projectTaskColumns,
   projectManagersColumns,
 } from "src/widgets/components/ColumnHelpers"
-import { UserIcon, GlobeAltIcon, ArchiveBoxIcon } from "@heroicons/react/24/outline"
+import { UserIcon, GlobeAltIcon, ArchiveBoxIcon, BeakerIcon } from "@heroicons/react/24/outline"
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import DateFormat from "./DateFormat"
 
@@ -227,6 +227,15 @@ export function GetProjectTotalDisplay({ projects }) {
     <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
       {projects.length}
       <ArchiveBoxIcon className="w-20" />
+    </div>
+  )
+}
+
+export function GetFormTotalDisplay({ forms }) {
+  return (
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
+      {forms.length}
+      <BeakerIcon className="w-20" />
     </div>
   )
 }
