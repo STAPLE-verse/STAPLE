@@ -13,6 +13,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import Card from "src/core/components/Card"
+import { Tooltip } from "react-tooltip"
 
 const InvitesPage = () => {
   const currentUser = useCurrentUser()
@@ -53,7 +54,16 @@ const InvitesPage = () => {
     <Layout title="Project Invitations">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center items-center mb-2 text-3xl">
-          Project Invitations <InformationCircleIcon className="h-6 w-6 ml-2 text-info stroke-2" />
+          Project Invitations
+          <InformationCircleIcon
+            className="h-6 w-6 ml-2 text-info stroke-2"
+            data-tooltip-id="invites-overview"
+          />
+          <Tooltip
+            id="invites-overview"
+            content="This page shows invitations to projects (for the email associated with this account). You can accept or decline the invitation. If you do not see the invitation, you can get the invitation code from your email and accept the project invitation by clicking Accept by Code and entering the invite code."
+            className="z-[1099] ourtooltips"
+          />
         </h1>
 
         <div className="m-4 justify-center flex flex-row">
