@@ -10,6 +10,54 @@ import { UserIcon, GlobeAltIcon, ArchiveBoxIcon, BeakerIcon } from "@heroicons/r
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import DateFormat from "./DateFormat"
 
+// use for all tables in widgets
+export function GetTableDisplay({ data, columns, type }) {
+  if (data.length === 0) {
+    return <p className="italic p-2">No {type}</p>
+  }
+  return (
+    <Table
+      columns={columns}
+      data={data}
+      classNames={{
+        thead: "text-sm text-base-content",
+        tbody: "text-sm text-base-content",
+        td: "text-sm text-base-content",
+      }}
+    />
+  )
+}
+
+//use for all circular task bars
+export function GetCircularProgressDisplay({ proportion }) {
+  return (
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
+      <CircularProgressbar
+        value={proportion * 100}
+        text={`${Math.round(proportion * 100)}%`}
+        styles={buildStyles({
+          textSize: "16px",
+          pathTransitionDuration: 0,
+          pathColor: "oklch(var(--p))",
+          textColor: "oklch(var(--p))",
+          trailColor: "oklch(var(--pc))",
+          backgroundColor: "oklch(var(--b3))",
+        })}
+      />
+    </div>
+  )
+}
+
+//use for all simple icon displays
+export function GetIconDisplay({ number, icon: Icon }) {
+  return (
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
+      {number}
+      <Icon className="w-20" />
+    </div>
+  )
+}
+
 export function GetProjectDisplay({ projects }) {
   if (projects.length === 0) {
     return <p className="italic p-2">No projects</p>
@@ -232,6 +280,15 @@ export function GetProjectTotalDisplay({ projects }) {
 }
 
 export function GetFormTotalDisplay({ forms }) {
+  return (
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
+      {forms.length}
+      <BeakerIcon className="w-20" />
+    </div>
+  )
+}
+
+export function GetRoleTotalDisplay({ forms }) {
   return (
     <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
       {forms.length}
