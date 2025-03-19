@@ -80,21 +80,13 @@ const InvitesPage = () => {
                   className="flex flex-col w-full"
                   onSubmit={(data) => handleInviteCode({ ...data, userId: currentUser?.id })}
                   userId={currentUser!.id}
+                  cancelText="Close"
+                  onCancel={handleToggleNewInviteModal}
                 ></InviteForm>
               </div>
               {formError && (
                 <div className="error-message text-red-600 mt-2 font-bold">{formError}</div>
               )}
-
-              <div className="modal-action flex justify-end mt-4">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleToggleNewInviteModal}
-                >
-                  Close
-                </button>
-              </div>
             </div>
           </Modal>
         </div>
