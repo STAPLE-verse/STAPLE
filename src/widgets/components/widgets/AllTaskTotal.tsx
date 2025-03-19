@@ -47,7 +47,8 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
   // Calculate task completion percentage
   // need to sum this up
   const totalCompletion = processedTasks.reduce((sum, task) => sum + task.completion, 0)
-  const taskPercent = processedTasks.length > 0 ? totalCompletion / processedTasks.length : 0
+  const taskPercent =
+    processedTasks.length > 0 ? (totalCompletion / processedTasks.length) * 100 : 0
 
   return (
     <Widget
