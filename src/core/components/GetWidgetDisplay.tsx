@@ -221,3 +221,12 @@ export function GetRolesDisplay({ rolePercent }) {
     </div>
   )
 }
+
+export function GetProjectTotalDisplay({ projects }) {
+  return (
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
+      {projects.length}
+      <ArchiveBoxIcon className="w-20" />
+    </div>
+  )
+}
