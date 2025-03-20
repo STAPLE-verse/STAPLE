@@ -48,7 +48,7 @@ const TotalContributors: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ s
       display={<GetIconDisplay number={uniqueUserIds.size} icon={UsersIcon} />}
       link={
         <PrimaryLink
-          route={Routes.RoleBuilderPage()}
+          route={Routes.InvitesPage()}
           text={<MagnifyingGlassIcon width={25} className="stroke-primary" />}
           classNames="btn-ghost"
         />
