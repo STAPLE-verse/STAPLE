@@ -2,9 +2,9 @@ import React from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
-import { GetProjectTotalDisplay } from "src/core/components/GetWidgetDisplay"
+import { GetIconDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { ArchiveBoxIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProjects from "src/projects/queries/getProjects"
 
@@ -25,7 +25,7 @@ const TotalProjects: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size 
   return (
     <Widget
       title="Projects"
-      display={<GetProjectTotalDisplay projects={projects} />}
+      display={<GetIconDisplay number={projects.length} icon={ArchiveBoxIcon} />}
       link={
         <PrimaryLink
           route={Routes.ProjectsPage()}

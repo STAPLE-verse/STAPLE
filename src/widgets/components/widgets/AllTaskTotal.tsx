@@ -1,11 +1,9 @@
 import React, { FC } from "react"
 import { useQuery } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
-import { GetTotalTaskDisplay } from "src/core/components/GetWidgetDisplay"
+import { GetCircularProgressDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
-import getTaskStats from "src/tasks/queries/getTaskStats"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
@@ -47,13 +45,12 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
   // Calculate task completion percentage
   // need to sum this up
   const totalCompletion = processedTasks.reduce((sum, task) => sum + task.completion, 0)
-  const taskPercent =
-    processedTasks.length > 0 ? (totalCompletion / processedTasks.length) * 100 : 0
+  const taskProportion = processedTasks.length > 0 ? totalCompletion / processedTasks.length : 0
 
   return (
     <Widget
       title="Tasks"
-      display={<GetTotalTaskDisplay taskPercent={taskPercent} />}
+      display={<GetCircularProgressDisplay proportion={taskProportion} />}
       link={
         <PrimaryLink
           route={Routes.AllTasksPage()}
