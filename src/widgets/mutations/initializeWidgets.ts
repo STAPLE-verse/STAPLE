@@ -13,9 +13,27 @@ export default resolver.pipe(resolver.authorize(), async (userId: number) => {
     size: WidgetSize.LARGE,
   }))
 
+  // New small widgets
+  const smallWidgetTypes = [
+    "AllTaskTotal",
+    "TotalContributors",
+    "TotalForms",
+    "TotalInvites",
+    "TotalProjects",
+    "TotalRoles",
+  ]
+
+  const smallWidgets = smallWidgetTypes.map((type, index) => ({
+    userId: userId,
+    type: type,
+    show: true,
+    position: widgetTypes.length + index + 1,
+    size: WidgetSize.SMALL,
+  }))
+
   // Create the widgets
   await db.widget.createMany({
-    data: widgets,
+    data: [...widgets, ...smallWidgets],
   })
 
   // Retrieve the created widgets

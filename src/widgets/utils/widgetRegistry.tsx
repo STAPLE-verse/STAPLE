@@ -12,6 +12,12 @@ import ProjectSummary from "../components/widgets/ProjectSummary"
 import ProjectUpcomingTasks from "../components/widgets/ProjectUpcomingTasks"
 import TaskTotal from "../components/widgets/TaskTotal"
 import TeamNumber from "../components/widgets/TeamNumber"
+import AllTaskTotal from "../components/widgets/AllTaskTotal"
+import TotalContributors from "../components/widgets/TotalContributors"
+import TotalForms from "../components/widgets/TotalForms"
+import TotalInvites from "../components/widgets/TotalInvites"
+import TotalProjects from "../components/widgets/TotalProjects"
+import TotalRoles from "../components/widgets/TotalRoles"
 
 export const widgetRegistry = {
   main: {
@@ -19,6 +25,12 @@ export const widgetRegistry = {
     Notifications: MainNotification,
     OverdueTask: MainOverdueTasks,
     UpcomingTask: MainUpcomingTasks,
+    AllTaskTotal: AllTaskTotal,
+    TotalContributors: TotalContributors,
+    TotalForms: TotalForms,
+    TotalInvites: TotalInvites,
+    TotalProjects: TotalProjects,
+    TotalRoles: TotalRoles,
   },
   project: {
     ProjectSummary: ProjectSummary,

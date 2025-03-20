@@ -21,7 +21,7 @@ const TotalForms: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) 
 
   return (
     <Widget
-      title="Projects"
+      title="Forms"
       display={<GetIconDisplay number={forms.length} icon={BeakerIcon} />}
       link={
         <PrimaryLink
