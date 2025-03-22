@@ -12,6 +12,8 @@ import {
 import { MultiSelectProvider, useMultiSelect } from "src/core/components/fields/MultiSelectContext"
 import { DeleteNotificationButton } from "src/notifications/components/DeleteNotificationButton"
 import { MultiReadToggleButton } from "src/notifications/components/MultiReadToggleButton"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 const NotificationContent = () => {
   const currentUser = useCurrentUser()
@@ -54,7 +56,18 @@ const NotificationContent = () => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="flex justify-center mb-2 text-3xl">All Notifications</h1>
+      <h1 className="flex justify-center items-center mb-2 text-3xl">
+        All Notifications
+        <InformationCircleIcon
+          className="h-6 w-6 ml-2 text-info stroke-2"
+          data-tooltip-id="dashboard-overview"
+        />
+        <Tooltip
+          id="dashboard-overview"
+          content="This page shows all your notifications. You can mark them as read or click on a link to view the related item. Use the last column to select multiple notifications at once."
+          className="z-[1099] ourtooltips"
+        />
+      </h1>
       <Table columns={columns} data={notificationTableData} addPagination={true} />
       <div className="flex justify-end mt-4 gap-4">
         <DeleteNotificationButton ids={selectedIds} />
