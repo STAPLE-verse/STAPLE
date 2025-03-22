@@ -14,6 +14,7 @@ import { DeleteNotificationButton } from "src/notifications/components/DeleteNot
 import { MultiReadToggleButton } from "src/notifications/components/MultiReadToggleButton"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import Card from "src/core/components/Card"
 
 const NotificationContent = () => {
   const currentUser = useCurrentUser()
@@ -56,7 +57,7 @@ const NotificationContent = () => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="flex justify-center items-center mb-2 text-3xl">
+      <h1 className="flex justify-center items-center text-3xl">
         All Notifications
         <InformationCircleIcon
           className="h-6 w-6 ml-2 text-info stroke-2"
@@ -68,8 +69,8 @@ const NotificationContent = () => {
           className="z-[1099] ourtooltips"
         />
       </h1>
-      <Table columns={columns} data={notificationTableData} addPagination={true} />
-      <div className="flex justify-end mt-4 gap-4">
+
+      <div className="flex justify-center m-4">
         <DeleteNotificationButton ids={selectedIds} />
         <MultiReadToggleButton
           notifications={selectedNotifications}
@@ -77,6 +78,9 @@ const NotificationContent = () => {
           resetSelection={resetSelection}
         />
       </div>
+      <Card title={""}>
+        <Table columns={columns} data={notificationTableData} addPagination={true} />
+      </Card>
     </main>
   )
 }

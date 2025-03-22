@@ -53,7 +53,7 @@ const InvitesPage = () => {
   return (
     <Layout title="Project Invitations">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center items-center mb-2 text-3xl">
+        <h1 className="flex justify-center items-center text-3xl">
           Project Invitations
           <InformationCircleIcon
             className="h-6 w-6 ml-2 text-info stroke-2"
@@ -72,7 +72,7 @@ const InvitesPage = () => {
           </button>
           <Modal open={openNewInviteModal} size="w-7/8 max-w-xl">
             <div className="">
-              <h1 className="flex justify-center mb-2 text-3xl">Enter Invite Code</h1>
+              <h1 className="flex justify-center m-4 text-3xl">Enter Invite Code</h1>
               <div className="flex justify-start mt-4">
                 <InviteForm
                   schema={InviteFormSchema}

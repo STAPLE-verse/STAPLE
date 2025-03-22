@@ -47,7 +47,7 @@ export const MultiReadToggleButton = ({
   const noSelection = notifications.length === 0
 
   return (
-    <div className="flex gap-2 mt-4">
+    <div className="flex gap-2">
       {(allUnread || mixedStatus) && (
         <button
           className="btn btn-primary"
