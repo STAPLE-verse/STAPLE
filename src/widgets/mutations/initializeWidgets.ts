@@ -9,7 +9,7 @@ export default resolver.pipe(resolver.authorize(), async (userId: number) => {
     userId: userId,
     type: type,
     show: true,
-    position: index + 1,
+    position: smallWidgetTypes.length + index + 1,
     size: WidgetSize.LARGE,
   }))
 
@@ -27,13 +27,13 @@ export default resolver.pipe(resolver.authorize(), async (userId: number) => {
     userId: userId,
     type: type,
     show: true,
-    position: widgetTypes.length + index + 1,
+    position: index + 1,
     size: WidgetSize.SMALL,
   }))
 
   // Create the widgets
   await db.widget.createMany({
-    data: [...widgets, ...smallWidgets],
+    data: [...smallWidgets, ...widgets],
   })
 
   // Retrieve the created widgets
