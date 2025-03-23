@@ -8,6 +8,9 @@ import AddFormTemplates from "src/forms/components/AddFormTemplates"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useQuery } from "@blitzjs/rpc"
 import getForms from "src/forms/queries/getForms"
+import Card from "src/core/components/Card"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 const AllFormsPage = () => {
   // AddFormTemplate modal settings
@@ -31,8 +34,20 @@ const AllFormsPage = () => {
     <Layout title="All Forms">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <Suspense fallback={<div>Loading...</div>}>
-          <div className="flex flex-row justify-start items-center">
-            <Link className="btn btn-primary mr-4" href={Routes.FormBuilderPage()}>
+          <h1 className="flex justify-center items-center text-3xl">
+            All Forms{" "}
+            <InformationCircleIcon
+              className="h-6 w-6 ml-2 text-info stroke-2"
+              data-tooltip-id="dashboard-overview"
+            />
+            <Tooltip
+              id="dashboard-overview"
+              content="This page shows all your metadata forms. You can create new forms to collect information about project metadata. These forms can be assigned to tasks in any project. We've provided templates to help you get started."
+              className="z-[1099] ourtooltips"
+            />
+          </h1>
+          <div className="flex justify-center m-4">
+            <Link className="btn btn-primary mr-2" href={Routes.FormBuilderPage()}>
               Create New Form
             </Link>
             <button className="btn btn-secondary" onClick={openModal}>
@@ -45,7 +60,9 @@ const AllFormsPage = () => {
               onFormsUpdated={refetch}
             />
           </div>
-          <FormsList forms={forms} addPagination={true} />
+          <Card title="">
+            <FormsList forms={forms} addPagination={true} />
+          </Card>
         </Suspense>
       </main>
     </Layout>

@@ -1,6 +1,5 @@
 import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
-import Head from "next/head"
 
 const HelpPage = () => {
   return (

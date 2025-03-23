@@ -9,6 +9,7 @@ import {
 import useUserAuthorization from "src/userprivileges/hooks/useUserAuthorization"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { TriggerDashboardMigration } from "src/updates/component/2025_03_migration"
+import Card from "src/core/components/Card"
 
 const UpdatesPage = () => {
   const user = useCurrentUser()
@@ -19,21 +20,15 @@ const UpdatesPage = () => {
         <PageHeader className="flex justify-center mb-2" title="Updates" />
         <Suspense fallback={<div>Loading...</div>}>
           <div>
-            <h3>Updates March 19, 2025</h3>
-            <div>
+            <Card title={"Updates March 19, 2025"}>
               <TriggerDashboardMigration />
-            </div>
-            <h3>Updates January 1, 2025</h3>
-            Please run updates in the following order:
-            <div>
+            </Card>
+            <Card title="Updates January 1, 2025">
+              Please run updates in the following order:
               <TriggerDefaultForms />
-            </div>
-            <div>
               <LinkDefaultForms />
-            </div>
-            <div>
               <CreateMetadata />
-            </div>
+            </Card>
             <br />
           </div>
         </Suspense>
