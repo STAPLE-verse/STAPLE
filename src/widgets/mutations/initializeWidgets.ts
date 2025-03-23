@@ -4,15 +4,6 @@ import db, { WidgetSize } from "db"
 export default resolver.pipe(resolver.authorize(), async (userId: number) => {
   // Adding main dashboard default widgets
   const widgetTypes = ["LastProject", "OverdueTask", "UpcomingTask", "Notifications"]
-
-  const widgets = widgetTypes.map((type, index) => ({
-    userId: userId,
-    type: type,
-    show: true,
-    position: smallWidgetTypes.length + index + 1,
-    size: WidgetSize.LARGE,
-  }))
-
   // New small widgets
   const smallWidgetTypes = [
     "AllTaskTotal",
@@ -22,6 +13,13 @@ export default resolver.pipe(resolver.authorize(), async (userId: number) => {
     "TotalProjects",
     "TotalRoles",
   ]
+  const widgets = widgetTypes.map((type, index) => ({
+    userId: userId,
+    type: type,
+    show: true,
+    position: smallWidgetTypes.length + index + 1,
+    size: WidgetSize.LARGE,
+  }))
 
   const smallWidgets = smallWidgetTypes.map((type, index) => ({
     userId: userId,
