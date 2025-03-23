@@ -56,7 +56,7 @@ export const NewRole = ({ taxonomyList, onRolesChanged }: NewRoleProps) => {
       <div>
         <button
           type="button"
-          className="btn btn-primary mt-4"
+          className="btn btn-primary"
           onClick={() => handleToggleNewRoleModal()}
         >
           New Role

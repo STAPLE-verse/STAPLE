@@ -93,3 +93,8 @@ export type RouteData = {
   path: string
   params?: Record<string, any>
 }
+
+// Define the ProjectWithMembers type
+export type ProjectWithMembers = Project & {
+  projectMembers: ProjectMemberWithUsers[]
+}

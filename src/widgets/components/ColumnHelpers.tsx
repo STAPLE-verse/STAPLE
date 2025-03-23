@@ -17,11 +17,13 @@ export const tasksColumns: ColumnDef<TasWithProject>[] = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
     enableColumnFilter: false,
+    enableSorting: false,
   }),
   taskColumnHelper.accessor((row) => row.project.name, {
     cell: (info) => <span>{info.getValue()} </span>,
     header: "Project",
     enableColumnFilter: false,
+    enableSorting: false,
   }),
   taskColumnHelper.accessor("deadline", {
     cell: (info) => (
@@ -36,6 +38,7 @@ export const tasksColumns: ColumnDef<TasWithProject>[] = [
     ),
     header: "Deadline",
     enableColumnFilter: false,
+    enableSorting: false,
   }),
   taskColumnHelper.accessor("id", {
     id: "view",
@@ -52,6 +55,7 @@ export const tasksColumns: ColumnDef<TasWithProject>[] = [
       </Link>
     ),
     enableColumnFilter: false,
+    enableSorting: false,
   }),
 ]
 
@@ -62,11 +66,13 @@ export const projectColumns: ColumnDef<Project>[] = [
     cell: (info) => <span className="font-semibold"> {info.getValue()} </span>,
     header: "Name",
     enableColumnFilter: false,
+    enableSorting: false,
   }),
   projectColumnHelper.accessor("updatedAt", {
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Updated",
     enableColumnFilter: false,
+    enableSorting: false,
   }),
   projectColumnHelper.accessor("id", {
     id: "view",

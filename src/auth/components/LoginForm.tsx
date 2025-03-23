@@ -29,7 +29,7 @@ export const LoginForm = (props: LoginFormProps) => {
   }
 
   return (
-    <div className="flex flex-col max-w-3xl mx-auto w-full justify-center flex-grow">
+    <div className="flex flex-col max-w-4xl mx-auto w-full justify-center flex-grow">
       <div className="flex justify-center items-center w-full">
         <picture>
           <source
@@ -41,7 +41,7 @@ export const LoginForm = (props: LoginFormProps) => {
           <img src="/logo_black_big.png" alt="STAPLE Logo" width={200} />
         </picture>
       </div>
-      <h1 className="text-center text-3xl">Log In</h1>
+      <h1 className="text-4xl pb-8 mt-4">STAPLE: Science Tracking Across the Project Lifespan</h1>
       <Form
         submitText="Log In"
         schema={Login}
@@ -87,10 +87,6 @@ export const LoginForm = (props: LoginFormProps) => {
 
         <Link className="btn btn-info ml-2" href={Routes.SignupPage()}>
           Register
-        </Link>
-
-        <Link className="btn btn-secondary ml-2" href={Routes.Home()}>
-          Go Back Home
         </Link>
       </div>
     </div>

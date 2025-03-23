@@ -10,11 +10,10 @@ import {
   BellIcon,
   DocumentChartBarIcon,
   NewspaperIcon,
-  TagIcon,
-  CheckCircleIcon,
   QuestionMarkCircleIcon,
   EnvelopeIcon,
   WrenchIcon,
+  FingerPrintIcon,
 } from "@heroicons/react/24/outline"
 import { Routes } from "@blitzjs/next"
 import { MemberPrivileges } from "db"
@@ -83,7 +82,7 @@ export const ProjectSidebarItems = (projectId: number): SidebarItemProps[] => {
       privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
     },
     {
-      icon: CheckCircleIcon,
+      icon: FingerPrintIcon,
       text: "Roles",
       route: Routes.RolesPage({ projectId: projectId }),
       tooltipId: "project-credit-tooltip",
@@ -152,7 +151,7 @@ export const HomeSidebarItems = (): SidebarItemProps[] => {
       userPrivilege: ["USER", "ADMIN"],
     },
     {
-      icon: TagIcon,
+      icon: FingerPrintIcon,
       text: "Roles",
       route: Routes.RoleBuilderPage(),
       tooltipId: "roles-tooltip",

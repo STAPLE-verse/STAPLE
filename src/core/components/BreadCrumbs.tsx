@@ -116,7 +116,7 @@ export const Breadcrumbs = () => {
   })
 
   return (
-    <div className="text-sm breadcrumbs">
+    <div className="text-md breadcrumbs">
       <ul>
         <li>
           <Link href="/main" className="hover:underline">
