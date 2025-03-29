@@ -49,7 +49,7 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
   const taskProportion =
     processedTasks.length > 0 ? totalCompletion / 100 / processedTasks.length : 0
 
-  console.log(processedTasks)
+  //console.log(processedTasks)
 
   return (
     <Widget

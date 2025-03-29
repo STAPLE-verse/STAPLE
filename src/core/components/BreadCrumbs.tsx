@@ -36,7 +36,7 @@ export const Breadcrumbs = () => {
             where: { id: parseInt(id, 10) },
             include: { users: true },
           })
-          console.log(`[API RESPONSE] ProjectMember Data for ID ${id}:`, data)
+          //console.log(`[API RESPONSE] ProjectMember Data for ID ${id}:`, data)
 
           if (data && data.users.length > 0) {
             const user = data.users[0]
@@ -51,7 +51,7 @@ export const Breadcrumbs = () => {
         }
 
         if (data?.name) {
-          console.log(`[UPDATE] Storing ${type} name for ID ${id}:`, data.name)
+          //console.log(`[UPDATE] Storing ${type} name for ID ${id}:`, data.name)
           setNamesCache((prev) => ({ ...prev, [id]: data.name })) // Store in cache
         } else {
           console.error(`[ERROR] No valid name found in response for ${type} ID ${id}`, data)

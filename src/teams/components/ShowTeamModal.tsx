@@ -20,7 +20,7 @@ export const ShowTeamModal = ({ projectMember, disabled }) => {
     setOpenModal((prev) => !prev)
   }
 
-  console.log(projectMember)
+  //console.log(projectMember)
 
   return (
     <div>
