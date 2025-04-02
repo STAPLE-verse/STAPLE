@@ -30,13 +30,24 @@ const TeamInformation = ({ team, privilege }: TeamInformationProps) => {
         ) : null
       }
     >
-      {users.map((user) => {
-        return (
-          <p key={user.id}>
-            {user.firstName || user.lastName ? `${user.firstName} ${user.lastName}` : user.username}
-          </p>
-        )
-      })}
+      <div className="flex flex-row justify-between">
+        {users.map((user) => {
+          return (
+            <Link
+              key={user.id}
+              className="btn btn-primary"
+              href={Routes.ShowContributorPage({
+                projectId: team.projectId,
+                contributorId: user.id,
+              })}
+            >
+              {user.firstName || user.lastName
+                ? `${user.firstName} ${user.lastName}`
+                : user.username}
+            </Link>
+          )
+        })}
+      </div>
     </Card>
   )
 }
