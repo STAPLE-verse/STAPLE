@@ -1,7 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import { useQuery } from "@blitzjs/rpc"
 import Link from "next/link"
-import { Tooltip } from "react-tooltip"
 import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
 import { Element } from "@prisma/client"
@@ -10,6 +9,7 @@ import { useState } from "react"
 import UpdateTasks from "./UpdateTasks"
 import { ElementTasksColumns } from "../tables/columns/ElementTasksColumns"
 import { processElementTasks } from "../tables/processing/processElementTasks"
+import TooltipWrapper from "src/core/components/TooltipWrapper"
 
 interface ElementInformationProps {
   element: Element
@@ -47,7 +47,7 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({
           <div className="card-title" data-tooltip-id="element-tool">
             {element.name}
           </div>
-          <Tooltip
+          <TooltipWrapper
             id="element-tool"
             content="Overall element information"
             className="z-[1099] ourtooltips"
@@ -87,7 +87,7 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({
           <div className="card-title" data-tooltip-id="tasks-tool">
             Tasks
           </div>
-          <Tooltip
+          <TooltipWrapper
             id="tasks-tool"
             content="Tasks assigned to this element"
             className="z-[1099] ourtooltips"

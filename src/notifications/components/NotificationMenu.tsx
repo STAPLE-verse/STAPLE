@@ -1,9 +1,9 @@
 import { BellIcon } from "@heroicons/react/24/outline"
 import Link from "next/link"
-import { Tooltip } from "react-tooltip"
 import { Routes } from "@blitzjs/next"
 import { useNotificationMenuData } from "../hooks/useNotificationMenuData"
 import NotificationItem from "./NotificationItem"
+import TooltipWrapper from "src/core/components/TooltipWrapper"
 
 const NotificationsMenu = () => {
   const { unreadCount, latestUnreadNotifications } = useNotificationMenuData()
@@ -13,7 +13,7 @@ const NotificationsMenu = () => {
       <label tabIndex={0} className="btn btn-ghost btn-circle">
         <div className="indicator">
           <BellIcon className="w-5 h-5" data-tooltip-id="notifications-top-tooltip" />
-          <Tooltip
+          <TooltipWrapper
             id="notifications-top-tooltip"
             content="View all notifications"
             className="z-[1099] ourtooltips"

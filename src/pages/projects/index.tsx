@@ -5,7 +5,7 @@ import Layout from "src/core/layouts/Layout"
 import ProjectsList from "src/projects/components/ProjectsList"
 import SearchButton from "src/core/components/SearchButton"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
-import TooltipWrapper from "src/core/components/TooltipWrapper"
+import { Tooltip } from "react-tooltip"
 
 const ProjectsPage = () => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -23,7 +23,7 @@ const ProjectsPage = () => {
             className="h-6 w-6 ml-2 text-info stroke-2"
             data-tooltip-id="project-overview"
           />
-          <TooltipWrapper
+          <Tooltip
             id="project-overview"
             content="This page displays all projects. You can create a new project or search for existing projects. Click on a project name to see more information before opening."
             className="z-[1099] ourtooltips"

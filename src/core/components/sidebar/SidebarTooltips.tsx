@@ -1,8 +1,7 @@
 import React from "react"
-import { Tooltip } from "react-tooltip"
+import TooltipWrapper from "../TooltipWrapper"
 
 const tooltipContents = [
-
   { id: "project-dashboard-tooltip", content: "Project dashboard" },
   { id: "project-tasks-tooltip", content: "Project tasks" },
   { id: "project-elements-tooltip", content: "Group and track tasks" },
@@ -36,7 +35,7 @@ const SidebarTooltips = () => {
   return (
     <>
       {tooltipContents.map((tooltip) => (
-        <Tooltip
+        <TooltipWrapper
           key={tooltip.id}
           id={tooltip.id}
           content={tooltip.content}
