@@ -5,8 +5,8 @@ import { useId } from "@reach/auto-id"
 export interface LabeledCheckboxFieldProps extends ComponentPropsWithoutRef<"input"> {
   /** Field name. */
   name: string
-  /** Field label. */
-  label: ReactNode
+  /** Field label. Handle dynamic labels through functions. */
+  label: ReactNode | ((value: boolean) => ReactNode)
   outerProps?: ComponentPropsWithoutRef<"div">
   fieldProps?: UseFieldConfig<string>
   labelProps?: ComponentPropsWithoutRef<"label">
@@ -41,7 +41,7 @@ export const LabeledCheckboxField = React.forwardRef<HTMLInputElement, LabeledCh
             />
           </div>
           <label htmlFor={id} className={labelProps.className} {...labelProps}>
-            {label}
+            {typeof label === "function" ? label(input.checked ?? input.value) : label}
             <div role="alert" className="text-red-700 text-sm mt-1 font-bold">
               {showError && normalizedError}
             </div>

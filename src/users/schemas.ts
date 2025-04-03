@@ -1,4 +1,4 @@
-import { string, z } from "zod"
+import { z } from "zod"
 
 export const email = z
   .string()
@@ -17,6 +17,7 @@ export const FormProfileSchema = z.object({
     .email()
     .transform((str) => str.toLowerCase().trim())
     .nullable(),
+  tooltips: z.boolean(),
 })
 
 export const UpdateUserSchema = z.object({
@@ -31,4 +32,5 @@ export const UpdateUserSchema = z.object({
     .email()
     .transform((str) => str.toLowerCase().trim())
     .nullable(),
+  tooltips: z.boolean(),
 })

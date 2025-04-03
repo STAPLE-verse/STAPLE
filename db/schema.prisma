@@ -39,6 +39,7 @@ model User {
   forms            Form[]
   roles            Role[]
   ProjectPrivilege ProjectPrivilege[]
+  tooltips         Boolean            @default(true)
 }
 
 model Session {

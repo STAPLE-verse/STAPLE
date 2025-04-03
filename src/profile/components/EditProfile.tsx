@@ -34,6 +34,7 @@ export const EditProfile = () => {
     username: user!.username,
     language: initialLanguageOption["id"] as string,
     gravatar: user!.gravatar,
+    tooltips: user!.tooltips,
   }
 
   return (

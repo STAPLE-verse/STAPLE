@@ -54,7 +54,7 @@ export const TosForm = (props: TosFormProps) => {
           label="I have read and agree to these terms."
           className="checkbox checkbox-primary border-2"
           labelProps={{ className: "text-lg" }}
-        ></LabeledCheckboxField>
+        />
       </Form>
       <div className="divider pt-4 pb-4"></div>
       <div className="flex flex-row justify-center">
