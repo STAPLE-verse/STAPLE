@@ -73,6 +73,7 @@
     "react-dom": "18.2.0",
     "react-final-form": "6.5.9",
     "react-hot-toast": "2.4.1",
+    "react-i18next": "15.4.1",
     "react-json-editor-ajrm": "2.5.14",
     "react-json-view": "1.21.3",
     "react-overlays": "5.2.1",
