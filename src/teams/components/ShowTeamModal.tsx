@@ -17,8 +17,8 @@ export const ShowTeamModal = ({ teamId, disabled }) => {
     contributorId: user.contributorId,
     projectId: team.projectId,
     username: user.username,
-    firstName: user.firstName,
-    lastName: user.lastName,
+    firstName: user.firstName ?? "",
+    lastName: user.lastName ?? "",
   }))
 
   // Handle events

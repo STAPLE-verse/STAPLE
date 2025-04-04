@@ -7,8 +7,8 @@ export type TeamMembers = {
   contributorId: number
   projectId: number
   username: string
-  firstName: string | null
-  lastName: string | null
+  firstName: string
+  lastName: string
 }
 
 // Create columnHelper
