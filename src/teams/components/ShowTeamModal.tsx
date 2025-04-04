@@ -11,7 +11,7 @@ import getTeam from "../queries/getTeam"
 export const ShowTeamModal = ({ teamId, disabled }) => {
   const [openModal, setOpenModal] = useState(false)
 
-  const [team] = useQuery(getTeam, { teamId: teamId })
+  const [team] = useQuery(getTeam, { id: teamId })
 
   const teamMembers: TeamMembers[] = team.users.map((user) => ({
     contributorId: user.contributorId,

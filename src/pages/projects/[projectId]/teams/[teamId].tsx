@@ -16,7 +16,7 @@ export const TeamPage = () => {
   const teamId = useParam("teamId", "number")
 
   const [team] = useQuery(getTeam, {
-    teamId: teamId!,
+    id: teamId!,
   })
 
   const userIds = team.users.map((user) => user.id)

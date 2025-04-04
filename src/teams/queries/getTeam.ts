@@ -4,15 +4,15 @@ import db from "db"
 import { TeamWithUsers } from "src/core/types"
 
 interface GetTeamInput {
-  teamId: number
+  id: number
 }
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ teamId }: GetTeamInput): Promise<TeamWithUsers> => {
+  async ({ id }: GetTeamInput): Promise<TeamWithUsers> => {
     const team = await db.projectMember.findUnique({
       where: {
-        id: teamId,
+        id: id,
       },
       include: {
         users: {
