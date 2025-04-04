@@ -113,3 +113,11 @@ export type RouteData = {
 export type ProjectWithMembers = Project & {
   projectMembers: ProjectMemberWithUsers[]
 }
+
+export type BreadcrumbEntityType = "project" | "task" | "element" | "team" | "contributor"
+
+export type BreadcrumbItem = {
+  label: string
+  href: string
+  isLast: boolean
+}
