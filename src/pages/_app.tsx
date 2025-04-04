@@ -31,16 +31,6 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
 
 function MyApp({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
-  const { i18n } = useTranslation()
-  const user = useCurrentUser()
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (user?.language && i18n.language !== user.language) {
-        i18n.changeLanguage(user.language)
-      }
-    }
-  }, [user?.language, i18n])
 
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
