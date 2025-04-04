@@ -51,7 +51,11 @@ export default resolver.pipe(resolver.zod(Signup), async ({ email, password, use
     size: WidgetSize.SMALL,
   }))
 
-  await ctx.session.$create({ userId: user.id, role: user.role as Role })
+  await ctx.session.$create({
+    userId: user.id,
+    role: user.role as Role,
+    tooltips: true,
+  })
 
   await db.widget.createMany({
     data: [...widgets, ...smallWidgets],
