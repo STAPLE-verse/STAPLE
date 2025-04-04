@@ -5,7 +5,7 @@ import HttpBackend from "i18next-http-backend"
 import LanguageDetector from "i18next-browser-languagedetector"
 
 // This setup uses dynamic loading from /public/locales
-i18n
+void i18n
   .use(HttpBackend)
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -15,7 +15,7 @@ i18n
     ns: ["common"], // Add other namespaces as needed
     defaultNS: "common",
     backend: {
-      loadPath: "./locales/{{lng}}/{{ns}}.json", // Path to load JSON files
+      loadPath: "/locales/{{lng}}/{{ns}}.json", // Path to load JSON files
     },
     detection: {
       order: ["localStorage", "navigator", "htmlTag"],

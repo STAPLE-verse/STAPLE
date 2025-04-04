@@ -1,10 +1,13 @@
+import "../core/utils/i18n"
 import { ErrorFallbackProps, ErrorComponent, ErrorBoundary, AppProps } from "@blitzjs/next"
 import { AuthenticationError, AuthorizationError } from "blitz"
-import React, { Suspense } from "react"
+import React, { Suspense, useEffect } from "react"
 import { withBlitz } from "src/blitz-client"
 import "src/styles/globals.css"
 import "src/core/styles/index.css"
 import { MemberPrivilegesProvider } from "src/projectprivileges/components/MemberPrivilegesContext"
+import { useTranslation } from "react-i18next"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -28,6 +31,17 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
 
 function MyApp({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
+  const { i18n } = useTranslation()
+  const user = useCurrentUser()
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (user?.language && i18n.language !== user.language) {
+        i18n.changeLanguage(user.language)
+      }
+    }
+  }, [user?.language, i18n])
+
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
       {/* TODO: Is it a good solution to add a big general suspnese? */}
