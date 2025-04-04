@@ -13,6 +13,8 @@ export type ProcessedIndividualTaskLog = {
   taskLog: ExtendedTaskLog | undefined
   firstLogId: number | undefined
   comments: CommentWithAuthor[]
+  contributorId: number
+  projectId: number
 }
 
 export function processIndividualTaskLogs(
@@ -46,6 +48,8 @@ export function processIndividualTaskLogs(
       taskLog: latestLog,
       firstLogId: firstLog?.id,
       comments: taskLogComments,
+      contributorId: projectMember.id,
+      projectId: projectMember.projectId,
     }
   })
 }
