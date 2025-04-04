@@ -37,6 +37,21 @@ export type ProjectMemberWithUsers = ProjectMember & {
   users: User[]
 }
 
+export type TeamUserWithContributor = {
+  id: number
+  username: string
+  firstName: string | null
+  lastName: string | null
+  contributorId: number
+}
+
+export type TeamWithUsers = {
+  id: number
+  projectId: number
+  name: string
+  users: TeamUserWithContributor[]
+}
+
 export type ProjectMemberWithUsername = ProjectMember & {
   users: {
     username: string

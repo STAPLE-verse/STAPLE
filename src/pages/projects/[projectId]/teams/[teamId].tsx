@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import Head from "next/head"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
@@ -18,7 +17,6 @@ export const TeamPage = () => {
 
   const [team] = useQuery(getTeam, {
     teamId: teamId!,
-    projectId: projectId!,
   })
 
   const userIds = team.users.map((user) => user.id)

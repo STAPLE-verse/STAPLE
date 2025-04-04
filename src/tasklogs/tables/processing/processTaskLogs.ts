@@ -51,7 +51,8 @@ export function processIndividualTaskLogs(
 }
 
 export type ProcessedTeamTaskLog = {
-  projectMember: ProjectMemberWithTaskLog
+  teamId: number
+  deletedTeam: boolean
   lastUpdate: string
   status: string
   taskLog: ExtendedTaskLog | undefined
@@ -76,7 +77,8 @@ export function processTeamTaskLogs(
     const taskLogComments = comments.filter((c) => c.taskLogId === firstLog?.id)
 
     return {
-      projectMember: projectMember,
+      teamId: projectMember.id,
+      deletedTeam: projectMember.deleted,
       lastUpdate: latestLog
         ? latestLog.createdAt.toLocaleDateString(undefined, {
             year: "numeric",

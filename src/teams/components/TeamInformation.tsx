@@ -2,10 +2,10 @@ import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { MemberPrivileges } from "db"
 import Card from "src/core/components/Card"
-import { ProjectMemberWithUsers } from "src/core/types"
+import { TeamWithUsers } from "src/core/types"
 
 interface TeamInformationProps {
-  team: ProjectMemberWithUsers
+  team: TeamWithUsers
   privilege: MemberPrivileges
 }
 
@@ -30,7 +30,7 @@ const TeamInformation = ({ team, privilege }: TeamInformationProps) => {
         ) : null
       }
     >
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-row justify-start gap-2">
         {users.map((user) => {
           return (
             <Link
@@ -38,7 +38,7 @@ const TeamInformation = ({ team, privilege }: TeamInformationProps) => {
               className="btn btn-primary"
               href={Routes.ShowContributorPage({
                 projectId: team.projectId,
-                contributorId: user.id,
+                contributorId: user.contributorId,
               })}
             >
               {user.firstName || user.lastName

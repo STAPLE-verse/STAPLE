@@ -34,12 +34,12 @@ model User {
   email            String             @unique
   language         String             @default("en-US")
   gravatar         String?
+  tooltips         Boolean            @default(true)
   // relational information
   projects         ProjectMember[]
   forms            Form[]
   roles            Role[]
   ProjectPrivilege ProjectPrivilege[]
-  tooltips         Boolean            @default(true)
 }
 
 model Session {
