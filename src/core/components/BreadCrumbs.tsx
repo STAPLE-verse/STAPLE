@@ -1,6 +1,6 @@
 import { useRouter } from "next/router"
 import { BreadcrumbList } from "src/core/components/BreadcrumbList"
-import { useBreadcrumbNames } from "../hooks/useBreadCrumbNames"
+import { segmentToTypeMap, useBreadcrumbNames } from "../hooks/useBreadCrumbNames"
 
 export const Breadcrumbs = () => {
   const router = useRouter()
@@ -10,8 +10,11 @@ export const Breadcrumbs = () => {
   const breadcrumbs = pathSegments.map((segment, index) => {
     const href = "/" + pathSegments.slice(0, index + 1).join("/")
     const prev = pathSegments[index - 1]
+    const type = prev ? segmentToTypeMap[prev] : undefined
 
-    const cachedLabel = namesCache[segment]
+    const compositeKey = type ? `${type}:${segment}` : segment
+    const cachedLabel = namesCache[compositeKey]
+
     let label =
       cachedLabel ?? segment.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
 
