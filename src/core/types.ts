@@ -10,6 +10,7 @@ import {
   FormVersion,
   Element,
 } from "db"
+import { ReactNode } from "react"
 
 export type RoleWithUser = Role & {
   user: User
@@ -117,7 +118,7 @@ export type ProjectWithMembers = Project & {
 export type BreadcrumbEntityType = "project" | "task" | "element" | "team" | "contributor"
 
 export type BreadcrumbItem = {
-  label: string
+  label: ReactNode
   href: string
   isLast: boolean
 }
