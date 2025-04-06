@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { BreadcrumbEntityType } from "../types"
 import getBreadcrumbLabel from "../queries/getBreadcrumbLabel"
 import { invoke } from "@blitzjs/rpc"
+import { useBreadcrumbCache } from "../components/BreadcrumbCacheContext"
 
 export const segmentToTypeMap: Record<string, BreadcrumbEntityType> = {
   projects: "project",
@@ -12,40 +13,37 @@ export const segmentToTypeMap: Record<string, BreadcrumbEntityType> = {
 }
 
 export function useBreadcrumbNames(pathSegments: string[]) {
-  // Now the keys are like "project:1", "task:99"
-  const [names, setNames] = useState<Record<string, string>>({})
+  // We are using composity keys of the type and the id: "project:1", "task:99"
+  const { names, setName } = useBreadcrumbCache()
   const seenKeys = useRef(new Set<string>())
 
-  const fetchLabel = useCallback(async (type: BreadcrumbEntityType, id: string) => {
-    const key = `${type}:${id}`
-    if (seenKeys.current.has(key)) return
-    seenKeys.current.add(key)
+  const fetchLabel = useCallback(
+    async (type: BreadcrumbEntityType, id: string) => {
+      const key = `${type}:${id}`
+      if (seenKeys.current.has(key) || names[key]) return
 
-    try {
-      const label = await invoke(getBreadcrumbLabel, {
-        type,
-        id: parseInt(id, 10),
-      })
+      seenKeys.current.add(key)
 
-      setNames((prev) => ({
-        ...prev,
-        [key]: typeof label === "string" ? label : "Unknown",
-      }))
-    } catch (e) {
-      console.warn("Could not fetch breadcrumb name for", key)
-    }
-  }, [])
+      try {
+        const label = await invoke(getBreadcrumbLabel, {
+          type,
+          id: parseInt(id, 10),
+        })
+        if (label) setName(key, label)
+      } catch (e) {
+        console.warn("Could not fetch breadcrumb name for", key)
+      }
+    },
+    [names, setName]
+  )
 
   useEffect(() => {
-    const tasks = pathSegments.map(async (segment, index) => {
+    pathSegments.forEach((segment, index) => {
       const prev = pathSegments[index - 1]
       if (!prev) return
-
       const type = segmentToTypeMap[prev]
-      if (type) void fetchLabel(type, segment)
+      if (type && /^\d+$/.test(segment)) void fetchLabel(type, segment)
     })
-
-    void Promise.all(tasks)
   }, [pathSegments, fetchLabel])
 
   return names
