@@ -6,7 +6,7 @@ export const BreadcrumbLabel = ({
   segment,
   prevSegment,
   namesCache,
-  maxLength = 20,
+  maxLength = 40,
 }: {
   segment: string
   prevSegment?: string
