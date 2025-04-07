@@ -10,6 +10,7 @@ export const segmentToTypeMap: Record<string, BreadcrumbEntityType> = {
   elements: "element",
   teams: "team",
   contributors: "contributor",
+  forms: "form",
 }
 
 export function useBreadcrumbNames(pathSegments: string[]) {

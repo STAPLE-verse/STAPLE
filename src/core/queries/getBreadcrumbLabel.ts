@@ -27,6 +27,15 @@ export default resolver.pipe(
           })
         )?.name
 
+      case "form": {
+        const latestVersion = await db.formVersion.findFirst({
+          where: { formId: input.id },
+          orderBy: { version: "desc" },
+          select: { name: true },
+        })
+        return latestVersion?.name
+      }
+
       case "contributor": {
         const member = await db.projectMember.findUnique({
           where: { id: input.id },

@@ -115,10 +115,11 @@ export type ProjectWithMembers = Project & {
   projectMembers: ProjectMemberWithUsers[]
 }
 
-export type BreadcrumbEntityType = "project" | "task" | "element" | "team" | "contributor"
+export type BreadcrumbEntityType = "project" | "task" | "element" | "team" | "contributor" | "form"
 
 export type BreadcrumbItem = {
   label: ReactNode
   href: string
   isLast: boolean
+  isValid: boolean
 }
