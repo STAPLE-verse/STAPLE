@@ -13,9 +13,9 @@ export function GetTableDisplay({ data, columns, type }) {
       columns={columns}
       data={data}
       classNames={{
-        thead: "text-sm text-base-content",
-        tbody: "text-sm text-base-content",
-        td: "text-sm text-base-content",
+        thead: "text-base text-base-content",
+        tbody: "text-base text-base-content",
+        td: "text-base text-base-content",
       }}
     />
   )
@@ -64,9 +64,9 @@ export function GetProjectSummaryDisplay({ project, projectManagers }) {
         columns={projectManagersColumns}
         data={projectManagers}
         classNames={{
-          thead: "text-sm",
-          tbody: "text-sm",
-          td: "text-sm",
+          thead: "text-base",
+          tbody: "text-base",
+          td: "text-base",
         }}
       />
     </div>

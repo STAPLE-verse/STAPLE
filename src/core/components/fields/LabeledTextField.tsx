@@ -33,7 +33,7 @@ export const LabeledTextField = forwardRef<HTMLInputElement, LabeledTextFieldPro
       <div {...outerProps} data-testid="labeledinput-testid">
         <label {...labelProps}>
           {label}
-          {description && <p className="text-sm mt-1">{description}</p>}
+          {description && <p className="text-base mt-1">{description}</p>}
           <input {...input} disabled={submitting} {...props} ref={ref} />
         </label>
 
