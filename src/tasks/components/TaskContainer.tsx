@@ -5,15 +5,20 @@ import clsx from "clsx"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowsUpDownLeftRight } from "@fortawesome/free-solid-svg-icons"
 import { UniqueIdentifier } from "@dnd-kit/core"
+import DeleteColumn from "./DeleteColumn"
+import { extractNumericId } from "../utils/extractNumericId"
+import EditableColumnTitle from "./EditableColumnTitle"
 
 interface ContainerProps {
   id: UniqueIdentifier
   children: React.ReactNode
   title?: string
   description?: string
+  onRefetch?: () => void
 }
 
-const TaskContainer = ({ id, children, title, description }: ContainerProps) => {
+const TaskContainer = ({ id, children, title, description, onRefetch }: ContainerProps) => {
+  const columnId = extractNumericId(id, "container")
   const { attributes, setNodeRef, listeners, transform, transition, isDragging } = useSortable({
     id: id,
     data: {
@@ -35,14 +40,25 @@ const TaskContainer = ({ id, children, title, description }: ContainerProps) => 
     >
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-y-1">
-          <h1 className="text-xl">{title}</h1>
+          <EditableColumnTitle
+            columnId={columnId!}
+            initialTitle={title ?? ""}
+            isEditable={title !== "Done"}
+            onRefetch={onRefetch}
+          />
           <p className="text-base">{description}</p>
         </div>
-        <FontAwesomeIcon
-          icon={faArrowsUpDownLeftRight}
-          className="w-6 h-6 text-base-content border-transparent rounded-2xl hover:opacity-50 draggable"
-          {...listeners}
-        />
+        <div className="flex items-center gap-2">
+          {title !== "Done" && columnId !== undefined && title !== undefined && (
+            <DeleteColumn columnId={columnId} columnName={title} />
+          )}
+
+          <FontAwesomeIcon
+            icon={faArrowsUpDownLeftRight}
+            className="w-6 h-6 text-base-content border-transparent rounded-2xl hover:opacity-50 draggable"
+            {...listeners}
+          />
+        </div>
       </div>
 
       {children}

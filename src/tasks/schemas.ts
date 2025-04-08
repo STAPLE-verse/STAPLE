@@ -95,3 +95,12 @@ export const UpdateTasksForElementSchema = z.object({
 export const UpdateTasksForElementFormSchema = z.object({
   selectedTasks: z.array(z.number()),
 })
+
+export const DeleteColumnSchema = z.object({
+  id: z.number(),
+})
+
+export const UpdateColumnSchema = z.object({
+  id: z.number(),
+  name: z.string().min(1),
+})

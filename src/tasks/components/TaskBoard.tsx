@@ -61,7 +61,12 @@ const TaskBoard = () => {
           >
             <SortableContext items={containers.map((i) => i.id)}>
               {containers.map((container) => (
-                <TaskContainer id={container.id} title={container.title} key={container.id}>
+                <TaskContainer
+                  id={container.id}
+                  title={container.title}
+                  key={container.id}
+                  onRefetch={refetch}
+                >
                   <SortableContext items={container.items.map((i) => i.id)}>
                     <div className="flex items-start flex-col gap-y-4">
                       {container.items.map((i) => (
