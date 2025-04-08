@@ -7,6 +7,10 @@ import handleItemSorting from "../utils/handleItemSorting"
 import handleItemDropping from "../utils/handleItemDropping"
 import handleContainerSorting from "../utils/handleContainerSorting"
 import updateColumnOrder from "../mutations/updateColumnOrder"
+import updateTaskStatus from "../mutations/updateTaskStatus"
+import { Status } from "db"
+import { extractNumericId } from "../utils/extractNumericId"
+import toast from "react-hot-toast"
 
 interface DragHandlersProps {
   containers: DNDType[]
@@ -18,6 +22,7 @@ const useDragHandlers = ({ containers, updateContainers }: DragHandlersProps) =>
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
   const [updateTaskOrderMutation] = useMutation(updateTaskOrder)
   const [updateColumnOrderMutation] = useMutation(updateColumnOrder)
+  const [updateTaskStatusMutation] = useMutation(updateTaskStatus)
 
   // On drag start
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -66,6 +71,13 @@ const useDragHandlers = ({ containers, updateContainers }: DragHandlersProps) =>
       const { active, over } = event
       let newContainers = [...containers]
 
+      // test
+      console.log("active.item.id", active.id.toString().includes("item"))
+      console.log("over.container.id", over?.id.toString().includes("container"))
+      console.log("active", active)
+      console.log("over", over)
+      console.log("is active id not equal over id", active.id !== over!.id)
+
       // Handling Container Sorting
       if (
         active.id.toString().includes("container") &&
@@ -107,6 +119,17 @@ const useDragHandlers = ({ containers, updateContainers }: DragHandlersProps) =>
         ) {
           newContainers = handleItemDropping(active.id, over.id, containers)
           if (newContainers) updateContainers(newContainers)
+
+          // Update the task status to completed
+          // when the item is dropped into the "done" container
+          const taskId = extractNumericId(active.id, "item")
+          const targetContainer = containers.find((c) => c.id === over.id)
+          const containerTitle = targetContainer?.title
+
+          if (containerTitle?.toLowerCase() === "done" && taskId) {
+            await updateTaskStatusMutation({ id: taskId, status: Status.COMPLETED })
+            toast.success("Task status change to Completed")
+          }
         }
 
         if (newContainers) {
@@ -124,7 +147,13 @@ const useDragHandlers = ({ containers, updateContainers }: DragHandlersProps) =>
 
       setActiveId(null)
     },
-    [containers, updateColumnOrderMutation, updateContainers, updateTaskOrderMutation]
+    [
+      containers,
+      updateColumnOrderMutation,
+      updateContainers,
+      updateTaskOrderMutation,
+      updateTaskStatusMutation,
+    ]
   )
 
   return {

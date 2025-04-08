@@ -53,8 +53,8 @@ export const UpdateTaskSchema = z.object({
   rolesId: z.array(z.number()).optional().nullable(),
 })
 
-export const UpdateStatusSchema = z.object({
-  id: z.number(),
+export const UpdateTaskStatusSchema = z.object({
+  id: z.number().int().positive(),
   status: z.nativeEnum(Status),
 })
 
