@@ -22,6 +22,8 @@ import getUserWidgets from "src/widgets/queries/getUserWidgets"
 import initializeWidgets from "src/widgets/mutations/initializeWidgets"
 import toast from "react-hot-toast"
 import { useTranslation } from "react-i18next"
+import { Tooltip } from "react-tooltip"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
 
 const MainContent = () => {
   const [updateWidgetMutation] = useMutation(updateWidget)
@@ -75,9 +77,18 @@ const MainContent = () => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl h-full space-y-4">
-      <div className="mb-4 justify-center flex">
-        <h3 className="text-3xl">Welcome, {name}!</h3>
-      </div>
+      <h3 className="text-3xl justify-center items-center flex">
+        Welcome, {name}!
+        <InformationCircleIcon
+          className="h-6 w-6 ml-2 text-info stroke-2"
+          data-tooltip-id="dashboard-overview"
+        />
+        <Tooltip
+          id="dashboard-overview"
+          content="Welcome to the main dahsboard! You can rearrange these widgets by clicking and dragging the boxes. Use the buttons to navigate to tasks, notifications, and more. "
+          className="z-[1099] ourtooltips"
+        />
+      </h3>
 
       <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd} sensors={sensors}>
         <WidgetContainer widgets={constructedWidgets} />

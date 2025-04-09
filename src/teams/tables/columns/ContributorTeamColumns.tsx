@@ -19,7 +19,7 @@ export const ContributorTeamColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
-      <div className="">
+      <div>
         <Link
           className="btn btn-primary"
           href={Routes.ShowTeamPage({

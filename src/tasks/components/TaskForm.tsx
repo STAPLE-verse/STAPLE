@@ -78,6 +78,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
   return (
     <Form<S> {...formProps} encType="multipart/form-data" className="mt-4 gap-4 flex flex-col">
+      Required:
+      <hr></hr>
       {/* Name */}
       <LabeledTextField
         className="input w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
@@ -86,7 +88,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         placeholder="Add Task Name"
         type="text"
       />
-
       {/* Column */}
       <LabelSelectField
         className="select w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
@@ -96,6 +97,28 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         optionText="name"
         optionValue="id"
       />
+      <label>At least one:</label>
+      <ValidationErrorDisplay fieldName={"projectMembersId"} />
+      {/* Contributors */}
+      <ToggleModal
+        buttonLabel="Assign Contributor(s)"
+        modalTitle="Select Contributors"
+        buttonClassName="w-1/2"
+        saveButton={true}
+      >
+        <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
+      </ToggleModal>
+      {/* Teams */}
+      <ToggleModal
+        buttonLabel="Assign Team(s)"
+        modalTitle="Select Teams"
+        buttonClassName="w-1/2"
+        saveButton={true}
+      >
+        <CheckboxFieldTable name="teamsId" options={teamOptions} />
+      </ToggleModal>
+      Optional: you can do this later
+      <hr></hr>
       {/* Description */}
       <LabeledTextAreaField
         className="textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2"
@@ -104,10 +127,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         placeholder="Add Description"
         type="textarea"
       />
-
       {/* Deadline */}
       <DateField name="deadline" label="Deadline:" />
-
       {/* Elements */}
       <LabelSelectField
         className="select w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
@@ -118,23 +139,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         optionValue="id"
         disableFirstOption={false}
       />
-
-      {/* Contributors */}
-      <ToggleModal
-        buttonLabel="Assign Contributor(s)"
-        modalTitle="Select Contributors"
-        buttonClassName="w-1/2"
-      >
-        <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
-      </ToggleModal>
-      <ValidationErrorDisplay fieldName={"projectMembersId"} />
-
-      {/* Teams */}
-      <ToggleModal buttonLabel="Assign Team(s)" modalTitle="Select Teams" buttonClassName="w-1/2">
-        <CheckboxFieldTable name="teamsId" options={teamOptions} />
-      </ToggleModal>
-      <ValidationErrorDisplay fieldName={"projectMembersId"} />
-
       {/* Form */}
       {formResponseSupplied ? (
         <TaskSchemaInput projectManagerIds={projectManagerUserIds} />
@@ -144,7 +148,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           would like to change the attached form.
         </p>
       )}
-
       {/* Roles */}
       <AddRoleInput
         projectManagerIds={projectManagerUserIds}

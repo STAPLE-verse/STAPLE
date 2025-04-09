@@ -77,13 +77,19 @@ export default resolver.pipe(
     // Send notification
     const assignedUserIds = taskLog.assignedTo.users.map((user) => user.id)
 
+    const createdByUsername = comment.author.users[0]
+      ? comment.author.users[0].firstName && comment.author.users[0].lastName
+        ? `${comment.author.users[0].firstName} ${comment.author.users[0].lastName}`
+        : comment.author.users[0].username
+      : "Unknown"
+
     await sendNotification(
       {
         templateId: "commentMade",
         recipients: assignedUserIds,
         data: {
           taskName: taskLog.task.name,
-          createdBy: comment.author.users[0]?.username || "Unknown",
+          createdBy: createdByUsername,
         },
         projectId: projectId,
         routeData: {
@@ -104,7 +110,7 @@ export default resolver.pipe(
         recipients: projectManagerIds,
         data: {
           taskName: taskLog.task.name,
-          createdBy: comment.author.users[0]?.username || "Unknown",
+          createdBy: createdByUsername,
         },
         projectId: projectId,
         routeData: {

@@ -16,7 +16,12 @@ const RoleSelect: React.FC<RoleSelectProps> = ({ projectManagerIds }) => {
 
   const roles = fetchedRoles.roles as RoleWithUser[]
   const roleOptions = roles.map((role) => ({ label: role.name, id: role.id }))
-  const extraData = roles.map((role) => ({ pm: role.user.username }))
+  const extraData = roles.map((role) => ({
+    pm:
+      role.user.firstName && role.user.lastName
+        ? `${role.user.firstName} ${role.user.lastName}`
+        : role.user.username || "Unknown User",
+  }))
 
   const extraColumns = [
     {

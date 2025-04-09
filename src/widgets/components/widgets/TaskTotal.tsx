@@ -3,7 +3,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
-import { GetTotalTaskDisplay } from "src/core/components/GetWidgetDisplay"
+import { GetCircularProgressDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 import { MemberPrivileges } from "@prisma/client"
 import getTaskStats from "src/tasks/queries/getTaskStats"
@@ -22,12 +22,12 @@ const TaskTotal: TaskTotalType = ({ size, privilege }) => {
   const [taskStats] = useQuery(getTaskStats, { projectId: projectId!, privilege: privilege })
 
   // Calculate task completion percentage
-  const taskPercent = taskStats.allTask === 0 ? 0 : taskStats.completedTask / taskStats.allTask
+  const taskProportion = taskStats.allTask === 0 ? 0 : taskStats.completedTask / taskStats.allTask
 
   return (
     <Widget
       title="Tasks"
-      display={<GetTotalTaskDisplay taskPercent={taskPercent} />}
+      display={<GetCircularProgressDisplay proportion={taskProportion} />}
       link={
         <PrimaryLink
           route={Routes.TasksPage({ projectId: projectId! })}

@@ -1,6 +1,5 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
-import Head from "next/head"
 import Link from "next/link"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"

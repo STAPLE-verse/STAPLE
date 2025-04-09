@@ -10,6 +10,7 @@ import {
   FormVersion,
   Element,
 } from "db"
+import { ReactNode } from "react"
 
 export type RoleWithUser = Role & {
   user: User
@@ -35,6 +36,21 @@ export type TaskLogWithTaskRoles = TaskLog & {
 
 export type ProjectMemberWithUsers = ProjectMember & {
   users: User[]
+}
+
+export type TeamUserWithContributor = {
+  id: number
+  username: string
+  firstName: string | null
+  lastName: string | null
+  contributorId: number
+}
+
+export type TeamWithUsers = {
+  id: number
+  projectId: number
+  name: string
+  users: TeamUserWithContributor[]
 }
 
 export type ProjectMemberWithUsername = ProjectMember & {
@@ -92,4 +108,18 @@ export type ExtendedTask = Task & {
 export type RouteData = {
   path: string
   params?: Record<string, any>
+}
+
+// Define the ProjectWithMembers type
+export type ProjectWithMembers = Project & {
+  projectMembers: ProjectMemberWithUsers[]
+}
+
+export type BreadcrumbEntityType = "project" | "task" | "element" | "team" | "contributor" | "form"
+
+export type BreadcrumbItem = {
+  label: ReactNode
+  href: string
+  isLast: boolean
+  isValid: boolean
 }

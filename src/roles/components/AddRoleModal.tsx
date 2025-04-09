@@ -68,6 +68,10 @@ export const AddRoleModal = ({ rows, projectId, refetch, type }) => {
             />
           </div>
           <div className="modal-action flex justify-end mt-4">
+            <button type="button" className="btn btn-primary" onClick={handleToggleModal}>
+              Save
+            </button>
+
             <button type="button" className="btn btn-secondary" onClick={handleToggleModal}>
               Close
             </button>

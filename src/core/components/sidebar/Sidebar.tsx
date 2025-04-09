@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 import { SidebarItemProps } from "./SidebarItems"
 import { SidebarState } from "src/core/hooks/useSidebar"
 import SidebarTooltips from "./SidebarTooltips"
+import TooltipWrapper from "../TooltipWrapper"
 
 export default function Sidebar({
   sidebarState,
@@ -33,11 +34,23 @@ export default function Sidebar({
         </h2>
         <button onClick={toggleExpand} className="p-1.5 rounded-lg hover:bg-primary/50">
           {expanded ? (
-            <ChevronLeftIcon className="w-6 h-6" />
+            <ChevronLeftIcon className="w-6 h-6" data-tooltip-id="chevron-left-tooltip" />
           ) : (
-            <ChevronRightIcon className="w-6 h-6" />
+            <ChevronRightIcon className="w-6 h-6" data-tooltip-id="chevron-right-tooltip" />
           )}
         </button>
+        <TooltipWrapper
+          id="chevron-left-tooltip"
+          content="Collapse Menu"
+          className="z-[1099] ourtooltips"
+          place="right"
+        />
+        <TooltipWrapper
+          id="chevron-right-tooltip"
+          content="Expand Menu"
+          className="z-[1099] ourtooltips"
+          place="right"
+        />
       </div>
       <nav className="flex-1">
         <ul className="px-3">
@@ -92,7 +105,7 @@ export function SidebarItem({
 
       {!expanded && (
         <div
-          className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-primary/100 text-primary-800 text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`}
+          className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-primary/100 text-primary-800 text-base invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`}
         >
           {text}
         </div>

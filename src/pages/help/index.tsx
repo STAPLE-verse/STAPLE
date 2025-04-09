@@ -1,12 +1,11 @@
 import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
-import Head from "next/head"
 
 const HelpPage = () => {
   return (
     <Layout title="Get Help">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl flex justify-center mb-2">Get Help</h1>
+        <h1 className="text-3xl flex justify-center mb-4">Get Help</h1>
 
         <Suspense fallback={<div>Loading...</div>}>
           <div className="text-lg flex flex-row">
