@@ -59,6 +59,7 @@ const NotificationContent = () => {
 
 const ProjectNotificationsPage = () => {
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Project Notifications">
       <Suspense fallback={<div>Loading...</div>}>
         <MultiSelectProvider>

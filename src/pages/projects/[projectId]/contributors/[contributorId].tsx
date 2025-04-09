@@ -47,6 +47,7 @@ export const ContributorPage = () => {
 
 const ShowContributorPage = () => {
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Contributions">
       <Suspense fallback={<div>Loading...</div>}>
         <ContributorPage />

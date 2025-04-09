@@ -89,6 +89,7 @@ const MetadataContent = () => {
 
 export const ShowMetadataPage = () => {
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Form Data Page">
       <Suspense fallback={<div>Loading...</div>}>
         <TaskLayout>

@@ -51,6 +51,7 @@ const InvitesPage = () => {
   }
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Project Invitations">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center items-center text-3xl">

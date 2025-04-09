@@ -43,6 +43,7 @@ const ContributorsPage = () => {
   const currentUser = useCurrentUser()
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="All Contributors">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Contributors</h1>

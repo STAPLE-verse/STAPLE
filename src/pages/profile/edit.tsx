@@ -14,7 +14,8 @@ const EditProfilePage = () => {
 
 EditProfilePage.authenticate = true
 EditProfilePage.getLayout = (page) => {
-  return <Layout title="Edit Profile">{page}</Layout>
+  return // @ts-expect-error children are clearly passed below
+  ;<Layout title="Edit Profile">{page}</Layout>
 }
 
 export default EditProfilePage

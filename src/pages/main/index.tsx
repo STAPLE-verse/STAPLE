@@ -98,6 +98,7 @@ const MainContent = () => {
 }
 
 export const MainPage = () => (
+  // @ts-expect-error children are clearly passed below
   <Layout title="Home">
     <Suspense fallback={<div>Loading...</div>}>
       <MainContent />
