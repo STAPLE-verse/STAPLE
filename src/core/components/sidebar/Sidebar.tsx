@@ -71,7 +71,7 @@ export function SidebarItem({
   alert,
   tooltipId,
   expanded,
-}: SidebarItemProps & { expanded: boolean }) {
+}: SidebarItemProps & { expanded: boolean; key: number | string }) {
   const router = useRouter()
 
   const handleClick = async () => {
