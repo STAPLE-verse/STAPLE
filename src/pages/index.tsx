@@ -11,9 +11,12 @@ const Home: BlitzPage = () => {
   }, [router])
 
   return (
-    <Head>
-      <title>{"Home"}</title>
-    </Head>
+    <>
+      {/* @ts-expect-error false positive: JSX children are valid here */}
+      <Head>
+        <title>{"Home"}</title>
+      </Head>
+    </>
   )
 }
 

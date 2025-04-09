@@ -62,11 +62,11 @@ const useSidebar = (): SidebarState => {
   const [project] = useQuery(getProject, { id: projectId }, { enabled: !!projectId })
   const user = useCurrentUser()
   const userPrivilege = user ? user!.role : "USER"
-  const { t } = useTranslation()
+  const translation = (useTranslation as any)()
 
   const sidebarState = useMemo(() => {
-    return getSidebarState(project, privilege, userPrivilege, t)
-  }, [project, privilege, userPrivilege, t])
+    return getSidebarState(project, privilege, userPrivilege, translation.t)
+  }, [project, privilege, userPrivilege, translation.t])
 
   return sidebarState
 }

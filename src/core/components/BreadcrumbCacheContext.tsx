@@ -10,7 +10,7 @@ const BreadcrumbCacheContext = createContext<{
   setName: () => {},
 })
 
-export const BreadcrumbCacheProvider = ({ children }: { children: React.ReactNode }) => {
+export const BreadcrumbCacheProvider = ({ children }: { children?: React.ReactNode }) => {
   const [names, setNames] = useState<BreadcrumbCache>({})
 
   const setName = (key: string, label: string) => {

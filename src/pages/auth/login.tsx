@@ -8,6 +8,7 @@ const LoginPage: BlitzPage = () => {
 
   return (
     <>
+      {/* @ts-expect-error false positive: JSX children are valid here */}
       <Head>
         <title>{"Login"}</title>
       </Head>
