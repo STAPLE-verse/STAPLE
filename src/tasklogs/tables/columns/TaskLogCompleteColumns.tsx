@@ -4,6 +4,8 @@ import { TaskLogToggleModal } from "../../components/TaskLogToggleModal"
 import { ProcessedIndividualTaskLog } from "../processing/processTaskLogs"
 import ToggleModal from "src/core/components/ToggleModal"
 import ChatBox from "src/comments/components/ChatBox"
+import { Routes } from "@blitzjs/next"
+import Link from "next/link"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedIndividualTaskLog>()
@@ -12,7 +14,17 @@ const columnHelper = createColumnHelper<ProcessedIndividualTaskLog>()
 // Table for assignment without a form
 export const TaskLogCompleteColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
   columnHelper.accessor("projectMemberName", {
-    cell: (info) => <span>{`${info.getValue()}`}</span>,
+    cell: (info) => (
+      <Link
+        className="btn btn-primary"
+        href={Routes.ShowContributorPage({
+          projectId: info.row.original.projectId,
+          contributorId: info.row.original.contributorId,
+        })}
+      >
+        {`${info.getValue()}`}
+      </Link>
+    ),
     header: "Contributor Name",
   }),
   columnHelper.accessor("lastUpdate", {
