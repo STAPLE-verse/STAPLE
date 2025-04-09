@@ -20,9 +20,9 @@ export const isValidPath = (href: string): boolean => {
 
 export const Breadcrumbs = () => {
   const router = useRouter()
+
   const pathSegments = router.asPath.split("/").filter(Boolean)
   const namesCache = useBreadcrumbNames(pathSegments)
-
   const breadcrumbs = pathSegments.map((segment, index) => {
     const href = "/" + pathSegments.slice(0, index + 1).join("/")
     const prev = pathSegments[index - 1]
