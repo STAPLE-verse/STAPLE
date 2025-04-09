@@ -1,5 +1,5 @@
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
-import { Tooltip } from "react-tooltip"
+import TooltipWrapper from "src/core/components/TooltipWrapper"
 
 interface CircularPercentageWidgetProps {
   data: number
@@ -17,7 +17,7 @@ export const CircularPercentageWidget: React.FC<CircularPercentageWidgetProps> =
       <div className="stat-title text-2xl text-inherit" data-tooltip-id={`${title}-tooltip`}>
         {title}
       </div>
-      <Tooltip id={`${title}-tooltip`} content={tooltip} className="z-[1099] ourtooltips" />
+      <TooltipWrapper id={`${title}-tooltip`} content={tooltip} className="z-[1099] ourtooltips" />
       <div className="w-20 h-20 m-2">
         <CircularProgressbar
           value={data * 100}

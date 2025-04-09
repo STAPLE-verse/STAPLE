@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import Modal from "src/core/components/Modal"
-import { Tooltip } from "react-tooltip"
 import RoleSelect from "./RoleSelect"
+import TooltipWrapper from "src/core/components/TooltipWrapper"
 
 interface AddRoleInputProps {
   projectManagerIds: number[]
@@ -19,7 +19,7 @@ const AddRoleInput: React.FC<AddRoleInputProps> = ({
 
   return (
     <>
-      <Tooltip
+      <TooltipWrapper
         id="role-tooltip"
         content={tooltipContent}
         className="z-[1099] ourtooltips"

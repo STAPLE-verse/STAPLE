@@ -8,10 +8,10 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { HomeIcon } from "@heroicons/react/24/outline"
 import NotificationsMenu from "src/notifications/components/NotificationMenu"
 import Image from "next/image"
-import { Tooltip } from "react-tooltip"
 import ThemeSelect from "../ThemeSelect"
 import { Breadcrumbs } from "../BreadCrumbs"
 import Gravatar from "react-gravatar"
+import TooltipWrapper from "../TooltipWrapper"
 
 type LogoProps = {
   theme: string
@@ -92,7 +92,7 @@ const Navbar = () => {
               className="w-10 rounded-full"
               data-tooltip-id="profile-tooltip"
             >
-              <Tooltip
+              <TooltipWrapper
                 id="profile-tooltip"
                 content="Update your profile"
                 className="z-[1099] ourtooltips"

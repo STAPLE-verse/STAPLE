@@ -5,6 +5,8 @@ import { withBlitz } from "src/blitz-client"
 import "src/styles/globals.css"
 import "src/core/styles/index.css"
 import { MemberPrivilegesProvider } from "src/projectprivileges/components/MemberPrivilegesContext"
+import { TooltipProvider } from "src/core/components/TooltipContext"
+import { useSession } from "@blitzjs/auth"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -28,13 +30,16 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
 
 function MyApp({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
+  const session = useSession({ suspense: false })
+
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
-      {/* TODO: Is it a good solution to add a big general suspnese? */}
       <Suspense fallback="Loading...">
-        <MemberPrivilegesProvider>
-          {getLayout(<Component {...pageProps} />)}
-        </MemberPrivilegesProvider>
+        <TooltipProvider enabled={session.tooltips}>
+          <MemberPrivilegesProvider>
+            {getLayout(<Component {...pageProps} />)}
+          </MemberPrivilegesProvider>
+        </TooltipProvider>
       </Suspense>
     </ErrorBoundary>
   )

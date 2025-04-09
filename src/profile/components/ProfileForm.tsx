@@ -1,4 +1,5 @@
 import { Form, FormProps } from "src/core/components/fields/Form"
+import { LabeledCheckboxField } from "src/core/components/fields/LabeledCheckboxField"
 import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import LabelSelectField from "src/core/components/fields/LabelSelectField"
 import { getDateLanguageLocales } from "src/core/utils/getDateLanguageLocales"
@@ -63,6 +64,12 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         placeholder="Email"
         type="text"
         className="input mb-8 text-primary input-primary input-bordered border-2 bg-base-300 w-1/2"
+      />
+      <LabeledCheckboxField
+        name="tooltips"
+        label={(value) => (value ? "Turn OFF tooltips" : "Turn ON tooltips")}
+        className="checkbox checkbox-primary border-2"
+        labelProps={{ className: "text-lg" }}
       />
     </Form>
   )

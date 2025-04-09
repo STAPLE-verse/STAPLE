@@ -1,8 +1,8 @@
 import { useState } from "react"
 import Modal from "src/core/components/Modal"
-import { Tooltip } from "react-tooltip"
 import { TeamMembers, TeamMembersColumn } from "src/teams/tables/columns/TeamMembersColumn"
 import Table from "src/core/components/Table"
+import TooltipWrapper from "src/core/components/TooltipWrapper"
 
 export const ShowTeamModal = ({ projectMember, disabled }) => {
   const [openModal, setOpenModal] = useState(false)
@@ -34,7 +34,7 @@ export const ShowTeamModal = ({ projectMember, disabled }) => {
       >
         <span>{`${projectMember.name}`}</span>
       </button>
-      <Tooltip
+      <TooltipWrapper
         id="showTeamModalTooltip"
         content="Show team members"
         className="z-[1099] ourtooltips"
