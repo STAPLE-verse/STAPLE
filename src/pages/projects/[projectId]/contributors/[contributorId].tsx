@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import Head from "next/head"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"

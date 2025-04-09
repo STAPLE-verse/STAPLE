@@ -5,7 +5,7 @@ import TooltipWrapper from "./TooltipWrapper"
 
 interface CardProps {
   title: string
-  children: ReactNode
+  children?: ReactNode
   tooltipContent?: string
   actions?: ReactNode
   className?: string
