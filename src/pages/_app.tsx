@@ -7,6 +7,7 @@ import "src/core/styles/index.css"
 import { MemberPrivilegesProvider } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { TooltipProvider } from "src/core/components/TooltipContext"
 import { useSession } from "@blitzjs/auth"
+import { BreadcrumbCacheProvider } from "src/core/components/BreadcrumbCacheContext"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -35,11 +36,13 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
       <Suspense fallback="Loading...">
-        <TooltipProvider enabled={session.tooltips}>
-          <MemberPrivilegesProvider>
-            {getLayout(<Component {...pageProps} />)}
-          </MemberPrivilegesProvider>
-        </TooltipProvider>
+        <BreadcrumbCacheProvider>
+          <TooltipProvider enabled={session.tooltips}>
+            <MemberPrivilegesProvider>
+              {getLayout(<Component {...pageProps} />)}
+            </MemberPrivilegesProvider>
+          </TooltipProvider>
+        </BreadcrumbCacheProvider>
       </Suspense>
     </ErrorBoundary>
   )
