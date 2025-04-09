@@ -21,6 +21,7 @@ import { Widget } from "db"
 import getUserWidgets from "src/widgets/queries/getUserWidgets"
 import initializeWidgets from "src/widgets/mutations/initializeWidgets"
 import toast from "react-hot-toast"
+import { useTranslation } from "react-i18next"
 
 const MainContent = () => {
   const [updateWidgetMutation] = useMutation(updateWidget)
@@ -28,6 +29,15 @@ const MainContent = () => {
 
   const currentUser = useCurrentUser()
   const userId = currentUser?.id!
+
+  //translations
+  const { i18n } = useTranslation()
+  useEffect(() => {
+    if (typeof window !== "undefined" && currentUser?.language) {
+      void i18n.changeLanguage(currentUser.language)
+      localStorage.setItem("i18nextLng", currentUser.language)
+    }
+  }, [currentUser?.language, i18n])
 
   const [widgets, setWidgets] = useState<Widget[]>([])
 
