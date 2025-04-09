@@ -10,18 +10,20 @@ export const ProjectTasksTabs = ({ projectPrivilege, projectId }) => {
   return (
     <>
       <Tab.Group defaultIndex={0}>
-        <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
-          {/* Tablink for board view */}
-          {projectPrivilege === MemberPrivileges.PROJECT_MANAGER && (
+        {projectPrivilege === MemberPrivileges.PROJECT_MANAGER && (
+          <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
+            {/* Tablink for board view */}
+            {projectPrivilege === MemberPrivileges.PROJECT_MANAGER && (
+              <Tab as="button" className={({ selected }) => clsx("tab", selected && "tab-active")}>
+                Board
+              </Tab>
+            )}
+            {/* TabLink for table view */}
             <Tab as="button" className={({ selected }) => clsx("tab", selected && "tab-active")}>
-              Board
+              Table
             </Tab>
-          )}
-          {/* TabLink for table view */}
-          <Tab as="button" className={({ selected }) => clsx("tab", selected && "tab-active")}>
-            Table
-          </Tab>
-        </Tab.List>
+          </Tab.List>
+        )}
 
         <Tab.Panels>
           {/* Tabpanel for kanban board */}

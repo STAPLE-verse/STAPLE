@@ -31,11 +31,11 @@ const AllFormsPage = () => {
   })
 
   return (
-    <Layout title="All Forms">
+    <Layout title="Forms">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <Suspense fallback={<div>Loading...</div>}>
           <h1 className="flex justify-center items-center text-3xl">
-            All Forms{" "}
+            Forms{" "}
             <InformationCircleIcon
               className="h-6 w-6 ml-2 text-info stroke-2"
               data-tooltip-id="dashboard-overview"
