@@ -11,7 +11,7 @@ export const Thanks: BlitzPage = () => {
       </Head>
 
       <main className="flex h-screen">
-        <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
+        <div className="flex flex-col max-w-3xl mx-auto w-full justify-center flex-grow">
           <div className="flex justify-center items-center w-full">
             <picture>
               <source
@@ -31,7 +31,8 @@ export const Thanks: BlitzPage = () => {
             login using the email and password you signed up with. You can change your email,
             username, and password within the settings of STAPLE.
           </div>
-          <div className="flex flex-row justify-end mb-4">
+          <div className="divider pt-4 pb-4"></div>
+          <div className="flex flex-row justify-center mb-4">
             <Link className="btn btn-primary" href={Routes.Home()}>
               Go Home
             </Link>

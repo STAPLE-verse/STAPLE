@@ -1,7 +1,7 @@
 import React from "react"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { TaskLogToggleModal } from "../../components/TaskLogToggleModal"
 import { ProcessedTeamTaskLog } from "../processing/processTaskLogs"
+import { TaskLogSchemaModal } from "../../components/TaskLogSchemaModal"
 import { ShowTeamModal } from "src/teams/components/ShowTeamModal"
 import ToggleModal from "src/core/components/ToggleModal"
 import ChatBox from "src/comments/components/ChatBox"
@@ -10,10 +10,10 @@ import ChatBox from "src/comments/components/ChatBox"
 const columnHelper = createColumnHelper<ProcessedTeamTaskLog>()
 
 // ColumnDefs
-export const TeamTaskLogCompleteColumns: ColumnDef<ProcessedTeamTaskLog>[] = [
-  columnHelper.accessor("projectMember", {
+export const TeamTaskLogFormColumns: ColumnDef<ProcessedTeamTaskLog>[] = [
+  columnHelper.accessor("teamId", {
     cell: (info) => (
-      <ShowTeamModal projectMember={info.getValue()} disabled={info.getValue().deleted} />
+      <ShowTeamModal teamId={info.getValue()} disabled={info.row.original.deletedTeam} />
     ),
     header: "Team Name",
   }),
@@ -28,11 +28,8 @@ export const TeamTaskLogCompleteColumns: ColumnDef<ProcessedTeamTaskLog>[] = [
     id: "status",
   }),
   columnHelper.accessor("taskLog", {
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => <TaskLogToggleModal taskLog={info.getValue()} />,
-    header: "Change status",
-    id: "updateStatus",
+    cell: (info) => <TaskLogSchemaModal taskLog={info.getValue()} />,
+    header: "Form Data",
   }),
   columnHelper.accessor("firstLogId", {
     enableColumnFilter: false,

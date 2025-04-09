@@ -1,6 +1,6 @@
 import { WidgetSize } from "@prisma/client"
 import React from "react"
-import { Tooltip } from "react-tooltip"
+import TooltipWrapper from "src/core/components/TooltipWrapper"
 
 interface WidgetProps {
   title: string
@@ -32,7 +32,7 @@ const Widget: React.FC<WidgetProps> = ({
         {title}
       </div>
       <div className="flex-grow overflow-auto flex align-center">{display}</div>
-      <Tooltip
+      <TooltipWrapper
         id={tooltipId}
         content={tooltipContent}
         className="z-[9999] ourtooltips"

@@ -591,6 +591,11 @@ span.arrow.tooltip-arrow {
   background-color: oklch(var(--nc)) !important;
   color: oklch(var(--n)) !important;
   font-weight: bold;
+  font-size: 16px !important;
+  max-width: 400px !important; /* Limits width to force wrapping */
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.2 !important;
 }
 
 /* focus for inputs overall */
@@ -598,4 +603,12 @@ input:focus {
   outline-color: oklch(var(--s)) !important;
   outline-offset: 0;
   outline-width: 3px !important;
+}
+
+.draggable {
+  cursor: grab;
+}
+
+.draggable:active {
+  cursor: grabbing;
 }

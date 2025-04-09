@@ -25,7 +25,7 @@ function MyForm<S extends z.ZodType<any, any>>(props: MyFormProps<S>) {
           name={name}
           placeholder={placeholder}
           onChange={(val) => {
-            console.log("what")
+            //console.log("what")
             onChangeCallback(val)
           }}
           label={label}

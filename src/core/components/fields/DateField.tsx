@@ -19,17 +19,22 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
       meta: { touched, error, submitError, submitting },
     } = useField(name, fieldProps)
 
-    const [dateInputValue, setDateInputValue] = useState<string>(() => {
-      return input.value ? moment(input.value).format("YYYY-MM-DDTHH:mm") : ""
-    })
+    // Ensure the initial state is only a date (or empty if none)
+    const [dateInputValue, setDateInputValue] = useState<string>(
+      input.value ? moment(input.value).format("YYYY-MM-DD") : ""
+    )
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value
-      setDateInputValue(value)
+
       if (value === "") {
+        setDateInputValue("")
         input.onChange(null)
       } else {
-        input.onChange(new Date(value))
+        // Ensure the date is stored as midnight in local time
+        const localDate = moment(value).endOf("day") // Sets to local midnight (00:00)
+        setDateInputValue(localDate.format("YYYY-MM-DD")) // Keep input display clean
+        input.onChange(localDate.toDate()) // Ensure it saves correctly in the DB
       }
     }
 
@@ -42,12 +47,13 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
           <input
             {...input}
             value={dateInputValue}
+            placeholder="No date selected"
             className="input input-bordered text-lg
             mb-4 border-primary rounded w-1/2 border-2
             bg-base-300 text-primary"
-            type="datetime-local"
-            min={moment().format("YYYY-MM-DDTHH:mm")}
-            max="2050-01-01T00:00"
+            type="date" // Changed to date type
+            min={moment().format("YYYY-MM-DD")}
+            max="2050-01-01"
             onChange={handleChange}
             disabled={submitting}
             ref={ref}

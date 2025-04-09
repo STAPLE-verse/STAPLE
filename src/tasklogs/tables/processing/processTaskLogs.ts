@@ -13,6 +13,8 @@ export type ProcessedIndividualTaskLog = {
   taskLog: ExtendedTaskLog | undefined
   firstLogId: number | undefined
   comments: CommentWithAuthor[]
+  contributorId: number
+  projectId: number
 }
 
 export function processIndividualTaskLogs(
@@ -46,12 +48,15 @@ export function processIndividualTaskLogs(
       taskLog: latestLog,
       firstLogId: firstLog?.id,
       comments: taskLogComments,
+      contributorId: projectMember.id,
+      projectId: projectMember.projectId,
     }
   })
 }
 
 export type ProcessedTeamTaskLog = {
-  projectMember: ProjectMemberWithTaskLog
+  teamId: number
+  deletedTeam: boolean
   lastUpdate: string
   status: string
   taskLog: ExtendedTaskLog | undefined
@@ -76,7 +81,8 @@ export function processTeamTaskLogs(
     const taskLogComments = comments.filter((c) => c.taskLogId === firstLog?.id)
 
     return {
-      projectMember: projectMember,
+      teamId: projectMember.id,
+      deletedTeam: projectMember.deleted,
       lastUpdate: latestLog
         ? latestLog.createdAt.toLocaleDateString(undefined, {
             year: "numeric",

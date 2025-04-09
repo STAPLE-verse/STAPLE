@@ -1,4 +1,3 @@
-import Layout from "src/core/layouts/Layout"
 import Link from "next/link"
 import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import { Form } from "src/core/components/fields/Form"
@@ -13,7 +12,7 @@ const ForgotPasswordPage: BlitzPage = () => {
   const [forgotPasswordMutation, { isSuccess }] = useMutation(forgotPassword)
 
   return (
-    <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
+    <div className="flex flex-col max-w-3xl mx-auto w-full justify-center flex-grow min-h-screen">
       <div className="flex justify-center items-center w-full">
         <picture>
           <source
@@ -59,7 +58,8 @@ const ForgotPasswordPage: BlitzPage = () => {
           />
         </Form>
       )}
-      <div className="flex flex-row justify-end mt-4">
+      <div className="divider pt-4 pb-4"></div>
+      <div className="flex flex-row justify-center">
         <Link className="btn btn-secondary" href={Routes.Home()}>
           Go Back Home
         </Link>

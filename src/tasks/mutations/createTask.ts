@@ -122,7 +122,11 @@ export default resolver.pipe(
 
       // Get username corresponding to the PM who created the task
       // it will always be one user to create so link to that projectMember
-      const createdByUsername = task.createdBy.users[0] ? task.createdBy.users[0].username : null
+      const createdByUsername = task.createdBy.users[0]
+        ? task.createdBy.users[0].firstName && task.createdBy.users[0].lastName
+          ? `${task.createdBy.users[0].firstName} ${task.createdBy.users[0].lastName}`
+          : task.createdBy.users[0].username
+        : null
 
       await sendNotification(
         {

@@ -4,9 +4,9 @@ import { useParam } from "@blitzjs/next"
 import getProjectStats from "src/projects/queries/getProjectStats"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
-import { GetProjectMemberDisplay } from "src/core/components/GetWidgetDisplay"
+import { GetIconDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { MagnifyingGlassIcon, UsersIcon } from "@heroicons/react/24/outline"
 
 const ProjectMemberNumber: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
@@ -18,7 +18,7 @@ const ProjectMemberNumber: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
   return (
     <Widget
       title="Contributors"
-      display={<GetProjectMemberDisplay projectStats={projectStats} />}
+      display={<GetIconDisplay number={projectStats.allProjectMember} icon={UsersIcon} />}
       link={
         <PrimaryLink
           route={Routes.ContributorsPage({ projectId: projectId! })}

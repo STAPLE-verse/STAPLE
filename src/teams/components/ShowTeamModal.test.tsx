@@ -2,29 +2,12 @@
  * @vitest-environment jsdom
  */
 
-import { expect, vi, test } from "vitest"
+import { expect, test } from "vitest"
 import { render, screen, fireEvent } from "test/utils"
 import { ShowTeamModal } from "src/teams/components/ShowTeamModal"
 
 test("renders show team modal", async () => {
-  const curentProjectMember = {
-    id: 1,
-    projectMember: {
-      name: "team1",
-    },
-    users: [
-      {
-        id: 1,
-        username: "user1",
-      },
-      {
-        id: 2,
-        username: "user2",
-      },
-    ],
-  }
-
-  render(<ShowTeamModal projectMember={curentProjectMember}></ShowTeamModal>)
+  render(<ShowTeamModal teamId={1} disabled={undefined} />)
   expect(await screen.getByText("team1")).toBeInTheDocument()
   const openModalBtn = screen.getByTestId("open-modal")
   expect(openModalBtn).toBeInTheDocument()

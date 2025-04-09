@@ -45,6 +45,12 @@ const ProfilePage = () => {
               <br />
               <span className="font-semibold">Signup Date:</span>{" "}
               <DateFormat date={currentUser.createdAt}></DateFormat>
+              <span className="font-semibold">Tooltips:</span>
+              {currentUser.tooltips ? (
+                <span className="text-success">On</span>
+              ) : (
+                <span className="text-error">Off</span>
+              )}
               <div className="card-actions justify-end">
                 <Link className="btn btn-primary" href={Routes.EditProfilePage()}>
                   Edit Profile

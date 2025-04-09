@@ -5,9 +5,9 @@ import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
 import { MemberPrivileges } from "@prisma/client"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
-import { Tooltip } from "react-tooltip"
 import AddRoleInput from "src/roles/components/AddRoleInput"
 import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManagerUserIds"
+import TooltipWrapper from "src/core/components/TooltipWrapper"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
@@ -33,7 +33,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
 
   return (
     <Form<S> {...formProps}>
-      <Tooltip
+      <TooltipWrapper
         id="priv-tooltip"
         content={
           isLastProjectManager
@@ -68,7 +68,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         <AddRoleInput
           projectManagerIds={projectManagerUserIds}
           buttonLabel="Add Role"
-          tooltipContent="Add roles to individual contributors (like administration)"
+          tooltipContent="Add role labels"
         />
       </div>
     </Form>

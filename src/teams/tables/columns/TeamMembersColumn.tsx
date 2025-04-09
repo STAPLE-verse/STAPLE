@@ -1,7 +1,11 @@
+import { Routes } from "@blitzjs/next"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import Link from "next/link"
 
 // Define type for table
 export type TeamMembers = {
+  contributorId: number
+  projectId: number
   username: string
   firstName: string
   lastName: string
@@ -13,7 +17,17 @@ const columnHelper = createColumnHelper<TeamMembers>()
 // ColumnDefs
 export const TeamMembersColumn: ColumnDef<TeamMembers>[] = [
   columnHelper.accessor("username", {
-    cell: (info) => <span>{`${info.row.original.username}`}</span>,
+    cell: (info) => (
+      <Link
+        className="btn btn-primary"
+        href={Routes.ShowContributorPage({
+          projectId: info.row.original.projectId,
+          contributorId: info.row.original.contributorId,
+        })}
+      >
+        {`${info.row.original.username}`}
+      </Link>
+    ),
     header: "Username",
   }),
   columnHelper.accessor("firstName", {
