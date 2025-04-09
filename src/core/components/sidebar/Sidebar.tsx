@@ -4,7 +4,7 @@ import { useRouter } from "next/router"
 import { SidebarItemProps } from "./SidebarItems"
 import { SidebarState } from "src/core/hooks/useSidebar"
 import SidebarTooltips from "./SidebarTooltips"
-import { Tooltip } from "react-tooltip"
+import TooltipWrapper from "../TooltipWrapper"
 
 export default function Sidebar({
   sidebarState,
@@ -39,13 +39,13 @@ export default function Sidebar({
             <ChevronRightIcon className="w-6 h-6" data-tooltip-id="chevron-right-tooltip" />
           )}
         </button>
-        <Tooltip
+        <TooltipWrapper
           id="chevron-left-tooltip"
           content="Collapse Menu"
           className="z-[1099] ourtooltips"
           place="right"
         />
-        <Tooltip
+        <TooltipWrapper
           id="chevron-right-tooltip"
           content="Expand Menu"
           className="z-[1099] ourtooltips"
@@ -105,7 +105,7 @@ export function SidebarItem({
 
       {!expanded && (
         <div
-          className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-primary/100 text-primary-800 text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`}
+          className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-primary/100 text-primary-800 text-base invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`}
         >
           {text}
         </div>

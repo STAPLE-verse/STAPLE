@@ -17,7 +17,7 @@ import useTaskBoardData from "../hooks/useTaskBoardData"
 import { findContainerTitle, findContainerItems, findItemValue } from "../utils/findHelpers"
 import useDragHandlers from "../hooks/useDragHandlers"
 import { useParam } from "@blitzjs/next"
-import { Tooltip } from "react-tooltip"
+import TooltipWrapper from "src/core/components/TooltipWrapper"
 
 const TaskBoard = () => {
   // Setup
@@ -42,7 +42,7 @@ const TaskBoard = () => {
         <h1 className="text-3xl font-bold" data-tooltip-id="kanban-tooltip">
           Project Tasks
         </h1>
-        <Tooltip
+        <TooltipWrapper
           id="kanban-tooltip"
           content="Completed tasks appear in a shade of green"
           className="z-[1099] ourtooltips"

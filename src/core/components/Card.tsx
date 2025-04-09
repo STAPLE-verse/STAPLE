@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
-import { Tooltip } from "react-tooltip"
 import clsx from "clsx"
 import { v4 as uuidv4 } from "uuid"
+import TooltipWrapper from "./TooltipWrapper"
 
 interface CardProps {
   title: string
@@ -22,7 +22,11 @@ const Card = ({ title, children, tooltipContent, actions, className }: CardProps
           {title}
         </div>
         {tooltipContent && (
-          <Tooltip id={tooltipId} content={tooltipContent} className="z-[1099] ourtooltips" />
+          <TooltipWrapper
+            id={tooltipId}
+            content={tooltipContent}
+            className="z-[1099] ourtooltips"
+          />
         )}
         {children}
         {actions && <div className="card-actions justify-end">{actions}</div>}
