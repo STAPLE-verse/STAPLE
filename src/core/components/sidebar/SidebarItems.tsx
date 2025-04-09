@@ -34,13 +34,6 @@ export interface SidebarItemProps {
 export const ProjectSidebarItems = (projectId: number, t: TFunction): SidebarItemProps[] => {
   return [
     {
-      icon: HomeIcon,
-      text: t("sidebar.project.home"),
-      route: Routes.MainPage(),
-      tooltipId: "project-home-tooltip",
-      privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
-    },
-    {
       icon: RectangleGroupIcon,
       text: t("sidebar.project.dashboard"),
       route: Routes.ShowProjectPage({ projectId: projectId }),
