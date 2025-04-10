@@ -1,9 +1,9 @@
 import Table from "src/core/components/Table"
 import { Prisma } from "@prisma/client"
-import { processTaskLogHistory } from "src/tasklogs/tabels/processing/processTaskLogs"
-import { ExtendedTaskLog } from "../hooks/useTaskLogData"
-import { TaskLogHistoryFormColumns } from "../tabels/columns/TaskLogHistoryFormColumns"
-import { TaskLogHistoryCompleteColumns } from "../tabels/columns/TaskLogHistoryCompleteColumns"
+import { processTaskLogHistory } from "src/tasklogs/tables/processing/processTaskLogs"
+import { ExtendedTaskLog } from "src/core/types"
+import { TaskLogHistoryFormColumns } from "../tables/columns/TaskLogHistoryFormColumns"
+import { TaskLogHistoryCompleteColumns } from "../tables/columns/TaskLogHistoryCompleteColumns"
 import ToggleModal from "src/core/components/ToggleModal"
 
 type AssignmentHistoryModalProps = {

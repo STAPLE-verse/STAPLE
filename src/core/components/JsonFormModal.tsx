@@ -73,7 +73,7 @@ export const JsonFormModal = ({
             </button>
           )}
 
-          <button type="button" className="btn btn-secondary" onClick={handleToggle}>
+          <button type="button" className="btn btn-secondary mb-6" onClick={handleToggle}>
             Close
           </button>
         </div>

@@ -24,7 +24,7 @@ export const SortableWidget = ({ id, children, size }) => {
       ? "row-span-1"
       : "row-span-2"
 
-  const classname = `card bg-base-300 text-base-content overflow-visible ${gridColumnClass} ${gridRowClass}`
+  const classname = `card bg-base-300 text-base-content overflow-visible draggable ${gridColumnClass} ${gridRowClass}`
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners} className={classname}>

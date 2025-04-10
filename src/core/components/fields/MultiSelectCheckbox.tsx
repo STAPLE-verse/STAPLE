@@ -1,7 +1,7 @@
 import { useMultiSelect } from "./MultiSelectContext"
 
 export const MultiSelectCheckbox = ({ id }) => {
-  const { selectedIds, handleSelection } = useMultiSelect()
+  const { selectedIds, toggleSelection } = useMultiSelect()
 
   return (
     <div>
@@ -11,7 +11,7 @@ export const MultiSelectCheckbox = ({ id }) => {
             type="checkbox"
             className="checkbox checkbox-primary border-2"
             checked={selectedIds.includes(id)}
-            onChange={() => handleSelection(id)}
+            onChange={() => toggleSelection(id)}
           />
         </label>
       </span>

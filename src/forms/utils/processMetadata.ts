@@ -1,6 +1,6 @@
 import { Prisma } from "db"
 import { getContributorName } from "src/core/utils/getName"
-import { ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
+import { ExtendedTaskLog } from "src/core/types"
 import { filterLatestTaskLog } from "src/tasklogs/utils/filterLatestTaskLog"
 
 export type ProcessedMetadata = {

@@ -9,7 +9,7 @@ export const TaskLogToggleModal = ({ taskLog }) => {
   const { projectMember: currentProjectMember } = useCurrentContributor(projectId)
 
   return (
-    <ToggleModal buttonLabel="Edit" modalTitle="Edit Task Completion">
+    <ToggleModal buttonLabel="Edit" modalTitle="Edit Task Completion" saveButton={true}>
       <CompleteToggle
         taskLog={taskLog}
         completedById={currentProjectMember!.id}

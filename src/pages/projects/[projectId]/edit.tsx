@@ -18,7 +18,7 @@ import DownloadJSON from "src/forms/components/DownloadJSON"
 import DownloadXLSX from "src/forms/components/DownloadXLSX"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import getJsonSchema from "src/forms/utils/getJsonSchema"
-import { MetadataDisplay } from "src/summary/components/MetaDataDisplay"
+import { MetadataDisplay } from "src/projects/components/MetaDataDisplay"
 
 export const EditProject = () => {
   // Setup
@@ -97,7 +97,7 @@ export const EditProject = () => {
   const [assignmentMetadata, setAssignmentMetadata] = useState(project.metadata)
 
   const handleJsonFormSubmit = async (data) => {
-    console.log("Submitting form data:", data) // Debug log
+    //console.log("Submitting form data:", data) // Debug log
     try {
       const updatedProject = await updateProjectMutation({
         id: project.id,

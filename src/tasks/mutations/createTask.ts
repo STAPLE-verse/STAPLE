@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateTaskSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
+import { Routes } from "@blitzjs/next"
 
 export default resolver.pipe(
   resolver.zod(CreateTaskSchema),
@@ -123,7 +124,11 @@ export default resolver.pipe(
 
       // Get username corresponding to the PM who created the task
       // it will always be one user to create so link to that projectMember
-      const createdByUsername = task.createdBy.users[0] ? task.createdBy.users[0].username : null
+      const createdByUsername = task.createdBy.users[0]
+        ? task.createdBy.users[0].firstName && task.createdBy.users[0].lastName
+          ? `${task.createdBy.users[0].firstName} ${task.createdBy.users[0].lastName}`
+          : task.createdBy.users[0].username
+        : null
 
       await sendNotification(
         {
@@ -131,6 +136,12 @@ export default resolver.pipe(
           recipients: uniqueUserIds,
           data: { taskName: name, createdBy: createdByUsername, deadline: deadline },
           projectId: projectId,
+          routeData: {
+            path: Routes.ShowTaskPage({
+              projectId: projectId,
+              taskId: task.id,
+            }).href,
+          },
         },
         ctx
       )

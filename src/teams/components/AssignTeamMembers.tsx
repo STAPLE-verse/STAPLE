@@ -1,7 +1,6 @@
 import { useQuery } from "@blitzjs/rpc"
 import React from "react"
 import getContributors from "src/contributors/queries/getContributors"
-import Card from "src/core/components/Card"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 
 interface AssignTeamMembersProps {
@@ -13,15 +12,15 @@ const AssignTeamMembers: React.FC<AssignTeamMembersProps> = ({ projectId }) => {
 
   const options = contributors.map((contributor) => ({
     id: contributor.users[0]!.id,
-    label: contributor.users[0]!.username,
+    label: contributor.users[0]?.firstName
+      ? `${contributor.users[0]?.firstName} ${contributor.users[0]?.lastName} (${contributor.users[0]?.username})`
+      : `${contributor.users[0]?.username}`,
   }))
 
   return (
     <div>
       <label>Add Team Members: (Required)</label>
-      <Card title="" className="w-full">
-        <CheckboxFieldTable name="projectMemberUserIds" options={options} />
-      </Card>
+      <CheckboxFieldTable name="projectMemberUserIds" options={options} />
     </div>
   )
 }

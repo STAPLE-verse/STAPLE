@@ -2,7 +2,7 @@ import React from "react"
 import { useParam } from "@blitzjs/next"
 import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
-import { GetProjectUpcomingTaskDisplay } from "src/core/components/GetWidgetDisplay"
+import { GetTableDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import moment from "moment"
@@ -10,6 +10,7 @@ import { useQuery } from "@blitzjs/rpc"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import { TaskLogWithTask } from "src/core/types"
+import { projectTaskColumns } from "../ColumnHelpers"
 
 const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }, ctx) => {
   // Get projectId from the route params
@@ -47,7 +48,13 @@ const ProjectUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = (
   return (
     <Widget
       title="Upcoming Tasks"
-      display={<GetProjectUpcomingTaskDisplay upcomingTasks={upcomingTasks} />}
+      display={
+        <GetTableDisplay
+          data={upcomingTasks.slice(0, 3)}
+          columns={projectTaskColumns}
+          type={"upcoming tasks"}
+        />
+      }
       link={
         <PrimaryLink
           route={Routes.TasksPage({

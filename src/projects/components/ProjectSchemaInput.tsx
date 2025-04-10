@@ -99,7 +99,7 @@ export const ProjectSchemaInput = ({
 
   // Handle radio button selection
   const handleRadioChange = (selectedId: number) => {
-    console.log("Radio selected with formVersionId:", selectedId)
+    // console.log("Radio selected with formVersionId:", selectedId)
     onDefaultFormCreated(selectedId)
   }
 

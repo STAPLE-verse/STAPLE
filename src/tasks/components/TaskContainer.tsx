@@ -36,11 +36,11 @@ const TaskContainer = ({ id, children, title, description }: ContainerProps) => 
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-y-1">
           <h1 className="text-xl">{title}</h1>
-          <p className="text-sm">{description}</p>
+          <p className="text-base">{description}</p>
         </div>
         <FontAwesomeIcon
           icon={faArrowsUpDownLeftRight}
-          className="w-6 h-6 text-base-content border-transparent rounded-2xl hover:opacity-50"
+          className="w-6 h-6 text-base-content border-transparent rounded-2xl hover:opacity-50 draggable"
           {...listeners}
         />
       </div>

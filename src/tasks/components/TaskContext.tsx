@@ -1,29 +1,7 @@
 import React, { createContext, ReactNode, useContext } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
-import { Task, KanbanBoard, Element, FormVersion, ProjectMember, User, TaskLog } from "db"
-import { ExtendedProjectMember, ExtendedTaskLog } from "src/tasklogs/hooks/useTaskLogData"
-import { useSanitizedProjectMembers } from "src/projectmembers/hooks/useSanitizedProjectMembers"
-
-export type ProjectMemberWithTaskLog = ProjectMember & {
-  taskLogAssignedTo: ExtendedTaskLog[]
-  users: Pick<User, "id" | "username">[]
-}
-
-// Creating custom types
-type TaskLogWithCompletedBy = TaskLog & {
-  completedBy: ExtendedProjectMember
-  assignedTo: ExtendedProjectMember
-}
-
-export type ExtendedTask = Task & {
-  container: KanbanBoard
-  element: Element | null
-  formVersion: FormVersion | null
-  roles: []
-  assignedMembers: ProjectMemberWithTaskLog[]
-  taskLogs: TaskLogWithCompletedBy[]
-}
+import { ExtendedTask, ProjectMemberWithTaskLog } from "src/core/types"
 
 interface TaskContextType {
   task: ExtendedTask
@@ -76,6 +54,8 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
             select: {
               id: true,
               username: true,
+              firstName: true,
+              lastName: true,
             },
           },
         },
@@ -83,14 +63,10 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
     },
   }) as [ExtendedTask, any]
 
-  const sanitizedProjectMembers = useSanitizedProjectMembers<ProjectMemberWithTaskLog>(
-    task.assignedMembers
-  )
-
   // Set context value
   const contextValue = {
     task,
-    projectMembers: sanitizedProjectMembers,
+    projectMembers: task.assignedMembers,
     refetchTaskData,
   }
 

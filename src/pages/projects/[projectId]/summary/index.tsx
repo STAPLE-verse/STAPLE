@@ -9,7 +9,7 @@ import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjec
 import { MemberPrivileges } from "db"
 import DateFormat from "src/core/components/DateFormat"
 import DownloadJSON from "src/forms/components/DownloadJSON"
-import { MetadataDisplay } from "src/summary/components/MetaDataDisplay"
+import { MetadataDisplay } from "src/projects/components/MetaDataDisplay"
 
 const Summary = () => {
   // Get data

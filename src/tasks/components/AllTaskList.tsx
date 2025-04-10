@@ -6,6 +6,7 @@ import { processAllTasks } from "../tables/processing/processAllTasks"
 import Table from "src/core/components/Table"
 import { AllTasksColumns } from "../tables/columns/AllTasksColumns"
 import { TaskLogWithTaskAndProject } from "src/core/types"
+import Card from "src/core/components/Card"
 
 export const AllTasksList = () => {
   const currentUser = useCurrentUser()
@@ -37,5 +38,9 @@ export const AllTasksList = () => {
 
   const processedTasks = processAllTasks(latestLogs)
 
-  return <Table columns={AllTasksColumns} data={processedTasks} addPagination={true} />
+  return (
+    <Card title={""}>
+      <Table columns={AllTasksColumns} data={processedTasks} addPagination={true} />
+    </Card>
+  )
 }

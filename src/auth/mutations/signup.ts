@@ -22,7 +22,7 @@ export default resolver.pipe(resolver.zod(Signup), async ({ email, password, use
     select: { id: true, email: true, role: true, username: true, tos: true },
   })
 
-  // Adding main dashboard default widgets
+  // Existing large widgets
   const widgetTypes = ["LastProject", "OverdueTask", "UpcomingTask", "Notifications"]
 
   const widgets = widgetTypes.map((type, index) => ({
@@ -33,10 +33,32 @@ export default resolver.pipe(resolver.zod(Signup), async ({ email, password, use
     size: WidgetSize.LARGE,
   }))
 
-  await ctx.session.$create({ userId: user.id, role: user.role as Role })
+  // New small widgets
+  const smallWidgetTypes = [
+    "AllTaskTotal",
+    "TotalContributors",
+    "TotalForms",
+    "TotalInvites",
+    "TotalProjects",
+    "TotalRoles",
+  ]
+
+  const smallWidgets = smallWidgetTypes.map((type, index) => ({
+    userId: user.id,
+    type: type,
+    show: true,
+    position: widgetTypes.length + index + 1,
+    size: WidgetSize.SMALL,
+  }))
+
+  await ctx.session.$create({
+    userId: user.id,
+    role: user.role as Role,
+    tooltips: true,
+  })
 
   await db.widget.createMany({
-    data: widgets,
+    data: [...widgets, ...smallWidgets],
   })
 
   await ResendMsg(createSignUpMsg(email))

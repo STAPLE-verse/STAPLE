@@ -24,9 +24,9 @@ const ReadToggle = ({ notification, refetch }) => {
   return (
     <div onClick={toggleReadStatus} className="cursor-pointer">
       {notification.read ? (
-        <EyeIcon className="h-8 w-8 text-blue-500 cursor-pointer transition duration-150 ease-in-out hover:text-blue-700 focus:text-blue-700 focus:outline-none" />
+        <EyeIcon className="h-8 w-8 text-neutral-content cursor-pointer transition duration-150 ease-in-out hover:text-neutral-focus focus:text-neutral-focus focus:outline-none" />
       ) : (
-        <EyeSlashIcon className="h-8 w-8 text-gray-500 cursor-pointer transition duration-150 ease-in-out hover:text-gray-700 focus:text-gray-700 focus:outline-none" />
+        <EyeSlashIcon className="h-8 w-8 text-primary cursor-pointer transition duration-150 ease-in-out hover:text-primary-focus focus:text-primary-focus focus:outline-none" />
       )}
     </div>
   )

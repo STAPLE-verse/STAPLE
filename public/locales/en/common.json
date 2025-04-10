@@ -1,0 +1,28 @@
+{
+  "sidebar": {
+    "project": {
+      "home": "Home",
+      "dashboard": "Dashboard",
+      "elements": "Elements",
+      "tasks": "Tasks",
+      "contributors": "Contributors",
+      "teams": "Teams",
+      "formData": "Form Data",
+      "notifications": "Notifications",
+      "roles": "Roles",
+      "summary": "Summary",
+      "settings": "Settings"
+    },
+    "home": {
+      "dashboard": "Dashboard",
+      "projects": "Projects",
+      "invitations": "Invitations",
+      "tasks": "Tasks",
+      "notifications": "Notifications",
+      "forms": "Forms",
+      "roles": "Roles",
+      "admin": "Admin",
+      "help": "Help"
+    }
+  }
+}

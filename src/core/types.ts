@@ -1,4 +1,16 @@
-import { Project, ProjectMember, Role, Task, TaskLog, User } from "db"
+import {
+  Project,
+  ProjectMember,
+  Role,
+  Task,
+  TaskLog,
+  User,
+  Comment,
+  KanbanBoard,
+  FormVersion,
+  Element,
+} from "db"
+import { ReactNode } from "react"
 
 export type RoleWithUser = Role & {
   user: User
@@ -26,9 +38,30 @@ export type ProjectMemberWithUsers = ProjectMember & {
   users: User[]
 }
 
+export type TeamUserWithContributor = {
+  id: number
+  username: string
+  firstName: string | null
+  lastName: string | null
+  contributorId: number
+}
+
+export type TeamWithUsers = {
+  id: number
+  projectId: number
+  name: string
+  users: TeamUserWithContributor[]
+}
+
 export type ProjectMemberWithUsername = ProjectMember & {
   users: {
     username: string
+  }
+}
+
+export type CommentWithAuthor = Comment & {
+  author: ProjectMember & {
+    users: Pick<User, "id" | "username" | "firstName" | "lastName">[]
   }
 }
 
@@ -41,4 +74,52 @@ export type ProjectMemberWithUsersAndRoles = ProjectMember & {
 export type TaskLogWithTaskCompleted = TaskLog & {
   task: TaskWithRoles
   completedBy: ProjectMemberWithUsers
+}
+
+export type ExtendedProjectMember = ProjectMember & {
+  users: Pick<User, "id" | "username">[]
+}
+
+export type ExtendedTaskLog = TaskLog & {
+  completedBy: ExtendedProjectMember
+  comments?: Comment[]
+  assignedTo: ExtendedProjectMember
+}
+
+export type ProjectMemberWithTaskLog = ProjectMember & {
+  taskLogAssignedTo: ExtendedTaskLog[]
+  users: Pick<User, "id" | "username">[]
+}
+
+export type TaskLogWithCompletedBy = TaskLog & {
+  completedBy: ExtendedProjectMember
+  assignedTo: ExtendedProjectMember
+}
+
+export type ExtendedTask = Task & {
+  container: KanbanBoard
+  element: Element | null
+  formVersion: FormVersion | null
+  roles: []
+  assignedMembers: ProjectMemberWithTaskLog[]
+  taskLogs: TaskLogWithCompletedBy[]
+}
+
+export type RouteData = {
+  path: string
+  params?: Record<string, any>
+}
+
+// Define the ProjectWithMembers type
+export type ProjectWithMembers = Project & {
+  projectMembers: ProjectMemberWithUsers[]
+}
+
+export type BreadcrumbEntityType = "project" | "task" | "element" | "team" | "contributor" | "form"
+
+export type BreadcrumbItem = {
+  label: ReactNode
+  href: string
+  isLast: boolean
+  isValid: boolean
 }
