@@ -24,5 +24,11 @@
       "admin": "Admin",
       "help": "Help"
     }
+  },
+  "main": {
+    "welcome": "Welcome",
+    "dashboard": {
+      "totalcontributors": "Total Contributors"
+    }
   }
 }
