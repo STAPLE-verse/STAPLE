@@ -14,9 +14,12 @@ export const WidgetContainer = ({ widgets }: WidgetContainerProps) => {
       {/*@ts-expect-error Suppress missing children error from SortableContext*/}
       <SortableContext items={widgets} strategy={rectSwappingStrategy}>
         {widgets.map((widget) => (
-          <SortableWidget key={widget.id} id={widget.id} size={widget.size}>
-            {widget.component}
-          </SortableWidget>
+          <>
+            {/* @ts-expect-error suppress key prop warning on SortableWidget */}
+            <SortableWidget key={widget.id} id={widget.id} size={widget.size}>
+              {widget.component}
+            </SortableWidget>
+          </>
         ))}
       </SortableContext>
     </div>
