@@ -6,7 +6,7 @@ import { useMutation } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { FormTaskSchema } from "src/tasks/schemas"
 import updateTask from "src/tasks/mutations/updateTask"
-import { TaskForm } from "src/tasks/components/TaskForm"
+import { Tag, TaskForm } from "src/tasks/components/TaskForm"
 import { FORM_ERROR } from "final-form"
 import toast from "react-hot-toast"
 import TaskLayout from "src/core/layouts/TaskLayout"
@@ -52,6 +52,12 @@ export const EditTask = () => {
     formVersionId: task.formVersionId,
     rolesId: rolesId,
     elementId: task.elementId,
+    tags: Array.isArray(task.tags)
+      ? (task.tags as Tag[]).map((tag) => ({
+          id: tag.key, // Use 'key' as the ID
+          text: tag.value, // Display the tag's value as text
+        }))
+      : [],
   }
 
   // Check if any assignment is COMPLETED
