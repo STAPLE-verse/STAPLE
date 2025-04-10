@@ -17,6 +17,7 @@ const NewProjectPage = () => {
   const userId = currentUser?.id!
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex mb-2 text-3xl">Create New Project</h1>

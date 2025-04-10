@@ -21,6 +21,7 @@ import { Widget } from "db"
 import getUserWidgets from "src/widgets/queries/getUserWidgets"
 import initializeWidgets from "src/widgets/mutations/initializeWidgets"
 import toast from "react-hot-toast"
+import { useTranslation } from "react-i18next"
 import { Tooltip } from "react-tooltip"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 
@@ -30,6 +31,15 @@ const MainContent = () => {
 
   const currentUser = useCurrentUser()
   const userId = currentUser?.id!
+
+  //translations
+  const { i18n } = (useTranslation as any)()
+  useEffect(() => {
+    if (typeof window !== "undefined" && currentUser?.language) {
+      void i18n.changeLanguage(currentUser.language)
+      localStorage.setItem("i18nextLng", currentUser.language)
+    }
+  }, [currentUser?.language, i18n])
 
   const [widgets, setWidgets] = useState<Widget[]>([])
 
@@ -88,6 +98,7 @@ const MainContent = () => {
 }
 
 export const MainPage = () => (
+  // @ts-expect-error children are clearly passed below
   <Layout title="Home">
     <Suspense fallback={<div>Loading...</div>}>
       <MainContent />

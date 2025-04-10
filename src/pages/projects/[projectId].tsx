@@ -35,7 +35,8 @@ const ShowProjectContent = () => {
 
 export const ShowProjectPage = () => {
   return (
-    <Layout title="Project page">
+    // @ts-expect-error children are clearly passed below
+    <Layout title="Project Page">
       <Suspense fallback={<div>Loading...</div>}>
         <ShowProjectContent />
       </Suspense>

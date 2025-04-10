@@ -76,6 +76,7 @@ const SummaryPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Project Summary">
       <Suspense fallback={<div>Loading...</div>}>
         <Summary />

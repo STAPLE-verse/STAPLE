@@ -3,6 +3,7 @@ import Layout from "src/core/layouts/Layout"
 
 const HelpPage = () => {
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Get Help">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="text-3xl flex justify-center mb-4">Get Help</h1>

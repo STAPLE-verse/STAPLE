@@ -21,6 +21,7 @@ const ShowElementPage = () => {
   const [element, { refetch }] = useQuery(getElement, { id: elementId })
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Element Page">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <div>

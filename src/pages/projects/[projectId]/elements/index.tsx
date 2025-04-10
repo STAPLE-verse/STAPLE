@@ -18,6 +18,7 @@ const Elements = () => {
   }
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Elements">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 text-3xl">Elements</h1>

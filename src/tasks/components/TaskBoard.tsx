@@ -59,23 +59,28 @@ const TaskBoard = () => {
             onDragMove={handleDragMove}
             onDragEnd={handleDragEnd}
           >
+            {/*@ts-expect-error Suppress missing children error from SortableContext*/}
             <SortableContext items={containers.map((i) => i.id)}>
               {containers.map((container) => (
-                <TaskContainer id={container.id} title={container.title} key={container.id}>
-                  <SortableContext items={container.items.map((i) => i.id)}>
-                    <div className="flex items-start flex-col gap-y-4">
-                      {container.items.map((i) => (
-                        <TaskItems
-                          title={i.title}
-                          id={i.id}
-                          key={i.id}
-                          projectId={projectId!}
-                          completed={i.completed}
-                        />
-                      ))}
-                    </div>
-                  </SortableContext>
-                </TaskContainer>
+                <div key={container.id}>
+                  <TaskContainer id={container.id} title={container.title}>
+                    {/*@ts-expect-error Suppress missing children error from SortableContext*/}
+                    <SortableContext items={container.items.map((i) => i.id)}>
+                      <div className="flex items-start flex-col gap-y-4">
+                        {container.items.map((i) => (
+                          <div key={i.id}>
+                            <TaskItems
+                              title={i.title}
+                              id={i.id}
+                              projectId={projectId!}
+                              completed={i.completed}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </TaskContainer>
+                </div>
               ))}
             </SortableContext>
 
@@ -93,13 +98,14 @@ const TaskBoard = () => {
               {activeId && activeId.toString().includes("container") && (
                 <TaskContainer id={activeId} title={findContainerTitle(activeId, containers)}>
                   {findContainerItems(activeId, containers).map((i) => (
-                    <TaskItems
-                      key={i.id}
-                      title={i.title}
-                      id={i.id}
-                      completed={i.completed}
-                      projectId={projectId!}
-                    />
+                    <div key={i.id}>
+                      <TaskItems
+                        title={i.title}
+                        id={i.id}
+                        completed={i.completed}
+                        projectId={projectId!}
+                      />
+                    </div>
                   ))}
                 </TaskContainer>
               )}

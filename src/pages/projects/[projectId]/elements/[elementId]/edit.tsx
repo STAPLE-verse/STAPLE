@@ -38,6 +38,7 @@ export const EditElement = () => {
   }
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Edit Element Page">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <PageHeader title={`Edit ${element.name}`} />

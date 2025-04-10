@@ -8,7 +8,7 @@ import { UniqueIdentifier } from "@dnd-kit/core"
 
 interface ContainerProps {
   id: UniqueIdentifier
-  children: React.ReactNode
+  children?: React.ReactNode
   title?: string
   description?: string
 }

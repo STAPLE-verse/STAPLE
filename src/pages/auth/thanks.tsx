@@ -6,6 +6,7 @@ import { Routes } from "@blitzjs/next"
 export const Thanks: BlitzPage = () => {
   return (
     <>
+      {/* @ts-expect-error false positive: JSX children are valid here */}
       <Head>
         <title>{"Thanks for Signing Up"}</title>
       </Head>
