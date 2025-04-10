@@ -33,7 +33,7 @@ const MainContent = () => {
   const userId = currentUser?.id!
 
   //translations
-  const { i18n } = (useTranslation as any)()
+  const { t, i18n } = (useTranslation as any)()
   useEffect(() => {
     if (typeof window !== "undefined" && currentUser?.language) {
       void i18n.changeLanguage(currentUser.language)
@@ -78,7 +78,7 @@ const MainContent = () => {
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl h-full space-y-4">
       <h3 className="text-3xl justify-center items-center flex">
-        Welcome, {name}!
+        {t("main.welcome")}, {name}!
         <InformationCircleIcon
           className="h-6 w-6 ml-2 text-info stroke-2"
           data-tooltip-id="dashboard-overview"
