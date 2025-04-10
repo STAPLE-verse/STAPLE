@@ -52,7 +52,9 @@ export const ProjectsList = ({ searchTerm }) => {
   return (
     <div>
       {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} />
+        <div key={project.id}>
+          <ProjectCard project={project} />
+        </div>
       ))}
       {/* Previous and next page btns */}
       <PaginationControls page={page} hasMore={hasMore} />

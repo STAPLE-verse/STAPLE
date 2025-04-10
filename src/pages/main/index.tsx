@@ -33,7 +33,7 @@ const MainContent = () => {
   const userId = currentUser?.id!
 
   //translations
-  const { i18n } = useTranslation()
+  const { i18n } = (useTranslation as any)()
   useEffect(() => {
     if (typeof window !== "undefined" && currentUser?.language) {
       void i18n.changeLanguage(currentUser.language)

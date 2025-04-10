@@ -24,15 +24,16 @@ export const TaskLogCompletion = () => {
       className="w-full"
     >
       {filteredProjectMembers.map((projectMember) => (
-        <CompleteRow
-          key={projectMember.id}
-          taskLogs={projectMember.taskLogAssignedTo}
-          completedById={currentContributor?.id}
-          completedAs={projectMember.name === null ? CompletedAs.INDIVIDUAL : CompletedAs.TEAM}
-          schema={task.formVersion?.schema}
-          ui={task.formVersion?.uiSchema}
-          isSchema={!!task.formVersion}
-        />
+        <div key={projectMember.id}>
+          <CompleteRow
+            taskLogs={projectMember.taskLogAssignedTo}
+            completedById={currentContributor?.id}
+            completedAs={projectMember.name === null ? CompletedAs.INDIVIDUAL : CompletedAs.TEAM}
+            schema={task.formVersion?.schema}
+            ui={task.formVersion?.uiSchema}
+            isSchema={!!task.formVersion}
+          />
+        </div>
       ))}
     </Card>
   )

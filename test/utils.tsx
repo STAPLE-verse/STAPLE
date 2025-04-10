@@ -36,6 +36,7 @@ export function render(
   if (!wrapper) {
     // Add a default context wrapper if one isn't supplied from the test
     wrapper = ({ children }: { children: React.ReactNode }) => (
+      // @ts-expect-error: children is provided correctly in JSX
       <BlitzProvider dehydratedState={dehydratedState} client={queryClient}>
         <RouterContext.Provider value={{ ...mockRouter, ...router }}>
           {children}
@@ -64,6 +65,7 @@ export function renderHook(
   if (!wrapper) {
     // Add a default context wrapper if one isn't supplied from the test
     wrapper = ({ children }: { children: React.ReactNode }) => (
+      // @ts-expect-error: children is provided correctly in JSX
       <BlitzProvider dehydratedState={dehydratedState} client={queryClient}>
         <RouterContext.Provider value={{ ...mockRouter, ...router }}>
           {children}

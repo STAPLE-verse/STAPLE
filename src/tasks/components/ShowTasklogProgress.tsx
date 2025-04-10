@@ -33,6 +33,21 @@ const ShowTasklogProgress = () => {
           text={`${Math.round(taskLogPercent * 100)}%`}
           data-tooltip-id="progress-tooltip"
           data-tooltip-content={`${taskLogProgress.completed} tasks out of ${taskLogProgress.all}`}
+          strokeWidth={8}
+          background={false}
+          backgroundPadding={0}
+          circleRatio={1}
+          maxValue={100}
+          minValue={0}
+          counterClockwise={false}
+          className=""
+          classes={{
+            root: "CircularProgressbar",
+            path: "CircularProgressbar-path",
+            trail: "CircularProgressbar-trail",
+            text: "CircularProgressbar-text",
+            background: "CircularProgressbar-background",
+          }}
           styles={buildStyles({
             textSize: "16px",
             pathTransitionDuration: 0,
