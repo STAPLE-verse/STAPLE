@@ -28,6 +28,22 @@ export function GetCircularProgressDisplay({ proportion }) {
       <CircularProgressbar
         value={proportion * 100}
         text={`${Math.round(proportion * 100)}%`}
+        strokeWidth={8}
+        maxValue={100}
+        minValue={0}
+        background={false}
+        backgroundPadding={0}
+        className=""
+        counterClockwise={false}
+        circleRatio={1}
+        //pass the defaults here so it stops complaining
+        classes={{
+          root: "CircularProgressbar",
+          path: "CircularProgressbar-path",
+          trail: "CircularProgressbar-trail",
+          text: "CircularProgressbar-text",
+          background: "CircularProgressbar-background",
+        }}
         styles={buildStyles({
           textSize: "16px",
           pathTransitionDuration: 0,

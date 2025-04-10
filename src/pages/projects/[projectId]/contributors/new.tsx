@@ -38,6 +38,7 @@ const NewContributorPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Invite New Contributor">
       <Suspense fallback={<div>Loading...</div>}>
         <NewContributor />

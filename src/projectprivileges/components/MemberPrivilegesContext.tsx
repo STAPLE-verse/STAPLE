@@ -19,7 +19,7 @@ const MemberPrivilegesContext = createContext<MemberPrivilegesContextProps>({
   error: null,
 })
 
-export const MemberPrivilegesProvider = ({ children }: { children: ReactNode }) => {
+export const MemberPrivilegesProvider = ({ children }: { children?: ReactNode }) => {
   const user = useCurrentUser()
   const projectId = useParam("projectId", "number")
 

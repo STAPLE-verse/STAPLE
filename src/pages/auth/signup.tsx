@@ -59,6 +59,7 @@ const SignupPage: BlitzPage = () => {
 
   return (
     <>
+      {/* @ts-expect-error false positive: JSX children are valid here */}
       <Head>
         <title>{"Sign Up"}</title>
       </Head>

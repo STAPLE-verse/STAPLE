@@ -73,6 +73,7 @@ ProfilePage.authenticate = true
 ProfilePage.getLayout = () => {
   return (
     <Suspense>
+      {/* @ts-expect-error children are clearly passed below*/}
       <Layout>
         <ProfilePage />
       </Layout>

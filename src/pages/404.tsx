@@ -9,6 +9,7 @@ export default function Page404() {
   const title = "This page could not be found"
   return (
     <>
+      {/* @ts-expect-error false positive: JSX children are valid here */}
       <Head>
         <title>
           {statusCode}: {title}

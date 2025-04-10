@@ -20,7 +20,7 @@ import { Routes } from "@blitzjs/next"
 import { MemberPrivileges } from "db"
 import { ComponentType } from "react"
 import { RouteUrlObject } from "blitz"
-import { useTranslation } from "react-i18next"
+import type { TFunction } from "i18next"
 
 export interface SidebarItemProps {
   icon: ComponentType<{ className?: string }>
@@ -32,16 +32,8 @@ export interface SidebarItemProps {
   userPrivilege?: string[]
 }
 
-export const ProjectSidebarItems = (projectId: number): (() => SidebarItemProps[]) => {
-  const { t } = useTranslation()
-  return () => [
-    {
-      icon: HomeIcon,
-      text: t("sidebar.project.home"),
-      route: Routes.MainPage(),
-      tooltipId: "project-home-tooltip",
-      privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
-    },
+export const ProjectSidebarItems = (projectId: number, t: TFunction): SidebarItemProps[] => {
+  return [
     {
       icon: RectangleGroupIcon,
       text: t("sidebar.project.dashboard"),
@@ -122,9 +114,8 @@ export const ProjectSidebarItems = (projectId: number): (() => SidebarItemProps[
   ]
 }
 
-export const HomeSidebarItems = (): (() => SidebarItemProps[]) => {
-  const { t } = useTranslation()
-  return () => [
+export const HomeSidebarItems = (t: TFunction): SidebarItemProps[] => {
+  return [
     {
       icon: RectangleGroupIcon,
       text: t("sidebar.home.dashboard"),

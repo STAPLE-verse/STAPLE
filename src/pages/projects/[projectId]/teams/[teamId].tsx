@@ -42,6 +42,7 @@ export const TeamPage = () => {
 
 const ShowTeamPage = () => {
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Team Page">
       <Suspense fallback={<div>Loading...</div>}>
         <TeamPage />

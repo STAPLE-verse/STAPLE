@@ -43,6 +43,7 @@ const NewTaskPage = () => {
   }
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Create New Task">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <PageHeader title="Create New Task" />

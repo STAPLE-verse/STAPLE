@@ -12,7 +12,7 @@ interface TaskContextType {
 // Creating props interface
 interface TaskProviderProps {
   taskId: number
-  children: ReactNode
+  children?: ReactNode
 }
 
 // Creating the context
