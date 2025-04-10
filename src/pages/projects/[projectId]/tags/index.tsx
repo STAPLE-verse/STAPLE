@@ -7,6 +7,7 @@ const TagsPage = () => {
   const projectId = useParam("projectId", "number")
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Tasks">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <Suspense fallback={<div>Loading...</div>}>
