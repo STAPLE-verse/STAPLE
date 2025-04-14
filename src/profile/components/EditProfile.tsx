@@ -78,8 +78,8 @@ export const EditProfile = () => {
               }
             }}
           />
-
-          <div className="flex justify-end mt-4">
+          <div className="divider pt-2 pb-2"></div>
+          <div className="flex justify-center">
             <button
               type="button"
               className="btn btn-warning"
