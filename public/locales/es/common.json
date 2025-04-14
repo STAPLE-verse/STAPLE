@@ -11,7 +11,8 @@
       "notifications": "Notificaciones",
       "roles": "Roles",
       "summary": "Resumen",
-      "settings": "Configuración"
+      "settings": "Configuración",
+      "tags": "Etiquetas"
     },
     "home": {
       "dashboard": "Panel",
@@ -23,6 +24,12 @@
       "roles": "Roles",
       "admin": "Administración",
       "help": "Ayuda"
+    }
+  },
+  "main": {
+    "welcome": "Bienvenido",
+    "dashboard": {
+      "totalcontributors": "Contribuidores Totales"
     }
   }
 }
