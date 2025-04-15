@@ -11,7 +11,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
 
   return (
     <Form<S> {...props}>
-      <span className="text-2xl">Required Information:</span>
+      <p className="text-2xl mt-4">Required Information</p>
       <hr className="w-1/2 mb-2"></hr>
 
       <LabeledTextField
@@ -29,8 +29,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300 w-1/2"
       />
 
-      <span className="text-2xl">User Information:</span>
-      <br />
+      <p className="text-2xl mt-4">User Information</p>
       <span className="text-base italic">
         If you enter your first and last name, it will replace your username in project areas.
       </span>
@@ -58,8 +57,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300 w-1/2"
       />
 
-      <span className="text-2xl">Look and Feel:</span>
-      <br />
+      <p className="text-2xl mt-4">Look and Feel</p>
       <span className="text-base italic"></span>
       <hr className="w-1/2 mb-2"></hr>
 
@@ -85,10 +83,10 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
       <LabeledTextField
         name="gravatar"
         label="Gravatar Email:"
-        description="This email will only be used to link to your Gravatar account for your profile picture. "
+        description="This email will only be used to link to your Gravatar account for your profile picture."
         placeholder="Email"
         type="text"
-        className="input mb-8 text-primary input-primary input-bordered border-2 bg-base-300 w-1/2"
+        className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300 w-1/2"
       />
     </Form>
   )
