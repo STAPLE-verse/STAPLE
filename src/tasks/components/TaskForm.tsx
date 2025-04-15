@@ -18,7 +18,6 @@ import { ProjectMemberWithUsers } from "src/core/types"
 import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManagerUserIds"
 import { useState } from "react"
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
-import classNames from "classnames"
 
 export type Tag = {
   id: string
@@ -187,7 +186,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       </ToggleModal>
       Optional: you can do this later
       <hr></hr>
-
       {/* Tag Input */}
       <div className="w-1/2">
         <label className="text-base-content">Tags:</label>
@@ -227,7 +225,6 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           placeholder="Add tags"
         />
       </div>
-
       {/* Form */}
       {formResponseSupplied ? (
         <TaskSchemaInput projectManagerIds={projectManagerUserIds} />
