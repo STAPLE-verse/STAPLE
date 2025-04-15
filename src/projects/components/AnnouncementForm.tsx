@@ -34,7 +34,10 @@ export function AnnouncementForm<S extends z.ZodType<any, any>>(props: FormProps
   const contributorOptions = individualProjectMembers.map((contributor) => {
     return {
       // there is only one user for contributors
-      label: contributor.users?.[0]?.username || "Unknown",
+      label:
+        contributor.users?.[0]?.firstName && contributor.users?.[0]?.lastName
+          ? `${contributor.users[0].firstName} ${contributor.users[0].lastName}`
+          : contributor.users?.[0]?.username || "Unknown",
       id: contributor.id,
     }
   })
@@ -63,7 +66,7 @@ export function AnnouncementForm<S extends z.ZodType<any, any>>(props: FormProps
       <ToggleModal
         buttonLabel="Assign Contributor(s)"
         modalTitle="Select Contributors"
-        buttonClassName="w-full mb-4"
+        buttonClassName="w-full mb-4 btn-info"
         saveButton={true}
       >
         <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
@@ -72,7 +75,7 @@ export function AnnouncementForm<S extends z.ZodType<any, any>>(props: FormProps
       <ToggleModal
         buttonLabel="Assign Team(s)"
         modalTitle="Select Teams"
-        buttonClassName="w-full"
+        buttonClassName="w-full btn-info"
         saveButton={true}
       >
         <CheckboxFieldTable name="teamsId" options={teamOptions} />

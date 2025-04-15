@@ -72,7 +72,10 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   const contributorOptions = individualProjectMembers.map((contributor) => {
     return {
       // there is only one user for contributors
-      label: contributor.users?.[0]?.username || "Unknown",
+      label:
+        contributor.users?.[0]?.firstName && contributor.users?.[0]?.lastName
+          ? `${contributor.users[0].firstName} ${contributor.users[0].lastName}`
+          : contributor.users?.[0]?.username || "Unknown",
       id: contributor.id,
     }
   })
