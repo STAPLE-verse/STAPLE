@@ -19,6 +19,9 @@ import DownloadXLSX from "src/forms/components/DownloadXLSX"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import getJsonSchema from "src/forms/utils/getJsonSchema"
 import { MetadataDisplay } from "src/projects/components/MetaDataDisplay"
+import CollapseCard from "src/core/components/CollapseCard"
+import InformationCircleIcon from "@heroicons/react/24/outline/InformationCircleIcon"
+import { Tooltip } from "react-tooltip"
 
 export const EditProject = () => {
   // Setup
@@ -169,72 +172,74 @@ export const EditProject = () => {
   return (
     <>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2 text-3xl">Project Settings</h1>
+        <h1 className="flex justify-center items-center mb-2 text-3xl">
+          Project Settings
+          <InformationCircleIcon
+            className="h-6 w-6 ml-2 text-info stroke-2"
+            data-tooltip-id="project-overview"
+          />
+          <Tooltip
+            id="project-overview"
+            content="This page allows you to change the project's name, description, and required metadata form. After updating the required metadata form, use the section below to enter, update, or download the project's metadata."
+            className="z-[1099] ourtooltips"
+          />
+        </h1>
         <Suspense fallback={<div>Loading...</div>}>
-          <div className="flex flex-row justify-center m-2">
-            <div className="card bg-base-300 mx-2 w-full">
-              <div className="card-body">
-                <div className="card-title">Edit Settings</div>
-                <ProjectForm
-                  submitText="Update Project"
-                  schema={FormProjectSchema}
-                  initialValues={initialValues}
-                  cancelText="Cancel"
-                  onCancel={handleCancel}
-                  onSubmit={handleSubmit}
-                  userId={currentUser.id}
-                  formResponseSupplied={initialValues.selectedFormVersionId ? true : false}
-                />
-              </div>
-            </div>
+          <div className="flex flex-row justify-center mb-4">
+            <ProjectForm
+              submitText="Update Project"
+              schema={FormProjectSchema}
+              initialValues={initialValues}
+              cancelText="Cancel"
+              onCancel={handleCancel}
+              onSubmit={handleSubmit}
+              userId={currentUser.id}
+              formResponseSupplied={initialValues.selectedFormVersionId ? true : false}
+            />
           </div>
 
-          <div className="flex flex-row justify-center m-2">
-            <div className="card bg-base-300 mx-2 w-full">
-              <div className="card-body">
-                <div className="card-title">View and Edit Form Data</div>
-                {project.formVersion ? (
-                  <div>
-                    <div className="flex flex-row justify-center mt-2">
-                      <DownloadJSON
-                        data={project.metadata}
-                        fileName={project.name}
-                        className="btn btn-primary"
-                        type="button"
-                      />
-                      <DownloadXLSX
-                        data={project.metadata}
-                        fileName={project.name}
-                        className="btn btn-secondary mx-2"
-                        type="button"
-                      />
-                      <JsonFormModal
-                        schema={getJsonSchema(project.formVersion?.schema)}
-                        uiSchema={getJsonSchema(project.formVersion?.uiSchema)}
-                        metadata={project.metadata ? project.metadata : {}}
-                        label={"Edit Form Data"}
-                        classNames="btn-info"
-                        onSubmit={handleJsonFormSubmit}
-                        onError={handleJsonFormError}
-                        resetHandler={handleResetMetadata}
-                        modalSize="w-11/12 max-w-5xl"
-                      />
-                    </div>
+          <CollapseCard title="Edit, View, and Download Required Form Data">
+            {project.formVersion ? (
+              <div>
+                <div className="flex flex-row justify-center mt-2">
+                  <DownloadJSON
+                    data={project.metadata}
+                    fileName={project.name}
+                    className="btn btn-primary"
+                    type="button"
+                  />
+                  <DownloadXLSX
+                    data={project.metadata}
+                    fileName={project.name}
+                    className="btn btn-secondary mx-2"
+                    type="button"
+                  />
+                  <JsonFormModal
+                    schema={getJsonSchema(project.formVersion?.schema)}
+                    uiSchema={getJsonSchema(project.formVersion?.uiSchema)}
+                    metadata={project.metadata ? project.metadata : {}}
+                    label={"Edit Form Data"}
+                    classNames="btn-info"
+                    onSubmit={handleJsonFormSubmit}
+                    onError={handleJsonFormError}
+                    resetHandler={handleResetMetadata}
+                    modalSize="w-11/12 max-w-5xl"
+                  />
+                </div>
 
-                    <div>
-                      <MetadataDisplay metadata={project.metadata} />
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-center text-gray-500 mt-4">
-                    No form has been created for this project yet.
-                  </p>
-                )}
+                <div>
+                  <MetadataDisplay metadata={project.metadata} />
+                </div>
               </div>
-            </div>
-          </div>
+            ) : (
+              <p className="text-center text-gray-500 mt-4">
+                No form has been created for this project yet.
+              </p>
+            )}
+          </CollapseCard>
 
-          <div className="flex justify-end mt-4">
+          <div className="divider pt-4 pb-4"></div>
+          <div className="flex justify-center">
             <button type="button" className="btn btn-warning" onClick={handleDelete}>
               Delete project
             </button>
