@@ -27,7 +27,7 @@ const RoleBuilderPage = () => {
     <Layout title="Contribution Roles">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center text-3xl items-center">
-          All Roles{" "}
+          Roles{" "}
           <InformationCircleIcon
             className="h-6 w-6 ml-2 text-info stroke-2"
             data-tooltip-id="dashboard-overview"

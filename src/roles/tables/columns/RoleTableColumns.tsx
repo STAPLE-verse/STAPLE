@@ -17,7 +17,7 @@ export const RoleTableColumns = [
   }),
   columnHelper.accessor("taxonomy", {
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Taxonomy",
+    header: "System",
   }),
   columnHelper.accessor("id", {
     id: "edit",

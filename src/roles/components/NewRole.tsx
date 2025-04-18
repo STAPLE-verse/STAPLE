@@ -7,6 +7,8 @@ import toast from "react-hot-toast"
 import Modal from "src/core/components/Modal"
 import { RoleForm } from "./RoleForm"
 import { RoleFormSchema } from "../schemas"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 interface NewRoleProps {
   taxonomyList: string[]
@@ -65,7 +67,18 @@ export const NewRole = ({ taxonomyList, onRolesChanged }: NewRoleProps) => {
 
       <Modal open={openNewRoleModal} size="w-1/3 max-w-1/2">
         <div className="">
-          <h1 className="flex justify-center mb-2 text-3xl">Create New Role</h1>
+          <h1 className="flex justify-center items-center mb-2 text-3xl">
+            Create New Role
+            <InformationCircleIcon
+              className="h-6 w-6 ml-2 text-info stroke-2"
+              data-tooltip-id="add-role"
+            />
+            <Tooltip
+              id="add-role"
+              content="Roles describe what each person did in a project—like data collection or project management. You can create your own roles and use them across any project. The 'system' should be the name of the role classification system you're using (e.g., CRediT, custom, etc.)."
+              className="z-[1099] ourtooltips"
+            />
+          </h1>
           <div className="flex justify-start mt-4">
             <RoleForm
               schema={RoleFormSchema}
@@ -73,14 +86,9 @@ export const NewRole = ({ taxonomyList, onRolesChanged }: NewRoleProps) => {
               className="flex flex-col w-full"
               onSubmit={handleNewRole}
               taxonomyList={taxonomyList}
+              cancelText={"Cancel"}
+              onCancel={handleToggleNewRoleModal}
             />
-          </div>
-
-          {/* closes the modal */}
-          <div className="modal-action flex justify-end mt-4">
-            <button type="button" className="btn btn-secondary" onClick={handleToggleNewRoleModal}>
-              Close
-            </button>
           </div>
         </div>
       </Modal>
