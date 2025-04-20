@@ -54,7 +54,7 @@ export function AnnouncementForm<S extends z.ZodType<any, any>>(props: FormProps
       <LabeledTextAreaField
         className="textarea text-primary textarea-bordered textarea-primary textarea-lg bg-base-300 border-2 w-full mb-4"
         name="announcementText"
-        label="Create Announcement:"
+        label="Announcement Text:"
         placeholder="Type your announcement here."
       />
 

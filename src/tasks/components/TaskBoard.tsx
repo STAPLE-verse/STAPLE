@@ -18,8 +18,15 @@ import { findContainerTitle, findContainerItems, findItemValue } from "../utils/
 import useDragHandlers from "../hooks/useDragHandlers"
 import { useParam } from "@blitzjs/next"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
+import { useEffect, useCallback } from "react"
+import { useMutation } from "@blitzjs/rpc"
+import createColumnMutation from "src/tasks/mutations/createColumn"
 
-const TaskBoard = () => {
+const TaskBoard = ({
+  onAddColumn,
+}: {
+  onAddColumn?: (fn: (name: string) => Promise<void>) => void
+}) => {
   // Setup
   const projectId = useParam("projectId", "number")
   const { containers, refetch, updateContainers } = useTaskBoardData(projectId)
@@ -27,6 +34,23 @@ const TaskBoard = () => {
     containers,
     updateContainers,
   })
+
+  const [createColumn] = useMutation(createColumnMutation)
+
+  const addColumn = useCallback(
+    async (name: string) => {
+      await createColumn({ projectId: projectId!, name })
+      await refetch()
+    },
+    [projectId, createColumn, refetch]
+  )
+
+  useEffect(() => {
+    if (onAddColumn) {
+      // @ts-ignore
+      onAddColumn(addColumn)
+    }
+  }, [onAddColumn, addColumn])
 
   // DND Handlers
   const sensors = useSensors(
@@ -37,20 +61,8 @@ const TaskBoard = () => {
   )
 
   return (
-    <div className="mx-auto max-w-7xl py-10">
-      <div className="flex items-center justify-between gap-y-2">
-        <h1 className="text-3xl font-bold" data-tooltip-id="kanban-tooltip">
-          Project Tasks
-        </h1>
-        <TooltipWrapper
-          id="kanban-tooltip"
-          content="Completed tasks appear in a shade of green"
-          className="z-[1099] ourtooltips"
-        />
-        <AddContainer projectId={projectId} refetch={refetch}></AddContainer>
-      </div>
-
-      <div className="mt-10">
+    <div className="mx-auto max-w-7xl">
+      <div className="mt-2">
         <div className="grid grid-cols-3 gap-6">
           <DndContext
             sensors={sensors}
@@ -68,14 +80,14 @@ const TaskBoard = () => {
                     <SortableContext items={container.items.map((i) => i.id)}>
                       <div className="flex items-start flex-col gap-y-4">
                         {container.items.map((i) => (
-                          <div key={i.id}>
-                            <TaskItems
-                              title={i.title}
-                              id={i.id}
-                              projectId={projectId!}
-                              completed={i.completed}
-                            />
-                          </div>
+                          <TaskItems
+                            title={i.title}
+                            id={i.id}
+                            // @ts-ignore: suppress key error, can't change key assignment
+                            key={i.id}
+                            projectId={projectId!}
+                            completed={i.completed}
+                          />
                         ))}
                       </div>
                     </SortableContext>
