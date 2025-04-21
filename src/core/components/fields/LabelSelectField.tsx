@@ -6,6 +6,7 @@ export interface LabeledSelectFieldProps extends PropsWithoutRef<JSX.IntrinsicEl
   name: string
   /** Field label. */
   label: string
+  description?: string
   type?: "number" | "string"
   options: any
   optionText: string
@@ -20,6 +21,7 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
     {
       name,
       label,
+      description,
       outerProps,
       options,
       optionText,
@@ -49,23 +51,23 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
 
     return (
       <div {...outerProps}>
-        <label>
-          {label}
-          <select {...input} disabled={submitting} multiple={multiple} {...props} ref={ref}>
-            <option disabled={disableFirstOption} value="">
-              {firstOptionText}
-            </option>
-            {options &&
-              options.length !== 0 &&
-              options.map((v) => {
-                return (
-                  <option key={v.id} value={v[optionValue]}>
-                    {v[optionText]}
-                  </option>
-                )
-              })}
-          </select>
-        </label>
+        <label>{label} </label>
+        <i>{description}</i>
+        <br />
+        <select {...input} disabled={submitting} multiple={multiple} {...props} ref={ref}>
+          <option disabled={disableFirstOption} value="">
+            {firstOptionText}
+          </option>
+          {options &&
+            options.length !== 0 &&
+            options.map((v) => {
+              return (
+                <option key={v.id} value={v[optionValue]}>
+                  {v[optionText]}
+                </option>
+              )
+            })}
+        </select>
 
         {touched && normalizedError && (
           <div role="alert" style={{ color: "red" }}>

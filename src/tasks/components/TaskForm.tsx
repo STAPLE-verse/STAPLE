@@ -18,6 +18,7 @@ import { ProjectMemberWithUsers } from "src/core/types"
 import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManagerUserIds"
 import { useState } from "react"
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
+import CollapseCard from "src/core/components/CollapseCard"
 
 export type Tag = {
   id: string
@@ -150,43 +151,45 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         }
       }}
     >
-      {/* Name */}
-      <LabeledTextField
-        className="input w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
-        name="name"
-        label="Task Name: (Required)"
-        placeholder="Add Task Name"
-        type="text"
-      />
+      <CollapseCard title="Required Fields: Name, Status, People" className="mb-4">
+        <LabeledTextField
+          className="input w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
+          name="name"
+          label="Task Name:"
+          placeholder="Add Task Name"
+          type="text"
+        />
+        <LabelSelectField
+          className="select w-1/2 text-lg text-primary select-primary select-bordered border-2 bg-base-300"
+          name="containerId"
+          label="Current Status:"
+          description="Status indicates the column placement on the kanban board."
+          options={columns}
+          optionText="name"
+          optionValue="id"
+        />
+        <label>At least one:</label>
+        <ValidationErrorDisplay fieldName={"projectMembersId"} />
+        {/* Contributors */}
+        <ToggleModal
+          buttonLabel="Assign Contributor(s)"
+          modalTitle="Select Contributors"
+          buttonClassName="w-1/2"
+          saveButton={true}
+        >
+          <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
+        </ToggleModal>
+        {/* Teams */}
+        <ToggleModal
+          buttonLabel="Assign Team(s)"
+          modalTitle="Select Teams"
+          buttonClassName="w-1/2"
+          saveButton={true}
+        >
+          <CheckboxFieldTable name="teamsId" options={teamOptions} />
+        </ToggleModal>
+      </CollapseCard>
       {/* Column */}
-      <LabelSelectField
-        className="select w-1/2 text-lg text-primary select-primary select-bordered border-2 bg-base-300"
-        name="containerId"
-        label="Current Column: (Required)"
-        options={columns}
-        optionText="name"
-        optionValue="id"
-      />
-      <label>At least one:</label>
-      <ValidationErrorDisplay fieldName={"projectMembersId"} />
-      {/* Contributors */}
-      <ToggleModal
-        buttonLabel="Assign Contributor(s)"
-        modalTitle="Select Contributors"
-        buttonClassName="w-1/2"
-        saveButton={true}
-      >
-        <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
-      </ToggleModal>
-      {/* Teams */}
-      <ToggleModal
-        buttonLabel="Assign Team(s)"
-        modalTitle="Select Teams"
-        buttonClassName="w-1/2"
-        saveButton={true}
-      >
-        <CheckboxFieldTable name="teamsId" options={teamOptions} />
-      </ToggleModal>
       Optional: you can do this later
       <hr></hr>
       {/* Tag Input */}

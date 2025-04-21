@@ -17,6 +17,7 @@ import toast from "react-hot-toast"
 import updateProject from "src/projects/mutations/updateProject"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import CollapseCard from "src/core/components/CollapseCard"
 
 const Summary = () => {
   // Get data
@@ -114,21 +115,52 @@ const Summary = () => {
       </h1>
       {/* buttons */}
       <div className="flex flex-row justify-center mb-2">
-        {project.metadata && (
+        {project.metadata && <></>}
+
+        <DownloadJSON
+          data={project}
+          fileName={`${project.name}`}
+          className="mx-2 btn btn-primary"
+          label="Download Project JSON"
+        />
+        <button className="btn btn-secondary">Launch Viewer (coming soon)</button>
+      </div>
+
+      {/* Project  information */}
+      <CollapseCard title="Project Settings">
+        Name: {project.name}
+        <br />
+        Created: <DateFormat date={project.createdAt}></DateFormat>
+        <br />
+        Last Update: <DateFormat date={project.updatedAt}></DateFormat>
+        <br />
+        Description: {project.description}
+        <div className="card-actions justify-end">
+          <Link
+            className="btn btn-primary"
+            href={Routes.EditProjectPage({ projectId: projectId! })}
+          >
+            Edit Project Settings
+          </Link>
+        </div>
+      </CollapseCard>
+      <CollapseCard title="Project Metadata">
+        {project.metadata ? (
           <>
+            <MetadataDisplay metadata={project.metadata} />
             <DownloadJSON
               data={project.metadata}
               fileName={project.name}
               className="btn btn-primary"
               type="button"
-              label="Project Metadata JSON"
+              label="Download Metadata JSON"
             />
             <DownloadXLSX
               data={project.metadata}
               fileName={project.name}
               className="btn btn-secondary mx-2"
               type="button"
-              label="Project Metadata XSLX"
+              label="Download Metadata XSLX"
             />
             <JsonFormModal
               schema={getJsonSchema(project.formVersion?.schema)}
@@ -142,46 +174,10 @@ const Summary = () => {
               modalSize="w-11/12 max-w-5xl"
             />
           </>
+        ) : (
+          <div>No metadata available for this project.</div>
         )}
-
-        <DownloadJSON
-          data={project}
-          fileName={`${project.name}`}
-          className="mx-2 btn btn-primary"
-          label="Entire Project JSON"
-        />
-        <button className="btn btn-secondary">Launch Viewer (coming soon)</button>
-      </div>
-
-      {/* Project  information */}
-      <div className="flex flex-row justify-center">
-        <div className="card bg-base-300 mx-2 w-full">
-          <div className="card-body">
-            <div className="card-title">Project Metadata</div>
-            <br />
-            Name: {project.name}
-            <br />
-            Created: <DateFormat date={project.createdAt}></DateFormat>
-            <br />
-            Last Update: <DateFormat date={project.updatedAt}></DateFormat>
-            <br />
-            Description: {project.description}
-            {project.metadata ? (
-              <MetadataDisplay metadata={project.metadata} />
-            ) : (
-              <div>No metadata available for this project.</div>
-            )}
-            <div className="card-actions justify-end">
-              <Link
-                className="btn btn-primary"
-                href={Routes.EditProjectPage({ projectId: projectId! })}
-              >
-                Edit Project Settings
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      </CollapseCard>
     </main>
   )
 }
