@@ -8,10 +8,13 @@ export const ProjectTasksList = () => {
   const projectId = useParam("projectId", "number")
 
   const { tasks } = useProjecTasksListData(projectId)
+  console.log(tasks)
 
   return (
     <Card title={""}>
-      <Table columns={ProjectTasksColumns} data={tasks} addPagination={true} />
+      <div className="overflow-x-auto">
+        <Table columns={ProjectTasksColumns} data={tasks} addPagination={true} />
+      </div>
     </Card>
   )
 }

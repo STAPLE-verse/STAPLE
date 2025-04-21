@@ -13,6 +13,12 @@ export default function useProjecTasksListData(projectId: number | undefined) {
   let queryParams: GetTasksInput = {
     where: { project: { id: projectId } },
     orderBy: [{ id: "asc" }],
+    include: {
+      container: {
+        select: { name: true },
+      },
+      taskLogs: true,
+    },
   }
 
   if (privilege && currentUser) {
