@@ -19,6 +19,6 @@ export const RoleTeamTableColumns = [
   }),
   columnHelper.accessor("taxonomy", {
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Taxonomy",
+    header: "System",
   }),
 ]

@@ -12,7 +12,7 @@ const columnHelper = createColumnHelper<NotificationTableData>()
 
 // ColumnDefs
 export const useNotificationTableColumns = (refetch: () => void, data: NotificationTableData[]) => {
-  const allIds = data.map((item) => item.id)
+  const allIds = useMemo(() => data.map((item) => item.id), [data])
 
   return useMemo(
     () => [

@@ -91,7 +91,7 @@ model ProjectMember {
   taskLogCompletedBy      TaskLog[]    @relation("completedBy")
   reassignmentInvitations Invitation[]
   comments                Comment[]
-  tags               Json?
+  tags                    Json?
 }
 
 model ProjectPrivilege {

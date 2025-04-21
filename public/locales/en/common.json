@@ -11,7 +11,8 @@
       "notifications": "Notifications",
       "roles": "Roles",
       "summary": "Summary",
-      "settings": "Settings"
+      "settings": "Settings",
+      "tags": "Tags"
     },
     "home": {
       "dashboard": "Dashboard",

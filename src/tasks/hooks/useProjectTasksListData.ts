@@ -1,24 +1,38 @@
+import { useEffect, useState } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTasks, { GetTasksInput } from "../queries/getTasks"
 import { MemberPrivileges } from "@prisma/client"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { processProjectTasks } from "../tables/processing/processProjectTasks"
+import getUserProjectMemberIds from "src/tasks/queries/getUserProjectMemberIds"
 
-export default function useProjecTasksListData(projectId: number | undefined) {
+export default function useProjectTasksListData(projectId: number | undefined) {
   const currentUser = useCurrentUser()
-
   const { privilege } = useMemberPrivileges()
+  const [queryParams, setQueryParams] = useState<GetTasksInput | null>(null)
+  const [userMemberIds = []] = useQuery(getUserProjectMemberIds, {
+    projectId: projectId!,
+    userId: currentUser?.id!,
+  })
 
-  let queryParams: GetTasksInput = {
-    where: { project: { id: projectId } },
-    orderBy: [{ id: "asc" }],
-  }
+  useEffect(() => {
+    if (!privilege || !currentUser || !projectId) return
 
-  if (privilege && currentUser) {
+    let baseParams: GetTasksInput = {
+      where: { project: { id: projectId } },
+      orderBy: [{ id: "asc" }],
+      include: {
+        container: {
+          select: { name: true },
+        },
+        taskLogs: true,
+      },
+    }
+
     if (privilege === MemberPrivileges.CONTRIBUTOR) {
-      queryParams.where = {
-        ...queryParams.where,
+      baseParams.where = {
+        ...baseParams.where,
         OR: [
           {
             assignedMembers: {
@@ -33,12 +47,30 @@ export default function useProjecTasksListData(projectId: number | undefined) {
           },
         ],
       }
-    }
-  }
 
-  const [{ tasks: fetchedTasks }] = useQuery(getTasks, queryParams)
+      baseParams.include = {
+        ...baseParams.include,
+        taskLogs: {
+          where: {
+            assignedToId: {
+              in: userMemberIds,
+            },
+          },
+        },
+      }
+    }
+
+    setQueryParams(baseParams)
+  }, [privilege, currentUser, projectId, userMemberIds])
+
+  const [{ tasks: fetchedTasks }] = useQuery(
+    getTasks,
+    queryParams ?? {
+      where: { project: { id: -1 } }, // dummy query until params are ready
+      orderBy: [{ id: "asc" }],
+    }
+  )
 
   const tasks = processProjectTasks(fetchedTasks)
-
   return { tasks }
 }

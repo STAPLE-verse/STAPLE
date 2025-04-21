@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useMemo } from "react"
 import Layout from "src/core/layouts/Layout"
 import Table from "src/core/components/Table"
 import { usePaginatedQuery } from "@blitzjs/rpc"
@@ -48,7 +48,10 @@ const NotificationContent = () => {
   const extendedNotifications = notifications as unknown as ExtendedNotification[]
 
   // Preprocess table data
-  const notificationTableData = processNotification(extendedNotifications)
+  const notificationTableData = useMemo(
+    () => processNotification(extendedNotifications),
+    [extendedNotifications]
+  )
 
   // Get columns and pass refetch
   const columns = useNotificationTableColumns(refetch, notificationTableData)

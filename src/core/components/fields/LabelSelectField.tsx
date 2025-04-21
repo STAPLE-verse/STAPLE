@@ -81,7 +81,7 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
             font-size: 1.25rem;
           }
           select {
-            font-size: 1rem;
+            font-size: 1rem !important;
             padding: 0.25rem 0.75rem !important;
             border-radius: 3px;
             appearance: none;

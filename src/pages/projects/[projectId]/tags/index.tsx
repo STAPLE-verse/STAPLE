@@ -1,11 +1,8 @@
 import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
-import { useParam } from "@blitzjs/next"
 import TagDisplay from "src/tags/components/TagDisplay"
 
 const TagsPage = () => {
-  const projectId = useParam("projectId", "number")
-
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="Tasks">

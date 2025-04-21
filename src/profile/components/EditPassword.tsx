@@ -1,6 +1,5 @@
 import { useRouter } from "next/router"
 import React, { Suspense } from "react"
-import Head from "next/head"
 import { useMutation } from "@blitzjs/rpc"
 import { FORM_ERROR } from "final-form"
 import changePassword from "src/auth/mutations/changePassword"

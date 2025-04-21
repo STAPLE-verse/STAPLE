@@ -69,7 +69,7 @@ export function processTeamTaskLogs(
   comments: CommentWithAuthor[]
 ): ProcessedTeamTaskLog[] {
   return projectMembers.map((projectMember) => {
-    // Function fails if does not recieve assignment data for teams
+    // Function fails if does not receive assignment data for teams
     if (!projectMember.name) {
       throw new Error(`Missing team data for assignment ID: ${projectMember.id}`)
     }

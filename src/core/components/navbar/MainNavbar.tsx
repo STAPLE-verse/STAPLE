@@ -122,8 +122,6 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-        {/* Theme Selector */}
-        <ThemeSelect />
       </div>
     </div>
   )

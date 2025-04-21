@@ -5,9 +5,16 @@ interface DownloadJSONProps {
   fileName: string
   type?: "button" | "submit" | "reset" // Match the allowed types
   className?: string
+  label?: string
 }
 
-const DownloadJSON = ({ data, fileName, type = "button", className }: DownloadJSONProps) => {
+const DownloadJSON = ({
+  data,
+  fileName,
+  type = "button",
+  className,
+  label = "Download JSON",
+}: DownloadJSONProps) => {
   const downloadJSON = () => {
     const jsonData = new Blob([JSON.stringify(data)], { type: "application/json" })
     const jsonURL = URL.createObjectURL(jsonData)
@@ -21,7 +28,7 @@ const DownloadJSON = ({ data, fileName, type = "button", className }: DownloadJS
 
   return (
     <button type={type} className={className} onClick={downloadJSON}>
-      Download JSON
+      {label}
     </button>
   )
 }
