@@ -7,9 +7,16 @@ interface DownloadXLSXProps {
   fileName: string
   type?: "button" | "submit" | "reset" // Match the allowed types
   className?: string
+  label?: string
 }
 
-function DownloadXLSX({ data, fileName, type = "button", className }: DownloadXLSXProps) {
+function DownloadXLSX({
+  data,
+  fileName,
+  type = "button",
+  className,
+  label = "Download XLSX",
+}: DownloadXLSXProps) {
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(data)
     const workbook = XLSX.utils.book_new()
@@ -26,7 +33,7 @@ function DownloadXLSX({ data, fileName, type = "button", className }: DownloadXL
 
   return (
     <button type={type} className={className} onClick={exportToExcel}>
-      Download XLSX
+      {label}
     </button>
   )
 }
