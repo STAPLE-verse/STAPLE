@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useMemo } from "react"
 import Layout from "src/core/layouts/Layout"
 import Table from "src/core/components/Table"
 import { useParam } from "@blitzjs/next"
@@ -34,7 +34,11 @@ const NotificationContent = () => {
   const extendedNotifications = notifications as unknown as ExtendedNotification[]
 
   // Preprocess table data
-  const projectNotificationTableData = processProjectNotification(extendedNotifications)
+  const projectNotificationTableData = useMemo(
+    () => processProjectNotification(extendedNotifications),
+
+    [extendedNotifications]
+  )
 
   // Get columns and pass refetch
   const columns = useProjectNotificationTableColumns(refetch, projectNotificationTableData)
