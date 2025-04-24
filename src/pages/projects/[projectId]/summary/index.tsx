@@ -150,31 +150,33 @@ const Summary = () => {
         {project.metadata ? (
           <>
             <MetadataDisplay metadata={project.metadata} />
-            <DownloadJSON
-              data={project.metadata}
-              fileName={project.name}
-              className="btn btn-primary"
-              type="button"
-              label="Download Metadata JSON"
-            />
-            <DownloadXLSX
-              data={project.metadata}
-              fileName={project.name}
-              className="btn btn-secondary mx-2"
-              type="button"
-              label="Download Metadata XSLX"
-            />
-            <JsonFormModal
-              schema={getJsonSchema(project.formVersion?.schema)}
-              uiSchema={getJsonSchema(project.formVersion?.uiSchema)}
-              metadata={project.metadata}
-              label={"Edit Project Metadata"}
-              classNames="btn-info"
-              onSubmit={handleJsonFormSubmit}
-              onError={handleJsonFormError}
-              resetHandler={handleResetMetadata}
-              modalSize="w-11/12 max-w-5xl"
-            />
+            <div className="justify-end flex">
+              <DownloadJSON
+                data={project.metadata}
+                fileName={project.name}
+                className="btn btn-primary"
+                type="button"
+                label="Download Metadata JSON"
+              />
+              <DownloadXLSX
+                data={project.metadata}
+                fileName={project.name}
+                className="btn btn-secondary mx-2"
+                type="button"
+                label="Download Metadata XSLX"
+              />
+              <JsonFormModal
+                schema={getJsonSchema(project.formVersion?.schema)}
+                uiSchema={getJsonSchema(project.formVersion?.uiSchema)}
+                metadata={project.metadata}
+                label={"Edit Project Metadata"}
+                classNames="btn-info"
+                onSubmit={handleJsonFormSubmit}
+                onError={handleJsonFormError}
+                resetHandler={handleResetMetadata}
+                modalSize="w-11/12 max-w-5xl"
+              />
+            </div>
           </>
         ) : (
           <div>No metadata available for this project.</div>
