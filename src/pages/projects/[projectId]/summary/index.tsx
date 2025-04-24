@@ -114,7 +114,7 @@ const Summary = () => {
         />
       </h1>
       {/* buttons */}
-      <div className="flex flex-row justify-center mb-2">
+      <div className="flex flex-row justify-center mb-4">
         {project.metadata && <></>}
 
         <DownloadJSON
@@ -127,7 +127,9 @@ const Summary = () => {
       </div>
 
       {/* Project  information */}
-      <CollapseCard title="Project Settings">
+      <CollapseCard title="Project Settings" className="mb-4">
+        Use project settings to change the name, description, and required project metadata.
+        <br />
         Name: {project.name}
         <br />
         Created: <DateFormat date={project.createdAt}></DateFormat>

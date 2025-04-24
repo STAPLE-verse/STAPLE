@@ -50,7 +50,7 @@ export const AddRoleModal = ({ rows, projectId, refetch, type }) => {
     <>
       <button
         type="button"
-        className="btn btn-primary"
+        className="btn btn-primary flex items-center gap-2"
         onClick={handleToggleModal}
         disabled={rows.length < 1 || selectedIds.length < 1}
       >

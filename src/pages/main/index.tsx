@@ -85,7 +85,7 @@ const MainContent = () => {
         />
         <Tooltip
           id="dashboard-overview"
-          content="Welcome to the main dahsboard! You can rearrange these widgets by clicking and dragging the boxes. Use the buttons to navigate to tasks, notifications, and more. "
+          content="Welcome to the main dashboard! You can rearrange these widgets by clicking and dragging the boxes. Use the buttons to navigate to tasks, notifications, and more. "
           className="z-[1099] ourtooltips"
         />
       </h3>
