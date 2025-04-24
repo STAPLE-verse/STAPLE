@@ -4,13 +4,12 @@ import { CSS } from "@dnd-kit/utilities"
 import clsx from "clsx"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowsUpDownLeftRight } from "@fortawesome/free-solid-svg-icons"
-import { UniqueIdentifier } from "@dnd-kit/core"
 import DeleteColumn from "./DeleteColumn"
-import { extractNumericId } from "../utils/extractNumericId"
 import EditableColumnTitle from "./EditableColumnTitle"
+import { makeDragId } from "../utils/dragId"
 
 interface ContainerProps {
-  id: UniqueIdentifier
+  id: number
   children: React.ReactNode
   title?: string
   description?: string
@@ -18,13 +17,14 @@ interface ContainerProps {
 }
 
 const TaskContainer = ({ id, children, title, description, onRefetch }: ContainerProps) => {
-  const columnId = extractNumericId(id, "container")
   const { attributes, setNodeRef, listeners, transform, transition, isDragging } = useSortable({
-    id: id,
+    id: makeDragId("container", id),
     data: {
       type: "container",
+      columnId: id,
     },
   })
+
   return (
     <div
       {...attributes}
@@ -41,7 +41,7 @@ const TaskContainer = ({ id, children, title, description, onRefetch }: Containe
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-y-1">
           <EditableColumnTitle
-            columnId={columnId!}
+            columnId={id}
             initialTitle={title ?? ""}
             isEditable={title !== "Done"}
             onRefetch={onRefetch}
@@ -49,8 +49,8 @@ const TaskContainer = ({ id, children, title, description, onRefetch }: Containe
           <p className="text-base">{description}</p>
         </div>
         <div className="flex items-center gap-2">
-          {title !== "Done" && columnId !== undefined && title !== undefined && (
-            <DeleteColumn columnId={columnId} columnName={title} />
+          {title !== "Done" && title !== undefined && (
+            <DeleteColumn columnId={id} columnName={title} />
           )}
 
           <FontAwesomeIcon

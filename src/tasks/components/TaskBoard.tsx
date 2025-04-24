@@ -18,14 +18,18 @@ import { findContainerTitle, findContainerItems, findItemValue } from "../utils/
 import useDragHandlers from "../hooks/useDragHandlers"
 import { useParam } from "@blitzjs/next"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
+import { makeDragId } from "../utils/dragId"
+import TaskItemPreview from "./TaskItemPreview"
+import TaskContainerPreview from "./TaskContainerPreview"
 
 const TaskBoard = () => {
   // Setup
   const projectId = useParam("projectId", "number")
-  const { containers, refetch, updateContainers } = useTaskBoardData(projectId)
-  const { handleDragStart, handleDragMove, handleDragEnd, activeId } = useDragHandlers({
+  const { containers, updateContainers, refetch } = useTaskBoardData(projectId!)
+  const { handleDragStart, handleDragMove, handleDragEnd, activeData } = useDragHandlers({
     containers,
     updateContainers,
+    refetch,
   })
 
   // DND Handlers
@@ -59,7 +63,7 @@ const TaskBoard = () => {
             onDragMove={handleDragMove}
             onDragEnd={handleDragEnd}
           >
-            <SortableContext items={containers.map((i) => i.id)}>
+            <SortableContext items={containers.map((c) => makeDragId("container", c.id))}>
               {containers.map((container) => (
                 <TaskContainer
                   id={container.id}
@@ -67,15 +71,18 @@ const TaskBoard = () => {
                   key={container.id}
                   onRefetch={refetch}
                 >
-                  <SortableContext items={container.items.map((i) => i.id)}>
+                  <SortableContext
+                    items={container.items.map((item) => makeDragId("item", item.id))}
+                  >
                     <div className="flex items-start flex-col gap-y-4">
                       {container.items.map((i) => (
                         <TaskItems
                           title={i.title}
                           id={i.id}
-                          key={i.id}
+                          key={makeDragId("item", i.id)}
                           projectId={projectId!}
                           completed={i.completed}
+                          containerId={container.id}
                         />
                       ))}
                     </div>
@@ -85,28 +92,18 @@ const TaskBoard = () => {
             </SortableContext>
 
             <DragOverlay adjustScale={false}>
-              {/* Drag Overlay For item Item */}
-              {activeId && activeId.toString().includes("item") && (
-                <TaskItems
-                  id={activeId}
-                  title={findItemValue(activeId, containers, "title") || ""}
-                  completed={findItemValue(activeId, containers, "completed") || false}
-                  projectId={projectId!}
+              {activeData?.type === "item" && (
+                <TaskItemPreview
+                  title={findItemValue(activeData.taskId, containers, "title") || ""}
+                  completed={findItemValue(activeData.taskId, containers, "completed") || false}
                 />
               )}
-              {/* Drag Overlay For Container */}
-              {activeId && activeId.toString().includes("container") && (
-                <TaskContainer id={activeId} title={findContainerTitle(activeId, containers)}>
-                  {findContainerItems(activeId, containers).map((i) => (
-                    <TaskItems
-                      key={i.id}
-                      title={i.title}
-                      id={i.id}
-                      completed={i.completed}
-                      projectId={projectId!}
-                    />
-                  ))}
-                </TaskContainer>
+
+              {activeData?.type === "container" && (
+                <TaskContainerPreview
+                  title={findContainerTitle(activeData.columnId, containers)}
+                  items={findContainerItems(activeData.columnId, containers)}
+                />
               )}
             </DragOverlay>
           </DndContext>
