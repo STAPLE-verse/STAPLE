@@ -28,7 +28,7 @@ export const RolesTabs = () => {
         />
       </h1>
       <Tab.Group defaultIndex={0}>
-        <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
+        <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2">
           {/* TabLink for table view */}
           <Tab
             className={({ selected }) =>

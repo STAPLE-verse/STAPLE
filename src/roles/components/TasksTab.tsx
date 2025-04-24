@@ -6,6 +6,7 @@ import React from "react"
 import { AddRoleModal } from "./AddRoleModal"
 import { RoleTaskTable } from "./RoleTaskTable"
 import { MultiSelectProvider } from "src/core/components/fields/MultiSelectContext"
+import Card from "src/core/components/Card"
 
 const TasksTab = () => {
   const projectId = useParam("projectId", "number")
@@ -18,14 +19,16 @@ const TasksTab = () => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <MultiSelectProvider>
-        <Suspense fallback={<div>Loading...</div>}>
-          <RoleTaskTable tasks={tasks} />
-          <div className="modal-action flex justify-end mt-4">
-            <AddRoleModal projectId={projectId} rows={tasks} refetch={refetch} type={"task"} />
-          </div>
-        </Suspense>
-      </MultiSelectProvider>
+      <Card title="">
+        <MultiSelectProvider>
+          <Suspense fallback={<div>Loading...</div>}>
+            <RoleTaskTable tasks={tasks} />
+            <div className="modal-action flex justify-end mt-4">
+              <AddRoleModal projectId={projectId} rows={tasks} refetch={refetch} type={"task"} />
+            </div>
+          </Suspense>
+        </MultiSelectProvider>
+      </Card>
     </main>
   )
 }

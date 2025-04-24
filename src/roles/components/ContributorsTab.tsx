@@ -7,6 +7,7 @@ import { MultiSelectProvider } from "../../core/components/fields/MultiSelectCon
 import { RoleContributorTable } from "./RoleContributorTable"
 import { AddRoleModal } from "./AddRoleModal"
 import { ProjectMemberWithUsersAndRoles } from "src/core/types"
+import Card from "src/core/components/Card"
 
 const ContributorsTab = () => {
   const projectId = useParam("projectId", "number")
@@ -28,19 +29,21 @@ const ContributorsTab = () => {
 
   return (
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <MultiSelectProvider>
-        <Suspense fallback={<div>Loading...</div>}>
-          <RoleContributorTable contributors={contributors} />
-          <div className="modal-action flex justify-end mt-4">
-            <AddRoleModal
-              rows={contributors}
-              refetch={refetch}
-              projectId={projectId}
-              type={"contributor"}
-            />
-          </div>
-        </Suspense>
-      </MultiSelectProvider>
+      <Card title="">
+        <MultiSelectProvider>
+          <Suspense fallback={<div>Loading...</div>}>
+            <RoleContributorTable contributors={contributors} />
+            <div className="modal-action flex justify-end mt-4">
+              <AddRoleModal
+                rows={contributors}
+                refetch={refetch}
+                projectId={projectId}
+                type={"contributor"}
+              />
+            </div>
+          </Suspense>
+        </MultiSelectProvider>
+      </Card>
     </main>
   )
 }
