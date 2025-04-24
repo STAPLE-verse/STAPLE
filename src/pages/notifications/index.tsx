@@ -73,7 +73,7 @@ const NotificationContent = () => {
         />
       </h1>
 
-      <div className="flex justify-center m-4">
+      <div className="flex justify-center m-4 gap-2">
         <DeleteNotificationButton ids={selectedIds} />
         <MultiReadToggleButton
           notifications={selectedNotifications}

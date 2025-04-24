@@ -49,7 +49,7 @@ const NotificationContent = () => {
     <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center mb-2 text-3xl">Project Notifications</h1>
       <Table columns={columns} data={projectNotificationTableData} addPagination={true} />
-      <div className="flex justify-end mt-4 gap-4">
+      <div className="flex justify-end mt-4 gap-2">
         <DeleteNotificationButton ids={selectedIds} />
         <MultiReadToggleButton
           notifications={selectedNotifications}
