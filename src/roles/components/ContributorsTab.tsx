@@ -28,7 +28,7 @@ const ContributorsTab = () => {
   }) as unknown as [{ projectMembers: ProjectMemberWithUsersAndRoles[] }, any]
 
   return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+    <main className="flex flex-col mx-auto w-full">
       <Card title="">
         <MultiSelectProvider>
           <Suspense fallback={<div>Loading...</div>}>

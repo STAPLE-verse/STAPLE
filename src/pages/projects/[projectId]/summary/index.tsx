@@ -100,7 +100,7 @@ const Summary = () => {
   }
 
   return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+    <main className="flex flex-col mx-auto w-full">
       <h1 className="flex justify-center items-center mb-2 text-3xl">
         Project Summary
         <InformationCircleIcon
@@ -163,7 +163,7 @@ const Summary = () => {
                 fileName={project.name}
                 className="btn btn-secondary mx-2"
                 type="button"
-                label="Download Metadata XSLX"
+                label="Download Metadata XLSX"
               />
               <JsonFormModal
                 schema={getJsonSchema(project.formVersion?.schema)}

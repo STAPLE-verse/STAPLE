@@ -25,7 +25,7 @@ const FormBuilderPage = () => {
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="Form Builder">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <Suspense fallback={<div>Loading...</div>}>
           <FormPlayground saveForm={saveForm} />
         </Suspense>

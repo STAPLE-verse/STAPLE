@@ -18,7 +18,7 @@ export const TriggerDefaultForms = () => {
   }
 
   return (
-    <div className="flex flex-col items-center mt-4">
+    <div className="flex flex-col items-center mt-2">
       <button onClick={handleCreateDefaultForms} className="btn btn-primary">
         Create Default Forms for Users
       </button>
@@ -39,7 +39,7 @@ export const LinkDefaultForms = () => {
   }
 
   return (
-    <div className="flex flex-col items-center mt-4">
+    <div className="flex flex-col items-center mt-2">
       <button onClick={handleLinkDefaultForms} className="btn btn-primary">
         Link Default Forms for Users
       </button>
@@ -60,7 +60,7 @@ export const CreateMetadata = () => {
   }
 
   return (
-    <div className="flex flex-col items-center mt-4">
+    <div className="flex flex-col items-center mt-2">
       <button onClick={handleCreateMetadata} className="btn btn-primary">
         Create Metadata from Current Projects
       </button>

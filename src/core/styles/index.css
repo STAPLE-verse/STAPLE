@@ -348,6 +348,8 @@ visuals look to our */
   border-right: none !important;
   width: 100% !important;
   border: none !important;
+  margin-bottom: 1rem !important;
+  margin-top: 1rem !important;
 }
 
 /* form builder background for possible values*/
@@ -625,4 +627,16 @@ input:focus {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
+}
+
+.card-body {
+  padding: 1rem !important;
+}
+
+.table :where(th, td) {
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  vertical-align: middle;
 }

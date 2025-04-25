@@ -76,7 +76,7 @@ const MainContent = () => {
     : currentUser!.username
 
   return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl h-full space-y-4">
+    <main className="flex flex-col mx-auto w-full h-full space-y-4">
       <h3 className="text-3xl justify-center items-center flex">
         {t("main.welcome")}, {name}!
         <InformationCircleIcon

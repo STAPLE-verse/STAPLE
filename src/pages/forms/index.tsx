@@ -33,7 +33,7 @@ const AllFormsPage = () => {
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="Forms">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <Suspense fallback={<div>Loading...</div>}>
           <h1 className="flex justify-center items-center text-3xl">
             Forms{" "}
@@ -47,7 +47,7 @@ const AllFormsPage = () => {
               className="z-[1099] ourtooltips"
             />
           </h1>
-          <div className="flex justify-center m-4">
+          <div className="flex justify-center mt-4 mb-2">
             <Link className="btn btn-primary mr-2" href={Routes.FormBuilderPage()}>
               Create New Form
             </Link>

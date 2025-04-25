@@ -46,10 +46,9 @@ const NotificationContent = () => {
   const selectedNotifications = extendedNotifications.filter((n) => selectedIds.includes(n.id))
 
   return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+    <main className="flex flex-col mx-auto w-full">
       <h1 className="flex justify-center mb-2 text-3xl">Project Notifications</h1>
-      <Table columns={columns} data={projectNotificationTableData} addPagination={true} />
-      <div className="flex justify-end mt-4 gap-2">
+      <div className="flex justify-center mt-4 gap-2">
         <DeleteNotificationButton ids={selectedIds} />
         <MultiReadToggleButton
           notifications={selectedNotifications}
@@ -57,6 +56,7 @@ const NotificationContent = () => {
           resetSelection={resetSelection}
         />
       </div>
+      <Table columns={columns} data={projectNotificationTableData} addPagination={true} />
     </main>
   )
 }

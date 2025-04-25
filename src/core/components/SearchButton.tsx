@@ -15,7 +15,7 @@ const SearchButton = ({ onChange, debounceTime = 500 }: Props) => {
   }
   return (
     <div>
-      <div className="flex flex-row py-3 px-6 mx-auto w-full max-w-md items-center justify-between relative text-base-400 focus-within:text-base-600 bg-base-50">
+      <div className="flex flex-row mx-auto w-full max-w-md items-center justify-between relative text-base-400 focus-within:text-base-600 bg-base-50">
         <MagnifyingGlassIcon className="w-5 h-5 absolute ml-3 pointer-events-none"></MagnifyingGlassIcon>
 
         <DebouncedInput

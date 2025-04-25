@@ -45,7 +45,7 @@ const ContributorsPage = () => {
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="All Contributors">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <h1 className="flex justify-center mb-2 text-3xl">Contributors</h1>
         <Suspense fallback={<Loading />}>
           <ContributorList

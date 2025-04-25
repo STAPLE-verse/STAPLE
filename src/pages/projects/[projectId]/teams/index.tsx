@@ -64,7 +64,7 @@ const TeamsPage = () => {
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="All Teams">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <h1 className="flex justify-center mb-2 text-3xl">Teams</h1>
         <Suspense fallback={<div>Loading...</div>}>
           <AllTeamList privilege={privilege!} projectId={projectId} />

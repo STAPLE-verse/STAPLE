@@ -27,7 +27,7 @@ export const ProjectTasksTabs = ({ projectPrivilege, projectId }) => {
     taskBoardAddColumn(name)
     setShowAddColumnModal(false)
   }
-
+  //https://daisyui.com/components/tab/?lang=en
   return (
     <>
       <h1 className="flex justify-center items-center text-3xl">
@@ -46,26 +46,6 @@ export const ProjectTasksTabs = ({ projectPrivilege, projectId }) => {
           className="z-[1099] ourtooltips"
         />
       </h1>
-      {projectPrivilege === MemberPrivileges.PROJECT_MANAGER && (
-        <div className="flex justify-center mt-2 mb-2 gap-2">
-          <Link className="btn btn-primary" href={Routes.NewTaskPage({ projectId: projectId! })}>
-            Create New Task
-          </Link>
-          {selectedIndex === 0 && (
-            <>
-              <button className="btn btn-secondary" onClick={() => setShowAddColumnModal(true)}>
-                Add New Column
-              </button>
-              <AddContainer
-                projectId={projectId}
-                show={showAddColumnModal}
-                onClose={() => setShowAddColumnModal(false)}
-                onSubmitName={handleAddColumn}
-              />
-            </>
-          )}
-        </div>
-      )}
 
       {projectPrivilege !== MemberPrivileges.CONTRIBUTOR && (
         <Tab.Group
@@ -75,6 +55,32 @@ export const ProjectTasksTabs = ({ projectPrivilege, projectId }) => {
         >
           {projectPrivilege === MemberPrivileges.PROJECT_MANAGER && (
             <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-2">
+              {projectPrivilege === MemberPrivileges.PROJECT_MANAGER && (
+                <div className="flex justify-center mt-2 mb-2 gap-2">
+                  <Link
+                    className="btn btn-primary"
+                    href={Routes.NewTaskPage({ projectId: projectId! })}
+                  >
+                    Create New Task
+                  </Link>
+                  {selectedIndex === 0 && (
+                    <>
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => setShowAddColumnModal(true)}
+                      >
+                        Add New Column
+                      </button>
+                      <AddContainer
+                        projectId={projectId}
+                        show={showAddColumnModal}
+                        onClose={() => setShowAddColumnModal(false)}
+                        onSubmitName={handleAddColumn}
+                      />
+                    </>
+                  )}
+                </div>
+              )}
               {/* Tablink for board view */}
               <Tab as="button" className={({ selected }) => clsx("tab", selected && "tab-active")}>
                 Board

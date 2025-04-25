@@ -63,7 +63,7 @@ const TaskBoard = ({
   return (
     <div className="mx-auto max-w-7xl">
       <div className="mt-2">
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-3 gap-4">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCorners}

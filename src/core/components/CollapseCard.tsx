@@ -35,7 +35,7 @@ const CollapseCard = ({
         )}
       </div>
 
-      <div className="collapse-content mb-4">
+      <div className="collapse-content">
         {children}
         <div className="justify-end absolute bottom-2 right-6">{actions}</div>
       </div>
