@@ -631,6 +631,7 @@ input:focus {
 
 .card-body {
   padding: 1rem !important;
+  gap: 0rem !important;
 }
 
 .table :where(th, td) {

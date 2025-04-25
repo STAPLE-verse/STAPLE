@@ -12,7 +12,7 @@ const ProjectCard = ({ project }) => (
       <p className="italic mb-2">
         Last update: <DateFormat date={project.updatedAt} />
       </p>
-      <div className="justify-end absolute bottom-2 right-6">
+      <div className="justify-end card-actions">
         <Link
           className="btn btn-primary mb-2"
           href={Routes.ShowProjectPage({ projectId: project.id })}

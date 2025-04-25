@@ -26,7 +26,7 @@ const Widget: React.FC<WidgetProps> = ({
       }`}
     >
       <div
-        className="card-title text-base-content p-2 overflow-visible"
+        className="card-title text-base-content mb-2 overflow-visible"
         data-tooltip-id={tooltipId}
       >
         {title}

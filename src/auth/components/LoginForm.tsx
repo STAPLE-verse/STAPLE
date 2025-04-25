@@ -79,7 +79,7 @@ export const LoginForm = (props: LoginFormProps) => {
         />
       </Form>
 
-      <div className="divider pt-4 pb-4"></div>
+      <div className="divider pt-2 pb-2"></div>
       <div className="flex flex-row justify-center">
         <Link className="btn btn-warning ml-2" href={Routes.ForgotPasswordPage()}>
           Forgot Password

@@ -56,7 +56,7 @@ export const TosForm = (props: TosFormProps) => {
           labelProps={{ className: "text-lg" }}
         />
       </Form>
-      <div className="divider pt-4 pb-4"></div>
+      <div className="divider pt-2 pb-2"></div>
       <div className="flex flex-row justify-center">
         <Link className="btn btn-secondary" href={Routes.Home()}>
           Cancel and go back to STAPLE Home Page

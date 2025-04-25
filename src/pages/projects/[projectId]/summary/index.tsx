@@ -101,7 +101,7 @@ const Summary = () => {
 
   return (
     <main className="flex flex-col mx-auto w-full">
-      <h1 className="flex justify-center items-center mb-2 text-3xl">
+      <h1 className="flex justify-center items-center mb-4 text-3xl">
         Project Summary
         <InformationCircleIcon
           className="h-6 w-6 ml-2 text-info stroke-2"
