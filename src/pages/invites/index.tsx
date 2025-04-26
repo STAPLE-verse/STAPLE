@@ -1,5 +1,4 @@
 import { Suspense, useState } from "react"
-import Head from "next/head"
 import { useRouter } from "next/router"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"

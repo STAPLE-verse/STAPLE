@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import Head from "next/head"
 import { useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"

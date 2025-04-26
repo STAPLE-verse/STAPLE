@@ -13,10 +13,7 @@ const ProjectCard = ({ project }) => (
         Last update: <DateFormat date={project.updatedAt} />
       </p>
       <div className="justify-end card-actions">
-        <Link
-          className="btn btn-primary mb-2"
-          href={Routes.ShowProjectPage({ projectId: project.id })}
-        >
+        <Link className="btn btn-primary" href={Routes.ShowProjectPage({ projectId: project.id })}>
           Open
         </Link>
       </div>

@@ -29,9 +29,9 @@ const ContributorsTab = () => {
 
   return (
     <main className="flex flex-col mx-auto w-full">
-      <Card title="">
-        <MultiSelectProvider>
-          <Suspense fallback={<div>Loading...</div>}>
+      <MultiSelectProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <div className="rounded-b-box rounded-tr-box bg-base-300 p-4">
             <RoleContributorTable contributors={contributors} />
             <div className="modal-action flex justify-end mt-4">
               <AddRoleModal
@@ -41,9 +41,9 @@ const ContributorsTab = () => {
                 type={"contributor"}
               />
             </div>
-          </Suspense>
-        </MultiSelectProvider>
-      </Card>
+          </div>
+        </Suspense>
+      </MultiSelectProvider>
     </main>
   )
 }

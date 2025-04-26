@@ -1,5 +1,4 @@
 import { Suspense, useState } from "react"
-import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"

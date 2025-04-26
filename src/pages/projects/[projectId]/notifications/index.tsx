@@ -11,6 +11,9 @@ import { processProjectNotification } from "src/notifications/tables/processing/
 import { MultiSelectProvider, useMultiSelect } from "src/core/components/fields/MultiSelectContext"
 import { DeleteNotificationButton } from "src/notifications/components/DeleteNotificationButton"
 import { MultiReadToggleButton } from "src/notifications/components/MultiReadToggleButton"
+import Card from "src/core/components/Card"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 const NotificationContent = () => {
   const projectId = useParam("projectId", "number")
@@ -47,8 +50,19 @@ const NotificationContent = () => {
 
   return (
     <main className="flex flex-col mx-auto w-full">
-      <h1 className="flex justify-center mb-2 text-3xl">Project Notifications</h1>
-      <div className="flex justify-center mt-4 gap-2">
+      <div className="flex justify-center items-center gap-2 mb-2">
+        <h1 className="text-3xl">Project Notifications</h1>
+        <InformationCircleIcon
+          className="h-5 w-5 stroke-2 text-info"
+          data-tooltip-id="project-notifications-tooltip"
+        />
+        <Tooltip
+          id="project-notifications-tooltip"
+          content="These are notifications for this project only. You can delete or mark them as read using the select options."
+          className="z-[1099] ourtooltips"
+        />
+      </div>
+      <div className="flex justify-center mt-4 mb-2 gap-2">
         <DeleteNotificationButton ids={selectedIds} />
         <MultiReadToggleButton
           notifications={selectedNotifications}
@@ -56,7 +70,9 @@ const NotificationContent = () => {
           resetSelection={resetSelection}
         />
       </div>
-      <Table columns={columns} data={projectNotificationTableData} addPagination={true} />
+      <Card title="">
+        <Table columns={columns} data={projectNotificationTableData} addPagination={true} />
+      </Card>
     </main>
   )
 }

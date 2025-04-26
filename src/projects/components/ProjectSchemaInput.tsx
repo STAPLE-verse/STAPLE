@@ -115,7 +115,7 @@ export const ProjectSchemaInput = ({
           <h1 className="flex justify-center items-center gap-2 mb-2 text-3xl">
             Select Form
             <InformationCircleIcon
-              className="h-5 w-5 text-info"
+              className="h-5 w-5 stroke-2 text-info"
               data-tooltip-id="form-select-tooltip"
             />
             <Tooltip

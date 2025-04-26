@@ -1,6 +1,5 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
-import Head from "next/head"
 import Link from "next/link"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
