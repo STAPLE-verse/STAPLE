@@ -76,22 +76,23 @@ enum MemberPrivileges {
 }
 
 model ProjectMember {
-  id                      Int          @id @default(autoincrement())
-  createdAt               DateTime     @default(now())
-  updatedAt               DateTime     @updatedAt
+  id                      Int                 @id @default(autoincrement())
+  createdAt               DateTime            @default(now())
+  updatedAt               DateTime            @updatedAt
   projectId               Int
-  project                 Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project                 Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
   name                    String?
   users                   User[]
-  createdTasks            Task[]       @relation("CreatedTasks")
-  assignedTasks           Task[]       @relation("AssignedTasks")
+  createdTasks            Task[]              @relation("CreatedTasks")
+  assignedTasks           Task[]              @relation("AssignedTasks")
   roles                   Role[]
-  deleted                 Boolean      @default(false)
-  taskLogAssignedTo       TaskLog[]    @relation("assignedTo")
-  taskLogCompletedBy      TaskLog[]    @relation("completedBy")
+  deleted                 Boolean             @default(false)
+  taskLogAssignedTo       TaskLog[]           @relation("assignedTo")
+  taskLogCompletedBy      TaskLog[]           @relation("completedBy")
   reassignmentInvitations Invitation[]
   comments                Comment[]
   tags                    Json?
+  commentReadStatus       CommentReadStatus[]
 }
 
 model ProjectPrivilege {
@@ -215,14 +216,15 @@ model TaskLog {
 }
 
 model Comment {
-  id        Int           @id @default(autoincrement())
-  createdAt DateTime      @default(now()) // When the comment was created
-  updatedAt DateTime      @updatedAt // Auto-update on edits
-  content   String // The comment text
-  taskLogId Int
-  taskLog   TaskLog       @relation(fields: [taskLogId], references: [id], onDelete: Cascade)
-  authorId  Int
-  author    ProjectMember @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  id                Int                 @id @default(autoincrement())
+  createdAt         DateTime            @default(now()) // When the comment was created
+  updatedAt         DateTime            @updatedAt // Auto-update on edits
+  content           String // The comment text
+  taskLogId         Int
+  taskLog           TaskLog             @relation(fields: [taskLogId], references: [id], onDelete: Cascade)
+  authorId          Int
+  author            ProjectMember       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  commentReadStatus CommentReadStatus[]
 }
 
 enum CompletedAs {
@@ -323,4 +325,16 @@ model ProjectWidget {
   privilege MemberPrivileges[] @default([CONTRIBUTOR, PROJECT_MANAGER])
 
   @@unique([userId, projectId, type])
+}
+
+model CommentReadStatus {
+  id              Int           @id @default(autoincrement())
+  createdAt       DateTime      @default(now())
+  commentId       Int
+  comment         Comment       @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  projectMemberId Int
+  projectMember   ProjectMember @relation(fields: [projectMemberId], references: [id], onDelete: Cascade)
+  read            Boolean       @default(false)
+
+  @@unique([commentId, projectMemberId])
 }

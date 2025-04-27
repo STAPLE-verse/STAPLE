@@ -24,6 +24,11 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
       },
     },
     include: {
+      comments: {
+        include: {
+          commentReadStatus: true,
+        },
+      },
       task: {
         include: {
           project: true, // Include the project linked to the task
@@ -49,7 +54,14 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
   const taskProportion =
     processedTasks.length > 0 ? totalCompletion / 100 / processedTasks.length : 0
 
-  //console.log(processedTasks)
+  // calculate if new comments
+  const hasNewComments = fetchedTaskLogs.some((taskLog) =>
+    taskLog.comments?.some((comment) =>
+      comment.commentReadStatus?.some(
+        (status) => status.projectMemberId === currentUser.projectMemberId && !status.read
+      )
+    )
+  )
 
   return (
     <Widget
@@ -65,6 +77,7 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
       tooltipId="tool-tasks"
       tooltipContent="Percent of tasks completed"
       size={size}
+      hasNewComments={hasNewComments}
     />
   )
 }

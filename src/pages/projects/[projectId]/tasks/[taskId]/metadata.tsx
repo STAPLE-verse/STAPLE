@@ -62,7 +62,7 @@ const MetadataContent = () => {
               taskId: task.id,
             })}
           >
-            Review and Edit Form Tasks
+            Edit Form Data
           </Link>
           <DownloadJSON data={processedMetadata} fileName={task.name} className="btn btn-info" />
           <DownloadXLSX

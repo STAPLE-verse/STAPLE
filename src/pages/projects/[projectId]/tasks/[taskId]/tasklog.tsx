@@ -1,4 +1,6 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 import { Routes } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import { TaskLogCompleteColumns } from "src/tasklogs/tables/columns/TaskLogCompleteColumns"
@@ -19,6 +21,7 @@ import Card from "src/core/components/Card"
 import { filterFirstTaskLog } from "src/tasklogs/utils/filterFirstTaskLog"
 import { useQuery } from "@blitzjs/rpc"
 import getComments from "src/comments/queries/getComments"
+import Modal from "src/core/components/Modal"
 
 const TaskLogSection = ({ title, data, columns, fallbackMessage }: any) => (
   <Card title={title} className="w-full overflow-x-auto">
@@ -36,6 +39,8 @@ const TaskLogContent = () => {
   const { individualProjectMembers, teamProjectMembers } =
     useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
 
+  const [openModal, setOpenModal] = useState(false)
+
   // Fetch all comments for task logs
   // Fetch all first task log IDs for teams
   const firstTaskLogIds = [
@@ -50,69 +55,92 @@ const TaskLogContent = () => {
   // Preprocess taskLogs to include only the latest log
   const processedIndividualAssignments = processIndividualTaskLogs(
     individualProjectMembers,
-    comments
+    comments,
+    task.name
   )
-  const processedTeamAssignments = processTeamTaskLogs(teamProjectMembers, comments)
+  const processedTeamAssignments = processTeamTaskLogs(teamProjectMembers, comments, task.name)
 
   // Get columns definitions for tables
   const individualColumns = task.formVersionId ? TaskLogFormColumns : TaskLogCompleteColumns
-  const teamColumns = task.formVersionId ? TeamTaskLogFormColumns : TeamTaskLogCompleteColumns
+  //const teamColumns = task.formVersionId ? TeamTaskLogFormColumns : TeamTaskLogCompleteColumns
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="flex justify-center mb-2 text-3xl">Review Responses</h1>
+      <h1 className="text-3xl flex justify-center items-center gap-2 mb-2">
+        Review Responses: <span className="truncate max-w-xs italic">{task.name}</span>
+        <InformationCircleIcon
+          className="h-5 w-5 stroke-2 text-info"
+          data-tooltip-id="tasklog-review-tooltip"
+        />
+        <Tooltip
+          id="tasklog-review-tooltip"
+          content="Use this page to review collaborators' answers to the form data you assigned them, edit the responses, or click the download button to access the download page."
+          className="z-[1099] ourtooltips"
+        />
+      </h1>
 
-      <div className="flex flex-row justify-center">
-        <div className="card bg-base-300 w-full">
-          <div className="card-body overflow-x-auto">
-            <div className="card-title">{task.name}</div>
-            {task.description}
-            <div className="card-actions justify-end">
-              <Link
-                className="btn btn-primary"
-                href={Routes.EditTaskPage({
-                  projectId: task.projectId as number,
-                  taskId: task.id as number,
-                })}
-              >
-                Edit Task
-              </Link>
-              {task.formVersionId && (
-                <Link
-                  className="btn btn-secondary mx-2"
-                  href={Routes.ShowMetadataPage({
-                    projectId: task.projectId as number,
-                    taskId: task.id as number,
-                  })}
-                >
-                  Download Form Data
-                </Link>
-              )}
-              <Link
-                className="btn btn-secondary self-end"
-                href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
-              >
-                Go back
-              </Link>
+      <div className="flex flex-row justify-center gap-2 mt-2 mb-2">
+        <>
+          <button className="btn btn-primary" onClick={() => setOpenModal(true)}>
+            Review Description
+          </button>
+          <Modal open={openModal} size="large">
+            <div className="flex flex-col">
+              <h2 className="text-2xl font-bold flex gap-2 justify-center items-center mb-4">
+                Task Description
+                <InformationCircleIcon
+                  className="h-5 w-5 stroke-2 text-info"
+                  data-tooltip-id="task-description-tooltip"
+                />
+                <Tooltip
+                  id="task-description-tooltip"
+                  content="Use this button to review the description for the task."
+                  className="z-[1099] ourtooltips"
+                />
+              </h2>
+              <p className="whitespace-pre-wrap">{task.description}</p>
+              <div className="flex justify-end mt-4">
+                <button className="btn btn-primary" onClick={() => setOpenModal(false)}>
+                  Close
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
+          </Modal>
+        </>
+        <Link
+          className="btn btn-secondary"
+          href={Routes.EditTaskPage({
+            projectId: task.projectId as number,
+            taskId: task.id as number,
+          })}
+        >
+          Edit Task
+        </Link>
+        {task.formVersionId && (
+          <Link
+            className="btn btn-info"
+            href={Routes.ShowMetadataPage({
+              projectId: task.projectId as number,
+              taskId: task.id as number,
+            })}
+          >
+            Go to Download
+          </Link>
+        )}
+        <Link
+          className="btn btn-success"
+          href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
+        >
+          Go to Task
+        </Link>
       </div>
 
-      {/* Individual Contributors */}
+      {/* Contributors (merged individual and team assignments) */}
       <TaskLogSection
-        title="Individual Contributors"
-        data={processedIndividualAssignments}
+        title="Contributors"
+        data={[...processedIndividualAssignments, ...processedTeamAssignments]}
         columns={individualColumns}
-        fallbackMessage="This task does not have individual contributors"
-      />
-
-      {/* Team Contributors */}
-      <TaskLogSection
-        title="Team Contributors"
-        data={processedTeamAssignments}
-        columns={teamColumns}
-        fallbackMessage="This task does not have teams of contributors"
+        fallbackMessage="This task does not have any contributors"
       />
     </main>
   )

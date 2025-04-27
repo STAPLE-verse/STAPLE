@@ -50,7 +50,7 @@ const NotificationContent = () => {
 
   return (
     <main className="flex flex-col mx-auto w-full">
-      <div className="flex justify-center items-center gap-2 mb-2">
+      <div className="flex justify-center items-center gap-2">
         <h1 className="text-3xl">Project Notifications</h1>
         <InformationCircleIcon
           className="h-5 w-5 stroke-2 text-info"

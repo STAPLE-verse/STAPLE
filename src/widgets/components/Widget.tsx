@@ -9,6 +9,7 @@ interface WidgetProps {
   tooltipContent: string
   link: React.ReactNode
   size?: WidgetSize
+  hasNewComments?: boolean
 }
 
 const Widget: React.FC<WidgetProps> = ({
@@ -18,6 +19,7 @@ const Widget: React.FC<WidgetProps> = ({
   tooltipContent,
   link,
   size,
+  hasNewComments,
 }) => {
   return (
     <div
@@ -29,7 +31,10 @@ const Widget: React.FC<WidgetProps> = ({
         className="card-title text-base-content mb-2 overflow-visible"
         data-tooltip-id={tooltipId}
       >
-        {title}
+        <div className="flex items-center gap-2">
+          <span>{title}</span>
+          {hasNewComments && <span className="badge badge-primary text-xs">New</span>}
+        </div>
       </div>
       <div className="flex-grow overflow-auto flex align-center">{display}</div>
       <TooltipWrapper

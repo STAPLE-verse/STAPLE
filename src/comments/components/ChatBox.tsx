@@ -60,7 +60,7 @@ export default function ChatBox({
               >
                 <div className="chat-header">
                   {getContributorName(comment.author) || "Unknown"}
-                  <time className="text-xs opacity-50 ml-2">
+                  <time className="text-s opacity-50 ml-2">
                     {comment.createdAt ? new Date(comment.createdAt).toLocaleTimeString() : "N/A"}
                   </time>
                 </div>
@@ -77,7 +77,7 @@ export default function ChatBox({
             )
           })
         ) : (
-          <p className="text-center text-gray-400 italic">No comments yet...</p>
+          <p className="text-center text-base italic">No comments yet...</p>
         )}
       </div>
 
@@ -91,7 +91,7 @@ export default function ChatBox({
           onChange={(e) => setNewComment(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSendComment()} // Send on Enter key press
         />
-        <button className="btn btn-secondary" onClick={handleSendComment}>
+        <button className="btn btn-primary" onClick={handleSendComment}>
           Send
         </button>
       </div>
