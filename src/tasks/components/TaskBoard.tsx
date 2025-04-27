@@ -61,8 +61,8 @@ const TaskBoard = ({
   )
 
   return (
-    <div className="mx-auto max-w-7xl bg-base-300">
-      <div className="bg-base-300 p-4">
+    <div className="rounded-b-box rounded-tr-box bg-base-300">
+      <div className="rounded-b-box rounded-tr-box bg-base-300 p-4">
         <div className="grid grid-cols-3 gap-4 bg-base-300">
           <DndContext
             sensors={sensors}
