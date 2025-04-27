@@ -26,7 +26,15 @@ export default function useProjectTasksListData(projectId: number | undefined) {
         container: {
           select: { name: true },
         },
-        taskLogs: true,
+        taskLogs: {
+          include: {
+            comments: {
+              include: {
+                commentReadStatus: true,
+              },
+            },
+          },
+        },
       },
     }
 
@@ -54,6 +62,13 @@ export default function useProjectTasksListData(projectId: number | undefined) {
           where: {
             assignedToId: {
               in: userMemberIds,
+            },
+          },
+          include: {
+            comments: {
+              include: {
+                commentReadStatus: true,
+              },
             },
           },
         },

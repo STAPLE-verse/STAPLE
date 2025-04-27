@@ -87,6 +87,7 @@ const TaskBoard = ({
                             key={i.id}
                             projectId={projectId!}
                             completed={i.completed}
+                            newCommentsCount={i.newCommentsCount}
                           />
                         ))}
                       </div>
@@ -104,6 +105,7 @@ const TaskBoard = ({
                   title={findItemValue(activeId, containers, "title") || ""}
                   completed={findItemValue(activeId, containers, "completed") || false}
                   projectId={projectId!}
+                  // Drag overlay doesn't need newCommentsCount shown, so skip it for now
                 />
               )}
               {/* Drag Overlay For Container */}

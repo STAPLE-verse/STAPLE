@@ -5,7 +5,7 @@ import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import { processAllTasks } from "../tables/processing/processAllTasks"
 import Table from "src/core/components/Table"
 import { AllTasksColumns } from "../tables/columns/AllTasksColumns"
-import { TaskLogWithTaskAndProject } from "src/core/types"
+import { TaskLogWithTaskProjectAndComments } from "src/core/types"
 import Card from "src/core/components/Card"
 
 export const AllTasksList = () => {
@@ -25,16 +25,31 @@ export const AllTasksList = () => {
           project: true, // Include the project linked to the task
         },
       },
+      comments: {
+        include: {
+          commentReadStatus: {
+            where: {
+              projectMember: {
+                users: {
+                  some: {
+                    id: currentUser?.id,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
     orderBy: { id: "asc" },
   })
 
   // Cast and handle the possibility of `undefined`
-  const taskLogs: TaskLogWithTaskAndProject[] = (fetchedTaskLogs ??
-    []) as TaskLogWithTaskAndProject[]
+  const taskLogs: TaskLogWithTaskProjectAndComments[] = (fetchedTaskLogs ??
+    []) as TaskLogWithTaskProjectAndComments[]
 
   // process those logs to get the latest one for each task-projectmemberId
-  const latestLogs = getLatestTaskLogs<TaskLogWithTaskAndProject>(taskLogs)
+  const latestLogs = getLatestTaskLogs<TaskLogWithTaskProjectAndComments>(taskLogs)
 
   const processedTasks = processAllTasks(latestLogs)
 

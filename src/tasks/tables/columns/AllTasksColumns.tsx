@@ -3,7 +3,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { MagnifyingGlassIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
 import { AllTasksData } from "../processing/processAllTasks"
 
 // Column helper
@@ -63,5 +63,26 @@ export const AllTasksColumns = [
         <MagnifyingGlassIcon width={25} className="stroke-primary" />
       </Link>
     ),
+  }),
+  columnHelperAll.accessor("newCommentsCount", {
+    header: "Comments",
+    id: "newComments",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => {
+      const count = info.getValue()
+      return (
+        <div className="relative flex items-center justify-center w-fit">
+          <ChatBubbleOvalLeftEllipsisIcon
+            className={`h-7 w-7 ${count > 0 ? "text-primary" : "opacity-30"}`}
+          />
+          {count > 0 && (
+            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white flex items-center justify-center">
+              {count}
+            </span>
+          )}
+        </div>
+      )
+    },
   }),
 ]

@@ -5,6 +5,8 @@ export type AllTasksData = {
   projectName: string
   deadline: Date | null
   completion: number
+  hasNewComments: boolean
+  newCommentsCount: number
   view: {
     taskId: number
     projectId: number
@@ -43,6 +45,8 @@ export function processAllTasks(latestTaskLog: TaskLogWithTaskAndProject[]): All
         projectName: "Unknown Project",
         deadline: null,
         completion: 0,
+        hasNewComments: false,
+        newCommentsCount: 0,
         view: {
           taskId: 0,
           projectId: 0,
@@ -57,11 +61,23 @@ export function processAllTasks(latestTaskLog: TaskLogWithTaskAndProject[]): All
     const taskLog = latestTaskLog.find((log) => log.taskId === Number(taskId))
     const task = taskLog?.task // Assuming task is part of the log
 
+    const hasNewComments =
+      taskLog?.comments?.some((comment) =>
+        comment.commentReadStatus?.some((status) => !status.read)
+      ) ?? false
+
+    const newCommentsCount =
+      taskLog?.comments?.reduce((count, comment) => {
+        return count + (comment.commentReadStatus?.filter((status) => !status.read).length ?? 0)
+      }, 0) ?? 0
+
     return {
       name: task?.name || "Unknown Task",
       projectName: task?.project!.name || "Unknown Project",
       deadline: task?.deadline || null,
       completion: completionPercentage,
+      hasNewComments,
+      newCommentsCount,
       view: {
         taskId: task?.id || 0,
         projectId: task?.projectId || 0,

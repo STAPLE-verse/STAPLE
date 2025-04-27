@@ -62,15 +62,17 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
   const taskProportion =
     processedTasks.length > 0 ? totalCompletion / 100 / processedTasks.length : 0
 
-  // calculate if new comments
-  const hasNewComments = taskLogs.some((taskLog) =>
-    taskLog.comments?.some((comment) =>
-      comment.commentReadStatus?.some(
-        (status) =>
-          status.projectMember?.users?.some((user) => user.id === currentUser!.id) && !status.read
-      )
+  // calculate total number of new comments
+  const newCommentsCount = taskLogs.reduce((total, taskLog) => {
+    return (
+      total +
+      (taskLog.comments?.reduce((commentSum, comment) => {
+        return (
+          commentSum + (comment.commentReadStatus?.filter((status) => !status.read).length ?? 0)
+        )
+      }, 0) ?? 0)
     )
-  )
+  }, 0)
 
   return (
     <Widget
@@ -86,7 +88,7 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
       tooltipId="tool-tasks"
       tooltipContent="Percent of tasks completed and new comments on tasks"
       size={size}
-      hasNewComments={hasNewComments}
+      newCommentsCount={newCommentsCount}
     />
   )
 }

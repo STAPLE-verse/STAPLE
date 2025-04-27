@@ -8,6 +8,7 @@ export type ProjectTasksData = {
   deadline: Date | null
   status: string
   percentComplete: number
+  newCommentsCount: number
   view: {
     taskId: number
     projectId: number
@@ -31,6 +32,15 @@ export function processProjectTasks(tasks): ProjectTasksData[] {
     const totalLogs = latestLogs.length
     const percentComplete = totalLogs > 0 ? Math.round((completedLogs / totalLogs) * 100) : 0
 
+    const newCommentsCount = logs.reduce((total, log) => {
+      return (
+        total +
+        (log.comments?.reduce((sum, comment) => {
+          return sum + (comment.commentReadStatus?.filter((status) => !status.read).length ?? 0)
+        }, 0) ?? 0)
+      )
+    }, 0)
+
     return {
       name: task.name,
       description: task.description ? task.description.substring(0, 50) : "No Description",
@@ -38,6 +48,7 @@ export function processProjectTasks(tasks): ProjectTasksData[] {
       deadline: task.deadline,
       status: task.status === Status.COMPLETED ? "Completed" : "Not completed",
       percentComplete,
+      newCommentsCount,
       view: {
         taskId: task.id,
         projectId: task.projectId,
