@@ -29,7 +29,7 @@ const TaskContainer = ({ id, children, title, description }: ContainerProps) => 
         transform: CSS.Translate.toString(transform),
       }}
       className={clsx(
-        "w-full h-full p-4 bg-base-300 rounded-xl flex flex-col gap-y-4 hover:border-accent-content cursor-pointer",
+        "w-full h-full p-4 bg-base-100 rounded-xl flex flex-col gap-y-4 hover:border-accent-content cursor-pointer p-4",
         isDragging && "opacity-50"
       )}
     >
