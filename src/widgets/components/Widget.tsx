@@ -1,6 +1,7 @@
 import { WidgetSize } from "@prisma/client"
 import React from "react"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
+import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
 
 interface WidgetProps {
   title: string
@@ -31,9 +32,9 @@ const Widget: React.FC<WidgetProps> = ({
         className="card-title text-base-content mb-2 overflow-visible"
         data-tooltip-id={tooltipId}
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between w-full gap-2">
           <span>{title}</span>
-          {hasNewComments && <span className="badge badge-primary text-xs">New</span>}
+          {hasNewComments && <ChatBubbleOvalLeftEllipsisIcon className="h-5 w-5 text-primary" />}
         </div>
       </div>
       <div className="flex-grow overflow-auto flex align-center">{display}</div>
@@ -43,6 +44,7 @@ const Widget: React.FC<WidgetProps> = ({
         className="z-[9999] ourtooltips"
         place="top"
       />
+
       <div className="card-actions mt-auto justify-end">{link}</div>
     </div>
   )
