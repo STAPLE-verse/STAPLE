@@ -7,7 +7,7 @@ import Widget from "../Widget"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
-import { TaskLogWithTaskAndProject } from "src/core/types"
+import { TaskLogWithTaskProjectAndComments } from "src/core/types"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import { processAllTasks } from "src/tasks/tables/processing/processAllTasks"
 
@@ -26,7 +26,15 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
     include: {
       comments: {
         include: {
-          commentReadStatus: true,
+          commentReadStatus: {
+            include: {
+              projectMember: {
+                include: {
+                  users: true,
+                },
+              },
+            },
+          },
         },
       },
       task: {
@@ -39,11 +47,11 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
   })
 
   // Cast and handle the possibility of `undefined`
-  const taskLogs: TaskLogWithTaskAndProject[] = (fetchedTaskLogs ??
-    []) as TaskLogWithTaskAndProject[]
+  const taskLogs: TaskLogWithTaskProjectAndComments[] = (fetchedTaskLogs ??
+    []) as TaskLogWithTaskProjectAndComments[]
 
   // process those logs to get the latest one for each task-projectmemberId
-  const latestLogs = getLatestTaskLogs<TaskLogWithTaskAndProject>(taskLogs)
+  const latestLogs = getLatestTaskLogs<TaskLogWithTaskProjectAndComments>(taskLogs)
 
   const processedTasks = processAllTasks(latestLogs)
 
@@ -55,10 +63,11 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
     processedTasks.length > 0 ? totalCompletion / 100 / processedTasks.length : 0
 
   // calculate if new comments
-  const hasNewComments = fetchedTaskLogs.some((taskLog) =>
+  const hasNewComments = taskLogs.some((taskLog) =>
     taskLog.comments?.some((comment) =>
       comment.commentReadStatus?.some(
-        (status) => status.projectMemberId === currentUser.projectMemberId && !status.read
+        (status) =>
+          status.projectMember?.users?.some((user) => user.id === currentUser!.id) && !status.read
       )
     )
   )

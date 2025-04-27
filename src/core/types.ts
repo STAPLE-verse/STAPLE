@@ -30,6 +30,27 @@ export type TaskLogWithTaskAndProject = TaskLog & {
   }
 }
 
+export type TaskLogWithTaskProjectAndComments = TaskLog & {
+  task: Task & {
+    project: Project
+  }
+  comments: (Comment & {
+    commentReadStatus: {
+      id: number
+      createdAt: Date
+      commentId: number
+      projectMemberId: number
+      read: boolean
+      projectMember: {
+        id: number
+        users: {
+          id: number
+        }[]
+      }
+    }[]
+  })[]
+}
+
 export type TaskLogWithTaskRoles = TaskLog & {
   task: TaskWithRoles
 }
