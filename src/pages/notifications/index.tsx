@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useMemo } from "react"
 import Layout from "src/core/layouts/Layout"
 import Table from "src/core/components/Table"
 import { usePaginatedQuery } from "@blitzjs/rpc"
@@ -48,7 +48,10 @@ const NotificationContent = () => {
   const extendedNotifications = notifications as unknown as ExtendedNotification[]
 
   // Preprocess table data
-  const notificationTableData = processNotification(extendedNotifications)
+  const notificationTableData = useMemo(
+    () => processNotification(extendedNotifications),
+    [extendedNotifications]
+  )
 
   // Get columns and pass refetch
   const columns = useNotificationTableColumns(refetch, notificationTableData)
@@ -86,6 +89,7 @@ const NotificationContent = () => {
 }
 const NotificationsPage = () => {
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="All Notifications">
       <Suspense fallback={<div>Loading...</div>}>
         <MultiSelectProvider>

@@ -4,7 +4,7 @@ import { useState } from "react"
 interface ToggleModalProps {
   buttonLabel: string
   modalTitle: string
-  children: React.ReactNode
+  children?: React.ReactNode
   modalSize?: string
   buttonClassName?: string
   saveButton?: boolean

@@ -5,7 +5,7 @@ import TooltipWrapper from "./TooltipWrapper"
 
 interface StatProps {
   title: string
-  children: ReactNode
+  children?: ReactNode
   tooltipContent?: string
   className?: string
   description?: ReactNode

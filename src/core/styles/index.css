@@ -612,3 +612,17 @@ input:focus {
 .draggable:active {
   cursor: grabbing;
 }
+
+.input-sm {
+  line-height: 1rem !important;
+}
+
+/* Wrapper to ensure tooltips render and wrap correctly in table headers */
+.table-header-tooltip {
+  position: relative;
+  overflow: visible;
+  white-space: normal;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}

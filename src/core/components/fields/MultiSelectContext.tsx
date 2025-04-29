@@ -12,7 +12,7 @@ interface MultiSelectContextType {
 const MultiSelectContext = createContext<MultiSelectContextType | undefined>(undefined)
 
 // Context provider component
-export const MultiSelectProvider = ({ children }: { children: ReactNode }) => {
+export const MultiSelectProvider = ({ children }: { children?: ReactNode }) => {
   const [selectedIds, setSelectedIds] = useState<number[]>([])
 
   // Toggle individual selection

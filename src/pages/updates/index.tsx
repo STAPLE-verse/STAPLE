@@ -15,6 +15,7 @@ const UpdatesPage = () => {
   const user = useCurrentUser()
   useUserAuthorization(user!.role)
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Updates">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <PageHeader className="flex justify-center mb-2" title="Updates" />

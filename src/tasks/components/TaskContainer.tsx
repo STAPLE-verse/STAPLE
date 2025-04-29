@@ -10,7 +10,7 @@ import { makeDragId } from "../utils/dragId"
 
 interface ContainerProps {
   id: number
-  children: React.ReactNode
+  children?: React.ReactNode
   title?: string
   description?: string
   onRefetch?: () => void

@@ -22,6 +22,21 @@ export const CircularPercentageWidget: React.FC<CircularPercentageWidgetProps> =
         <CircularProgressbar
           value={data * 100}
           text={`${Math.round(data * 100)}%`}
+          strokeWidth={8}
+          background={false}
+          backgroundPadding={0}
+          circleRatio={1}
+          maxValue={100}
+          minValue={0}
+          counterClockwise={false}
+          className=""
+          classes={{
+            root: "CircularProgressbar",
+            path: "CircularProgressbar-path",
+            trail: "CircularProgressbar-trail",
+            text: "CircularProgressbar-text",
+            background: "CircularProgressbar-background",
+          }}
           styles={buildStyles({
             textSize: "16px",
             pathTransitionDuration: 0,

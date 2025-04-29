@@ -6,6 +6,7 @@ import UpdateTasks from "./UpdateTasks"
 import DateFormat from "src/core/components/DateFormat"
 
 interface ElementItemProps {
+  key: number | string
   element: Element
   projectId: number
   tasks: Task[]

@@ -21,8 +21,15 @@ import TooltipWrapper from "src/core/components/TooltipWrapper"
 import { makeDragId } from "../utils/dragId"
 import TaskItemPreview from "./TaskItemPreview"
 import TaskContainerPreview from "./TaskContainerPreview"
+import { useEffect, useCallback } from "react"
+import { useMutation } from "@blitzjs/rpc"
+import createColumnMutation from "src/tasks/mutations/createColumn"
 
-const TaskBoard = () => {
+const TaskBoard = ({
+  onAddColumn,
+}: {
+  onAddColumn?: (fn: (name: string) => Promise<void>) => void
+}) => {
   // Setup
   const projectId = useParam("projectId", "number")
   const { containers, updateContainers, refetch } = useTaskBoardData(projectId!)
@@ -31,6 +38,23 @@ const TaskBoard = () => {
     updateContainers,
     refetch,
   })
+
+  const [createColumn] = useMutation(createColumnMutation)
+
+  const addColumn = useCallback(
+    async (name: string) => {
+      await createColumn({ projectId: projectId!, name })
+      await refetch()
+    },
+    [projectId, createColumn, refetch]
+  )
+
+  useEffect(() => {
+    if (onAddColumn) {
+      // @ts-ignore
+      onAddColumn(addColumn)
+    }
+  }, [onAddColumn, addColumn])
 
   // DND Handlers
   const sensors = useSensors(
@@ -41,20 +65,8 @@ const TaskBoard = () => {
   )
 
   return (
-    <div className="mx-auto max-w-7xl py-10">
-      <div className="flex items-center justify-between gap-y-2">
-        <h1 className="text-3xl font-bold" data-tooltip-id="kanban-tooltip">
-          Project Tasks
-        </h1>
-        <TooltipWrapper
-          id="kanban-tooltip"
-          content="Completed tasks appear in a shade of green"
-          className="z-[1099] ourtooltips"
-        />
-        <AddContainer projectId={projectId} refetch={refetch}></AddContainer>
-      </div>
-
-      <div className="mt-10">
+    <div className="mx-auto max-w-7xl">
+      <div className="mt-2">
         <div className="grid grid-cols-3 gap-6">
           <DndContext
             sensors={sensors}
@@ -98,7 +110,6 @@ const TaskBoard = () => {
                   completed={findItemValue(activeData.taskId, containers, "completed") || false}
                 />
               )}
-
               {activeData?.type === "container" && (
                 <TaskContainerPreview
                   title={findContainerTitle(activeData.columnId, containers)}

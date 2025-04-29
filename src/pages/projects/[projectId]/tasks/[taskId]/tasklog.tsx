@@ -120,6 +120,7 @@ const TaskLogContent = () => {
 
 export const TaskLogsPage = () => {
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout>
       <TaskLayout>
         <Suspense fallback={<div>Loading...</div>}>

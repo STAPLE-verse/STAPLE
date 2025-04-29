@@ -8,7 +8,7 @@ export const TooltipProvider = ({
   children,
   enabled,
 }: {
-  children: React.ReactNode
+  children?: React.ReactNode
   enabled: boolean | undefined
 }) => {
   return (

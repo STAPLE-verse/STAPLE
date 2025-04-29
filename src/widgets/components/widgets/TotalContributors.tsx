@@ -8,9 +8,11 @@ import { MagnifyingGlassIcon, UsersIcon } from "@heroicons/react/24/outline"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProjects from "src/projects/queries/getProjects"
 import { ProjectWithMembers } from "src/core/types"
+import { useTranslation } from "react-i18next"
 
 const TotalContributors: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const currentUser = useCurrentUser()
+  const { t } = (useTranslation as any)()
 
   // Get projects with project members and users
   const [{ projects }] = useQuery<typeof getProjects, { projects: ProjectWithMembers[] }>(
@@ -44,7 +46,7 @@ const TotalContributors: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ s
 
   return (
     <Widget
-      title="Total Contributors"
+      title={t("main.dashboard.totalcontributors")}
       display={<GetIconDisplay number={uniqueUserIds.size} icon={UsersIcon} />}
       link={
         <PrimaryLink

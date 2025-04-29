@@ -49,7 +49,7 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
             value={dateInputValue}
             placeholder="No date selected"
             className="input input-bordered text-lg
-            mb-4 border-primary rounded w-1/2 border-2
+            border-primary rounded w-1/2 border-2
             bg-base-300 text-primary"
             type="date" // Changed to date type
             min={moment().format("YYYY-MM-DD")}
@@ -76,7 +76,7 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
           }
           input {
             font-size: 1rem;
-            padding: 0.25rem 0.5rem;
+            padding: 0.25rem 0.75rem !important;
             border-radius: 3px;
             appearance: none;
             margin-top: 0.5rem;

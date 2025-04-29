@@ -1,53 +1,58 @@
-import { useMutation } from "@blitzjs/rpc"
-import createColumn from "src/tasks/mutations/createColumn"
-import { useState } from "react"
 import Modal from "src/core/components/Modal"
 import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import Form from "src/core/components/fields/Form"
 import { FORM_ERROR } from "final-form"
 import { z } from "zod"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { MemberPrivileges } from "db"
+import { Tooltip } from "react-tooltip"
 
 const AddContainerSchema = z.object({
   containerName: z.string(),
 })
 
-const AddContainer = ({ projectId, refetch }) => {
-  const [createColumnMutation] = useMutation(createColumn)
-  const [showAddContainerModal, setShowAddContainerModal] = useState(false)
-
-  const handleToggleContainerModal = () => {
-    setShowAddContainerModal((prev) => !prev)
-  }
-
+const AddContainer = ({
+  projectId,
+  show,
+  onClose,
+  onSubmitName,
+}: {
+  projectId: number
+  show: boolean
+  onClose: () => void
+  onSubmitName: (name: string) => void
+}) => {
   const onAddContainer = async (values) => {
     try {
-      await createColumnMutation({ projectId, name: values.containerName })
-      handleToggleContainerModal()
-      refetch()
+      onSubmitName(values.containerName)
+      onClose()
     } catch (error) {
-      console.error("Failed to create column:", error)
+      console.error("Failed to add column:", error)
       return { [FORM_ERROR]: error.toString() }
     }
   }
 
   return (
     <>
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={() => setShowAddContainerModal(true)}
-      >
-        Add Column
-      </button>
-
-      <Modal open={showAddContainerModal}>
-        <h1 className="flex justify-center mb-2 text-3xl">Add Column</h1>
+      <Modal open={show}>
+        <h1 className="flex justify-center mb-2 items-center text-3xl">
+          Add New Column
+          <InformationCircleIcon
+            className="h-6 w-6 ml-2 text-info stroke-2"
+            data-tooltip-id="new-column-tasks"
+          />
+          <Tooltip
+            id="new-column-tasks"
+            content="Add a new column to your kanban board. You’ll be able to rename or delete it later."
+            className="z-[1099] ourtooltips"
+          />
+        </h1>
         <Form
           schema={AddContainerSchema}
           onSubmit={onAddContainer}
-          submitText="Add Column"
+          submitText="Add New Column"
           cancelText="Close"
-          onCancel={handleToggleContainerModal}
+          onCancel={onClose}
         >
           <LabeledTextField
             className="input w-full text-primary input-primary input-bordered border-2 bg-base-300"

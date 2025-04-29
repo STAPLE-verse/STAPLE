@@ -34,6 +34,6 @@ export const RoleTaskTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <MultiSelectCheckbox id={info.getValue()} />,
-    header: "Add Multiple",
+    header: "Select",
   }),
 ]

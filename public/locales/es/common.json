@@ -1,0 +1,35 @@
+{
+  "sidebar": {
+    "project": {
+      "home": "Inicio",
+      "dashboard": "Panel",
+      "elements": "Elementos",
+      "tasks": "Tareas",
+      "contributors": "Colaboradores",
+      "teams": "Equipos",
+      "formData": "Datos del formulario",
+      "notifications": "Notificaciones",
+      "roles": "Roles",
+      "summary": "Resumen",
+      "settings": "Configuración",
+      "tags": "Etiquetas"
+    },
+    "home": {
+      "dashboard": "Panel",
+      "projects": "Proyectos",
+      "invitations": "Invitaciones",
+      "tasks": "Tareas",
+      "notifications": "Notificaciones",
+      "forms": "Formularios",
+      "roles": "Roles",
+      "admin": "Administración",
+      "help": "Ayuda"
+    }
+  },
+  "main": {
+    "welcome": "Bienvenido",
+    "dashboard": {
+      "totalcontributors": "Contribuidores Totales"
+    }
+  }
+}

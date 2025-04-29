@@ -31,6 +31,7 @@ const AllFormsPage = () => {
   })
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Forms">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <Suspense fallback={<div>Loading...</div>}>

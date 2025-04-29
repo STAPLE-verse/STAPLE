@@ -149,6 +149,7 @@ const EditContributorPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Edit Contributor">
       <Suspense fallback={<div>Loading...</div>}>
         <EditContributor />

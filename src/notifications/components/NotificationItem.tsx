@@ -9,6 +9,7 @@ interface Notification {
 }
 
 interface NotificationItemProps {
+  key: string | number
   notification: Notification
 }
 

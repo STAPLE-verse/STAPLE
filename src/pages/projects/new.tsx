@@ -9,6 +9,8 @@ import { FORM_ERROR } from "final-form"
 import { Suspense } from "react"
 import toast from "react-hot-toast"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 const NewProjectPage = () => {
   const router = useRouter()
@@ -17,9 +19,21 @@ const NewProjectPage = () => {
   const userId = currentUser?.id!
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout>
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex mb-2 text-3xl">Create New Project</h1>
+        <h1 className="flex mb-2 justify-center items-center text-3xl">
+          Create New Project
+          <InformationCircleIcon
+            className="h-6 w-6 ml-2 text-info stroke-2"
+            data-tooltip-id="new-project"
+          />
+          <Tooltip
+            id="new-project"
+            className="z-[1099] ourtooltips"
+            content="Enter a name and description for your project. Then, optionally choose a metadata form to include additional information that will appear on the summary page."
+          />
+        </h1>
         <Suspense fallback={<div>Loading...</div>}>
           <ProjectForm
             submitText="Create Project"

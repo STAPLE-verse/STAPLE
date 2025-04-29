@@ -11,7 +11,9 @@ export const ProjectTasksList = () => {
 
   return (
     <Card title={""}>
-      <Table columns={ProjectTasksColumns} data={tasks} addPagination={true} />
+      <div className="overflow-x-auto">
+        <Table columns={ProjectTasksColumns} data={tasks} addPagination={true} />
+      </div>
     </Card>
   )
 }

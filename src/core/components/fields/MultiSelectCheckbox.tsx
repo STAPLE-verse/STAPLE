@@ -1,6 +1,11 @@
+import React from "react"
 import { useMultiSelect } from "./MultiSelectContext"
 
-export const MultiSelectCheckbox = ({ id }) => {
+type MultiSelectCheckboxProps = {
+  id: number
+}
+
+export const MultiSelectCheckbox = React.memo(({ id }: MultiSelectCheckboxProps) => {
   const { selectedIds, toggleSelection } = useMultiSelect()
 
   return (
@@ -17,4 +22,4 @@ export const MultiSelectCheckbox = ({ id }) => {
       </span>
     </div>
   )
-}
+})

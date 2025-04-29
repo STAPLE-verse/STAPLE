@@ -28,8 +28,8 @@ export const LabeledCheckboxField = React.forwardRef<HTMLInputElement, LabeledCh
 
     return (
       <div {...outerProps}>
-        <div className="flex space-x-2 text-base">
-          <div className="h-5">
+        <div className="flex space-x-2 text-base mb-2">
+          <div className="h-5 flex items-center">
             <input
               id={id}
               key={id}

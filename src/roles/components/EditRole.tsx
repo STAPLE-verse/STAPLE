@@ -2,11 +2,12 @@ import { useMutation } from "@blitzjs/rpc"
 import updateRole from "../mutations/updateRole"
 import toast from "react-hot-toast"
 import { FORM_ERROR } from "final-form"
-import { PencilSquareIcon } from "@heroicons/react/24/outline"
+import { InformationCircleIcon, PencilSquareIcon } from "@heroicons/react/24/outline"
 import Modal from "src/core/components/Modal"
 import { useState } from "react"
 import { RoleForm } from "./RoleForm"
 import { RoleFormSchema } from "../schemas"
+import { Tooltip } from "react-tooltip"
 
 interface EditRoleProps {
   id: number
@@ -69,7 +70,18 @@ export const EditRole = ({
       </button>
       <Modal open={openEditRoleModal} size="w-1/3 max-w-1/2">
         <div className="">
-          <h1 className="flex justify-center mb-2 text-3xl">Edit Role</h1>
+          <h1 className="flex justify-center mb-2 items-center text-3xl">
+            Edit Role
+            <InformationCircleIcon
+              className="h-6 w-6 ml-2 text-info stroke-2"
+              data-tooltip-id="edit-role"
+            />
+            <Tooltip
+              id="edit-role"
+              content="Roles describe what each person did in a project—like data collection or project management. You can create your own roles and use them across any project. The 'system' should be the name of the role classification system you're using (e.g., CRediT, custom, etc.)."
+              className="z-[1099] ourtooltips"
+            />
+          </h1>
           <div className="flex justify-start mt-4">
             <RoleForm
               schema={RoleFormSchema}
@@ -78,14 +90,9 @@ export const EditRole = ({
               onSubmit={handleEditRole}
               initialValues={{ name, description, taxonomy }}
               taxonomyList={taxonomyList}
+              onCancel={handleToggleEditRoleModal}
+              cancelText={"Cancel"}
             ></RoleForm>
-          </div>
-
-          {/* closes the modal */}
-          <div className="modal-action flex justify-end mt-4">
-            <button type="button" className="btn btn-secondary" onClick={handleToggleEditRoleModal}>
-              Close
-            </button>
           </div>
         </div>
       </Modal>

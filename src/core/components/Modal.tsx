@@ -3,7 +3,7 @@ import cn from "classnames"
 import { Modal as OverlayModal } from "react-overlays"
 
 type Props = {
-  children: React.ReactNode
+  children?: React.ReactNode
   open: boolean
   size?: string
 }

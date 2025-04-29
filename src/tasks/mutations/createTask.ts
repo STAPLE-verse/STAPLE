@@ -20,6 +20,7 @@ export default resolver.pipe(
       projectMembersId,
       teamsId,
       rolesId,
+      tags,
     },
     ctx
   ) => {
@@ -62,6 +63,7 @@ export default resolver.pipe(
         assignedMembers: {
           connect: combinedIds ? combinedIds.map((id) => ({ id })) : [],
         },
+        tags: tags ?? [],
       },
       include: {
         createdBy: {

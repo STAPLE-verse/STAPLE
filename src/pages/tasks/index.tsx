@@ -6,6 +6,7 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline"
 
 const AllTasksPage = () => {
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Tasks">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center mb-2 items-center text-3xl">

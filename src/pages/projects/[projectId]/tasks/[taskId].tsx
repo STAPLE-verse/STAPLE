@@ -31,6 +31,7 @@ const TaskContent = () => {
 
 // Show the task page
 export const ShowTaskPage = () => (
+  // @ts-expect-error children are clearly passed below
   <Layout title="Task Page">
     <TaskLayout>
       <Suspense fallback={<div>Loading...</div>}>

@@ -31,8 +31,9 @@ export function RoleForm<S extends z.ZodType<any, any>>(props: RoleFormProps<S>)
       <LabeledTextField
         className="input mb-4 text-primary input-primary input-bordered border-2 bg-base-300 w-full"
         name="taxonomy"
-        label="Taxonomy:"
-        placeholder="Role Taxonomy"
+        label="System:"
+        description="If this role is part of a standard system (such as CRediT), please list it."
+        placeholder="System Name"
         type="text"
         list="taxonomy_tags"
       />

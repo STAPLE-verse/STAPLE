@@ -38,6 +38,15 @@ export const CreateTaskSchema = z.object({
   projectMembersId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.number()).optional().nullable(),
   rolesId: z.array(z.number()).optional().nullable(),
+  tags: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+      })
+    )
+    .optional()
+    .nullable(),
 })
 
 export const UpdateTaskSchema = z.object({
@@ -51,6 +60,15 @@ export const UpdateTaskSchema = z.object({
   formVersionId: z.number().optional().nullable(),
   deadline: z.date().optional().nullable(),
   rolesId: z.array(z.number()).optional().nullable(),
+  tags: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+      })
+    )
+    .optional()
+    .nullable(),
 })
 
 export const UpdateTaskStatusSchema = z.object({

@@ -3,8 +3,9 @@ import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { MagnifyingGlassIcon, InformationCircleIcon } from "@heroicons/react/24/outline"
 import { ProjectTasksData } from "../processing/processProjectTasks"
+import { Tooltip } from "react-tooltip"
 
 // Column helper
 const columnHelperProject = createColumnHelper<ProjectTasksData>()
@@ -14,6 +15,28 @@ export const ProjectTasksColumns = [
   columnHelperProject.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "text",
+    },
+  }),
+  columnHelperProject.accessor("container", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: (
+      <div className="table-header-tooltip">
+        Status
+        <InformationCircleIcon
+          className="h-4 w-4 ml-1 text-info stroke-2"
+          data-tooltip-id="status-tooltip"
+        />
+        <Tooltip
+          id="status-tooltip"
+          content="Status indicates the kanban column this task is currently in."
+          className="z-[1099] ourtooltips"
+        />
+      </div>
+    ),
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
@@ -39,12 +62,47 @@ export const ProjectTasksColumns = [
     },
   }),
   columnHelperProject.accessor("status", {
-    header: "Completed",
+    header: () => (
+      <div className="table-header-tooltip">
+        Completed
+        <InformationCircleIcon
+          className="h-4 w-4 ml-1 text-info stroke-2"
+          data-tooltip-id="task-status-tooltip"
+        />
+        <Tooltip
+          id="task-status-tooltip"
+          content="Marked complete by the project manager, regardless of whether all parts are finished."
+          className="z-[1099] ourtooltips"
+        />
+      </div>
+    ),
     cell: (info) => <span>{info.getValue()}</span>,
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
       filterVariant: "select",
+    },
+  }),
+  columnHelperProject.accessor("percentComplete", {
+    header: () => (
+      <div className="table-header-tooltip">
+        Percent Complete
+        <InformationCircleIcon
+          className="h-6 w-6 ml-1 text-info stroke-2"
+          data-tooltip-id="task-percent-tooltip"
+        />
+        <Tooltip
+          id="task-percent-tooltip"
+          content="The percentage of individual assignments that have been completed for this task."
+          className="z-[1099] ourtooltips"
+        />
+      </div>
+    ),
+    cell: (info) => <span>{info.getValue()}</span>,
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "range",
     },
   }),
   columnHelperProject.accessor("view", {
