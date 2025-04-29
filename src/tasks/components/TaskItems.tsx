@@ -7,24 +7,26 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowsUpDownLeftRight } from "@fortawesome/free-solid-svg-icons"
+import { makeDragId } from "../utils/dragId"
 
 type ItemsType = {
-  id: string | number
+  id: number
   title: string
   completed: boolean
   projectId: number
   newCommentsCount?: number
+  containerId: number
 }
 
-const TaskItems = ({ id, title, completed, projectId, newCommentsCount }: ItemsType) => {
+const TaskItems = ({ id, title, completed, projectId, containerId, newCommentsCount }: ItemsType) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: id,
+    id: makeDragId("item", id),
     data: {
       type: "item",
+      taskId: id,
+      columnId: containerId,
     },
   })
-
-  const taskId = typeof id === "string" ? parseInt(id.replace("item-", "")) : id
 
   return (
     <div
@@ -50,7 +52,7 @@ const TaskItems = ({ id, title, completed, projectId, newCommentsCount }: ItemsT
           <b className="text-accent-content">{title}</b>
         </div>
         <div className="flex justify-end items-center">
-          <Link href={Routes.ShowTaskPage({ projectId: projectId, taskId: taskId })}>
+          <Link href={Routes.ShowTaskPage({ projectId: projectId, taskId: id })}>
             <MagnifyingGlassPlusIcon className="w-7 h-7 mr-2 stroke-2 stroke-neutral border-transparent rounded-2xl shadow-sm hover:opacity-50"></MagnifyingGlassPlusIcon>
           </Link>
           <FontAwesomeIcon

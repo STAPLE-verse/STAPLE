@@ -1,49 +1,25 @@
 import { arrayMove } from "@dnd-kit/sortable"
 import { DNDType } from "../hooks/useTaskBoardData"
-import { UniqueIdentifier } from "@dnd-kit/core"
 
 const handleContainerSorting = (
-  activeId: UniqueIdentifier,
-  overId: UniqueIdentifier,
+  activeId: number,
+  overId: number,
   containers: DNDType[]
 ): { newContainers: DNDType[]; newColumnOrder: number[] } | undefined => {
-  // Setup
-  let newContainers = [...containers]
+  // Create shallow copy of containers array
+  const newContainers = [...containers]
 
-  // Validation
-  // if (!activeId || !overId) {
-  //   console.error("Active or Over item is undefined")
-  //   return
-  // }
+  // Find indices of the containers to reorder
+  const fromIdx = newContainers.findIndex((container) => container.id === activeId)
+  const toIdx = newContainers.findIndex((container) => container.id === overId)
 
-  // if (!activeId.toString().includes("container") &&
-  //   !overId?.toString().includes("container")) {
-  //   console.error("Ids do not belong to sortable containers.")
-  //   return
-  // }
+  if (fromIdx === -1 || toIdx === -1) return undefined
 
-  // if (activeId !== overId) {
-  //   console.error("activeId must not be equal to overId")
-  //   return
-  // }
+  const reordered = arrayMove(newContainers, fromIdx, toIdx)
 
-  // Find the index of the active and over container
-  const activeContainerIndex = containers.findIndex((container) => container.id === activeId)
-  const overContainerIndex = containers.findIndex((container) => container.id === overId)
-  // if (!activeContainerIndex || !overContainerIndex) {
-  //   console.error("Active or Over container indexes are not found")
-  //   return
-  // }
-  // Swap the active and over container
-  newContainers = arrayMove(newContainers, activeContainerIndex, overContainerIndex)
+  const newColumnOrder = reordered.map((container) => container.id)
 
-  // Update column order
-  const newColumnOrder = newContainers.map((container) =>
-    parseInt(String(container.id).replace("container-", ""))
-  )
-
-  // Return updated state
-  return { newContainers: newContainers, newColumnOrder: newColumnOrder }
+  return { newContainers: reordered, newColumnOrder }
 }
 
 export default handleContainerSorting

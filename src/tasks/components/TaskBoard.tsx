@@ -18,6 +18,9 @@ import { findContainerTitle, findContainerItems, findItemValue } from "../utils/
 import useDragHandlers from "../hooks/useDragHandlers"
 import { useParam } from "@blitzjs/next"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
+import { makeDragId } from "../utils/dragId"
+import TaskItemPreview from "./TaskItemPreview"
+import TaskContainerPreview from "./TaskContainerPreview"
 import { useEffect, useCallback } from "react"
 import { useMutation } from "@blitzjs/rpc"
 import createColumnMutation from "src/tasks/mutations/createColumn"
@@ -29,10 +32,11 @@ const TaskBoard = ({
 }) => {
   // Setup
   const projectId = useParam("projectId", "number")
-  const { containers, refetch, updateContainers } = useTaskBoardData(projectId)
-  const { handleDragStart, handleDragMove, handleDragEnd, activeId } = useDragHandlers({
+  const { containers, updateContainers, refetch } = useTaskBoardData(projectId!)
+  const { handleDragStart, handleDragMove, handleDragEnd, activeData } = useDragHandlers({
     containers,
     updateContainers,
+    refetch,
   })
 
   const [createColumn] = useMutation(createColumnMutation)
@@ -71,57 +75,47 @@ const TaskBoard = ({
             onDragMove={handleDragMove}
             onDragEnd={handleDragEnd}
           >
-            {/*@ts-expect-error Suppress missing children error from SortableContext*/}
-            <SortableContext items={containers.map((i) => i.id)}>
+            <SortableContext items={containers.map((c) => makeDragId("container", c.id))}>
               {containers.map((container) => (
-                <div key={container.id}>
-                  <TaskContainer id={container.id} title={container.title}>
-                    {/*@ts-expect-error Suppress missing children error from SortableContext*/}
-                    <SortableContext items={container.items.map((i) => i.id)}>
-                      <div className="flex items-start flex-col gap-y-4">
-                        {container.items.map((i) => (
-                          <TaskItems
-                            title={i.title}
-                            id={i.id}
-                            // @ts-ignore: suppress key error, can't change key assignment
-                            key={i.id}
-                            projectId={projectId!}
-                            completed={i.completed}
-                            newCommentsCount={i.newCommentsCount}
-                          />
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </TaskContainer>
-                </div>
+                <TaskContainer
+                  id={container.id}
+                  title={container.title}
+                  key={container.id}
+                  onRefetch={refetch}
+                >
+                  <SortableContext
+                    items={container.items.map((item) => makeDragId("item", item.id))}
+                  >
+                    <div className="flex items-start flex-col gap-y-4">
+                      {container.items.map((i) => (
+                        <TaskItems
+                          title={i.title}
+                          id={i.id}
+                          // @ts-ignore: suppress key error, can't change key assignment
+                          key={makeDragId("item", i.id)}
+                          projectId={projectId!}
+                          completed={i.completed}
+                          containerId={container.id}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </TaskContainer>
               ))}
             </SortableContext>
 
             <DragOverlay adjustScale={false}>
-              {/* Drag Overlay For item Item */}
-              {activeId && activeId.toString().includes("item") && (
-                <TaskItems
-                  id={activeId}
-                  title={findItemValue(activeId, containers, "title") || ""}
-                  completed={findItemValue(activeId, containers, "completed") || false}
-                  projectId={projectId!}
-                  // Drag overlay doesn't need newCommentsCount shown, so skip it for now
+              {activeData?.type === "item" && (
+                <TaskItemPreview
+                  title={findItemValue(activeData.taskId, containers, "title") || ""}
+                  completed={findItemValue(activeData.taskId, containers, "completed") || false}
                 />
               )}
-              {/* Drag Overlay For Container */}
-              {activeId && activeId.toString().includes("container") && (
-                <TaskContainer id={activeId} title={findContainerTitle(activeId, containers)}>
-                  {findContainerItems(activeId, containers).map((i) => (
-                    <div key={i.id}>
-                      <TaskItems
-                        title={i.title}
-                        id={i.id}
-                        completed={i.completed}
-                        projectId={projectId!}
-                      />
-                    </div>
-                  ))}
-                </TaskContainer>
+              {activeData?.type === "container" && (
+                <TaskContainerPreview
+                  title={findContainerTitle(activeData.columnId, containers)}
+                  items={findContainerItems(activeData.columnId, containers)}
+                />
               )}
             </DragOverlay>
           </DndContext>
