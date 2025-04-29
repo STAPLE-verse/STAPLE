@@ -1,4 +1,4 @@
-import { TaskLogWithTaskAndProject } from "src/core/types"
+import { TaskLogWithTaskAndProject, TaskLogWithTaskProjectAndComments } from "src/core/types"
 
 export type AllTasksData = {
   name: string
@@ -13,7 +13,9 @@ export type AllTasksData = {
   }
 }
 
-export function processAllTasks(latestTaskLog: TaskLogWithTaskAndProject[]): AllTasksData[] {
+export function processAllTasks(
+  latestTaskLog: TaskLogWithTaskProjectAndComments[]
+): AllTasksData[] {
   const taskSummary: Record<number, { total: number; completed: number }> = {}
 
   // Initialize the summary for each taskLog
