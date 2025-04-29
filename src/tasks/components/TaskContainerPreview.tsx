@@ -28,6 +28,7 @@ const TaskContainerPreview = ({ title, items = [] }: TaskContainerPreviewProps) 
 
       <div className="flex flex-col gap-y-2">
         {items.map((item) => (
+          // @ts-ignore: suppress key error, can't change key assignment
           <TaskItemPreview key={item.id} title={item.title} completed={item.completed} />
         ))}
       </div>

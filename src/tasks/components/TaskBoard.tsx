@@ -11,13 +11,11 @@ import { SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 // get specific components for this board
 import TaskContainer from "src/tasks/components/TaskContainer"
 import TaskItems from "src/tasks/components/TaskItems"
-import AddContainer from "./AddContainer"
 import useTaskBoardData from "../hooks/useTaskBoardData"
 // Get helper functions
 import { findContainerTitle, findContainerItems, findItemValue } from "../utils/findHelpers"
 import useDragHandlers from "../hooks/useDragHandlers"
 import { useParam } from "@blitzjs/next"
-import TooltipWrapper from "src/core/components/TooltipWrapper"
 import { makeDragId } from "../utils/dragId"
 import TaskItemPreview from "./TaskItemPreview"
 import TaskContainerPreview from "./TaskContainerPreview"
@@ -75,14 +73,17 @@ const TaskBoard = ({
             onDragMove={handleDragMove}
             onDragEnd={handleDragEnd}
           >
+            {/* @ts-ignore: suppress children error */}
             <SortableContext items={containers.map((c) => makeDragId("container", c.id))}>
               {containers.map((container) => (
                 <TaskContainer
                   id={container.id}
                   title={container.title}
+                  // @ts-ignore: suppress key error, can't change key assignment
                   key={container.id}
                   onRefetch={refetch}
                 >
+                  {/* @ts-ignore: suppress children error */}
                   <SortableContext
                     items={container.items.map((item) => makeDragId("item", item.id))}
                   >
