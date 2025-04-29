@@ -15,11 +15,16 @@ export type ProcessedIndividualTaskLog = {
   comments: CommentWithAuthor[]
   contributorId: number
   projectId: number
+  type: string
+  teamId?: number
+  deletedTeam?: string
+  taskName: string
 }
 
 export function processIndividualTaskLogs(
   projectMembers: ProjectMemberWithTaskLog[],
-  comments: CommentWithAuthor[]
+  comments: CommentWithAuthor[],
+  taskName: string
 ): ProcessedIndividualTaskLog[] {
   return projectMembers.map((projectMember) => {
     const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
@@ -50,6 +55,8 @@ export function processIndividualTaskLogs(
       comments: taskLogComments,
       contributorId: projectMember.id,
       projectId: projectMember.projectId,
+      type: "Individual",
+      taskName: taskName,
     }
   })
 }
@@ -62,11 +69,14 @@ export type ProcessedTeamTaskLog = {
   taskLog: ExtendedTaskLog | undefined
   firstLogId: number | undefined
   comments: CommentWithAuthor[]
+  type: string
+  taskName: string
 }
 
 export function processTeamTaskLogs(
   projectMembers: ProjectMemberWithTaskLog[],
-  comments: CommentWithAuthor[]
+  comments: CommentWithAuthor[],
+  taskName: string
 ): ProcessedTeamTaskLog[] {
   return projectMembers.map((projectMember) => {
     // Function fails if does not receive assignment data for teams
@@ -103,6 +113,8 @@ export function processTeamTaskLogs(
       users: projectMember.users,
       firstLogId: firstLog?.id,
       comments: taskLogComments,
+      type: "Team",
+      taskName: taskName,
     }
   })
 }

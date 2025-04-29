@@ -92,8 +92,8 @@ export const EditProject = () => {
 
   return (
     <>
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center items-center mb-2 text-3xl">
+      <main className="flex flex-col mx-auto w-full">
+        <h1 className="flex justify-center items-center mb-4 text-3xl">
           Project Settings
           <InformationCircleIcon
             className="h-6 w-6 ml-2 text-info stroke-2"
@@ -119,7 +119,7 @@ export const EditProject = () => {
             />
           </div>
 
-          <div className="divider pt-4 pb-4"></div>
+          <div className="divider pt-2 pb-2"></div>
           <div className="flex justify-center">
             <button type="button" className="btn btn-warning" onClick={handleDelete}>
               Delete project

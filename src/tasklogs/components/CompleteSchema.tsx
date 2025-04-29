@@ -62,8 +62,8 @@ const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => 
           schema={getJsonSchema(schema)}
           uiSchema={ui}
           metadata={assignmentMetadata}
-          label="Provide Data"
-          classNames="btn-info"
+          label="Edit Data"
+          classNames="btn-info btn w-2/3"
           onSubmit={handleJsonFormSubmit}
           onError={handleJsonFormError}
           resetHandler={handleResetMetadata}

@@ -48,7 +48,15 @@ export const TaskLogCompleteColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
-      <ToggleModal buttonLabel={"Open"} modalTitle={"Task comments"}>
+      <ToggleModal
+        buttonLabel={"Open"}
+        modalTitle={
+          <>
+            <span>Comments:</span>
+            <span className="italic ml-1">{info.row.original.taskName}</span>
+          </>
+        }
+      >
         <ChatBox taskLogId={info.getValue()!} initialComments={info.row.original.comments} />
       </ToggleModal>
     ),

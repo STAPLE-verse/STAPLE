@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import Head from "next/head"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
@@ -24,7 +23,7 @@ const ShowProjectContent = () => {
   })
 
   return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+    <main className="flex flex-col mx-auto w-full">
       {privilege == MemberPrivileges.PROJECT_MANAGER && (
         <AnnouncementModal projectId={projectId!} refreshWidgets={refreshWidgets} />
       )}

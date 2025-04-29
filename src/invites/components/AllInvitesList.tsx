@@ -13,7 +13,7 @@ export const AllInvitesList = () => {
   })
 
   return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+    <main className="flex flex-col mx-auto w-full">
       <Table columns={InvitePMColumns} data={invites} addPagination={true} />
     </main>
   )

@@ -2,6 +2,7 @@ import { Routes } from "@blitzjs/next"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { Prisma, Project, Notification, Task, TaskLog } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import NotificationMessage from "src/notifications/components/NotificationMessage"
 import Link from "next/link"
 import DateFormat from "src/core/components/DateFormat"
 
@@ -96,8 +97,13 @@ export const projectColumns: ColumnDef<Project>[] = [
 const notificationColumnHelper = createColumnHelper<Notification>()
 export const notificationColumns: ColumnDef<Notification>[] = [
   notificationColumnHelper.accessor("message", {
-    cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
     header: "Message",
+    cell: (info) => (
+      <NotificationMessage
+        message={info.getValue()}
+        routeData={(info.row.original as any).routeData}
+      />
+    ),
     enableColumnFilter: false,
     enableSorting: false,
   }),

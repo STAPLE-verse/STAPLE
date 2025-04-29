@@ -23,7 +23,7 @@ export const TeamPage = () => {
 
   return (
     <>
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <TeamInformation team={team} privilege={privilege!} />
 
         <TeamRolesList usersId={userIds} projectId={projectId} />

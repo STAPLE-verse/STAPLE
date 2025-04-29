@@ -59,11 +59,7 @@ export const MultiReadToggleButton = ({
       )}
 
       {(allRead || mixedStatus) && (
-        <button
-          className="btn btn-secondary"
-          onClick={() => handleToggle(false)}
-          disabled={noSelection}
-        >
+        <button className="btn btn-info" onClick={() => handleToggle(false)} disabled={noSelection}>
           {mixedStatus ? "Mark All as Unread" : "Mark as Unread"}
         </button>
       )}

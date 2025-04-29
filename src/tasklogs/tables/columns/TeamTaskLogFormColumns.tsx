@@ -35,7 +35,16 @@ export const TeamTaskLogFormColumns: ColumnDef<ProcessedTeamTaskLog>[] = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
-      <ToggleModal buttonLabel={"Open"} modalTitle={"Team Task Comments"}>
+      <ToggleModal
+        buttonLabel={"Open"}
+        modalTitle={
+          <div className="flex items-center">
+            <span>Comments:</span>
+            <span className="italic ml-1">{info.row.original.taskName}</span>
+          </div>
+        }
+        buttonClassName="w-2/3"
+      >
         <ChatBox taskLogId={info.getValue()!} initialComments={info.row.original.comments} />
       </ToggleModal>
     ),

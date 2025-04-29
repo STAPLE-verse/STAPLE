@@ -65,9 +65,9 @@ const TaskBoard = ({
   )
 
   return (
-    <div className="mx-auto max-w-7xl">
-      <div className="mt-2">
-        <div className="grid grid-cols-3 gap-6">
+    <div className="rounded-b-box rounded-tr-box bg-base-300">
+      <div className="rounded-b-box rounded-tr-box bg-base-300 p-4">
+        <div className="grid grid-cols-3 gap-4 bg-base-300">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCorners}
@@ -91,6 +91,7 @@ const TaskBoard = ({
                         <TaskItems
                           title={i.title}
                           id={i.id}
+                          // @ts-ignore: suppress key error, can't change key assignment
                           key={makeDragId("item", i.id)}
                           projectId={projectId!}
                           completed={i.completed}

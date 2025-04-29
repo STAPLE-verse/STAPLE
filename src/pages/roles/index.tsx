@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import Head from "next/head"
 import { useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
@@ -25,7 +24,7 @@ const RoleBuilderPage = () => {
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="Contribution Roles">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <h1 className="flex justify-center text-3xl items-center">
           Roles{" "}
           <InformationCircleIcon
@@ -39,7 +38,7 @@ const RoleBuilderPage = () => {
           />
         </h1>
 
-        <div className="flex justify-center m-4">
+        <div className="flex justify-center mt-4 mb-2">
           <NewRole taxonomyList={taxonomyList} onRolesChanged={refetch} />
         </div>
         <Card title={""}>

@@ -21,7 +21,7 @@ const NewProjectPage = () => {
   return (
     // @ts-expect-error children are clearly passed below
     <Layout>
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <h1 className="flex mb-2 justify-center items-center text-3xl">
           Create New Project
           <InformationCircleIcon

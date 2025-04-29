@@ -6,6 +6,8 @@ import ToggleModal from "src/core/components/ToggleModal"
 import ChatBox from "src/comments/components/ChatBox"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
+import { ShowTeamModal } from "src/teams/components/ShowTeamModal"
+import TooltipWrapper from "src/core/components/TooltipWrapper"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedIndividualTaskLog>()
@@ -13,20 +15,47 @@ const columnHelper = createColumnHelper<ProcessedIndividualTaskLog>()
 // ColumnDefs
 // Table for assignment with a form
 export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
-  columnHelper.accessor("projectMemberName", {
-    cell: (info) => (
-      <Link
-        className="btn btn-primary"
-        href={Routes.ShowContributorPage({
-          projectId: info.row.original.projectId,
-          contributorId: info.row.original.contributorId,
-        })}
-      >
-        {`${info.getValue()}`}
-      </Link>
-    ),
-    header: "Contributor Name",
+  columnHelper.accessor("type", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Type",
+    id: "type",
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "select",
+    },
   }),
+  columnHelper.accessor("projectMemberName", {
+    id: "contributorOrTeam",
+    header: "Collaborator(s)",
+    cell: (info) => {
+      const { type, projectId, contributorId, teamId, deletedTeam } = info.row.original
+      if (type === "Individual") {
+        return (
+          <>
+            <Link
+              className="btn btn-primary w-2/3"
+              data-tooltip-id="showIndividualModalTooltip"
+              href={Routes.ShowContributorPage({
+                projectId: projectId,
+                contributorId: contributorId,
+              })}
+            >
+              {info.getValue()}
+            </Link>
+            <TooltipWrapper
+              id="showIndividualModalTooltip"
+              content="Go to contributor page"
+              className="z-[1099] ourtooltips"
+            />
+          </>
+        )
+      } else {
+        return <ShowTeamModal teamId={teamId} disabled={deletedTeam} />
+      }
+    },
+  }),
+
   columnHelper.accessor("lastUpdate", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Last Update",
@@ -36,16 +65,31 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Status",
     id: "status",
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "select",
+    },
   }),
   columnHelper.accessor("taskLog", {
     cell: (info) => <TaskLogSchemaModal taskLog={info.getValue()} />,
     header: "Form Data",
+    enableColumnFilter: false,
   }),
   columnHelper.accessor("firstLogId", {
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (
-      <ToggleModal buttonLabel={"Open"} modalTitle={"Task comments"}>
+      <ToggleModal
+        buttonLabel={"Open"}
+        modalTitle={
+          <>
+            <span>Comments:</span>
+            <span className="italic ml-1">{info.row.original.taskName}</span>
+          </>
+        }
+        buttonClassName="w-2/3"
+      >
         <ChatBox taskLogId={info.getValue()!} initialComments={info.row.original.comments} />
       </ToggleModal>
     ),

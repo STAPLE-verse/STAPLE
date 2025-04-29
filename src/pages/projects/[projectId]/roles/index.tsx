@@ -28,11 +28,16 @@ export const RolesTabs = () => {
         />
       </h1>
       <Tab.Group defaultIndex={0}>
-        <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
+        <Tab.List className="tabs tabs-lifted tabs-lg flex flex-row justify-left space-x-2">
           {/* TabLink for table view */}
           <Tab
             className={({ selected }) =>
-              classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
+              classNames(
+                "tab tab-lifted border",
+                selected
+                  ? "tab-active !bg-base-300 [--tab-bg:var(--fallback-b3,oklch(var(--b3)))]"
+                  : "!bg-base-100 hover:text-gray-500"
+              )
             }
           >
             Assign Tasks
@@ -40,7 +45,12 @@ export const RolesTabs = () => {
 
           <Tab
             className={({ selected }) =>
-              classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
+              classNames(
+                "tab tab-lifted border",
+                selected
+                  ? "tab-active !bg-base-300 [--tab-bg:var(--fallback-b3,oklch(var(--b3)))]"
+                  : "!bg-base-100 hover:text-gray-500"
+              )
             }
           >
             Assign Contributors
@@ -70,7 +80,7 @@ const RolesPage = () => {
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="Assign Roles">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         {
           <Suspense fallback={<div>Loading...</div>}>
             <RolesTabs />

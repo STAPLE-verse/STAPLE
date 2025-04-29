@@ -7,7 +7,7 @@ import Widget from "../Widget"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
-import { TaskLogWithTaskAndProject } from "src/core/types"
+import { TaskLogWithTaskProjectAndComments } from "src/core/types"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import { processAllTasks } from "src/tasks/tables/processing/processAllTasks"
 
@@ -24,6 +24,19 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
       },
     },
     include: {
+      comments: {
+        include: {
+          commentReadStatus: {
+            include: {
+              projectMember: {
+                include: {
+                  users: true,
+                },
+              },
+            },
+          },
+        },
+      },
       task: {
         include: {
           project: true, // Include the project linked to the task
@@ -34,11 +47,11 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
   })
 
   // Cast and handle the possibility of `undefined`
-  const taskLogs: TaskLogWithTaskAndProject[] = (fetchedTaskLogs ??
-    []) as TaskLogWithTaskAndProject[]
+  const taskLogs: TaskLogWithTaskProjectAndComments[] = (fetchedTaskLogs ??
+    []) as TaskLogWithTaskProjectAndComments[]
 
   // process those logs to get the latest one for each task-projectmemberId
-  const latestLogs = getLatestTaskLogs<TaskLogWithTaskAndProject>(taskLogs)
+  const latestLogs = getLatestTaskLogs<TaskLogWithTaskProjectAndComments>(taskLogs)
 
   const processedTasks = processAllTasks(latestLogs)
 
@@ -49,7 +62,17 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
   const taskProportion =
     processedTasks.length > 0 ? totalCompletion / 100 / processedTasks.length : 0
 
-  //console.log(processedTasks)
+  // calculate total number of new comments
+  const newCommentsCount = taskLogs.reduce((total, taskLog) => {
+    return (
+      total +
+      (taskLog.comments?.reduce((commentSum, comment) => {
+        return (
+          commentSum + (comment.commentReadStatus?.filter((status) => !status.read).length ?? 0)
+        )
+      }, 0) ?? 0)
+    )
+  }, 0)
 
   return (
     <Widget
@@ -63,8 +86,9 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
         />
       }
       tooltipId="tool-tasks"
-      tooltipContent="Percent of tasks completed"
+      tooltipContent="Percent of tasks completed and new comments on tasks"
       size={size}
+      newCommentsCount={newCommentsCount}
     />
   )
 }

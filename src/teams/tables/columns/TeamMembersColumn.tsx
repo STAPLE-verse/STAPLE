@@ -19,7 +19,7 @@ export const TeamMembersColumn: ColumnDef<TeamMembers>[] = [
   columnHelper.accessor("username", {
     cell: (info) => (
       <Link
-        className="btn btn-primary"
+        className="btn btn-primary w-2/3"
         href={Routes.ShowContributorPage({
           projectId: info.row.original.projectId,
           contributorId: info.row.original.contributorId,

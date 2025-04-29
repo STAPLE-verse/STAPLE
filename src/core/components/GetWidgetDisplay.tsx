@@ -6,7 +6,7 @@ import DateFormat from "./DateFormat"
 // use for all tables in widgets
 export function GetTableDisplay({ data, columns, type }) {
   if (data.length === 0) {
-    return <p className="italic p-2">No {type}</p>
+    return <p className="italic mb-2">No {type}</p>
   }
   return (
     <Table

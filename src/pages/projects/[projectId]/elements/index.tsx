@@ -1,6 +1,5 @@
 import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
-import Head from "next/head"
 import Link from "next/link"
 import Layout from "src/core/layouts/Layout"
 import { useParam } from "@blitzjs/next"
@@ -20,7 +19,7 @@ const Elements = () => {
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="Elements">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <h1 className="flex justify-center mb-2 text-3xl">Elements</h1>
         <SearchButton onChange={handleSearch}></SearchButton>
         <Suspense fallback={<div>Loading...</div>}>

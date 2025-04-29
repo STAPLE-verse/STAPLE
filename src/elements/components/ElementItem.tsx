@@ -28,7 +28,7 @@ const ElementItem: React.FC<ElementItemProps> = ({ element, projectId, tasks, on
       <input type="checkbox" />
       {/* Element name */}
       <div className="collapse-title text-xl font-medium">{element.name}</div>
-      <div className="collapse-content mb-4">
+      <div className="collapse-content">
         {/* Element description */}
         <p className="mb-2">{element.description}</p>
         {/* Element last update */}

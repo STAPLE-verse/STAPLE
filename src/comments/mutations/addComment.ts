@@ -123,6 +123,26 @@ export default resolver.pipe(
       ctx
     )
 
+    // Merge assigned and manager user IDs
+    const allRelevantUserIds = [...assignedUserIds, ...projectManagerIds]
+
+    // Find corresponding ProjectMember records
+    const relevantProjectMembers = await db.projectMember.findMany({
+      where: {
+        id: { in: allRelevantUserIds },
+        projectId: projectId,
+      },
+    })
+
+    // Create CommentReadStatus records
+    await db.commentReadStatus.createMany({
+      data: relevantProjectMembers.map((member) => ({
+        commentId: comment.id,
+        projectMemberId: member.id,
+        read: false,
+      })),
+    })
+
     return comment
   }
 )

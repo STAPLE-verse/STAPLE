@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useMemo } from "react"
 import Layout from "src/core/layouts/Layout"
 import Table from "src/core/components/Table"
 import { useParam } from "@blitzjs/next"
@@ -11,6 +11,9 @@ import { processProjectNotification } from "src/notifications/tables/processing/
 import { MultiSelectProvider, useMultiSelect } from "src/core/components/fields/MultiSelectContext"
 import { DeleteNotificationButton } from "src/notifications/components/DeleteNotificationButton"
 import { MultiReadToggleButton } from "src/notifications/components/MultiReadToggleButton"
+import Card from "src/core/components/Card"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 const NotificationContent = () => {
   const projectId = useParam("projectId", "number")
@@ -34,7 +37,11 @@ const NotificationContent = () => {
   const extendedNotifications = notifications as unknown as ExtendedNotification[]
 
   // Preprocess table data
-  const projectNotificationTableData = processProjectNotification(extendedNotifications)
+  const projectNotificationTableData = useMemo(
+    () => processProjectNotification(extendedNotifications),
+
+    [extendedNotifications]
+  )
 
   // Get columns and pass refetch
   const columns = useProjectNotificationTableColumns(refetch, projectNotificationTableData)
@@ -42,10 +49,20 @@ const NotificationContent = () => {
   const selectedNotifications = extendedNotifications.filter((n) => selectedIds.includes(n.id))
 
   return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="flex justify-center mb-2 text-3xl">Project Notifications</h1>
-      <Table columns={columns} data={projectNotificationTableData} addPagination={true} />
-      <div className="flex justify-end mt-4 gap-4">
+    <main className="flex flex-col mx-auto w-full">
+      <div className="flex justify-center items-center gap-2">
+        <h1 className="text-3xl">Project Notifications</h1>
+        <InformationCircleIcon
+          className="h-5 w-5 stroke-2 text-info"
+          data-tooltip-id="project-notifications-tooltip"
+        />
+        <Tooltip
+          id="project-notifications-tooltip"
+          content="These are notifications for this project only. You can delete or mark them as read using the select options."
+          className="z-[1099] ourtooltips"
+        />
+      </div>
+      <div className="flex justify-center mt-4 mb-2 gap-2">
         <DeleteNotificationButton ids={selectedIds} />
         <MultiReadToggleButton
           notifications={selectedNotifications}
@@ -53,6 +70,9 @@ const NotificationContent = () => {
           resetSelection={resetSelection}
         />
       </div>
+      <Card title="">
+        <Table columns={columns} data={projectNotificationTableData} addPagination={true} />
+      </Card>
     </main>
   )
 }

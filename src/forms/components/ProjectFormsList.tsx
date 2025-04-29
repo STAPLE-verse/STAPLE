@@ -5,6 +5,7 @@ import { useParam } from "@blitzjs/next"
 import { ProjectFormsColumns } from "../tables/columns/ProjectFormsColumns"
 import { processProjectForms } from "../tables/processing/processProjectForms"
 import { FormVersion, Task } from "db"
+import Card from "src/core/components/Card"
 
 export interface TaskWithFormVersion extends Task {
   formVersion: FormVersion | null
@@ -31,8 +32,8 @@ export const ProjectFormsList = () => {
   const projectFormsTableData = processProjectForms(tasks as TaskWithFormVersion[])
 
   return (
-    <div>
+    <Card title="">
       <Table data={projectFormsTableData} columns={ProjectFormsColumns} addPagination={true} />
-    </div>
+    </Card>
   )
 }

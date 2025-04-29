@@ -16,7 +16,7 @@ export const TriggerDashboardMigration = () => {
   }
 
   return (
-    <div className="flex flex-col items-center mt-4">
+    <div className="flex flex-col items-center mt-2">
       <button onClick={handleRunMigration} className="btn btn-primary">
         Add New Dashboard Widgets
       </button>

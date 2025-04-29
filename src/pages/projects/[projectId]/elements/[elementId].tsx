@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import getElement from "src/elements/queries/getElement"
 import { useQuery } from "@blitzjs/rpc"

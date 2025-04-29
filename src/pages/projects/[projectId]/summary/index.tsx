@@ -17,6 +17,7 @@ import toast from "react-hot-toast"
 import updateProject from "src/projects/mutations/updateProject"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import CollapseCard from "src/core/components/CollapseCard"
 
 const Summary = () => {
   // Get data
@@ -99,8 +100,8 @@ const Summary = () => {
   }
 
   return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="flex justify-center items-center mb-2 text-3xl">
+    <main className="flex flex-col mx-auto w-full">
+      <h1 className="flex justify-center items-center mb-4 text-3xl">
         Project Summary
         <InformationCircleIcon
           className="h-6 w-6 ml-2 text-info stroke-2"
@@ -113,75 +114,74 @@ const Summary = () => {
         />
       </h1>
       {/* buttons */}
-      <div className="flex flex-row justify-center mb-2">
-        {project.metadata && (
-          <>
-            <DownloadJSON
-              data={project.metadata}
-              fileName={project.name}
-              className="btn btn-primary"
-              type="button"
-              label="Project Metadata JSON"
-            />
-            <DownloadXLSX
-              data={project.metadata}
-              fileName={project.name}
-              className="btn btn-secondary mx-2"
-              type="button"
-              label="Project Metadata XSLX"
-            />
-            <JsonFormModal
-              schema={getJsonSchema(project.formVersion?.schema)}
-              uiSchema={getJsonSchema(project.formVersion?.uiSchema)}
-              metadata={project.metadata}
-              label={"Edit Project Metadata"}
-              classNames="btn-info"
-              onSubmit={handleJsonFormSubmit}
-              onError={handleJsonFormError}
-              resetHandler={handleResetMetadata}
-              modalSize="w-11/12 max-w-5xl"
-            />
-          </>
-        )}
+      <div className="flex flex-row justify-center mb-4">
+        {project.metadata && <></>}
 
         <DownloadJSON
           data={project}
           fileName={`${project.name}`}
           className="mx-2 btn btn-primary"
-          label="Entire Project JSON"
+          label="Download Project JSON"
         />
         <button className="btn btn-secondary">Launch Viewer (coming soon)</button>
       </div>
 
       {/* Project  information */}
-      <div className="flex flex-row justify-center">
-        <div className="card bg-base-300 mx-2 w-full">
-          <div className="card-body">
-            <div className="card-title">Project Metadata</div>
-            <br />
-            Name: {project.name}
-            <br />
-            Created: <DateFormat date={project.createdAt}></DateFormat>
-            <br />
-            Last Update: <DateFormat date={project.updatedAt}></DateFormat>
-            <br />
-            Description: {project.description}
-            {project.metadata ? (
-              <MetadataDisplay metadata={project.metadata} />
-            ) : (
-              <div>No metadata available for this project.</div>
-            )}
-            <div className="card-actions justify-end">
-              <Link
-                className="btn btn-primary"
-                href={Routes.EditProjectPage({ projectId: projectId! })}
-              >
-                Edit Project Settings
-              </Link>
-            </div>
-          </div>
+      <CollapseCard title="Project Settings" className="mb-4">
+        Use project settings to change the name, description, and required project metadata.
+        <br />
+        Name: {project.name}
+        <br />
+        Created: <DateFormat date={project.createdAt}></DateFormat>
+        <br />
+        Last Update: <DateFormat date={project.updatedAt}></DateFormat>
+        <br />
+        Description: {project.description}
+        <div className="card-actions justify-end">
+          <Link
+            className="btn btn-primary"
+            href={Routes.EditProjectPage({ projectId: projectId! })}
+          >
+            Edit Project Settings
+          </Link>
         </div>
-      </div>
+      </CollapseCard>
+      <CollapseCard title="Project Metadata">
+        {project.metadata ? (
+          <>
+            <MetadataDisplay metadata={project.metadata} />
+            <div className="justify-end flex">
+              <DownloadJSON
+                data={project.metadata}
+                fileName={project.name}
+                className="btn btn-primary"
+                type="button"
+                label="Download Metadata JSON"
+              />
+              <DownloadXLSX
+                data={project.metadata}
+                fileName={project.name}
+                className="btn btn-secondary mx-2"
+                type="button"
+                label="Download Metadata XLSX"
+              />
+              <JsonFormModal
+                schema={getJsonSchema(project.formVersion?.schema)}
+                uiSchema={getJsonSchema(project.formVersion?.uiSchema)}
+                metadata={project.metadata}
+                label={"Edit Project Metadata"}
+                classNames="btn-info"
+                onSubmit={handleJsonFormSubmit}
+                onError={handleJsonFormError}
+                resetHandler={handleResetMetadata}
+                modalSize="w-11/12 max-w-5xl"
+              />
+            </div>
+          </>
+        ) : (
+          <div>No metadata available for this project.</div>
+        )}
+      </CollapseCard>
     </main>
   )
 }
