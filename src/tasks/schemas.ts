@@ -71,8 +71,8 @@ export const UpdateTaskSchema = z.object({
     .nullable(),
 })
 
-export const UpdateStatusSchema = z.object({
-  id: z.number(),
+export const UpdateTaskStatusSchema = z.object({
+  id: z.number().int().positive(),
   status: z.nativeEnum(Status),
 })
 
@@ -112,4 +112,13 @@ export const UpdateTasksForElementSchema = z.object({
 
 export const UpdateTasksForElementFormSchema = z.object({
   selectedTasks: z.array(z.number()),
+})
+
+export const DeleteColumnSchema = z.object({
+  id: z.number(),
+})
+
+export const UpdateColumnSchema = z.object({
+  id: z.number(),
+  name: z.string().min(1),
 })

@@ -6,6 +6,11 @@ export default resolver.pipe(
   resolver.zod(CreateColumnSchema),
   resolver.authorize(),
   async ({ projectId, name }) => {
+    // Make sure it is not possible to create a new column called Done
+    if (name.trim().toLowerCase() === "done") {
+      throw new Error("You cannot manually create a column named 'Done'.")
+    }
+
     const columnCount = await db.kanbanBoard.count({
       where: { projectId: projectId },
     })
