@@ -6,7 +6,11 @@ export type AllTasksData = {
   deadline: Date | null
   completion: number
   hasNewComments: boolean
-  newCommentsCount: number
+  newCommentsCount: {
+    countTotal: number
+    taskId: number
+    projectId: number
+  }
   view: {
     taskId: number
     projectId: number
@@ -48,7 +52,11 @@ export function processAllTasks(
         deadline: null,
         completion: 0,
         hasNewComments: false,
-        newCommentsCount: 0,
+        newCommentsCount: {
+          countTotal: 0,
+          taskId: 0,
+          projectId: 0,
+        },
         view: {
           taskId: 0,
           projectId: 0,
@@ -79,7 +87,11 @@ export function processAllTasks(
       deadline: task?.deadline || null,
       completion: completionPercentage,
       hasNewComments,
-      newCommentsCount,
+      newCommentsCount: {
+        countTotal: newCommentsCount,
+        taskId: task?.id || 0,
+        projectId: task?.projectId || 0,
+      },
       view: {
         taskId: task?.id || 0,
         projectId: task?.projectId || 0,
