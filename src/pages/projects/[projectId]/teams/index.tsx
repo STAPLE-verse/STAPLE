@@ -13,6 +13,9 @@ import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { processTeam } from "src/teams/tables/processing/processTeam"
 import { ProjectMemberWithUsers } from "src/core/types"
+import Card from "src/core/components/Card"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 interface AllTeamListProps {
   privilege: MemberPrivileges
@@ -65,20 +68,30 @@ const TeamsPage = () => {
     // @ts-expect-error children are clearly passed below
     <Layout title="All Teams">
       <main className="flex flex-col mx-auto w-full">
-        <h1 className="flex justify-center mb-2 text-3xl">Teams</h1>
-        <Suspense fallback={<div>Loading...</div>}>
-          <AllTeamList privilege={privilege!} projectId={projectId} />
-        </Suspense>
+        <h1 className="flex justify-center items-center mb-2 text-3xl">
+          Teams
+          <InformationCircleIcon
+            className="ml-2 h-5 w-5 stroke-2 text-info"
+            data-tooltip-id="team-tooltip"
+          />
+          <Tooltip
+            id="team-tooltip"
+            content="Use this page to create new groups of people to work together in teams. Use teams to assign a task to a group of people where only one completion is needed. People can be in more than one team. Use the view button to review team assignments, members, and completions."
+            className="z-[1099] ourtooltips"
+          />
+        </h1>
         {privilege === MemberPrivileges.PROJECT_MANAGER && (
-          <div>
-            <Link
-              className="btn btn-primary mb-4 mt-4"
-              href={Routes.NewTeamPage({ projectId: projectId! })}
-            >
+          <div className="flex justify-center mb-2 mt-2">
+            <Link className="btn btn-primary" href={Routes.NewTeamPage({ projectId: projectId! })}>
               Add Team
             </Link>
           </div>
         )}
+        <Suspense fallback={<div>Loading...</div>}>
+          <Card title="">
+            <AllTeamList privilege={privilege!} projectId={projectId} />
+          </Card>
+        </Suspense>
       </main>
     </Layout>
   )
