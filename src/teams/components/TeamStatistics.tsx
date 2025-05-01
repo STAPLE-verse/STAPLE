@@ -21,7 +21,11 @@ export const TeamStatistics = ({ teamId, projectId }) => {
     },
     where: {
       projectId: projectId,
-      id: teamId,
+      assignedMembers: {
+        some: {
+          id: teamId, // Filter tasks by teamId in assignedMembers
+        },
+      },
     },
   })
 
@@ -29,6 +33,7 @@ export const TeamStatistics = ({ teamId, projectId }) => {
   const [fetchedTaskLogs] = useQuery(getTaskLogs, {
     where: {
       taskId: { in: tasks.map((task) => task.id) },
+      assignedToId: teamId,
     },
     include: {
       task: true,
@@ -67,7 +72,7 @@ export const TeamStatistics = ({ teamId, projectId }) => {
         />
         <PieChartWidget
           data={rolePieData}
-          title={"Role Distribution"}
+          titleWidget={"Role Distribution"}
           tooltip={"The distribution of roles across tasks assigned to the team"}
           noData={tasks.length === 0 || rolePieData.length === 0}
           noDataText="No tasks with roles found"

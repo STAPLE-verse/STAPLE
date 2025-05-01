@@ -1,9 +1,10 @@
 import { PieChart } from "react-minimal-pie-chart"
-import TooltipWrapper from "src/core/components/TooltipWrapper"
+import { Tooltip } from "react-tooltip"
+import { useState } from "react"
 
 interface PieChartWidgetProps {
-  data: { title: string; value: number; color: string }[] // Data format for the pie chart
-  title: string
+  data: { label: string; value: number; color: string }[] // Data format for the pie chart
+  titleWidget: string
   tooltip: string
   noData: boolean
   noDataText?: string
@@ -11,33 +12,58 @@ interface PieChartWidgetProps {
 
 export const PieChartWidget: React.FC<PieChartWidgetProps> = ({
   data,
-  title,
+  titleWidget,
   tooltip,
   noData,
   noDataText,
 }) => {
+  const [hoveredSegment, setHoveredSegment] = useState(null)
+
+  const handleMouseOver = (event, dataIndex) => {
+    setHoveredSegment(dataIndex)
+  }
+
+  const handleMouseOut = () => {
+    setHoveredSegment(null)
+  }
+
   return (
     <div className="stat place-items-center">
-      <div className="stat-title text-2xl text-inherit" data-tooltip-id={`${title}-tooltip`}>
-        {title}
+      <div className="stat-title text-2xl text-inherit" data-tooltip-id="titleWidgetTooltip">
+        {titleWidget}
       </div>
-      <TooltipWrapper id={`${title}-tooltip`} content={tooltip} className="z-[1099] ourtooltips" />
+      <Tooltip id="titleWidgetTooltip" className="z-[1099] ourtooltips" content={tooltip} />
+
       {noData ? (
         noDataText
       ) : (
         <>
-          <div className="w-40 h-40 m-2">
+          <div className="w-20 h-20 m-2" data-tip="" data-for="chart">
             <PieChart
               data={data}
-              lineWidth={60}
+              radius={50}
+              lineWidth={40}
               rounded
-              label={({ dataEntry }) => `${dataEntry.title}: ${dataEntry.value}`}
-              labelStyle={{
-                fontSize: "5px",
-                fontFamily: "Arial",
-                fill: "#fff",
-              }}
+              onMouseOver={handleMouseOver}
+              onMouseOut={handleMouseOut}
+              segmentsStyle={(index) => ({
+                transition: "opacity 300ms",
+                opacity: hoveredSegment === null || hoveredSegment === index ? 1 : 0.5,
+              })}
             />
+            {hoveredSegment !== null && (
+              <div
+                className="ourtooltips"
+                style={{
+                  position: "absolute", // Make sure the tooltip is positioned relative to the chart
+                  padding: "5px 10px", // Add padding for spacing
+                  borderRadius: "5px", // Round corners for the tooltip
+                  textAlign: "center", // Align the text in the center
+                }}
+              >
+                {`${data[hoveredSegment]!.label}: ${data[hoveredSegment]!.value}`}
+              </div>
+            )}
           </div>
         </>
       )}
