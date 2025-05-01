@@ -77,11 +77,13 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
               tooltip={"Percent of overall tasks completed by project manager"}
             />
             {/* Form data */}
-            <CircularPercentageWidget
-              data={formPercent}
-              title={"Form Data"}
-              tooltip={"Percent of required forms completed by contributors"}
-            />
+            {tasks.length > 0 && formPercent >= 0 && (
+              <CircularPercentageWidget
+                data={formPercent}
+                title={"Form Data"}
+                tooltip={"Percent of required forms completed by contributors"}
+              />
+            )}
             {/* Roles */}
             <CircularPercentageWidget
               data={rolePercent}

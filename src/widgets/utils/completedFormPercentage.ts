@@ -7,7 +7,7 @@ type TaskLogWithTask = TaskLog & {
 export const completedFormPercentage = (taskLogs: TaskLogWithTask[] | null | undefined): number => {
   // Check if taskLogs is null or undefined
   if (!taskLogs || taskLogs.length === 0) {
-    return 0
+    return -1
   }
 
   const allFormTaskLogs = taskLogs.filter((taskLog) => {
@@ -21,6 +21,6 @@ export const completedFormPercentage = (taskLogs: TaskLogWithTask[] | null | und
 
     return completedFormTaskLogs.length / allFormTaskLogs.length
   } else {
-    return 0
+    return -1
   }
 }

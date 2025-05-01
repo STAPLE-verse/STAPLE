@@ -8,13 +8,13 @@ import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import getTasks from "src/tasks/queries/getTasks"
 import { completedFormPercentage } from "src/widgets/utils/completedFormPercentage"
-import { completedTaskPercentage } from "src/widgets/utils/completedTaskPercentage"
 import { CircularPercentageWidget } from "src/widgets/components/CircularPercentageWidget"
 import { roleDistribution } from "src/widgets/utils/roleDistribution"
+import { PieChartWidget } from "src/widgets/components/PieChartWidget" // Import PieChartWidget component
+import { completedTaskLogPercentage } from "src/widgets/utils/completedTaskLogPercentage"
 
 export const TeamStatistics = ({ teamId, projectId }) => {
   // get tasks for this teamId and projectId
-  // Get tasks
   const [{ tasks }] = useQuery(getTasks, {
     include: {
       roles: true,
@@ -43,23 +43,36 @@ export const TeamStatistics = ({ teamId, projectId }) => {
 
   // Calculate summary data
   const formPercent = completedFormPercentage(allTaskLogs)
-  const taskPercent = completedTaskPercentage(tasks)
-  const roleDistribution = roleDistribution(tasks)
+  const taskPercent = completedTaskLogPercentage(allTaskLogs)
+  const rolePieData = roleDistribution(tasks)
+
+  console.log(rolePieData)
 
   return (
     <CollapseCard title={"Team Statistics"} className="w-full mt-4">
-      {/* Task status */}
-      <CircularPercentageWidget
-        data={taskPercent}
-        title={"Task Status"}
-        tooltip={"Percent of overall tasks completed by the team"}
-      />
-      {/* Form data */}
-      <CircularPercentageWidget
-        data={formPercent}
-        title={"Form Data"}
-        tooltip={"Percent of required forms completed the team"}
-      />
+      <div className="stats bg-base-300 text-lg font-bold w-full">
+        <CircularPercentageWidget
+          data={taskPercent}
+          title={"Task Status"}
+          tooltip={"Percent of overall tasks completed by the team"}
+          noData={tasks.length === 0}
+          noDataText="No tasks were found"
+        />
+        <CircularPercentageWidget
+          data={formPercent}
+          title={"Form Data"}
+          tooltip={"Percent of required forms completed by the team"}
+          noData={tasks.length === 0 || formPercent <= 0}
+          noDataText="No forms were required"
+        />
+        <PieChartWidget
+          data={rolePieData}
+          title={"Role Distribution"}
+          tooltip={"The distribution of roles across tasks assigned to the team"}
+          noData={tasks.length === 0 || rolePieData.length === 0}
+          noDataText="No tasks with roles found"
+        />
+      </div>
     </CollapseCard>
   )
 }
