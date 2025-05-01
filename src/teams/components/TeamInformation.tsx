@@ -1,8 +1,8 @@
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { MemberPrivileges } from "db"
-import Card from "src/core/components/Card"
 import { TeamWithUsers } from "src/core/types"
+import CollapseCard from "src/core/components/CollapseCard"
 
 interface TeamInformationProps {
   team: TeamWithUsers
@@ -13,23 +13,7 @@ const TeamInformation = ({ team, privilege }: TeamInformationProps) => {
   const users = team.users
 
   return (
-    <Card
-      title={team.name!}
-      className="w-full"
-      actions={
-        privilege === MemberPrivileges.PROJECT_MANAGER ? (
-          <Link
-            href={Routes.EditTeamPage({
-              projectId: team.projectId,
-              teamId: team.id,
-            })}
-            className="btn btn-primary"
-          >
-            Edit Team
-          </Link>
-        ) : null
-      }
-    >
+    <CollapseCard title="Team Members" className="w-full">
       <div className="flex flex-row justify-start gap-2">
         {users.map((user) => {
           return (
@@ -48,7 +32,7 @@ const TeamInformation = ({ team, privilege }: TeamInformationProps) => {
           )
         })}
       </div>
-    </Card>
+    </CollapseCard>
   )
 }
 

@@ -1,14 +1,17 @@
 import { Suspense } from "react"
 import { useQuery } from "@blitzjs/rpc"
-import { useParam } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
 import { MemberPrivileges } from "db"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
-import { TeamRolesList } from "src/teams/components/TeamRolesList"
 import DeleteTeam from "src/teams/components/DeleteTeam"
 import TeamInformation from "src/teams/components/TeamInformation"
 import getTeam from "src/teams/queries/getTeam"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
+import Link from "next/link"
+import { TeamStatistics } from "src/teams/components/TeamStatistics"
 
 export const TeamPage = () => {
   const projectId = useParam("projectId", "number")
@@ -19,22 +22,43 @@ export const TeamPage = () => {
     id: teamId!,
   })
 
-  const userIds = team.users.map((user) => user.id)
-
   return (
     <>
       <main className="flex flex-col mx-auto w-full">
-        <TeamInformation team={team} privilege={privilege!} />
-
-        <TeamRolesList usersId={userIds} projectId={projectId} />
-
-        <TeamTaskListDone teamId={teamId!} />
+        <h1 className="flex justify-center items-center text-3xl">
+          {team.name}
+          <InformationCircleIcon
+            className="ml-2 h-5 w-5 stroke-2 text-info"
+            data-tooltip-id="team-tooltip"
+          />
+          <Tooltip
+            id="team-tooltip"
+            content="Use this page to review a team’s tasks, track their completion status, and manage members within the team."
+            className="z-[1099] ourtooltips"
+          />
+        </h1>
 
         {privilege === MemberPrivileges.PROJECT_MANAGER && (
-          <div className="flex justify-end mt-4">
+          <div className="flex justify-center m-4 gap-2">
+            <Link
+              href={Routes.EditTeamPage({
+                projectId: team.projectId,
+                teamId: team.id,
+              })}
+              className="btn btn-primary"
+            >
+              Edit Team
+            </Link>
+
             <DeleteTeam team={team} />
           </div>
         )}
+
+        <TeamInformation team={team} privilege={privilege!} />
+
+        <TeamStatistics teamId={teamId} projectId={projectId} />
+
+        <TeamTaskListDone teamId={teamId!} />
       </main>
     </>
   )
