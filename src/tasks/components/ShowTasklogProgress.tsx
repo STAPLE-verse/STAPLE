@@ -1,11 +1,11 @@
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import "react-circular-progressbar/dist/styles.css"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { useTaskContext } from "./TaskContext"
 import useTaskLogProgress from "src/tasklogs/hooks/useTaskLogProgress"
 import Stat from "src/core/components/Stat"
-import TooltipWrapper from "src/core/components/TooltipWrapper"
+import { GetCircularProgressDisplay } from "src/core/components/GetWidgetDisplay"
+import { Tooltip } from "react-tooltip"
 
 const ShowTasklogProgress = () => {
   const { task, projectMembers } = useTaskContext()
@@ -27,37 +27,13 @@ const ShowTasklogProgress = () => {
         </Link>
       }
     >
-      <div className="w-20 h-20 m-2">
-        <CircularProgressbar
-          value={taskLogPercent * 100}
-          text={`${Math.round(taskLogPercent * 100)}%`}
-          data-tooltip-id="progress-tooltip"
-          data-tooltip-content={`${taskLogProgress.completed} tasks out of ${taskLogProgress.all}`}
-          strokeWidth={8}
-          background={false}
-          backgroundPadding={0}
-          circleRatio={1}
-          maxValue={100}
-          minValue={0}
-          counterClockwise={false}
-          className=""
-          classes={{
-            root: "CircularProgressbar",
-            path: "CircularProgressbar-path",
-            trail: "CircularProgressbar-trail",
-            text: "CircularProgressbar-text",
-            background: "CircularProgressbar-background",
-          }}
-          styles={buildStyles({
-            textSize: "16px",
-            pathTransitionDuration: 0,
-            pathColor: "oklch(var(--p))",
-            textColor: "oklch(var(--p))",
-            trailColor: "oklch(var(--pc))",
-            backgroundColor: "oklch(var(--b3))",
-          })}
+      <div className="w-20 h-20 m-2" data-tooltip-id="progress-tooltip">
+        <GetCircularProgressDisplay proportion={taskLogPercent} />
+        <Tooltip
+          id="progress-tooltip"
+          content={`${taskLogProgress.completed} tasks out of ${taskLogProgress.all}`}
+          className="z-[1099] ourtooltips"
         />
-        <TooltipWrapper id="progress-tooltip" className="z-[1099] ourtooltips" />
       </div>
     </Stat>
   )

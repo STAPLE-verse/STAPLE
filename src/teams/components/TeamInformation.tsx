@@ -13,7 +13,7 @@ const TeamInformation = ({ team, privilege }: TeamInformationProps) => {
   const users = team.users
 
   return (
-    <CollapseCard title="Team Members" className="w-full">
+    <CollapseCard title="Team Members" className="w-full mt-4">
       <div className="flex flex-row justify-start gap-2">
         {users.map((user) => {
           return (

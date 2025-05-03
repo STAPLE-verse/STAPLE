@@ -2,11 +2,11 @@ import { Routes } from "@blitzjs/next"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
-import { TeamTaskListDoneData } from "../processing/processTeamTaskListDone"
+import { TeamTaskListData } from "../processing/processTeamTaskList"
 
-const columnHelper = createColumnHelper<TeamTaskListDoneData>()
+const columnHelper = createColumnHelper<TeamTaskListData>()
 
-export const TeamTaskListDoneColumns = [
+export const TeamTaskListColumns = [
   columnHelper.accessor("completedBy", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Completed By",
@@ -22,10 +22,22 @@ export const TeamTaskListDoneColumns = [
     header: "Roles",
     id: "roles",
   }),
+  // change this to task history
   columnHelper.accessor("latestUpdate", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Latest Update",
     id: "lastestUpdate",
+  }),
+  // add approval for lastest log
+  columnHelper.accessor("approved", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Approved",
+    id: "approved",
+  }),
+  columnHelper.accessor("deadline", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Deadline",
+    id: "deadline",
   }),
   columnHelper.accessor("taskId", {
     id: "view",
@@ -35,7 +47,7 @@ export const TeamTaskListDoneColumns = [
     cell: (info) => (
       <Link
         className="btn btn-ghost"
-        href={Routes.ShowTaskPage({
+        href={Routes.TaskLogsPage({
           projectId: info.row.original.projectId,
           taskId: info.getValue(),
         })}

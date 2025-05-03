@@ -15,8 +15,6 @@ import {
 } from "src/tasklogs/tables/processing/processTaskLogs"
 import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
 import { TaskLogFormColumns } from "src/tasklogs/tables/columns/TaskLogFormColumns"
-import { TeamTaskLogFormColumns } from "src/tasklogs/tables/columns/TeamTaskLogFormColumns"
-import { TeamTaskLogCompleteColumns } from "src/tasklogs/tables/columns/TeamTaskLogCompleteColumns"
 import Card from "src/core/components/Card"
 import { filterFirstTaskLog } from "src/tasklogs/utils/filterFirstTaskLog"
 import { useQuery } from "@blitzjs/rpc"
@@ -65,7 +63,7 @@ const TaskLogContent = () => {
   //const teamColumns = task.formVersionId ? TeamTaskLogFormColumns : TeamTaskLogCompleteColumns
 
   return (
-    <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
+    <main className="flex flex-col mb-2 mt-2 mx-auto w-full">
       <h1 className="text-3xl flex justify-center items-center gap-2 mb-2">
         Review Responses: <span className="truncate max-w-xs italic">{task.name}</span>
         <InformationCircleIcon

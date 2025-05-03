@@ -1,6 +1,3 @@
-import { RoleTeamTableColumns } from "../tables/columns/RoleTeamTableColumns"
-import { processRoleTeam } from "../tables/processing/processRoleTeam"
-import ProjectMemberRolesList from "src/projectmembers/components/ProjectMemberRolesList"
 import CollapseCard from "src/core/components/CollapseCard"
 import { useQuery } from "@blitzjs/rpc"
 import { TaskLogWithTask } from "src/core/types"
@@ -8,12 +5,21 @@ import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import getTasks from "src/tasks/queries/getTasks"
 import { completedFormPercentage } from "src/widgets/utils/completedFormPercentage"
-import { CircularPercentageWidget } from "src/widgets/components/CircularPercentageWidget"
 import { roleDistribution } from "src/widgets/utils/roleDistribution"
 import { PieChartWidget } from "src/widgets/components/PieChartWidget" // Import PieChartWidget component
 import { completedTaskLogPercentage } from "src/widgets/utils/completedTaskLogPercentage"
+import { Tooltip } from "react-tooltip"
+import { GetCircularProgressDisplay, GetIconDisplay } from "src/core/components/GetWidgetDisplay"
+import { UserGroupIcon } from "@heroicons/react/24/outline"
+import getTeam from "../queries/getTeam"
 
 export const TeamStatistics = ({ teamId, projectId }) => {
+  // get team number
+  const [team] = useQuery(getTeam, { id: teamId })
+
+  // Calculate the number of team members
+  const numberOfMembers = team?.users?.length || 0
+
   // get tasks for this teamId and projectId
   const [{ tasks }] = useQuery(getTasks, {
     include: {
@@ -51,25 +57,65 @@ export const TeamStatistics = ({ teamId, projectId }) => {
   const taskPercent = completedTaskLogPercentage(allTaskLogs)
   const rolePieData = roleDistribution(tasks)
 
-  console.log(rolePieData)
-
   return (
-    <CollapseCard title={"Team Statistics"} className="w-full mt-4">
+    <CollapseCard title={"Team Statistics"} className="w-full">
       <div className="stats bg-base-300 text-lg font-bold w-full">
-        <CircularPercentageWidget
-          data={taskPercent}
-          title={"Task Status"}
-          tooltip={"Percent of overall tasks completed by the team"}
-          noData={tasks.length === 0}
-          noDataText="No tasks were found"
-        />
-        <CircularPercentageWidget
-          data={formPercent}
-          title={"Form Data"}
-          tooltip={"Percent of required forms completed by the team"}
-          noData={tasks.length === 0 || formPercent <= 0}
-          noDataText="No forms were required"
-        />
+        {/* Task Status */}
+        <div className="stat place-items-center">
+          <div className="stat-title text-2xl text-inherit" data-tooltip-id="team-number-tooltip">
+            Team Members
+          </div>
+          <Tooltip
+            id="team-number-tooltip"
+            content="Number of team members"
+            className="z-[1099] ourtooltips"
+          />
+          <GetIconDisplay number={numberOfMembers} icon={UserGroupIcon} />
+        </div>
+
+        {/* Task Status */}
+        <div className="stat place-items-center">
+          <div className="stat-title text-2xl text-inherit" data-tooltip-id="task-status-tooltip">
+            Task Status
+          </div>
+          <Tooltip
+            id="task-status-tooltip"
+            content="Percent of overall tasks completed by the team"
+            className="z-[1099] ourtooltips"
+          />
+          {tasks.length === 0 ? (
+            <>No tasks were found</>
+          ) : (
+            <>
+              <div className="w-20 h-20 m-2">
+                <GetCircularProgressDisplay proportion={taskPercent} />
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Form Status */}
+        <div className="stat place-items-center">
+          <div className="stat-title text-2xl text-inherit" data-tooltip-id="form-status-tooltip">
+            <>Form Data</>
+          </div>
+          <Tooltip
+            id="form-status-tooltip"
+            content="Percent of required forms completed by the team"
+            className="z-[1099] ourtooltips"
+          />
+          {tasks.length === 0 || formPercent <= 0 ? (
+            <>No forms were required</>
+          ) : (
+            <>
+              <div className="w-20 h-20 m-2">
+                <GetCircularProgressDisplay proportion={taskPercent} />
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Role Pie Chart */}
         <PieChartWidget
           data={rolePieData}
           titleWidget={"Role Distribution"}

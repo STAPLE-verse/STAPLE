@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { Routes, useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
-import { TeamTaskListDone } from "src/teams/components/TeamTaskListDone"
+import { TeamTaskList } from "src/teams/components/TeamTaskList"
 import { MemberPrivileges } from "db"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import DeleteTeam from "src/teams/components/DeleteTeam"
@@ -54,11 +54,11 @@ export const TeamPage = () => {
           </div>
         )}
 
-        <TeamInformation team={team} privilege={privilege!} />
-
         <TeamStatistics teamId={teamId} projectId={projectId} />
 
-        <TeamTaskListDone teamId={teamId!} />
+        <TeamInformation team={team} privilege={privilege!} />
+
+        <TeamTaskList teamId={teamId!} />
       </main>
     </>
   )

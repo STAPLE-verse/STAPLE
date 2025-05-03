@@ -213,6 +213,7 @@ model TaskLog {
   taskId        Int
   task          Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)
   comments      Comment[]
+  approved      Boolean?
 }
 
 model Comment {

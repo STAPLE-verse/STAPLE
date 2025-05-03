@@ -1,7 +1,7 @@
 import { getContributorName } from "src/core/utils/getName"
 import { TaskLogWithTaskCompleted } from "src/core/types"
 
-export type TeamTaskListDoneData = {
+export type TeamTaskListData = {
   id: number
   completedBy: string
   taskName: string
@@ -11,11 +11,11 @@ export type TeamTaskListDoneData = {
   projectId: number
 }
 
-// Adjusted processor function for team task list done
-export function processTeamTaskListDone(
+// Adjusted processor function for team task list
+export function processTeamTaskList(
   taskLogs: TaskLogWithTaskCompleted[],
   locale: string
-): TeamTaskListDoneData[] {
+): TeamTaskListData[] {
   const userMap: { [key: number]: string } = {}
 
   // Populate user map for quick contributor name lookup

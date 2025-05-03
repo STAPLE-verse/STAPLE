@@ -18,6 +18,7 @@ export type RoleWithUser = Role & {
 
 export type TaskWithRoles = Task & {
   roles?: Role[]
+  deadline?: Date
 }
 
 export type TaskLogWithTask = TaskLog & {

@@ -22,6 +22,11 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistory>[] = [
     header: "Status",
     id: "status",
   }),
+  columnHelper.accessor("approved", {
+    cell: (info) => <span>{info.getValue()}</span>,
+    header: "Approved",
+    id: "approved",
+  }),
   columnHelper.accessor("formData", {
     cell: (info) => (
       <>

@@ -4,13 +4,13 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
-import { ContributorTaskListDoneData } from "../processing/processContributorTaskListDone"
+import { ContributorTaskListData } from "../processing/processContributorTaskList"
 
 // Column helper
-const columnHelperFinished = createColumnHelper<ContributorTaskListDoneData>()
+const columnHelperFinished = createColumnHelper<ContributorTaskListData>()
 
 // ColumnDefs
-export const ContributorTaskListDoneColumns = [
+export const ContributorTaskListColumns = [
   columnHelperFinished.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",

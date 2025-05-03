@@ -1,22 +1,22 @@
 import { MemberPrivileges } from "db"
-import ProjectMemberTaskListDone from "src/projectmembers/components/ProjectMemberTaskListDone"
+import ProjectMemberTaskList from "src/projectmembers/components/ProjectMemberTaskList"
 import Card from "src/core/components/Card"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { ContributorTaskListDoneColumns } from "../tables/columns/ContributorTaskListDoneColumns"
-import { processContributorTaskListDone } from "../tables/processing/processContributorTaskListDone"
+import { ContributorTaskListColumns } from "../tables/columns/ContributorTaskListColumns"
+import { processContributorTaskList } from "../tables/processing/processContributorTaskList"
 
-interface ContributorTaskListDoneProps {
+interface ContributorTaskListProps {
   contributorId: number
   projectId: number
   privilege: MemberPrivileges
 }
 
-export const ContributorTaskListDone = ({
+export const ContributorTaskList = ({
   contributorId,
   projectId,
   privilege,
-}: ContributorTaskListDoneProps) => (
+}: ContributorTaskListProps) => (
   <Card
     title="Contributor Tasks"
     className="w-full"
@@ -29,10 +29,10 @@ export const ContributorTaskListDone = ({
       )
     }
   >
-    <ProjectMemberTaskListDone
+    <ProjectMemberTaskList
       projectMemberId={contributorId}
-      tableColumns={ContributorTaskListDoneColumns}
-      dataProcessor={processContributorTaskListDone}
+      tableColumns={ContributorTaskListColumns}
+      dataProcessor={processContributorTaskList}
     />
   </Card>
 )

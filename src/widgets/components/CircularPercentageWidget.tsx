@@ -1,4 +1,4 @@
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
+import { GetCircularProgressDisplay } from "src/core/components/GetWidgetDisplay"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
 
 interface CircularPercentageWidgetProps {
@@ -27,33 +27,7 @@ export const CircularPercentageWidget: React.FC<CircularPercentageWidgetProps> =
       ) : (
         <>
           <div className="w-20 h-20 m-2">
-            <CircularProgressbar
-              value={data * 100}
-              text={`${Math.round(data * 100)}%`}
-              strokeWidth={8}
-              background={false}
-              backgroundPadding={0}
-              circleRatio={1}
-              maxValue={100}
-              minValue={0}
-              counterClockwise={false}
-              className=""
-              classes={{
-                root: "CircularProgressbar",
-                path: "CircularProgressbar-path",
-                trail: "CircularProgressbar-trail",
-                text: "CircularProgressbar-text",
-                background: "CircularProgressbar-background",
-              }}
-              styles={buildStyles({
-                textSize: "16px",
-                pathTransitionDuration: 0,
-                pathColor: "oklch(var(--p))",
-                textColor: "oklch(var(--s))",
-                trailColor: "oklch(var(--pc))",
-                backgroundColor: "oklch(var(--b3))",
-              })}
-            />
+            <GetCircularProgressDisplay proportion={data} />
           </div>
         </>
       )}

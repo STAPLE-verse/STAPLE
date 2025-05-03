@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
-import { ContributorTaskListDone } from "src/contributors/components/ContributorTaskListDone"
+import { ContributorTaskList } from "src/contributors/components/ContributorTaskList"
 import { ContributorRolesList } from "src/contributors/components/ContributorRolesList"
 import ContributorInformation from "src/contributors/components/ContributorInformation"
 import { useContributorData } from "src/contributors/hooks/useContributorData"
@@ -35,7 +35,7 @@ export const ContributorPage = () => {
           privilege={privilege!}
         />
 
-        <ContributorTaskListDone
+        <ContributorTaskList
           contributorId={contributorId!}
           projectId={projectId!}
           privilege={privilege!}
