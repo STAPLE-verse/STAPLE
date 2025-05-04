@@ -15,7 +15,7 @@ export const WidgetContainer = ({ widgets }: WidgetContainerProps) => {
       <SortableContext items={widgets} strategy={rectSwappingStrategy}>
         {widgets.map((widget) => (
           <>
-            {/* @ts-expect-error suppress key prop warning on SortableWidget */}
+            {/*@ts-expect-error Suppress missing children error from SortableContext*/}
             <SortableWidget key={widget.id} id={widget.id} size={widget.size}>
               {widget.component}
             </SortableWidget>

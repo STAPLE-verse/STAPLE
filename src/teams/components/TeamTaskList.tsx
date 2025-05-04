@@ -23,6 +23,7 @@ export const TeamTaskList = ({ teamId }: TeamTaskListProps) => {
         projectMemberId={teamId}
         tableColumns={TeamTaskListColumns}
         dataProcessor={localDataProcessor}
+        currentUserId={currentUser!.id}
       />
     </CollapseCard>
   )

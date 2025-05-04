@@ -8,6 +8,7 @@ interface ProjectMemberTaskListProps {
   projectMemberId: number // ID of the ProjectMember, whether a team or individual contributor
   tableColumns: any
   dataProcessor: (taskLogs: TaskLogWithTaskCompleted[]) => any[]
+  currentUserId: number // Add currentUserId as a prop
 }
 
 const ProjectMemberTaskList = ({
@@ -17,19 +18,18 @@ const ProjectMemberTaskList = ({
 }: ProjectMemberTaskListProps) => {
   const [fetchedTaskLogs] = useQuery(getTaskLogs, {
     where: {
-      assignedToId: projectMemberId,
-      //status: Status.COMPLETED, get all logs for now
+      assignedToId: projectMemberId, // Use currentUserId here to filter tasks
     },
+    orderBy: undefined,
     include: {
       task: {
         include: {
-          deadline: true,
-          roles: true,
+          roles: true, // Include roles related to task
         },
       },
       completedBy: {
         include: {
-          users: true,
+          users: true, // Include users related to completedBy
         },
       },
     },

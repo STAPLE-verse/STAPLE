@@ -9,6 +9,8 @@ export type TeamTaskListData = {
   latestUpdate: string
   taskId: number
   projectId: number
+  deadline: Date | null
+  approved: Boolean | null
 }
 
 // Adjusted processor function for team task list
@@ -31,6 +33,7 @@ export function processTeamTaskList(
   // Transform tasks into the desired table format
   return taskLogs.map((taskLog) => {
     const task = taskLog.task
+    console.log("Processing taskLog:", taskLog)
     return {
       id: task.id,
       completedBy: userMap[taskLog.completedBy?.id] || "Not Completed",
@@ -50,6 +53,8 @@ export function processTeamTaskList(
         }) || "Unknown",
       taskId: task.id,
       projectId: task.projectId,
+      deadline: task.deadline,
+      approved: taskLog.approved,
     }
   })
 }

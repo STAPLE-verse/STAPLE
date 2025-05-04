@@ -3,6 +3,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { TeamTaskListData } from "../processing/processTeamTaskList"
+import { ApproveDropdown } from "src/tasklogs/components/ApproveTask"
 
 const columnHelper = createColumnHelper<TeamTaskListData>()
 
@@ -28,9 +29,15 @@ export const TeamTaskListColumns = [
     header: "Latest Update",
     id: "lastestUpdate",
   }),
-  // add approval for lastest log
+  // add approval for latest log
   columnHelper.accessor("approved", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => (
+      <ApproveDropdown
+        value={info.getValue()}
+        onChange={(newValue) => {}}
+        taskLogId={info.row.original.id}
+      />
+    ),
     header: "Approved",
     id: "approved",
   }),
