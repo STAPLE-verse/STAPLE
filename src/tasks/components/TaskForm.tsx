@@ -17,6 +17,7 @@ import { useState } from "react"
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
 import CollapseCard from "src/core/components/CollapseCard"
 import getMilestones from "src/milestones/queries/getMilestones"
+import DateField from "src/core/components/fields/DateField"
 
 export type Tag = {
   id: string
@@ -165,6 +166,16 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           options={columns}
           optionText="name"
           optionValue="id"
+        />
+        <DateField name="deadline" label="Deadline:" />
+        <LabelSelectField
+          className="select w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
+          name="milestoneId"
+          label="Assign milestone:"
+          options={milestones}
+          optionText="name"
+          optionValue="id"
+          disableFirstOption={false}
         />
         <label>At least one:</label>
         <ValidationErrorDisplay fieldName={"projectMembersId"} />
