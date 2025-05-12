@@ -10,9 +10,12 @@ import { MemberPrivileges } from "db"
 import SearchButton from "src/core/components/SearchButton"
 import InformationCircleIcon from "@heroicons/react/24/outline/InformationCircleIcon"
 import { Tooltip } from "react-tooltip"
+import { Tab } from "@headlessui/react"
+import classNames from "classnames"
 
 const Milestones = () => {
   const projectId = useParam("projectId", "number")
+  const [selectedIndex, setSelectedIndex] = useState<number>(0)
   const [searchTerm, setSearchTerm] = useState("")
   const handleSearch = (currentSearch) => {
     setSearchTerm(currentSearch)
@@ -34,20 +37,68 @@ const Milestones = () => {
             className="z-[1099] ourtooltips"
           />
         </h1>
-        <div className="flex flex-row justify-between items-center">
-          <Link
-            className="btn btn-primary mb-4 mt-4"
-            href={Routes.NewMilestonePage({ projectId: projectId! })}
+
+        <div>
+          <Tab.Group
+            selectedIndex={selectedIndex}
+            onChange={(index) => setSelectedIndex(index)}
+            defaultIndex={0}
           >
-            Create Milestone
-          </Link>
+            <div className="flex">
+              <Tab.List className="tabs tabs-lifted tabs-lg flex flex-row justify-start space-x-2 bg-base-100">
+                {/* Tablink for list view */}
+                <Tab
+                  className={({ selected }) =>
+                    classNames(
+                      "tab tab-lifted border",
+                      selected
+                        ? "tab-active !bg-base-300 [--tab-bg:var(--fallback-b3,oklch(var(--b3)))]"
+                        : "!bg-base-100 hover:text-gray-500"
+                    )
+                  }
+                >
+                  List
+                </Tab>
+                {/* TabLink for table view */}
+                <Tab
+                  className={({ selected }) =>
+                    classNames(
+                      "tab tab-lifted border",
+                      selected
+                        ? "tab-active !bg-base-300 [--tab-bg:var(--fallback-b3,oklch(var(--b3)))]"
+                        : "!bg-base-100 hover:text-gray-500"
+                    )
+                  }
+                >
+                  Gantt
+                </Tab>
+              </Tab.List>
 
-          <SearchButton onChange={handleSearch} />
+              <div className="flex justify-end items-start ml-auto items-center">
+                <Link
+                  className="btn btn-primary mb-4 mt-4"
+                  href={Routes.NewMilestonePage({ projectId: projectId! })}
+                >
+                  Create Milestone
+                </Link>
+                {selectedIndex === 0 && (
+                  <div className="ml-2">
+                    <SearchButton onChange={handleSearch} />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <Tab.Panels>
+              {/* Tabpanel for expandable milestone list */}
+              <Tab.Panel unmount={false}>
+                <MilestoneList searchTerm={searchTerm} />
+              </Tab.Panel>
+              {/* Tabpanel for gantt chart */}
+              <Tab.Panel unmount={false}></Tab.Panel>
+            </Tab.Panels>
+          </Tab.Group>
         </div>
-
-        <Suspense fallback={<div>Loading...</div>}>
-          <MilestoneList searchTerm={searchTerm} />
-        </Suspense>
       </main>
     </Layout>
   )
