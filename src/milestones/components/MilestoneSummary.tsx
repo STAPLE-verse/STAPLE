@@ -1,9 +1,9 @@
 import { useRouter } from "next/router"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
-import deleteElement from "src/elements/mutations/deleteElement"
+import deleteMilestone from "src/milestones/mutations/deleteMilestone"
 import "react-circular-progressbar/dist/styles.css"
-import { Element } from "@prisma/client"
+import { Milestone } from "@prisma/client"
 import { completedTaskPercentage } from "src/widgets/utils/completedTaskPercentage"
 import { completedFormPercentage } from "src/widgets/utils/completedFormPercentage"
 import { completedRolePercentage } from "src/widgets/utils/completedRolePercentage"
@@ -13,15 +13,15 @@ import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import { TaskLogWithTask } from "src/core/types"
 
-interface ElementSummaryProps {
-  element: Element
+interface MilestoneSummaryProps {
+  milestone: Milestone
   projectId: number | undefined
 }
 
-export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, projectId }) => {
+export const MilestoneSummary: React.FC<MilestoneSummaryProps> = ({ milestone, projectId }) => {
   // Setup
   const router = useRouter()
-  const [deleteElementMutation] = useMutation(deleteElement)
+  const [deleteMilestoneMutation] = useMutation(deleteMilestone)
 
   // Get tasks
   const [{ tasks }] = useQuery(getTasks, {
@@ -30,7 +30,7 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
     },
     where: {
       projectId: projectId,
-      elementId: element.id,
+      milestoneId: milestone.id,
     },
   })
 
@@ -57,9 +57,9 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
 
   // Delete event
   const handleDelete = async () => {
-    if (window.confirm("This element will be deleted. Is that ok?")) {
-      await deleteElementMutation({ id: element.id })
-      await router.push(Routes.ElementsPage({ projectId: projectId! }))
+    if (window.confirm("This milestone will be deleted. Is that ok?")) {
+      await deleteMilestoneMutation({ id: milestone.id })
+      await router.push(Routes.MilestonesPage({ projectId: projectId! }))
     }
   }
 
@@ -86,12 +86,12 @@ export const ElementSummary: React.FC<ElementSummaryProps> = ({ element, project
             <CircularPercentageWidget
               data={rolePercent}
               title={"Roles"}
-              tooltip={"Percent of tasks in this element with assigned roles"}
+              tooltip={"Percent of tasks in this milestone with assigned roles"}
             />
 
-            {/* Delete element button */}
+            {/* Delete milestone button */}
             <div className="stat place-items-center">
-              <div className="stat-title text-2xl text-inherit">Delete Element</div>
+              <div className="stat-title text-2xl text-inherit">Delete Milestone</div>
               <button type="button" className="btn btn-secondary" onClick={handleDelete}>
                 Delete
               </button>

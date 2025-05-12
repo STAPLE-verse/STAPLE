@@ -3,22 +3,22 @@ import { useQuery } from "@blitzjs/rpc"
 import Link from "next/link"
 import Table from "src/core/components/Table"
 import getTasks from "src/tasks/queries/getTasks"
-import { Element } from "@prisma/client"
+import { Milestone } from "@prisma/client"
 import DateFormat from "src/core/components/DateFormat"
 import { useState } from "react"
 import UpdateTasks from "./UpdateTasks"
-import { ElementTasksColumns } from "../tables/columns/ElementTasksColumns"
-import { processElementTasks } from "../tables/processing/processElementTasks"
+import { MilestoneTasksColumns } from "../tables/columns/MilestoneTasksColumns"
+import { processMilestoneTasks } from "../tables/processing/processMilestoneTasks"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
 
-interface ElementInformationProps {
-  element: Element
+interface MilestoneInformationProps {
+  milestone: Milestone
   projectId: number | undefined
   onTasksUpdated: () => void
 }
 
-export const ElementInformation: React.FC<ElementInformationProps> = ({
-  element,
+export const MilestoneInformation: React.FC<MilestoneInformationProps> = ({
+  milestone,
   projectId,
   onTasksUpdated,
 }) => {
@@ -35,43 +35,43 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({
     orderBy: { id: "asc" },
   })
 
-  const elementTasks = tasks.filter((task) => task.elementId === element.id)
+  const milestoneTasks = tasks.filter((task) => task.milestoneId === milestone.id)
 
-  const processedTasks = processElementTasks(elementTasks)
+  const processedTasks = processMilestoneTasks(milestoneTasks)
 
   return (
     <div className="flex flex-row justify-center w-full">
       <div className="card bg-base-300 w-1/3 mr-2">
         <div className="card-body">
-          {/* Element name */}
-          <div className="card-title" data-tooltip-id="element-tool">
-            {element.name}
+          {/* Milestone name */}
+          <div className="card-title" data-tooltip-id="milestone-tool">
+            {milestone.name}
           </div>
           <TooltipWrapper
-            id="element-tool"
-            content="Overall element information"
+            id="milestone-tool"
+            content="Overall milestone information"
             className="z-[1099] ourtooltips"
           />
-          {/* Element description */}
-          {element.description}
-          {/* Element last update */}
+          {/* Milestone description */}
+          {milestone.description}
+          {/* Milestone last update */}
           <p className="italic">
-            Last update: <DateFormat date={element.updatedAt}></DateFormat>
+            Last update: <DateFormat date={milestone.updatedAt}></DateFormat>
           </p>
-          {/* Show update element page */}
+          {/* Show update milestone page */}
           <div className="card-actions justify-end">
             <Link
               className="btn btn-primary"
-              href={Routes.EditElementPage({ projectId: projectId!, elementId: element.id })}
+              href={Routes.EditMilestonePage({ projectId: projectId!, milestoneId: milestone.id })}
             >
-              Update Element
+              Update Milestone
             </Link>
 
             <button className="btn btn-secondary" onClick={openModal}>
               Update Tasks
             </button>
             <UpdateTasks
-              elementId={element.id}
+              milestoneId={milestone.id}
               open={isModalOpen}
               onClose={closeModal}
               onTasksUpdated={refetch}
@@ -89,11 +89,11 @@ export const ElementInformation: React.FC<ElementInformationProps> = ({
           </div>
           <TooltipWrapper
             id="tasks-tool"
-            content="Tasks assigned to this element"
+            content="Tasks assigned to this milestone"
             className="z-[1099] ourtooltips"
           />
           <div className="overflow-x-auto">
-            <Table columns={ElementTasksColumns} data={processedTasks} addPagination={true} />
+            <Table columns={MilestoneTasksColumns} data={processedTasks} addPagination={true} />
           </div>
         </div>
       </div>

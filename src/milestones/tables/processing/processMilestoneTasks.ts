@@ -1,7 +1,7 @@
 import { Status } from "db"
 
-// Element task table
-export type ElementTasksData = {
+// Milestone task table
+export type MilestoneTasksData = {
   name: string
   deadline: Date | null
   status: string
@@ -11,7 +11,7 @@ export type ElementTasksData = {
   }
 }
 
-export function processElementTasks(tasks): ElementTasksData[] {
+export function processMilestoneTasks(tasks): MilestoneTasksData[] {
   return tasks.map((task) => ({
     name: task.name,
     deadline: task.deadline,

@@ -1,25 +1,25 @@
 import { useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
-import getElements from "../queries/getElements"
-import ElementItem from "./ElementItem"
+import getMilestones from "../queries/getMilestones"
+import MilestoneItem from "./MilestoneItem"
 import getTasks from "src/tasks/queries/getTasks"
 import PaginationControls from "src/core/components/PaginationControls"
 
-interface ElementsListProps {
+interface MilestonesListProps {
   searchTerm: string
 }
 
 const ITEMS_PER_PAGE = 7
 
-export const ElementsList: React.FC<ElementsListProps> = ({ searchTerm }) => {
+export const MilestoneList: React.FC<MilestonesListProps> = ({ searchTerm }) => {
   // Setup
   const router = useRouter()
   const page = Number(router.query.page) || 0
   const projectId = useParam("projectId", "number")
 
-  // Get elements data
-  const [{ elements, hasMore }] = usePaginatedQuery(getElements, {
+  // Get milestones data
+  const [{ milestones, hasMore }] = usePaginatedQuery(getMilestones, {
     where: {
       project: { id: projectId! },
       OR: [
@@ -57,11 +57,11 @@ export const ElementsList: React.FC<ElementsListProps> = ({ searchTerm }) => {
 
   return (
     <div>
-      {/* Element cards */}
-      {elements.map((element) => (
-        <ElementItem
-          key={element.id}
-          element={element}
+      {/* Milestones cards */}
+      {milestones.map((milestone) => (
+        <MilestoneItem
+          key={milestone.id}
+          milestone={milestone}
           projectId={projectId!}
           tasks={tasks}
           onTasksUpdated={refetch}

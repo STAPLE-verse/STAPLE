@@ -5,7 +5,7 @@ import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextArea
 
 import { z } from "zod"
 
-export function ElementForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function MilestoneForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
     <Form<S> {...props}>
       <LabeledTextField

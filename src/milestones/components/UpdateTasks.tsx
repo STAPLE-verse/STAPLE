@@ -4,11 +4,11 @@ import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import Form from "src/core/components/fields/Form"
 import { Task } from "db"
 import { useMutation } from "@blitzjs/rpc"
-import updateTasksForElement from "src/tasks/mutations/updateTasksForElement"
-import { UpdateTasksForElementFormSchema } from "src/tasks/schemas"
+import { UpdateTasksForMilestoneFormSchema } from "src/tasks/schemas"
+import updateTasksForMilestone from "src/tasks/mutations/updateTasksForMilestone"
 
 type UpdateTasksProps = {
-  elementId: number
+  milestoneId: number
   open: boolean
   onClose: () => void
   onTasksUpdated: () => void
@@ -16,16 +16,16 @@ type UpdateTasksProps = {
 }
 
 const UpdateTasks: React.FC<UpdateTasksProps> = ({
-  elementId,
+  milestoneId,
   open,
   onClose,
   onTasksUpdated,
   tasks,
 }) => {
-  const [updateTasksForElementMutation] = useMutation(updateTasksForElement)
+  const [updateTasksForMilestoneMutation] = useMutation(updateTasksForMilestone)
 
-  // Determine which tasks are already assigned to the element
-  const currentTasks = tasks.filter((task) => task.elementId === elementId)
+  // Determine which tasks are already assigned to the milestone
+  const currentTasks = tasks.filter((task) => task.milestoneId === milestoneId)
 
   const taskOptions = tasks.map((task) => ({
     label: task.name,
@@ -34,8 +34,8 @@ const UpdateTasks: React.FC<UpdateTasksProps> = ({
   }))
 
   const handleSubmit = async (values) => {
-    await updateTasksForElementMutation({
-      elementId: elementId,
+    await updateTasksForMilestoneMutation({
+      milestoneId: milestoneId,
       taskIds: values.selectedTasks,
     })
 
@@ -50,7 +50,7 @@ const UpdateTasks: React.FC<UpdateTasksProps> = ({
         <>
           {taskOptions.length > 0 ? (
             <Form
-              schema={UpdateTasksForElementFormSchema}
+              schema={UpdateTasksForMilestoneFormSchema}
               onSubmit={handleSubmit}
               initialValues={{ selectedTasks: currentTasks.map((task) => task.id) }}
               submitText="Save"

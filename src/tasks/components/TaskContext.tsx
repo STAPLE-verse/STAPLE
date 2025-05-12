@@ -24,7 +24,7 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
   const [task, { refetch: refetchTaskData }] = useQuery(getTask, {
     where: { id: taskId },
     include: {
-      element: true,
+      milestone: true,
       container: true,
       formVersion: true,
       roles: true,

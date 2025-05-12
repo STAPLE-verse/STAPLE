@@ -1,13 +1,13 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { CreateElementSchema } from "../schemas"
+import { CreateMilestoneSchema } from "../schemas"
 
 export default resolver.pipe(
-  resolver.zod(CreateElementSchema),
+  resolver.zod(CreateMilestoneSchema),
   resolver.authorize(),
   async ({ projectId, name, description }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const element = await db.element.create({
+    const milestone = await db.milestone.create({
       data: {
         name,
         description,
@@ -17,6 +17,6 @@ export default resolver.pipe(
       },
     })
 
-    return element
+    return milestone
   }
 )

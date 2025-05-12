@@ -3,12 +3,12 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import DateFormat from "src/core/components/DateFormat"
-import { ElementTasksData } from "../processing/processElementTasks"
+import { MilestoneTasksData } from "../processing/processMilestoneTasks"
 
-const columnHelperElement = createColumnHelper<ElementTasksData>()
+const columnHelperMilestone = createColumnHelper<MilestoneTasksData>()
 
-export const ElementTasksColumns = [
-  columnHelperElement.accessor("name", {
+export const MilestoneTasksColumns = [
+  columnHelperMilestone.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
     enableColumnFilter: true,
@@ -17,7 +17,7 @@ export const ElementTasksColumns = [
       filterVariant: "text",
     },
   }),
-  columnHelperElement.accessor("deadline", {
+  columnHelperMilestone.accessor("deadline", {
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Due Date",
     enableColumnFilter: true,
@@ -26,7 +26,7 @@ export const ElementTasksColumns = [
       filterVariant: "text",
     },
   }),
-  columnHelperElement.accessor("status", {
+  columnHelperMilestone.accessor("status", {
     header: "Completed",
     cell: (info) => <span>{info.getValue()}</span>,
     enableColumnFilter: true,
@@ -35,7 +35,7 @@ export const ElementTasksColumns = [
       filterVariant: "select",
     },
   }),
-  columnHelperElement.accessor("view", {
+  columnHelperMilestone.accessor("view", {
     id: "view",
     header: "View",
     enableColumnFilter: false,

@@ -1,14 +1,11 @@
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
-import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import getColumns from "../queries/getColumns"
-import getElements from "src/elements/queries/getElements"
 import { useQuery } from "@blitzjs/rpc"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
-import DateField from "src/core/components/fields/DateField"
 import { z } from "zod"
 import AddRoleInput from "src/roles/components/AddRoleInput"
 import ToggleModal from "src/core/components/ToggleModal"
@@ -19,6 +16,7 @@ import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManag
 import { useState } from "react"
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
 import CollapseCard from "src/core/components/CollapseCard"
+import getMilestones from "src/milestones/queries/getMilestones"
 
 export type Tag = {
   id: string
@@ -40,8 +38,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     where: { project: { id: projectId! } },
   })
 
-  // Elements
-  const [{ elements: elements }] = useQuery(getElements, {
+  // Milestones
+  const [{ milestones: milestones }] = useQuery(getMilestones, {
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
   })

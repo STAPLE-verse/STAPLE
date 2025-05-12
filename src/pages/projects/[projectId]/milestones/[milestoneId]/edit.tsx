@@ -6,10 +6,10 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 
 import Layout from "src/core/layouts/Layout"
-import { FormElementSchema } from "src/elements/schemas"
-import getElement from "src/elements/queries/getElement"
-import updateElement from "src/elements/mutations/updateElement"
-import { ElementForm } from "src/elements/components/ElementForm"
+import { FormMilestoneSchema } from "src/milestones/schemas"
+import getMilestone from "src/milestones/queries/getMilestone"
+import updateMilestone from "src/milestones/mutations/updateMilestone"
+import { MilestoneForm } from "src/milestones/components/MilestoneForm"
 import { FORM_ERROR } from "final-form"
 
 import toast from "react-hot-toast"
@@ -17,14 +17,14 @@ import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjec
 import { MemberPrivileges } from "db"
 import PageHeader from "src/core/components/PageHeader"
 
-export const EditElement = () => {
-  const [updateElementMutation] = useMutation(updateElement)
+export const EditMilestone = () => {
+  const [updateMilestoneMutation] = useMutation(updateMilestone)
   const router = useRouter()
-  const elementId = useParam("elementId", "number")
+  const milestoneId = useParam("milestoneId", "number")
   const projectId = useParam("projectId", "number")
-  const [element, { setQueryData }] = useQuery(
-    getElement,
-    { id: elementId },
+  const [milestone, { setQueryData }] = useQuery(
+    getMilestone,
+    { id: milestoneId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
@@ -32,34 +32,34 @@ export const EditElement = () => {
   )
 
   const initialValues = {
-    name: element.name,
-    description: element.description,
+    name: milestone.name,
+    description: milestone.description,
   }
 
   return (
     // @ts-expect-error children are clearly passed below
-    <Layout title="Edit Element Page">
+    <Layout title="Edit Milestone Page">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <PageHeader title={`Edit ${element.name}`} />
+        <PageHeader title={`Edit ${milestone.name}`} />
         <Suspense fallback={<div>Loading...</div>}>
-          <ElementForm
-            submitText="Update Element"
-            schema={FormElementSchema}
+          <MilestoneForm
+            submitText="Update Milestone"
+            schema={FormMilestoneSchema}
             initialValues={initialValues}
             onSubmit={async (values) => {
               try {
-                const updated = await updateElementMutation({
-                  id: element.id,
+                const updated = await updateMilestoneMutation({
+                  id: milestone.id,
                   ...values,
                 })
                 await toast.promise(Promise.resolve(updated), {
-                  loading: "Updating element...",
-                  success: "Element updated!",
-                  error: "Failed to update the element...",
+                  loading: "Updating milestone...",
+                  success: "Milestone updated!",
+                  error: "Failed to update the milestone...",
                 })
                 await setQueryData(updated)
                 await router.push(
-                  Routes.ShowElementPage({ projectId: projectId!, elementId: updated.id })
+                  Routes.ShowMilestonePage({ projectId: projectId!, milestoneId: updated.id })
                 )
               } catch (error: any) {
                 console.error(error)
@@ -71,7 +71,7 @@ export const EditElement = () => {
           />
           <Link
             className="btn btn-secondary self-end mt-4"
-            href={Routes.ShowElementPage({ projectId: projectId!, elementId: elementId! })}
+            href={Routes.ShowMilestonePage({ projectId: projectId!, milestoneId: milestoneId! })}
           >
             Cancel
           </Link>
@@ -81,16 +81,16 @@ export const EditElement = () => {
   )
 }
 
-const EditElementPage = () => {
+const EditMilestonePage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <EditElement />
+      <EditMilestone />
     </Suspense>
   )
 }
 
-EditElementPage.authenticate = true
+EditMilestonePage.authenticate = true
 
-export default EditElementPage
+export default EditMilestonePage

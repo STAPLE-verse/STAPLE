@@ -1,5 +1,5 @@
 import ProjectMemberNumber from "../components/widgets/ProjectMemberNumber"
-import ElementSummary from "../components/widgets/ProjectElements"
+import MilestoneSummary from "../components/widgets/ProjectMilestone"
 import FormNumber from "../components/widgets/ProjectForms"
 import RolesSummary from "../components/widgets/ProjectRoles"
 import LastProject from "../components/widgets/MainLastProject"
@@ -41,7 +41,7 @@ export const widgetRegistry = {
     TeamNumber: TeamNumber,
     FormNumber: FormNumber,
     TaskTotal: TaskTotal,
-    ElementSummary: ElementSummary,
+    MilestoneSummary: MilestoneSummary,
     RolesSummary: RolesSummary,
   },
 }
