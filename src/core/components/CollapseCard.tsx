@@ -9,6 +9,7 @@ interface CollapseCardProps {
   tooltipContent?: string
   actions?: ReactNode
   className?: string
+  defaultOpen?: boolean // New prop to control default open state
 }
 
 const CollapseCard = ({
@@ -17,13 +18,14 @@ const CollapseCard = ({
   tooltipContent,
   actions,
   className,
+  defaultOpen,
 }: CollapseCardProps) => {
   // Generate a unique ID if tooltipContent is provided
   const tooltipId = tooltipContent ? uuidv4() : undefined
 
   return (
     <div className={clsx("collapse collapse-arrow bg-base-300 overflow-visible", className)}>
-      <input type="checkbox" data-tooltip-id={tooltipId} />
+      <input type="checkbox" data-tooltip-id={tooltipId} defaultChecked={defaultOpen} />
       <div className="collapse-title text-xl font-medium">
         <div className="card-title">{title}</div>
         {tooltipContent && (

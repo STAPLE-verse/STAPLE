@@ -54,7 +54,7 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: ProjectFormPro
       onSubmit={handleSubmit}
       encType="multipart/form-data"
     >
-      <CollapseCard title="Edit Name and Description" className="mb-4">
+      <CollapseCard title="Edit Name and Description" className="mb-4" defaultOpen={true}>
         <LabeledTextField
           name="name"
           label="Name: (Required)"

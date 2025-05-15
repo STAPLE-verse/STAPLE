@@ -4,11 +4,12 @@ import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import { ProjectFormsColumns } from "../tables/columns/ProjectFormsColumns"
 import { processProjectForms } from "../tables/processing/processProjectForms"
-import { FormVersion, Task } from "db"
+import { FormVersion, Task, TaskLog } from "db"
 import Card from "src/core/components/Card"
 
-export interface TaskWithFormVersion extends Task {
+export interface TaskwithFormandLog extends Task {
   formVersion: FormVersion | null
+  taskLogs: TaskLog[]
 }
 
 export const ProjectFormsList = () => {
@@ -25,12 +26,13 @@ export const ProjectFormsList = () => {
     },
     include: {
       formVersion: true, // Include formVersion relation
+      taskLogs: true,
     },
     orderBy: { id: "asc" },
   })
 
-  const projectFormsTableData = processProjectForms(tasks as TaskWithFormVersion[])
-
+  const projectFormsTableData = processProjectForms(tasks as TaskwithFormandLog[])
+  console.log(tasks)
   return (
     <Card title="">
       <Table data={projectFormsTableData} columns={ProjectFormsColumns} addPagination={true} />

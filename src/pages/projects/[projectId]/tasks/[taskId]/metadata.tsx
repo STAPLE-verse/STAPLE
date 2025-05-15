@@ -35,7 +35,7 @@ const MetadataContent = () => {
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         {/* Header */}
         <h1 className="flex justify-center items-center gap-2 text-3xl">
-          Form Data for {task.name}
+          Form Data: <span className="italic">{task.name}</span>
           <InformationCircleIcon
             className="h-5 w-5 stroke-2 text-info"
             data-tooltip-id="form-select-tooltip"
