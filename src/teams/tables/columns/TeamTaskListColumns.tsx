@@ -4,6 +4,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { TeamTaskListData } from "../processing/processTeamTaskList"
 import { ApproveDropdown } from "src/tasklogs/components/ApproveTask"
+import AssignmentHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
 
 const columnHelper = createColumnHelper<TeamTaskListData>()
 
@@ -24,10 +25,16 @@ export const TeamTaskListColumns = [
     id: "roles",
   }),
   // change this to task history
-  columnHelper.accessor("latestUpdate", {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Latest Update",
-    id: "lastestUpdate",
+  columnHelper.accessor("taskHistory", {
+    cell: (info) => (
+      <AssignmentHistoryModal
+        taskLogs={info.row.original.taskHistory}
+        schema={info.row.original.taskHistory.schema}
+        ui={info.row.original.taskHistory.ui}
+      />
+    ),
+    header: "Task History",
+    id: "taskHistory",
   }),
   // add approval for latest log
   columnHelper.accessor("approved", {

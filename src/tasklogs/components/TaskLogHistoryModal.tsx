@@ -1,7 +1,7 @@
 import Table from "src/core/components/Table"
 import { Prisma } from "@prisma/client"
 import { processTaskLogHistory } from "src/tasklogs/tables/processing/processTaskLogs"
-import { ExtendedTaskLog } from "src/core/types"
+import { TaskLogCompletedBy } from "src/core/types"
 import { TaskLogHistoryFormColumns } from "../tables/columns/TaskLogHistoryFormColumns"
 import { TaskLogHistoryCompleteColumns } from "../tables/columns/TaskLogHistoryCompleteColumns"
 import ToggleModal from "src/core/components/ToggleModal"
@@ -9,17 +9,23 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 
 type AssignmentHistoryModalProps = {
-  taskLogs: ExtendedTaskLog[]
+  taskLogs: TaskLogCompletedBy[]
   schema?: Prisma.JsonValue
   ui?: Prisma.JsonValue
+  isModalOpen: boolean // New prop to track modal open state
 }
-export const AssignmentHistoryModal = ({ taskLogs, schema, ui }: AssignmentHistoryModalProps) => {
+
+export const AssignmentHistoryModal = ({
+  taskLogs,
+  schema,
+  ui,
+  isModalOpen,
+}: AssignmentHistoryModalProps) => {
   const processedAssignmentHistory = processTaskLogHistory(taskLogs, schema, ui)
-  console.log(taskLogs)
-  // get name
-  // get task name
+
   return (
     <ToggleModal
+      key={isModalOpen ? "open" : "closed"}
       buttonLabel="Show History"
       modalTitle={
         <div className="flex justify-center items-center">

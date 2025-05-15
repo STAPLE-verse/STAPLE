@@ -1,5 +1,6 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { ProcessedTaskLogHistory } from "../processing/processTaskLogs"
+import { ApproveDropdown } from "src/tasklogs/components/ApproveTask"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedTaskLogHistory>()
@@ -22,7 +23,13 @@ export const TaskLogHistoryCompleteColumns: ColumnDef<ProcessedTaskLogHistory>[]
     id: "status",
   }),
   columnHelper.accessor("approved", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => (
+      <ApproveDropdown
+        value={info.getValue()}
+        onChange={(newValue) => {}}
+        taskLogId={info.row.original.id}
+      />
+    ),
     header: "Approved",
     id: "approved",
   }),

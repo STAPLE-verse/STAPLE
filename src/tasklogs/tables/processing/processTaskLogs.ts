@@ -1,5 +1,5 @@
 import { getContributorName } from "src/core/utils/getName"
-import { ExtendedTaskLog } from "src/core/types"
+import { ExtendedTaskLog, TaskLogCompletedBy } from "src/core/types"
 import { Prisma } from "@prisma/client"
 import { ProjectMemberWithTaskLog } from "src/core/types"
 import { filterLatestTaskLog } from "../../utils/filterLatestTaskLog"
@@ -120,9 +120,11 @@ export function processTeamTaskLogs(
 }
 
 export type ProcessedTaskLogHistory = {
+  id: number
   projectMemberName: string
   lastUpdate: string
   status: string
+  approved: boolean | null
   formData?: {
     metadata: Prisma.JsonValue
     schema: Prisma.JsonValue
@@ -131,12 +133,13 @@ export type ProcessedTaskLogHistory = {
 }
 
 export function processTaskLogHistory(
-  taskLogs: ExtendedTaskLog[],
+  taskLogs: TaskLogCompletedBy[],
   schema?: any,
   ui?: any
 ): ProcessedTaskLogHistory[] {
   return taskLogs.map((taskLog) => {
     const processedData: ProcessedTaskLogHistory = {
+      id: taskLog.id,
       projectMemberName: taskLog.completedBy
         ? getContributorName(taskLog.completedBy)
         : "Task created",
@@ -150,6 +153,7 @@ export function processTaskLogHistory(
         hour12: false,
       }),
       status: taskLog.status === "COMPLETED" ? "Completed" : "Not Completed",
+      approved: taskLog.approved,
     }
 
     if (schema && ui) {

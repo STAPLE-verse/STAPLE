@@ -108,6 +108,10 @@ export type ExtendedTaskLog = TaskLog & {
   assignedTo: ExtendedProjectMember
 }
 
+export type TaskLogCompletedBy = TaskLog & {
+  completedBy: ExtendedProjectMember
+}
+
 export type ProjectMemberWithTaskLog = ProjectMember & {
   taskLogAssignedTo: ExtendedTaskLog[]
   users: Pick<User, "id" | "username">[]

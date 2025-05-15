@@ -1,5 +1,5 @@
 import { getContributorName } from "src/core/utils/getName"
-import { TaskLogWithTaskCompleted } from "src/core/types"
+import { ExtendedTaskLog, TaskLogWithTaskCompleted } from "src/core/types"
 
 export type TeamTaskListData = {
   id: number
@@ -11,12 +11,15 @@ export type TeamTaskListData = {
   projectId: number
   deadline: Date | null
   approved: Boolean | null
+  taskHistory: ExtendedTaskLog & { schema: any; ui: any } // Corrected taskHistory type to include schema and ui
 }
 
 // Adjusted processor function for team task list
 export function processTeamTaskList(
   taskLogs: TaskLogWithTaskCompleted[],
-  locale: string
+  locale: string,
+  schema: any,
+  ui: any
 ): TeamTaskListData[] {
   const userMap: { [key: number]: string } = {}
 
@@ -33,7 +36,6 @@ export function processTeamTaskList(
   // Transform tasks into the desired table format
   return taskLogs.map((taskLog) => {
     const task = taskLog.task
-    console.log("Processing taskLog:", taskLog)
     return {
       id: task.id,
       completedBy: userMap[taskLog.completedBy?.id] || "Not Completed",
@@ -55,6 +57,7 @@ export function processTeamTaskList(
       projectId: task.projectId,
       deadline: task.deadline,
       approved: taskLog.approved,
+      taskHistory: { ...taskLog, schema, ui }, // Include schema and ui in taskHistory
     }
   })
 }
