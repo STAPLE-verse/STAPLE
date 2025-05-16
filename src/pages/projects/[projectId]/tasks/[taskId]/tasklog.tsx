@@ -1,7 +1,7 @@
 import { Suspense, useState } from "react"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
-import { Routes } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import { TaskLogCompleteColumns } from "src/tasklogs/tables/columns/TaskLogCompleteColumns"
 import Table from "src/core/components/Table"
@@ -20,6 +20,8 @@ import { filterFirstTaskLog } from "src/tasklogs/utils/filterFirstTaskLog"
 import { useQuery } from "@blitzjs/rpc"
 import getComments from "src/comments/queries/getComments"
 import Modal from "src/core/components/Modal"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
+import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
 const TaskLogSection = ({ title, data, columns, fallbackMessage }: any) => (
   <Card title={title} className="w-full overflow-x-auto">
@@ -34,6 +36,9 @@ const TaskLogSection = ({ title, data, columns, fallbackMessage }: any) => (
 const TaskLogContent = () => {
   // Get values
   const { task, projectMembers } = useTaskContext()
+  const projectId = useParam("projectId", "number")
+  const { projectMember: currentContributor } = useCurrentContributor(projectId)
+
   const { individualProjectMembers, teamProjectMembers } =
     useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
 
@@ -54,9 +59,15 @@ const TaskLogContent = () => {
   const processedIndividualAssignments = processIndividualTaskLogs(
     individualProjectMembers,
     comments,
-    task.name
+    task.name,
+    currentContributor!.id
   )
-  const processedTeamAssignments = processTeamTaskLogs(teamProjectMembers, comments, task.name)
+  const processedTeamAssignments = processTeamTaskLogs(
+    teamProjectMembers,
+    comments,
+    task.name,
+    currentContributor!.id
+  )
 
   // Get columns definitions for tables
   const individualColumns = task.formVersionId ? TaskLogFormColumns : TaskLogCompleteColumns
@@ -88,10 +99,16 @@ const TaskLogContent = () => {
                 Task Description
               </h2>
               <p className="whitespace-pre-wrap">
-                Description: {task.description ? task.description : "None Provided"}
+                Description:{" "}
+                {task.description ? (
+                  task.description
+                ) : (
+                  <span className="italic">None Provided</span>
+                )}
               </p>
               <p className="whitespace-pre-wrap">
-                Due Date: {task.deadline ? task.deadline : "None Provided"}
+                Due Date:{" "}
+                {task.deadline ? task.deadline : <span className="italic">None Provided</span>}
               </p>
               <div className="flex justify-end mt-4">
                 <button className="btn btn-primary" onClick={() => setOpenModal(false)}>

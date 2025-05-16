@@ -19,12 +19,14 @@ export type ProcessedIndividualTaskLog = {
   teamId?: number
   deletedTeam?: string
   taskName: string
+  newCommentsCount?: number
 }
 
 export function processIndividualTaskLogs(
   projectMembers: ProjectMemberWithTaskLog[],
   comments: CommentWithAuthor[],
-  taskName: string
+  taskName: string,
+  currentContributor: number
 ): ProcessedIndividualTaskLog[] {
   return projectMembers.map((projectMember) => {
     const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
@@ -53,6 +55,12 @@ export function processIndividualTaskLogs(
       taskLog: latestLog,
       firstLogId: firstLog?.id,
       comments: taskLogComments,
+      newCommentsCount:
+        taskLogComments?.filter((comment) =>
+          comment.commentReadStatus?.some(
+            (status) => status.projectMemberId === currentContributor && !status.read
+          )
+        ).length ?? 0,
       contributorId: projectMember.id,
       projectId: projectMember.projectId,
       type: "Individual",
@@ -71,12 +79,14 @@ export type ProcessedTeamTaskLog = {
   comments: CommentWithAuthor[]
   type: string
   taskName: string
+  newCommentsCount?: number
 }
 
 export function processTeamTaskLogs(
   projectMembers: ProjectMemberWithTaskLog[],
   comments: CommentWithAuthor[],
-  taskName: string
+  taskName: string,
+  currentContributor: number
 ): ProcessedTeamTaskLog[] {
   return projectMembers.map((projectMember) => {
     // Function fails if does not receive assignment data for teams
@@ -113,6 +123,12 @@ export function processTeamTaskLogs(
       users: projectMember.users,
       firstLogId: firstLog?.id,
       comments: taskLogComments,
+      newCommentsCount:
+        taskLogComments?.filter((comment) =>
+          comment.commentReadStatus?.some(
+            (status) => status.projectMemberId === currentContributor && !status.read
+          )
+        ).length ?? 0,
       type: "Team",
       taskName: taskName,
     }

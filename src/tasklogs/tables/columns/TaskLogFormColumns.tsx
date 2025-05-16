@@ -8,6 +8,7 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { ShowTeamModal } from "src/teams/components/ShowTeamModal"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
+import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedIndividualTaskLog>()
@@ -79,20 +80,37 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
   columnHelper.accessor("firstLogId", {
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => (
-      <ToggleModal
-        buttonLabel={"Open"}
-        modalTitle={
-          <>
-            <span>Comments:</span>
-            <span className="italic ml-1">{info.row.original.taskName}</span>
-          </>
-        }
-        buttonClassName="w-2/3"
-      >
-        <ChatBox taskLogId={info.getValue()!} initialComments={info.row.original.comments} />
-      </ToggleModal>
-    ),
+    cell: (info) => {
+      const hasNewComments = (info.row.original.newCommentsCount ?? 0) > 0
+      return (
+        <div className="flex">
+          <ToggleModal
+            buttonLabel={
+              <div className="relative">
+                <ChatBubbleOvalLeftEllipsisIcon
+                  className={`h-7 w-7 ${hasNewComments ? "text-primary" : "opacity-30"}`}
+                  aria-hidden="true"
+                />
+                {hasNewComments && (
+                  <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white">
+                    {info.row.original.newCommentsCount}
+                  </div>
+                )}
+              </div>
+            }
+            modalTitle={
+              <>
+                <span>Comments:</span>
+                <span className="italic ml-1">{info.row.original.taskName}</span>
+              </>
+            }
+            buttonClassName="btn-ghost"
+          >
+            <ChatBox taskLogId={info.getValue()!} initialComments={info.row.original.comments} />
+          </ToggleModal>
+        </div>
+      )
+    },
     header: "Comments",
     id: "chat",
   }),

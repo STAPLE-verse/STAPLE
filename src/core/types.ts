@@ -9,6 +9,7 @@ import {
   KanbanBoard,
   FormVersion,
   Element,
+  CommentReadStatus,
 } from "db"
 import { ReactNode } from "react"
 
@@ -85,6 +86,7 @@ export type CommentWithAuthor = Comment & {
   author: ProjectMember & {
     users: Pick<User, "id" | "username" | "firstName" | "lastName">[]
   }
+  commentReadStatus: CommentReadStatus[]
 }
 
 export type ProjectMemberWithUsersAndRoles = ProjectMember & {
