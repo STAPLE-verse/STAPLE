@@ -65,7 +65,7 @@ const TaskLogContent = () => {
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full">
       <h1 className="text-3xl flex justify-center items-center gap-2 mb-2">
-        Review Responses: <span className="truncate max-w-xs italic">{task.name}</span>
+        Edit Responses: <span className="truncate max-w-xs italic">{task.name}</span>
         <InformationCircleIcon
           className="h-5 w-5 stroke-2 text-info"
           data-tooltip-id="tasklog-review-tooltip"
@@ -80,23 +80,19 @@ const TaskLogContent = () => {
       <div className="flex flex-row justify-center gap-2 mt-2 mb-2">
         <>
           <button className="btn btn-primary" onClick={() => setOpenModal(true)}>
-            Review Description
+            Task Description
           </button>
           <Modal open={openModal} size="large">
             <div className="flex flex-col">
               <h2 className="text-2xl font-bold flex gap-2 justify-center items-center mb-4">
                 Task Description
-                <InformationCircleIcon
-                  className="h-5 w-5 stroke-2 text-info"
-                  data-tooltip-id="task-description-tooltip"
-                />
-                <Tooltip
-                  id="task-description-tooltip"
-                  content="Use this button to review the description for the task."
-                  className="z-[1099] ourtooltips"
-                />
               </h2>
-              <p className="whitespace-pre-wrap">{task.description}</p>
+              <p className="whitespace-pre-wrap">
+                Description: {task.description ? task.description : "None Provided"}
+              </p>
+              <p className="whitespace-pre-wrap">
+                Due Date: {task.deadline ? task.deadline : "None Provided"}
+              </p>
               <div className="flex justify-end mt-4">
                 <button className="btn btn-primary" onClick={() => setOpenModal(false)}>
                   Close

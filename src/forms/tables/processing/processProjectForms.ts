@@ -1,10 +1,5 @@
 import { TaskwithFormandLog } from "src/forms/components/ProjectFormsList"
 import { Prisma, TaskLog } from "db"
-import { useQuery } from "@blitzjs/rpc"
-import { TaskLogWithTask } from "src/core/types"
-import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
-import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
-import { completedFormPercentage } from "src/widgets/utils/completedFormPercentage"
 
 export type ProjectFormData = {
   taskName: string
@@ -14,6 +9,7 @@ export type ProjectFormData = {
   formUi: Prisma.JsonValue
   formSchema: Prisma.JsonValue
   percentComplete: number
+  percentApproved: number
 }
 
 export function processProjectForms(tasks: TaskwithFormandLog[]): ProjectFormData[] {
@@ -31,6 +27,12 @@ export function processProjectForms(tasks: TaskwithFormandLog[]): ProjectFormDat
     const completedCount = latestLogs.filter((log) => log.status === "COMPLETED").length
     const formPercent = totalAssigned > 0 ? Math.round((completedCount / totalAssigned) * 100) : 0
 
+    const approvedCount = latestLogs.filter(
+      (log) => log.status === "COMPLETED" && log.approved === true
+    ).length
+    const percentApproved =
+      completedCount > 0 ? Math.round((approvedCount / completedCount) * 100) : 0
+
     return {
       taskName: task.name,
       formName: task.formVersion ? task.formVersion.name : "Unknown",
@@ -39,6 +41,7 @@ export function processProjectForms(tasks: TaskwithFormandLog[]): ProjectFormDat
       formUi: task.formVersion?.uiSchema || {},
       formSchema: task.formVersion?.schema || {},
       percentComplete: formPercent,
+      percentApproved: percentApproved,
     }
   })
 }
