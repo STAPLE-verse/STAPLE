@@ -12,6 +12,7 @@ import InformationCircleIcon from "@heroicons/react/24/outline/InformationCircle
 import { Tooltip } from "react-tooltip"
 import { Tab } from "@headlessui/react"
 import classNames from "classnames"
+import GanttChart from "src/milestones/components/GanttChart"
 
 const Milestones = () => {
   const projectId = useParam("projectId", "number")
@@ -81,11 +82,9 @@ const Milestones = () => {
                 >
                   Create Milestone
                 </Link>
-                {selectedIndex === 0 && (
-                  <div className="ml-2">
-                    <SearchButton onChange={handleSearch} />
-                  </div>
-                )}
+                <div className="ml-2">
+                  <SearchButton onChange={handleSearch} />
+                </div>
               </div>
             </div>
 
@@ -95,7 +94,9 @@ const Milestones = () => {
                 <MilestoneList searchTerm={searchTerm} />
               </Tab.Panel>
               {/* Tabpanel for gantt chart */}
-              <Tab.Panel unmount={false}></Tab.Panel>
+              <Tab.Panel unmount={false}>
+                <GanttChart projectId={projectId!} />
+              </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
         </div>

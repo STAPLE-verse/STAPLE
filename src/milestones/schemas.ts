@@ -1,3 +1,5 @@
+import { start } from "repl"
+import { e } from "vitest/dist/index-9f5bc072"
 import { z } from "zod"
 
 export const FormMilestoneSchema = z.object({
@@ -17,7 +19,15 @@ export const UpdateMilestoneSchema = z.object({
   id: z.number(),
   name: z.string(),
   description: z.string().optional().nullable(),
+  startDate: z.date().optional().nullable(),
+  endDate: z.date().optional().nullable(),
   // template: __fieldName__: z.__zodType__(),
+})
+
+export const UpdateMilestoneDatesSchema = z.object({
+  id: z.number(),
+  startDate: z.date().optional(),
+  endDate: z.date().optional(),
 })
 
 export const DeleteMilestoneSchema = z.object({

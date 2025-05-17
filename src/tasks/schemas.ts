@@ -60,6 +60,7 @@ export const UpdateTaskSchema = z.object({
   formVersionId: z.number().optional().nullable(),
   deadline: z.date().optional().nullable(),
   rolesId: z.array(z.number()).optional().nullable(),
+  startDate: z.date().optional().nullable(),
   tags: z
     .array(
       z.object({
@@ -121,4 +122,10 @@ export const DeleteColumnSchema = z.object({
 export const UpdateColumnSchema = z.object({
   id: z.number(),
   name: z.string().min(1),
+})
+
+export const UpdateTaskDatesSchema = z.object({
+  id: z.number(),
+  startDate: z.date().optional(),
+  deadline: z.date().optional(),
 })

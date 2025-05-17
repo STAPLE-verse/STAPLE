@@ -150,3 +150,7 @@ export type BreadcrumbItem = {
   isLast: boolean
   isValid: boolean
 }
+
+export type MilestoneWithTasks = Milestone & {
+  task: Task[]
+}
