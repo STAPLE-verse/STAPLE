@@ -62,7 +62,8 @@ const TaskLogContent = () => {
     currentContributor!.id,
     task.formVersion?.schema,
     task.formVersion?.uiSchema,
-    refetchComments
+    refetchComments,
+    task.deadline
   )
   const processedTeamAssignments = processTeamTaskLogs(
     teamProjectMembers,
@@ -71,7 +72,8 @@ const TaskLogContent = () => {
     currentContributor!.id,
     task.formVersion?.schema,
     task.formVersion?.uiSchema,
-    refetchComments
+    refetchComments,
+    task.deadline
   )
 
   // Get columns definitions for tables

@@ -8,7 +8,7 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { ShowTeamModal } from "src/teams/components/ShowTeamModal"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
-import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
+import { ChatBubbleOvalLeftEllipsisIcon, HandRaisedIcon } from "@heroicons/react/24/outline"
 import TaskLogHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
 
 // Column helper
@@ -59,7 +59,19 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
   }),
 
   columnHelper.accessor("lastUpdate", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => {
+      const isOverdue = info.row.original.overdue
+      return (
+        <div className="flex items-center gap-1">
+          {isOverdue && (
+            <span className="text-error" title="Overdue">
+              <HandRaisedIcon className="h-5 w-5 inline-block" />
+            </span>
+          )}
+          <span>{info.getValue()}</span>
+        </div>
+      )
+    },
     header: "Last Update",
     id: "updatedAt",
   }),

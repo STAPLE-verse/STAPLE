@@ -24,6 +24,7 @@ export type ProcessedIndividualTaskLog = {
   schema?: Prisma.JsonValue | undefined
   ui?: Prisma.JsonValue | undefined
   refetchComments?: () => void
+  overdue?: boolean
 }
 
 export function processIndividualTaskLogs(
@@ -33,13 +34,20 @@ export function processIndividualTaskLogs(
   currentContributor: number,
   schema?: Prisma.JsonValue | undefined,
   ui?: Prisma.JsonValue | undefined,
-  refetchComments?: () => void
+  refetchComments?: () => void,
+  deadline?: Date | null
 ): ProcessedIndividualTaskLog[] {
   return projectMembers.map((projectMember) => {
     const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
     const firstLog = filterFirstTaskLog(projectMember.taskLogAssignedTo)
     // Find comments for this taskLog
     const taskLogComments = comments.filter((c) => c.taskLogId === firstLog?.id)
+
+    const overdue =
+      deadline instanceof Date &&
+      latestLog &&
+      latestLog.status !== "COMPLETED" &&
+      deadline.getTime() < latestLog.createdAt.getTime()
 
     return {
       projectMemberName: getContributorName(projectMember),
@@ -76,6 +84,7 @@ export function processIndividualTaskLogs(
       schema: schema,
       ui: ui,
       refetchComments: refetchComments,
+      overdue,
     }
   })
 }
@@ -95,6 +104,7 @@ export type ProcessedTeamTaskLog = {
   schema?: Prisma.JsonValue | undefined
   ui?: Prisma.JsonValue | undefined
   refetchComments?: () => void
+  overdue?: boolean
 }
 
 export function processTeamTaskLogs(
@@ -104,7 +114,8 @@ export function processTeamTaskLogs(
   currentContributor: number,
   schema?: Prisma.JsonValue | undefined,
   ui?: Prisma.JsonValue | undefined,
-  refetchComments?: () => void
+  refetchComments?: () => void,
+  deadline?: Date | null
 ): ProcessedTeamTaskLog[] {
   return projectMembers.map((projectMember) => {
     // Function fails if does not receive assignment data for teams
@@ -117,6 +128,12 @@ export function processTeamTaskLogs(
 
     // Find comments for this team's task log
     const taskLogComments = comments.filter((c) => c.taskLogId === firstLog?.id)
+
+    const overdue =
+      deadline instanceof Date &&
+      latestLog &&
+      latestLog.status !== "COMPLETED" &&
+      deadline.getTime() < latestLog.createdAt.getTime()
 
     return {
       teamId: projectMember.id,
@@ -153,6 +170,7 @@ export function processTeamTaskLogs(
       schema: schema,
       ui: ui,
       refetchComments: refetchComments,
+      overdue,
     }
   })
 }
