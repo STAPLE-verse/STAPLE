@@ -19,7 +19,7 @@ const Modal = ({ children, open, size = "max-w-lg" }: Props) => {
     >
       <div
         className={cn(
-          "flex justify-center bg-base-100 p-4 rounded-lg shadow-lg relative max-w-lg w-full md:max-w-3xl max-h-[90vh] overflow-y-auto",
+          "flex justify-center bg-base-100 p-4 rounded-lg shadow-lg relative max-w-lg w-full md:max-w-4xl max-h-[90vh] overflow-y-auto",
           size
         )}
       >

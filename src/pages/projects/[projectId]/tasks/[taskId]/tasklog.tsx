@@ -20,7 +20,6 @@ import { filterFirstTaskLog } from "src/tasklogs/utils/filterFirstTaskLog"
 import { useQuery } from "@blitzjs/rpc"
 import getComments from "src/comments/queries/getComments"
 import Modal from "src/core/components/Modal"
-import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
 const TaskLogSection = ({ title, data, columns, fallbackMessage }: any) => (
@@ -60,13 +59,17 @@ const TaskLogContent = () => {
     individualProjectMembers,
     comments,
     task.name,
-    currentContributor!.id
+    currentContributor!.id,
+    task.formVersion?.schema,
+    task.formVersion?.uiSchema
   )
   const processedTeamAssignments = processTeamTaskLogs(
     teamProjectMembers,
     comments,
     task.name,
-    currentContributor!.id
+    currentContributor!.id,
+    task.formVersion?.schema,
+    task.formVersion?.uiSchema
   )
 
   // Get columns definitions for tables

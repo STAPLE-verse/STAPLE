@@ -1,6 +1,6 @@
 import { getContributorName } from "src/core/utils/getName"
 import { ExtendedTaskLog, TaskLogCompletedBy } from "src/core/types"
-import { Prisma } from "@prisma/client"
+import { Prisma, TaskLog } from "@prisma/client"
 import { ProjectMemberWithTaskLog } from "src/core/types"
 import { filterLatestTaskLog } from "../../utils/filterLatestTaskLog"
 import { filterFirstTaskLog } from "src/tasklogs/utils/filterFirstTaskLog"
@@ -20,13 +20,18 @@ export type ProcessedIndividualTaskLog = {
   deletedTeam?: string
   taskName: string
   newCommentsCount?: number
+  taskHistory?: ExtendedTaskLog[]
+  schema?: Prisma.JsonValue | undefined
+  ui?: Prisma.JsonValue | undefined
 }
 
 export function processIndividualTaskLogs(
   projectMembers: ProjectMemberWithTaskLog[],
   comments: CommentWithAuthor[],
   taskName: string,
-  currentContributor: number
+  currentContributor: number,
+  schema?: Prisma.JsonValue | undefined,
+  ui?: Prisma.JsonValue | undefined
 ): ProcessedIndividualTaskLog[] {
   return projectMembers.map((projectMember) => {
     const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
@@ -65,6 +70,9 @@ export function processIndividualTaskLogs(
       projectId: projectMember.projectId,
       type: "Individual",
       taskName: taskName,
+      taskHistory: projectMember.taskLogAssignedTo,
+      schema: schema,
+      ui: ui,
     }
   })
 }
@@ -80,13 +88,18 @@ export type ProcessedTeamTaskLog = {
   type: string
   taskName: string
   newCommentsCount?: number
+  taskHistory?: ExtendedTaskLog[]
+  schema?: Prisma.JsonValue | undefined
+  ui?: Prisma.JsonValue | undefined
 }
 
 export function processTeamTaskLogs(
   projectMembers: ProjectMemberWithTaskLog[],
   comments: CommentWithAuthor[],
   taskName: string,
-  currentContributor: number
+  currentContributor: number,
+  schema?: Prisma.JsonValue | undefined,
+  ui?: Prisma.JsonValue | undefined
 ): ProcessedTeamTaskLog[] {
   return projectMembers.map((projectMember) => {
     // Function fails if does not receive assignment data for teams
@@ -131,6 +144,9 @@ export function processTeamTaskLogs(
         ).length ?? 0,
       type: "Team",
       taskName: taskName,
+      taskHistory: projectMember.taskLogAssignedTo,
+      schema: schema,
+      ui: ui,
     }
   })
 }

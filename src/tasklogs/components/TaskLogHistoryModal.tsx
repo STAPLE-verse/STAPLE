@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"
 import Table from "src/core/components/Table"
 import { Prisma } from "@prisma/client"
 import { processTaskLogHistory } from "src/tasklogs/tables/processing/processTaskLogs"
@@ -7,25 +8,37 @@ import { TaskLogHistoryCompleteColumns } from "../tables/columns/TaskLogHistoryC
 import ToggleModal from "src/core/components/ToggleModal"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import { useTaskContext } from "src/tasks/components/TaskContext"
 
-type AssignmentHistoryModalProps = {
+type TaskLogHistoryModalProps = {
   taskLogs: TaskLogCompletedBy[]
   schema?: Prisma.JsonValue
   ui?: Prisma.JsonValue
-  isModalOpen: boolean // New prop to track modal open state
 }
 
-export const AssignmentHistoryModal = ({
-  taskLogs,
-  schema,
-  ui,
-  isModalOpen,
-}: AssignmentHistoryModalProps) => {
-  const processedAssignmentHistory = processTaskLogHistory(taskLogs, schema, ui)
+export const TaskLogHistoryModal = ({ taskLogs, schema, ui }: TaskLogHistoryModalProps) => {
+  const [internalTaskLogHistory, setInternalTaskLogHistory] = useState(
+    processTaskLogHistory(taskLogs, schema, ui)
+  )
+
+  let refetchTaskData: (() => Promise<void>) | undefined = undefined
+  try {
+    const context = useTaskContext()
+    if (context.refetchTaskData) {
+      refetchTaskData = async () => {
+        await context.refetchTaskData()
+      }
+    }
+  } catch (e) {
+    // context not available
+  }
+
+  useEffect(() => {
+    setInternalTaskLogHistory(processTaskLogHistory(taskLogs, schema, ui))
+  }, [taskLogs, schema, ui])
 
   return (
     <ToggleModal
-      key={isModalOpen ? "open" : "closed"}
       buttonLabel="Show History"
       modalTitle={
         <div className="flex justify-center items-center">
@@ -41,12 +54,17 @@ export const AssignmentHistoryModal = ({
           />
         </div>
       }
-      modalSize="w-11/12 max-w-3xl"
+      onOpen={async () => {
+        if (refetchTaskData) {
+          await refetchTaskData()
+        }
+        setInternalTaskLogHistory(processTaskLogHistory(taskLogs, schema, ui))
+      }}
     >
       <div className="modal-action flex flex-col">
         <Table
           columns={schema && ui ? TaskLogHistoryFormColumns : TaskLogHistoryCompleteColumns}
-          data={processedAssignmentHistory}
+          data={internalTaskLogHistory}
           classNames={{
             thead: "text-base",
             tbody: "text-base",
@@ -58,4 +76,4 @@ export const AssignmentHistoryModal = ({
   )
 }
 
-export default AssignmentHistoryModal
+export default TaskLogHistoryModal

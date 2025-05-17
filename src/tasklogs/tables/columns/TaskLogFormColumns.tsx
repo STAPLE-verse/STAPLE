@@ -9,6 +9,7 @@ import { Routes } from "@blitzjs/next"
 import { ShowTeamModal } from "src/teams/components/ShowTeamModal"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
 import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
+import TaskLogHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedIndividualTaskLog>()
@@ -71,6 +72,21 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
     meta: {
       filterVariant: "select",
     },
+  }),
+  columnHelper.accessor("taskHistory", {
+    cell: (info) => {
+      return (
+        <TaskLogHistoryModal
+          taskLogs={info.row.original.taskHistory ?? []}
+          schema={info.row.original.schema}
+          ui={info.row.original.ui}
+        />
+      )
+    },
+    header: "History",
+    id: "history",
+    enableColumnFilter: false,
+    enableSorting: false,
   }),
   columnHelper.accessor("taskLog", {
     cell: (info) => <TaskLogSchemaModal taskLog={info.getValue()} />,

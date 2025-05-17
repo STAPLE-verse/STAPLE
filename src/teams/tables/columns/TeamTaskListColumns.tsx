@@ -4,7 +4,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { TeamTaskListData } from "../processing/processTeamTaskList"
 import { ApproveDropdown } from "src/tasklogs/components/ApproveTask"
-import AssignmentHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
+import TaskLogHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
 
 const columnHelper = createColumnHelper<TeamTaskListData>()
 
@@ -27,7 +27,7 @@ export const TeamTaskListColumns = [
   // change this to task history
   columnHelper.accessor("taskHistory", {
     cell: (info) => (
-      <AssignmentHistoryModal
+      <TaskLogHistoryModal
         taskLogs={info.row.original.taskHistory}
         schema={info.row.original.taskHistory.schema}
         ui={info.row.original.taskHistory.ui}
