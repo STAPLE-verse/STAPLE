@@ -139,7 +139,7 @@ export default resolver.pipe(
       data: relevantProjectMembers.map((member) => ({
         commentId: comment.id,
         projectMemberId: member.id,
-        read: false,
+        read: member.id === projectMemberId,
       })),
     })
 

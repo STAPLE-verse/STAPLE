@@ -9,11 +9,13 @@ import { useCurrentContributor } from "src/contributors/hooks/useCurrentContribu
 interface ChatBoxProps {
   initialComments?: CommentWithAuthor[]
   taskLogId: number
+  refetchComments?: () => void
 }
 
 export default function ChatBox({
   initialComments = [], // Ensure default value as empty array
   taskLogId,
+  refetchComments,
 }: ChatBoxProps) {
   const [comments, setComments] = useState<CommentWithAuthor[]>(initialComments)
   const [newComment, setNewComment] = useState("")
@@ -40,6 +42,7 @@ export default function ChatBox({
       })
       setComments((prev) => [...prev, createdComment]) // Update state directly
       setNewComment("") // Clear input field
+      if (refetchComments) refetchComments() // Trigger refresh
     } catch (error) {
       console.error("Failed to send comment:", error)
     }

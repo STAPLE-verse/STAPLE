@@ -23,6 +23,7 @@ export type ProcessedIndividualTaskLog = {
   taskHistory?: ExtendedTaskLog[]
   schema?: Prisma.JsonValue | undefined
   ui?: Prisma.JsonValue | undefined
+  refetchComments?: () => void
 }
 
 export function processIndividualTaskLogs(
@@ -31,7 +32,8 @@ export function processIndividualTaskLogs(
   taskName: string,
   currentContributor: number,
   schema?: Prisma.JsonValue | undefined,
-  ui?: Prisma.JsonValue | undefined
+  ui?: Prisma.JsonValue | undefined,
+  refetchComments?: () => void
 ): ProcessedIndividualTaskLog[] {
   return projectMembers.map((projectMember) => {
     const latestLog = filterLatestTaskLog(projectMember.taskLogAssignedTo)
@@ -73,6 +75,7 @@ export function processIndividualTaskLogs(
       taskHistory: projectMember.taskLogAssignedTo,
       schema: schema,
       ui: ui,
+      refetchComments: refetchComments,
     }
   })
 }
@@ -91,6 +94,7 @@ export type ProcessedTeamTaskLog = {
   taskHistory?: ExtendedTaskLog[]
   schema?: Prisma.JsonValue | undefined
   ui?: Prisma.JsonValue | undefined
+  refetchComments?: () => void
 }
 
 export function processTeamTaskLogs(
@@ -99,7 +103,8 @@ export function processTeamTaskLogs(
   taskName: string,
   currentContributor: number,
   schema?: Prisma.JsonValue | undefined,
-  ui?: Prisma.JsonValue | undefined
+  ui?: Prisma.JsonValue | undefined,
+  refetchComments?: () => void
 ): ProcessedTeamTaskLog[] {
   return projectMembers.map((projectMember) => {
     // Function fails if does not receive assignment data for teams
@@ -147,6 +152,7 @@ export function processTeamTaskLogs(
       taskHistory: projectMember.taskLogAssignedTo,
       schema: schema,
       ui: ui,
+      refetchComments: refetchComments,
     }
   })
 }

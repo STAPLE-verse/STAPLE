@@ -122,7 +122,11 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
             }
             buttonClassName="btn-ghost"
           >
-            <ChatBox taskLogId={info.getValue()!} initialComments={info.row.original.comments} />
+            <ChatBox
+              taskLogId={info.getValue()!}
+              initialComments={info.row.original.comments}
+              refetchComments={info.row.original.refetchComments}
+            />
           </ToggleModal>
         </div>
       )

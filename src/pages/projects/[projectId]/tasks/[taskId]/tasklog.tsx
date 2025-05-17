@@ -50,7 +50,7 @@ const TaskLogContent = () => {
     ...teamProjectMembers.map((team) => filterFirstTaskLog(team.taskLogAssignedTo)?.id),
   ].filter((id): id is number => id !== undefined) // Remove undefined values
 
-  const [comments] = useQuery(getComments, {
+  const [comments, { refetch: refetchComments }] = useQuery(getComments, {
     where: { taskLogId: { in: firstTaskLogIds } },
   })
 
@@ -61,7 +61,8 @@ const TaskLogContent = () => {
     task.name,
     currentContributor!.id,
     task.formVersion?.schema,
-    task.formVersion?.uiSchema
+    task.formVersion?.uiSchema,
+    refetchComments
   )
   const processedTeamAssignments = processTeamTaskLogs(
     teamProjectMembers,
@@ -69,7 +70,8 @@ const TaskLogContent = () => {
     task.name,
     currentContributor!.id,
     task.formVersion?.schema,
-    task.formVersion?.uiSchema
+    task.formVersion?.uiSchema,
+    refetchComments
   )
 
   // Get columns definitions for tables
