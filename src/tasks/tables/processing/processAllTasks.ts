@@ -18,7 +18,8 @@ export type AllTasksData = {
 }
 
 export function processAllTasks(
-  latestTaskLog: TaskLogWithTaskProjectAndComments[]
+  latestTaskLog: TaskLogWithTaskProjectAndComments[],
+  originalTaskLogs?: TaskLogWithTaskProjectAndComments[]
 ): AllTasksData[] {
   const taskSummary: Record<number, { total: number; completed: number }> = {}
 
@@ -71,15 +72,19 @@ export function processAllTasks(
     const taskLog = latestTaskLog.find((log) => log.taskId === Number(taskId))
     const task = taskLog?.task // Assuming task is part of the log
 
-    const hasNewComments =
-      taskLog?.comments?.some((comment) =>
-        comment.commentReadStatus?.some((status) => !status.read)
-      ) ?? false
+    // Find original log for this task/assignedTo if available
+    const originalLog = originalTaskLogs?.find(
+      (log) => log.taskId === Number(taskId) && log.assignedToId === taskLog?.assignedToId
+    )
+    const commentsSource = originalLog?.comments ?? taskLog?.comments ?? []
 
-    const newCommentsCount =
-      taskLog?.comments?.reduce((count, comment) => {
-        return count + (comment.commentReadStatus?.filter((status) => !status.read).length ?? 0)
-      }, 0) ?? 0
+    const hasNewComments = commentsSource.some((comment) =>
+      comment.commentReadStatus?.some((status) => !status.read)
+    )
+
+    const newCommentsCount = commentsSource.reduce((count, comment) => {
+      return count + (comment.commentReadStatus?.filter((status) => !status.read).length ?? 0)
+    }, 0)
 
     return {
       name: task?.name || "Unknown Task",
