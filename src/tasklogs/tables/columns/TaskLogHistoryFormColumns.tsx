@@ -41,7 +41,7 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistoryModal>[
             metadata={info.getValue()?.metadata}
             schema={info.getValue()!.schema}
             uiSchema={info.getValue()!.ui}
-            label="View Form Data"
+            label="View Response"
             classNames="btn-primary"
             submittable={false}
           />
@@ -50,6 +50,6 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistoryModal>[
         )}
       </>
     ),
-    header: "Form Data",
+    header: "Response",
   }),
 ]

@@ -16,6 +16,8 @@ import { Tooltip } from "react-tooltip"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { TaskLogTaskCompleted } from "src/core/types"
+import { TaskLogSchemaModal } from "src/tasklogs/components/TaskLogSchemaModal"
+import { TaskLogToggleModal } from "src/tasklogs/components/TaskLogToggleModal"
 
 type ProcessedTaskLog = (ProcessedIndividualTaskLog | ProcessedTeamTaskLog) & {
   refetchTaskData?: () => Promise<void>
@@ -88,24 +90,18 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
     enableSorting: false,
   }),
   columnHelper.accessor("taskLog", {
-    id: "view",
-    enableColumnFilter: false,
-    enableSorting: false,
     cell: (info) => {
-      const taskLog = info.getValue() as TaskLogTaskCompleted
-      return (
-        <Link
-          className="btn btn-ghost"
-          href={Routes.TaskLogsPage({
-            taskId: taskLog.task.id,
-            projectId: taskLog.task.projectId,
-          })}
-        >
-          <DocumentTextIcon width={25} className="stroke-primary" />
-        </Link>
+      const { schema, refetchTaskData } = info.row.original
+      const taskLog = info.getValue()
+      console.log(taskLog)
+      return schema ? (
+        <TaskLogSchemaModal taskLog={taskLog} refetchTaskData={refetchTaskData} />
+      ) : (
+        <TaskLogToggleModal taskLog={taskLog} refetchTaskData={refetchTaskData} />
       )
     },
     header: "Responses",
+    enableColumnFilter: false,
   }),
   columnHelper.accessor("firstLogId", {
     enableColumnFilter: false,
