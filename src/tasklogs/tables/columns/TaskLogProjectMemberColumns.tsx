@@ -2,7 +2,6 @@ import React from "react"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { ProcessedIndividualTaskLog } from "../processing/processTaskLogs"
 import { ProcessedTeamTaskLog } from "../processing/processTaskLogs"
-import { TaskLogSchemaModal } from "../../components/TaskLogSchemaModal"
 import ToggleModal from "src/core/components/ToggleModal"
 import ChatBox from "src/comments/components/ChatBox"
 
@@ -14,12 +13,13 @@ import {
 } from "@heroicons/react/24/outline"
 import TaskLogHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
 import { Tooltip } from "react-tooltip"
-import { TaskLogToggleModal } from "src/tasklogs/components/TaskLogToggleModal"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { TaskLogTaskCompleted } from "src/core/types"
 
-type ProcessedTaskLog = ProcessedIndividualTaskLog | ProcessedTeamTaskLog
+type ProcessedTaskLog = (ProcessedIndividualTaskLog | ProcessedTeamTaskLog) & {
+  refetchTaskData?: () => Promise<void>
+}
 // Column helper
 const columnHelper = createColumnHelper<ProcessedTaskLog>()
 
@@ -73,11 +73,12 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
   }),
   columnHelper.accessor("taskHistory", {
     cell: (info) => {
-      const { taskHistory, schema, ui } = info.row.original
+      const { taskHistory, schema, ui, refetchTaskData } = info.row.original
       return (
         <TaskLogHistoryModal
           taskLogs={taskHistory ?? []}
           {...(schema && ui ? { schema, ui } : {})}
+          refetchTaskData={refetchTaskData}
         />
       )
     },
@@ -111,6 +112,7 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
     enableSorting: false,
     cell: (info) => {
       const hasNewComments = (info.row.original.newCommentsCount ?? 0) > 0
+      console.log(info.getValue())
       return (
         <div className="flex">
           <ToggleModal

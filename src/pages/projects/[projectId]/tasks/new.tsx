@@ -10,7 +10,6 @@ import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
 import toast from "react-hot-toast"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
-import PageHeader from "src/core/components/PageHeader"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 

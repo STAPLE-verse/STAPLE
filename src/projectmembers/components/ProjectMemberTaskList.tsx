@@ -1,5 +1,6 @@
 import { useQuery } from "@blitzjs/rpc"
 import getComments from "src/comments/queries/getComments"
+import CollapseCard from "src/core/components/CollapseCard"
 import Table from "src/core/components/Table"
 import { TaskLogTaskCompleted } from "src/core/types"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
@@ -8,12 +9,17 @@ import { processTaskLogHistory } from "src/tasklogs/tables/processing/processTas
 interface ProjectMemberTaskListProps {
   projectMemberId: number // ID of the ProjectMember, whether a team or individual contributor
   tableColumns: any
-  dataProcessor: "team" | "individual"
+  currentContributor: number
 }
 
-const ProjectMemberTaskList = ({ projectMemberId, tableColumns }: ProjectMemberTaskListProps) => {
-  const [taskLogs] = useQuery(getTaskLogs, {
+const ProjectMemberTaskList = ({
+  projectMemberId,
+  tableColumns,
+  currentContributor,
+}: ProjectMemberTaskListProps) => {
+  const [taskLogs, { refetch: refetchTaskLogs }] = useQuery(getTaskLogs, {
     where: { assignedToId: projectMemberId },
+    orderBy: { createdAt: "desc" },
     include: {
       task: {
         include: {
@@ -35,10 +41,16 @@ const ProjectMemberTaskList = ({ projectMemberId, tableColumns }: ProjectMemberT
   const processedData = processTaskLogHistory(
     taskLogs as TaskLogTaskCompleted[],
     comments,
-    refetchComments
+    refetchComments,
+    currentContributor,
+    () => refetchTaskLogs()
   )
 
-  return <Table columns={tableColumns} data={processedData} addPagination={true} />
+  return (
+    <CollapseCard title="Contributor Tasks" className="mt-4">
+      <Table columns={tableColumns} data={processedData} addPagination={true} />
+    </CollapseCard>
+  )
 }
 
 export default ProjectMemberTaskList

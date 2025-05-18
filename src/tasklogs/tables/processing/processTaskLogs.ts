@@ -184,12 +184,16 @@ export type ProcessedTaskLogHistory = {
   taskHistory: ExtendedTaskLog[]
   comments: CommentWithAuthor[]
   refetchComments?: () => void
+  newCommentsCount?: number
+  refetchTaskData?: () => void
 }
 
 export function processTaskLogHistory(
   taskLogs: TaskLogTaskCompleted[],
   comments: CommentWithAuthor[],
-  refetchComments?: () => void
+  refetchComments?: () => void,
+  currentContributor?: number,
+  refetchTaskData?: () => void
 ): ProcessedTaskLogHistory[] {
   const groupedByTask = taskLogs.reduce((acc, log) => {
     if (!acc[log.taskId]) acc[log.taskId] = []
@@ -200,6 +204,11 @@ export function processTaskLogHistory(
   return Object.values(groupedByTask).map((logs) => {
     const latestLog = filterLatestTaskLog(logs) as TaskLogTaskCompleted
     const firstLog = filterFirstTaskLog(logs) as TaskLogTaskCompleted
+
+    const overdue =
+      latestLog?.task.deadline instanceof Date &&
+      latestLog.status !== "COMPLETED" &&
+      latestLog.task.deadline.getTime() < latestLog.createdAt.getTime()
 
     return {
       id: latestLog!.id,
@@ -218,8 +227,19 @@ export function processTaskLogHistory(
       taskHistory: logs as ExtendedTaskLog[],
       comments: (comments ?? []).filter((c) => c.taskLogId === firstLog?.id),
       refetchComments,
+      newCommentsCount:
+        (comments ?? []).filter(
+          (c) =>
+            c.taskLogId === firstLog?.id &&
+            c.commentReadStatus?.some(
+              (status) => status.projectMemberId === currentContributor && !status.read
+            )
+        ).length ?? 0,
       schema: latestLog.task.formVersion?.schema,
       ui: latestLog.task.formVersion?.uiSchema,
+      overdue,
+      firstLogId: firstLog.id,
+      refetchTaskData,
     }
   })
 }

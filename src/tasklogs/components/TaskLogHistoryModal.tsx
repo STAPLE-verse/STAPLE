@@ -14,18 +14,24 @@ type TaskLogHistoryModalProps = {
   taskLogs: TaskLogCompletedBy[]
   schema?: Prisma.JsonValue
   ui?: Prisma.JsonValue
+  refetchTaskData?: () => Promise<void>
 }
 
-export const TaskLogHistoryModal = ({ taskLogs, schema, ui }: TaskLogHistoryModalProps) => {
+export const TaskLogHistoryModal = ({
+  taskLogs,
+  schema,
+  ui,
+  refetchTaskData,
+}: TaskLogHistoryModalProps) => {
   const [internalTaskLogHistory, setInternalTaskLogHistory] = useState(
     processTaskLogHistoryModal(taskLogs, schema, ui)
   )
 
-  let refetchTaskData: (() => Promise<void>) | undefined = undefined
+  let contextRefetch: (() => Promise<void>) | undefined = undefined
   try {
     const context = useTaskContext()
     if (context.refetchTaskData) {
-      refetchTaskData = async () => {
+      contextRefetch = async () => {
         await context.refetchTaskData()
       }
     }
@@ -57,6 +63,8 @@ export const TaskLogHistoryModal = ({ taskLogs, schema, ui }: TaskLogHistoryModa
       onOpen={async () => {
         if (refetchTaskData) {
           await refetchTaskData()
+        } else if (contextRefetch) {
+          await contextRefetch()
         }
         setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, schema, ui))
       }}

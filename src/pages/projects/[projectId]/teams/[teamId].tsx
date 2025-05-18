@@ -13,11 +13,13 @@ import Link from "next/link"
 import { TeamStatistics } from "src/teams/components/TeamStatistics"
 import ProjectMemberTaskList from "src/projectmembers/components/ProjectMemberTaskList"
 import { TaskLogProjectMemberColumns } from "src/tasklogs/tables/columns/TaskLogProjectMemberColumns"
+import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 
 export const TeamPage = () => {
   const projectId = useParam("projectId", "number")
   const { privilege } = useMemberPrivileges()
   const teamId = useParam("teamId", "number")
+  const { projectMember: currentContributor } = useCurrentContributor(projectId)
 
   const [team] = useQuery(getTeam, {
     id: teamId!,
@@ -62,7 +64,7 @@ export const TeamPage = () => {
         <ProjectMemberTaskList
           projectMemberId={teamId!}
           tableColumns={TaskLogProjectMemberColumns}
-          dataProcessor={"team"}
+          currentContributor={currentContributor!.id}
         />
       </main>
     </>
