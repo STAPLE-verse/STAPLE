@@ -90,6 +90,7 @@ export default resolver.pipe(
         data: {
           taskName: taskLog.task.name,
           createdBy: createdByUsername,
+          commentContent: comment.content,
         },
         projectId: projectId,
         routeData: {
@@ -111,6 +112,7 @@ export default resolver.pipe(
         data: {
           taskName: taskLog.task.name,
           createdBy: createdByUsername,
+          commentContent: comment.content,
         },
         projectId: projectId,
         routeData: {

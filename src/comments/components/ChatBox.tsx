@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useMutation } from "@blitzjs/rpc"
 import addComment from "../mutations/addComment"
+import markAsRead from "../mutations/markAsRead"
 import { CommentWithAuthor } from "src/core/types"
 import { getContributorName } from "src/core/utils/getName"
 import { useParam } from "@blitzjs/next"
@@ -21,6 +22,7 @@ export default function ChatBox({
   const [newComment, setNewComment] = useState("")
   const chatRef = useRef<HTMLDivElement>(null)
   const [addCommentMutation] = useMutation(addComment)
+  const [markCommentsAsReadMutation] = useMutation(markAsRead)
 
   const projectId = useParam("projectId", "number")
   const { projectMember: currentContributor } = useCurrentContributor(projectId)
@@ -31,6 +33,33 @@ export default function ChatBox({
     }
   }, [comments])
 
+  useEffect(() => {
+    if (currentContributor && comments.length > 0) {
+      const unreadCommentIds = comments
+        .filter(
+          (comment) =>
+            comment.authorId !== currentContributor.id &&
+            !comment.commentReadStatus?.some(
+              (status) => status.projectMemberId === currentContributor.id && status.read
+            )
+        )
+        .map((comment) => comment.id)
+
+      if (unreadCommentIds.length > 0) {
+        markCommentsAsReadMutation({
+          commentIds: unreadCommentIds,
+          projectMemberId: currentContributor.id,
+        })
+          .then(() => {
+            if (refetchComments) refetchComments()
+          })
+          .catch((error) => {
+            console.error("Failed to mark comments as read:", error)
+          })
+      }
+    }
+  }, [comments, currentContributor, markCommentsAsReadMutation, refetchComments])
+
   const handleSendComment = async () => {
     if (!newComment.trim()) return // Prevent empty messages
 
@@ -40,7 +69,7 @@ export default function ChatBox({
         projectMemberId: currentContributor!.id,
         content: newComment,
       })
-      setComments((prev) => [...prev, createdComment]) // Update state directly
+      setComments((prev) => [...prev, { ...createdComment, commentReadStatus: [] }]) // Ensure new comment has empty commentReadStatus
       setNewComment("") // Clear input field
       if (refetchComments) refetchComments() // Trigger refresh
     } catch (error) {
