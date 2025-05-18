@@ -19,6 +19,9 @@ import { UpdateProjectMemberFormSchema } from "src/projectmembers/schemas"
 import { ProjectMemberWithUsersAndRoles } from "src/core/types"
 import DeleteContributor from "src/contributors/components/DeleteContributor"
 import PageHeader from "src/core/components/PageHeader"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
+import Card from "src/core/components/Card"
 
 export const EditContributor = () => {
   const [updateProjectMemberMutation] = useMutation(updateProjectMember)
@@ -120,7 +123,20 @@ export const EditContributor = () => {
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-      <PageHeader className="mb-2" title={`Edit Contributor ${getContributorName(contributor)}`} />
+      <h1 className="flex justify-center items-center text-3xl mb-4">
+        Edit Contributor: <span className="italic ml-1"> {getContributorName(contributor)}</span>
+        <InformationCircleIcon
+          className="h-6 w-6 ml-2 text-info stroke-2"
+          data-tooltip-id="contributors-overview"
+        />
+        <Tooltip
+          id="contributors-overview"
+          content="This page allows you to update the contributor's
+          administration privileges. Project managers can see and edit
+          all parts of the project, and you must have at least one at all times."
+          className="z-[1099] ourtooltips"
+        />
+      </h1>
       <Suspense fallback={<div>Loading...</div>}>
         <ContributorForm
           submitText="Update Contributor"
@@ -133,7 +149,8 @@ export const EditContributor = () => {
           onCancel={handleCancel}
           onSubmit={handleSubmit}
         />
-        <div className="flex justify-end mt-2">
+        <div className="divider pt-2 pb-2"></div>
+        <div className="flex justify-center">
           <DeleteContributor
             projectId={projectId!}
             contributorUser={contributorUser!}

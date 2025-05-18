@@ -52,8 +52,7 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
     return (
       <div {...outerProps}>
         <label>{label} </label>
-        <i>{description}</i>
-        <br />
+        {description && <p className="text-base mt-1">{description}</p>}
         <select {...input} disabled={submitting} multiple={multiple} {...props} ref={ref}>
           <option disabled={disableFirstOption} value="">
             {firstOptionText}

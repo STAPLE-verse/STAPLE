@@ -43,7 +43,7 @@ const DeleteContributor = ({
   }
 
   return (
-    <button className="btn btn-secondary" onClick={handleDelete}>
+    <button className="btn btn-warning" onClick={handleDelete}>
       Delete Contributor
     </button>
   )
