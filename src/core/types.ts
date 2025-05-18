@@ -10,6 +10,7 @@ import {
   FormVersion,
   Element,
   CommentReadStatus,
+  Prisma,
 } from "db"
 import { ReactNode } from "react"
 
@@ -20,6 +21,12 @@ export type RoleWithUser = Role & {
 export type TaskWithRoles = Task & {
   roles?: Role[]
   approved?: boolean | null // added approved here
+}
+
+export type TaskWithRolesForms = Task & {
+  roles?: Role[]
+  approved?: boolean | null // added approved here
+  formVersion: FormVersion
 }
 
 export type TaskLogWithTask = TaskLog & {
@@ -94,9 +101,9 @@ export type ProjectMemberWithUsersAndRoles = ProjectMember & {
   roles: Array<Pick<Role, "id" | "name">>
 }
 
-// Define the TaskLogWithTaskCompleted type
-export type TaskLogWithTaskCompleted = TaskLog & {
-  task: TaskWithRoles
+// Define the TaskLogWithTaskForm type
+export type TaskLogWithTaskForm = TaskLog & {
+  task: TaskWithRolesForms
   completedBy: ProjectMemberWithUsers
 }
 
@@ -122,6 +129,17 @@ export type ProjectMemberWithTaskLog = ProjectMember & {
 export type TaskLogWithCompletedBy = TaskLog & {
   completedBy: ExtendedProjectMember
   assignedTo: ExtendedProjectMember
+}
+
+export type TaskLogTaskCompleted = TaskLog & {
+  completedBy: ExtendedProjectMember
+  assignedTo: ExtendedProjectMember
+  task: Task & {
+    formVersion?: {
+      schema?: Prisma.JsonValue
+      uiSchema?: Prisma.JsonValue
+    }
+  }
 }
 
 export type ExtendedTask = Task & {

@@ -1,6 +1,6 @@
 import { getContributorName } from "src/core/utils/getName"
-import { ExtendedTaskLog, TaskLogCompletedBy } from "src/core/types"
-import { Prisma, TaskLog } from "@prisma/client"
+import { ExtendedTaskLog, TaskLogCompletedBy, TaskLogTaskCompleted } from "src/core/types"
+import { Prisma } from "@prisma/client"
 import { ProjectMemberWithTaskLog } from "src/core/types"
 import { filterLatestTaskLog } from "../../utils/filterLatestTaskLog"
 import { filterFirstTaskLog } from "src/tasklogs/utils/filterFirstTaskLog"
@@ -177,6 +177,55 @@ export function processTeamTaskLogs(
 
 export type ProcessedTaskLogHistory = {
   id: number
+  taskName: string
+  lastUpdate: string
+  status: string
+  taskLog: ExtendedTaskLog
+  taskHistory: ExtendedTaskLog[]
+  comments: CommentWithAuthor[]
+  refetchComments?: () => void
+}
+
+export function processTaskLogHistory(
+  taskLogs: TaskLogTaskCompleted[],
+  comments: CommentWithAuthor[],
+  refetchComments?: () => void
+): ProcessedTaskLogHistory[] {
+  const groupedByTask = taskLogs.reduce((acc, log) => {
+    if (!acc[log.taskId]) acc[log.taskId] = []
+    acc[log.taskId]!.push(log)
+    return acc
+  }, {} as Record<number, TaskLogTaskCompleted[]>)
+
+  return Object.values(groupedByTask).map((logs) => {
+    const latestLog = filterLatestTaskLog(logs) as TaskLogTaskCompleted
+    const firstLog = filterFirstTaskLog(logs) as TaskLogTaskCompleted
+
+    return {
+      id: latestLog!.id,
+      taskName: latestLog!.task.name ?? "Untitled Task",
+      lastUpdate: latestLog!.createdAt.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      }),
+      status: latestLog!.status === "COMPLETED" ? "Completed" : "Not Completed",
+      taskLog: latestLog,
+      taskHistory: logs as ExtendedTaskLog[],
+      comments: (comments ?? []).filter((c) => c.taskLogId === firstLog?.id),
+      refetchComments,
+      schema: latestLog.task.formVersion?.schema,
+      ui: latestLog.task.formVersion?.uiSchema,
+    }
+  })
+}
+
+export type ProcessedTaskLogHistoryModal = {
+  id: number
   projectMemberName: string
   lastUpdate: string
   status: string
@@ -188,13 +237,13 @@ export type ProcessedTaskLogHistory = {
   }
 }
 
-export function processTaskLogHistory(
+export function processTaskLogHistoryModal(
   taskLogs: TaskLogCompletedBy[],
   schema?: any,
   ui?: any
-): ProcessedTaskLogHistory[] {
+): ProcessedTaskLogHistoryModal[] {
   return taskLogs.map((taskLog) => {
-    const processedData: ProcessedTaskLogHistory = {
+    const processedData: ProcessedTaskLogHistoryModal = {
       id: taskLog.id,
       projectMemberName: taskLog.completedBy
         ? getContributorName(taskLog.completedBy)

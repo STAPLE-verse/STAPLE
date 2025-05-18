@@ -1,4 +1,4 @@
-import { TaskLogWithTaskCompleted } from "src/core/types"
+import { TaskLogWithTaskForm } from "src/core/types"
 
 // Finshed tasks table
 export type ContributorTaskListData = {
@@ -12,7 +12,7 @@ export type ContributorTaskListData = {
 }
 
 export function processContributorTaskList(
-  taskLogs: TaskLogWithTaskCompleted[]
+  taskLogs: TaskLogWithTaskForm[]
 ): ContributorTaskListData[] {
   return taskLogs.map((taskLog) => {
     const task = taskLog.task

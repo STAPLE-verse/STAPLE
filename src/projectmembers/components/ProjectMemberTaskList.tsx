@@ -1,51 +1,44 @@
 import { useQuery } from "@blitzjs/rpc"
+import getComments from "src/comments/queries/getComments"
 import Table from "src/core/components/Table"
+import { TaskLogTaskCompleted } from "src/core/types"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
-import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
-import { TaskLogWithTaskCompleted } from "src/core/types"
+import { processTaskLogHistory } from "src/tasklogs/tables/processing/processTaskLogs"
 
 interface ProjectMemberTaskListProps {
   projectMemberId: number // ID of the ProjectMember, whether a team or individual contributor
   tableColumns: any
-  dataProcessor: (taskLogs: TaskLogWithTaskCompleted[]) => any[]
-  currentUserId: number // Add currentUserId as a prop
+  dataProcessor: "team" | "individual"
 }
 
-const ProjectMemberTaskList = ({
-  projectMemberId,
-  tableColumns,
-  dataProcessor,
-}: ProjectMemberTaskListProps) => {
-  const [fetchedTaskLogs] = useQuery(getTaskLogs, {
-    where: {
-      assignedToId: projectMemberId, // Use currentUserId here to filter tasks
-    },
-    orderBy: undefined,
+const ProjectMemberTaskList = ({ projectMemberId, tableColumns }: ProjectMemberTaskListProps) => {
+  const [taskLogs] = useQuery(getTaskLogs, {
+    where: { assignedToId: projectMemberId },
     include: {
       task: {
         include: {
-          roles: true, // Include roles related to task
+          formVersion: true,
         },
       },
-      completedBy: {
-        include: {
-          users: true, // Include users related to completedBy
-        },
+      completedBy: { include: { users: true } },
+      assignedTo: { include: { users: true } },
+    },
+  })
+  const [comments = [], { refetch: refetchComments }] = useQuery(getComments, {
+    where: {
+      taskLogId: {
+        in: taskLogs.map((log) => log.id),
       },
     },
   })
 
-  const taskLogs: TaskLogWithTaskCompleted[] = fetchedTaskLogs
-    ? (fetchedTaskLogs as TaskLogWithTaskCompleted[])
-    : []
+  const processedData = processTaskLogHistory(
+    taskLogs as TaskLogTaskCompleted[],
+    comments,
+    refetchComments
+  )
 
-  // Get the latest task logs
-  const latestTaskLogs = getLatestTaskLogs<TaskLogWithTaskCompleted>(taskLogs)
-
-  const processedTasks = dataProcessor(latestTaskLogs)
-  console.log(processedTasks)
-
-  return <Table columns={tableColumns} data={processedTasks} addPagination={true} />
+  return <Table columns={tableColumns} data={processedData} addPagination={true} />
 }
 
 export default ProjectMemberTaskList

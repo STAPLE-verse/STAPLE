@@ -2,7 +2,6 @@ import { Suspense } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import { Routes, useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
-import { TeamTaskList } from "src/teams/components/TeamTaskList"
 import { MemberPrivileges } from "db"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import DeleteTeam from "src/teams/components/DeleteTeam"
@@ -12,6 +11,8 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import Link from "next/link"
 import { TeamStatistics } from "src/teams/components/TeamStatistics"
+import ProjectMemberTaskList from "src/projectmembers/components/ProjectMemberTaskList"
+import { TaskLogProjectMemberColumns } from "src/tasklogs/tables/columns/TaskLogProjectMemberColumns"
 
 export const TeamPage = () => {
   const projectId = useParam("projectId", "number")
@@ -58,7 +59,11 @@ export const TeamPage = () => {
 
         <TeamInformation team={team} privilege={privilege!} />
 
-        <TeamTaskList teamId={teamId!} />
+        <ProjectMemberTaskList
+          projectMemberId={teamId!}
+          tableColumns={TaskLogProjectMemberColumns}
+          dataProcessor={"team"}
+        />
       </main>
     </>
   )

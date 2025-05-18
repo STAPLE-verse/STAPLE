@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import Table from "src/core/components/Table"
 import { Prisma } from "@prisma/client"
-import { processTaskLogHistory } from "src/tasklogs/tables/processing/processTaskLogs"
+import { processTaskLogHistoryModal } from "src/tasklogs/tables/processing/processTaskLogs"
 import { TaskLogCompletedBy } from "src/core/types"
 import { TaskLogHistoryFormColumns } from "../tables/columns/TaskLogHistoryFormColumns"
 import { TaskLogHistoryCompleteColumns } from "../tables/columns/TaskLogHistoryCompleteColumns"
@@ -18,7 +18,7 @@ type TaskLogHistoryModalProps = {
 
 export const TaskLogHistoryModal = ({ taskLogs, schema, ui }: TaskLogHistoryModalProps) => {
   const [internalTaskLogHistory, setInternalTaskLogHistory] = useState(
-    processTaskLogHistory(taskLogs, schema, ui)
+    processTaskLogHistoryModal(taskLogs, schema, ui)
   )
 
   let refetchTaskData: (() => Promise<void>) | undefined = undefined
@@ -34,7 +34,7 @@ export const TaskLogHistoryModal = ({ taskLogs, schema, ui }: TaskLogHistoryModa
   }
 
   useEffect(() => {
-    setInternalTaskLogHistory(processTaskLogHistory(taskLogs, schema, ui))
+    setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, schema, ui))
   }, [taskLogs, schema, ui])
 
   return (
@@ -58,7 +58,7 @@ export const TaskLogHistoryModal = ({ taskLogs, schema, ui }: TaskLogHistoryModa
         if (refetchTaskData) {
           await refetchTaskData()
         }
-        setInternalTaskLogHistory(processTaskLogHistory(taskLogs, schema, ui))
+        setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, schema, ui))
       }}
     >
       <div className="modal-action flex flex-col">

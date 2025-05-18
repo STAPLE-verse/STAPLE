@@ -1,12 +1,12 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
-import { ProcessedTaskLogHistory } from "../processing/processTaskLogs"
+import { ProcessedTaskLogHistoryModal } from "../processing/processTaskLogs"
 import { ApproveDropdown } from "src/tasklogs/components/ApproveTask"
 // Column helper
-const columnHelper = createColumnHelper<ProcessedTaskLogHistory>()
+const columnHelper = createColumnHelper<ProcessedTaskLogHistoryModal>()
 
 // ColumnDefs
-export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistory>[] = [
+export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistoryModal>[] = [
   columnHelper.accessor("projectMemberName", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Changed By",
