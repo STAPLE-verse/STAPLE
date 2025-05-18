@@ -8,7 +8,12 @@ import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { Tooltip } from "react-tooltip"
 import { ShowTeamModal } from "src/teams/components/ShowTeamModal"
-import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
+import {
+  ChatBubbleOvalLeftEllipsisIcon,
+  HandRaisedIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline"
+import TaskLogHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedIndividualTaskLog>()
@@ -56,15 +61,50 @@ export const TaskLogCompleteColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
       }
     },
   }),
+
   columnHelper.accessor("lastUpdate", {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Last Update",
+    cell: (info) => {
+      const isOverdue = info.row.original.overdue
+      return (
+        <div className="flex items-center gap-1">
+          {isOverdue && (
+            <span className="text-error" title="Overdue">
+              <HandRaisedIcon className="h-5 w-5 inline-block" />
+            </span>
+          )}
+          <span>{info.getValue()}</span>
+        </div>
+      )
+    },
+    header: (
+      <div className="table-header-tooltip">
+        Latest Update
+        <InformationCircleIcon
+          className="ml-1 h-4 w-4 stroke-2 text-info"
+          data-tooltip-id="update-tooltip"
+        />
+        <Tooltip
+          id="update-tooltip"
+          content="The last update on this task from you or the project member. The hand icon indicates updates after the due date."
+          className="z-[1099] ourtooltips"
+        />
+      </div>
+    ),
     id: "updatedAt",
   }),
   columnHelper.accessor("status", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Status",
     id: "status",
+  }),
+  columnHelper.accessor("taskHistory", {
+    cell: (info) => {
+      return <TaskLogHistoryModal taskLogs={info.row.original.taskHistory ?? []} />
+    },
+    header: "History",
+    id: "history",
+    enableColumnFilter: false,
+    enableSorting: false,
   }),
   columnHelper.accessor("taskLog", {
     enableColumnFilter: false,
@@ -102,7 +142,11 @@ export const TaskLogCompleteColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
             }
             buttonClassName="btn-ghost"
           >
-            <ChatBox taskLogId={info.getValue()!} initialComments={info.row.original.comments} />
+            <ChatBox
+              taskLogId={info.getValue()!}
+              initialComments={info.row.original.comments}
+              refetchComments={info.row.original.refetchComments}
+            />
           </ToggleModal>
         </div>
       )

@@ -8,8 +8,13 @@ import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { ShowTeamModal } from "src/teams/components/ShowTeamModal"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
-import { ChatBubbleOvalLeftEllipsisIcon, HandRaisedIcon } from "@heroicons/react/24/outline"
+import {
+  ChatBubbleOvalLeftEllipsisIcon,
+  HandRaisedIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline"
 import TaskLogHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
+import { Tooltip } from "react-tooltip"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedIndividualTaskLog>()
@@ -57,7 +62,6 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
       }
     },
   }),
-
   columnHelper.accessor("lastUpdate", {
     cell: (info) => {
       const isOverdue = info.row.original.overdue
@@ -72,7 +76,20 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
         </div>
       )
     },
-    header: "Last Update",
+    header: (
+      <div className="table-header-tooltip">
+        Latest Update
+        <InformationCircleIcon
+          className="ml-1 h-4 w-4 stroke-2 text-info"
+          data-tooltip-id="update-tooltip"
+        />
+        <Tooltip
+          id="update-tooltip"
+          content="The last update on this task from you or the project member. The hand icon indicates updates after the due date."
+          className="z-[1099] ourtooltips"
+        />
+      </div>
+    ),
     id: "updatedAt",
   }),
   columnHelper.accessor("status", {
