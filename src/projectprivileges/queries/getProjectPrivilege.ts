@@ -10,7 +10,6 @@ export default resolver.pipe(
   async ({ where, include }: GetProjectPrivilegeInput) => {
     const projectPrivilege = await db.projectPrivilege.findFirst({ where, include })
 
-    // TODO: could be changed to a more specific error
     if (!projectPrivilege) throw new NotFoundError()
 
     return projectPrivilege as ProjectPrivilege
