@@ -6,7 +6,7 @@ import getMilestones from "../queries/getMilestones"
 import { MilestoneWithTasks } from "src/core/types"
 import MissingDatesModal from "./MissingDatesModal"
 import { getMissingMilestoneAndTaskRows } from "../utils/ganttRowHelpers"
-import { transformMilestonesToGanttTasks } from "../utils/transformGanttTasks"
+import { transformMilestonesToGanttTasks } from "../utils/transformMilestonesToGanttTasks"
 
 interface GanttChartProps {
   projectId: number
@@ -16,7 +16,30 @@ const GanttChart = ({ projectId }: GanttChartProps) => {
   // Fetch milestones and tasks
   const [{ milestones: fetchedMilestones }, { refetch }] = useQuery(getMilestones, {
     where: { projectId },
-    include: { task: true },
+    include: {
+      task: {
+        include: {
+          assignedMembers: {
+            include: {
+              taskLogAssignedTo: {
+                select: {
+                  id: true,
+                  status: true,
+                  createdAt: true,
+                  assignedToId: true,
+                },
+              },
+              users: {
+                select: {
+                  id: true,
+                  username: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     orderBy: { id: "asc" },
   })
   const milestones = fetchedMilestones as MilestoneWithTasks[]
@@ -31,7 +54,7 @@ const GanttChart = ({ projectId }: GanttChartProps) => {
   return (
     <>
       <div className="flex flex-col justify-end mb-4">
-        <div>
+        <div className="gantt-wrapper">
           <Gantt
             tasks={ganttTasks}
             viewMode={ViewMode.Day}
@@ -39,6 +62,7 @@ const GanttChart = ({ projectId }: GanttChartProps) => {
             onDateChange={() => {
               /* optionally refetch() */
             }}
+            onProgressChange={() => {}}
           />
         </div>
         <div className="mt-4">

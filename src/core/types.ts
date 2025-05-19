@@ -152,5 +152,7 @@ export type BreadcrumbItem = {
 }
 
 export type MilestoneWithTasks = Milestone & {
-  task: Task[]
+  task: (Task & {
+    assignedMembers: ProjectMemberWithTaskLog[]
+  })[]
 }
