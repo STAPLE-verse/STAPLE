@@ -31,6 +31,18 @@ export default function useProjectTasksListData(projectId: number | undefined) {
             comments: {
               include: {
                 commentReadStatus: true,
+                author: {
+                  include: {
+                    users: {
+                      select: {
+                        id: true,
+                        username: true,
+                        firstName: true,
+                        lastName: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -68,6 +80,18 @@ export default function useProjectTasksListData(projectId: number | undefined) {
             comments: {
               include: {
                 commentReadStatus: true,
+                author: {
+                  include: {
+                    users: {
+                      select: {
+                        id: true,
+                        username: true,
+                        firstName: true,
+                        lastName: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -86,6 +110,8 @@ export default function useProjectTasksListData(projectId: number | undefined) {
     }
   )
 
-  const tasks = processProjectTasks(fetchedTasks)
+  const tasks = processProjectTasks(fetchedTasks, async () => {
+    await refetch()
+  })
   return { tasks, refetchTasks: refetch }
 }

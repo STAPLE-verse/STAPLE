@@ -97,6 +97,7 @@ const TaskBoard = ({
                           projectId={projectId!}
                           completed={i.completed}
                           containerId={container.id}
+                          newCommentsCount={i.newCommentsCount}
                         />
                       ))}
                     </div>

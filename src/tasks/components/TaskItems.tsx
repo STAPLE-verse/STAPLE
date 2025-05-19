@@ -3,6 +3,7 @@ import React from "react"
 import { CSS } from "@dnd-kit/utilities"
 import clsx from "clsx"
 import { MagnifyingGlassPlusIcon } from "@heroicons/react/24/outline"
+import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/solid"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -18,7 +19,14 @@ type ItemsType = {
   containerId: number
 }
 
-const TaskItems = ({ id, title, completed, projectId, containerId, newCommentsCount }: ItemsType) => {
+const TaskItems = ({
+  id,
+  title,
+  completed,
+  projectId,
+  containerId,
+  newCommentsCount,
+}: ItemsType) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: makeDragId("item", id),
     data: {
@@ -42,16 +50,24 @@ const TaskItems = ({ id, title, completed, projectId, containerId, newCommentsCo
         completed ? "bg-success" : "bg-accent"
       )}
     >
-      {newCommentsCount && newCommentsCount > 0 ? (
-        <span className="absolute -top-2 -right-2 bg-error text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-          {newCommentsCount}
-        </span>
-      ) : null}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
           <b className="text-accent-content">{title}</b>
         </div>
         <div className="flex justify-end items-center">
+          {newCommentsCount! > 0 && (
+            <div className="relative mr-2">
+              <Link href={Routes.TaskLogsPage({ taskId: id, projectId })}>
+                <ChatBubbleOvalLeftEllipsisIcon
+                  className="w-7 h-7 stroke-2 bg-accent text-accent-content border-transparent rounded-2xl shadow-sm hover:opacity-50"
+                  aria-hidden="true"
+                />
+              </Link>
+              <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white">
+                {newCommentsCount}
+              </div>
+            </div>
+          )}
           <Link href={Routes.ShowTaskPage({ projectId: projectId, taskId: id })}>
             <MagnifyingGlassPlusIcon className="w-7 h-7 mr-2 stroke-2 stroke-neutral border-transparent rounded-2xl shadow-sm hover:opacity-50"></MagnifyingGlassPlusIcon>
           </Link>

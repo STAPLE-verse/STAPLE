@@ -142,14 +142,14 @@ export const ProjectTasksColumns = [
             modalTitle={
               <>
                 <span>Comments:</span>
-                <span className="italic ml-1">{info.row.original.taskName}</span>
+                <span className="italic ml-1">{info.row.original.name}</span>
               </>
             }
             buttonClassName="btn-ghost"
           >
             <ChatBox
-              taskLogId={info.getValue()?.[0]?.taskLogId}
-              initialComments={info.getValue()}
+              taskLogId={info.row.original.firstLogId!}
+              initialComments={info.row.original.comments}
               refetchComments={info.row.original.refetchTasks}
             />
           </ToggleModal>
