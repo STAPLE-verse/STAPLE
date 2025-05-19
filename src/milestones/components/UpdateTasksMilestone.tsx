@@ -7,7 +7,7 @@ import { useMutation } from "@blitzjs/rpc"
 import { UpdateTasksForMilestoneFormSchema } from "src/tasks/schemas"
 import updateTasksForMilestone from "src/tasks/mutations/updateTasksForMilestone"
 
-type UpdateTasksProps = {
+type UpdateTasksMilestoneProps = {
   milestoneId: number
   open: boolean
   onClose: () => void
@@ -15,7 +15,7 @@ type UpdateTasksProps = {
   tasks: Task[]
 }
 
-const UpdateTasks: React.FC<UpdateTasksProps> = ({
+const UpdateTasksMilestone: React.FC<UpdateTasksMilestoneProps> = ({
   milestoneId,
   open,
   onClose,
@@ -73,4 +73,4 @@ const UpdateTasks: React.FC<UpdateTasksProps> = ({
   )
 }
 
-export default UpdateTasks
+export default UpdateTasksMilestone

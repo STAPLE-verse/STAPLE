@@ -2,7 +2,7 @@ import { Routes } from "@blitzjs/next"
 import { Task, Milestone } from "@prisma/client"
 import Link from "next/link"
 import { useState } from "react"
-import UpdateTasks from "./UpdateTasks"
+import UpdateTasksMilestone from "./UpdateTasksMilestone"
 import DateFormat from "src/core/components/DateFormat"
 
 interface MilestoneItemProps {
@@ -36,11 +36,29 @@ const MilestoneItem: React.FC<MilestoneItemProps> = ({
       <div className="collapse-content">
         {/* Milestone description */}
         <p className="mb-2">{milestone.description}</p>
-        {/* Milestone last update */}
+        {/* Milestone date range */}
         <p className="italic mb-2">
-          Last update: <DateFormat date={milestone.updatedAt}></DateFormat>
+          {milestone.startDate && milestone.endDate ? (
+            <>
+              <span>
+                {`From `}
+                <DateFormat date={milestone.startDate} />
+                {` to `}
+                <DateFormat date={milestone.endDate} />
+              </span>
+            </>
+          ) : milestone.startDate ? (
+            <>
+              Start: <DateFormat date={milestone.startDate} />
+            </>
+          ) : milestone.endDate ? (
+            <>
+              End: <DateFormat date={milestone.endDate} />
+            </>
+          ) : (
+            <>No date range set</>
+          )}
         </p>
-
         {/* Tasks in the milestone */}
         <div className="divider font-medium">Tasks</div>
         <div className="flex flex-row overflow-x-auto space-x-4 pb-6">
@@ -87,7 +105,7 @@ const MilestoneItem: React.FC<MilestoneItemProps> = ({
           <button className="btn btn-secondary" onClick={openModal}>
             Update Tasks
           </button>
-          <UpdateTasks
+          <UpdateTasksMilestone
             milestoneId={milestone.id}
             open={isModalOpen}
             onClose={closeModal}
