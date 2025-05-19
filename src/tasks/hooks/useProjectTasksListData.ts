@@ -78,7 +78,7 @@ export default function useProjectTasksListData(projectId: number | undefined) {
     setQueryParams(baseParams)
   }, [privilege, currentUser, projectId, userMemberIds])
 
-  const [{ tasks: fetchedTasks }] = useQuery(
+  const [{ tasks: fetchedTasks }, { refetch }] = useQuery(
     getTasks,
     queryParams ?? {
       where: { project: { id: -1 } }, // dummy query until params are ready
@@ -87,5 +87,5 @@ export default function useProjectTasksListData(projectId: number | undefined) {
   )
 
   const tasks = processProjectTasks(fetchedTasks)
-  return { tasks }
+  return { tasks, refetchTasks: refetch }
 }

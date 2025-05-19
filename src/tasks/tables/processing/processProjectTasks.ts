@@ -13,9 +13,11 @@ export type ProjectTasksData = {
     taskId: number
     projectId: number
   }
+  comments: Comment
+  refetchTasks?: () => Promise<void>
 }
 
-export function processProjectTasks(tasks): ProjectTasksData[] {
+export function processProjectTasks(tasks, refetchTasks?: () => Promise<void>): ProjectTasksData[] {
   return tasks.map((task) => {
     const logs = task.taskLogs || []
 
@@ -53,6 +55,8 @@ export function processProjectTasks(tasks): ProjectTasksData[] {
         taskId: task.id,
         projectId: task.projectId,
       },
+      comments: task.taskLogs?.[0]?.comments ?? [],
+      refetchTasks,
     }
   })
 }
