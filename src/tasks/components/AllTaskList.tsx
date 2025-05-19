@@ -54,8 +54,6 @@ export const AllTasksList = () => {
   // process both sets so that comment counts use original taskLogs (first log for each person-task combo)
   const processedTasks = processAllTasks(latestLogs, taskLogs)
 
-  console.log(taskLogs)
-
   return (
     <Card title={""}>
       <Table columns={AllTasksColumns} data={processedTasks} addPagination={true} />

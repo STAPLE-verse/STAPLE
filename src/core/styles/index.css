@@ -641,3 +641,9 @@ input:focus {
   padding-bottom: 0.5rem !important;
   vertical-align: middle;
 }
+
+.CircularProgressbar-text {
+  text-anchor: middle;
+  dominant-baseline: middle;
+  text-align: center;
+}

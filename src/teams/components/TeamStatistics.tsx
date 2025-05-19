@@ -58,7 +58,7 @@ export const TeamStatistics = ({ teamId, projectId }) => {
   const rolePieData = roleDistribution(tasks)
 
   return (
-    <CollapseCard title={"Team Statistics"} className="w-full">
+    <CollapseCard title={"Team Statistics"} className="w-full" defaultOpen={true}>
       <div className="stats bg-base-300 text-lg font-bold w-full">
         {/* Task Status */}
         <div className="stat place-items-center">

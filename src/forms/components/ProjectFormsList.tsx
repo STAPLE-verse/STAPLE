@@ -32,7 +32,6 @@ export const ProjectFormsList = () => {
   })
 
   const projectFormsTableData = processProjectForms(tasks as TaskwithFormandLog[])
-  console.log(tasks)
   return (
     <Card title="">
       <Table data={projectFormsTableData} columns={ProjectFormsColumns} addPagination={true} />

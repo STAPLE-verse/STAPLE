@@ -17,7 +17,7 @@ export const TaskLogToggleModal = ({
   return (
     <ToggleModal
       buttonLabel="Edit Status"
-      buttonClassName="btn-info"
+      buttonClassName="btn-info w-full"
       modalTitle="Edit Task Completion"
       saveButton={true}
     >

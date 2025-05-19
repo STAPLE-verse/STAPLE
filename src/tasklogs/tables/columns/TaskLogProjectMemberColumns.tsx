@@ -7,15 +7,14 @@ import ChatBox from "src/comments/components/ChatBox"
 
 import {
   ChatBubbleOvalLeftEllipsisIcon,
-  DocumentTextIcon,
   HandRaisedIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline"
+import { TaskLogTaskCompleted } from "src/core/types"
+import Link from "next/link"
+import { Routes } from "@blitzjs/next"
 import TaskLogHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
 import { Tooltip } from "react-tooltip"
-import { Routes } from "@blitzjs/next"
-import Link from "next/link"
-import { TaskLogTaskCompleted } from "src/core/types"
 import { TaskLogSchemaModal } from "src/tasklogs/components/TaskLogSchemaModal"
 import { TaskLogToggleModal } from "src/tasklogs/components/TaskLogToggleModal"
 
@@ -29,7 +28,18 @@ const columnHelper = createColumnHelper<ProcessedTaskLog>()
 // Table for assignment with a form
 export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
   columnHelper.accessor("taskName", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => {
+      const name = info.getValue()
+      const taskLog = info.row.original.taskLog as TaskLogTaskCompleted
+      const taskId = taskLog.task.id
+      const projectId = taskLog.task.projectId
+      const displayName = name.length > 20 ? `${name.slice(0, 20)}...` : name
+      return (
+        <Link href={Routes.TasksPage({ taskId, projectId })}>
+          <button className="btn btn-primary w-full ">{displayName}</button>
+        </Link>
+      )
+    },
     header: "Task",
     id: "task",
   }),
@@ -93,7 +103,6 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
     cell: (info) => {
       const { schema, refetchTaskData } = info.row.original
       const taskLog = info.getValue()
-      console.log(taskLog)
       return schema ? (
         <TaskLogSchemaModal taskLog={taskLog} refetchTaskData={refetchTaskData} />
       ) : (
@@ -108,7 +117,6 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
     enableSorting: false,
     cell: (info) => {
       const hasNewComments = (info.row.original.newCommentsCount ?? 0) > 0
-      console.log(info.getValue())
       return (
         <div className="flex">
           <ToggleModal

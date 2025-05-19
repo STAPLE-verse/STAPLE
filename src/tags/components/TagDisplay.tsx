@@ -43,7 +43,7 @@ const TagDisplay = () => {
 
   const handleTagClick = (index) => {
     const selectedTag = uniqueTags[index]
-    console.log("Tag clicked:", selectedTag?.text)
+    //console.log("Tag clicked:", selectedTag?.text)
     setSelectedTag(selectedTag!.text)
   }
 

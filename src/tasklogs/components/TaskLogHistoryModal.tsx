@@ -46,6 +46,7 @@ export const TaskLogHistoryModal = ({
   return (
     <ToggleModal
       buttonLabel="Show History"
+      buttonClassName="w-full"
       modalTitle={
         <div className="flex justify-center items-center">
           Task History
