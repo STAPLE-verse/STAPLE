@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Gantt, Task as GanttTask, ViewMode } from "gantt-task-react"
 import { useMutation } from "@blitzjs/rpc"
 import { MilestoneWithTasks } from "src/core/types"
@@ -22,13 +22,26 @@ const GanttChart = ({ milestones, onDataChange }: GanttChartProps) => {
   const [updateMilestoneDatesMutation] = useMutation(updateMilestoneDates)
   const [updateTaskDatesMutation] = useMutation(updateTaskDates)
 
+  const [modalOpen, setModalOpen] = useState(false)
+
   // Filter out milestones and tasks with missing dates
   const missingRows = useMemo(() => getMissingMilestoneAndTaskRows(milestones), [milestones])
 
   // Transform milestones and tasks to Gantt tasks
-  const ganttTasks = useMemo(() => transformMilestonesToGanttTasks(milestones), [milestones])
+  const baseTasks = useMemo(() => transformMilestonesToGanttTasks(milestones), [milestones])
 
-  const [modalOpen, setModalOpen] = useState(false)
+  const [tasks, setTasks] = useState<GanttTask[]>([])
+  useEffect(() => {
+    // initialize on mount & whenever milestones change
+    setTasks(baseTasks)
+  }, [baseTasks])
+
+  const handleExpanderClick = (tsk: GanttTask) => {
+    if (tsk.type !== "project") return
+    setTasks((prev) =>
+      prev.map((t) => (t.id === tsk.id ? { ...t, hideChildren: !t.hideChildren } : t))
+    )
+  }
 
   const handleDateChange = async (task: GanttTask) => {
     if (privilege !== MemberPrivileges.PROJECT_MANAGER) {
@@ -69,14 +82,15 @@ const GanttChart = ({ milestones, onDataChange }: GanttChartProps) => {
   return (
     <>
       <div className="flex flex-col justify-end mb-4">
-        {ganttTasks.length > 0 ? (
+        {tasks.length > 0 ? (
           // Render the chart when there’s data
           <div className="gantt-wrapper" style={{ position: "relative", overflow: "visible" }}>
             <Gantt
-              tasks={ganttTasks}
+              tasks={tasks}
               viewMode={ViewMode.Day}
               onDateChange={handleDateChange}
               onProgressChange={() => {}}
+              onExpanderClick={handleExpanderClick}
             />
           </div>
         ) : (

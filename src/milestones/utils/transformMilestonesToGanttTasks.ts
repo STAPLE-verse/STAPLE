@@ -6,6 +6,8 @@ export const transformMilestonesToGanttTasks = (milestones: MilestoneWithTasks[]
   const out: GanttTask[] = []
 
   for (const m of milestones) {
+    const parentId = `milestone-${m.id}`
+
     // Only consider tasks that have a deadline
     const validTasks = m.task.filter((t) => t.deadline)
 
@@ -40,14 +42,15 @@ export const transformMilestonesToGanttTasks = (milestones: MilestoneWithTasks[]
 
     // 4) Emit the milestone bar
     out.push({
-      id: `milestone-${m.id}`,
+      id: parentId,
       name: m.name,
       start: milestoneStart,
       end: milestoneEnd,
       type: "project",
       progress: milestoneProgress,
-      isDisabled: true,
+      isDisabled: false,
       dependencies: [],
+      hideChildren: false,
     })
 
     // 5) Emit each child task bar, only for tasks with a deadline
@@ -57,6 +60,7 @@ export const transformMilestonesToGanttTasks = (milestones: MilestoneWithTasks[]
 
       out.push({
         id: `task-${t.id}`,
+        project: parentId,
         name: t.name,
         start: t.startDate ? new Date(t.startDate) : new Date(t.createdAt),
         end: new Date(t.deadline!),
