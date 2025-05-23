@@ -9,6 +9,7 @@ import {
   KanbanBoard,
   FormVersion,
   Milestone,
+  Status,
 } from "db"
 import { ReactNode } from "react"
 
@@ -151,8 +152,17 @@ export type BreadcrumbItem = {
   isValid: boolean
 }
 
+export type ProjectMemberRef = { id: number }
+
+export type TaskWithTaskLogs = Task & {
+  assignedMembers: ProjectMemberRef[]
+  taskLogs: {
+    id: number
+    status: Status
+    createdAt: Date
+    assignedToId: number
+  }[]
+}
 export type MilestoneWithTasks = Milestone & {
-  task: (Task & {
-    assignedMembers: ProjectMemberWithTaskLog[]
-  })[]
+  task: TaskWithTaskLogs[]
 }

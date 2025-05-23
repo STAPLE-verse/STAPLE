@@ -1,6 +1,6 @@
 import { Task as GanttTask } from "gantt-task-react"
 import { MilestoneWithTasks } from "src/core/types"
-import { calculateProgressFromAssignedMembers } from "src/tasklogs/utils/calculateProgressFromAssignedMembers"
+import { calculateProgressForTask } from "src/tasklogs/utils/calculateProgressForTask"
 
 export const transformMilestonesToGanttTasks = (milestones: MilestoneWithTasks[]): GanttTask[] => {
   const out: GanttTask[] = []
@@ -55,9 +55,9 @@ export const transformMilestonesToGanttTasks = (milestones: MilestoneWithTasks[]
 
     // 5) Emit each child task bar, only for tasks with a deadline
     for (const t of validTasks) {
-      const { completed, all } = calculateProgressFromAssignedMembers(t.assignedMembers)
+      const { completed, all } = calculateProgressForTask(t.assignedMembers, t.taskLogs)
       const taskProgress = all > 0 ? Math.round((completed / all) * 100) : 0
-
+      console.log(t.id, taskProgress)
       out.push({
         id: `task-${t.id}`,
         project: parentId,

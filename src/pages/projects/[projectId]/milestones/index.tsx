@@ -35,19 +35,17 @@ const Milestones = () => {
       include: {
         task: {
           include: {
+            // pull the IDs so we know who’s assigned
             assignedMembers: {
-              include: {
-                users: {
-                  select: { id: true, username: true },
-                },
-                taskLogAssignedTo: {
-                  select: {
-                    id: true,
-                    status: true,
-                    createdAt: true,
-                    assignedToId: true,
-                  },
-                },
+              select: { id: true },
+            },
+            // pull only this task’s logs
+            taskLogs: {
+              select: {
+                id: true,
+                status: true,
+                createdAt: true,
+                assignedToId: true,
               },
             },
           },
