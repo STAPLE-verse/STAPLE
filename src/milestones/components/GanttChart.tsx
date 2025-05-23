@@ -27,14 +27,11 @@ const GanttChart = ({ milestones, onDataChange }: GanttChartProps) => {
   // Filter out milestones and tasks with missing dates
   const missingRows = useMemo(() => getMissingMilestoneAndTaskRows(milestones), [milestones])
 
-  // Transform milestones and tasks to Gantt tasks
-  const baseTasks = useMemo(() => transformMilestonesToGanttTasks(milestones), [milestones])
+  const [tasks, setTasks] = useState<GanttTask[]>(() => transformMilestonesToGanttTasks(milestones))
 
-  const [tasks, setTasks] = useState<GanttTask[]>([])
   useEffect(() => {
-    // initialize on mount & whenever milestones change
-    setTasks(baseTasks)
-  }, [baseTasks])
+    setTasks(transformMilestonesToGanttTasks(milestones))
+  }, [milestones])
 
   const handleExpanderClick = (tsk: GanttTask) => {
     if (tsk.type !== "project") return
@@ -44,6 +41,10 @@ const GanttChart = ({ milestones, onDataChange }: GanttChartProps) => {
   }
 
   const handleDateChange = async (task: GanttTask) => {
+    setTasks((prev) =>
+      prev.map((t) => (t.id === task.id ? { ...t, start: task.start, end: task.end } : t))
+    )
+
     if (privilege !== MemberPrivileges.PROJECT_MANAGER) {
       toast.error("You don't have permission to update dates.")
       return
