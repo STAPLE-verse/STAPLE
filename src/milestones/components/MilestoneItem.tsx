@@ -1,34 +1,34 @@
 import { Routes } from "@blitzjs/next"
-import { Task, Milestone } from "@prisma/client"
 import Link from "next/link"
 import { useState } from "react"
 import UpdateTasksMilestone from "./UpdateTasksMilestone"
-import DateFormat from "src/core/components/DateFormat"
+import { MilestoneWithTasks } from "src/core/types"
+import { Task } from "db"
+import DateRange from "src/core/components/DateRange"
 
 interface MilestoneItemProps {
   key: number | string
-  milestone: Milestone
+  milestone: MilestoneWithTasks
   projectId: number
-  tasks: Task[]
   onTasksUpdated: () => void
+  tasks: Task[]
 }
 
 const MilestoneItem: React.FC<MilestoneItemProps> = ({
   milestone,
   projectId,
-  tasks,
   onTasksUpdated,
+  tasks,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
 
-  // Filter tasks to get only the tasks for the current milestone
-  const milestoneTasks = tasks.filter((task) => task.milestoneId === milestone.id)
+  const milestoneTasks = tasks.filter((t) => t.milestoneId === milestone.id)
 
   return (
-    <div className="collapse collapse-arrow bg-base-300 mb-2" key={milestone.id}>
+    <div className="collapse collapse-arrow bg-base-100 mb-2" key={milestone.id}>
       {/* Don't change this one it's not a check box */}
       <input type="checkbox" />
       {/* Milestone name */}
@@ -38,46 +38,32 @@ const MilestoneItem: React.FC<MilestoneItemProps> = ({
         <p className="mb-2">{milestone.description}</p>
         {/* Milestone date range */}
         <p className="italic mb-2">
-          {milestone.startDate && milestone.endDate ? (
-            <>
-              <span>
-                {`From `}
-                <DateFormat date={milestone.startDate} />
-                {` to `}
-                <DateFormat date={milestone.endDate} />
-              </span>
-            </>
-          ) : milestone.startDate ? (
-            <>
-              Start: <DateFormat date={milestone.startDate} />
-            </>
-          ) : milestone.endDate ? (
-            <>
-              End: <DateFormat date={milestone.endDate} />
-            </>
-          ) : (
-            <>No date range set</>
-          )}
+          <DateRange
+            start={milestone.startDate}
+            end={milestone.endDate}
+            emptyText="No date range set"
+            className="italic"
+          />
         </p>
         {/* Tasks in the milestone */}
         <div className="divider font-medium">Tasks</div>
         <div className="flex flex-row overflow-x-auto space-x-4 pb-6">
           {milestoneTasks && milestoneTasks.length > 0 ? (
             milestoneTasks.map((task) => (
-              <div key={task.id} className="card bg-base-100 text-base-content flex-shrink-0 w-1/4">
+              <div key={task.id} className="card bg-base-300 text-base-content flex-shrink-0 w-1/4">
                 <div className="card-body">
                   {/* Task name */}
                   <div className="card-title text-base-content justify-center">{task.name}</div>
                   {task.description && <div>{task.description.substring(0, 50)}</div>}
-                  {task.deadline ? (
-                    <p className="italic mb-2">
-                      Deadline: <DateFormat date={task.deadline}></DateFormat>
-                    </p>
-                  ) : (
-                    <p className="italic mb-2">No deadline</p>
-                  )}
+                  <p className="italic mb-2">
+                    <DateRange
+                      start={task.startDate}
+                      end={task.deadline}
+                      emptyText="No deadline set"
+                      className="italic"
+                    />
+                  </p>
                 </div>
-                {/* TODO: Possibly add more information for the tasks */}
                 {/* Show task page */}
                 <div className="card-actions justify-center mb-2">
                   <Link

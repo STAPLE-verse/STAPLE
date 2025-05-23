@@ -9,6 +9,8 @@ import { MemberPrivilegesProvider } from "src/projectprivileges/components/Membe
 import { TooltipProvider } from "src/core/components/TooltipContext"
 import { useSession } from "@blitzjs/auth"
 import { BreadcrumbCacheProvider } from "src/core/components/BreadcrumbCacheContext"
+import "gantt-task-react/dist/index.css"
+import "src/styles/gantt-theme-override.css" // Custom override styles
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {

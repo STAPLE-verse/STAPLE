@@ -23,8 +23,3 @@ i {
 * {
   box-sizing: border-box;
 }
-
-/* Disable progress slider on gantt chart */
-.gantt-wrapper svg polygon[points] {
-  display: none !important;
-}

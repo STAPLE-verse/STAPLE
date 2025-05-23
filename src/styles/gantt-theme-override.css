@@ -1,0 +1,13 @@
+/* 1) Let every layer inside our wrapper spill out */
+.gantt-wrapper,
+.gantt-wrapper > div,          /* the library’s inner div */
+.gantt-wrapper > div > svg {
+  /* the actual <svg> grid */
+  overflow: visible !important;
+  position: relative !important;
+}
+
+/* 2) Elevate the tooltip container above everything */
+[class*="tooltipDetailsContainer"] {
+  z-index: 9999 !important;
+}

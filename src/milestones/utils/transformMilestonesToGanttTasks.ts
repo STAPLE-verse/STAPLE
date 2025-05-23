@@ -6,30 +6,43 @@ export const transformMilestonesToGanttTasks = (milestones: MilestoneWithTasks[]
   const out: GanttTask[] = []
 
   for (const m of milestones) {
+    // Only consider tasks that have a deadline
     const validTasks = m.task.filter((t) => t.deadline)
 
-    if (validTasks.length === 0) continue
+    // if no explicit endDate AND no valid tasks, skip this milestone entirely
+    if (!m.endDate && validTasks.length === 0) {
+      continue
+    }
 
-    const milestoneStart = m.startDate ?? m.createdAt
+    // 1) Compute milestone start: either the stored startDate or createdAt
+    const milestoneStart = m.startDate ? new Date(m.startDate) : new Date(m.createdAt)
 
-    const milestoneEnd =
-      m.endDate ??
-      new Date(
-        Math.max(
-          ...validTasks
-            .map((t) => t.deadline)
-            .filter(Boolean)
-            .map((d) => new Date(d!).getTime())
-        )
-      )
+    // 2) Compute milestone end:
+    //   • If m.endDate exists, use it
+    //   • Else if any validTasks exist, pick the latest deadline
+    let milestoneEnd: Date
+    if (m.endDate) {
+      milestoneEnd = new Date(m.endDate)
+    } else {
+      const latestDeadline = validTasks
+        .map((t) => new Date(t.deadline!).getTime())
+        .reduce((a, b) => Math.max(a, b), 0)
+      milestoneEnd = new Date(latestDeadline)
+    }
 
-    const completedTasksCount = validTasks.filter((t) => t.status === "COMPLETED").length
-    const milestoneProgress = Math.round((completedTasksCount / validTasks.length) * 100)
+    // 3) Compute milestone progress: percent of validTasks with status === "COMPLETED"
+    const milestoneProgress =
+      validTasks.length > 0
+        ? Math.round(
+            (validTasks.filter((t) => t.status === "COMPLETED").length / validTasks.length) * 100
+          )
+        : 0
 
+    // 4) Emit the milestone bar
     out.push({
       id: `milestone-${m.id}`,
       name: m.name,
-      start: new Date(milestoneStart),
+      start: milestoneStart,
       end: milestoneEnd,
       type: "project",
       progress: milestoneProgress,
@@ -37,6 +50,7 @@ export const transformMilestonesToGanttTasks = (milestones: MilestoneWithTasks[]
       dependencies: [],
     })
 
+    // 5) Emit each child task bar, only for tasks with a deadline
     for (const t of validTasks) {
       const { completed, all } = calculateProgressFromAssignedMembers(t.assignedMembers)
       const taskProgress = all > 0 ? Math.round((completed / all) * 100) : 0
@@ -49,7 +63,7 @@ export const transformMilestonesToGanttTasks = (milestones: MilestoneWithTasks[]
         type: "task",
         progress: taskProgress,
         isDisabled: false,
-        dependencies: [m.id.toString()],
+        dependencies: [`milestone-${m.id}`],
       })
     }
   }

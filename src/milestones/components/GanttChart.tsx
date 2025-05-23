@@ -1,63 +1,27 @@
 import React, { useMemo, useState } from "react"
 import { Gantt, Task as GanttTask, ViewMode } from "gantt-task-react"
-import "gantt-task-react/dist/index.css"
-import { useMutation, useQuery } from "@blitzjs/rpc"
-import getMilestones from "../queries/getMilestones"
+import { useMutation } from "@blitzjs/rpc"
 import { MilestoneWithTasks } from "src/core/types"
 import MissingDatesModal from "./MissingDatesModal"
 import { getMissingMilestoneAndTaskRows } from "../utils/ganttRowHelpers"
 import { transformMilestonesToGanttTasks } from "../utils/transformMilestonesToGanttTasks"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
-// import getProject from "src/projects/queries/getProject"
 import updateMilestoneDates from "../mutations/updateMilestoneDates"
 import updateTaskDates from "src/tasks/mutations/updateTaskDates"
 import toast from "react-hot-toast"
 import { MemberPrivileges } from "db"
 
 interface GanttChartProps {
-  projectId: number
+  milestones: MilestoneWithTasks[]
+  onDataChange: () => void
 }
 
-const GanttChart = ({ projectId }: GanttChartProps) => {
+const GanttChart = ({ milestones, onDataChange }: GanttChartProps) => {
   const { privilege } = useMemberPrivileges()
-  // const [project] = useQuery(getProject, {
-  //   id: projectId,
-  // })
 
   const [updateMilestoneDatesMutation] = useMutation(updateMilestoneDates)
   const [updateTaskDatesMutation] = useMutation(updateTaskDates)
 
-  // Fetch milestones and tasks
-  const [{ milestones: fetchedMilestones }, { refetch }] = useQuery(getMilestones, {
-    where: { projectId },
-    include: {
-      task: {
-        include: {
-          assignedMembers: {
-            include: {
-              taskLogAssignedTo: {
-                select: {
-                  id: true,
-                  status: true,
-                  createdAt: true,
-                  assignedToId: true,
-                },
-              },
-              users: {
-                select: {
-                  id: true,
-                  username: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    orderBy: { id: "asc" },
-  })
-
-  const milestones = fetchedMilestones as MilestoneWithTasks[]
   // Filter out milestones and tasks with missing dates
   const missingRows = useMemo(() => getMissingMilestoneAndTaskRows(milestones), [milestones])
 
@@ -66,18 +30,11 @@ const GanttChart = ({ projectId }: GanttChartProps) => {
 
   const [modalOpen, setModalOpen] = useState(false)
 
-  const onDateChange = async (task: GanttTask) => {
+  const handleDateChange = async (task: GanttTask) => {
     if (privilege !== MemberPrivileges.PROJECT_MANAGER) {
       toast.error("You don't have permission to update dates.")
       return
     }
-
-    // const minDate = new Date(project.createdAt)
-
-    // if (task.start < minDate) {
-    //   toast.error("Start date cannot be before the project start date.")
-    //   return
-    // }
 
     const rawId = task.id.replace(/^(task-|milestone-)/, "") // remove prefix
     const numericId = Number(rawId)
@@ -102,7 +59,7 @@ const GanttChart = ({ projectId }: GanttChartProps) => {
         })
       }
       toast.success("Dates updated successfully.")
-      await refetch()
+      await onDataChange()
     } catch (error) {
       console.error("Failed to update task/milestone:", error)
       toast.error("Failed to update dates.")
@@ -112,15 +69,22 @@ const GanttChart = ({ projectId }: GanttChartProps) => {
   return (
     <>
       <div className="flex flex-col justify-end mb-4">
-        <div className="gantt-wrapper">
-          <Gantt
-            tasks={ganttTasks}
-            viewMode={ViewMode.Day}
-            columnWidth={65}
-            onDateChange={onDateChange}
-            onProgressChange={() => {}}
-          />
-        </div>
+        {ganttTasks.length > 0 ? (
+          // Render the chart when there’s data
+          <div className="gantt-wrapper" style={{ position: "relative", overflow: "visible" }}>
+            <Gantt
+              tasks={ganttTasks}
+              viewMode={ViewMode.Day}
+              onDateChange={handleDateChange}
+              onProgressChange={() => {}}
+            />
+          </div>
+        ) : (
+          // Otherwise show a simple placeholder
+          <div className="flex items-center justify-center py-12 text-gray-600">
+            No milestones or tasks with valid dates to display.
+          </div>
+        )}
         <div className="mt-4">
           <button
             className="btn btn-primary"
@@ -137,7 +101,7 @@ const GanttChart = ({ projectId }: GanttChartProps) => {
         onClose={() => setModalOpen(false)}
         onDatesUpdated={async () => {
           setModalOpen(false)
-          await refetch()
+          await onDataChange()
         }}
       />
     </>
