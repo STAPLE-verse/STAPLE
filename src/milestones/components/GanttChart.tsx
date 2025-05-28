@@ -11,6 +11,106 @@ import updateTaskDates from "src/tasks/mutations/updateTaskDates"
 import toast from "react-hot-toast"
 import { MemberPrivileges } from "db"
 
+export const CustomTaskListHeader: React.FC<{
+  headerHeight: number
+  rowWidth: string
+  fontFamily: string
+  fontSize: string
+}> = ({ headerHeight, rowWidth, fontFamily, fontSize }) => {
+  return (
+    <div
+      style={{
+        height: headerHeight,
+        display: "flex",
+        fontFamily,
+        fontSize,
+        backgroundColor: "oklch(var(--b1))",
+        fontWeight: "bold",
+        color: "oklch(var(--s))",
+      }}
+    >
+      <div
+        style={{
+          minWidth: rowWidth,
+          maxWidth: rowWidth,
+          flexShrink: 0,
+          paddingLeft: "8px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        Name
+      </div>
+      <div
+        style={{
+          minWidth: rowWidth,
+          maxWidth: rowWidth,
+          flexShrink: 0,
+          paddingLeft: "8px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        From
+      </div>
+      <div
+        style={{
+          minWidth: rowWidth,
+          maxWidth: rowWidth,
+          flexShrink: 0,
+          paddingLeft: "8px",
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        To
+      </div>
+    </div>
+  )
+}
+
+export const CustomTaskListTable: React.FC<{
+  rowHeight: number
+  rowWidth: string
+  fontFamily: string
+  fontSize: string
+  tasks: GanttTask[]
+  selectedTaskId: string
+  onExpanderClick: (task: GanttTask) => void
+}> = ({ rowHeight, fontFamily, fontSize, tasks, selectedTaskId, onExpanderClick }) => {
+  return (
+    <div>
+      {tasks.map((task) => (
+        <div
+          key={task.id}
+          className={`flex items-center border-b border-base-200 ${
+            task.id === selectedTaskId ? "bg-primary text-primary-content" : "bg-base-100"
+          }`}
+          style={{
+            height: rowHeight,
+            fontFamily,
+            fontSize,
+          }}
+        >
+          <div className="min-w-[155px] max-w-[155px] px-2 font-semibold truncate flex items-center space-x-1">
+            {task.type === "project" && (
+              <button
+                onClick={() => onExpanderClick(task)}
+                className="text-secondary hover:text-secondary-focus"
+              >
+                {task.hideChildren ? "▶" : "▼"}
+              </button>
+            )}
+            <span>{task.name}</span>
+          </div>
+          <div className="min-w-[155px] max-w-[155px] px-2">{task.start.toLocaleDateString()}</div>
+          <div className="min-w-[155px] max-w-[155px] px-2">{task.end.toLocaleDateString()}</div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 interface GanttChartProps {
   milestones: MilestoneWithTasks[]
   onDataChange: () => void
@@ -92,6 +192,14 @@ const GanttChart = ({ milestones, onDataChange }: GanttChartProps) => {
               onDateChange={handleDateChange}
               onProgressChange={() => {}}
               onExpanderClick={handleExpanderClick}
+              fontFamily="var(--font-sans)"
+              fontSize="1rem"
+              barBackgroundColor="oklch(var(--bc))"
+              barProgressColor="oklch(var(--p))"
+              arrowColor="oklch(var(--s))"
+              todayColor="oklch(var(--n))"
+              TaskListHeader={CustomTaskListHeader}
+              TaskListTable={CustomTaskListTable}
             />
           </div>
         ) : (

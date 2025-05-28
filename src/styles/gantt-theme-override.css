@@ -1,3 +1,49 @@
 .gantt-wrapper svg polygon {
   display: none !important;
 }
+
+.gantt-wrapper .bar text {
+  fill: oklch(var(--t));
+  font-weight: bold;
+}
+
+/* Project bar base (including selected state) */
+.gantt-wrapper .bar > g > g > rect:first-child {
+  fill: oklch(var(--bc)) !important;
+}
+
+/* Project bar progress (second rect, even when selected) */
+.gantt-wrapper .bar > g > g > rect:nth-child(2) {
+  fill: oklch(var(--p)) !important;
+}
+
+/* Project progress bar inner (15px height) */
+.gantt-wrapper .bar > g > g > rect[height="15"] {
+  fill: oklch(var(--s)) !important;
+}
+
+/* Main table body grid */
+.gantt-wrapper .grid .rows rect:nth-child(odd) {
+  fill: oklch(var(--b1)) !important;
+}
+
+.gantt-wrapper .grid .rows rect:nth-child(even) {
+  fill: oklch(var(--b2)) !important;
+}
+
+/* Background color of the calendar row */
+.gantt-wrapper .calendar rect {
+  fill: oklch(var(--bc)) !important;
+}
+
+/* Day text (e.g., "Tue, 17") */
+.gantt-wrapper .calendar > text {
+  fill: oklch(var(--pc)) !important;
+  font-weight: bold;
+}
+
+/* Month text (e.g., "May") */
+.gantt-wrapper .calendarTop text {
+  fill: oklch(var(--s)) !important;
+  font-weight: bold;
+}
