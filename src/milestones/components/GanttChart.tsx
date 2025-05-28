@@ -11,6 +11,30 @@ import updateTaskDates from "src/tasks/mutations/updateTaskDates"
 import toast from "react-hot-toast"
 import { MemberPrivileges } from "db"
 
+const CustomTooltip: React.FC<{ task: GanttTask }> = ({ task }) => {
+  return (
+    <div
+      style={{
+        background: "oklch(var(--b1))",
+        color: "oklch(var(--s))",
+        padding: "0.75rem 1rem",
+        borderRadius: "0.5rem",
+        fontFamily: "var(--font-sans)",
+        fontSize: "1rem",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+        pointerEvents: "none",
+        maxWidth: "300px",
+      }}
+    >
+      <strong>
+        {task.name}: {task.start.toLocaleDateString()} – {task.end.toLocaleDateString()}
+      </strong>
+      <p>Duration: {Math.ceil((+task.end - +task.start) / 86400000)} day(s)</p>
+      <p>Progress: {task.progress} %</p>
+    </div>
+  )
+}
+
 export const CustomTaskListHeader: React.FC<{
   headerHeight: number
   rowWidth: string
@@ -197,9 +221,10 @@ const GanttChart = ({ milestones, onDataChange }: GanttChartProps) => {
               barBackgroundColor="oklch(var(--bc))"
               barProgressColor="oklch(var(--p))"
               arrowColor="oklch(var(--s))"
-              todayColor="oklch(var(--n))"
+              todayColor="oklch(var(--b3))"
               TaskListHeader={CustomTaskListHeader}
               TaskListTable={CustomTaskListTable}
+              TooltipContent={CustomTooltip}
             />
           </div>
         ) : (

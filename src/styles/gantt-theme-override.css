@@ -3,13 +3,15 @@
 }
 
 .gantt-wrapper .bar text {
-  fill: oklch(var(--t));
+  fill: oklch(var(--pc));
   font-weight: bold;
 }
 
 /* Project bar base (including selected state) */
 .gantt-wrapper .bar > g > g > rect:first-child {
   fill: oklch(var(--bc)) !important;
+  opacity: 1 !important;
+  fill-opacity: 1 !important;
 }
 
 /* Project bar progress (second rect, even when selected) */
