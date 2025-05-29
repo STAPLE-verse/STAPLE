@@ -20,6 +20,7 @@ import getMilestones from "src/milestones/queries/getMilestones"
 import DateField from "src/core/components/fields/DateField"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import LabeledTextAreaField from "src/core/components/fields/LabeledTextAreaField"
 
 export type Tag = {
   id: string
@@ -169,16 +170,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           optionText="name"
           optionValue="id"
         />
-        <DateField name="deadline" label="Deadline:" />
-        <LabelSelectField
-          className="select w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
-          name="milestoneId"
-          label="Assign milestone:"
-          options={milestones}
-          optionText="name"
-          optionValue="id"
-          disableFirstOption={false}
-        />
+
         <label>At least one:</label>
         <ValidationErrorDisplay fieldName={"projectMembersId"} />
         {/* Contributors */}
@@ -210,6 +202,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           placeholder="Add Instructions"
           type="textarea"
         />
+
         {/* Deadline */}
         <DateField name="deadline" label="Deadline:" />
 
@@ -237,10 +230,10 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       <CollapseCard title="Organization: Milestones, Tags">
         {/* Elements */}
         <LabelSelectField
-          className="select w-1/2 text-primary select-primary select-bordered border-2 bg-base-300 mb-4"
-          name="elementId"
-          label="Assign Element:"
-          options={elements}
+          className="select w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
+          name="milestoneId"
+          label="Assign milestone:"
+          options={milestones}
           optionText="name"
           optionValue="id"
           disableFirstOption={false}
