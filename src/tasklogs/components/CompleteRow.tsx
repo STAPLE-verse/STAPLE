@@ -9,8 +9,23 @@ import { useQuery } from "@blitzjs/rpc"
 import getComments from "src/comments/queries/getComments"
 import { useState } from "react"
 import { CompletedAs as CompletedAsType } from "db"
+import { ExtendedTaskLog } from "src/core/types"
 
-export const CompleteRow = ({ taskLogs, completedById, completedAs, schema, ui, isSchema }) => {
+export const CompleteRow = ({
+  taskLogs,
+  completedById,
+  completedAs,
+  schema,
+  ui,
+  isSchema,
+}: {
+  taskLogs: ExtendedTaskLog[]
+  completedById: any
+  completedAs: any
+  schema: any
+  ui: any
+  isSchema: boolean
+}) => {
   const latestTaskLog = filterLatestTaskLog(taskLogs)
 
   // New taskLogs are created for each completion, so we can use the first task log to get the comments
@@ -18,7 +33,6 @@ export const CompleteRow = ({ taskLogs, completedById, completedAs, schema, ui, 
   const [comments] = useQuery(getComments, { where: { taskLogId: firstTaskLog!.id } })
 
   const [isOpen, setIsOpen] = useState(true) // Collapse state
-  const [isModalOpen, setIsModalOpen] = useState(false) // Modal state
 
   const buttonLabel =
     latestTaskLog?.completedAs === CompletedAsType.TEAM
@@ -47,16 +61,11 @@ export const CompleteRow = ({ taskLogs, completedById, completedAs, schema, ui, 
               taskLog={latestTaskLog}
               completedById={completedById}
               completedAs={completedAs}
+              refetchTaskData={() => {}}
             />
           )}
           {/* Task Log History Modal */}
-          <TaskLogHistoryModal
-            taskLogs={taskLogs}
-            schema={schema}
-            ui={ui}
-            isModalOpen={isModalOpen} // Pass isModalOpen prop
-            setIsModalOpen={setIsModalOpen} // Pass the function to toggle the modal
-          />
+          <TaskLogHistoryModal taskLogs={taskLogs} schema={schema} ui={ui} />
         </div>
         {/* Chat Section */}
         <div className="mt-2">
