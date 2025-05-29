@@ -21,9 +21,14 @@ export const isValidPath = (href: string): boolean => {
 export const Breadcrumbs = () => {
   const router = useRouter()
 
-  const pathSegments = router.asPath.split("/").filter(Boolean)
+  // drop any querystring before splitting
+  const rawPath = router.asPath ?? ""
+  const basePath = rawPath.split("?")[0] || ""
+  const pathSegments = basePath.split("/").filter((seg) => seg.length > 0)
+
   const namesCache = useBreadcrumbNames(pathSegments)
   const breadcrumbs = pathSegments.map((segment, index) => {
+    // build the href without any query
     const href = "/" + pathSegments.slice(0, index + 1).join("/")
     const prev = pathSegments[index - 1]
 

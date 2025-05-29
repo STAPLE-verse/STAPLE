@@ -1,14 +1,11 @@
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
-import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import getColumns from "../queries/getColumns"
-import getElements from "src/elements/queries/getElements"
 import { useQuery } from "@blitzjs/rpc"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
-import DateField from "src/core/components/fields/DateField"
 import { z } from "zod"
 import AddRoleInput from "src/roles/components/AddRoleInput"
 import ToggleModal from "src/core/components/ToggleModal"
@@ -19,6 +16,8 @@ import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManag
 import { useState } from "react"
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
 import CollapseCard from "src/core/components/CollapseCard"
+import getMilestones from "src/milestones/queries/getMilestones"
+import DateField from "src/core/components/fields/DateField"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 
@@ -42,8 +41,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     where: { project: { id: projectId! } },
   })
 
-  // Elements
-  const [{ elements: elements }] = useQuery(getElements, {
+  // Milestones
+  const [{ milestones: milestones }] = useQuery(getMilestones, {
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
   })
@@ -170,7 +169,17 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           optionText="name"
           optionValue="id"
         />
-        <label>Assign at least one person or team:</label>
+        <DateField name="deadline" label="Deadline:" />
+        <LabelSelectField
+          className="select w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
+          name="milestoneId"
+          label="Assign milestone:"
+          options={milestones}
+          optionText="name"
+          optionValue="id"
+          disableFirstOption={false}
+        />
+        <label>At least one:</label>
         <ValidationErrorDisplay fieldName={"projectMembersId"} />
         {/* Contributors */}
         <ToggleModal

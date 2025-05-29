@@ -14,9 +14,6 @@ export default resolver.pipe(
   resolver.authorize(),
   async ({ announcementText, projectId, projectMembersId = [], teamsId = [] }) => {
     const selectedIds = [...projectMembersId, ...teamsId]
-    console.log("Received projectMembersId:", projectMembersId)
-    console.log("Received teamsId:", teamsId)
-    console.log("Combined selectedIds:", selectedIds)
     let finalRecipients: number[] = []
 
     if (selectedIds.length === 0) {

@@ -50,9 +50,9 @@ export const ProjectSidebarItems = (projectId: number, t: TFunction): SidebarIte
     },
     {
       icon: RectangleStackIcon,
-      text: t("sidebar.project.elements"),
-      route: Routes.ElementsPage({ projectId: projectId }),
-      tooltipId: "project-elements-tooltip",
+      text: t("sidebar.project.milestones"),
+      route: Routes.MilestonesPage({ projectId: projectId }),
+      tooltipId: "project-milestones-tooltip",
       privilege: [MemberPrivileges.PROJECT_MANAGER],
     },
     {

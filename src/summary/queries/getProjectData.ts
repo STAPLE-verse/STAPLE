@@ -15,7 +15,7 @@ export default resolver.pipe(resolver.zod(GetProjectData), resolver.authorize(),
       formVersion: true,
       tasks: {
         include: {
-          element: true,
+          milestone: true,
           roles: true,
           taskLogs: true,
           formVersion: true,

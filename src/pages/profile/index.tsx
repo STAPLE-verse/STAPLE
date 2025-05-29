@@ -18,7 +18,7 @@ const ProfilePage = () => {
         <div className="text-lg">
           <div className="card bg-base-300 w-full">
             <div className="card-body">
-              <div className="card-title" data-tooltip-id="element-tool">
+              <div className="card-title" data-tooltip-id="milestone-tool">
                 Profile Information
               </div>
               <span className="font-semibold">Username:</span> {currentUser.username}

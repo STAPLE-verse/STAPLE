@@ -48,7 +48,7 @@ export default resolver.pipe(
       },
     })
 
-    const allElements = await db.element.count({
+    const allMilestones = await db.milestone.count({
       where: {
         projectId: id,
       },
@@ -123,7 +123,7 @@ export default resolver.pipe(
       allTask: allTask,
       completedTask: completedTask,
       allTeams: allTeams,
-      allElements: allElements,
+      allMilestones: allMilestones,
       completedContribRoles: completedContribRoles.length,
       completedTaskRoles: completedTaskRoles.length,
       allTaskLogs: allTaskLogs.length,

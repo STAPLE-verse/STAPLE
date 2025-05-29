@@ -7,7 +7,7 @@ import { useBreadcrumbCache } from "../components/BreadcrumbCacheContext"
 export const segmentToTypeMap: Record<string, BreadcrumbEntityType> = {
   projects: "project",
   tasks: "task",
-  elements: "element",
+  milestones: "milestone",
   teams: "team",
   contributors: "contributor",
   forms: "form",

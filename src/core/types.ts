@@ -8,7 +8,8 @@ import {
   Comment,
   KanbanBoard,
   FormVersion,
-  Element,
+  Milestone,
+  Status,
   CommentReadStatus,
   Prisma,
 } from "db"
@@ -144,7 +145,7 @@ export type TaskLogTaskCompleted = TaskLog & {
 
 export type ExtendedTask = Task & {
   container: KanbanBoard
-  element: Element | null
+  milestone: Milestone | null
   formVersion: FormVersion | null
   roles: []
   assignedMembers: ProjectMemberWithTaskLog[]
@@ -161,11 +162,32 @@ export type ProjectWithMembers = Project & {
   projectMembers: ProjectMemberWithUsers[]
 }
 
-export type BreadcrumbEntityType = "project" | "task" | "element" | "team" | "contributor" | "form"
+export type BreadcrumbEntityType =
+  | "project"
+  | "task"
+  | "milestone"
+  | "team"
+  | "contributor"
+  | "form"
 
 export type BreadcrumbItem = {
   label: ReactNode
   href: string
   isLast: boolean
   isValid: boolean
+}
+
+export type ProjectMemberRef = { id: number }
+
+export type TaskWithTaskLogs = Task & {
+  assignedMembers: ProjectMemberRef[]
+  taskLogs: {
+    id: number
+    status: Status
+    createdAt: Date
+    assignedToId: number
+  }[]
+}
+export type MilestoneWithTasks = Milestone & {
+  task: TaskWithTaskLogs[]
 }
