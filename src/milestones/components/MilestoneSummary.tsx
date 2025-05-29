@@ -75,20 +75,26 @@ export const MilestoneSummary: React.FC<MilestoneSummaryProps> = ({ milestone, p
               data={taskPercent}
               title={"Task Status"}
               tooltip={"Percent of overall tasks completed by project manager"}
+              noData={tasks.length === 0}
+              noDataText="No tasks were assigned"
             />
             {/* Form data */}
-            {tasks.length > 0 && formPercent >= 0 && (
-              <CircularPercentageWidget
-                data={formPercent}
-                title={"Form Data"}
-                tooltip={"Percent of required forms completed by contributors"}
-              />
-            )}
+
+            <CircularPercentageWidget
+              data={formPercent}
+              title={"Form Data"}
+              tooltip={"Percent of required forms completed by contributors"}
+              noData={tasks.length === 0 && formPercent <= 0}
+              noDataText="No tasks with forms were assigned"
+            />
             {/* Roles */}
             <CircularPercentageWidget
               data={rolePercent}
               title={"Roles"}
               tooltip={"Percent of tasks in this milestone with assigned roles"}
+              //erin you need to fix this
+              noData={tasks.length === 0}
+              noDataText="No tasks with roles were found"
             />
 
             {/* Delete milestone button */}
