@@ -18,6 +18,8 @@ import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
 import CollapseCard from "src/core/components/CollapseCard"
 import getMilestones from "src/milestones/queries/getMilestones"
 import DateField from "src/core/components/fields/DateField"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 export type Tag = {
   id: string
@@ -150,16 +152,16 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         }
       }}
     >
-      <CollapseCard title="Required Fields: Name, Status, People" className="mb-4">
+      <CollapseCard title="Required Fields: Name, Status, People" className="" defaultOpen={true}>
         <LabeledTextField
-          className="input w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
+          className="input w-1/2 text-primary input-primary input-bordered border-2 bg-base-300 mb-4"
           name="name"
           label="Task Name:"
           placeholder="Add Task Name"
           type="text"
         />
         <LabelSelectField
-          className="select w-1/2 text-lg text-primary select-primary select-bordered border-2 bg-base-300"
+          className="select w-1/2 text-lg text-primary select-primary select-bordered border-2 bg-base-300 mb-4"
           name="containerId"
           label="Current Status:"
           description="Status indicates the column placement on the kanban board."
@@ -183,7 +185,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         <ToggleModal
           buttonLabel="Assign Contributor(s)"
           modalTitle="Select Contributors"
-          buttonClassName="w-1/2"
+          buttonClassName="w-1/2 mb-4 mt-2"
           saveButton={true}
         >
           <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
@@ -198,63 +200,102 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           <CheckboxFieldTable name="teamsId" options={teamOptions} />
         </ToggleModal>
       </CollapseCard>
-      {/* Column */}
-      Optional: you can do this later
-      <hr></hr>
-      {/* Tag Input */}
-      <div className="w-1/2">
-        <label className="text-base-content">Tags:</label>
-        <i>
-          Use a comma, semicolon, enter, or tab to create separate tags. To edit a tag, click on it,
-          and then hit the enter key when you are finished.
-        </i>
-        <ReactTags
-          tags={tags}
-          name="tags"
-          separators={[SEPARATORS.TAB, SEPARATORS.COMMA, SEPARATORS.ENTER, SEPARATORS.SEMICOLON]}
-          handleDelete={handleDelete}
-          handleAddition={handleAddition}
-          handleDrag={handleDrag}
-          handleTagClick={handleTagClick}
-          onTagUpdate={onTagUpdate}
-          inputFieldPosition="inline"
-          editable
-          clearAll
-          onClearAll={onClearAll}
-          classNames={{
-            tags: "mt-2 p-2 rounded-md bg-base-300 react-tags-wrapper", // entire box for tags
-            tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 mb-2 text-lg",
-            remove: "ml-3 text-primary-content font-bold cursor-pointer remove",
-            tagInput: "bg-base-300", // whole div around
-            tagInputField:
-              "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4", // just input field
 
-            selected: "bg-base-300",
-            editTagInput: "bg-base-300",
-            editTagInputField:
-              "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4 mb-4",
-            clearAll: "font-bold ml-3",
-            suggestions: "suggestions-dropdown",
-            activeSuggestion: "active-suggestion-class",
-          }}
-          placeholder="Add tags"
+      <CollapseCard title="Details: Instructions, Deadline, Forms, Roles">
+        {/* Description */}
+        <LabeledTextAreaField
+          className="textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2 mb-4"
+          name="description"
+          label="Task Instructions:"
+          placeholder="Add Instructions"
+          type="textarea"
         />
-      </div>
-      {/* Form */}
-      {formResponseSupplied ? (
-        <TaskSchemaInput projectManagerIds={projectManagerUserIds} />
-      ) : (
-        <p className="w-1/2 text-red-500">
-          The task is already being completed by the contributors. Please, create a new task if you
-          would like to change the attached form.
-        </p>
-      )}
-      {/* Roles */}
-      <AddRoleInput
-        projectManagerIds={projectManagerUserIds}
-        buttonLabel="Assign Role(s)"
-        tooltipContent="Add roles to task"
-      />
+        {/* Deadline */}
+        <DateField name="deadline" label="Deadline:" />
+
+        {/* Form */}
+        {formResponseSupplied ? (
+          <TaskSchemaInput
+            projectManagerIds={projectManagerUserIds}
+            className="mt-4 mb-4"
+            tooltipContent="Add a required form to gather responses for the task"
+          />
+        ) : (
+          <p className="w-1/2 text-red-500">
+            The task is already being completed by the contributors. Please, create a new task if
+            you would like to change the attached form.
+          </p>
+        )}
+        {/* Roles */}
+        <AddRoleInput
+          projectManagerIds={projectManagerUserIds}
+          buttonLabel="Assign Role(s)"
+          tooltipContent="Add roles to task"
+        />
+      </CollapseCard>
+
+      <CollapseCard title="Organization: Milestones, Tags">
+        {/* Elements */}
+        <LabelSelectField
+          className="select w-1/2 text-primary select-primary select-bordered border-2 bg-base-300 mb-4"
+          name="elementId"
+          label="Assign Element:"
+          options={elements}
+          optionText="name"
+          optionValue="id"
+          disableFirstOption={false}
+        />
+
+        {/* Tag Input */}
+        <div className="w-1/2">
+          <label className="text-base-content">
+            <span className="flex items-center">
+              Tags:
+              <InformationCircleIcon
+                className="h-4 w-4 ml-1 text-info stroke-2"
+                data-tooltip-id="tags-overview"
+              />
+              <Tooltip
+                id="tags-overview"
+                content="Use a comma, semicolon, enter, or tab to create separate tags. To edit a tag, click on
+            it, and then hit the enter key when you are finished."
+                className="z-[1099] ourtooltips"
+              />
+            </span>
+          </label>
+          <ReactTags
+            tags={tags}
+            name="tags"
+            separators={[SEPARATORS.TAB, SEPARATORS.COMMA, SEPARATORS.ENTER, SEPARATORS.SEMICOLON]}
+            handleDelete={handleDelete}
+            handleAddition={handleAddition}
+            handleDrag={handleDrag}
+            handleTagClick={handleTagClick}
+            onTagUpdate={onTagUpdate}
+            inputFieldPosition="inline"
+            editable
+            clearAll
+            onClearAll={onClearAll}
+            classNames={{
+              tags: "p-2 rounded-md bg-base-300 react-tags-wrapper", // entire box for tags
+              tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 mb-2 text-lg",
+              remove: "ml-3 text-primary-content font-bold cursor-pointer remove",
+              tagInput: "bg-base-300", // whole div around
+              tagInputField:
+                "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4", // just input field
+
+              selected: "bg-base-300",
+              editTagInput: "bg-base-300",
+              editTagInputField:
+                "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4 mb-4",
+              clearAll: "font-bold ml-3",
+              suggestions: "suggestions-dropdown",
+              activeSuggestion: "active-suggestion-class",
+            }}
+            placeholder="Add tags"
+          />
+        </div>
+      </CollapseCard>
     </Form>
   )
 }

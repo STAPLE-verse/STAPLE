@@ -5,14 +5,22 @@ import { useTaskContext } from "src/tasks/components/TaskContext"
 import updateTaskLog from "../mutations/updateTaskLog"
 
 const CompleteToggle = ({
-  // refetch,
   taskLog,
   completedById,
   completedAs,
+  refetchTaskData: propRefetchTaskData,
 }) => {
   const [updateTaskLogMutation] = useMutation(updateTaskLog)
-  // Get refecth from taskContext
-  const { refetchTaskData } = useTaskContext()
+
+  let contextRefetchTaskData: (() => Promise<void>) | undefined
+  try {
+    const context = useTaskContext()
+    contextRefetchTaskData = async () => {
+      await context.refetchTaskData()
+    }
+  } catch (error) {
+    // context not available
+  }
 
   // Handle assignment status
   const handleAssignmentStatusToggle = async () => {
@@ -27,8 +35,7 @@ const CompleteToggle = ({
     })
 
     setIsChecked(newChecked)
-    // await refetch()
-    await refetchTaskData()
+    await (contextRefetchTaskData?.() ?? propRefetchTaskData?.())
   }
 
   const [isChecked, setIsChecked] = useState(taskLog.status === Status.COMPLETED)

@@ -8,6 +8,7 @@ import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import AddRoleInput from "src/roles/components/AddRoleInput"
 import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManagerUserIds"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
+import CollapseCard from "src/core/components/CollapseCard"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
@@ -33,44 +34,45 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
 
   return (
     <Form<S> {...formProps}>
-      <TooltipWrapper
-        id="priv-tooltip"
-        content={
-          isLastProjectManager
-            ? "User is the last project manager on the project. The privilege cannot be changed."
-            : "Project Managers can see and edit all parts of a project, while contributors can only complete tasks assigned to them."
-        }
-        className="z-[1099] ourtooltips"
-        place="right"
-        opacity={1}
-      />
-      {!isEdit && (
-        <LabeledTextField
-          name="email"
-          label="Email: (Required)"
-          placeholder="Email"
-          type="text"
-          className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
+      <CollapseCard title="Edit Contributor Settings" defaultOpen={true}>
+        <TooltipWrapper
+          id="priv-tooltip"
+          content={
+            isLastProjectManager
+              ? "User is the last project manager on the project. The privilege cannot be changed."
+              : "Project Managers can see and edit all parts of a project, while contributors can only complete tasks assigned to them."
+          }
+          className="z-[1099] ourtooltips"
+          place="right"
+          opacity={1}
         />
-      )}
-      <LabelSelectField
-        className="select text-primary select-bordered border-primary border-2 w-1/2 mt-4 bg-base-300"
-        name="privilege"
-        label="Select Privilege: (Required)"
-        options={MemberPrivilegesOptions}
-        optionText="label"
-        optionValue="value"
-        type="string"
-        data-tooltip-id="priv-tooltip"
-        disabled={isLastProjectManager}
-      />
-      <div className="mt-4">
+        {!isEdit && (
+          <LabeledTextField
+            name="email"
+            label="Email:"
+            placeholder="Email"
+            type="text"
+            className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
+          />
+        )}
+        <LabelSelectField
+          className="select text-primary select-bordered border-primary border-2 w-1/2 mb-4 w-1/2"
+          name="privilege"
+          label="Select Privilege:"
+          options={MemberPrivilegesOptions}
+          optionText="label"
+          optionValue="value"
+          type="string"
+          data-tooltip-id="priv-tooltip"
+          disabled={isLastProjectManager}
+        />
+
         <AddRoleInput
           projectManagerIds={projectManagerUserIds}
           buttonLabel="Add Role"
           tooltipContent="Add role labels"
         />
-      </div>
+      </CollapseCard>
     </Form>
   )
 }

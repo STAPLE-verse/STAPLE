@@ -51,7 +51,8 @@ export const AllTasksList = () => {
   // process those logs to get the latest one for each task-projectmemberId
   const latestLogs = getLatestTaskLogs<TaskLogWithTaskProjectAndComments>(taskLogs)
 
-  const processedTasks = processAllTasks(latestLogs)
+  // process both sets so that comment counts use original taskLogs (first log for each person-task combo)
+  const processedTasks = processAllTasks(latestLogs, taskLogs)
 
   return (
     <Card title={""}>

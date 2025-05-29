@@ -147,7 +147,7 @@ const Summary = () => {
         </div>
       </CollapseCard>
       <CollapseCard title="Project Metadata">
-        {project.metadata ? (
+        {project.formVersionId ? (
           <>
             <MetadataDisplay metadata={project.metadata} />
             <div className="justify-end flex">

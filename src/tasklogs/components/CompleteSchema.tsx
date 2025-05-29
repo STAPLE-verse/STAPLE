@@ -7,13 +7,35 @@ import updateTaskLog from "../mutations/updateTaskLog"
 import getJsonSchema from "src/forms/utils/getJsonSchema"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 
-const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => {
+const CompleteSchema = ({
+  taskLog,
+  completedById,
+  completedAs,
+  schema,
+  ui,
+  refetchTaskData: propRefetchTaskData,
+}: {
+  taskLog: any
+  completedById: number
+  completedAs: CompletedAsType
+  schema: any
+  ui: any
+  refetchTaskData?: () => Promise<void>
+}) => {
   // Setup
   const [updateTaskLogMutation] = useMutation(updateTaskLog)
   // State to store metadata
   const [assignmentMetadata, setAssignmentMetadata] = useState(taskLog.metadata)
-  // Get refecth from taskContext
-  const { refetchTaskData } = useTaskContext()
+  // Get refecth from taskContext safely
+  let contextRefetchTaskData: (() => Promise<void>) | undefined
+  try {
+    const context = useTaskContext()
+    contextRefetchTaskData = async () => {
+      await context.refetchTaskData()
+    }
+  } catch (e) {
+    // context not available
+  }
 
   // Handle assignment metadata
   const handleJsonFormSubmit = async (data) => {
@@ -29,7 +51,7 @@ const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => 
 
     // TODO: Add handler to close modal
 
-    await refetchTaskData()
+    await (contextRefetchTaskData?.() ?? propRefetchTaskData?.())
   }
 
   const handleJsonFormError = (errors) => {
@@ -52,7 +74,7 @@ const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => 
     // TODO: Add handler to close modal
 
     // Refetch the data
-    await refetchTaskData()
+    await (contextRefetchTaskData?.() ?? propRefetchTaskData?.())
   }
 
   return (
@@ -62,8 +84,8 @@ const CompleteSchema = ({ taskLog, completedById, completedAs, schema, ui }) => 
           schema={getJsonSchema(schema)}
           uiSchema={ui}
           metadata={assignmentMetadata}
-          label="Edit Data"
-          classNames="btn-info btn w-2/3"
+          label="Edit Response"
+          classNames="btn-info btn w-full"
           onSubmit={handleJsonFormSubmit}
           onError={handleJsonFormError}
           resetHandler={handleResetMetadata}

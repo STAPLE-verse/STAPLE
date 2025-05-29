@@ -1,4 +1,5 @@
 import { Status } from "db"
+import { CommentWithAuthor } from "src/core/types"
 
 // Project task table
 export type ProjectTasksData = {
@@ -13,9 +14,12 @@ export type ProjectTasksData = {
     taskId: number
     projectId: number
   }
+  comments: CommentWithAuthor[]
+  refetchTasks?: () => Promise<void>
+  firstLogId?: number
 }
 
-export function processProjectTasks(tasks): ProjectTasksData[] {
+export function processProjectTasks(tasks, refetchTasks?: () => Promise<void>): ProjectTasksData[] {
   return tasks.map((task) => {
     const logs = task.taskLogs || []
 
@@ -53,6 +57,9 @@ export function processProjectTasks(tasks): ProjectTasksData[] {
         taskId: task.id,
         projectId: task.projectId,
       },
+      comments: task.taskLogs?.[0]?.comments ?? [],
+      refetchTasks,
+      firstLogId: task.taskLogs?.[0]?.id,
     }
   })
 }

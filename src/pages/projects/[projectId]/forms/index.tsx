@@ -21,7 +21,7 @@ const MetadataPage = () => {
           />
           <Tooltip
             id="form-data-tooltip"
-            content="View the metadata collected from your collaborators. Click 'View' to review entries and download the data in JSON or Excel format."
+            content="View the metadata collected from your collaborators. Click 'Responses' to review entries and download the data in JSON or Excel format."
             className="z-[1099] ourtooltips"
           />
         </div>

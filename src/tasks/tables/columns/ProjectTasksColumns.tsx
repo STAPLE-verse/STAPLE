@@ -3,13 +3,11 @@ import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
-import {
-  MagnifyingGlassIcon,
-  InformationCircleIcon,
-  ChatBubbleOvalLeftEllipsisIcon,
-} from "@heroicons/react/24/outline"
+import { InformationCircleIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
 import { ProjectTasksData } from "../processing/processProjectTasks"
 import { Tooltip } from "react-tooltip"
+import ChatBox from "src/comments/components/ChatBox"
+import ToggleModal from "src/core/components/ToggleModal"
 
 // Column helper
 const columnHelperProject = createColumnHelper<ProjectTasksData>()
@@ -17,7 +15,16 @@ const columnHelperProject = createColumnHelper<ProjectTasksData>()
 // ColumnDefs
 export const ProjectTasksColumns = [
   columnHelperProject.accessor("name", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => {
+      const name = info.getValue()
+      const displayName = name.length > 20 ? `${name.slice(0, 20)}...` : name
+      const { projectId, taskId } = info.row.original.view
+      return (
+        <Link href={Routes.ShowTaskPage({ projectId, taskId })}>
+          <button className="btn btn-primary w-full">{displayName}</button>
+        </Link>
+      )
+    },
     header: "Name",
     enableColumnFilter: true,
     enableSorting: true,
@@ -109,40 +116,43 @@ export const ProjectTasksColumns = [
       filterVariant: "range",
     },
   }),
-  columnHelperProject.accessor("view", {
-    id: "view",
-    header: "View",
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => (
-      <Link
-        className="btn btn-ghost"
-        href={Routes.ShowTaskPage({
-          projectId: info.getValue().projectId,
-          taskId: info.getValue().taskId,
-        })}
-      >
-        <MagnifyingGlassIcon width={25} className="stroke-primary" />
-      </Link>
-    ),
-  }),
-  columnHelperProject.accessor("newCommentsCount", {
+  columnHelperProject.accessor("comments", {
     header: "Comments",
-    id: "newComments",
+    id: "comments",
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => {
-      const count = info.getValue()
+      const hasNewComments = info.row.original.newCommentsCount > 0
       return (
-        <div className="relative flex items-center justify-center w-fit">
-          <ChatBubbleOvalLeftEllipsisIcon
-            className={`h-7 w-7 ${count > 0 ? "text-primary" : "opacity-30"}`}
-          />
-          {count > 0 && (
-            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white flex items-center justify-center">
-              {count}
-            </span>
-          )}
+        <div className="flex">
+          <ToggleModal
+            buttonLabel={
+              <div className="relative">
+                <ChatBubbleOvalLeftEllipsisIcon
+                  className={`h-7 w-7 ${hasNewComments ? "text-primary" : "opacity-30"}`}
+                  aria-hidden="true"
+                />
+                {hasNewComments && (
+                  <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white">
+                    {info.row.original.newCommentsCount}
+                  </div>
+                )}
+              </div>
+            }
+            modalTitle={
+              <>
+                <span>Comments:</span>
+                <span className="italic ml-1">{info.row.original.name}</span>
+              </>
+            }
+            buttonClassName="btn-ghost"
+          >
+            <ChatBox
+              taskLogId={info.row.original.firstLogId!}
+              initialComments={info.row.original.comments}
+              refetchComments={info.row.original.refetchTasks}
+            />
+          </ToggleModal>
         </div>
       )
     },

@@ -1,34 +1,26 @@
-import { getPrivilegeText } from "src/core/utils/getPrivilegeText"
-import { MemberPrivileges, User } from "db"
 import CollapseCard from "src/core/components/CollapseCard"
-import DateFormat from "src/core/components/DateFormat"
-import { Tooltip } from "react-tooltip"
 import { useQuery } from "@blitzjs/rpc"
-import getTasks from "src/tasks/queries/getTasks"
-import { useParam } from "@blitzjs/next"
-import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import { TaskLogWithTask } from "src/core/types"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
+import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
+import getTasks from "src/tasks/queries/getTasks"
 import { completedFormPercentage } from "src/widgets/utils/completedFormPercentage"
-import { completedTaskLogPercentage } from "src/widgets/utils/completedTaskLogPercentage"
 import { roleDistribution } from "src/widgets/utils/roleDistribution"
-import { GetCircularProgressDisplay } from "src/core/components/GetWidgetDisplay"
-import { PieChartWidget } from "src/widgets/components/PieChartWidget"
+import { PieChartWidget } from "src/widgets/components/PieChartWidget" // Import PieChartWidget component
+import { completedTaskLogPercentage } from "src/widgets/utils/completedTaskLogPercentage"
+import { Tooltip } from "react-tooltip"
+import { GetCircularProgressDisplay, GetIconDisplay } from "src/core/components/GetWidgetDisplay"
+import { UserGroupIcon } from "@heroicons/react/24/outline"
+import getTeam from "../queries/getTeam"
 
-interface ContributorInformationProps {
-  teamNames: (string | null)[]
-  contributorPrivilege: MemberPrivileges
-  contributorUser: User
-}
+export const TeamStatistics = ({ teamId, projectId }) => {
+  // get team number
+  const [team] = useQuery(getTeam, { id: teamId })
 
-const ContributorInformation = ({
-  teamNames,
-  contributorPrivilege,
-  contributorUser,
-}: ContributorInformationProps) => {
-  const projectId = useParam("projectId", "number")
+  // Calculate the number of team members
+  const numberOfMembers = team?.users?.length || 0
 
-  // get tasks for this user and projectId
+  // get tasks for this teamId and projectId
   const [{ tasks }] = useQuery(getTasks, {
     include: {
       roles: true,
@@ -37,7 +29,7 @@ const ContributorInformation = ({
       projectId: projectId,
       assignedMembers: {
         some: {
-          id: contributorUser.id, // Filter tasks by user in assignedMembers
+          id: teamId, // Filter tasks by teamId in assignedMembers
         },
       },
     },
@@ -47,7 +39,7 @@ const ContributorInformation = ({
   const [fetchedTaskLogs] = useQuery(getTaskLogs, {
     where: {
       taskId: { in: tasks.map((task) => task.id) },
-      assignedToId: contributorUser.id,
+      assignedToId: teamId,
     },
     include: {
       task: true,
@@ -66,35 +58,29 @@ const ContributorInformation = ({
   const rolePieData = roleDistribution(tasks)
 
   return (
-    <CollapseCard title="Contributor Information" defaultOpen={true}>
-      {contributorUser.firstName && contributorUser.lastName && (
-        <p>
-          <span className="font-semibold">Username:</span> {contributorUser.username}
-        </p>
-      )}
-      <p>
-        <span className="font-semibold">Email:</span> {contributorUser.email}
-      </p>
-      <p>
-        <span className="font-semibold">Privilege:</span> {getPrivilegeText(contributorPrivilege)}
-      </p>
-      <p>
-        <span className="font-semibold">Team Membership:</span>{" "}
-        {teamNames.length > 0 ? teamNames.join(", ") : "No team memberships"}
-      </p>
-      <p>
-        <span className="font-semibold">Add to Project: </span>{" "}
-        {<DateFormat date={contributorUser.createdAt}></DateFormat>}
-      </p>
+    <CollapseCard title={"Team Statistics"} className="w-full" defaultOpen={true}>
+      <div className="stats bg-base-300 text-lg font-bold w-full">
+        {/* Task Status */}
+        <div className="stat place-items-center">
+          <div className="stat-title text-2xl text-inherit" data-tooltip-id="team-number-tooltip">
+            Team Members
+          </div>
+          <Tooltip
+            id="team-number-tooltip"
+            content="Number of team members"
+            className="z-[1099] ourtooltips"
+          />
+          <GetIconDisplay number={numberOfMembers} icon={UserGroupIcon} />
+        </div>
 
-      <div className="stats bg-base-300 text-lg font-bold w-full mt-2">
+        {/* Task Status */}
         <div className="stat place-items-center">
           <div className="stat-title text-2xl text-inherit" data-tooltip-id="task-status-tooltip">
             Task Status
           </div>
           <Tooltip
             id="task-status-tooltip"
-            content="Percent of overall tasks completed by the contributor"
+            content="Percent of overall tasks completed by the team"
             className="z-[1099] ourtooltips"
           />
           {tasks.length === 0 ? (
@@ -108,13 +94,14 @@ const ContributorInformation = ({
           )}
         </div>
 
+        {/* Form Status */}
         <div className="stat place-items-center">
           <div className="stat-title text-2xl text-inherit" data-tooltip-id="form-status-tooltip">
             <>Form Data</>
           </div>
           <Tooltip
             id="form-status-tooltip"
-            content="Percent of required forms completed by the contributor"
+            content="Percent of required forms completed by the team"
             className="z-[1099] ourtooltips"
           />
           {tasks.length === 0 || formPercent <= 0 ? (
@@ -127,6 +114,8 @@ const ContributorInformation = ({
             </>
           )}
         </div>
+
+        {/* Role Pie Chart */}
         <PieChartWidget
           data={rolePieData}
           titleWidget={"Role Distribution"}
@@ -138,5 +127,3 @@ const ContributorInformation = ({
     </CollapseCard>
   )
 }
-
-export default ContributorInformation

@@ -20,7 +20,7 @@ const DeleteTeam = ({ team }: DeleteTeamProps) => {
   }
 
   return (
-    <button className="btn btn-secondary mt-4" onClick={handleDelete}>
+    <button className="btn btn-secondary" onClick={handleDelete}>
       Delete Team
     </button>
   )

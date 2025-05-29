@@ -19,7 +19,6 @@ const AnnouncementModal: React.FC<AnnouncementModalProps> = ({ projectId, refres
   const handleToggle = () => setOpenModal((prev) => !prev)
 
   const handleSubmit = async (values) => {
-    console.log("Form Values:", values)
     try {
       await createAnnouncementMutation({
         projectId,

@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
-import { useRouter } from "next/router"
+import router, { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
@@ -13,8 +13,10 @@ import updateTeam from "src/teams/mutations/updateTeam"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
-import PageHeader from "src/core/components/PageHeader"
 import { ProjectMemberWithUsers } from "src/core/types"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
+import Card from "src/core/components/Card"
 
 export const EditTeam = () => {
   const [updateTeamMutation] = useMutation(updateTeam)
@@ -68,25 +70,45 @@ export const EditTeam = () => {
     }
   }
 
+  // Handle cancel event
+  const handleCancel = async () => {
+    await router.push(
+      Routes.ShowTeamPage({
+        projectId: projectId!,
+        teamId: teamId!,
+      })
+    )
+  }
+
   return (
     <>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <PageHeader title={`Edit ${teamProjectMember.name}`} />
-        <Suspense fallback={<div>Loading...</div>}>
-          <TeamForm
-            projectId={projectId!}
-            initialValues={initialValues}
-            submitText="Update Team"
-            schema={TeamFormSchema}
-            onSubmit={handleEditTeam}
+        <h1 className="flex justify-center items-center mb-2 text-3xl">
+          {`Edit ${teamProjectMember.name}`}
+          <InformationCircleIcon
+            className="ml-2 h-5 w-5 stroke-2 text-info"
+            data-tooltip-id="team-tooltip"
           />
+          <Tooltip
+            id="team-tooltip"
+            content="Use this page to edit the team name and membership."
+            className="z-[1099] ourtooltips"
+          />
+        </h1>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Card title="">
+            <TeamForm
+              projectId={projectId!}
+              initialValues={initialValues}
+              submitText="Update Team"
+              schema={TeamFormSchema}
+              onSubmit={handleEditTeam}
+              cancelText="Cancel"
+              onCancel={handleCancel}
+            />
+          </Card>
 
-          <Link
-            className="btn btn-secondary self-end mt-4"
-            href={Routes.ShowTeamPage({ projectId: projectId!, teamId: teamId! })}
-          >
-            Cancel
-          </Link>
+          {/* The cancel button is now handled by the TeamForm's onCancel */}
         </Suspense>
       </main>
     </>

@@ -18,6 +18,7 @@ export const CompleteRow = ({ taskLogs, completedById, completedAs, schema, ui, 
   const [comments] = useQuery(getComments, { where: { taskLogId: firstTaskLog!.id } })
 
   const [isOpen, setIsOpen] = useState(true) // Collapse state
+  const [isModalOpen, setIsModalOpen] = useState(false) // Modal state
 
   const buttonLabel =
     latestTaskLog?.completedAs === CompletedAsType.TEAM
@@ -49,7 +50,13 @@ export const CompleteRow = ({ taskLogs, completedById, completedAs, schema, ui, 
             />
           )}
           {/* Task Log History Modal */}
-          <TaskLogHistoryModal taskLogs={taskLogs} schema={schema} ui={ui} />
+          <TaskLogHistoryModal
+            taskLogs={taskLogs}
+            schema={schema}
+            ui={ui}
+            isModalOpen={isModalOpen} // Pass isModalOpen prop
+            setIsModalOpen={setIsModalOpen} // Pass the function to toggle the modal
+          />
         </div>
         {/* Chat Section */}
         <div className="mt-2">

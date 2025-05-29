@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTags from "src/tags/queries/getTags"
-import getTasks from "src/tasks/queries/getTasks" // Adjust the path as needed
 import { WithContext as ReactTags } from "react-tag-input"
 import { useParam } from "@blitzjs/next"
 
@@ -43,7 +42,7 @@ const TagDisplay = () => {
 
   const handleTagClick = (index) => {
     const selectedTag = uniqueTags[index]
-    console.log("Tag clicked:", selectedTag?.text)
+    //console.log("Tag clicked:", selectedTag?.text)
     setSelectedTag(selectedTag!.text)
   }
 

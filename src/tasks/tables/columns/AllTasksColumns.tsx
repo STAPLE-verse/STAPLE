@@ -42,7 +42,9 @@ export const AllTasksColumns = [
     header: "Completion",
     enableColumnFilter: true,
     enableSorting: true,
-    cell: (info) => <span>{info.getValue()}%</span>,
+    cell: (info) => (
+      <div className="flex w-full justify-center items-center">{info.getValue()}%</div>
+    ),
     meta: {
       filterVariant: "range",
     },
@@ -70,17 +72,27 @@ export const AllTasksColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => {
-      const count = info.getValue()
+      const count = info.getValue().countTotal
       return (
-        <div className="relative flex items-center justify-center w-fit">
-          <ChatBubbleOvalLeftEllipsisIcon
-            className={`h-7 w-7 ${count > 0 ? "text-primary" : "opacity-30"}`}
-          />
-          {count > 0 && (
-            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white flex items-center justify-center">
-              {count}
-            </span>
-          )}
+        <div className="relative flex items-center justify-center w-full">
+          <Link
+            className="btn btn-ghost"
+            href={Routes.ShowTaskPage({
+              projectId: info.getValue().projectId,
+              taskId: info.getValue().taskId,
+            })}
+          >
+            <div className="flex items-center justify-center relative">
+              <ChatBubbleOvalLeftEllipsisIcon
+                className={`h-7 w-7 ${count > 0 ? "text-primary" : "opacity-30"}`}
+              />
+              {count > 0 && (
+                <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white">
+                  {count}
+                </div>
+              )}
+            </div>
+          </Link>
         </div>
       )
     },

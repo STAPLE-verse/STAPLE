@@ -8,6 +8,8 @@ interface ToggleModalProps {
   modalSize?: string
   buttonClassName?: string
   saveButton?: boolean
+  key?: string | number // Add key as an optional prop
+  onOpen?: () => void
 }
 
 const ToggleModal = ({
@@ -17,12 +19,20 @@ const ToggleModal = ({
   modalSize = "w-7/8 max-w-xl",
   buttonClassName = "",
   saveButton,
+  key, // Accept key as a prop
+  onOpen,
 }: ToggleModalProps) => {
   const [isOpen, setIsOpen] = useState(false)
-  const toggleModal = () => setIsOpen((prev) => !prev)
+  const toggleModal = () => {
+    setIsOpen((prev) => {
+      const next = !prev
+      if (!prev && onOpen) onOpen()
+      return next
+    })
+  }
 
   return (
-    <div>
+    <div key={key}>
       <button type="button" className={`btn btn-primary ${buttonClassName}`} onClick={toggleModal}>
         {buttonLabel}
       </button>

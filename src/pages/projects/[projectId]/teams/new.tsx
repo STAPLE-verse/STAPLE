@@ -11,7 +11,9 @@ import toast from "react-hot-toast"
 import createTeam from "src/teams/mutations/createTeam"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
-import PageHeader from "src/core/components/PageHeader"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
+import Card from "src/core/components/Card"
 
 const NewTeamContent = () => {
   const router = useRouter()
@@ -47,13 +49,15 @@ const NewTeamContent = () => {
   }
 
   return (
-    <TeamForm
-      projectId={projectId!}
-      className="flex flex-col"
-      submitText="Add Team"
-      schema={TeamFormSchema}
-      onSubmit={handleNewTeam}
-    />
+    <Card title="">
+      <TeamForm
+        projectId={projectId!}
+        className="flex flex-col"
+        submitText="Add Team"
+        schema={TeamFormSchema}
+        onSubmit={handleNewTeam}
+      />
+    </Card>
   )
 }
 
@@ -64,7 +68,18 @@ const NewTeamPage = () => {
     // @ts-expect-error children are clearly passed below
     <Layout title="Add New Team">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <PageHeader title="Add New Team" />
+        <h1 className="flex justify-center items-center mb-2 text-3xl">
+          Add New Team
+          <InformationCircleIcon
+            className="ml-2 h-5 w-5 stroke-2 text-info"
+            data-tooltip-id="team-tooltip"
+          />
+          <Tooltip
+            id="team-tooltip"
+            content="Create a new team by adding members and defining a team name."
+            className="z-[1099] ourtooltips"
+          />
+        </h1>
         <Suspense fallback={<div>Loading...</div>}>
           <NewTeamContent />
         </Suspense>
