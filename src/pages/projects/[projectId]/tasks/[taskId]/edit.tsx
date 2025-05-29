@@ -51,7 +51,7 @@ export const EditTask = () => {
     teamsId: teamsId,
     formVersionId: task.formVersionId,
     rolesId: rolesId,
-    elementId: task.elementId,
+    milestoneId: task.milestoneId,
     tags: Array.isArray(task.tags)
       ? (task.tags as Tag[]).map((tag) => ({
           id: tag.key, // Use 'key' as the ID

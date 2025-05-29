@@ -1,5 +1,5 @@
-import React from "react"
 import { useRouter } from "next/router"
+import React from "react"
 
 interface PaginationControlsProps {
   page: number
@@ -11,13 +11,27 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({ page, hasMore }
 
   const goToPreviousPage = async () => {
     if (page > 0) {
-      await router.push({ query: { page: page - 1 } })
+      await router.push(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, page: page - 1 },
+        },
+        undefined,
+        { shallow: true }
+      )
     }
   }
 
   const goToNextPage = async () => {
     if (hasMore) {
-      await router.push({ query: { page: page + 1 } })
+      await router.push(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, page: page + 1 },
+        },
+        undefined,
+        { shallow: true }
+      )
     }
   }
 

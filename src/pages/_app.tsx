@@ -1,7 +1,7 @@
 import "../core/utils/i18n"
 import { ErrorFallbackProps, ErrorComponent, ErrorBoundary, AppProps } from "@blitzjs/next"
 import { AuthenticationError, AuthorizationError } from "blitz"
-import React, { Suspense, useEffect } from "react"
+import React, { Suspense } from "react"
 import { withBlitz } from "src/blitz-client"
 import "src/styles/globals.css"
 import "src/core/styles/index.css"
@@ -9,6 +9,8 @@ import { MemberPrivilegesProvider } from "src/projectprivileges/components/Membe
 import { TooltipProvider } from "src/core/components/TooltipContext"
 import { useSession } from "@blitzjs/auth"
 import { BreadcrumbCacheProvider } from "src/core/components/BreadcrumbCacheContext"
+import "gantt-task-react/dist/index.css"
+import "src/styles/gantt-theme-override.css" // Custom override styles
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {

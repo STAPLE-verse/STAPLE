@@ -48,8 +48,8 @@ export const TaskInformation = () => {
       </p>
 
       <p>
-        <span className="font-semibold">Element:</span>{" "}
-        {task["element"] ? task["element"]!.name : "No element"}
+        <span className="font-semibold">Milestone:</span>{" "}
+        {task["milestone"] ? task["milestone"]!.name : "No milestone"}
       </p>
 
       <p>

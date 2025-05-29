@@ -15,8 +15,8 @@ export default resolver.pipe(
       case "task":
         return (await db.task.findUnique({ where: { id: input.id }, select: { name: true } }))?.name
 
-      case "element":
-        return (await db.element.findUnique({ where: { id: input.id }, select: { name: true } }))
+      case "milestone":
+        return (await db.milestone.findUnique({ where: { id: input.id }, select: { name: true } }))
           ?.name
 
       case "team":

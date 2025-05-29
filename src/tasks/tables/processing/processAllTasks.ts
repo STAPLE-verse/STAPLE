@@ -1,4 +1,4 @@
-import { TaskLogWithTaskAndProject, TaskLogWithTaskProjectAndComments } from "src/core/types"
+import { TaskLogWithTaskProjectAndComments } from "src/core/types"
 
 export type AllTasksData = {
   name: string

@@ -2,7 +2,7 @@ import { z } from "zod"
 
 export const BreadcrumbLabelInput = z.union([
   z.object({
-    type: z.enum(["project", "task", "element", "team", "form"]),
+    type: z.enum(["project", "task", "milestone", "team", "form"]),
     id: z.number(),
   }),
   z.object({
