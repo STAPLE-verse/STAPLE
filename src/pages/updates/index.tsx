@@ -10,6 +10,7 @@ import useUserAuthorization from "src/userprivileges/hooks/useUserAuthorization"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { TriggerDashboardMigration } from "src/updates/component/2025_03_migration"
 import Card from "src/core/components/Card"
+import { TriggerMilestoneMutation } from "src/updates/component/2025_05_migration"
 
 const UpdatesPage = () => {
   const user = useCurrentUser()
@@ -21,6 +22,9 @@ const UpdatesPage = () => {
         <PageHeader className="flex justify-center mb-2" title="Updates" />
         <Suspense fallback={<div>Loading...</div>}>
           <div>
+            <Card title={"Updates May 29, 2025"}>
+              <TriggerMilestoneMutation />
+            </Card>
             <Card title={"Updates March 19, 2025"}>
               <TriggerDashboardMigration />
             </Card>

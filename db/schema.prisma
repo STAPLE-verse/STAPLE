@@ -159,6 +159,7 @@ model Project {
   metadata         Json? // Add metadata field
   formVersion      FormVersion?       @relation(fields: [formVersionId], references: [id])
   formVersionId    Int?
+  elements         Element[]
 }
 
 enum Status {
@@ -194,6 +195,8 @@ model Task {
   roles              Role[]
   // who or which team should be assigned the task
   assignedMembers    ProjectMember[] @relation("AssignedTasks")
+  elementId          Int?
+  element            Element?        @relation(fields: [elementId], references: [id])
 }
 
 model TaskLog {
@@ -341,4 +344,17 @@ model CommentReadStatus {
   read            Boolean       @default(false)
 
   @@unique([commentId, projectMemberId], name: "commentId_projectMemberId")
+}
+
+model Element {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  projectId   Int
+  project     Project   @relation(fields: [projectId], references: [id])
+  name        String
+  description String?
+  task        Task[]
+  parents     Element[] @relation("ElementToElement")
+  children    Element[] @relation("ElementToElement")
 }
