@@ -12,6 +12,7 @@ import {
   ClipboardDocumentListIcon,
   FolderOpenIcon,
 } from "@heroicons/react/24/outline"
+import { determineNotificationType } from "src/notifications/utils/determineNotificationType"
 
 const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
@@ -27,15 +28,6 @@ const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
     },
     orderBy: { id: "desc" },
   })
-
-  function determineNotificationType(message: string): string {
-    const msg = message.toLowerCase()
-    if (msg.includes("assigned")) return "Task"
-    if (msg.includes("comment")) return "Comment"
-    if (msg.includes("project")) return "Project"
-    if (msg.includes("assignment")) return "Task"
-    return "Other"
-  }
 
   const countsByType: { [key: string]: number } = {}
   notifications.forEach((n) => {

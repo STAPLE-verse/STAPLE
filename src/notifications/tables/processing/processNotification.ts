@@ -1,5 +1,6 @@
 import { Project, Notification } from "db"
 import { RouteData } from "src/core/types"
+import { determineNotificationType } from "src/notifications/utils/determineNotificationType"
 import { stripHtmlTags } from "src/notifications/utils/stripHtmlTags"
 
 // Type for notifications with project included
@@ -21,15 +22,6 @@ export type NotificationTableData = {
 export function processNotification(
   notifications: ExtendedNotification[]
 ): NotificationTableData[] {
-  function determineNotificationType(message: string): string {
-    const msg = message.toLowerCase()
-    if (msg.includes("assigned")) return "Task"
-    if (msg.includes("comment")) return "Comment"
-    if (msg.includes("project")) return "Project"
-    if (msg.includes("assignment")) return "Task"
-    return "Other"
-  }
-
   return notifications.map((notification) => {
     const cleanMessage = stripHtmlTags(notification.message || "")
 

@@ -1,18 +1,10 @@
 import { Ctx } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
+import { determineNotificationType } from "../utils/determineNotificationType"
 
 interface GetLatestUnreadNotificationsInput {
   projectId?: number
-}
-
-function determineNotificationType(message: string): string {
-  const msg = message.toLowerCase()
-  if (msg.includes("assigned")) return "Task"
-  if (msg.includes("comment")) return "Comment"
-  if (msg.includes("project")) return "Project"
-  if (msg.includes("assignment")) return "Task"
-  return "Other"
 }
 
 export default resolver.pipe(
