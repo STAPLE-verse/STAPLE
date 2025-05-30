@@ -6,6 +6,15 @@ interface GetLatestUnreadNotificationsInput {
   projectId?: number
 }
 
+function determineNotificationType(message: string): string {
+  const msg = message.toLowerCase()
+  if (msg.includes("assigned")) return "Task"
+  if (msg.includes("comment")) return "Comment"
+  if (msg.includes("project")) return "Project"
+  if (msg.includes("assignment")) return "Task"
+  return "Other"
+}
+
 export default resolver.pipe(
   resolver.authorize(),
   async ({ projectId }: GetLatestUnreadNotificationsInput, ctx: Ctx) => {
@@ -22,11 +31,20 @@ export default resolver.pipe(
     const notifications = await db.notification.findMany({
       where: whereClause,
       orderBy: { createdAt: "desc" }, // Use a timestamp field to get the latest notifications
-      take: 3,
     })
 
+    const countsByType: { [key: string]: number } = {}
+
+    notifications.forEach((n) => {
+      const type = determineNotificationType(n.message)
+      countsByType[type] = (countsByType[type] || 0) + 1
+    })
+
+    const topThree = notifications.slice(0, 3)
+
     return {
-      notifications,
+      notifications: topThree,
+      countsByType,
     }
   }
 )
