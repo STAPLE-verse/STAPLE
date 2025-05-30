@@ -191,3 +191,14 @@ export type TaskWithTaskLogs = Task & {
 export type MilestoneWithTasks = Milestone & {
   task: TaskWithTaskLogs[]
 }
+
+export type ProjectWithNewCommentsCount = Project & {
+  tasks: {
+    taskLogs: {
+      comments: {
+        commentReadStatus: CommentReadStatus[]
+      }[]
+    }[]
+  }[]
+  newCommentsCount: number
+}

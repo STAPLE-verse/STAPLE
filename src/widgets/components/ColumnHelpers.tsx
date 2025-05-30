@@ -1,19 +1,20 @@
 import { Routes } from "@blitzjs/next"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { ChatBubbleOvalLeftEllipsisIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { Prisma, Project, Notification, Task, TaskLog } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import NotificationMessage from "src/notifications/components/NotificationMessage"
 import Link from "next/link"
 import DateFormat from "src/core/components/DateFormat"
+import { ProjectWithNewCommentsCount } from "src/core/types"
 
 // Tasks table
-type TasWithProject = Prisma.TaskGetPayload<{
+type TaskWithProject = Prisma.TaskGetPayload<{
   include: {
     project: true
   }
 }>
-const taskColumnHelper = createColumnHelper<TasWithProject>()
-export const tasksColumns: ColumnDef<TasWithProject>[] = [
+const taskColumnHelper = createColumnHelper<TaskWithProject>()
+export const tasksColumns: ColumnDef<TaskWithProject>[] = [
   taskColumnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
@@ -61,8 +62,8 @@ export const tasksColumns: ColumnDef<TasWithProject>[] = [
 ]
 
 // Projects table
-const projectColumnHelper = createColumnHelper<Project>()
-export const projectColumns: ColumnDef<Project>[] = [
+const projectColumnHelper = createColumnHelper<ProjectWithNewCommentsCount>()
+export const projectColumns: ColumnDef<ProjectWithNewCommentsCount>[] = [
   projectColumnHelper.accessor("name", {
     cell: (info) => <span className="font-semibold"> {info.getValue()} </span>,
     header: "Name",
@@ -74,6 +75,24 @@ export const projectColumns: ColumnDef<Project>[] = [
     header: "Updated",
     enableColumnFilter: false,
     enableSorting: false,
+  }),
+  projectColumnHelper.accessor("newCommentsCount", {
+    id: "newComments",
+    header: "Comments",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <div className="relative flex items-center justify-center w-fit">
+        <ChatBubbleOvalLeftEllipsisIcon
+          className={`h-7 w-7 ${info.getValue() > 0 ? "text-primary" : "opacity-30"}`}
+        />
+        {info.getValue() > 0 && (
+          <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white flex items-center justify-center">
+            {info.getValue()}
+          </span>
+        )}
+      </div>
+    ),
   }),
   projectColumnHelper.accessor("id", {
     id: "view",
