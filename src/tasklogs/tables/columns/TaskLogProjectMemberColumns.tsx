@@ -127,7 +127,7 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
                   aria-hidden="true"
                 />
                 {hasNewComments && (
-                  <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white">
+                  <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white">
                     {info.row.original.newCommentsCount}
                   </div>
                 )}

@@ -42,7 +42,7 @@ const Widget: React.FC<WidgetProps> = ({
                 className={`h-7 w-7 ${newCommentsCount > 0 ? "text-primary" : "opacity-30"}`}
               />
               {newCommentsCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white flex items-center justify-center">
                   {newCommentsCount}
                 </span>
               )}

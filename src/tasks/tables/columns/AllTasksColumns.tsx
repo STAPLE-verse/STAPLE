@@ -87,7 +87,7 @@ export const AllTasksColumns = [
                 className={`h-7 w-7 ${count > 0 ? "text-primary" : "opacity-30"}`}
               />
               {count > 0 && (
-                <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white">
+                <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white">
                   {count}
                 </div>
               )}
