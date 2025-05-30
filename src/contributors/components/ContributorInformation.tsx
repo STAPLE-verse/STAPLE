@@ -16,13 +16,11 @@ import { GetCircularProgressDisplay } from "src/core/components/GetWidgetDisplay
 import { PieChartWidget } from "src/widgets/components/PieChartWidget"
 
 interface ContributorInformationProps {
-  teamNames: (string | null)[]
   contributorPrivilege: MemberPrivileges
   contributorUser: User
 }
 
 const ContributorInformation = ({
-  teamNames,
   contributorPrivilege,
   contributorUser,
 }: ContributorInformationProps) => {
@@ -78,10 +76,7 @@ const ContributorInformation = ({
       <p>
         <span className="font-semibold">Privilege:</span> {getPrivilegeText(contributorPrivilege)}
       </p>
-      <p>
-        <span className="font-semibold">Team Membership:</span>{" "}
-        {teamNames.length > 0 ? teamNames.join(", ") : "No team memberships"}
-      </p>
+
       <p>
         <span className="font-semibold">Add to Project: </span>{" "}
         {<DateFormat date={contributorUser.createdAt}></DateFormat>}

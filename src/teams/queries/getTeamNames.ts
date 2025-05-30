@@ -29,13 +29,14 @@ export default resolver.pipe(
         }),
       },
       select: {
+        id: true,
         name: true,
       },
     })
 
-    // Extract the names into an array
-    const names = projectMembers.map((member) => member.name)
-
-    return names
+    return projectMembers.map((member) => ({
+      id: member.id,
+      name: member.name,
+    }))
   }
 )
