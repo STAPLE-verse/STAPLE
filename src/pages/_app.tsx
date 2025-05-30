@@ -11,6 +11,7 @@ import { useSession } from "@blitzjs/auth"
 import { BreadcrumbCacheProvider } from "src/core/components/BreadcrumbCacheContext"
 import "gantt-task-react/dist/index.css"
 import "src/styles/gantt-theme-override.css" // Custom override styles
+import { useInitializeTheme } from "src/core/hooks/useTheme"
 
 function RootErrorFallback({ error }: ErrorFallbackProps) {
   if (error instanceof AuthenticationError) {
@@ -35,6 +36,7 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
 function MyApp({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
   const session = useSession({ suspense: false })
+  useInitializeTheme()
 
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>

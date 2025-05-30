@@ -12,7 +12,11 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
 
   return (
     <Form<S> {...props}>
-      <CollapseCard title="Required Information" className="mb-4">
+      <CollapseCard
+        title="Required Information: Email, Username"
+        className="mb-4"
+        defaultOpen={true}
+      >
         <LabeledTextField
           name="email"
           label="Email:"
@@ -29,7 +33,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         />
       </CollapseCard>
 
-      <CollapseCard title="User Information" className="mb-4">
+      <CollapseCard title="User Information: Name, Institution" className="mb-4">
         <p className="text-base italic mb-2">
           If you enter your first and last name, it will replace your username in project areas.
         </p>
@@ -57,7 +61,7 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         />
       </CollapseCard>
 
-      <CollapseCard className="mb-4" title="Look and Feel">
+      <CollapseCard className="mb-4" title="Look and Feel: Theme, Tooltips, Language, and Icon">
         {/* Theme Selector */}
         <ThemeSelect />
 

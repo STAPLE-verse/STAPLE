@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 const THEMES = [
   { value: "light", label: "☼ Light" },
@@ -42,10 +42,6 @@ const ThemeSelect = () => {
     setTheme(selectedTheme)
     document.documentElement.setAttribute("data-theme", selectedTheme)
   }
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme)
-  }, [theme])
 
   return (
     <>
