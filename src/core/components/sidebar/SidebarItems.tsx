@@ -3,7 +3,7 @@ import {
   ClipboardDocumentListIcon,
   Cog6ToothIcon,
   RectangleGroupIcon,
-  RectangleStackIcon,
+  FlagIcon,
   UsersIcon,
   UserGroupIcon,
   BeakerIcon,
@@ -49,7 +49,7 @@ export const ProjectSidebarItems = (projectId: number, t: TFunction): SidebarIte
       privilege: [MemberPrivileges.PROJECT_MANAGER],
     },
     {
-      icon: RectangleStackIcon,
+      icon: FlagIcon,
       text: t("sidebar.project.milestones"),
       route: Routes.MilestonesPage({ projectId: projectId }),
       tooltipId: "project-milestones-tooltip",
