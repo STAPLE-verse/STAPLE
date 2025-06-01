@@ -20,6 +20,7 @@ import { ProjectMemberWithUsersAndRoles } from "src/core/types"
 import DeleteContributor from "src/contributors/components/DeleteContributor"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import { Tag } from "src/tasks/components/TaskForm"
 
 export const EditContributor = () => {
   const [updateProjectMemberMutation] = useMutation(updateProjectMember)
@@ -57,6 +58,14 @@ export const EditContributor = () => {
   const initialValues = {
     privilege: contributorPrivilege.privilege,
     rolesId: rolesId,
+    tags: Array.isArray(contributor.tags)
+      ? (contributor.tags as Tag[]).map((tag) => ({
+          id: `${tag.key}-${tag.value}`,
+          key: tag.key ?? "",
+          value: tag.value ?? "",
+          text: tag.value ?? "",
+        }))
+      : [],
   }
 
   // Handle events
@@ -77,6 +86,7 @@ export const EditContributor = () => {
         userId: contributorUser!.id,
         privilege: values.privilege,
         rolesId: values.rolesId,
+        tags: values.tags,
       })
 
       await toast.promise(Promise.resolve(updated), {

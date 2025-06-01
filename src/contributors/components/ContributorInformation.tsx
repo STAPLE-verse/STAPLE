@@ -14,6 +14,7 @@ import { completedTaskLogPercentage } from "src/widgets/utils/completedTaskLogPe
 import { roleDistribution } from "src/widgets/utils/roleDistribution"
 import { GetCircularProgressDisplay } from "src/core/components/GetWidgetDisplay"
 import { PieChartWidget } from "src/widgets/components/PieChartWidget"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
 
 interface ContributorInformationProps {
   contributorPrivilege: MemberPrivileges
@@ -25,6 +26,7 @@ const ContributorInformation = ({
   contributorUser,
 }: ContributorInformationProps) => {
   const projectId = useParam("projectId", "number")
+  const contributorId = useParam("contributorId", "number")
 
   // get tasks for this user and projectId
   const [{ tasks }] = useQuery(getTasks, {
@@ -63,6 +65,13 @@ const ContributorInformation = ({
   const taskPercent = completedTaskLogPercentage(allTaskLogs)
   const rolePieData = roleDistribution(tasks)
 
+  const [ProjectMember, { setQueryData }] = useQuery(getProjectMember, {
+    where: {
+      id: contributorId,
+      projectId: projectId,
+    },
+  })
+
   return (
     <CollapseCard title="Contributor Information" defaultOpen={true} className="mt-4">
       {contributorUser.firstName && contributorUser.lastName && (
@@ -76,12 +85,34 @@ const ContributorInformation = ({
       <p>
         <span className="font-semibold">Privilege:</span> {getPrivilegeText(contributorPrivilege)}
       </p>
-
       <p>
         <span className="font-semibold">Add to Project: </span>{" "}
         {<DateFormat date={contributorUser.createdAt}></DateFormat>}
       </p>
+      {ProjectMember.tags &&
+        (() => {
+          const tagsArray =
+            typeof ProjectMember.tags === "string"
+              ? JSON.parse(ProjectMember.tags)
+              : ProjectMember.tags
 
+          return (
+            Array.isArray(tagsArray) &&
+            tagsArray.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                <span className="font-semibold mr-2">Tags:</span>
+                {tagsArray.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="bg-primary text-primary-content rounded px-2 py-1 text-md font-medium"
+                  >
+                    {typeof tag === "object" && tag !== null && "value" in tag ? tag.value : ""}
+                  </span>
+                ))}
+              </div>
+            )
+          )
+        })()}
       <div className="stats bg-base-300 text-lg font-bold w-full mt-2">
         <div className="stat place-items-center">
           <div className="stat-title text-2xl text-inherit" data-tooltip-id="task-status-tooltip">

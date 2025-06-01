@@ -90,7 +90,7 @@ export default resolver.pipe(
       where: { id },
       data: {
         ...data,
-        tags: data.tags ? JSON.stringify(data.tags) : undefined,
+        tags: data.tags ? data.tags : undefined,
       },
     })
 

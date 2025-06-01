@@ -116,6 +116,7 @@ model Invitation {
   email           String
   privilege       MemberPrivileges @default(CONTRIBUTOR)
   addedBy         String
+  tags            Json?
   reassignmentFor Int? // Foreign key to ProjectMember
   projectMember   ProjectMember?   @relation(fields: [reassignmentFor], references: [id]) // Relation to ProjectMember
 }
