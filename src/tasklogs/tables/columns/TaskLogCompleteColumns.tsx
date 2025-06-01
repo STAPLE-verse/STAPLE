@@ -105,7 +105,12 @@ export const TaskLogCompleteColumns: ColumnDef<
   }),
   columnHelper.accessor("taskHistory", {
     cell: (info) => {
-      return <TaskLogHistoryModal taskLogs={info.row.original.taskHistory ?? []} />
+      return (
+        <TaskLogHistoryModal
+          taskLogs={info.row.original.taskHistory ?? []}
+          privilege={info.row.original.privilege}
+        />
+      )
     },
     header: "History",
     id: "history",

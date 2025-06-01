@@ -113,6 +113,7 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog | Processe
           taskLogs={info.row.original.taskHistory ?? []}
           schema={info.row.original.schema}
           ui={info.row.original.ui}
+          privilege={info.row.original.privilege}
         />
       )
     },

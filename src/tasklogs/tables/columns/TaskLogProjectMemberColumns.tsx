@@ -91,6 +91,7 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
           taskLogs={taskHistory ?? []}
           {...(schema && ui ? { schema, ui } : {})}
           refetchTaskData={refetchTaskData}
+          privilege={info.row.original.privilege}
         />
       )
     },

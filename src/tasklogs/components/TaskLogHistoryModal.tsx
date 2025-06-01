@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import Table from "src/core/components/Table"
-import { Prisma } from "@prisma/client"
+import { MemberPrivileges, Prisma } from "@prisma/client"
 import { processTaskLogHistoryModal } from "src/tasklogs/tables/processing/processTaskLogs"
 import { TaskLogCompletedBy } from "src/core/types"
 import { TaskLogHistoryFormColumns } from "../tables/columns/TaskLogHistoryFormColumns"
@@ -15,6 +15,7 @@ type TaskLogHistoryModalProps = {
   schema?: Prisma.JsonValue
   ui?: Prisma.JsonValue
   refetchTaskData?: () => Promise<void>
+  privilege: MemberPrivileges
 }
 
 export const TaskLogHistoryModal = ({
@@ -22,9 +23,10 @@ export const TaskLogHistoryModal = ({
   schema,
   ui,
   refetchTaskData,
+  privilege,
 }: TaskLogHistoryModalProps) => {
   const [internalTaskLogHistory, setInternalTaskLogHistory] = useState(
-    processTaskLogHistoryModal(taskLogs, schema, ui)
+    processTaskLogHistoryModal(taskLogs, privilege, schema, ui)
   )
 
   let contextRefetch: (() => Promise<void>) | undefined = undefined
@@ -40,8 +42,8 @@ export const TaskLogHistoryModal = ({
   }
 
   useEffect(() => {
-    setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, schema, ui))
-  }, [taskLogs, schema, ui])
+    setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, privilege, schema, ui))
+  }, [taskLogs, schema, ui, privilege])
 
   return (
     <ToggleModal
@@ -67,7 +69,7 @@ export const TaskLogHistoryModal = ({
         } else if (contextRefetch) {
           await contextRefetch()
         }
-        setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, schema, ui))
+        setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, privilege, schema, ui))
       }}
     >
       <div className="modal-action flex flex-col">

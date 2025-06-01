@@ -12,6 +12,7 @@ import {
   Status,
   CommentReadStatus,
   Prisma,
+  MemberPrivileges,
 } from "db"
 import { ReactNode } from "react"
 
@@ -125,6 +126,7 @@ export type TaskLogCompletedBy = TaskLog & {
 export type ProjectMemberWithTaskLog = ProjectMember & {
   taskLogAssignedTo: ExtendedTaskLog[]
   users: Pick<User, "id" | "username">[]
+  privilege: MemberPrivileges
 }
 
 export type TaskLogWithCompletedBy = TaskLog & {
