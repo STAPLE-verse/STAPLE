@@ -116,7 +116,7 @@ export default resolver.pipe(
         },
         projectId: projectId,
         routeData: {
-          path: Routes.TaskLogsPage({
+          path: Routes.ShowTaskPage({
             projectId: projectId,
             taskId: taskLog.task.id,
           }).href,

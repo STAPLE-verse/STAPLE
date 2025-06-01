@@ -57,7 +57,7 @@ const TaskItems = ({
         <div className="flex justify-end items-center">
           {newCommentsCount! > 0 && (
             <div className="relative mr-2">
-              <Link href={Routes.TaskLogsPage({ taskId: id, projectId })}>
+              <Link href={Routes.ShowTaskPage({ taskId: id, projectId })}>
                 <ChatBubbleOvalLeftEllipsisIcon
                   className="w-7 h-7 stroke-2 bg-accent text-accent-content border-transparent rounded-2xl shadow-sm hover:opacity-50"
                   aria-hidden="true"

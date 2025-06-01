@@ -2,8 +2,8 @@ import { CompletedAs } from "db"
 import { useTaskContext } from "src/tasks/components/TaskContext"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
-import Card from "src/core/components/Card"
 import { CompleteRow } from "./CompleteRow"
+import CollapseCard from "src/core/components/CollapseCard"
 
 export const TaskLogCompletion = () => {
   const { task, projectMembers } = useTaskContext()
@@ -18,7 +18,7 @@ export const TaskLogCompletion = () => {
   )
 
   return (
-    <Card
+    <CollapseCard
       title="Your Task(s)"
       tooltipContent="Complete your individual or team task and view completion history"
       className="w-full"
@@ -35,6 +35,6 @@ export const TaskLogCompletion = () => {
           />
         </div>
       ))}
-    </Card>
+    </CollapseCard>
   )
 }

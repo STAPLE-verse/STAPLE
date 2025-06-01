@@ -1,7 +1,7 @@
 import React from "react"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { TaskLogToggleModal } from "../../components/TaskLogToggleModal"
-import { ProcessedIndividualTaskLog } from "../processing/processTaskLogs"
+import { ProcessedIndividualTaskLog, ProcessedTeamTaskLog } from "../processing/processTaskLogs"
 import ToggleModal from "src/core/components/ToggleModal"
 import ChatBox from "src/comments/components/ChatBox"
 import { Routes } from "@blitzjs/next"
@@ -16,11 +16,13 @@ import {
 import TaskLogHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
 
 // Column helper
-const columnHelper = createColumnHelper<ProcessedIndividualTaskLog>()
+const columnHelper = createColumnHelper<ProcessedIndividualTaskLog | ProcessedTeamTaskLog>()
 
 // ColumnDefs
 // Table for assignment without a form
-export const TaskLogCompleteColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
+export const TaskLogCompleteColumns: ColumnDef<
+  ProcessedIndividualTaskLog | ProcessedTeamTaskLog
+>[] = [
   columnHelper.accessor("type", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Type",
@@ -35,7 +37,11 @@ export const TaskLogCompleteColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
     id: "contributorOrTeam",
     header: "Collaborator(s)",
     cell: (info) => {
-      const { type, projectId, contributorId, teamId, deletedTeam } = info.row.original
+      const { type, teamId, deletedTeam } = info.row.original
+      const projectId =
+        type === "Individual" ? (info.row.original as ProcessedIndividualTaskLog).projectId : ""
+      const contributorId =
+        type === "Individual" ? (info.row.original as ProcessedIndividualTaskLog).contributorId : ""
       if (type === "Individual") {
         return (
           <>

@@ -54,13 +54,6 @@ const TaskContent = () => {
                 Edit Task
               </Link>
 
-              <Link
-                className="btn btn-success"
-                href={Routes.TaskLogsPage({ projectId: task.projectId, taskId: task.id })}
-              >
-                Edit Responses
-              </Link>
-
               {task.formVersion ? (
                 <JsonFormModal
                   schema={getJsonSchema(task.formVersion.schema)}

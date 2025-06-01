@@ -57,21 +57,12 @@ const MetadataContent = () => {
 
           <Link
             className="btn btn-secondary mx-2"
-            href={Routes.TaskLogsPage({
-              projectId: task.projectId,
-              taskId: task.id,
-            })}
-          >
-            Edit Responses
-          </Link>
-          <Link
-            className="btn btn-success mr-2"
             href={Routes.ShowTaskPage({
               projectId: task.projectId,
               taskId: task.id,
             })}
           >
-            Go to Task
+            Edit Responses
           </Link>
 
           <DownloadJSON data={processedMetadata} fileName={task.name} className="btn btn-info" />

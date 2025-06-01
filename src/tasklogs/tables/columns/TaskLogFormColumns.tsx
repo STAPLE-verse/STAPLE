@@ -1,6 +1,6 @@
 import React from "react"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { ProcessedIndividualTaskLog } from "../processing/processTaskLogs"
+import { ProcessedIndividualTaskLog, ProcessedTeamTaskLog } from "../processing/processTaskLogs"
 import { TaskLogSchemaModal } from "../../components/TaskLogSchemaModal"
 import ToggleModal from "src/core/components/ToggleModal"
 import ChatBox from "src/comments/components/ChatBox"
@@ -17,11 +17,11 @@ import TaskLogHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
 import { Tooltip } from "react-tooltip"
 
 // Column helper
-const columnHelper = createColumnHelper<ProcessedIndividualTaskLog>()
+const columnHelper = createColumnHelper<ProcessedIndividualTaskLog | ProcessedTeamTaskLog>()
 
 // ColumnDefs
 // Table for assignment with a form
-export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
+export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog | ProcessedTeamTaskLog>[] = [
   columnHelper.accessor("type", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Type",
@@ -36,7 +36,11 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog>[] = [
     id: "contributorOrTeam",
     header: "Collaborator(s)",
     cell: (info) => {
-      const { type, projectId, contributorId, teamId, deletedTeam } = info.row.original
+      const { type, teamId, deletedTeam } = info.row.original
+      const projectId =
+        type === "Individual" ? (info.row.original as ProcessedIndividualTaskLog).projectId : ""
+      const contributorId =
+        type === "Individual" ? (info.row.original as ProcessedIndividualTaskLog).contributorId : ""
       if (type === "Individual") {
         return (
           <>
