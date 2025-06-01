@@ -32,6 +32,33 @@ export const MilestoneInformation: React.FC<MilestoneInformationProps> = ({
         />
         {/* Milestone description */}
         {milestone.description}
+
+        {/* Milestone start and end dates */}
+        {milestone.startDate && (
+          <p>
+            <strong>Start Date:</strong> <DateFormat date={milestone.startDate} />
+          </p>
+        )}
+        {milestone.endDate && (
+          <p>
+            <strong>End Date:</strong> <DateFormat date={milestone.endDate} />
+          </p>
+        )}
+
+        {/* Milestone tags */}
+        {Array.isArray(milestone.tags) && milestone.tags.length > 0 && (
+          <p>
+            <strong>Tags:</strong>{" "}
+            {milestone.tags.map((tag: { key: string; value: string }, idx: number) => (
+              <span
+                key={idx}
+                className="bg-primary text-white text-md font-medium px-2 py-1 rounded-md mx-1 inline-block"
+              >
+                {tag.value}
+              </span>
+            ))}
+          </p>
+        )}
         {/* Milestone last update */}
         <p className="italic">
           Last update: <DateFormat date={milestone.updatedAt}></DateFormat>

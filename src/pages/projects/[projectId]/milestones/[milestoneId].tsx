@@ -74,7 +74,7 @@ const ShowMilestonePage = () => {
             className="btn btn-primary"
             href={Routes.EditMilestonePage({ projectId: projectId!, milestoneId: milestone.id })}
           >
-            Update Milestone
+            Edit Milestone
           </Link>
 
           <button className="btn btn-secondary" onClick={openModal}>

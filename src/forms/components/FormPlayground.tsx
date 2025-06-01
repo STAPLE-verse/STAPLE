@@ -58,21 +58,21 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
         <Tab
           className={({ selected }) =>
-            classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
+            classNames("tab", "text-lg", selected ? "tab-active text" : "hover:text-gray-500")
           }
         >
           Visual Builder
         </Tab>
         <Tab
           className={({ selected }) =>
-            classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
+            classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
           }
         >
           JSON Builder
         </Tab>
         <Tab
           className={({ selected }) =>
-            classNames("tab", selected ? "tab-active" : "hover:text-gray-500")
+            classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
           }
         >
           Preview

@@ -103,6 +103,11 @@ const MissingDatesModal: React.FC<Props> = ({ rows, open, onClose, onDatesUpdate
       const start = new Date(r.startDate)
       const end = new Date(r.endDate)
 
+      if (start > end) {
+        alert(`Start date cannot be after end date for "${r.name}" (${r.type})`)
+        continue
+      }
+
       if (r.type === "milestone") {
         await updateMilestoneDatesMutation({
           id: r.id,
@@ -125,11 +130,11 @@ const MissingDatesModal: React.FC<Props> = ({ rows, open, onClose, onDatesUpdate
       <h1 className="flex justify-center mb-2 text-3xl">Fill in Missing Dates</h1>
       <Table columns={columns} data={data} addPagination />
       <div className="flex justify-end gap-2 mt-4">
-        <button className="btn btn-secondary" onClick={onClose}>
-          Cancel
-        </button>
         <button className="btn btn-primary" onClick={handleSave}>
           Save
+        </button>
+        <button className="btn btn-secondary" onClick={onClose}>
+          Cancel
         </button>
       </div>
     </Modal>

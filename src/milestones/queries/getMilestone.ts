@@ -10,7 +10,12 @@ const GetMilestone = z.object({
 
 export default resolver.pipe(resolver.zod(GetMilestone), resolver.authorize(), async ({ id }) => {
   // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-  const milestone = await db.milestone.findFirst({ where: { id } })
+  const milestone = await db.milestone.findFirst({
+    where: { id },
+    include: {
+      task: true,
+    },
+  })
 
   if (!milestone) throw new NotFoundError()
 

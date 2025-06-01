@@ -19,6 +19,7 @@ export type Tag = {
 
 type MilestoneFormProps<S extends z.ZodType<any, any>> = FormProps<S> & {
   tasks: Task[]
+  status?: any
 }
 
 export function MilestoneForm<S extends z.ZodType<any, any>>(props: MilestoneFormProps<S>) {
@@ -118,8 +119,14 @@ export function MilestoneForm<S extends z.ZodType<any, any>>(props: MilestoneFor
       </ToggleModal>
 
       <DateField name="startDate" label="Start Date:" />
+      {formProps.status?.fieldErrors?.startDate && (
+        <div className="text-error text-sm mt-1">{formProps.status.fieldErrors.startDate}</div>
+      )}
 
       <DateField name="endDate" label="End Date:" />
+      {formProps.status?.fieldErrors?.endDate && (
+        <div className="text-error text-sm mt-1">{formProps.status.fieldErrors.endDate}</div>
+      )}
 
       <div className="w-2/3">
         <label className="text-base-content">

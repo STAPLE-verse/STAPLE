@@ -5,7 +5,7 @@ import Layout from "src/core/layouts/Layout"
 import { FormMilestoneSchema } from "src/milestones/schemas"
 import { MilestoneForm } from "src/milestones/components/MilestoneForm"
 import { FORM_ERROR } from "final-form"
-import { Suspense, useState } from "react"
+import { Suspense } from "react"
 import { useParam } from "@blitzjs/next"
 import toast from "react-hot-toast"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
@@ -70,6 +70,14 @@ const NewMilestonePage = () => {
               schema={FormMilestoneSchema}
               tasks={tasks}
               onSubmit={handleNewMilestone}
+              cancelText="Cancel"
+              onCancel={() =>
+                router.push(
+                  Routes.MilestonesPage({
+                    projectId: projectId!,
+                  })
+                )
+              }
             />
           </Card>
         </Suspense>
