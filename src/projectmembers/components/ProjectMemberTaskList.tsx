@@ -46,8 +46,6 @@ const ProjectMemberTaskList = ({
     () => refetchTaskLogs()
   )
 
-  console.log(processedData)
-
   return (
     <CollapseCard title="Contributor Tasks" className="mt-4">
       <Table columns={tableColumns} data={processedData} addPagination={true} />

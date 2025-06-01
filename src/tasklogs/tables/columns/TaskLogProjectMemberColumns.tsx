@@ -35,7 +35,7 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
       const projectId = taskLog.task.projectId
       const displayName = name.length > 20 ? `${name.slice(0, 20)}...` : name
       return (
-        <Link href={Routes.TasksPage({ taskId, projectId })}>
+        <Link href={Routes.ShowTaskPage({ taskId, projectId })}>
           <button className="btn btn-primary w-full ">{displayName}</button>
         </Link>
       )
