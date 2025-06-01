@@ -5,7 +5,6 @@ import getProjectMember from "src/projectmembers/queries/getProjectMember"
 import DateFormat from "src/core/components/DateFormat"
 import CollapseCard from "src/core/components/CollapseCard"
 import { ExtendedTask, ProjectMemberWithUsername } from "src/core/types"
-import ICSDownloadButton from "src/core/components/IcsDownload"
 
 export const TaskInformation = () => {
   const taskContext = useContext(TaskContext)
@@ -25,10 +24,9 @@ export const TaskInformation = () => {
   return (
     <CollapseCard
       title="Task Information"
-      className="mx-2 w-full"
+      className="w-full"
       tooltipContent="Overall information about this task"
     >
-      <ICSDownloadButton task={task} />
       <p>
         <span className="font-semibold">Name: </span> {task.name}
       </p>

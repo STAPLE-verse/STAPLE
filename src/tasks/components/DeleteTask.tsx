@@ -20,7 +20,7 @@ const DeleteTask = ({ taskId, projectId }: DeleteTaskProps) => {
   }
 
   return (
-    <button type="button" className="btn btn-secondary" onClick={handleDelete}>
+    <button type="button" className="btn btn-warning" onClick={handleDelete}>
       Delete task
     </button>
   )
