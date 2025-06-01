@@ -13,6 +13,8 @@ import {
   processTeamTaskLogs,
 } from "src/tasklogs/tables/processing/processTaskLogs"
 import { filterFirstTaskLog } from "src/tasklogs/utils/filterFirstTaskLog"
+import getProjectPrivilege from "src/projectprivileges/queries/getProjectPrivilege"
+import getCurrentUser from "src/users/queries/getCurrentUser"
 
 interface TaskLogTableProps {
   contributorFilter?: number
@@ -23,6 +25,11 @@ export const TaskLogTable = ({ contributorFilter }: TaskLogTableProps) => {
   const { task, projectMembers } = useTaskContext()
   const projectId = useParam("projectId", "number")
   const { projectMember: currentContributor } = useCurrentContributor(projectId)
+  const [data, { isError, error, refetch }] = useQuery(getCurrentUser, null)
+
+  const [contributorPrivilege] = useQuery(getProjectPrivilege, {
+    where: { userId: data!.id, projectId: projectId },
+  })
 
   const { individualProjectMembers, teamProjectMembers } =
     useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
@@ -50,6 +57,7 @@ export const TaskLogTable = ({ contributorFilter }: TaskLogTableProps) => {
     comments,
     task.name,
     currentContributor!.id,
+    contributorPrivilege.privilege,
     task.formVersion?.schema,
     task.formVersion?.uiSchema,
     refetchComments,
@@ -65,6 +73,7 @@ export const TaskLogTable = ({ contributorFilter }: TaskLogTableProps) => {
     comments,
     task.name,
     currentContributor!.id,
+    contributorPrivilege.privilege,
     task.formVersion?.schema,
     task.formVersion?.uiSchema,
     refetchComments,

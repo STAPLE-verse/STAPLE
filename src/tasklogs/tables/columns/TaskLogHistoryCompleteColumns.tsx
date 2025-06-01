@@ -26,8 +26,9 @@ export const TaskLogHistoryCompleteColumns: ColumnDef<ProcessedTaskLogHistoryMod
     cell: (info) => {
       const privilege = info.row.original.privilege
       const value = info.getValue()
+      const displayValue = value === null ? "Pending" : value === true ? "Approved" : "Not Approved"
       return privilege === "CONTRIBUTOR" ? (
-        <span>{value}</span>
+        <span>{displayValue}</span>
       ) : (
         <ApproveDropdown
           value={value}

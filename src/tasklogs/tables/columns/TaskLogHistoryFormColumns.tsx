@@ -27,7 +27,7 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistoryModal>[
       const privilege = info.row.original.privilege
       const value = info.getValue()
       return privilege === "CONTRIBUTOR" ? (
-        <span>{value}</span>
+        <span>{value === null ? "Pending" : value === true ? "Approved" : "Not Approved"}</span>
       ) : (
         <ApproveDropdown
           value={value}

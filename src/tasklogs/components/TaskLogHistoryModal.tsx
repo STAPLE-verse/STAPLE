@@ -43,7 +43,7 @@ export const TaskLogHistoryModal = ({
 
   useEffect(() => {
     setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, privilege, schema, ui))
-  }, [taskLogs, schema, ui, privilege])
+  }, [taskLogs, privilege, schema, ui])
 
   return (
     <ToggleModal

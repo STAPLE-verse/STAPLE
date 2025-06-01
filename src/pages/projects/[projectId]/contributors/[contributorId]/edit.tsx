@@ -18,10 +18,8 @@ import getProjectPrivilege from "src/projectprivileges/queries/getProjectPrivile
 import { UpdateProjectMemberFormSchema } from "src/projectmembers/schemas"
 import { ProjectMemberWithUsersAndRoles } from "src/core/types"
 import DeleteContributor from "src/contributors/components/DeleteContributor"
-import PageHeader from "src/core/components/PageHeader"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
-import Card from "src/core/components/Card"
 
 export const EditContributor = () => {
   const [updateProjectMemberMutation] = useMutation(updateProjectMember)

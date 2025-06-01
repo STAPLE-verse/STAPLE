@@ -33,6 +33,7 @@ export function processIndividualTaskLogs(
   comments: CommentWithAuthor[],
   taskName: string,
   currentContributor: number,
+  privilege: MemberPrivileges,
   schema?: Prisma.JsonValue | undefined,
   ui?: Prisma.JsonValue | undefined,
   refetchComments?: () => void,
@@ -86,7 +87,7 @@ export function processIndividualTaskLogs(
       ui: ui,
       refetchComments: refetchComments,
       overdue,
-      privilege: projectMember.privilege,
+      privilege: privilege,
     }
   })
 }
@@ -115,6 +116,7 @@ export function processTeamTaskLogs(
   comments: CommentWithAuthor[],
   taskName: string,
   currentContributor: number,
+  privilege: MemberPrivileges,
   schema?: Prisma.JsonValue | undefined,
   ui?: Prisma.JsonValue | undefined,
   refetchComments?: () => void,
@@ -174,7 +176,7 @@ export function processTeamTaskLogs(
       ui: ui,
       refetchComments: refetchComments,
       overdue,
-      privilege: projectMember.privilege,
+      privilege: privilege,
     }
   })
 }
