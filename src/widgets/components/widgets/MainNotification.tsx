@@ -26,9 +26,11 @@ const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
                 {type === "Comment" && <ChatBubbleLeftRightIcon className="h-10 w-10" />}
                 {type === "Project" && <FolderOpenIcon className="h-10 w-10" />}
                 {type === "Other" && <BellAlertIcon className="h-10 w-10" />}
-                <span className="absolute top-0 -right-2 badge badge-primary text-xs">
-                  {countsByType?.[type] || 0}
-                </span>
+                {countsByType[type]! > 0 && (
+                  <span className="absolute top-0 -right-2 badge badge-primary text-xs">
+                    {countsByType[type]}
+                  </span>
+                )}
               </div>
               <div className="text-xl mt-2 font-medium">{type}</div>
             </div>

@@ -8,8 +8,8 @@ import { ContributorTeamColumns } from "./ContributorTeamColumns"
 // Column helper
 const columnHelper = createColumnHelper<TeamData>()
 
-// ColumnDefs
-ContributorTeamColumns.push(
+export const PmTeamColumns = [
+  ...ContributorTeamColumns,
   columnHelper.accessor("id", {
     id: "edit",
     header: "Edit",
@@ -28,6 +28,5 @@ ContributorTeamColumns.push(
         </Link>
       </div>
     ),
-  })
-)
-export const PmTeamColumns = ContributorTeamColumns
+  }),
+]

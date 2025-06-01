@@ -49,12 +49,12 @@ export const AllTeamList = ({ privilege, projectId }: AllTeamListProps) => {
     projectId!
   )
 
-  const tableColumns =
+  const tableColumnsTeams =
     privilege === MemberPrivileges.CONTRIBUTOR ? ContributorTeamColumns : PmTeamColumns
 
   return (
     <div>
-      <Table columns={tableColumns} data={teamData} addPagination={true} />
+      <Table columns={tableColumnsTeams} data={teamData} addPagination={true} />
     </div>
   )
 }

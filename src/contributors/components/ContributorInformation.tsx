@@ -64,7 +64,7 @@ const ContributorInformation = ({
   const rolePieData = roleDistribution(tasks)
 
   return (
-    <CollapseCard title="Contributor Information" defaultOpen={true}>
+    <CollapseCard title="Contributor Information" defaultOpen={true} className="mt-4">
       {contributorUser.firstName && contributorUser.lastName && (
         <p>
           <span className="font-semibold">Username:</span> {contributorUser.username}
