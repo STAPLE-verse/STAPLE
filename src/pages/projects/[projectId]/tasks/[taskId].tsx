@@ -15,10 +15,12 @@ import DeleteTask from "src/tasks/components/DeleteTask"
 import { Routes } from "@blitzjs/next"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import getJsonSchema from "src/forms/utils/getJsonSchema"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 
 const TaskContent = () => {
   const { task } = useTaskContext()
   const { privilege } = useMemberPrivileges()
+  const currentUser = useCurrentUser()
 
   return (
     <>
@@ -81,13 +83,15 @@ const TaskContent = () => {
           )}
         </div>
 
-        {privilege == MemberPrivileges.PROJECT_MANAGER && <TaskSummary />}
         <div className="flex flex-row justify-center mt-2">
           <TaskInformation />
         </div>
-        <div className="flex flex-row justify-center mt-2">
-          <TaskLogCompletion />
-        </div>
+
+        {privilege === MemberPrivileges.PROJECT_MANAGER ? (
+          <TaskSummary />
+        ) : (
+          <TaskSummary contributorFilter={currentUser?.id} />
+        )}
       </main>
     </>
   )

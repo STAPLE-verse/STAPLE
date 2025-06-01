@@ -3,7 +3,6 @@ import Table from "src/core/components/Table"
 import { useTaskContext } from "./TaskContext"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
 import { useParam } from "@blitzjs/next"
-import { useState } from "react"
 import getComments from "src/comments/queries/getComments"
 import { ProjectMemberWithTaskLog } from "src/core/types"
 import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
@@ -15,7 +14,11 @@ import {
 } from "src/tasklogs/tables/processing/processTaskLogs"
 import { filterFirstTaskLog } from "src/tasklogs/utils/filterFirstTaskLog"
 
-export const TaskLogTable = () => {
+interface TaskLogTableProps {
+  contributorFilter?: number
+}
+
+export const TaskLogTable = ({ contributorFilter }: TaskLogTableProps) => {
   // Get values
   const { task, projectMembers } = useTaskContext()
   const projectId = useParam("projectId", "number")
@@ -23,8 +26,6 @@ export const TaskLogTable = () => {
 
   const { individualProjectMembers, teamProjectMembers } =
     useSeparateProjectMembers<ProjectMemberWithTaskLog>(projectMembers)
-
-  const [openModal, setOpenModal] = useState(false)
 
   // Fetch all comments for task logs
   // Fetch all first task log IDs for teams
@@ -38,8 +39,14 @@ export const TaskLogTable = () => {
   })
 
   // Preprocess taskLogs to include only the latest log
+  const individualProjectMembersFiltered = contributorFilter
+    ? individualProjectMembers.filter((member) =>
+        member.users?.some((user) => user.id === contributorFilter)
+      )
+    : individualProjectMembers
+
   const processedIndividualAssignments = processIndividualTaskLogs(
-    individualProjectMembers,
+    individualProjectMembersFiltered,
     comments,
     task.name,
     currentContributor!.id,
@@ -48,8 +55,13 @@ export const TaskLogTable = () => {
     refetchComments,
     task.deadline
   )
+
+  const teamProjectMembersFiltered = contributorFilter
+    ? teamProjectMembers.filter((team) => team.users?.some((user) => user.id === contributorFilter))
+    : teamProjectMembers
+
   const processedTeamAssignments = processTeamTaskLogs(
-    teamProjectMembers,
+    teamProjectMembersFiltered,
     comments,
     task.name,
     currentContributor!.id,
@@ -61,15 +73,11 @@ export const TaskLogTable = () => {
 
   // Get columns definitions for tables
   const individualColumns = task.formVersionId ? TaskLogFormColumns : TaskLogCompleteColumns
-
+  const allProcessedLogs = [...processedIndividualAssignments, ...processedTeamAssignments]
   return (
     <div className="rounded-b-box rounded-tr-box bg-base-300 p-4">
       <div className="overflow-x-auto">
-        <Table
-          data={[...processedIndividualAssignments, ...processedTeamAssignments]}
-          columns={individualColumns}
-          addPagination={true}
-        />
+        <Table data={allProcessedLogs} columns={individualColumns} addPagination={true} />
       </div>
     </div>
   )

@@ -4,18 +4,20 @@ import CollapseCard from "src/core/components/CollapseCard"
 import { TaskLogTable } from "./TaskLogTable"
 
 // Create task summary for the PM
-export const TaskSummary = () => {
+export const TaskSummary = ({ contributorFilter }: { contributorFilter?: number }) => {
   return (
     <div className="flex flex-row justify-center mt-2 mb-2">
       {/* overall project information */}
-      <CollapseCard title="Project Manager Information" className="w-full" defaultOpen={true}>
-        <div className="flex">
-          <CompleteTaskToggle />
-          <ShowTasklogProgress />
-        </div>
+      <CollapseCard title="Task Completion" className="w-full" defaultOpen={true}>
+        {!contributorFilter && (
+          <div className="flex">
+            <CompleteTaskToggle />
+            <ShowTasklogProgress />
+          </div>
+        )}
 
         <div>
-          <TaskLogTable />
+          <TaskLogTable contributorFilter={contributorFilter} />
         </div>
       </CollapseCard>
     </div>
