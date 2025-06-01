@@ -51,7 +51,7 @@ export const ProjectTasksColumns = [
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
-      filterVariant: "text",
+      filterVariant: "select",
     },
   }),
   columnHelperProject.accessor("description", {
@@ -99,7 +99,7 @@ export const ProjectTasksColumns = [
       <div className="table-header-tooltip">
         Percent Complete
         <InformationCircleIcon
-          className="h-6 w-6 ml-1 text-info stroke-2"
+          className="h-4 w-4 ml-1 text-info stroke-2"
           data-tooltip-id="task-percent-tooltip"
         />
         <Tooltip

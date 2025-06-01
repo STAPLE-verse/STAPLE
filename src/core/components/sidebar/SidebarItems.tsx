@@ -45,7 +45,7 @@ export const ProjectSidebarItems = (projectId: number, t: TFunction): SidebarIte
       icon: SwatchIcon,
       text: t("sidebar.project.tags"),
       route: Routes.TagsPage({ projectId: projectId }),
-      tooltipId: "project-dashboard-tooltip",
+      tooltipId: "project-tags-tooltip",
       privilege: [MemberPrivileges.PROJECT_MANAGER],
     },
     {
