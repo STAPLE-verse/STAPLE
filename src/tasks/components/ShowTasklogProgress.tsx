@@ -18,16 +18,8 @@ const ShowTasklogProgress = () => {
     <Stat
       title="Task Progress"
       tooltipContent="Percent of contributors/teams that have finished the task"
-      description={
-        <Link
-          className="btn btn-primary"
-          href={Routes.TaskLogsPage({ projectId: task.projectId, taskId: task.id })}
-        >
-          Edit Responses
-        </Link>
-      }
     >
-      <div className="w-20 h-20 m-2" data-tooltip-id="progress-tooltip">
+      <div className="w-20 h-20 mt-2" data-tooltip-id="progress-tooltip">
         <GetCircularProgressDisplay proportion={taskLogPercent} />
         <Tooltip
           id="progress-tooltip"

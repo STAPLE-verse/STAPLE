@@ -64,7 +64,7 @@ export const CompleteTaskToggle = () => {
           type="checkbox"
           checked={status === Status.COMPLETED}
           onChange={handleStatus}
-          className="checkbox checkbox-primary border-2"
+          className="checkbox checkbox-primary border-2 mt-2"
         />
         <Modal open={isConfirmModalOpen} size="w-11/12 max-w-3xl">
           <div className="flex flex-col justify-center items-center space-y-4">

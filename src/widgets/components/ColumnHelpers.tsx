@@ -1,6 +1,6 @@
 import { Routes } from "@blitzjs/next"
 import { ChatBubbleOvalLeftEllipsisIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
-import { Prisma, Project, Notification, Task, TaskLog } from "@prisma/client"
+import { Prisma, Notification, Task, TaskLog } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import NotificationMessage from "src/notifications/components/NotificationMessage"
 import Link from "next/link"

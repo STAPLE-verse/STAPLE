@@ -64,7 +64,7 @@ const ICSDownloadButton = ({ task }) => {
   })
 
   return (
-    <button className="btn btn-primary w-1/6" onClick={() => downloadICSFile(task, person)}>
+    <button className="btn btn-primary" onClick={() => downloadICSFile(task, person)}>
       Add to Calendar
     </button>
   )

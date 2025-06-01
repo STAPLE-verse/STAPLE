@@ -13,6 +13,8 @@ import ICSDownloadButton from "src/core/components/IcsDownload"
 import Link from "next/link"
 import DeleteTask from "src/tasks/components/DeleteTask"
 import { Routes } from "@blitzjs/next"
+import { JsonFormModal } from "src/core/components/JsonFormModal"
+import getJsonSchema from "src/forms/utils/getJsonSchema"
 
 const TaskContent = () => {
   const { task } = useTaskContext()
@@ -43,18 +45,50 @@ const TaskContent = () => {
 
         <div className="flex justify-center items-center mt-2 mb-2 gap-2">
           <ICSDownloadButton task={task} />
-          <Link
-            className="btn btn-secondary"
-            href={Routes.EditTaskPage({ projectId: task.projectId, taskId: task.id })}
-          >
-            Update task
-          </Link>
-          <DeleteTask taskId={task.id} projectId={task.projectId} />
+          {privilege == MemberPrivileges.PROJECT_MANAGER && (
+            <>
+              <Link
+                className="btn btn-secondary"
+                href={Routes.EditTaskPage({ projectId: task.projectId, taskId: task.id })}
+              >
+                Edit Task
+              </Link>
+
+              <Link
+                className="btn btn-success"
+                href={Routes.TaskLogsPage({ projectId: task.projectId, taskId: task.id })}
+              >
+                Edit Responses
+              </Link>
+
+              {task.formVersion ? (
+                <JsonFormModal
+                  schema={getJsonSchema(task.formVersion.schema)}
+                  uiSchema={task.formVersion.uiSchema}
+                  label="Required Form"
+                  classNames="btn-info"
+                  submittable={false} // Ensures the form is not submittable
+                />
+              ) : (
+                <></>
+              )}
+
+              <Link
+                className="btn btn-accent"
+                href={Routes.ShowMetadataPage({
+                  projectId: task.projectId,
+                  taskId: task.id,
+                })}
+              >
+                Go to Download
+              </Link>
+
+              <DeleteTask taskId={task.id} projectId={task.projectId} />
+            </>
+          )}
         </div>
 
-        {privilege == MemberPrivileges.PROJECT_MANAGER && (
-          <TaskSummary taskId={task.id} projectId={task.projectId} />
-        )}
+        {privilege == MemberPrivileges.PROJECT_MANAGER && <TaskSummary />}
         <div className="flex flex-row justify-center mt-2">
           <TaskInformation />
         </div>
