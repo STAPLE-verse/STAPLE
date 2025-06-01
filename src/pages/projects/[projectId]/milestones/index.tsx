@@ -71,7 +71,7 @@ const Milestones = () => {
 
   return (
     <>
-      <h1 className="flex justify-center mb-2 text-3xl">
+      <h1 className="flex justify-center items-center mb-2 text-3xl">
         Milestones
         <InformationCircleIcon
           className="h-6 w-6 ml-2 text-info stroke-2"

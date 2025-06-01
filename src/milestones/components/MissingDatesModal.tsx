@@ -43,8 +43,20 @@ const MissingDatesModal: React.FC<Props> = ({ rows, open, onClose, onDatesUpdate
 
   const columns = useMemo<ColumnDef<GanttRow, any>[]>(
     () => [
-      { header: "Type", accessorKey: "type" },
-      { header: "Name", accessorKey: "name" },
+      {
+        header: "Type",
+        accessorKey: "type",
+        id: "type",
+        enableColumnFilter: true,
+        enableSorting: true,
+      },
+      {
+        header: "Name",
+        accessorKey: "name",
+        id: "name",
+        enableColumnFilter: true,
+        enableSorting: true,
+      },
       {
         header: "Start Date",
         accessorKey: "startDate",
@@ -57,7 +69,7 @@ const MissingDatesModal: React.FC<Props> = ({ rows, open, onClose, onDatesUpdate
             onChange={(e) =>
               handleDateChange(row.original.id, row.original.type, "startDate", e.target.value)
             }
-            className="input input-bordered text-lg border-primary rounded w-40 border-2 bg-base-300 text-primary"
+            className="input input-bordered text-lg border-primary rounded w-full border-2 bg-base-300 text-primary"
             min="2000-01-01"
             max="2050-01-01"
           />
@@ -75,7 +87,7 @@ const MissingDatesModal: React.FC<Props> = ({ rows, open, onClose, onDatesUpdate
             onChange={(e) =>
               handleDateChange(row.original.id, row.original.type, "endDate", e.target.value)
             }
-            className="input input-bordered text-lg border-primary rounded w-40 border-2 bg-base-300 text-primary"
+            className="input input-bordered text-lg border-primary rounded w-full border-2 bg-base-300 text-primary"
             min="2000-01-01"
             max="2050-01-01"
           />
@@ -109,9 +121,9 @@ const MissingDatesModal: React.FC<Props> = ({ rows, open, onClose, onDatesUpdate
   }
 
   return (
-    <Modal open={open} size="max-w-3xl">
-      <h2 className="text-2xl mb-4">Fill missing dates</h2>
-      <Table columns={columns} data={data} addPagination classNames={{ table: "w-full" }} />
+    <Modal open={open} size="max-w-4xl">
+      <h1 className="flex justify-center mb-2 text-3xl">Fill in Missing Dates</h1>
+      <Table columns={columns} data={data} addPagination />
       <div className="flex justify-end gap-2 mt-4">
         <button className="btn btn-secondary" onClick={onClose}>
           Cancel

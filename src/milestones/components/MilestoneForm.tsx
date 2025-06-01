@@ -75,7 +75,7 @@ export function MilestoneForm<S extends z.ZodType<any, any>>(props: MilestoneFor
     <Form<S>
       {...formProps}
       encType="multipart/form-data"
-      className="mt-4 gap-4 flex flex-col"
+      className="flex gap-4 flex-col"
       onSubmit={(values, form, callback) => {
         return formProps.onSubmit(
           {
@@ -100,31 +100,29 @@ export function MilestoneForm<S extends z.ZodType<any, any>>(props: MilestoneFor
         label="Name: (Required)"
         placeholder="Name"
         type="text"
-        className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
+        className="input w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
       />
       <LabeledTextAreaField
         name="description"
         label="Description:"
         placeholder="Add Description"
         type="textarea"
-        className="mb-4 w-1/2 textarea text-primary textarea-bordered textarea-primary textarea-lg bg-base-300 border-2"
+        className="w-1/2 textarea text-primary textarea-bordered textarea-primary textarea-lg bg-base-300 border-2"
       />
-      <div className="mb-4">
-        <ToggleModal
-          buttonLabel="Add Tasks"
-          modalTitle="Select Tasks"
-          buttonClassName="w-1/2"
-          saveButton={true}
-        >
-          <CheckboxFieldTable name="taskIds" options={taskOptions} />
-        </ToggleModal>
-      </div>
-      <div className="mb-4">
-        <DateField name="startDate" label="Start Date:" />
-      </div>
+      <ToggleModal
+        buttonLabel="Add Tasks"
+        modalTitle="Select Tasks"
+        buttonClassName="w-1/2"
+        saveButton={true}
+      >
+        <CheckboxFieldTable name="taskIds" options={taskOptions} />
+      </ToggleModal>
+
+      <DateField name="startDate" label="Start Date:" />
+
       <DateField name="endDate" label="End Date:" />
 
-      <div className="w-2/3 mt-4">
+      <div className="w-2/3">
         <label className="text-base-content">
           <span className="flex items-center mb-2">
             Tags:
