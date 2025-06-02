@@ -4,7 +4,9 @@ import getTags from "src/tags/queries/getTags"
 import { WithContext as ReactTags } from "react-tag-input"
 import { useParam } from "@blitzjs/next"
 import getTaskTags from "../queries/getTaskTags"
-import { TagTaskTable } from "./TaskTagTable"
+import getMilestoneTags from "../queries/getMilestoneTags"
+import { TagTaskTable } from "./TagTaskTable"
+import { TagMilestoneTable } from "./TagMilestoneTable"
 
 const TagDisplay = () => {
   const projectId = useParam("projectId", "number")
@@ -12,16 +14,15 @@ const TagDisplay = () => {
   // get task tags
   const [allTaskTags] = useQuery(getTaskTags, { projectId: projectId! })
 
+  // get milestone tags
+  const [allMilestoneTags] = useQuery(getMilestoneTags, { projectId: projectId! })
+
   // Fetch tasks with their tags
   const [allTags] = useQuery(getTags, {
     where: {
       projectId: projectId,
     },
     source: "all",
-  })
-
-  allTags.forEach((task, i) => {
-    console.log(`task[${i}].tags`, task.tags)
   })
 
   // Flatten all tags into a single array
@@ -37,6 +38,12 @@ const TagDisplay = () => {
   // State for selected tag
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
 
+  const handleTagClick = (index) => {
+    const selectedTag = uniqueTags[index]
+    //console.log("Tag clicked:", selectedTag?.text)
+    setSelectedTag(selectedTag!.text)
+  }
+
   // Filter tasks locally based on the selected tag, using allTaskTags
   const filteredTasks =
     selectedTag !== null
@@ -47,11 +54,17 @@ const TagDisplay = () => {
         )
       : []
 
-  const handleTagClick = (index) => {
-    const selectedTag = uniqueTags[index]
-    //console.log("Tag clicked:", selectedTag?.text)
-    setSelectedTag(selectedTag!.text)
-  }
+  // Filter milestones locally based on the selected tag, using allMilestoneTags
+  const filteredMilestones =
+    selectedTag !== null
+      ? allMilestoneTags.filter(
+          (milestone) =>
+            Array.isArray(milestone.tags) &&
+            milestone.tags.some(
+              (tag) => (tag as { key: string; value: string }).value === selectedTag
+            )
+        )
+      : []
 
   return (
     <div className="p-4">
@@ -82,7 +95,12 @@ const TagDisplay = () => {
       )}
 
       {/* Display tasks related to the selected tag */}
-      {selectedTag && filteredTasks.length > 0 && <TagTaskTable tasks={filteredTasks} />}
+      {selectedTag && filteredTasks.length > 0 && (
+        <>
+          <TagTaskTable tasks={filteredTasks} />
+          <TagMilestoneTable milestones={filteredMilestones} />
+        </>
+      )}
     </div>
   )
 }

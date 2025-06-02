@@ -6,8 +6,6 @@ import DateFormat from "src/core/components/DateFormat"
 import { InformationCircleIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
 import { ProjectTasksData } from "../processing/processProjectTasks"
 import { Tooltip } from "react-tooltip"
-import ChatBox from "src/comments/components/ChatBox"
-import ToggleModal from "src/core/components/ToggleModal"
 
 // Column helper
 const columnHelperProject = createColumnHelper<ProjectTasksData>()
@@ -44,7 +42,7 @@ export const ProjectTasksColumns = [
         <Tooltip
           id="status-tooltip"
           content="Status indicates the kanban column this task is currently in."
-          className="z-[1099] ourtooltips"
+          className="z-[1099] table-header-tooltip"
         />
       </div>
     ),
@@ -83,7 +81,7 @@ export const ProjectTasksColumns = [
         <Tooltip
           id="task-status-tooltip"
           content="Marked complete by the project manager, regardless of whether all parts are finished."
-          className="z-[1099] ourtooltips"
+          className="z-[1099] table-header-tooltip"
         />
       </div>
     ),
@@ -105,7 +103,7 @@ export const ProjectTasksColumns = [
         <Tooltip
           id="task-percent-tooltip"
           content="The percentage of individual assignments that have been completed for this task."
-          className="z-[1099] ourtooltips"
+          className="z-[1099] table-header-tooltip"
         />
       </div>
     ),

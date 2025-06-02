@@ -1,6 +1,5 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
-import Link from "next/link"
 import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
@@ -17,6 +16,8 @@ import { ProjectMemberWithTaskLog } from "src/core/types"
 import { responseSubmitted } from "src/tasklogs/utils/responseSubmitted"
 import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
 import PageHeader from "src/core/components/PageHeader"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 export const EditTask = () => {
   //Setup
@@ -97,7 +98,18 @@ export const EditTask = () => {
   return (
     <>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <PageHeader title={`Edit ${task.name}`} />
+        <h1 className="flex justify-center items-center text-3xl">
+          Edit: <span className="ml-2 italic">{task.name}</span>
+          <InformationCircleIcon
+            className="h-6 w-6 ml-2 text-info stroke-2"
+            data-tooltip-id="task-update"
+          />
+          <Tooltip
+            id="task-update"
+            content="Use this page to update/edit a task. You can add new people or teams that are required to complete the task. If you included a form in the original task, you need to create a new task to change it. "
+            className="z-[1099] ourtooltips"
+          />
+        </h1>
         <Suspense fallback={<div>Loading...</div>}>
           <TaskForm
             projectId={task.projectId}
@@ -106,13 +118,11 @@ export const EditTask = () => {
             schema={FormTaskSchema}
             initialValues={initialValues}
             onSubmit={handleSubmit}
+            onCancel={() =>
+              router.push(Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id }))
+            }
+            cancelText="Cancel"
           />
-          <Link
-            className="btn self-end mt-4 btn-error"
-            href={Routes.ShowTaskPage({ projectId: task.projectId, taskId: task.id })}
-          >
-            Cancel
-          </Link>
         </Suspense>
       </main>
     </>
