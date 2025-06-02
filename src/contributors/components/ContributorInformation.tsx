@@ -86,7 +86,7 @@ const ContributorInformation = ({
         <span className="font-semibold">Privilege:</span> {getPrivilegeText(contributorPrivilege)}
       </p>
       <p>
-        <span className="font-semibold">Add to Project: </span>{" "}
+        <span className="font-semibold">Added to Project: </span>{" "}
         {<DateFormat date={contributorUser.createdAt}></DateFormat>}
       </p>
       {ProjectMember.tags &&

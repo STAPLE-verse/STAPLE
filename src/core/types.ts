@@ -83,6 +83,8 @@ export type TeamWithUsers = {
   projectId: number
   name: string
   users: TeamUserWithContributor[]
+  createdAt: Date
+  tags?: Prisma.JsonValue
 }
 
 export type ProjectMemberWithUsername = ProjectMember & {

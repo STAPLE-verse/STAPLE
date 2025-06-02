@@ -40,6 +40,16 @@ export const EditTeam = () => {
   const initialValues = {
     name: teamProjectMember.name ? teamProjectMember.name : undefined,
     projectMemberUserIds: userIds,
+    tags:
+      Array.isArray(teamProjectMember.tags) &&
+      teamProjectMember.tags.every((tag) => typeof tag === "object" && tag !== null)
+        ? teamProjectMember.tags.map((tag) => ({
+            id: (tag as any).key ?? "",
+            text: (tag as any).value ?? "",
+            key: (tag as any).key ?? "",
+            value: (tag as any).value ?? "",
+          }))
+        : [],
   }
 
   // Handle events

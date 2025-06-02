@@ -27,6 +27,7 @@ const NewTeamContent = () => {
         name: values.name,
         projectId: projectId!,
         userIds: values.projectMemberUserIds,
+        tags: values.tags || [],
       })
       await toast.promise(Promise.resolve(team), {
         loading: "Adding team...",
@@ -56,6 +57,14 @@ const NewTeamContent = () => {
         submitText="Add Team"
         schema={TeamFormSchema}
         onSubmit={handleNewTeam}
+        cancelText="Cancel"
+        onCancel={() =>
+          router.push(
+            Routes.TeamsPage({
+              projectId: projectId!,
+            })
+          )
+        }
       />
     </Card>
   )
