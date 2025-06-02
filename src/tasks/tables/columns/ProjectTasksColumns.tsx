@@ -125,34 +125,17 @@ export const ProjectTasksColumns = [
       const hasNewComments = info.row.original.newCommentsCount > 0
       return (
         <div className="flex">
-          <ToggleModal
-            buttonLabel={
-              <div className="relative">
-                <ChatBubbleOvalLeftEllipsisIcon
-                  className={`h-7 w-7 ${hasNewComments ? "text-primary" : "opacity-30"}`}
-                  aria-hidden="true"
-                />
-                {hasNewComments && (
-                  <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white">
-                    {info.row.original.newCommentsCount}
-                  </div>
-                )}
-              </div>
-            }
-            modalTitle={
-              <>
-                <span>Comments:</span>
-                <span className="italic ml-1">{info.row.original.name}</span>
-              </>
-            }
-            buttonClassName="btn-ghost"
-          >
-            <ChatBox
-              taskLogId={info.row.original.firstLogId!}
-              initialComments={info.row.original.comments}
-              refetchComments={info.row.original.refetchTasks}
+          <div className="relative">
+            <ChatBubbleOvalLeftEllipsisIcon
+              className={`h-7 w-7 ${hasNewComments ? "text-primary" : "opacity-30"}`}
+              aria-hidden="true"
             />
-          </ToggleModal>
+            {hasNewComments && (
+              <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white">
+                {info.row.original.newCommentsCount}
+              </div>
+            )}
+          </div>
         </div>
       )
     },

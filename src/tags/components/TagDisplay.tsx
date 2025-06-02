@@ -3,40 +3,47 @@ import { useQuery } from "@blitzjs/rpc"
 import getTags from "src/tags/queries/getTags"
 import { WithContext as ReactTags } from "react-tag-input"
 import { useParam } from "@blitzjs/next"
+import getTaskTags from "../queries/getTaskTags"
+import { TagTaskTable } from "./TaskTagTable"
 
 const TagDisplay = () => {
   const projectId = useParam("projectId", "number")
 
+  // get task tags
+  const [allTaskTags] = useQuery(getTaskTags, { projectId: projectId! })
+
   // Fetch tasks with their tags
-  const [tasksFromTags] = useQuery(getTags, {
+  const [allTags] = useQuery(getTags, {
     where: {
       projectId: projectId,
     },
-    orderBy: { createdAt: "desc" },
+    source: "all",
+  })
+
+  allTags.forEach((task, i) => {
+    console.log(`task[${i}].tags`, task.tags)
   })
 
   // Flatten all tags into a single array
-  const allTags = tasksFromTags
-    .flatMap((task) => (task.tags ? (task.tags as { key: string; value: string }[]) : []))
-    .map((tag) => ({
-      id: tag.key,
-      text: tag.value,
-      className: "",
-    }))
+  const flattenedTags = allTags.map((tag) => ({
+    id: tag.key,
+    text: tag.value,
+    className: "",
+  }))
 
   // Optional: Remove duplicates
-  const uniqueTags = Array.from(new Map(allTags.map((tag) => [tag.id, tag])).values())
+  const uniqueTags = Array.from(new Map(flattenedTags.map((tag) => [tag.id, tag])).values())
 
   // State for selected tag
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
 
-  // Filter tasks locally based on the selected tag
+  // Filter tasks locally based on the selected tag, using allTaskTags
   const filteredTasks =
     selectedTag !== null
-      ? tasksFromTags.filter(
+      ? allTaskTags.filter(
           (task) =>
             Array.isArray(task.tags) &&
-            (task.tags as { key: string; value: string }[]).some((tag) => tag.value === selectedTag)
+            task.tags.some((tag) => (tag as { key: string; value: string }).value === selectedTag)
         )
       : []
 
@@ -75,27 +82,7 @@ const TagDisplay = () => {
       )}
 
       {/* Display tasks related to the selected tag */}
-      {selectedTag && (
-        <div className="mt-4">
-          <h2 className="text-2xl font-bold">Tasks with tag: {selectedTag}</h2>
-          {filteredTasks.length === 0 ? (
-            <p>No tasks found with this tag.</p>
-          ) : (
-            <ul className="list-disc pl-5">
-              {filteredTasks.map((task) => (
-                <li key={task.id} className="mb-2">
-                  <div className="p-3 border rounded-md bg-base-200">
-                    <h3 className="font-semibold">{task.name}</h3>
-                    {task.description && (
-                      <p className="text-sm text-gray-500">{task.description}</p>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
+      {selectedTag && filteredTasks.length > 0 && <TagTaskTable tasks={filteredTasks} />}
     </div>
   )
 }

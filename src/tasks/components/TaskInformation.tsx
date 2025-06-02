@@ -59,19 +59,21 @@ export const TaskInformation = () => {
 
       {task.tags && Array.isArray(task.tags) && task.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-2">
+          <span className="font-semibold">Tags: </span>
           {task.tags.map((tag: { key: string; value: string }, index: number) => (
             <span
               key={index}
-              className="bg-primary text-white text-xs font-semibold px-2 py-1 rounded"
+              className="bg-primary text-white text-md font-semibold px-2 py-1 rounded"
             >
-              {tag.key}: {tag.value}
+              {tag.value}
             </span>
           ))}
         </div>
       )}
 
-      <p className="italic">
-        Last update: <DateFormat date={task.updatedAt}></DateFormat>
+      <p>
+        <span className="font-semibold">Last update: </span>
+        <DateFormat date={task.updatedAt} />
       </p>
     </CollapseCard>
   )
