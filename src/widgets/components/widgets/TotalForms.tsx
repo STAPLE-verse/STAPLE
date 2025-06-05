@@ -7,6 +7,7 @@ import Widget from "../Widget"
 import { BeakerIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getForms from "src/forms/queries/getForms"
+import { useTranslation } from "react-i18next"
 
 const TotalForms: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const currentUser = useCurrentUser()
@@ -18,10 +19,10 @@ const TotalForms: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) 
     },
     orderBy: { id: "asc" },
   })
-
+  const { t } = (useTranslation as any)()
   return (
     <Widget
-      title="Forms"
+      title={t("main.dashboard.forms")}
       display={<GetIconDisplay number={forms.length} icon={BeakerIcon} />}
       link={
         <PrimaryLink
@@ -31,7 +32,7 @@ const TotalForms: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) 
         />
       }
       tooltipId="tool-form-total"
-      tooltipContent="Total number of metadata templates"
+      tooltipContent={t("main.dashboard.tooltips.forms")}
       size={size}
     />
   )

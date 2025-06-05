@@ -6,13 +6,15 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetTableDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
 import { notificationColumns } from "../ColumnHelpers"
+import { useTranslation } from "react-i18next"
 
 const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const [{ notifications }] = useQuery(getLatestUnreadNotifications, {})
 
+  const { t } = (useTranslation as any)()
   return (
     <Widget
-      title="Notifications"
+      title={t("main.dashboard.notifications")}
       display={
         <GetTableDisplay
           data={notifications}
@@ -23,12 +25,12 @@ const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
       link={
         <PrimaryLink
           route={Routes.NotificationsPage()}
-          text="All Notifications"
+          text={t("main.dashboard.allnotificationsbutton")}
           classNames="btn-primary"
         />
       }
       tooltipId="tool-notifications"
-      tooltipContent="Three recent notifications for all projects"
+      tooltipContent={t("main.dashboard.tooltips.notifications")}
       size={size}
     />
   )

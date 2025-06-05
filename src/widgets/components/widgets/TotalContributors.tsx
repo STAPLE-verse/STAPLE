@@ -56,7 +56,7 @@ const TotalContributors: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ s
         />
       }
       tooltipId="tool-contributors-total"
-      tooltipContent="Total number of unique contributors across all projects"
+      tooltipContent={t("main.dashboard.tooltips.totalcontributors")}
       size={size}
     />
   )

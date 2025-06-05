@@ -10,6 +10,7 @@ import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import { TaskLogWithTaskAndProject } from "src/core/types"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import { processAllTasks } from "src/tasks/tables/processing/processAllTasks"
+import { useTranslation } from "react-i18next"
 
 const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const currentUser = useCurrentUser()
@@ -50,10 +51,10 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
     processedTasks.length > 0 ? totalCompletion / 100 / processedTasks.length : 0
 
   //console.log(processedTasks)
-
+  const { t } = (useTranslation as any)()
   return (
     <Widget
-      title="Tasks"
+      title={t("main.dashboard.alltasks")} // This is the Tasks widget in the main dashboard
       display={<GetCircularProgressDisplay proportion={taskProportion} />}
       link={
         <PrimaryLink
@@ -63,7 +64,7 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
         />
       }
       tooltipId="tool-tasks"
-      tooltipContent="Percent of tasks completed"
+      tooltipContent={t("main.dashboard.tooltips.alltasks")}
       size={size}
     />
   )

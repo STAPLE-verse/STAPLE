@@ -6,6 +6,7 @@ import ProjectsList from "src/projects/components/ProjectsList"
 import SearchButton from "src/core/components/SearchButton"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import { useTranslation } from "react-i18next"
 
 const ProjectsPage = () => {
   const [searchTerm, setSearchTerm] = useState("")
@@ -13,13 +14,13 @@ const ProjectsPage = () => {
   const handleSearch = (currentSearch) => {
     setSearchTerm(currentSearch)
   }
-
+  const { t } = (useTranslation as any)()
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="Projects">
       <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center items-center text-3xl">
-          All Projects
+          {t("projects.title")}
           <InformationCircleIcon
             className="h-6 w-6 ml-2 text-info stroke-2"
             data-tooltip-id="project-overview"
@@ -32,7 +33,7 @@ const ProjectsPage = () => {
         </h1>
         <div className="flex flex-row justify-between items-center">
           <Link className="btn btn-primary mb-4 mt-4" href={Routes.NewProjectPage()}>
-            Create Project
+            {t("projects.createproject")}
           </Link>
 
           <SearchButton onChange={handleSearch}></SearchButton>

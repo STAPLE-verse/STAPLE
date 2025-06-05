@@ -5,6 +5,7 @@ import { SidebarItemProps } from "./SidebarItems"
 import { SidebarState } from "src/core/hooks/useSidebar"
 import SidebarTooltips from "./SidebarTooltips"
 import TooltipWrapper from "../TooltipWrapper"
+import { useTranslation } from "react-i18next"
 
 export default function Sidebar({
   sidebarState,
@@ -20,7 +21,7 @@ export default function Sidebar({
   if (!sidebarTitle) {
     return <div className="loading">Loading...</div>
   }
-
+  const { t } = (useTranslation as any)()
   return (
     <aside className="flex flex-col border-r shadow-sm">
       <div className="p-4 pb-2 flex justify-between items-center">
@@ -30,7 +31,7 @@ export default function Sidebar({
           } max-w-[15ch] whitespace-nowrap overflow-ellipsis`}
           title={sidebarTitle}
         >
-          {sidebarTitle ? sidebarTitle : "Home"}
+          {sidebarTitle ? sidebarTitle : t("sidebar.project.home")}
         </h2>
         <button onClick={toggleExpand} className="p-1.5 rounded-lg hover:bg-primary/50">
           {expanded ? (

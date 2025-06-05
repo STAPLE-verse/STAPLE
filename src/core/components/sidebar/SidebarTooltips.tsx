@@ -1,5 +1,9 @@
 import React from "react"
 import TooltipWrapper from "../TooltipWrapper"
+// import { useTranslation } from "react-i18next"
+
+// const { t } = (useTranslation as any)() There is an error when reading this line
+// TypeError: Cannot read properties of null (reading 'useContext')
 
 const tooltipContents = [
   { id: "project-dashboard-tooltip", content: "Project dashboard" },
