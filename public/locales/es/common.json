@@ -69,5 +69,9 @@
   "projects": {
     "title": "Todos los proyectos",
     "createproject": "Crear proyecto"
+  },
+  "widgets": {
+    "upcomingtask": "No hay tareas pendientes",
+    "overduetask": "No overdue task TEST"
   }
 }

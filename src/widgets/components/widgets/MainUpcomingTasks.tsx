@@ -17,7 +17,11 @@ const MainUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ s
     <Widget
       title={t("main.dashboard.upcomingtask")}
       display={
-        <GetTableDisplay data={upcomingTasks} columns={tasksColumns} type={"upcoming tasks"} />
+        <GetTableDisplay
+          data={upcomingTasks}
+          columns={tasksColumns}
+          type={t("widgets.upcomingtask")}
+        />
       }
       link={
         <PrimaryLink

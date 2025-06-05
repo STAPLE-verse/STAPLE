@@ -69,5 +69,9 @@
   "projects": {
     "title": "All Projects",
     "createproject": "Create Project"
+  },
+  "widgets": {
+    "upcomingtask": "No upcoming task",
+    "overduetask": "No overdue task"
   }
 }

@@ -17,7 +17,11 @@ const MainOverdueTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
     <Widget
       title={t("main.dashboard.overduetask")}
       display={
-        <GetTableDisplay data={pastDueTasks} columns={tasksColumns} type={"overdue tasks"} />
+        <GetTableDisplay
+          data={pastDueTasks}
+          columns={tasksColumns}
+          type={t("widgets.overduetask")}
+        />
       }
       link={
         <PrimaryLink
