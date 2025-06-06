@@ -1,5 +1,5 @@
 import React from "react"
-import { FormBuilder } from "@ginkgo-bioworks/react-json-schema-form-builder"
+import FormBuilder from "src/formBuilder/FormBuilder"
 
 interface VisualBuilderTabProps {
   schema: object
