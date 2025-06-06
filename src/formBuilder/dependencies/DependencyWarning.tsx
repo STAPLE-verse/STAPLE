@@ -26,7 +26,7 @@ export default function DependencyWarning({
     parameters.enum &&
     parameters.dependents &&
     parameters.dependents.length &&
-    parameters.dependents[0].value
+    parameters.dependents[0]!.value
   ) {
     // get the set of defined enum values
     const definedVals = new Set([])

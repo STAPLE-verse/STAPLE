@@ -32,20 +32,20 @@ export function defaultDataProps(
   category: string,
   allFormInputs: { [key: string]: FormInput }
 ): InputSelectDataType {
-  return allFormInputs[category].defaultDataSchema as unknown as InputSelectDataType
+  return allFormInputs[category]!.defaultDataSchema as unknown as InputSelectDataType
 }
 
 export function defaultUiProps(
   category: string,
   allFormInputs: { [key: string]: FormInput }
 ): InputSelectDataType {
-  return allFormInputs[category].defaultUiSchema as unknown as InputSelectDataType
+  return allFormInputs[category]!.defaultUiSchema as unknown as InputSelectDataType
 }
 export function categoryType(
   category: string,
   allFormInputs: { [key: string]: FormInput }
 ): DataType {
-  return allFormInputs[category].type
+  return allFormInputs[category]!.type
 }
 export function getCardBody(category: string, allFormInputs: { [key: string]: FormInput }) {
   return (allFormInputs[category] && allFormInputs[category].cardBody) || (() => null)
@@ -56,7 +56,7 @@ export function categoryToNameMap(allFormInputs: { [key: string]: FormInput }): 
 } {
   const categoryNameMap: { [key: string]: any } = {}
   Object.keys(allFormInputs).forEach((inputName) => {
-    categoryNameMap[inputName] = allFormInputs[inputName].displayName
+    categoryNameMap[inputName] = allFormInputs[inputName]!.displayName
   })
   return categoryNameMap
 }
@@ -74,7 +74,7 @@ export function generateCategoryHash(allFormInputs: { [key: string]: FormInput }
   const categoryHash: { [key: string]: any } = {}
   Object.keys(allFormInputs).forEach((categoryName) => {
     const formInput = allFormInputs[categoryName]
-    formInput.matchIf.forEach((match) => {
+    formInput!.matchIf.forEach((match) => {
       match.types.forEach((type) => {
         const hash = `type:${type === "null" ? "" : type};widget:${match.widget || ""};field:${
           match.field || ""
@@ -288,7 +288,7 @@ export function checkForUnsupportedFeatures(
   const fields: string[] = []
   const options: string[] = []
   Object.keys(allFormInputs).forEach((inputType) => {
-    allFormInputs[inputType].matchIf.forEach((match) => {
+    allFormInputs[inputType]!.matchIf.forEach((match) => {
       if (match.widget && !widgets.includes(match.widget)) {
         widgets.push(match.widget)
       }
@@ -297,10 +297,10 @@ export function checkForUnsupportedFeatures(
       }
     })
     if (
-      allFormInputs[inputType].possibleOptions &&
-      Array.isArray(allFormInputs[inputType].possibleOptions)
+      allFormInputs[inputType]!.possibleOptions &&
+      Array.isArray(allFormInputs[inputType]!.possibleOptions)
     ) {
-      options.push(...allFormInputs[inputType].possibleOptions!)
+      options.push(...allFormInputs[inputType]!.possibleOptions!)
     }
   })
   const supportedWidgets = new Set(widgets)
@@ -418,14 +418,14 @@ export function generateElementPropsFromSchemas(parameters: {
         throw new Error(`Invalid definition, not at '#/definitions': ${elementDetails.$ref}`)
       }
       const pathArr = elementDetails.$ref !== undefined ? elementDetails.$ref.split("/") : []
-      if (pathArr[0] === "#" && pathArr[1] === "definitions" && definitionData[pathArr[2]]) {
+      if (pathArr[0] === "#" && pathArr[1] === "definitions" && definitionData[pathArr[2]!]) {
         elementDetails = {
-          ...definitionData[pathArr[2]],
+          ...definitionData[pathArr[2]!],
           ...elementDetails,
         }
       }
 
-      const definedUiProps = (definitionUi || {})[pathArr[2]]
+      const definedUiProps = (definitionUi || {})[pathArr[2]!]
       uischema[parameter] = {
         ...(definedUiProps || {}),
         ...uischema[parameter],
@@ -706,9 +706,9 @@ export function generateSchemaFromElementProps(elementArr: ElementProps[]): {
   const dependentElements = new Set()
   for (let index = 0; index < elementArr.length; index += 1) {
     const element = elementArr[index]
-    elementDict[element.name] = { ...element }
-    if (element.dependents)
-      element.dependents.forEach((possibility) => {
+    elementDict[element!.name] = { ...element }
+    if (element!.dependents)
+      element!.dependents.forEach((possibility) => {
         possibility.children.forEach((dependentElement) => {
           dependentElements.add(dependentElement)
         })
@@ -716,11 +716,11 @@ export function generateSchemaFromElementProps(elementArr: ElementProps[]): {
   }
   Object.keys(elementDict).forEach((elementName) => {
     const element = elementDict[elementName]
-    if (element.dependents && element.dependents[0]) {
-      if (element.dependents[0].value) {
+    if (element!.dependents && element!.dependents[0]) {
+      if (element!.dependents[0].value) {
         // handle value based case
         dependencies[elementName] = {
-          oneOf: element.dependents.map((possibility: FormElement) => {
+          oneOf: element!.dependents.map((possibility: FormElement) => {
             const childrenComponents: { [key: string]: any } = {}
             const requiredValues: string[] = []
             possibility?.children?.forEach((child) => {
@@ -742,9 +742,9 @@ export function generateSchemaFromElementProps(elementArr: ElementProps[]): {
         // handle definition based case
         const childrenComponents: { [key: string]: any } = {}
         const requiredValues: string[] = []
-        element.dependents[0].children.forEach((child) => {
-          childrenComponents[child] = generateSchemaElementFromElement(elementDict[child])
-          if (elementDict[child].required) requiredValues.push(child)
+        element!.dependents[0].children.forEach((child) => {
+          childrenComponents[child] = generateSchemaElementFromElement(elementDict[child]!)
+          if (elementDict[child]!.required) requiredValues.push(child)
         })
         dependencies[elementName] = {
           properties: childrenComponents,
@@ -753,7 +753,7 @@ export function generateSchemaFromElementProps(elementArr: ElementProps[]): {
       }
     }
     if (!dependentElements.has(elementName)) {
-      props[element.name] = generateSchemaElementFromElement(element)
+      props[element!.name] = generateSchemaElementFromElement(element!)
     }
   })
 
@@ -781,8 +781,8 @@ export function generateUiSchemaFromElementProps(
     if (element.$ref !== undefined) {
       // look for the reference
       const pathArr = typeof element.$ref === "string" ? element.$ref.split("/") : []
-      if (definitions && definitions[pathArr[2]]) {
-        uiSchema[element.name] = definitions[pathArr[2]]
+      if (definitions && definitions[pathArr[2]!]) {
+        uiSchema[element.name] = definitions[pathArr[2]!]
       }
     }
     if (element.propType === "card" && element.uiOptions) {
@@ -1024,22 +1024,23 @@ export function generateElementComponentsFromSchemas(parameters: {
           componentProps={
             Object.assign(
               {
-                name: elementPropArr[index].name,
-                required: elementPropArr[index].required,
+                name: elementPropArr[index]!.name,
+                required: elementPropArr[index]!.required,
                 hideKey,
-                path: `${path}_${elementPropArr[index].name}`,
+                path: `${path}_${elementPropArr[index]!.name}`,
                 definitionData,
                 definitionUi,
-                neighborNames: elementPropArr[index].neighborNames,
-                dependents: elementPropArr[index].dependents,
-                dependent: elementPropArr[index].dependent,
-                parent: elementPropArr[index].parent,
+                neighborNames: elementPropArr[index]!.neighborNames,
+                dependents: elementPropArr[index]!.dependents,
+                dependent: elementPropArr[index]!.dependent,
+                parent: elementPropArr[index]!.parent,
               },
-              elementPropArr[index].uiOptions,
-              elementPropArr[index].dataOptions
+              elementPropArr[index]!.uiOptions,
+              elementPropArr[index]!.dataOptions
             ) as CardComponentPropsType
           }
-          key={`${path}_${elementPropArr[index].name}`}
+          // @ts-ignore: suppress key error, can't change key assignment
+          key={`${path}_${elementPropArr[index]!.name}`}
           TypeSpecificParameters={TypeSpecificParameters}
           onChange={(newCardObj: { [key: string]: any }) => {
             const newElementObjArr = generateElementPropsFromSchemas({
@@ -1074,7 +1075,7 @@ export function generateElementComponentsFromSchemas(parameters: {
               }
             })
 
-            if (newElementObjArr[index].propType === "card") {
+            if (newElementObjArr[index]!.propType === "card") {
               const oldElement = newElementObjArr[index]
               newElementObjArr[index] = {
                 ...oldElement,
@@ -1219,7 +1220,7 @@ export function generateElementComponentsFromSchemas(parameters: {
               propType: "section",
             }
 
-            if (newRef) newElementObjArr[index].$ref = newRef
+            if (newRef) newElementObjArr[index]!.$ref = newRef
 
             updateSchemas(newElementObjArr, {
               schema,
@@ -1365,7 +1366,8 @@ export function generateElementComponentsFromSchemas(parameters: {
             })
           }}
           name={elementProp.name}
-          key={`${path}_${elementPropArr[index].name}`}
+          // @ts-ignore: suppress key error, can't change key assignment
+          key={`${path}_${elementPropArr[index]!.name}`}
           required={elementProp.required}
           path={`${path}_${elementProp.name}`}
           definitionData={definitionData || {}}
@@ -1392,7 +1394,7 @@ export function generateElementComponentsFromSchemas(parameters: {
       )
     } else {
       return (
-        <div key={`${path}_${elementPropArr[index].name}`}>
+        <div key={`${path}_${elementPropArr[index]!.name}`}>
           <h2> Error parsing element </h2>
         </div>
       )

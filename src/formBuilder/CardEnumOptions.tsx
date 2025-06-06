@@ -108,6 +108,7 @@ export default function CardEnumOptions({
     <React.Fragment>
       {possibleValues}
       <PlusIcon
+        className="h-4 w-4"
         onClick={() => {
           // add a new dropdown option
           onChange(

@@ -43,11 +43,14 @@ export default function Add({
 
   return (
     <div style={{ display: hidden ? "none" : "initial" }}>
-      <span id={`${elementId}_add`}>
-        <PlusCircleIcon onClick={() => setPopoverOpen(true)} />
+      <span id={`${elementId}_add`} className="flex justify-center">
+        <PlusCircleIcon
+          className="h-6 w-6 stroke-secondary stroke-2"
+          onClick={() => setPopoverOpen(true)}
+        />
       </span>
       <UncontrolledTooltip placement="top" target={`${elementId}_add`}>
-        {tooltipDescription || "Add a new question or section"}
+        {tooltipDescription || "Add a new item or section"}
       </UncontrolledTooltip>
       <Popover
         placement="bottom"
@@ -57,20 +60,22 @@ export default function Add({
         className={`add-details ${classes.addDetails}`}
         id={`${elementId}_add_popover`}
       >
-        <PopoverHeader>Create New</PopoverHeader>
+        <PopoverHeader>
+          <span className="justify-center flex">Create New</span>
+        </PopoverHeader>
         <PopoverBody>
           <FBRadioGroup
-            className="choose-create"
+            className="choose-create text-lg"
             defaultValue={createChoice}
             horizontal={false}
             options={[
               {
                 value: "card",
-                label: labels?.addElementLabel ?? "Form element",
+                label: labels?.addElementLabel ?? "Item",
               },
               {
                 value: "section",
-                label: labels?.addSectionLabel ?? "Form section",
+                label: labels?.addSectionLabel ?? "Section",
               },
             ]}
             onChange={(selection) => {

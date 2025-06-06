@@ -56,6 +56,7 @@ export default function FBRadioGroup(props: FBRadioGroupPropsType): ReactElement
           label={option.label}
           {...elementId}
           name={name}
+          // @ts-ignore: suppress key error, can't change key assignment
           key={option.value}
           checked={option.value === defaultValue}
           autoFocus={autoFocus && index === 1}

@@ -332,6 +332,7 @@ export default function FormBuilder({
                   Card,
                   Section,
                 }).map((element: any, index) => (
+                  // @ts-ignore: suppress key error, can't change key assignment
                   <Draggable key={element.key} draggableId={element.key} index={index}>
                     {(providedDraggable) => (
                       <div

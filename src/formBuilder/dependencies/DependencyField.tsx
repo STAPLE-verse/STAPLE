@@ -148,6 +148,7 @@ export default function DependencyField({
                 parentType={parameters.type}
                 parentName={parameters.name}
                 parentSchema={parameters.schema}
+                // @ts-ignore: suppress key error, can't change key assignment
                 key={`${elementId}_possibility${index}`}
                 onChange={(newPossibility: { children: Array<string>; value?: any }) => {
                   const newDependents = parameters.dependents ? [...parameters.dependents] : []

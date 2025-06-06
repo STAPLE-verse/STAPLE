@@ -61,6 +61,7 @@ const CardNumberParameterInputs: CardComponentType = ({ parameters, onChange }) 
       />
       <div className="card-modal-boolean">
         <FBCheckbox
+          // @ts-ignore: suppress key error, can't change key assignment
           key="exclusiveMinimum"
           onChangeValue={() => {
             const newMin = parameters.minimum || parameters.exclusiveMinimum
@@ -111,6 +112,7 @@ const CardNumberParameterInputs: CardComponentType = ({ parameters, onChange }) 
       />
       <div className="card-modal-boolean">
         <FBCheckbox
+          // @ts-ignore: suppress key error, can't change key assignment
           key="exclusiveMaximum"
           onChangeValue={() => {
             const newMax = parameters.maximum || parameters.exclusiveMaximum

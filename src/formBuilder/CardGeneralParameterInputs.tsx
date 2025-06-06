@@ -57,7 +57,7 @@ export default function CardGeneralParameterInputs({
 
     return inputKeys
       .map((key) => ({ value: key, label: categoryMap[key] }))
-      .sort((a, b) => a.label.localeCompare(b.label))
+      .sort((a, b) => a.label!.localeCompare(b.label!))
   }
 
   return (
