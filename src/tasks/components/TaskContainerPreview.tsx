@@ -1,7 +1,6 @@
 // TaskContainerPreview.tsx
 import clsx from "clsx"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowsUpDownLeftRight } from "@fortawesome/free-solid-svg-icons"
+import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline"
 import TaskItemPreview from "./TaskItemPreview"
 
 type TaskContainerPreviewProps = {
@@ -20,10 +19,7 @@ const TaskContainerPreview = ({ title, items = [] }: TaskContainerPreviewProps) 
         <div className="flex flex-col gap-y-1">
           <h2 className="font-bold text-lg">{title}</h2>
         </div>
-        <FontAwesomeIcon
-          icon={faArrowsUpDownLeftRight}
-          className="w-6 h-6 text-base-content border-transparent rounded-2xl"
-        />
+        <ArrowsPointingOutIcon className="w-6 h-6 text-base-content border-transparent rounded-2xl" />
       </div>
 
       <div className="flex flex-col gap-y-2">

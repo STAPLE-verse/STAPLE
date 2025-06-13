@@ -2,11 +2,10 @@ import React from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import clsx from "clsx"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowsUpDownLeftRight } from "@fortawesome/free-solid-svg-icons"
 import DeleteColumn from "./DeleteColumn"
 import EditableColumnTitle from "./EditableColumnTitle"
 import { makeDragId } from "../utils/dragId"
+import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline"
 
 interface ContainerProps {
   id: number
@@ -53,8 +52,7 @@ const TaskContainer = ({ id, children, title, description, onRefetch }: Containe
             <DeleteColumn columnId={id} columnName={title} />
           )}
 
-          <FontAwesomeIcon
-            icon={faArrowsUpDownLeftRight}
+          <ArrowsPointingOutIcon
             className="w-6 h-6 text-base-content border-transparent rounded-2xl hover:opacity-50 draggable"
             {...listeners}
           />
