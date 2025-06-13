@@ -9,7 +9,7 @@ import Add from "./Add"
 import Tooltip from "./Tooltip"
 import { getRandomId } from "./utils"
 import type { CardPropsType, CardComponentPropsType } from "./types"
-import { ArrowDownIcon, ArrowUpIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
+import { ArrowsPointingOutIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
 
 const useStyles = createUseStyles({
   cardEntries: {
@@ -112,6 +112,7 @@ export default function Card({
 
   return (
     <React.Fragment>
+      {/* @ts-expect-error children error */}
       <Collapse
         isOpen={cardOpen}
         toggleCollapse={() => setCardOpen(!cardOpen)}
@@ -139,17 +140,14 @@ export default function Card({
               )}
             </span>
             <span className="arrows">
-              <span id={`${elementId}_moveupbiginfo`}>
-                <ArrowUpIcon onClick={() => (onMoveUp ? onMoveUp() : {})} />
+              <span id={`${elementId}_moveformcard`}>
+                <ArrowsPointingOutIcon
+                  className="w-8 h-8 stroke-2 stroke-primary"
+                  onClick={() => {}}
+                />
               </span>
-              <UncontrolledTooltip placement="top" target={`${elementId}_moveupbiginfo`}>
-                Move form element up
-              </UncontrolledTooltip>
-              <span id={`${elementId}_movedownbiginfo`}>
-                <ArrowDownIcon onClick={() => (onMoveDown ? onMoveDown() : {})} />
-              </span>
-              <UncontrolledTooltip placement="top" target={`${elementId}_movedownbiginfo`}>
-                Move form element down
+              <UncontrolledTooltip placement="top" target={`${elementId}_moveformcard`}>
+                Drag to move form item
               </UncontrolledTooltip>
             </span>
           </React.Fragment>

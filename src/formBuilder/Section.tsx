@@ -21,7 +21,7 @@ import {
 } from "./utils"
 import { getRandomId } from "./utils"
 import type { SectionPropsType } from "./types"
-import { ArrowDownIcon, ArrowUpIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
+import { ArrowsPointingOutIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
 
 const useStyles = createUseStyles({
   sectionContainer: {
@@ -136,6 +136,7 @@ export default function Section({
 
   return (
     <React.Fragment>
+      {/* @ts-expect-error children error */}
       <Collapse
         isOpen={cardOpen}
         toggleCollapse={() => setCardOpen(!cardOpen)}
@@ -154,17 +155,14 @@ export default function Section({
               )}
             </span>
             <span className="arrows">
-              <span id={`${elementId}_moveupbiginfo`}>
-                <ArrowUpIcon onClick={() => (onMoveUp ? onMoveUp() : {})} />
+              <span id={`${elementId}_moveinfosection`}>
+                <ArrowsPointingOutIcon
+                  className="w-8 h-8 stroke-2 stroke-primary"
+                  onClick={() => {}}
+                />
               </span>
-              <UncontrolledTooltip placement="top" target={`${elementId}_moveupbiginfo`}>
-                Move form element up
-              </UncontrolledTooltip>
-              <span id={`${elementId}_movedownbiginfo`}>
-                <ArrowDownIcon onClick={() => (onMoveDown ? onMoveDown() : {})} />
-              </span>
-              <UncontrolledTooltip placement="top" target={`${elementId}_movedownbiginfo`}>
-                Move form element down
+              <UncontrolledTooltip placement="top" target={`${elementId}_moveinfosection`}>
+                Drag to move section
               </UncontrolledTooltip>
             </span>
           </React.Fragment>
@@ -314,6 +312,7 @@ export default function Section({
             </Alert>
           </div>
           <div className="section-body">
+            {/* @ts-expect-error children error */}
             <DragDropContext
               onDragEnd={(result) =>
                 onDragEnd(result, {
@@ -326,6 +325,7 @@ export default function Section({
                 })
               }
             >
+              {/* @ts-expect-error children error */}
               <Droppable droppableId="droppable" type={DROPPABLE_TYPE}>
                 {(providedDroppable) => (
                   <div ref={providedDroppable.innerRef} {...providedDroppable.droppableProps}>
