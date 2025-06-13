@@ -27,11 +27,12 @@ export default function Example({
   id: string
 }): ReactElement {
   const classes = useStyles()
+  const Icon = typeMap[type]
 
   return (
     <React.Fragment>
       <span style={{ textDecoration: "underline", color: "blue" }} id={id}>
-        {typeMap[type]}
+        <Icon className="h-4 w-4 inline" />
       </span>
       <UncontrolledTooltip autohide={false} className={classes.toolTip} placement="top" target={id}>
         {text}
