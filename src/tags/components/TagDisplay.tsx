@@ -34,6 +34,8 @@ const TagDisplay = () => {
 
   // Optional: Remove duplicates
   const uniqueTags = Array.from(new Map(flattenedTags.map((tag) => [tag.id, tag])).values())
+  // Sort tags alphabetically by their text value
+  uniqueTags.sort((a, b) => a.text.localeCompare(b.text))
 
   // State for selected tag
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
@@ -76,8 +78,8 @@ const TagDisplay = () => {
           tags={uniqueTags}
           handleTagClick={handleTagClick}
           classNames={{
-            tags: "mt-2 p-2 rounded-md bg-base-300 react-tags-wrapper", // entire box for tags
-            tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 text-lg",
+            tags: "pt-4 pl-4 pr-4 pb-2 rounded-lg bg-base-300 react-tags-wrapper flex flex-wrap", // entire box for tags with wrapping and vertical spacing
+            tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 text-lg mb-2",
             remove: "hidden",
             tagInput: "hidden", // whole div around
             tagInputField:
