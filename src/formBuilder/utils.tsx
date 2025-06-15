@@ -48,7 +48,7 @@ export function categoryType(
   return allFormInputs[category]!.type
 }
 export function getCardBody(category: string, allFormInputs: { [key: string]: FormInput }) {
-  return (allFormInputs[category] && allFormInputs[category].cardBody) || (() => null)
+  return (allFormInputs[category] && allFormInputs[category]!.cardBody) || (() => null)
 }
 
 export function categoryToNameMap(allFormInputs: { [key: string]: FormInput }): {
@@ -282,7 +282,7 @@ export function checkForUnsupportedFeatures(
   allFormInputs: { [key: string]: FormInput }
 ): string[] {
   // add each unsupported feature to this array
-  const unsupportedFeatures = []
+  const unsupportedFeatures: string[] = []
 
   const widgets: string[] = []
   const fields: string[] = []
@@ -499,8 +499,9 @@ export function generateElementPropsFromSchemas(parameters: {
               newElement.required = requiredValues.includes(newElement.name)
               elementDict[newElement.name!] = newElement
             }
-            if (parameter !== parent) {
-              const newElement = elementDict[parameter]
+            // simplified check and assignment block
+            const newElement = elementDict[parameter]
+            if (newElement && parameter !== parent) {
               newElement.dependent = true
               newElement.parent = parent
               elementDict[parent].dependents[possibilityIndex].children.push(parameter)
@@ -706,7 +707,9 @@ export function generateSchemaFromElementProps(elementArr: ElementProps[]): {
   const dependentElements = new Set()
   for (let index = 0; index < elementArr.length; index += 1) {
     const element = elementArr[index]
-    elementDict[element!.name] = { ...element }
+    if (element?.name) {
+      elementDict[element.name] = { ...element }
+    }
     if (element!.dependents)
       element!.dependents.forEach((possibility) => {
         possibility.children.forEach((dependentElement) => {
@@ -724,9 +727,10 @@ export function generateSchemaFromElementProps(elementArr: ElementProps[]): {
             const childrenComponents: { [key: string]: any } = {}
             const requiredValues: string[] = []
             possibility?.children?.forEach((child) => {
-              if (elementDict[child]) {
-                childrenComponents[child] = generateSchemaElementFromElement(elementDict[child])
-                if (elementDict[child].required) requiredValues.push(child)
+              const childElement = elementDict[child]
+              if (childElement) {
+                childrenComponents[child] = generateSchemaElementFromElement(childElement)
+                if (childElement.required) requiredValues.push(child)
               }
             })
             return {
@@ -808,7 +812,7 @@ export function getCardParameterInputComponentForType(
   category: string,
   allFormInputs: { [key: string]: FormInput }
 ): CardComponentType {
-  return (allFormInputs[category] && allFormInputs[category].modalBody) || (() => null)
+  return (allFormInputs[category] && allFormInputs[category]!.modalBody) || (() => null)
 }
 
 // takes in an array of Card Objects and updates both schemas
@@ -1091,9 +1095,13 @@ export function generateElementComponentsFromSchemas(parameters: {
                 dependents: newCardObj.dependents,
                 dependent: newCardObj.dependent,
                 parent: newCardObj.parent,
-                name: newCardObj.name,
+                // Ensure name is always a string fallback
+                name: newCardObj.name ?? "UnnamedInput",
                 $ref: newCardObj.$ref,
                 propType: "card",
+                neighborNames: oldElement!.neighborNames ?? [],
+                schema: oldElement!.schema ?? {},
+                uischema: oldElement!.uischema ?? {},
               }
             } else {
               throw new Error("Card editing non card element")
@@ -1136,8 +1144,14 @@ export function generateElementComponentsFromSchemas(parameters: {
             if (index === 0) return
 
             const tempBlock = newElementObjArr[index - 1]
-            newElementObjArr[index - 1] = newElementObjArr[index]
-            newElementObjArr[index] = tempBlock
+            if (newElementObjArr[index]) {
+              //@ts-ignore
+              newElementObjArr[index - 1] = newElementObjArr[index]
+            }
+            if (tempBlock) {
+              newElementObjArr[index] = tempBlock
+            }
+
             updateSchemas(newElementObjArr, {
               schema,
               uischema,
@@ -1157,8 +1171,13 @@ export function generateElementComponentsFromSchemas(parameters: {
             if (index === elementPropArr.length - 1) return
 
             const tempBlock = newElementObjArr[index + 1]
-            newElementObjArr[index + 1] = newElementObjArr[index]
-            newElementObjArr[index] = tempBlock
+            if (newElementObjArr[index]) {
+              //@ts-ignore
+              newElementObjArr[index + 1] = newElementObjArr[index]
+            }
+            if (tempBlock) {
+              newElementObjArr[index] = tempBlock
+            }
             updateSchemas(newElementObjArr, {
               schema,
               uischema,
@@ -1221,9 +1240,14 @@ export function generateElementComponentsFromSchemas(parameters: {
 
             newElementObjArr[index] = {
               ...oldSection,
+              name: oldSection!.name ?? "UnnamedSection",
+              required: oldSection!.required ?? false,
+              dataOptions: oldSection!.dataOptions ?? {},
+              uiOptions: oldSection!.uiOptions ?? {},
               schema: newSchema,
               uischema: newUiSchema,
               propType: "section",
+              neighborNames: oldSection!.neighborNames ?? [],
             }
 
             if (newRef) newElementObjArr[index]!.$ref = newRef
@@ -1340,8 +1364,14 @@ export function generateElementComponentsFromSchemas(parameters: {
             if (index === 0) return
 
             const tempBlock = newElementObjArr[index - 1]
-            newElementObjArr[index - 1] = newElementObjArr[index]
-            newElementObjArr[index] = tempBlock
+            if (newElementObjArr[index]) {
+              //@ts-ignore
+              newElementObjArr[index - 1] = newElementObjArr[index]
+            }
+            if (tempBlock) {
+              newElementObjArr[index] = tempBlock
+            }
+
             updateSchemas(newElementObjArr, {
               schema,
               uischema,
@@ -1361,8 +1391,13 @@ export function generateElementComponentsFromSchemas(parameters: {
             if (index === elementPropArr.length - 1) return
 
             const tempBlock = newElementObjArr[index + 1]
-            newElementObjArr[index + 1] = newElementObjArr[index]
-            newElementObjArr[index] = tempBlock
+            if (newElementObjArr[index]) {
+              //@ts-ignore
+              newElementObjArr[index + 1] = newElementObjArr[index]
+            }
+            if (tempBlock) {
+              newElementObjArr[index] = tempBlock
+            }
             updateSchemas(newElementObjArr, {
               schema,
               uischema,
@@ -1433,9 +1468,14 @@ export function onDragEnd(
     categoryHash,
   })
 
-  const tempBlock = newElementObjArr[src]
-  newElementObjArr[src] = newElementObjArr[dest]
-  newElementObjArr[dest] = tempBlock
+  // Only swap if both src and dest are defined
+  if (newElementObjArr[src] && newElementObjArr[dest]) {
+    const tempBlock = newElementObjArr[src]
+    //@ts-ignore
+    newElementObjArr[src] = newElementObjArr[dest]
+    //@ts-ignore
+    newElementObjArr[dest] = tempBlock
+  }
 
   updateSchemas(newElementObjArr, {
     schema,

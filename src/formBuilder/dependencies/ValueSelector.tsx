@@ -212,7 +212,7 @@ export default function ValueSelector({
           {enumArr.map((combination, index) => (
             <li key={`${elementId}_possibleValue${index}`}>
               {Object.keys(combination).map((key) => {
-                const val: combinationValue = combination[key]
+                const val: combinationValue = combination[key] ?? ""
                 return (
                   <div key={key}>
                     <h5>{key}:</h5>

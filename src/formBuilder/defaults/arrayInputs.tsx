@@ -114,7 +114,7 @@ const InnerCard: CardComponentType = ({ parameters, onChange, mods }) => {
         definitionUi,
         hideKey: true,
         cardOpenArray: [cardOpen],
-        setCardOpenArray: (newArr) => setCardOpen(newArr[0]),
+        setCardOpenArray: (newArr) => setCardOpen(newArr[0] ?? false),
         allFormInputs,
         mods,
         categoryHash: generateCategoryHash(allFormInputs),
