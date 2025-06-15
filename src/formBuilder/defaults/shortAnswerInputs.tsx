@@ -1,11 +1,11 @@
 import React, { useState } from "react"
-import Select from "react-select"
 import { Input } from "reactstrap"
 import FBCheckbox from "../checkbox/FBCheckbox"
 import Tooltip from "../Tooltip"
 import { getRandomId } from "../utils"
 import type { CardComponentType, FormInput, DataType } from "../types"
 import { PlaceholderInput } from "../inputs/PlaceholderInput"
+import SelectField from "src/core/components/fields/SelectField"
 
 const formatDictionary = {
   "": "None",
@@ -40,7 +40,7 @@ const CardShortAnswerParameterInputs: CardComponentType = ({ parameters, onChang
   const [elementId] = useState(getRandomId())
   return (
     <div>
-      <h4>Minimum Length</h4>
+      <div className="text-[18px] font-bold">Minimum Length</div>
       <Input
         value={parameters.minLength ? parameters.minLength : ""}
         placeholder="Minimum Length"
@@ -54,7 +54,7 @@ const CardShortAnswerParameterInputs: CardComponentType = ({ parameters, onChang
         }}
         className="card-modal-number"
       />
-      <h4>Maximum Length</h4>
+      <div className="text-[18px] font-bold">Maximum Length</div>
       <Input
         value={parameters.maxLength ? parameters.maxLength : ""}
         placeholder="Maximum Length"
@@ -68,7 +68,7 @@ const CardShortAnswerParameterInputs: CardComponentType = ({ parameters, onChang
         }}
         className="card-modal-number"
       />
-      <h4>
+      <div className="text-[18px] font-bold">
         Regular Expression Pattern{" "}
         <a
           href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
@@ -81,7 +81,7 @@ const CardShortAnswerParameterInputs: CardComponentType = ({ parameters, onChang
             text="Regular expression pattern that this must satisfy"
           />
         </a>
-      </h4>
+      </div>
       <Input
         value={parameters.pattern ? parameters.pattern : ""}
         placeholder="Regular Expression Pattern"
@@ -95,38 +95,31 @@ const CardShortAnswerParameterInputs: CardComponentType = ({ parameters, onChang
         }}
         className="card-modal-text"
       />
-      <h4>
+      <div className="text-[18px] font-bold">
         Format{" "}
         <Tooltip
           id={`${elementId}_format`}
           type="help"
           text="Require string input to match a certain common format"
         />
-      </h4>
-      <Select
-        value={{
-          value: Object.keys(formatDictionary).includes(parameters.format!)
-            ? formatDictionary[parameters.format as FormatDictionaryKey]
-            : "",
-          label: Object.keys(formatDictionary).includes(parameters.format!)
-            ? formatDictionary[parameters.format as FormatDictionaryKey]
-            : "None",
-        }}
-        placeholder="Format"
-        key="format"
-        options={Object.keys(formatDictionary).map((key: string) => ({
+      </div>
+      <SelectField
+        className="select text-primary select-bordered border-primary border-2 w-full mt-2 mb-2 bg-primary-content"
+        value={parameters.format || ""}
+        onChange={(e) =>
+          onChange({
+            ...parameters,
+            format: e.target.value,
+          })
+        }
+        options={Object.keys(formatDictionary).map((key) => ({
           value: key,
           label: formatDictionary[key as FormatDictionaryKey],
         }))}
-        onChange={(val: any) => {
-          onChange({
-            ...parameters,
-            format: val.value,
-          })
-        }}
-        className="card-modal-select"
+        optionValue="value"
+        optionText="label"
       />
-      <h5>
+      <div className="text-[18px] font-bold">
         Auto Complete Category{" "}
         <a
           href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete"
@@ -139,66 +132,26 @@ const CardShortAnswerParameterInputs: CardComponentType = ({ parameters, onChang
             text="Suggest entries based on the user's browser history"
           />
         </a>
-      </h5>
-      <Select
-        value={{
-          value: parameters["ui:autocomplete"]
-            ? autoDictionary[
-                typeof parameters["ui:autocomplete"] === "string"
-                  ? (parameters["ui:autocomplete"] as AutoDictionaryKey)
-                  : ""
-              ]
-            : "",
-          label: parameters["ui:autocomplete"]
-            ? autoDictionary[
-                typeof parameters["ui:autocomplete"] === "string"
-                  ? (parameters["ui:autocomplete"] as AutoDictionaryKey)
-                  : ""
-              ]
-            : "None",
-        }}
-        placeholder="Auto Complete"
-        key="ui:autocomplete"
+      </div>
+      <SelectField
+        className="select text-primary select-bordered border-primary border-2 w-full mt-2 mb-2 bg-primary-content"
+        value={parameters["ui:autocomplete"] || ""}
+        onChange={(e) =>
+          onChange({
+            ...parameters,
+            "ui:autocomplete": e.target.value,
+          })
+        }
         options={Object.keys(autoDictionary).map((key) => ({
           value: key,
           label: autoDictionary[key as AutoDictionaryKey],
         }))}
-        onChange={(val: any) => {
-          onChange({
-            ...parameters,
-            "ui:autocomplete": val.value,
-          })
-        }}
-        className="card-modal-select"
+        optionValue="value"
+        optionText="label"
       />
+
       <PlaceholderInput parameters={parameters} onChange={onChange} />
-      <h4>
-        Column Size{" "}
-        <a
-          href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Basic_Concepts_of_Grid_Layout"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Tooltip
-            id={`${elementId}_column_size`}
-            type="help"
-            text="Set the column size of the input"
-          />
-        </a>
-      </h4>
-      <Input
-        value={parameters["ui:column"] ? parameters["ui:column"] : ""}
-        placeholder="Column size"
-        key="ui:column"
-        type="number"
-        onChange={(ev) => {
-          onChange({
-            ...parameters,
-            "ui:column": ev.target.value,
-          })
-        }}
-        className="card-modal-text"
-      />
+
       <div className="card-modal-boolean">
         <FBCheckbox
           onChangeValue={() => {
@@ -220,7 +173,7 @@ const CardShortAnswerParameterInputs: CardComponentType = ({ parameters, onChang
 const ShortAnswerField: CardComponentType = ({ parameters, onChange }) => {
   return (
     <React.Fragment>
-      <h5>Default value</h5>
+      <h5>Default Value</h5>
       <Input
         value={parameters.default as string | number | readonly string[] | undefined}
         placeholder="Default"
@@ -238,7 +191,7 @@ const ShortAnswerField: CardComponentType = ({ parameters, onChange }) => {
 const Password: CardComponentType = ({ parameters, onChange }) => {
   return (
     <React.Fragment>
-      <h5>Default password</h5>
+      <h5>Default Password</h5>
       <Input
         value={parameters.default as string | number | readonly string[] | undefined}
         placeholder="Default"

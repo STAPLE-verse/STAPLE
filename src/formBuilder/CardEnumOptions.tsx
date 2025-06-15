@@ -1,22 +1,6 @@
 import React, { ReactElement } from "react"
-import { Input } from "reactstrap"
-import { createUseStyles } from "react-jss"
+import { Input, UncontrolledTooltip } from "reactstrap"
 import { XMarkIcon, PlusIcon } from "@heroicons/react/24/outline"
-
-const useStyles = createUseStyles({
-  cardEnumOption: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    marginBottom: ".5em",
-    "& input": { width: "80%", marginRight: "1em", marginBottom: 0 },
-    "& .delete-button": {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-    },
-  },
-})
 
 interface CardEnumOptionsProps {
   initialValues: Array<any>
@@ -34,18 +18,17 @@ export default function CardEnumOptions({
   onChange,
   type,
 }: CardEnumOptionsProps): ReactElement {
-  const classes = useStyles()
-
   const possibleValues = []
   for (let index = 0; index < initialValues.length; index += 1) {
     const value = initialValues[index]
     let name = `${value}`
-    if (names && index < names.length) name = names[index]
+    if (names && index < names.length) name = names[index] ?? ""
     possibleValues.push(
-      <div key={index} className={classes.cardEnumOption}>
+      //@ts-ignore
+      <div key={index} className="card-enum-option">
         <Input
           value={value === undefined || value === null ? "" : value}
-          placeholder="Possible Value"
+          placeholder="Stored Value"
           key={`val-${index}`}
           type={type === "string" ? "text" : "number"}
           onChange={(ev: any) => {
@@ -107,16 +90,22 @@ export default function CardEnumOptions({
   return (
     <React.Fragment>
       {possibleValues}
-      <PlusIcon
-        className="h-4 w-4"
-        onClick={() => {
-          // add a new dropdown option
-          onChange(
-            [...initialValues, type === "string" ? "" : 0],
-            names ? [...names, ""] : undefined
-          )
-        }}
-      />
+      <span id="add-enum-option">
+        <PlusIcon
+          className="h-6 w-6 stroke-secondary mt-2 mb-2"
+          strokeWidth={4}
+          onClick={() => {
+            // add a new dropdown option
+            onChange(
+              [...initialValues, type === "string" ? "" : 0],
+              names ? [...names, ""] : undefined
+            )
+          }}
+        />
+      </span>
+      <UncontrolledTooltip placement="top" target="add-enum-option">
+        Add new possible option
+      </UncontrolledTooltip>
     </React.Fragment>
   )
 }

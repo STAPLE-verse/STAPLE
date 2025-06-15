@@ -8,7 +8,7 @@ export const PlaceholderInput: CardComponentType = ({ parameters, onChange }) =>
   const [elementId] = useState(getRandomId())
   return (
     <React.Fragment>
-      <h4>
+      <div className="text-[18px] font-bold">
         Placeholder{" "}
         <a
           href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder"
@@ -21,7 +21,7 @@ export const PlaceholderInput: CardComponentType = ({ parameters, onChange }) =>
             text="Hint to the user as to what kind of information is expected in the field"
           />
         </a>
-      </h4>
+      </div>
       <Input
         value={parameters["ui:placeholder"] ? parameters["ui:placeholder"] : ""}
         placeholder="Placeholder"

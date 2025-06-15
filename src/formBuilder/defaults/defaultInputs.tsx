@@ -1,17 +1,10 @@
 import React from "react"
 import { Input } from "reactstrap"
-import { createUseStyles } from "react-jss"
 import FBCheckbox from "../checkbox/FBCheckbox"
 import CardEnumOptions from "../CardEnumOptions"
 import { getRandomId } from "../utils"
 import type { FormInput, CardComponentType, CardComponentPropsType } from "../types"
 import { InputType } from "reactstrap/types/lib/Input"
-
-const useStyles = createUseStyles({
-  hidden: {
-    display: "none",
-  },
-})
 
 // specify the inputs required for a string type object
 export const CardDefaultParameterInputs: CardComponentType = () => <div />
@@ -26,7 +19,7 @@ const getInputCardBodyComponent = ({ type }: { type: InputType }) =>
   }) {
     return (
       <React.Fragment>
-        <h5>Default value</h5>
+        <h5>Default Value</h5>
         <Input
           value={(parameters.default || "") as string | number}
           placeholder="Default"
@@ -49,7 +42,7 @@ const Checkbox: CardComponentType = ({ parameters, onChange }) => {
           })
         }}
         isChecked={parameters.default ? parameters.default === true : false}
-        label="Default"
+        label="Default Unchecked or Checked"
       />
     </div>
   )
@@ -62,7 +55,7 @@ function MultipleChoice({
   parameters: CardComponentPropsType
   onChange: (newParams: CardComponentPropsType) => void
 }) {
-  const classes = useStyles()
+  // no longer needed
   const enumArray = Array.isArray(parameters.enum) ? parameters.enum : []
 
   const containsUnparsableString = enumArray.some((val) => {
@@ -74,7 +67,7 @@ function MultipleChoice({
   const [elementId] = React.useState(getRandomId())
   return (
     <div className="card-enum">
-      <h3>Possible Values</h3>
+      <h5>Possible Values</h5>
       <FBCheckbox
         onChangeValue={() => {
           if (Array.isArray(parameters.enumNames)) {
@@ -92,10 +85,10 @@ function MultipleChoice({
           }
         }}
         isChecked={Array.isArray(parameters.enumNames)}
-        label="Display label is different from value"
+        label="Display different text label than the stored value"
         id={`${elementId}_different`}
       />
-      <div className={containsUnparsableString || !enumArray.length ? classes.hidden : ""}>
+      <div className={containsUnparsableString || !enumArray.length ? "hidden" : ""}>
         <FBCheckbox
           onChangeValue={() => {
             if (containsString || !isNumber) {

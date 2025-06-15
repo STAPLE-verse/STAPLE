@@ -1,26 +1,6 @@
 import React, { ReactElement } from "react"
 import classnames from "classnames"
-import { createUseStyles } from "react-jss"
 import FBRadioButton from "./FBRadioButton"
-
-const useStyles = createUseStyles({
-  radio: {
-    "& .fb-radio-button": {
-      display: "block",
-      '& input[type="radio"]': {
-        marginRight: "5px",
-        marginBottom: 0,
-        height: "1em",
-        verticalAlign: "middle",
-      },
-      '& input[type="radio"] + label': {
-        marginTop: 0,
-        marginBottom: 0,
-        verticalAlign: "middle",
-      },
-    },
-  },
-})
 
 type FBRadioGroupPropsType = {
   options: Array<{ label: string | ReactElement; value: string | number }>
@@ -37,7 +17,7 @@ type FBRadioGroupPropsType = {
 export default function FBRadioGroup(props: FBRadioGroupPropsType): ReactElement {
   const { options, defaultValue, onChange, horizontal, id, autoFocus, disabled } = props
   const name = Math.random().toString()
-  const classjss = useStyles()
+  // Removed JSS class usage
   const classes = classnames("fb-radio-group", {
     horizontal,
   })
@@ -49,7 +29,7 @@ export default function FBRadioGroup(props: FBRadioGroupPropsType): ReactElement
   }
 
   return (
-    <div {...elementId} className={`${classes} ${classjss.radio}`}>
+    <div {...elementId} className={`${classes} radio-group`}>
       {options.map((option, index) => (
         <FBRadioButton
           value={option.value}

@@ -1,7 +1,6 @@
 import React, { ReactElement } from "react"
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"
-import Select from "react-select"
-import { createUseStyles } from "react-jss"
+import SelectField from "src/core/components/fields/SelectField"
 import { Alert, Input, UncontrolledTooltip, FormGroup, FormFeedback } from "reactstrap"
 import FBCheckbox from "./checkbox/FBCheckbox"
 import Collapse from "./Collapse/Collapse"
@@ -22,62 +21,6 @@ import {
 import { getRandomId } from "./utils"
 import type { SectionPropsType } from "./types"
 import { ArrowsPointingOutIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
-
-const useStyles = createUseStyles({
-  sectionContainer: {
-    "& .section-head": {
-      display: "flex",
-      borderBottom: "1px solid gray",
-      margin: "0.5em 1.5em 0 1.5em",
-      "& h5": {
-        color: "black",
-        fontSize: "14px",
-        fontWeight: "bold",
-      },
-      "& .section-entry": {
-        width: "33%",
-        textAlign: "left",
-        padding: "0.5em",
-      },
-      "& .section-reference": { width: "100%" },
-    },
-    "& .section-footer": {
-      marginTop: "1em",
-      textAlign: "center",
-      "& .fa": { cursor: "pointer" },
-    },
-    "& .section-interactions": {
-      margin: "0.5em 1.5em",
-      textAlign: "left",
-      borderTop: "1px solid gray",
-      paddingTop: "1em",
-      "& .fa": {
-        marginRight: "1em",
-        borderRadius: "4px",
-        padding: "0.25em",
-        height: "25px",
-        width: "25px",
-      },
-      "& .fa-pencil-alt, &.fa-pencil, & .fa-arrow-up, & .fa-arrow-down": {
-        border: "1px solid #1d71ad",
-        color: "#1d71ad",
-      },
-      "& .fa-trash": { border: "1px solid #de5354", color: "#de5354" },
-      "& .fa-arrow-up, & .fa-arrow-down": { marginRight: "0.5em" },
-      "& .fb-checkbox": {
-        display: "inline-block",
-        label: { color: "#9aa4ab" },
-      },
-      "& .interactions-left, & .interactions-right": {
-        display: "inline-block",
-        width: "48%",
-        margin: "0 auto",
-      },
-      "& .interactions-left": { textAlign: "left" },
-      "& .interactions-right": { textAlign: "right" },
-    },
-  },
-})
 
 export default function Section({
   name,
@@ -107,7 +50,6 @@ export default function Section({
   mods,
   categoryHash,
 }: SectionPropsType): ReactElement {
-  const classes = useStyles()
   const unsupportedFeatures = checkForUnsupportedFeatures(
     schema || {},
     uischema || {},
@@ -141,7 +83,7 @@ export default function Section({
         isOpen={cardOpen}
         toggleCollapse={() => setCardOpen(!cardOpen)}
         title={
-          <React.Fragment>
+          <div className="card-title-row">
             <span onClick={() => setCardOpen(!cardOpen)} className="label">
               {schemaData.title || keyName}{" "}
               {parent ? (
@@ -154,10 +96,10 @@ export default function Section({
                 ""
               )}
             </span>
-            <span className="arrows">
+            <span className="move-icon">
               <span id={`${elementId}_moveinfosection`}>
                 <ArrowsPointingOutIcon
-                  className="w-8 h-8 stroke-2 stroke-primary"
+                  className="w-8 h-8 stroke-2 stroke-secondary"
                   onClick={() => {}}
                 />
               </span>
@@ -165,31 +107,29 @@ export default function Section({
                 Drag to move section
               </UncontrolledTooltip>
             </span>
-          </React.Fragment>
+          </div>
         }
-        className={`section-container ${classes.sectionContainer} ${
-          dependent ? "section-dependent" : ""
-        } ${reference ? "section-reference" : ""}`}
+        className={`section-container sectionContainer ${dependent ? "section-dependent" : ""} ${
+          reference ? "section-reference" : ""
+        }`}
       >
         <div className={`section-entries ${reference ? "section-reference" : ""}`}>
           <div className="section-head">
             {reference ? (
               <div className="section-entry section-reference">
                 <h5>Reference Section</h5>
-                <Select
-                  value={{
-                    value: reference,
-                    label: reference,
+                <SelectField
+                  className="select select-bordered w-full mt-2 mb-2 text-primary border-primary border-2 bg-primary-content"
+                  value={reference}
+                  onChange={(e) => {
+                    onChange(schema, uischema, e.target.value)
                   }}
-                  placeholder="Reference"
                   options={Object.keys(definitionData).map((key) => ({
                     value: `#/definitions/${key}`,
                     label: `#/definitions/${key}`,
                   }))}
-                  onChange={(val: any) => {
-                    onChange(schema, uischema, val.value)
-                  }}
-                  className="section-select"
+                  optionValue="value"
+                  optionText="label"
                 />
               </div>
             ) : (
@@ -197,7 +137,7 @@ export default function Section({
             )}
             <div className="section-entry" data-test="section-object-name">
               <h5>
-                Section Object Name{" "}
+                Section Variable Name{" "}
                 <Tooltip
                   text={
                     mods &&
@@ -205,7 +145,7 @@ export default function Section({
                     mods.tooltipDescriptions &&
                     typeof mods.tooltipDescriptions.cardSectionObjectName === "string"
                       ? mods.tooltipDescriptions.cardSectionObjectName
-                      : "The key to the object that will represent this form section."
+                      : "The name in the downloaded data for this section."
                   }
                   id={`${elementId}_nameinfo`}
                   type="help"
@@ -245,7 +185,7 @@ export default function Section({
                     mods.tooltipDescriptions &&
                     typeof mods.tooltipDescriptions.cardSectionDisplayName === "string"
                       ? mods.tooltipDescriptions.cardSectionDisplayName
-                      : "The name of the form section that will be shown to users of the form."
+                      : "The name of the section that will be shown to contributors completing the form."
                   }
                   id={`${elementId}_titleinfo`}
                   type="help"
@@ -380,24 +320,32 @@ export default function Section({
             )}
           </div>
           <div className="section-interactions">
-            <span id={`${elementId}_editinfo`}>
-              <PencilIcon onClick={() => setModalOpen(true)} />
-            </span>
-            <UncontrolledTooltip placement="top" target={`${elementId}_editinfo`}>
-              Additional configurations for this form element
-            </UncontrolledTooltip>
-            <span id={`${elementId}_trashinfo`}>
-              <TrashIcon onClick={() => (onDelete ? onDelete() : {})} />
-            </span>
-            <UncontrolledTooltip placement="top" target={`${elementId}_trashinfo`}>
-              Delete form element
-            </UncontrolledTooltip>
-            <FBCheckbox
-              onChangeValue={() => onRequireToggle()}
-              isChecked={required}
-              label="Required"
-              id={`${elementId}_required`}
-            />
+            <div className="flex items-center justify-center gap-2 w-full mt-4">
+              <span id={`${elementId}_editinfo`}>
+                <PencilIcon
+                  className="w-8 h-8 stroke-secondary"
+                  onClick={() => setModalOpen(true)}
+                />
+              </span>
+              <UncontrolledTooltip placement="top" target={`${elementId}_editinfo`}>
+                Additional configurations for this item
+              </UncontrolledTooltip>
+              <span id={`${elementId}_trashinfo`}>
+                <TrashIcon
+                  className="w-8 h-8 stroke-warning"
+                  onClick={() => (onDelete ? onDelete() : {})}
+                />
+              </span>
+              <UncontrolledTooltip placement="top" target={`${elementId}_trashinfo`}>
+                Delete item
+              </UncontrolledTooltip>
+              <FBCheckbox
+                onChangeValue={() => onRequireToggle()}
+                isChecked={required}
+                label="Required"
+                id={`${elementId}_required`}
+              />
+            </div>
           </div>
         </div>
         <CardModal

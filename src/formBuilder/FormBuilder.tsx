@@ -1,11 +1,9 @@
 import React, { ReactElement, useEffect, useState } from "react"
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"
 import { Alert, Input } from "reactstrap"
-import { createUseStyles } from "react-jss"
 import Card from "./Card"
 import Section from "./Section"
 import Add from "./Add"
-import { arrows as arrowsStyle } from "./styles"
 import {
   parse,
   stringify,
@@ -22,166 +20,6 @@ import {
 import DEFAULT_FORM_INPUTS from "./defaults/defaultFormInputs"
 import type { Mods, InitParameters, AddFormObjectParametersType } from "./types"
 
-const useStyles = createUseStyles({
-  formBuilder: {
-    "text-align": "center",
-    "& .fa": {
-      cursor: "pointer",
-    },
-    "& .fa-question-circle, & .fa-circle-question": {
-      color: "gray",
-    },
-    "& .fa-asterisk": {
-      "font-size": ".9em",
-      color: "green",
-    },
-    "& .fa-plus-square, & .fa-square-plus": {
-      color: "green",
-      "font-size": "1.5em",
-      margin: "0 auto",
-    },
-    ...arrowsStyle,
-    "& .card-container": {
-      "&:hover": {
-        border: "1px solid green",
-      },
-      display: "block",
-      width: "70%",
-      "min-width": "400px",
-      margin: "2em auto",
-      border: "1px solid gray",
-      "border-radius": "4px",
-      "background-color": "white",
-      "& h4": {
-        width: "100%",
-        "text-align": "left",
-        display: "inline-block",
-        color: "#138AC2",
-        margin: "0.25em .5em 0 .5em",
-        "font-size": "18px",
-      },
-      "& .d-flex": {
-        "border-bottom": "1px solid gray",
-      },
-      "& .label": {
-        float: "left",
-      },
-    },
-    "& .card-container:hover": { border: "1px solid green" },
-    "& .card-dependent": {
-      border: "1px dashed gray",
-    },
-    "& .card-requirements": {
-      border: "1px dashed black",
-    },
-    "& .section-container": {
-      "&:hover": {
-        border: "1px solid green",
-      },
-      display: "block",
-      width: "90%",
-      "min-width": "400px",
-      margin: "2em auto",
-      border: "1px solid gray",
-      "border-radius": "4px",
-      "background-color": "white",
-      "& h4": {
-        width: "100%",
-        "text-align": "left",
-        display: "inline-block",
-        color: "#138AC2",
-        margin: "0.25em .5em 0 .5em",
-        "font-size": "18px",
-      },
-      "& .d-flex": {
-        "border-bottom": "1px solid gray",
-      },
-      "& .label": {
-        float: "left",
-      },
-    },
-    "& .section-container:hover": { border: "1px solid green" },
-    "& .section-dependent": {
-      border: "1px dashed gray",
-    },
-    "& .section-requirements": {
-      border: "1px dashed black",
-    },
-    "& .alert": {
-      textAlign: "left",
-      width: "70%",
-      margin: "1em auto",
-      "& h5": {
-        color: "black",
-        fontSize: "16px",
-        fontWeight: "bold",
-        margin: "0",
-      },
-      "& .fa": { fontSize: "14px" },
-    },
-    "& .disabled-unchecked-checkbox": {
-      color: "gray",
-      "& div::before": { backgroundColor: "lightGray" },
-    },
-    "& .disabled-input": {
-      "& input": { backgroundColor: "lightGray" },
-      "& input:focus": {
-        backgroundColor: "lightGray",
-        border: "1px solid gray",
-      },
-    },
-  },
-  formHead: {
-    display: "block",
-    margin: "0 auto",
-    "background-color": "#EBEBEB",
-    border: "1px solid #858F96",
-    "border-radius": "4px",
-    width: "70%",
-    padding: "10px",
-    "& div": {
-      width: "30%",
-      display: "inline-block",
-      "text-align": "left",
-      padding: "10px",
-    },
-    "& .form-title": {
-      "text-align": "left",
-    },
-    "& .form-description": {
-      "text-align": "left",
-    },
-    "& h5": {
-      "font-size": "14px",
-      "line-height": "21px",
-      "font-weight": "bold",
-    },
-  },
-  formBody: {
-    display: "flex",
-    flexDirection: "column",
-    "& .fa-pencil-alt, & .fa-pencil": {
-      border: "1px solid #1d71ad",
-      color: "#1d71ad",
-    },
-    "& .modal-body": {
-      maxHeight: "500px",
-      overflowY: "scroll",
-    },
-    "& .card-add": {
-      cursor: "pointer",
-      display: "block",
-      color: "$green",
-      fontSize: "1.5em",
-    },
-  },
-  formFooter: {
-    marginTop: "1em",
-    textAlign: "center",
-    "& .fa": { cursor: "pointer", color: "$green", fontSize: "1.5em" },
-  },
-})
-
 export default function FormBuilder({
   schema,
   uischema,
@@ -197,7 +35,6 @@ export default function FormBuilder({
   mods?: Mods
   className?: string
 }): ReactElement {
-  const classes = useStyles()
   const schemaData = parse(schema)
   schemaData.type = "object"
   const uiSchemaData = parse(uischema)
@@ -239,7 +76,7 @@ export default function FormBuilder({
   }, [isFirstRender, onMount, categoryHash])
 
   return (
-    <div className={`${classes.formBuilder} ${className || ""}`}>
+    <div className={`formBuilder ${className || ""}`}>
       <Alert
         style={{
           display: unsupportedFeatures.length === 0 ? "none" : "block",
@@ -252,7 +89,7 @@ export default function FormBuilder({
         ))}
       </Alert>
       {(!mods || mods.showFormHead !== false) && (
-        <div className={classes.formHead} data-test="form-head">
+        <div className="formHead" data-test="form-head">
           <div>
             <h5 data-test="form-name-label">
               {mods && mods.labels && typeof mods.labels.formNameLabel === "string"
@@ -299,7 +136,8 @@ export default function FormBuilder({
           </div>
         </div>
       )}
-      <div className={`form-body ${classes.formBody}`}>
+      <div className="form-body formBody">
+        {/* @ts-expect-error children the droppable*/}
         <DragDropContext
           onDragEnd={(result) =>
             onDragEnd(result, {
@@ -313,6 +151,7 @@ export default function FormBuilder({
             })
           }
         >
+          {/* @ts-expect-error children is part of the map*/}
           <Droppable droppableId="droppable" type={DROPPABLE_TYPE}>
             {(providedDroppable) => (
               <div ref={providedDroppable.innerRef} {...providedDroppable.droppableProps}>
@@ -351,7 +190,7 @@ export default function FormBuilder({
           </Droppable>
         </DragDropContext>
       </div>
-      <div className={`form-footer ${classes.formFooter}`}>
+      <div className="form-footer formFooter">
         {!hideAddButton && mods?.components?.add && mods.components.add(addProperties)}
         {!mods?.components?.add && (
           <Add

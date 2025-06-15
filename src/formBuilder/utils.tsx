@@ -894,7 +894,10 @@ export function addCardObj(parameters: AddFormObjectParametersType) {
   } else {
     newElementObjArr.push(newElement)
   }
-  updateSchemas(newElementObjArr, {
+  // 🧪 Log the new card object schema before updating
+  const returnObj = newElementObjArr
+  //console.log("🧪 new card object schema", JSON.stringify(returnObj, null, 2))
+  updateSchemas(returnObj, {
     schema,
     uischema,
     definitionData,
@@ -937,7 +940,10 @@ export function addSectionObj(parameters: AddFormObjectParametersType) {
   } else {
     newElementObjArr.push(newElement)
   }
-  updateSchemas(newElementObjArr, {
+  // 🧪 Log the new section object schema before updating
+  const returnObj = newElementObjArr
+  //console.log("🧪 new section object schema", JSON.stringify(returnObj, null, 2))
+  updateSchemas(returnObj, {
     schema,
     uischema,
     definitionData,

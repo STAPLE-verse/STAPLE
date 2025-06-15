@@ -1,6 +1,6 @@
 import React from "react"
 import type { FormInput, CardComponentType } from "../types"
-import Select from "react-select"
+import SelectField from "src/core/components/fields/SelectField"
 import { PlaceholderInput } from "../inputs/PlaceholderInput"
 
 export const CardReferenceParameterInputs: CardComponentType = ({ parameters, onChange }) => {
@@ -17,26 +17,23 @@ const RefChoice: CardComponentType = ({ parameters, onChange }) => {
     pathArr.length === 3 &&
     pathArr[0] === "#" &&
     pathArr[1] === "definitions" &&
+    pathArr[2] &&
     (parameters.definitionData || {})[pathArr[2]]
       ? parameters.definitionData![pathArr[2]].title || parameters.$ref
       : parameters.$ref
 
   return (
     <div className="card-select">
-      <Select
-        value={{
-          value: parameters.$ref,
-          label: currentValueLabel,
-        }}
-        placeholder="Reference"
+      <SelectField
+        className="select select-bordered w-full mt-2 mb-2 text-primary border-primary border-2 bg-primary-content"
+        value={parameters.$ref || ""}
+        onChange={(e) => onChange({ ...parameters, $ref: e.target.value })}
         options={Object.keys(parameters.definitionData || {}).map((key) => ({
           value: `#/definitions/${key}`,
           label: parameters.definitionData![key].title || `#/definitions/${key}`,
         }))}
-        onChange={(val: any) => {
-          onChange({ ...parameters, $ref: val.value })
-        }}
-        className="card-select"
+        optionValue="value"
+        optionText="label"
       />
     </div>
   )

@@ -1,17 +1,5 @@
 import React, { FC } from "react"
 import classnames from "classnames"
-import { createUseStyles } from "react-jss"
-
-const useStyles = createUseStyles({
-  checkbox: {
-    "& *": {
-      display: "inline-block",
-    },
-    "& input": {
-      marginRight: "5px",
-    },
-  },
-})
 
 interface FBCheckboxProps {
   onChangeValue: (_arg0: { [key: string]: any }) => void
@@ -36,7 +24,6 @@ const FBCheckbox: FC<FBCheckboxProps> = ({
   dataTest = "",
   labelClassName = "",
 }) => {
-  const classjss = useStyles()
   const classes = classnames("fb-checkbox", {
     "edit-checkbox": !disabled && use === "edit",
     "action-checkbox": !disabled && use === "action",
@@ -46,7 +33,7 @@ const FBCheckbox: FC<FBCheckboxProps> = ({
   const potentialCheckboxId = id !== "" ? id : label
   const checkboxId = potentialCheckboxId !== "" ? potentialCheckboxId : undefined
   return (
-    <div data-test="checkbox" className={`${classes} ${classjss.checkbox}`}>
+    <div data-test="checkbox" className={`${classes} checkbox-style flex items-center`}>
       <input
         type="checkbox"
         id={checkboxId}
@@ -60,7 +47,7 @@ const FBCheckbox: FC<FBCheckboxProps> = ({
         disabled={disabled}
         checked={isChecked}
       />
-      <div className="checkbox-overlay">
+      <div className="checkbox-overlay text-lg">
         {label && (
           <label htmlFor={checkboxId} className={labelClassName || undefined}>
             {label}

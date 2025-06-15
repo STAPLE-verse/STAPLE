@@ -233,7 +233,7 @@ export default function ValueSelector({
             </li>
           ))}
           <PlusIcon
-            className="h-4 w-4"
+            className="h-6 w-6 stroke-2 stroke-secondary"
             onClick={() => {
               const newCase: { [key: string]: any } = {}
               const propArr: { [key: string]: any } = parentSchema ? parentSchema.properties : {}

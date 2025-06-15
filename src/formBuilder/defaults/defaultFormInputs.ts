@@ -12,7 +12,7 @@ const DEFAULT_FORM_INPUTS: { [key: string]: FormInput } = {
   ...shortAnswerInputs,
   ...longAnswerInputs,
   ...numberInputs,
-  ...arrayInputs,
+  //...arrayInputs,
 }
 
 export default DEFAULT_FORM_INPUTS

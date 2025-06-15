@@ -1,5 +1,5 @@
 import React, { useState, ReactElement } from "react"
-import Select from "react-select"
+import SelectField from "src/core/components/fields/SelectField"
 import { getRandomId } from "../utils"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 
@@ -30,11 +30,12 @@ export default function CardSelector({
           </li>
         ))}
       </ul>
-      <Select
-        value={{
-          value: "",
-          label: "",
+      <SelectField
+        value=""
+        onChange={(e) => {
+          onChange([...chosenChoices, e.target.value])
         }}
+        className="select select-bordered w-full mt-2 mb-2 text-primary border-primary border-2 bg-primary-content"
         placeholder={placeholder}
         options={possibleChoices
           .filter((choice) => !chosenChoices.includes(choice))
@@ -42,10 +43,8 @@ export default function CardSelector({
             value: choice,
             label: choice,
           }))}
-        onChange={(val: any) => {
-          onChange([...chosenChoices, val.value])
-        }}
-        className="card-modal-select"
+        optionValue="value"
+        optionText="label"
       />
     </React.Fragment>
   )

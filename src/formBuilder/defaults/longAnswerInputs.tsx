@@ -11,7 +11,7 @@ const CardLongAnswerParameterInputs: CardComponentType = ({ parameters, onChange
   const [elementId] = useState(getRandomId())
   return (
     <div>
-      <h4>Minimum Length</h4>
+      <div className="text-[18px] font-bold">Minimum Length</div>
       <Input
         value={parameters.minLength ? parameters.minLength : ""}
         placeholder="Minimum Length"
@@ -25,7 +25,7 @@ const CardLongAnswerParameterInputs: CardComponentType = ({ parameters, onChange
         }}
         className="card-modal-number"
       />
-      <h4>Maximum Length</h4>
+      <div className="text-[18px] font-bold">Maximum Length</div>
       <Input
         value={parameters.maxLength ? parameters.maxLength : ""}
         placeholder="Maximum Length"
@@ -39,7 +39,7 @@ const CardLongAnswerParameterInputs: CardComponentType = ({ parameters, onChange
         }}
         className="card-modal-number"
       />
-      <h4>
+      <div className="text-[18px] font-bold">
         Regular Expression Pattern{" "}
         <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions">
           <Tooltip
@@ -48,7 +48,7 @@ const CardLongAnswerParameterInputs: CardComponentType = ({ parameters, onChange
             text="Regular expression pattern that this must satisfy"
           />
         </a>
-      </h4>
+      </div>
       <Input
         value={parameters.pattern ? parameters.pattern : ""}
         placeholder="Regular Expression Pattern"
@@ -84,7 +84,7 @@ const CardLongAnswerParameterInputs: CardComponentType = ({ parameters, onChange
 const LongAnswer: CardComponentType = ({ parameters, onChange }) => {
   return (
     <React.Fragment>
-      <h5>Default value</h5>
+      <h5>Default Value</h5>
       <Input
         value={parameters.default as string | number | readonly string[] | undefined}
         placeholder="Default"

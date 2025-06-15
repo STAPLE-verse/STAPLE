@@ -1,29 +1,9 @@
 import React, { useState, ReactElement } from "react"
 import { Popover, PopoverHeader, PopoverBody, UncontrolledTooltip, Button } from "reactstrap"
-import { createUseStyles } from "react-jss"
 import FBRadioGroup from "./radio/FBRadioGroup"
 import { getRandomId } from "./utils"
 import type { ModLabels } from "./types"
 import { PlusCircleIcon } from "@heroicons/react/24/outline"
-
-const useStyles = createUseStyles({
-  addDetails: {
-    "& .popover": {
-      width: "300px",
-      "z-index": "1051 !important",
-      "& .popover-inner": {
-        border: "1px solid #1d71ad",
-        borderRadius: "4px",
-        "& .popover-header": { borderBottom: "1px solid #1d71ad" },
-        "& .action-buttons": {
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: ".5em",
-        },
-      },
-    },
-  },
-})
 
 export default function Add({
   addElem,
@@ -36,7 +16,6 @@ export default function Add({
   tooltipDescription?: string
   labels?: ModLabels
 }): ReactElement {
-  const classes = useStyles()
   const [popoverOpen, setPopoverOpen] = useState(false)
   const [createChoice, setCreateChoice] = useState("card")
   const [elementId] = useState(getRandomId())
@@ -57,7 +36,7 @@ export default function Add({
         target={`${elementId}_add`}
         isOpen={popoverOpen}
         toggle={() => setPopoverOpen(false)}
-        className={`add-details ${classes.addDetails}`}
+        className="add-details"
         id={`${elementId}_add_popover`}
       >
         <PopoverHeader>

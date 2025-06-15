@@ -10,14 +10,14 @@ const CardNumberParameterInputs: CardComponentType = ({ parameters, onChange }) 
   const [elementId] = useState(getRandomId())
   return (
     <div>
-      <h4>
+      <div className="text-[18px] font-bold">
         Multiple of{" "}
         <Tooltip
           id={`${elementId}_multiple`}
           type="help"
           text="Require number to be a multiple of this number"
         />
-      </h4>
+      </div>
       <Input
         value={parameters.multipleOf ? parameters.multipleOf : ""}
         placeholder="ex: 2"
@@ -33,7 +33,7 @@ const CardNumberParameterInputs: CardComponentType = ({ parameters, onChange }) 
         }}
         className="card-modal-number"
       />
-      <h4>Minimum</h4>
+      <div className="text-[18px] font-bold">Minimum</div>
       <Input
         value={parameters.minimum || parameters.exclusiveMinimum || ""}
         placeholder="ex: 3"
@@ -84,7 +84,7 @@ const CardNumberParameterInputs: CardComponentType = ({ parameters, onChange }) 
           label="Exclusive Minimum"
         />
       </div>
-      <h4>Maximum</h4>
+      <div className="text-[18px] font-bold">Maximum</div>
       <Input
         value={parameters.maximum || parameters.exclusiveMaximum || ""}
         placeholder="ex: 8"
@@ -142,7 +142,7 @@ const CardNumberParameterInputs: CardComponentType = ({ parameters, onChange }) 
 const NumberField: CardComponentType = ({ parameters, onChange }) => {
   return (
     <React.Fragment>
-      <h5>Default number</h5>
+      <h5>Default Number</h5>
       <Input
         value={parameters.default as string | number | readonly string[] | undefined}
         placeholder="Default"

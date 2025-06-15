@@ -1,23 +1,7 @@
 import React, { FC, ReactNode, MouseEvent } from "react"
-import { createUseStyles } from "react-jss"
 import { Collapse as RSCollapse } from "reactstrap"
 import classnames from "classnames"
 import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/24/solid"
-
-const useStyles = createUseStyles({
-  collapseElement: {
-    "& .disabled": { ".toggle-collapse": { cursor: "default" } },
-    "& h4": { marginTop: "7px", padding: "13px 10px 10px 10px" },
-    "& .toggle-collapse": {
-      fontSize: "2.3rem",
-      cursor: "pointer",
-      marginLeft: "33px",
-      "& .fa-caret-right": {
-        marginRight: "9px",
-      },
-    },
-  },
-})
 
 interface CollapseProps {
   // Determines if the Collapse component is open
@@ -34,20 +18,17 @@ interface CollapseProps {
 }
 
 const Collapse: FC<CollapseProps> = (props) => {
-  const classes = classnames(
-    `collapse-element ${props.className || ""} ${useStyles().collapseElement}`,
-    {
-      disabled: props.disableToggle,
-    }
-  )
+  const classes = classnames(`collapse-element ${props.className || ""} collapseElement`, {
+    disabled: props.disableToggle,
+  })
 
   return (
     <div className={classes}>
-      <div className="d-flex">
+      <div className="flex">
         <span className="toggle-collapse">
           {props.isOpen ? (
             <ChevronDownIcon
-              className="h-6 w-6 cursor-pointer"
+              className="h-6 w-6 cursor-pointer stroke-secondary"
               onClick={(event) => {
                 if (!props.disableToggle) {
                   props.toggleCollapse(event)
@@ -56,7 +37,7 @@ const Collapse: FC<CollapseProps> = (props) => {
             />
           ) : (
             <ChevronRightIcon
-              className="h-6 w-6 cursor-pointer"
+              className="h-6 w-6 cursor-pointer stroke-secondary"
               onClick={(event) => {
                 if (!props.disableToggle) {
                   props.toggleCollapse(event)

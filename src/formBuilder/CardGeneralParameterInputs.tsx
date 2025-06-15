@@ -1,8 +1,8 @@
 import React, { ReactElement } from "react"
-import Select from "react-select"
 import { Input, FormGroup, FormFeedback } from "reactstrap"
 import classnames from "classnames"
 import GeneralParameterInputs from "./GeneralParameterInputs"
+import SelectField from "src/core/components/fields/SelectField"
 import {
   defaultUiProps,
   defaultDataProps,
@@ -41,23 +41,38 @@ export default function CardGeneralParameterInputs({
       : defaultLabel
   }
 
-  const objectNameLabel = fetchLabel("objectNameLabel", "Object Name")
+  const objectNameLabel = fetchLabel("objectNameLabel", "Variable Name")
   const displayNameLabel = fetchLabel("displayNameLabel", "Display Name")
   const descriptionLabel = fetchLabel("descriptionLabel", "Description")
-  const inputTypeLabel = fetchLabel("inputTypeLabel", "Input Type")
+  const inputTypeLabel = fetchLabel("inputTypeLabel", "Item Type")
 
   const availableInputTypes = () => {
     const definitionsInSchema =
       parameters.definitionData && Object.keys(parameters.definitionData).length !== 0
 
-    // Hide the "Reference" option if there are no definitions in the schema
     let inputKeys = Object.keys(categoryMap).filter((key) => key !== "ref" || definitionsInSchema)
-    // Exclude hidden inputs based on mods
     if (mods) inputKeys = subtractArray(inputKeys, mods.deactivatedFormInputs)
 
-    return inputKeys
+    // Define manual group order
+    const groupOrder = [
+      "dateTime",
+      "date",
+      "time",
+      "checkbox",
+      "radio",
+      "dropdown",
+      "shortAnswer",
+      "password",
+      "longAnswer",
+      "integer",
+      "number",
+      //"array",
+      "ref",
+    ]
+
+    return groupOrder
+      .filter((key) => inputKeys.includes(key))
       .map((key) => ({ value: key, label: categoryMap[key] }))
-      .sort((a, b) => a.label!.localeCompare(b.label!))
   }
 
   return (
@@ -73,7 +88,7 @@ export default function CardGeneralParameterInputs({
                   mods.tooltipDescriptions &&
                   typeof mods.tooltipDescriptions.cardObjectName === "string"
                     ? mods.tooltipDescriptions.cardObjectName
-                    : "The back-end name of the object"
+                    : "The name of the item when you download the data"
                 }
                 id={`${elementId}_nameinfo`}
                 type="help"
@@ -110,7 +125,7 @@ export default function CardGeneralParameterInputs({
             </FormGroup>
           </div>
         )}
-        <div className={`card-entry ${parameters.$ref === undefined ? "" : "disabled-input"}`}>
+        <div className="card-entry">
           <h5>
             {`${displayNameLabel} `}
             <Tooltip
@@ -119,7 +134,7 @@ export default function CardGeneralParameterInputs({
                 mods.tooltipDescriptions &&
                 typeof mods.tooltipDescriptions.cardDisplayName === "string"
                   ? mods.tooltipDescriptions.cardDisplayName
-                  : "The user-facing name of this object"
+                  : "The item name shown on the form"
               }
               id={`${elementId}-titleinfo`}
               type="help"
@@ -138,7 +153,7 @@ export default function CardGeneralParameterInputs({
         </div>
       </div>
       <div className="card-entry-row">
-        <div className={`card-entry ${parameters.$ref ? "disabled-input" : ""}`}>
+        <div className="card-entry">
           <h5>
             {`${descriptionLabel} `}
             <Tooltip
@@ -179,23 +194,17 @@ export default function CardGeneralParameterInputs({
                 mods.tooltipDescriptions &&
                 typeof mods.tooltipDescriptions.cardInputType === "string"
                   ? mods.tooltipDescriptions.cardInputType
-                  : "The type of form input displayed on the form"
+                  : "The type of item displayed on the form"
               }
               id={`${elementId}-inputinfo`}
               type="help"
             />
           </h5>
-          <Select
-            value={{
-              value: parameters.category,
-              label: categoryMap[parameters.category!],
-            }}
-            placeholder={inputTypeLabel}
-            options={availableInputTypes()}
-            onChange={(val: any) => {
-              // figure out the new 'type'
-              const newCategory = val.value
-
+          <SelectField
+            className="select text-primary select-bordered border-primary border-2 w-full mt-2 mb-2 bg-primary-content"
+            value={parameters.category}
+            onChange={(e) => {
+              const newCategory = e.target.value
               const newProps = {
                 ...defaultUiProps(newCategory, allFormInputs),
                 ...defaultDataProps(newCategory, allFormInputs),
@@ -203,7 +212,6 @@ export default function CardGeneralParameterInputs({
                 required: parameters.required,
               }
               if (newProps.$ref !== undefined && !newProps.$ref) {
-                // assign an initial reference
                 const firstDefinition = Object.keys(parameters.definitionData!)[0]
                 newProps.$ref = `#/definitions/${firstDefinition || "empty"}`
               }
@@ -215,7 +223,9 @@ export default function CardGeneralParameterInputs({
                 category: newProps.category || newCategory,
               })
             }}
-            className="card-select"
+            options={availableInputTypes()}
+            optionValue="value"
+            optionText="label"
           />
         </div>
       </div>

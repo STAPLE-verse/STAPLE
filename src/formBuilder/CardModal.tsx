@@ -1,32 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { Modal, ModalHeader, Button, ModalBody, ModalFooter, Input } from "reactstrap"
-import { createUseStyles } from "react-jss"
 import DependencyField from "./dependencies/DependencyField"
 import type { CardModalType, CardComponentPropsType } from "./types"
 import Tooltip from "./Tooltip"
-
-const useStyles = createUseStyles({
-  cardModal: {
-    "& .card-modal-header": { paddingTop: ".5em", paddingBottom: ".5em" },
-    "& .card-modal-entries": { padding: "1em" },
-    "& h4, h5, p, label, li": { marginTop: ".5em", marginBottom: ".5em" },
-    "& h5, p, label, li": { fontSize: "14px" },
-    "& h4": { fontSize: "16px" },
-    "& h3": { fontSize: "18px", marginBottom: 0 },
-    "& .card-modal-entries > div > input": {
-      marginBottom: "1em",
-      height: "32px",
-    },
-    "& .fa-question-circle, & .fa-circle-question": { color: "gray" },
-    "& .card-modal-boolean": {
-      "& *": { marginRight: "0.25em", height: "auto", display: "inline-block" },
-    },
-    "& .card-modal-select": {
-      "& input": { margin: "0", height: "20px" },
-      marginBottom: "1em",
-    },
-  },
-})
 
 const CardModal: CardModalType = ({
   componentProps,
@@ -35,7 +11,6 @@ const CardModal: CardModalType = ({
   onClose,
   TypeSpecificParameters,
 }) => {
-  const classes = useStyles()
   // assign state values for parameters that should only change on hitting "Save"
   const [componentPropsState, setComponentProps] = useState(componentProps)
 
@@ -44,10 +19,10 @@ const CardModal: CardModalType = ({
   }, [componentProps])
 
   return (
-    <Modal isOpen={isOpen} data-test="card-modal" className={classes.cardModal}>
+    <Modal isOpen={isOpen} data-test="card-modal" className="cardModal">
       <ModalHeader className="card-modal-header">
         <div style={{ display: componentProps.hideKey ? "none" : "initial" }}>
-          <h3>Additional Settings</h3>
+          <div className="text-[18px] font-bold">Additional Settings</div>
         </div>
       </ModalHeader>
       <ModalBody className="card-modal-entries">
@@ -61,7 +36,7 @@ const CardModal: CardModalType = ({
           }}
         />
         <div>
-          <h4>
+          <div className="text-[18px] font-bold">
             Column Size{" "}
             <a
               href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout/Basic_Concepts_of_Grid_Layout"
@@ -71,13 +46,13 @@ const CardModal: CardModalType = ({
               <Tooltip
                 id="column_size_tooltip"
                 type="help"
-                text="Set the column size of the input"
+                text="Set the column size of the item"
               />
             </a>
-          </h4>
+          </div>
           <Input
             value={componentPropsState["ui:column"] ? componentPropsState["ui:column"] : ""}
-            placeholder="Column size"
+            placeholder="Column Size"
             key="ui:column"
             type="number"
             min={0}

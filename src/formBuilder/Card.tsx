@@ -1,6 +1,5 @@
 import React, { ReactElement } from "react"
 import { UncontrolledTooltip } from "reactstrap"
-import { createUseStyles } from "react-jss"
 import FBCheckbox from "./checkbox/FBCheckbox"
 import Collapse from "./Collapse/Collapse"
 import CardModal from "./CardModal"
@@ -10,86 +9,6 @@ import Tooltip from "./Tooltip"
 import { getRandomId } from "./utils"
 import type { CardPropsType, CardComponentPropsType } from "./types"
 import { ArrowsPointingOutIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline"
-
-const useStyles = createUseStyles({
-  cardEntries: {
-    "border-bottom": "1px solid gray",
-    margin: ".5em 1.5em 0 1.5em",
-    "& h5": {
-      color: "black",
-      "font-size": "14px",
-      "font-weight": "bold",
-    },
-    "& .card-entry-row": {
-      display: "flex",
-    },
-    "& .card-entry": {
-      margin: 0,
-      width: "50%",
-      "text-align": "left",
-      padding: "0.5em",
-      "&.wide-card-entry": {
-        width: "100%",
-      },
-    },
-    "& input": {
-      border: "1px solid gray",
-      "border-radius": "4px",
-    },
-    "& .card-category-options": {
-      padding: ".5em",
-    },
-    "& .card-select": {
-      border: "1px solid gray",
-      "border-radius": "4px",
-    },
-    "& .card-array": {
-      "& .fa-plus-square, & .fa-square-plus": { display: "none" },
-      "& .section-entries": {
-        "& .fa-plus-square, & .fa-square-plus": { display: "initial" },
-      },
-    },
-    "& .card-enum": {
-      display: "flex",
-      flexDirection: "column",
-      width: "100%",
-      backgroundColor: "lightGray",
-      textAlign: "left",
-      padding: "1em",
-      "& h3": { fontSize: "16px", margin: "0 0 .5em 0" },
-      "& label": { color: "black", fontSize: "14px" },
-      "& .card-enum-header": {
-        marginTop: "0.5em",
-        width: "100%",
-        display: "flex",
-        flexDirection: "row",
-        "& h5": { width: "50%", fontWeight: "bold", fontSize: "14px" },
-      },
-      "& .fa": { cursor: "pointer" },
-    },
-  },
-  cardInteractions: {
-    margin: ".5em 1.5em",
-    textAlign: "left",
-    "& .fa": {
-      marginRight: "1em",
-      borderRadius: "4px",
-      padding: ".25em",
-      height: "25px",
-      width: "25px",
-    },
-    "& .fa-arrow-up, .fa-arrow-down": { marginRight: ".5em" },
-    "& .fa-trash": { border: "1px solid #DE5354", color: "#DE5354" },
-    "& .fb-checkbox": { display: "inline-block" },
-    "& .interactions-left, & .interactions-right": {
-      display: "inline-block",
-      width: "48%",
-      margin: "0 auto",
-    },
-    "& .interactions-left": { textAlign: "left" },
-    "& .interactions-right": { textAlign: "right" },
-  },
-})
 
 export default function Card({
   componentProps,
@@ -106,7 +25,6 @@ export default function Card({
   showObjectNameInput = true,
   addProperties,
 }: CardPropsType): ReactElement {
-  const classes = useStyles()
   const [modalOpen, setModalOpen] = React.useState(false)
   const [elementId] = React.useState(getRandomId())
 
@@ -117,7 +35,7 @@ export default function Card({
         isOpen={cardOpen}
         toggleCollapse={() => setCardOpen(!cardOpen)}
         title={
-          <React.Fragment>
+          <div className="card-title-row">
             <span onClick={() => setCardOpen(!cardOpen)} className="label">
               {componentProps.title || componentProps.name}{" "}
               {componentProps.parent ? (
@@ -139,24 +57,22 @@ export default function Card({
                 ""
               )}
             </span>
-            <span className="arrows">
-              <span id={`${elementId}_moveformcard`}>
-                <ArrowsPointingOutIcon
-                  className="w-8 h-8 stroke-2 stroke-primary"
-                  onClick={() => {}}
-                />
-              </span>
+            <span className="move-icon" id={`${elementId}_moveformcard`}>
+              <ArrowsPointingOutIcon
+                className="w-8 h-8 stroke-2 stroke-secondary"
+                onClick={() => {}}
+              />
               <UncontrolledTooltip placement="top" target={`${elementId}_moveformcard`}>
                 Drag to move form item
               </UncontrolledTooltip>
             </span>
-          </React.Fragment>
+          </div>
         }
         className={`card-container ${componentProps.dependent ? "card-dependent" : ""} ${
           componentProps.$ref === undefined ? "" : "card-reference"
         }`}
       >
-        <div className={classes.cardEntries}>
+        <div className="cardEntries">
           <CardGeneralParameterInputs
             parameters={componentProps}
             onChange={onChange}
@@ -165,18 +81,18 @@ export default function Card({
             showObjectNameInput={showObjectNameInput}
           />
         </div>
-        <div className={classes.cardInteractions}>
+        <div className="flex items-center justify-center gap-2 w-full mt-4">
           <span id={`${elementId}_editinfo`}>
-            <PencilIcon onClick={() => setModalOpen(true)} />
+            <PencilIcon className="w-8 h-8 stroke-secondary" onClick={() => setModalOpen(true)} />
           </span>
           <UncontrolledTooltip placement="top" target={`${elementId}_editinfo`}>
-            Additional configurations for this form element
+            Additional configurations for this item
           </UncontrolledTooltip>
           <span id={`${elementId}_trashinfo`}>
-            <TrashIcon onClick={() => onDelete && onDelete()} />
+            <TrashIcon className="w-8 h-8 stroke-warning" onClick={() => onDelete && onDelete()} />
           </span>
           <UncontrolledTooltip placement="top" target={`${elementId}_trashinfo`}>
-            Delete form element
+            Delete item
           </UncontrolledTooltip>
           <FBCheckbox
             onChangeValue={() =>
