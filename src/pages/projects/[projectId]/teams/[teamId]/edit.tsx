@@ -1,7 +1,6 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
-import Link from "next/link"
-import router, { useRouter } from "next/router"
+import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
@@ -59,6 +58,7 @@ export const EditTeam = () => {
         name: values.name,
         id: teamProjectMember.id,
         userIds: values.projectMemberUserIds,
+        tags: values.tags,
       })
       await toast.promise(Promise.resolve(updated), {
         loading: "Updating team...",
