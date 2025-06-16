@@ -61,7 +61,7 @@ export const transformMilestonesToGanttTasks = (milestones: MilestoneWithTasks[]
       out.push({
         id: `task-${t.id}`,
         project: parentId,
-        name: t.name,
+        name: `📋 ${t.name}`,
         start: t.startDate ? new Date(t.startDate) : new Date(t.createdAt),
         end: new Date(t.deadline!),
         type: "task",

@@ -12,7 +12,6 @@ import Link from "next/link"
 import UpdateTasksMilestone from "src/milestones/components/UpdateTasksMilestone"
 import { useState } from "react"
 import { processMilestoneTasks } from "src/milestones/tables/processing/processMilestoneTasks"
-import type { MilestoneTasksData } from "src/milestones/tables/processing/processMilestoneTasks"
 import getTasks from "src/tasks/queries/getTasks"
 import router from "next/router"
 import deleteMilestone from "src/milestones/mutations/deleteMilestone"
@@ -48,7 +47,7 @@ const ShowMilestonePage = () => {
   const milestoneTasks = tasks.filter((task) => task.milestoneId === milestone.id)
   const processedTasks = processMilestoneTasks(milestoneTasks)
 
-  console.log(processedTasks)
+  //console.log(processedTasks)
 
   return (
     // @ts-expect-error children are clearly passed below

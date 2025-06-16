@@ -79,7 +79,7 @@ const Milestones = () => {
         />
         <Tooltip
           id="milestone-overview"
-          content="This page displays all milestones. You can create a new milestones or search and update existing milestones. Click on a milestone name to see more information."
+          content="This page displays all milestones. You can create a new milestones or search and update existing milestones."
           className="z-[1099] ourtooltips"
         />
       </h1>
@@ -101,9 +101,15 @@ const Milestones = () => {
                     : "!bg-base-100 hover:text-gray-500"
                 )
               }
+              data-tooltip-id="milestone-list-tab"
             >
               List
             </Tab>
+            <Tooltip
+              id="milestone-list-tab"
+              content="In this view, you can click on milestones to open their summary pages."
+              className="z-[1099] ourtooltips"
+            />
             {/* TabLink for table view */}
             <Tab
               className={({ selected }) =>
@@ -114,9 +120,15 @@ const Milestones = () => {
                     : "!bg-base-100 hover:text-gray-500"
                 )
               }
+              data-tooltip-id="milestone-gantt-tab"
             >
               Gantt
             </Tab>
+            <Tooltip
+              id="milestone-gantt-tab"
+              content="View a Gantt chart of your tasks and milestones. Tasks are lighter in color and include an icon. Hover over each bar to view more information."
+              className="z-[1099] ourtooltips"
+            />
           </Tab.List>
 
           <div className="flex justify-end items-start ml-auto items-center">

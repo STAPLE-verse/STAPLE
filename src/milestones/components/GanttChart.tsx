@@ -63,31 +63,7 @@ export const CustomTaskListHeader: React.FC<{
           alignItems: "center",
         }}
       >
-        Name
-      </div>
-      <div
-        style={{
-          minWidth: rowWidth,
-          maxWidth: rowWidth,
-          flexShrink: 0,
-          paddingLeft: "8px",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        From
-      </div>
-      <div
-        style={{
-          minWidth: rowWidth,
-          maxWidth: rowWidth,
-          flexShrink: 0,
-          paddingLeft: "8px",
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        To
+        Milestone
       </div>
     </div>
   )
@@ -116,7 +92,7 @@ export const CustomTaskListTable: React.FC<{
             fontSize,
           }}
         >
-          <div className="min-w-[155px] max-w-[155px] px-2 font-semibold truncate flex items-center space-x-1">
+          <div className="min-w-[220px] max-w-[220px] px-2 font-semibold truncate flex items-center space-x-1">
             {task.type === "project" && (
               <button
                 onClick={() => onExpanderClick(task)}
@@ -125,10 +101,15 @@ export const CustomTaskListTable: React.FC<{
                 {task.hideChildren ? "▶" : "▼"}
               </button>
             )}
-            <span>{task.name}</span>
+            <div
+              className={`truncate ${
+                task.type === "project" ? "font-bold text-lg" : "text-base text-neutral-content"
+              }`}
+              title={task.name}
+            >
+              {task.name}
+            </div>
           </div>
-          <div className="min-w-[155px] max-w-[155px] px-2">{task.start.toLocaleDateString()}</div>
-          <div className="min-w-[155px] max-w-[155px] px-2">{task.end.toLocaleDateString()}</div>
         </div>
       ))}
     </div>
@@ -218,10 +199,10 @@ const GanttChart = ({ milestones, onDataChange }: GanttChartProps) => {
               onExpanderClick={handleExpanderClick}
               fontFamily="var(--font-sans)"
               fontSize="1rem"
-              barBackgroundColor="oklch(var(--bc))"
+              barBackgroundColor="oklch(var(--bc) / 0.7)"
               barProgressColor="oklch(var(--p))"
-              arrowColor="oklch(var(--s))"
-              todayColor="oklch(var(--b3))"
+              arrowColor="oklch(var(--a))"
+              todayColor="oklch(var(--w) / 0.1)"
               TaskListHeader={CustomTaskListHeader}
               TaskListTable={CustomTaskListTable}
               TooltipContent={CustomTooltip}
