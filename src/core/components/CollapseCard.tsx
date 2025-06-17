@@ -38,7 +38,7 @@ const CollapseCard = ({
       </div>
 
       <div className="collapse-content">
-        <div className="w-full overflow-x-auto">{children}</div>
+        <div className="w-full overflow-visible">{children}</div>
         {actions && <div className="card-actions justify-end">{actions}</div>}
       </div>
     </div>
