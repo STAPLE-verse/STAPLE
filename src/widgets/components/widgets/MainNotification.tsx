@@ -21,11 +21,11 @@ const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
         <div className="flex justify-around gap-4">
           {["Task", "Comment", "Project", "Other"].map((type) => (
             <div key={type} className="flex flex-col items-center relative">
-              <div className="relative h-10 w-10 text-primary">
-                {type === "Task" && <ClipboardDocumentListIcon className="h-10 w-10" />}
-                {type === "Comment" && <ChatBubbleLeftRightIcon className="h-10 w-10" />}
-                {type === "Project" && <FolderOpenIcon className="h-10 w-10" />}
-                {type === "Other" && <BellAlertIcon className="h-10 w-10" />}
+              <div className="relative h-20 w-20 text-primary">
+                {type === "Task" && <ClipboardDocumentListIcon className="h-15 w-15" />}
+                {type === "Comment" && <ChatBubbleLeftRightIcon className="h-15 w-15" />}
+                {type === "Project" && <FolderOpenIcon className="h-15 w-15" />}
+                {type === "Other" && <BellAlertIcon className="h-15 w-15" />}
                 {countsByType[type]! > 0 && (
                   <span className="absolute top-0 -right-2 badge badge-primary text-xs">
                     {countsByType[type]}
