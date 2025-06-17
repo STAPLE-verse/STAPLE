@@ -102,9 +102,7 @@ export const CustomTaskListTable: React.FC<{
               </button>
             )}
             <div
-              className={`truncate ${
-                task.type === "project" ? "font-bold text-lg" : "text-base text-neutral-content"
-              }`}
+              className={`truncate ${task.type === "project" ? "font-bold text-lg" : "text-base"}`}
               title={task.name}
             >
               {task.name}
@@ -199,7 +197,7 @@ const GanttChart = ({ milestones, onDataChange }: GanttChartProps) => {
               onExpanderClick={handleExpanderClick}
               fontFamily="var(--font-sans)"
               fontSize="1rem"
-              barBackgroundColor="oklch(var(--bc) / 0.7)"
+              barBackgroundColor="oklch(var(--pc))"
               barProgressColor="oklch(var(--p))"
               arrowColor="oklch(var(--a))"
               todayColor="oklch(var(--w) / 0.1)"
@@ -210,7 +208,7 @@ const GanttChart = ({ milestones, onDataChange }: GanttChartProps) => {
           </div>
         ) : (
           // Otherwise show a simple placeholder
-          <div className="flex items-center justify-center py-12 text-gray-600">
+          <div className="flex items-center justify-center py-12">
             No milestones or tasks with valid dates to display.
           </div>
         )}

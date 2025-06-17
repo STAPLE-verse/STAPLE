@@ -3,14 +3,14 @@
 }
 
 .gantt-wrapper .bar text {
-  fill: oklch(var(--pc));
+  fill: oklch(var(--bc));
   font-weight: bold;
 }
 
 /* Project bar base (including selected state) */
 /* milestone background */
 .gantt-wrapper .bar > g > g > rect:first-child {
-  fill: oklch(var(--bc)) !important;
+  fill: oklch(var(--sc)) !important;
   opacity: 1 !important;
   fill-opacity: 1 !important;
 }
@@ -18,13 +18,13 @@
 /* Project bar progress (second rect, even when selected) */
 /* milestone fill for progress */
 .gantt-wrapper .bar > g > g > rect:nth-child(2) {
-  fill: oklch(var(--a)) !important;
+  fill: oklch(var(--s)) !important;
 }
 
 /* Project progress bar inner (15px height) */
 /* milestone background */
 .gantt-wrapper .bar > g > g > rect[height="15"] {
-  fill: oklch(var(--bc)) !important;
+  fill: oklch(var(--pc)) !important;
 }
 
 /* milestone top bar we don't want */
