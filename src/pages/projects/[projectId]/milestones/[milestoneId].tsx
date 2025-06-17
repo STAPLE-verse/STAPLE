@@ -44,7 +44,7 @@ const ShowMilestonePage = () => {
     },
     orderBy: { id: "asc" },
   })
-  const milestoneTasks = tasks.filter((task) => task.milestoneId === milestone.id)
+  const milestoneTasks = tasks.filter((task) => task.milestoneId === null)
   const processedTasks = processMilestoneTasks(milestoneTasks)
 
   //console.log(processedTasks)
@@ -76,15 +76,27 @@ const ShowMilestonePage = () => {
             Edit Milestone
           </Link>
 
-          <button className="btn btn-secondary" onClick={openModal}>
-            Update Tasks
-          </button>
+          <span className="tooltip-wrapper relative">
+            <button
+              className="btn btn-secondary"
+              onClick={openModal}
+              data-tooltip-id="task-assign-milestone-info"
+            >
+              Update Tasks
+              <InformationCircleIcon className="h-4 w-4 stroke-2" />
+            </button>
+            <Tooltip
+              id="task-assign-milestone-info"
+              content="Tasks can only be assigned to one milestone at a time."
+              className="z-[1099] ourtooltips"
+            />
+          </span>
           <UpdateTasksMilestone
             milestoneId={milestone.id}
             open={isModalOpen}
             onClose={closeModal}
             onTasksUpdated={refetchTasks}
-            tasks={tasks}
+            tasks={milestoneTasks}
           />
 
           <button type="button" className="btn btn-warning" onClick={handleDelete}>

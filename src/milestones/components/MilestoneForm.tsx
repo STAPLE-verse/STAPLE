@@ -25,12 +25,14 @@ type MilestoneFormProps<S extends z.ZodType<any, any>> = FormProps<S> & {
 export function MilestoneForm<S extends z.ZodType<any, any>>(props: MilestoneFormProps<S>) {
   const { tasks, ...formProps } = props
 
-  const taskOptions = tasks.map((task) => {
-    return {
-      label: task.name ? task.name : "",
-      id: task.id,
-    }
-  })
+  const taskOptions = tasks
+    .filter((task) => task.milestoneId === null)
+    .map((task) => {
+      return {
+        label: task.name ? task.name : "",
+        id: task.id,
+      }
+    })
 
   // information for tags
   const initialTags = props.initialValues?.tags ?? []
@@ -110,7 +112,20 @@ export function MilestoneForm<S extends z.ZodType<any, any>>(props: MilestoneFor
         className="w-1/2 textarea text-primary textarea-bordered textarea-primary textarea-lg bg-base-300 border-2"
       />
       <ToggleModal
-        buttonLabel="Add Tasks"
+        buttonLabel={
+          <span className="flex items-center gap-1">
+            Add Tasks
+            <InformationCircleIcon
+              className="h-4 w-4 stroke-2"
+              data-tooltip-id="task-assignment-info"
+            />
+            <Tooltip
+              id="task-assignment-info"
+              content="Tasks can only be assigned to one milestone."
+              className="z-[1099] ourtooltips"
+            />
+          </span>
+        }
         modalTitle="Select Tasks"
         buttonClassName="w-1/2"
         saveButton={true}
