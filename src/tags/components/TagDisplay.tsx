@@ -7,6 +7,8 @@ import getTaskTags from "../queries/getTaskTags"
 import getMilestoneTags from "../queries/getMilestoneTags"
 import { TagTaskTable } from "./TagTaskTable"
 import { TagMilestoneTable } from "./TagMilestoneTable"
+import getPeopleTags from "../queries/getPeopleTags"
+import { TagPeopleTable } from "./TagPeopleTable"
 
 const TagDisplay = () => {
   const projectId = useParam("projectId", "number")
@@ -16,6 +18,8 @@ const TagDisplay = () => {
 
   // get milestone tags
   const [allMilestoneTags] = useQuery(getMilestoneTags, { projectId: projectId! })
+
+  const [allPeopleTags] = useQuery(getPeopleTags, { projectId: projectId! })
 
   // Fetch tasks with their tags
   const [allTags] = useQuery(getTags, {
@@ -68,6 +72,15 @@ const TagDisplay = () => {
         )
       : []
 
+  const filteredPeople =
+    selectedTag !== null
+      ? allPeopleTags.filter(
+          (people) =>
+            Array.isArray(people.tags) &&
+            people.tags.some((tag) => (tag as { key: string; value: string }).value === selectedTag)
+        )
+      : []
+
   return (
     <div className="p-4">
       <h1 className="flex justify-center mb-2 text-3xl">Tags</h1>
@@ -99,6 +112,7 @@ const TagDisplay = () => {
       {/* Display tasks related to the selected tag */}
       {selectedTag && filteredTasks.length > 0 && (
         <>
+          <TagPeopleTable people={filteredPeople} />
           <TagTaskTable tasks={filteredTasks} />
           <TagMilestoneTable milestones={filteredMilestones} />
         </>
