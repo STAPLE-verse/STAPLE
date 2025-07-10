@@ -66,6 +66,16 @@ export const TagOverall = ({ people, tasks, milestones }: TagOverallProps) => {
   const percentFormsComplete =
     totalFormAssignments > 0 ? Math.round((totalFormsComplete / totalFormAssignments) * 100) : 0
 
+  console.log(
+    "Processed Tasks",
+    processedTasks.map((t) => ({
+      id: t.id,
+      formAssigned: t.formAssigned,
+      numberAssigned: t.numberAssigned,
+      percentComplete: t.percentComplete,
+    }))
+  )
+
   return (
     <CollapseCard title="Tag Summary" className="mt-4" defaultOpen={true}>
       <div className="stats bg-base-300 text-lg font-bold w-full flex flex-wrap divide-x divide-base-100">
@@ -157,7 +167,7 @@ export const TagOverall = ({ people, tasks, milestones }: TagOverallProps) => {
             className="z-[1099] ourtooltips"
           />
           <div className="h-24 flex items-center justify-center">
-            {totalFormAssignments > 0 ? (
+            {totalFormAssignments === 0 ? (
               <span>No forms required</span>
             ) : (
               <div className="w-20 h-20 m-2">
