@@ -148,7 +148,7 @@ const ContributorInformation = ({
           ) : (
             <>
               <div className="w-20 h-20 m-2">
-                <GetCircularProgressDisplay proportion={taskPercent} />
+                <GetCircularProgressDisplay proportion={formPercent} />
               </div>
             </>
           )}

@@ -9,6 +9,7 @@ import { TagTaskTable } from "./TagTaskTable"
 import { TagMilestoneTable } from "./TagMilestoneTable"
 import getPeopleTags from "../queries/getPeopleTags"
 import { TagPeopleTable } from "./TagPeopleTable"
+import { TagOverall } from "./TagOverall"
 
 const TagDisplay = () => {
   const projectId = useParam("projectId", "number")
@@ -112,6 +113,11 @@ const TagDisplay = () => {
       {/* Display tasks related to the selected tag */}
       {selectedTag && filteredTasks.length > 0 && (
         <>
+          <TagOverall
+            people={filteredPeople}
+            tasks={filteredTasks}
+            milestones={filteredMilestones}
+          />
           <TagPeopleTable people={filteredPeople} />
           <TagTaskTable tasks={filteredTasks} />
           <TagMilestoneTable milestones={filteredMilestones} />

@@ -85,7 +85,7 @@ export const ProjectTasksColumns = [
         />
       </div>
     ),
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => <span>{info.getValue()}%</span>,
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
@@ -107,7 +107,29 @@ export const ProjectTasksColumns = [
         />
       </div>
     ),
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => <span>{info.getValue()}%</span>,
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "range",
+    },
+  }),
+  columnHelperProject.accessor("percentApproved", {
+    header: () => (
+      <div className="table-header-tooltip">
+        Percent Approved
+        <InformationCircleIcon
+          className="h-4 w-4 ml-1 text-info stroke-2"
+          data-tooltip-id="task-approved-tooltip"
+        />
+        <Tooltip
+          id="task-approved-tooltip"
+          content="The percentage of individual assignments that have been approved by the project manager for this task."
+          className="z-[1099] table-header-tooltip"
+        />
+      </div>
+    ),
+    cell: (info) => <span>{info.getValue()}%</span>,
     enableColumnFilter: true,
     enableSorting: true,
     meta: {

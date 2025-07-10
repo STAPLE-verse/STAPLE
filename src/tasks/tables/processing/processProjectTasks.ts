@@ -8,7 +8,10 @@ export type ProjectTasksData = {
   container: string
   deadline: Date | null
   status: string
+  numberAssigned: number
+  formAssigned: number
   percentComplete: number
+  percentApproved: number
   newCommentsCount: number
   view: {
     taskId: number
@@ -23,6 +26,8 @@ export function processProjectTasks(tasks, refetchTasks?: () => Promise<void>): 
   return tasks.map((task) => {
     const logs = task.taskLogs || []
 
+    const formAssigned = task.formVersionId ? 1 : 0
+
     const latestLogsMap = new Map<number, any>()
     for (const log of logs) {
       const current = latestLogsMap.get(log.assignedToId)
@@ -35,6 +40,9 @@ export function processProjectTasks(tasks, refetchTasks?: () => Promise<void>): 
     const completedLogs = latestLogs.filter((log) => log.status === Status.COMPLETED).length
     const totalLogs = latestLogs.length
     const percentComplete = totalLogs > 0 ? Math.round((completedLogs / totalLogs) * 100) : 0
+
+    const approvedLogs = latestLogs.filter((log) => log.approved === true).length
+    const percentApproved = totalLogs > 0 ? Math.round((approvedLogs / totalLogs) * 100) : 0
 
     const newCommentsCount = logs.reduce((total, log) => {
       return (
@@ -51,7 +59,10 @@ export function processProjectTasks(tasks, refetchTasks?: () => Promise<void>): 
       container: task.container.name,
       deadline: task.deadline,
       status: task.status === Status.COMPLETED ? "Completed" : "Not completed",
+      numberAssigned: totalLogs,
+      formAssigned: formAssigned,
       percentComplete,
+      percentApproved,
       newCommentsCount,
       view: {
         taskId: task.id,
