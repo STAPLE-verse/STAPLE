@@ -15,26 +15,26 @@ export function processTagPeople(
   projectId: number
 ): TagPeopleData[] {
   return people.map((person) => {
-    const allLogs: TaskLog[] = person.assignedTasks.flatMap((task) => task.taskLogs)
-
-    // group by taskId + assignedToId and get the latest log per pair
-    const latestLogs = new Map<string, TaskLog>()
-    for (const log of allLogs) {
-      const key = `${log.taskId}-${log.assignedToId}`
-      if (!latestLogs.has(key) || latestLogs.get(key)!.createdAt < log.createdAt) {
-        latestLogs.set(key, log)
+    // Get the latest log per task assigned to this person
+    const latestLogsForPersonMap = new Map<number, TaskLog>()
+    for (const task of person.assignedTasks) {
+      for (const log of task.taskLogs) {
+        if (log.assignedToId !== person.id) continue
+        const existing = latestLogsForPersonMap.get(log.taskId)
+        if (!existing || existing.createdAt < log.createdAt) {
+          latestLogsForPersonMap.set(log.taskId, log)
+        }
       }
     }
+    const latestLogsForPerson = Array.from(latestLogsForPersonMap.values())
 
-    const latestLogArray = Array.from(latestLogs.values())
-
-    const total = latestLogArray.length
-    const complete = latestLogArray.filter((log) => log.status === Status.COMPLETED).length
-    const approved = latestLogArray.filter((log) => log.approved === true).length
+    const total = latestLogsForPerson.length
+    const complete = latestLogsForPerson.filter((log) => log.status === Status.COMPLETED).length
+    const approved = latestLogsForPerson.filter((log) => log.approved === true).length
 
     const withForm = person.assignedTasks.filter((task) => task.formVersionId)
     const formComplete = withForm.filter((task) => {
-      const latest = latestLogArray.find((log) => log.taskId === task.id)
+      const latest = latestLogsForPerson.find((log) => log.taskId === task.id)
       return latest?.status === Status.COMPLETED
     }).length
 
@@ -66,11 +66,18 @@ export function processTagPeople(
     return {
       name,
       createdAt: person.createdAt ?? null,
-      percentTasksComplete: total ? Math.round((complete / total) * 100) : 0,
-      percentApproved: total ? Math.round((approved / total) * 100) : 0,
+      percentTasksComplete: total ? Math.round((complete / total) * 100) : null,
+      percentApproved: total ? Math.round((approved / total) * 100) : null,
       percentFormsComplete: withForm.length
-        ? Math.round((formComplete / withForm.length) * 100)
-        : 0,
+        ? Math.round(
+            (withForm.filter((task) => {
+              const latest = latestLogsForPerson.find((log) => log.taskId === task.id)
+              return latest?.status === Status.COMPLETED
+            }).length /
+              withForm.length) *
+              100
+          )
+        : null,
       roles: uniqueRoles,
       type: person.users.length > 1 ? "Team" : "Individual",
       userId: person.id,

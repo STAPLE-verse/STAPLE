@@ -40,21 +40,8 @@ export const TagPeopleColumns = [
     cell: (info) => <DateFormat date={info.getValue()} />,
   }),
   columnHelper.accessor("percentTasksComplete", {
-    header: () => (
-      <div className="flex items-center gap-1">
-        Tasks Complete
-        <InformationCircleIcon
-          className="h-4 w-4 text-info stroke-2"
-          data-tooltip-id="task-complete"
-        />
-        <Tooltip
-          id="task-complete"
-          content="Percentage of tasks completed for this milestone. Calculated from the latest logs per user-task combination."
-          className="z-[1099] table-header-tooltip"
-        />
-      </div>
-    ),
-    cell: (info) => `${info.getValue()}%`,
+    header: "Tasks Complete",
+    cell: (info) => (info.getValue() === null ? "N/A" : `${info.getValue()}%`),
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
@@ -63,7 +50,7 @@ export const TagPeopleColumns = [
   }),
   columnHelper.accessor("percentApproved", {
     header: "Tasks Approved",
-    cell: (info) => `${info.getValue()}%`,
+    cell: (info) => (info.getValue() === null ? "N/A" : `${info.getValue()}%`),
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
@@ -72,7 +59,7 @@ export const TagPeopleColumns = [
   }),
   columnHelper.accessor("percentFormsComplete", {
     header: "Forms Complete",
-    cell: (info) => `${info.getValue()}%`,
+    cell: (info) => (info.getValue() === null ? "N/A" : `${info.getValue()}%`),
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
