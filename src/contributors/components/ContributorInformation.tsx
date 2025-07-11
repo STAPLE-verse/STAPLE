@@ -15,6 +15,7 @@ import { roleDistribution } from "src/widgets/utils/roleDistribution"
 import { GetCircularProgressDisplay } from "src/core/components/GetWidgetDisplay"
 import { PieChartWidget } from "src/widgets/components/PieChartWidget"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
+import { completedTaskApprovalPercentage } from "src/widgets/utils/completedTaskApprovalPercentage"
 
 interface ContributorInformationProps {
   contributorPrivilege: MemberPrivileges
@@ -64,6 +65,7 @@ const ContributorInformation = ({
   const formPercent = completedFormPercentage(allTaskLogs)
   const taskPercent = completedTaskLogPercentage(allTaskLogs)
   const rolePieData = roleDistribution(tasks)
+  const approvalPercent = completedTaskApprovalPercentage(allTaskLogs)
 
   const [ProjectMember, { setQueryData }] = useQuery(getProjectMember, {
     where: {
@@ -129,6 +131,26 @@ const ContributorInformation = ({
             <>
               <div className="w-20 h-20 m-2">
                 <GetCircularProgressDisplay proportion={taskPercent} />
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className="stat place-items-center">
+          <div className="stat-title text-2xl text-inherit" data-tooltip-id="task-approval-tooltip">
+            Task Approval
+          </div>
+          <Tooltip
+            id="task-approval-tooltip"
+            content="Percent of overall tasks approved"
+            className="z-[1099] ourtooltips"
+          />
+          {tasks.length === 0 ? (
+            <>No tasks were found</>
+          ) : (
+            <>
+              <div className="w-20 h-20 m-2">
+                <GetCircularProgressDisplay proportion={approvalPercent} />
               </div>
             </>
           )}

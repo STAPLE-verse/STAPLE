@@ -37,8 +37,8 @@ export const TaskInformation = () => {
       </p>
 
       <p>
-        <span className="font-semibold">Description:</span>{" "}
-        {task.description ? task.description : "No Description"}
+        <span className="font-semibold">Instructions:</span>{" "}
+        {task.description ? task.description : "No instructions"}
       </p>
 
       <p>

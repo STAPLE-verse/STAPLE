@@ -1,10 +1,10 @@
-import { TaskLog, Task, Status } from "db"
+import { TaskLog, Task } from "db"
 
 type TaskLogWithTask = TaskLog & {
   task: Task
 }
 
-export const completedTaskLogPercentage = (
+export const completedTaskApprovalPercentage = (
   taskLogs: TaskLogWithTask[] | null | undefined
 ): number => {
   // Check if taskLogs is null or undefined
@@ -12,6 +12,6 @@ export const completedTaskLogPercentage = (
     return -1
   }
 
-  const completedTaskLogs = taskLogs.filter((taskLog) => taskLog.status === Status.COMPLETED)
+  const completedTaskLogs = taskLogs.filter((taskLog) => taskLog.approved === true)
   return completedTaskLogs.length / taskLogs.length
 }

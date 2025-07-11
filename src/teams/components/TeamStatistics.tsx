@@ -12,6 +12,7 @@ import { Tooltip } from "react-tooltip"
 import { GetCircularProgressDisplay, GetIconDisplay } from "src/core/components/GetWidgetDisplay"
 import { UserGroupIcon } from "@heroicons/react/24/outline"
 import getTeam from "../queries/getTeam"
+import { completedTaskApprovalPercentage } from "src/widgets/utils/completedTaskApprovalPercentage"
 
 export const TeamStatistics = ({ teamId, projectId }) => {
   // get team number
@@ -56,6 +57,7 @@ export const TeamStatistics = ({ teamId, projectId }) => {
   const formPercent = completedFormPercentage(allTaskLogs)
   const taskPercent = completedTaskLogPercentage(allTaskLogs)
   const rolePieData = roleDistribution(tasks)
+  const approvalPercent = completedTaskApprovalPercentage(allTaskLogs)
 
   return (
     <CollapseCard title={"Team Statistics"} className="w-full mt-4" defaultOpen={true}>
@@ -89,6 +91,27 @@ export const TeamStatistics = ({ teamId, projectId }) => {
             <>
               <div className="w-20 h-20 m-2">
                 <GetCircularProgressDisplay proportion={taskPercent} />
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Task approval */}
+        <div className="stat place-items-center">
+          <div className="stat-title text-2xl text-inherit" data-tooltip-id="task-approval-tooltip">
+            Task Approval
+          </div>
+          <Tooltip
+            id="task-approval-tooltip"
+            content="Percent of overall tasks completed by the team"
+            className="z-[1099] ourtooltips"
+          />
+          {tasks.length === 0 ? (
+            <>No tasks were found</>
+          ) : (
+            <>
+              <div className="w-20 h-20 m-2">
+                <GetCircularProgressDisplay proportion={approvalPercent} />
               </div>
             </>
           )}
