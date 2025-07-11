@@ -1,4 +1,5 @@
-import React from "react"
+import React, { useEffect } from "react"
+import { eventBus } from "src/core/utils/eventBus"
 import { useQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import getNotifications from "src/notifications/queries/getNotifications"
@@ -21,7 +22,7 @@ const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
   const currentUser = useCurrentUser()
 
   // Fetch notifications for the project
-  const [{ notifications }] = useQuery(getNotifications, {
+  const [{ notifications }, { refetch }] = useQuery(getNotifications, {
     where: {
       recipients: { some: { id: currentUser!.id } },
       projectId: projectId,
@@ -29,6 +30,12 @@ const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
     },
     orderBy: { id: "desc" },
   })
+
+  useEffect(() => {
+    const handler = () => refetch()
+    eventBus.on("announcementCreated", handler)
+    return () => eventBus.off("announcementCreated", handler)
+  }, [refetch])
 
   const countsByType: { [key: string]: number } = {}
   notifications.forEach((n) => {
@@ -70,7 +77,7 @@ const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
         />
       }
       tooltipId="tool-notification"
-      tooltipContent="Three notifications for this project"
+      tooltipContent="Number of notifications for this project"
       size={size}
     />
   )

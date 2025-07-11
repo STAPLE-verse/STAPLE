@@ -6,6 +6,7 @@ import { AnnouncementForm } from "src/projects/components/AnnouncementForm"
 import { FormAnnouncementSchema } from "src/projects/schemas"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import { eventBus } from "src/core/utils/eventBus"
 
 interface AnnouncementModalProps {
   projectId: number
@@ -27,6 +28,7 @@ const AnnouncementModal: React.FC<AnnouncementModalProps> = ({ projectId, refres
         teamsId: values.teamsId ?? [],
       })
       await refreshWidgets()
+      eventBus.emit("announcementCreated")
       setOpenModal(false)
     } catch (error) {
       console.error("Error creating announcement:", error)
