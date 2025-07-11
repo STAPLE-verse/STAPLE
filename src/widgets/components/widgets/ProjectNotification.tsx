@@ -13,6 +13,7 @@ import {
   FolderOpenIcon,
 } from "@heroicons/react/24/outline"
 import { determineNotificationType } from "src/notifications/utils/determineNotificationType"
+import Link from "next/link"
 
 const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
@@ -42,7 +43,10 @@ const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
         <div className="flex justify-around gap-4">
           {["Task", "Comment", "Project", "Other"].map((type) => (
             <div key={type} className="flex flex-col items-center relative">
-              <div className="relative h-20 w-20 text-primary">
+              <Link
+                href={Routes.ProjectNotificationsPage({ projectId: projectId! })}
+                className="relative h-20 w-20 text-primary"
+              >
                 {type === "Task" && <ClipboardDocumentListIcon className="h-15 w-15" />}
                 {type === "Comment" && <ChatBubbleLeftRightIcon className="h-15 w-15" />}
                 {type === "Project" && <FolderOpenIcon className="h-15 w-15" />}
@@ -52,7 +56,7 @@ const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
                     {countsByType[type]}
                   </span>
                 )}
-              </div>
+              </Link>
               <div className="text-xl mt-2 font-medium">{type}</div>
             </div>
           ))}

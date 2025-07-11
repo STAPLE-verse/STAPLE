@@ -83,14 +83,21 @@ export const projectColumns: ColumnDef<ProjectWithNewCommentsCount>[] = [
     enableSorting: false,
     cell: (info) => (
       <div className="relative flex items-center justify-center w-fit">
-        <ChatBubbleOvalLeftEllipsisIcon
-          className={`h-7 w-7 ${info.getValue() > 0 ? "text-primary" : "opacity-30"}`}
-        />
-        {info.getValue() > 0 && (
-          <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white flex items-center justify-center">
-            {info.getValue()}
-          </span>
-        )}
+        <Link
+          className="btn btn-sm btn-ghost"
+          href={Routes.ShowProjectPage({
+            projectId: info.row.original.id,
+          })}
+        >
+          <ChatBubbleOvalLeftEllipsisIcon
+            className={`h-7 w-7 ${info.getValue() > 0 ? "text-primary" : "opacity-30"}`}
+          />
+          {info.getValue() > 0 && (
+            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white flex items-center justify-center">
+              {info.getValue()}
+            </span>
+          )}
+        </Link>
       </div>
     ),
   }),

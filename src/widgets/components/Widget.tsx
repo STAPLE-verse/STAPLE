@@ -2,6 +2,8 @@ import { WidgetSize } from "@prisma/client"
 import React from "react"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
 import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
+import PrimaryLink from "src/core/components/PrimaryLink"
+import { Routes } from "@blitzjs/next"
 
 interface WidgetProps {
   title: string
@@ -12,6 +14,7 @@ interface WidgetProps {
   size?: WidgetSize
   hasNewComments?: boolean
   newCommentsCount?: number
+  project?: number
 }
 
 const Widget: React.FC<WidgetProps> = ({
@@ -23,6 +26,7 @@ const Widget: React.FC<WidgetProps> = ({
   size,
   hasNewComments,
   newCommentsCount,
+  project,
 }) => {
   return (
     <div
@@ -38,14 +42,22 @@ const Widget: React.FC<WidgetProps> = ({
           <span>{title}</span>
           {typeof newCommentsCount !== "undefined" && (
             <div className="relative flex items-center justify-center w-fit">
-              <ChatBubbleOvalLeftEllipsisIcon
-                className={`h-7 w-7 ${newCommentsCount > 0 ? "text-primary" : "opacity-30"}`}
+              <PrimaryLink
+                route={project ? Routes.TasksPage({ projectId: project }) : Routes.AllTasksPage()}
+                text={
+                  <>
+                    <ChatBubbleOvalLeftEllipsisIcon
+                      className={`h-7 w-7 ${newCommentsCount > 0 ? "text-primary" : "opacity-30"}`}
+                    />
+                    {newCommentsCount > 0 && (
+                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white flex items-center justify-center">
+                        {newCommentsCount}
+                      </span>
+                    )}
+                  </>
+                }
+                classNames="btn-ghost"
               />
-              {newCommentsCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white flex items-center justify-center">
-                  {newCommentsCount}
-                </span>
-              )}
             </div>
           )}
         </div>

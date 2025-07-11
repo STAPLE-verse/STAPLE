@@ -49,23 +49,6 @@ export const AllTasksColumns = [
       filterVariant: "range",
     },
   }),
-  columnHelperAll.accessor("view", {
-    header: "View",
-    id: "view",
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => (
-      <Link
-        className="btn btn-ghost"
-        href={Routes.ShowTaskPage({
-          projectId: info.getValue().projectId,
-          taskId: info.getValue().taskId,
-        })}
-      >
-        <MagnifyingGlassIcon width={25} className="stroke-primary" />
-      </Link>
-    ),
-  }),
   columnHelperAll.accessor("newCommentsCount", {
     header: "Comments",
     id: "newComments",
@@ -96,5 +79,22 @@ export const AllTasksColumns = [
         </div>
       )
     },
+  }),
+  columnHelperAll.accessor("view", {
+    header: "View",
+    id: "view",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <Link
+        className="btn btn-ghost"
+        href={Routes.ShowTaskPage({
+          projectId: info.getValue().projectId,
+          taskId: info.getValue().taskId,
+        })}
+      >
+        <MagnifyingGlassIcon width={25} className="stroke-primary" />
+      </Link>
+    ),
   }),
 ]

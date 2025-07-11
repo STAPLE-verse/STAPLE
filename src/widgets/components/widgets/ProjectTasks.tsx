@@ -39,6 +39,7 @@ const TaskTotal: TaskTotalType = ({ size, privilege }) => {
       tooltipContent="Percent of tasks completed and number of new comments"
       size={size}
       newCommentsCount={taskStats.newCommentsCount}
+      project={projectId}
     />
   )
 }

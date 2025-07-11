@@ -10,6 +10,7 @@ import {
   FolderOpenIcon,
   BellAlertIcon,
 } from "@heroicons/react/24/outline"
+import Link from "next/link"
 
 const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const [{ notifications, countsByType }] = useQuery(getLatestUnreadNotifications, {})
@@ -21,7 +22,7 @@ const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
         <div className="flex justify-around gap-4">
           {["Task", "Comment", "Project", "Other"].map((type) => (
             <div key={type} className="flex flex-col items-center relative">
-              <div className="relative h-20 w-20 text-primary">
+              <Link href={Routes.NotificationsPage()} className="relative h-20 w-20 text-primary">
                 {type === "Task" && <ClipboardDocumentListIcon className="h-15 w-15" />}
                 {type === "Comment" && <ChatBubbleLeftRightIcon className="h-15 w-15" />}
                 {type === "Project" && <FolderOpenIcon className="h-15 w-15" />}
@@ -31,7 +32,7 @@ const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
                     {countsByType[type]}
                   </span>
                 )}
-              </div>
+              </Link>
               <div className="text-xl mt-2 font-medium">{type}</div>
             </div>
           ))}
