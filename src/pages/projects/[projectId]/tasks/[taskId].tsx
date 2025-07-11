@@ -56,26 +56,28 @@ const TaskContent = () => {
               </Link>
 
               {task.formVersion ? (
-                <JsonFormModal
-                  schema={getJsonSchema(task.formVersion.schema)}
-                  uiSchema={task.formVersion.uiSchema}
-                  label="Required Form"
-                  classNames="btn-info"
-                  submittable={false} // Ensures the form is not submittable
-                />
+                <>
+                  <JsonFormModal
+                    schema={getJsonSchema(task.formVersion.schema)}
+                    uiSchema={task.formVersion.uiSchema}
+                    label="Required Form"
+                    classNames="btn-info"
+                    submittable={false} // Ensures the form is not submittable
+                  />
+
+                  <Link
+                    className="btn btn-accent"
+                    href={Routes.ShowMetadataPage({
+                      projectId: task.projectId,
+                      taskId: task.id,
+                    })}
+                  >
+                    Go to Download
+                  </Link>
+                </>
               ) : (
                 <></>
               )}
-
-              <Link
-                className="btn btn-accent"
-                href={Routes.ShowMetadataPage({
-                  projectId: task.projectId,
-                  taskId: task.id,
-                })}
-              >
-                Go to Download
-              </Link>
 
               <DeleteTask taskId={task.id} projectId={task.projectId} />
             </>
