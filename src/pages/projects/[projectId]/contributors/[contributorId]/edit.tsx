@@ -21,6 +21,7 @@ import DeleteContributor from "src/contributors/components/DeleteContributor"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import { Tag } from "src/tasks/components/TaskForm"
+import Card from "src/core/components/Card"
 
 export const EditContributor = () => {
   const [updateProjectMemberMutation] = useMutation(updateProjectMember)
@@ -146,17 +147,19 @@ export const EditContributor = () => {
         />
       </h1>
       <Suspense fallback={<div>Loading...</div>}>
-        <ContributorForm
-          submitText="Update Contributor"
-          projectId={projectId!}
-          editedUserId={contributorUser!.id}
-          isEdit={true}
-          schema={UpdateProjectMemberFormSchema}
-          initialValues={initialValues}
-          cancelText="Cancel"
-          onCancel={handleCancel}
-          onSubmit={handleSubmit}
-        />
+        <Card title="">
+          <ContributorForm
+            submitText="Update Contributor"
+            projectId={projectId!}
+            editedUserId={contributorUser!.id}
+            isEdit={true}
+            schema={UpdateProjectMemberFormSchema}
+            initialValues={initialValues}
+            cancelText="Cancel"
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
+          />
+        </Card>
         <div className="divider pt-2 pb-2"></div>
         <div className="flex justify-center">
           <DeleteContributor

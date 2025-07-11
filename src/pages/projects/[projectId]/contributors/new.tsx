@@ -10,6 +10,7 @@ import { CreateProjectMemberFormSchema } from "src/projectmembers/schemas"
 import { useInviteContributor } from "src/invites/hooks/useInviteContributor"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import Card from "src/core/components/Card"
 
 function NewContributor() {
   const projectId = useParam("projectId", "number")
@@ -35,16 +36,18 @@ function NewContributor() {
         an email inviting them to join the project. You will not be able to add them to tasks or
         teams until they accept their invitation.
       </p>
-      <ContributorForm
-        projectId={projectId!}
-        className="flex flex-col"
-        submitText="Add Contributor"
-        schema={CreateProjectMemberFormSchema}
-        onSubmit={handleSubmit}
-        isEdit={false}
-        cancelText="Cancel"
-        onCancel={() => router.push(Routes.InvitesPagePM({ projectId: projectId! }))}
-      />
+      <Card title="">
+        <ContributorForm
+          projectId={projectId!}
+          className="flex flex-col"
+          submitText="Add Contributor"
+          schema={CreateProjectMemberFormSchema}
+          onSubmit={handleSubmit}
+          isEdit={false}
+          cancelText="Cancel"
+          onCancel={() => router.push(Routes.InvitesPagePM({ projectId: projectId! }))}
+        />
+      </Card>
     </main>
   )
 }

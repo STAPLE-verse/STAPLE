@@ -16,12 +16,18 @@ import { ProjectMemberWithUsers } from "src/core/types"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import Card from "src/core/components/Card"
+import DeleteTeam from "src/teams/components/DeleteTeam"
+import getTeam from "src/teams/queries/getTeam"
 
 export const EditTeam = () => {
   const [updateTeamMutation] = useMutation(updateTeam)
   const router = useRouter()
   const teamId = useParam("teamId", "number")
   const projectId = useParam("projectId", "number")
+
+  const [team] = useQuery(getTeam, {
+    id: teamId!,
+  })
 
   const [teamProjectMember, { setQueryData }] = useQuery(getProjectMember, {
     where: {
@@ -94,7 +100,7 @@ export const EditTeam = () => {
     <>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
         <h1 className="flex justify-center items-center mb-2 text-3xl">
-          {`Edit ${teamProjectMember.name}`}
+          Edit Team: <span className="italic ml-1">{teamProjectMember.name}</span>
           <InformationCircleIcon
             className="ml-2 h-5 w-5 stroke-2 text-info"
             data-tooltip-id="team-tooltip"
@@ -117,6 +123,11 @@ export const EditTeam = () => {
               onCancel={handleCancel}
             />
           </Card>
+
+          <div className="divider pt-2 pb-2"></div>
+          <div className="flex justify-center">
+            <DeleteTeam team={team} />
+          </div>
 
           {/* The cancel button is now handled by the TeamForm's onCancel */}
         </Suspense>

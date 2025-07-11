@@ -8,10 +8,10 @@ import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import AddRoleInput from "src/roles/components/AddRoleInput"
 import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManagerUserIds"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
-import CollapseCard from "src/core/components/CollapseCard"
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import Card from "src/core/components/Card"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
@@ -104,95 +104,93 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         }
       }}
     >
-      <CollapseCard title="Edit Contributor Settings" defaultOpen={true}>
-        <TooltipWrapper
-          id="priv-tooltip"
-          content={
-            isLastProjectManager
-              ? "User is the last project manager on the project. The privilege cannot be changed."
-              : "Project Managers can see and edit all parts of a project, while contributors can only complete tasks assigned to them."
-          }
-          className="z-[1099] ourtooltips"
-          place="right"
-          opacity={1}
+      <TooltipWrapper
+        id="priv-tooltip"
+        content={
+          isLastProjectManager
+            ? "User is the last project manager on the project. The privilege cannot be changed."
+            : "Project Managers can see and edit all parts of a project, while contributors can only complete tasks assigned to them."
+        }
+        className="z-[1099] ourtooltips"
+        place="right"
+        opacity={1}
+      />
+      {!isEdit && (
+        <LabeledTextField
+          name="email"
+          label="Email:"
+          placeholder="Email"
+          type="text"
+          className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
         />
-        {!isEdit && (
-          <LabeledTextField
-            name="email"
-            label="Email:"
-            placeholder="Email"
-            type="text"
-            className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
-          />
-        )}
-        <LabelSelectField
-          className="select text-primary select-bordered border-primary border-2 w-1/2 mb-4 w-1/2"
-          name="privilege"
-          label="Select Privilege:"
-          options={MemberPrivilegesOptions}
-          optionText="label"
-          optionValue="value"
-          type="string"
-          data-tooltip-id="priv-tooltip"
-          disabled={isLastProjectManager}
-        />
+      )}
+      <LabelSelectField
+        className="select text-primary select-bordered border-primary border-2 w-1/2 mb-4 w-1/2"
+        name="privilege"
+        label="Select Privilege:"
+        options={MemberPrivilegesOptions}
+        optionText="label"
+        optionValue="value"
+        type="string"
+        data-tooltip-id="priv-tooltip"
+        disabled={isLastProjectManager}
+      />
 
-        <AddRoleInput
-          projectManagerIds={projectManagerUserIds}
-          buttonLabel="Add Role"
-          tooltipContent="Add role labels"
-        />
+      <AddRoleInput
+        projectManagerIds={projectManagerUserIds}
+        buttonLabel="Add Role"
+        tooltipContent="Add role labels"
+      />
 
-        {/* Tag Input */}
-        <div className="w-2/3 mt-4">
-          <label className="text-base-content">
-            <span className="flex items-center mb-2">
-              Tags:
-              <InformationCircleIcon
-                className="h-4 w-4 ml-1 text-info stroke-2"
-                data-tooltip-id="tags-overview"
-              />
-              <Tooltip
-                id="tags-overview"
-                content="Use a comma, semicolon, enter, or tab to create separate tags. To edit a tag, click on
+      {/* Tag Input */}
+      <div className="w-2/3 mt-4">
+        <label className="text-base-content">
+          <span className="flex items-center mb-2">
+            Tags:
+            <InformationCircleIcon
+              className="h-4 w-4 ml-1 text-info stroke-2"
+              data-tooltip-id="tags-overview"
+            />
+            <Tooltip
+              id="tags-overview"
+              content="Use a comma, semicolon, enter, or tab to create separate tags. To edit a tag, click on
             it, and then hit the enter key when you are finished."
-                className="z-[1099] ourtooltips"
-              />
-            </span>
-          </label>
-          <ReactTags
-            tags={tags}
-            name="tags"
-            separators={[SEPARATORS.TAB, SEPARATORS.COMMA, SEPARATORS.ENTER, SEPARATORS.SEMICOLON]}
-            handleDelete={handleDelete}
-            handleAddition={handleAddition}
-            handleDrag={handleDrag}
-            handleTagClick={handleTagClick}
-            onTagUpdate={onTagUpdate}
-            inputFieldPosition="inline"
-            editable
-            clearAll
-            onClearAll={onClearAll}
-            classNames={{
-              tags: "rounded-md bg-base-300 react-tags-wrapper", // entire box for tags
-              tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 mb-2 text-lg",
-              remove: "ml-3 text-primary-content font-bold cursor-pointer remove",
-              tagInput: "bg-base-300", // whole div around
-              tagInputField:
-                "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4", // just input field
+              className="z-[1099] ourtooltips"
+            />
+          </span>
+        </label>
+        <ReactTags
+          tags={tags}
+          name="tags"
+          separators={[SEPARATORS.TAB, SEPARATORS.COMMA, SEPARATORS.ENTER, SEPARATORS.SEMICOLON]}
+          handleDelete={handleDelete}
+          handleAddition={handleAddition}
+          handleDrag={handleDrag}
+          handleTagClick={handleTagClick}
+          onTagUpdate={onTagUpdate}
+          inputFieldPosition="inline"
+          editable
+          clearAll
+          onClearAll={onClearAll}
+          classNames={{
+            tags: "rounded-md bg-base-300 react-tags-wrapper", // entire box for tags
+            tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 mb-2 text-lg",
+            remove: "ml-3 text-primary-content font-bold cursor-pointer remove",
+            tagInput: "bg-base-300", // whole div around
+            tagInputField:
+              "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4", // just input field
 
-              selected: "bg-base-300",
-              editTagInput: "bg-base-300",
-              editTagInputField:
-                "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4 mb-4",
-              clearAll: "font-bold ml-3",
-              suggestions: "suggestions-dropdown",
-              activeSuggestion: "active-suggestion-class",
-            }}
-            placeholder="Add tags"
-          />
-        </div>
-      </CollapseCard>
+            selected: "bg-base-300",
+            editTagInput: "bg-base-300",
+            editTagInputField:
+              "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4 mb-4",
+            clearAll: "font-bold ml-3",
+            suggestions: "suggestions-dropdown",
+            activeSuggestion: "active-suggestion-class",
+          }}
+          placeholder="Add tags"
+        />
+      </div>
     </Form>
   )
 }

@@ -135,12 +135,12 @@ export function MilestoneForm<S extends z.ZodType<any, any>>(props: MilestoneFor
 
       <DateField name="startDate" label="Start Date:" />
       {formProps.status?.fieldErrors?.startDate && (
-        <div className="text-error text-sm mt-1">{formProps.status.fieldErrors.startDate}</div>
+        <div className="text-error text-md mt-1">{formProps.status.fieldErrors.startDate}</div>
       )}
 
       <DateField name="endDate" label="End Date:" />
       {formProps.status?.fieldErrors?.endDate && (
-        <div className="text-error text-sm mt-1">{formProps.status.fieldErrors.endDate}</div>
+        <div className="text-error text-md mt-1">{formProps.status.fieldErrors.endDate}</div>
       )}
 
       <div className="w-2/3">

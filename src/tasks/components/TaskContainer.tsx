@@ -33,7 +33,7 @@ const TaskContainer = ({ id, children, title, description, onRefetch }: Containe
         transform: CSS.Translate.toString(transform),
       }}
       className={clsx(
-        "w-full h-full p-4 bg-base-100 rounded-xl flex flex-col gap-y-4 hover:border-accent-content cursor-pointer p-4",
+        "w-full h-full max-h-[80vh] overflow-y-auto p-4 bg-base-100 rounded-xl flex flex-col gap-y-4 hover:border-accent-content cursor-pointer",
         isDragging && "opacity-50"
       )}
     >
