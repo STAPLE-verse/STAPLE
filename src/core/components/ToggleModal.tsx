@@ -10,6 +10,7 @@ interface ToggleModalProps {
   saveButton?: boolean
   key?: string | number // Add key as an optional prop
   onOpen?: () => void
+  onClose?: () => void
 }
 
 const ToggleModal = ({
@@ -21,12 +22,14 @@ const ToggleModal = ({
   saveButton,
   key, // Accept key as a prop
   onOpen,
+  onClose,
 }: ToggleModalProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const toggleModal = () => {
     setIsOpen((prev) => {
       const next = !prev
       if (!prev && onOpen) onOpen()
+      if (prev && onClose) onClose()
       return next
     })
   }

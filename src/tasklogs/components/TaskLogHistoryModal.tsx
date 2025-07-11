@@ -9,6 +9,7 @@ import ToggleModal from "src/core/components/ToggleModal"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import { useTaskContext } from "src/tasks/components/TaskContext"
+import { eventBus } from "src/core/utils/eventBus"
 
 type TaskLogHistoryModalProps = {
   taskLogs: TaskLogCompletedBy[]
@@ -45,6 +46,10 @@ export const TaskLogHistoryModal = ({
     setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, privilege, schema, ui))
   }, [taskLogs, privilege, schema, ui])
 
+  const handleClose = () => {
+    eventBus.emit("taskLogUpdated")
+  }
+
   return (
     <ToggleModal
       buttonLabel="Show History"
@@ -71,6 +76,7 @@ export const TaskLogHistoryModal = ({
         }
         setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, privilege, schema, ui))
       }}
+      onClose={handleClose}
     >
       <div className="modal-action flex flex-col">
         <Table

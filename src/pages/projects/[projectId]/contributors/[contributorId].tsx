@@ -71,7 +71,7 @@ export const ContributorPage = () => {
         )}
 
         <ProjectMemberTaskList
-          projectMemberId={contributorUser!.id}
+          projectMemberId={contributorId!}
           tableColumns={TaskLogProjectMemberColumns}
           currentContributor={currentContributor!.id}
         />

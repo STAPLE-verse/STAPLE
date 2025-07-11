@@ -86,6 +86,7 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
   columnHelper.accessor("taskHistory", {
     cell: (info) => {
       const { taskHistory, schema, ui, refetchTaskData } = info.row.original
+
       return (
         <TaskLogHistoryModal
           taskLogs={taskHistory ?? []}

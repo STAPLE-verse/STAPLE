@@ -1,14 +1,11 @@
 import "react-circular-progressbar/dist/styles.css"
 import { useTaskContext } from "./TaskContext"
-import useTaskLogProgress from "src/tasklogs/hooks/useTaskLogProgress"
 import Stat from "src/core/components/Stat"
 import { GetCircularProgressDisplay } from "src/core/components/GetWidgetDisplay"
 import { Tooltip } from "react-tooltip"
 
 const ShowTasklogProgress = () => {
-  const { task, projectMembers } = useTaskContext()
-
-  const taskLogProgress = useTaskLogProgress(projectMembers)
+  const { task, projectMembers, taskLogProgress } = useTaskContext()
 
   const taskLogPercent = taskLogProgress.completed / taskLogProgress.all
   const approvedLogPercent = taskLogProgress.approved / taskLogProgress.all

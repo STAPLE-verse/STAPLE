@@ -5,16 +5,13 @@ import updateTaskStatus from "../mutations/updateTaskStatus"
 import toast from "react-hot-toast"
 import Modal from "src/core/components/Modal"
 import { useTaskContext } from "./TaskContext"
-import useTaskLogProgress from "src/tasklogs/hooks/useTaskLogProgress"
 import Stat from "src/core/components/Stat"
 
 export const CompleteTaskToggle = () => {
   const [updateStatusMutation] = useMutation(updateTaskStatus)
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
 
-  const { task, projectMembers } = useTaskContext()
-
-  const taskLogProgress = useTaskLogProgress(projectMembers)
+  const { task, projectMembers, taskLogProgress } = useTaskContext()
 
   const [status, setStatus] = useState(task?.status || Status.NOT_COMPLETED)
 

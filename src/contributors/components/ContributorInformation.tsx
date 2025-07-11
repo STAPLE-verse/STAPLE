@@ -4,6 +4,8 @@ import CollapseCard from "src/core/components/CollapseCard"
 import DateFormat from "src/core/components/DateFormat"
 import { Tooltip } from "react-tooltip"
 import { useQuery } from "@blitzjs/rpc"
+import { eventBus } from "src/core/utils/eventBus"
+import { useEffect } from "react"
 import getTasks from "src/tasks/queries/getTasks"
 import { useParam } from "@blitzjs/next"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
@@ -30,7 +32,7 @@ const ContributorInformation = ({
   const contributorId = useParam("contributorId", "number")
 
   // get tasks for this user and projectId
-  const [{ tasks }] = useQuery(getTasks, {
+  const [{ tasks }, { refetch: refetchTasks }] = useQuery(getTasks, {
     include: {
       roles: true,
     },
@@ -38,22 +40,31 @@ const ContributorInformation = ({
       projectId: projectId,
       assignedMembers: {
         some: {
-          id: contributorUser.id, // Filter tasks by user in assignedMembers
+          id: contributorId, // Filter tasks by user in assignedMembers
         },
       },
     },
   })
 
   // get taskLogs for those tasks
-  const [fetchedTaskLogs] = useQuery(getTaskLogs, {
+  const [fetchedTaskLogs, { refetch: refetchTaskLogs }] = useQuery(getTaskLogs, {
     where: {
       taskId: { in: tasks.map((task) => task.id) },
-      assignedToId: contributorUser.id,
+      assignedToId: contributorId,
     },
     include: {
       task: true,
     },
-  }) as unknown as TaskLogWithTask[]
+  }) as unknown as [TaskLogWithTask[], { refetch: () => Promise<any> }]
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      void refetchTasks()
+      void refetchTaskLogs()
+    }
+    eventBus.on("taskLogUpdated", handleUpdate)
+    return () => eventBus.off("taskLogUpdated", handleUpdate)
+  }, [refetchTasks, refetchTaskLogs])
 
   // Cast and handle the possibility of `undefined`
   const taskLogs: TaskLogWithTask[] = (fetchedTaskLogs ?? []) as TaskLogWithTask[]
