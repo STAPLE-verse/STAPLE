@@ -10,27 +10,28 @@ export type MilestoneWithTasksRoles = Milestone & {
 
 export function processTagMilestones(milestones: MilestoneWithTasksRoles[]): TagMilestoneData[] {
   return milestones.map((milestone) => {
-    const allLogs: TaskLog[] = milestone.task.flatMap((task) => task.taskLogs)
-
-    // group by taskId + assignedToId and get the latest log per pair
-    const latestLogs = new Map<string, TaskLog>()
-    for (const log of allLogs) {
-      const key = `${log.taskId}-${log.assignedToId}`
-      if (!latestLogs.has(key) || latestLogs.get(key)!.createdAt < log.createdAt) {
-        latestLogs.set(key, log)
+    // Get the latest log per task-user pair
+    const latestLogMap = new Map<string, TaskLog>()
+    for (const task of milestone.task) {
+      for (const log of task.taskLogs) {
+        const key = `${log.taskId}-${log.assignedToId}`
+        const existing = latestLogMap.get(key)
+        if (!existing || existing.createdAt < log.createdAt) {
+          latestLogMap.set(key, log)
+        }
       }
     }
-
-    const latestLogArray = Array.from(latestLogs.values())
+    const latestLogArray = Array.from(latestLogMap.values())
 
     const total = latestLogArray.length
     const complete = latestLogArray.filter((log) => log.status === Status.COMPLETED).length
     const approved = latestLogArray.filter((log) => log.approved === true).length
 
     const withForm = milestone.task.filter((task) => task.formVersionId)
+
     const formComplete = withForm.filter((task) => {
-      const latest = latestLogArray.find((log) => log.taskId === task.id)
-      return latest?.status === Status.COMPLETED
+      const matchingLogs = latestLogArray.filter((log) => log.taskId === task.id)
+      return matchingLogs.some((log) => log.status === Status.COMPLETED)
     }).length
 
     const roleLabelCounts: Record<string, number> = {}
@@ -57,6 +58,7 @@ export function processTagMilestones(milestones: MilestoneWithTasksRoles[]): Tag
       percentFormsComplete: withForm.length
         ? Math.round((formComplete / withForm.length) * 100)
         : 0,
+      formAssignedCount: withForm.length,
       roles: uniqueRoles,
     }
   })

@@ -1,16 +1,15 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import DateFormat from "src/core/components/DateFormat"
-import { InformationCircleIcon } from "@heroicons/react/24/outline"
-import { Tooltip } from "react-tooltip"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 
 export type TagPeopleData = {
   name: string
   createdAt: Date
-  percentTasksComplete: number
-  percentApproved: number
-  percentFormsComplete: number
+  percentTasksComplete: number | null
+  percentApproved: number | null
+  percentFormsComplete: number | null
+  formAssignedCount: number
   roles: string[] | null
   type: string
   userId: number
@@ -59,7 +58,10 @@ export const TagPeopleColumns = [
   }),
   columnHelper.accessor("percentFormsComplete", {
     header: "Forms Complete",
-    cell: (info) => (info.getValue() === null ? "N/A" : `${info.getValue()}%`),
+    cell: (info) => {
+      const row = info.row.original
+      return row.formAssignedCount === 0 ? "N/A" : `${info.getValue()}%`
+    },
     enableColumnFilter: true,
     enableSorting: true,
     meta: {

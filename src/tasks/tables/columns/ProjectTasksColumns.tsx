@@ -37,10 +37,10 @@ export const ProjectTasksColumns = [
         Status
         <InformationCircleIcon
           className="h-4 w-4 ml-1 text-info stroke-2"
-          data-tooltip-id="status-tooltip"
+          data-tooltip-id="status-tooltip-1"
         />
         <Tooltip
-          id="status-tooltip"
+          id="status-tooltip-1"
           content="Status indicates the kanban column this task is currently in."
           className="z-[1099] table-header-tooltip"
         />
@@ -52,15 +52,15 @@ export const ProjectTasksColumns = [
       filterVariant: "select",
     },
   }),
-  columnHelperProject.accessor("description", {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Description",
-    enableColumnFilter: true,
-    enableSorting: true,
-    meta: {
-      filterVariant: "text",
-    },
-  }),
+  //columnHelperProject.accessor("description", {
+  // cell: (info) => <span>{info.getValue()}</span>,
+  // header: "Description",
+  // enableColumnFilter: true,
+  // enableSorting: true,
+  // meta: {
+  //   filterVariant: "text",
+  // },
+  //}),
   columnHelperProject.accessor("deadline", {
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Due Date",
@@ -76,16 +76,16 @@ export const ProjectTasksColumns = [
         Completed
         <InformationCircleIcon
           className="h-4 w-4 ml-1 text-info stroke-2"
-          data-tooltip-id="task-status-tooltip"
+          data-tooltip-id="task-status-tooltip-1"
         />
         <Tooltip
-          id="task-status-tooltip"
+          id="task-status-tooltip-1"
           content="Marked complete by the project manager, regardless of whether all parts are finished."
-          className="z-[1099] table-header-tooltip"
+          className="z-[1099] ourtooltips"
         />
       </div>
     ),
-    cell: (info) => <span>{info.getValue()}%</span>,
+    cell: (info) => <span>{info.getValue()}</span>,
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
@@ -97,13 +97,13 @@ export const ProjectTasksColumns = [
       <div className="table-header-tooltip">
         Percent Complete
         <InformationCircleIcon
-          className="h-4 w-4 ml-1 text-info stroke-2"
-          data-tooltip-id="task-percent-tooltip"
+          className="h-6 w-6 ml-1 text-info stroke-2"
+          data-tooltip-id="task-percent-tooltip-1"
         />
         <Tooltip
-          id="task-percent-tooltip"
+          id="task-percent-tooltip-1"
           content="The percentage of individual assignments that have been completed for this task."
-          className="z-[1099] table-header-tooltip"
+          className="z-[1099] ourtooltips"
         />
       </div>
     ),
@@ -119,13 +119,13 @@ export const ProjectTasksColumns = [
       <div className="table-header-tooltip">
         Percent Approved
         <InformationCircleIcon
-          className="h-4 w-4 ml-1 text-info stroke-2"
-          data-tooltip-id="task-approved-tooltip"
+          className="h-6 w-6 ml-1 text-info stroke-2"
+          data-tooltip-id="task-approved-tooltip-1"
         />
         <Tooltip
-          id="task-approved-tooltip"
+          id="task-approved-tooltip-1"
           content="The percentage of individual assignments that have been approved by the project manager for this task."
-          className="z-[1099] table-header-tooltip"
+          className="z-[1099] ourtooltips"
         />
       </div>
     ),

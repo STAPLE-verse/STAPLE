@@ -66,16 +66,6 @@ export const TagOverall = ({ people, tasks, milestones }: TagOverallProps) => {
   const percentFormsComplete =
     totalFormAssignments > 0 ? Math.round((totalFormsComplete / totalFormAssignments) * 100) : 0
 
-  console.log(
-    "Processed Tasks",
-    processedTasks.map((t) => ({
-      id: t.id,
-      formAssigned: t.formAssigned,
-      numberAssigned: t.numberAssigned,
-      percentComplete: t.percentComplete,
-    }))
-  )
-
   return (
     <CollapseCard title="Tag Summary" className="mt-4" defaultOpen={true}>
       <div className="stats bg-base-300 text-lg font-bold w-full flex flex-wrap divide-x divide-base-100">

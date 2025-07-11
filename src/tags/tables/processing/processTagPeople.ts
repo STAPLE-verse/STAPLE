@@ -69,15 +69,9 @@ export function processTagPeople(
       percentTasksComplete: total ? Math.round((complete / total) * 100) : null,
       percentApproved: total ? Math.round((approved / total) * 100) : null,
       percentFormsComplete: withForm.length
-        ? Math.round(
-            (withForm.filter((task) => {
-              const latest = latestLogsForPerson.find((log) => log.taskId === task.id)
-              return latest?.status === Status.COMPLETED
-            }).length /
-              withForm.length) *
-              100
-          )
+        ? Math.round((formComplete / withForm.length) * 100)
         : null,
+      formAssignedCount: withForm.length,
       roles: uniqueRoles,
       type: person.users.length > 1 ? "Team" : "Individual",
       userId: person.id,

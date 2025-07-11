@@ -10,6 +10,7 @@ export type TagMilestoneData = {
   percentTasksComplete: number
   percentApproved: number
   percentFormsComplete: number
+  formAssignedCount: number
   roles: string[]
 }
 
@@ -17,7 +18,7 @@ const columnHelper = createColumnHelper<TagMilestoneData>()
 
 export const TagMilestoneColumns = [
   columnHelper.accessor("name", {
-    header: "Milestone Name",
+    header: "Name",
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor("startDate", {
@@ -30,16 +31,18 @@ export const TagMilestoneColumns = [
   }),
   columnHelper.accessor("percentTasksComplete", {
     header: () => (
-      <div className="flex items-center gap-1">
-        Tasks Complete
+      <div className="table-header-tooltip whitespace-normal leading-tight">
+        Tasks
+        <br />
+        Complete
         <InformationCircleIcon
-          className="h-4 w-4 text-info stroke-2"
-          data-tooltip-id="task-complete"
+          className="h-6 w-6 ml-1 text-info stroke-2 inline-block"
+          data-tooltip-id="task-complete-milestone"
         />
         <Tooltip
-          id="task-complete"
+          id="task-complete-milestone"
           content="Percentage of tasks completed for this milestone. Calculated from the latest logs per user-task combination."
-          className="z-[1099] table-header-tooltip"
+          className="z-[1099] ourtooltips"
         />
       </div>
     ),
@@ -51,7 +54,13 @@ export const TagMilestoneColumns = [
     },
   }),
   columnHelper.accessor("percentApproved", {
-    header: "Tasks Approved",
+    header: () => (
+      <div className="table-header-tooltip whitespace-normal leading-tight">
+        Tasks
+        <br />
+        Approved
+      </div>
+    ),
     cell: (info) => `${info.getValue()}%`,
     enableColumnFilter: true,
     enableSorting: true,
@@ -60,8 +69,17 @@ export const TagMilestoneColumns = [
     },
   }),
   columnHelper.accessor("percentFormsComplete", {
-    header: "Forms Complete",
-    cell: (info) => `${info.getValue()}%`,
+    header: () => (
+      <div className="table-header-tooltip whitespace-normal leading-tight">
+        Forms
+        <br />
+        Complete
+      </div>
+    ),
+    cell: (info) => {
+      const row = info.row.original
+      return row.formAssignedCount === 0 ? "N/A" : `${info.getValue()}%`
+    },
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
