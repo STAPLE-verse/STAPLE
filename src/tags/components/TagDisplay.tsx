@@ -82,6 +82,11 @@ const TagDisplay = () => {
         )
       : []
 
+  //console.log("Selected Tag:", selectedTag)
+  //console.log("Filtered Tasks:", filteredTasks)
+  //console.log("Filtered Milestones:", filteredMilestones)
+  //console.log("Filtered People:", filteredPeople)
+
   return (
     <div className="p-4">
       <h1 className="flex justify-center mb-2 text-3xl">Tags</h1>
@@ -111,16 +116,20 @@ const TagDisplay = () => {
       )}
 
       {/* Display tasks related to the selected tag */}
-      {selectedTag && filteredTasks.length > 0 && (
+      {selectedTag && (
         <>
-          <TagOverall
-            people={filteredPeople}
-            tasks={filteredTasks}
-            milestones={filteredMilestones}
-          />
-          <TagPeopleTable people={filteredPeople} />
-          <TagTaskTable tasks={filteredTasks} />
-          <TagMilestoneTable milestones={filteredMilestones} />
+          {(filteredPeople.length > 0 ||
+            filteredTasks.length > 0 ||
+            filteredMilestones.length > 0) && (
+            <TagOverall
+              people={filteredPeople}
+              tasks={filteredTasks}
+              milestones={filteredMilestones}
+            />
+          )}
+          {filteredPeople.length > 0 && <TagPeopleTable people={filteredPeople} />}
+          {filteredTasks.length > 0 && <TagTaskTable tasks={filteredTasks} />}
+          {filteredMilestones.length > 0 && <TagMilestoneTable milestones={filteredMilestones} />}
         </>
       )}
     </div>

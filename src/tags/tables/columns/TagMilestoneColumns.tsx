@@ -2,8 +2,12 @@ import { createColumnHelper } from "@tanstack/react-table"
 import DateFormat from "src/core/components/DateFormat"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import Link from "next/link"
+import { Routes } from "@blitzjs/next"
 
 export type TagMilestoneData = {
+  id: number
+  projectId: number
   name: string
   startDate: Date | null
   endDate: Date | null
@@ -19,7 +23,17 @@ const columnHelper = createColumnHelper<TagMilestoneData>()
 export const TagMilestoneColumns = [
   columnHelper.accessor("name", {
     header: "Name",
-    cell: (info) => info.getValue(),
+    cell: (info) => (
+      <Link
+        href={Routes.ShowMilestonePage({
+          milestoneId: info.row.original.id,
+          projectId: info.row.original.projectId,
+        })}
+        className="btn btn-primary"
+      >
+        {info.getValue()}
+      </Link>
+    ),
   }),
   columnHelper.accessor("startDate", {
     header: "Start Date",

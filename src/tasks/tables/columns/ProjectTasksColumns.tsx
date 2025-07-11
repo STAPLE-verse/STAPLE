@@ -6,6 +6,7 @@ import DateFormat from "src/core/components/DateFormat"
 import { InformationCircleIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
 import { ProjectTasksData } from "../processing/processProjectTasks"
 import { Tooltip } from "react-tooltip"
+import PrimaryLink from "src/core/components/PrimaryLink"
 
 // Column helper
 const columnHelperProject = createColumnHelper<ProjectTasksData>()
@@ -143,19 +144,26 @@ export const ProjectTasksColumns = [
     enableSorting: false,
     cell: (info) => {
       const hasNewComments = info.row.original.newCommentsCount > 0
+      const { projectId, taskId } = info.row.original.view
       return (
         <div className="flex">
-          <div className="relative">
-            <ChatBubbleOvalLeftEllipsisIcon
-              className={`h-7 w-7 ${hasNewComments ? "text-primary" : "opacity-30"}`}
-              aria-hidden="true"
-            />
-            {hasNewComments && (
-              <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white">
-                {info.row.original.newCommentsCount}
+          <PrimaryLink
+            route={Routes.ShowTaskPage({ projectId, taskId })}
+            text={
+              <div className="relative">
+                <ChatBubbleOvalLeftEllipsisIcon
+                  className={`h-7 w-7 ${hasNewComments ? "text-primary" : "opacity-30"}`}
+                  aria-hidden="true"
+                />
+                {hasNewComments && (
+                  <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white">
+                    {info.row.original.newCommentsCount}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            }
+            classNames="btn-ghost"
+          />
         </div>
       )
     },

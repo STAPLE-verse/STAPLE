@@ -8,7 +8,10 @@ export type MilestoneWithTasksRoles = Milestone & {
   })[]
 }
 
-export function processTagMilestones(milestones: MilestoneWithTasksRoles[]): TagMilestoneData[] {
+export function processTagMilestones(
+  milestones: MilestoneWithTasksRoles[],
+  projectId: number
+): TagMilestoneData[] {
   return milestones.map((milestone) => {
     // Get the latest log per task-user pair
     const latestLogMap = new Map<string, TaskLog>()
@@ -51,6 +54,8 @@ export function processTagMilestones(milestones: MilestoneWithTasksRoles[]): Tag
 
     return {
       name: milestone.name,
+      projectId: projectId,
+      id: milestone.id,
       startDate: milestone.startDate ?? null,
       endDate: milestone.endDate ?? null,
       percentTasksComplete: total ? Math.round((complete / total) * 100) : 0,

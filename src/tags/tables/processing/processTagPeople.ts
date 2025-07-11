@@ -70,10 +70,10 @@ export function processTagPeople(
       percentApproved: total ? Math.round((approved / total) * 100) : null,
       percentFormsComplete: withForm.length
         ? Math.round((formComplete / withForm.length) * 100)
-        : null,
+        : 0,
       formAssignedCount: withForm.length,
       roles: uniqueRoles,
-      type: person.users.length > 1 ? "Team" : "Individual",
+      type: person.name ? "Team" : "Individual",
       userId: person.id,
       projectId: projectId,
     }
