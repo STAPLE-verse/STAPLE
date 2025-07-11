@@ -11,10 +11,10 @@ import { Tooltip } from "react-tooltip"
 import Link from "next/link"
 import UpdateTasksMilestone from "src/milestones/components/UpdateTasksMilestone"
 import { useState } from "react"
-import { processMilestoneTasks } from "src/milestones/tables/processing/processMilestoneTasks"
 import getTasks from "src/tasks/queries/getTasks"
 import router from "next/router"
 import deleteMilestone from "src/milestones/mutations/deleteMilestone"
+import { processProjectTasks } from "src/tasks/tables/processing/processProjectTasks"
 
 const ShowMilestonePage = () => {
   // ProjectMember authentication
@@ -43,11 +43,17 @@ const ShowMilestonePage = () => {
       project: { id: projectId! },
     },
     orderBy: { id: "asc" },
+    include: {
+      container: true,
+      taskLogs: {
+        include: {
+          comments: true,
+        },
+      },
+    },
   })
   const milestoneTasks = tasks.filter((task) => task.milestoneId === null)
-  const processedTasks = processMilestoneTasks(milestoneTasks)
-
-  //console.log(processedTasks)
+  const processedTasks = processProjectTasks(milestoneTasks)
 
   return (
     // @ts-expect-error children are clearly passed below

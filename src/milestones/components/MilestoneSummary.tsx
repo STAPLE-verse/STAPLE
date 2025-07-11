@@ -60,13 +60,14 @@ export const MilestoneSummary: React.FC<MilestoneSummaryProps> = ({ milestone, p
           noData={tasks.length === 0}
           noDataText="No tasks were assigned"
         />
+
         {/* Form data */}
 
         <CircularPercentageWidget
           data={formPercent}
           title={"Form Data"}
           tooltip={"Percent of required forms completed by contributors"}
-          noData={tasks.length === 0 && formPercent <= 0}
+          noData={tasks.length === 0 || formPercent <= 0}
           noDataText="No tasks with forms were assigned"
         />
         {/* Roles */}

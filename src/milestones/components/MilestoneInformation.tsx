@@ -6,10 +6,12 @@ import TooltipWrapper from "src/core/components/TooltipWrapper"
 import CollapseCard from "src/core/components/CollapseCard"
 import { MilestoneTasksData } from "../tables/processing/processMilestoneTasks"
 import { MilestoneSummary } from "./MilestoneSummary"
+import { ProjectTasksColumns } from "src/tasks/tables/columns/ProjectTasksColumns"
+import { ProjectTasksData } from "src/tasks/tables/processing/processProjectTasks"
 
 interface MilestoneInformationProps {
   milestone: Milestone
-  processedTasks: MilestoneTasksData[]
+  processedTasks: ProjectTasksData[]
   projectId: number
 }
 
@@ -69,7 +71,7 @@ export const MilestoneInformation: React.FC<MilestoneInformationProps> = ({
 
       <CollapseCard title="Tasks" className="mt-4">
         <div className="overflow-x-auto">
-          <Table columns={MilestoneTasksColumns} data={processedTasks} addPagination={true} />
+          <Table columns={ProjectTasksColumns} data={processedTasks} addPagination={true} />
         </div>
       </CollapseCard>
     </>

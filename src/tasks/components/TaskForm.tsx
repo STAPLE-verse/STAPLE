@@ -193,7 +193,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         </ToggleModal>
       </CollapseCard>
 
-      <CollapseCard title="Details: Instructions, Deadline, Forms, Roles">
+      <CollapseCard title="Details: Instructions, Dates, Forms, Roles">
         {/* Description */}
         <LabeledTextAreaField
           className="textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2 mb-4"
@@ -203,8 +203,12 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           type="textarea"
         />
 
+        <DateField name="startDate" label="Start Date:" />
+
         {/* Deadline */}
-        <DateField name="deadline" label="Deadline:" />
+        <div className="mt-4">
+          <DateField name="deadline" label="Deadline:" />
+        </div>
 
         {/* Form */}
         {formResponseSupplied ? (

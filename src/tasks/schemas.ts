@@ -12,6 +12,7 @@ export const FormTaskSchema = z
     rolesId: z.array(z.number()).optional().nullable(),
     deadline: z.date().optional().nullable(),
     formVersionId: z.number().optional().nullable(),
+    startDate: z.date().optional().nullable(),
   })
   .refine(
     (data) => {
@@ -33,6 +34,7 @@ export const CreateTaskSchema = z.object({
   formVersionId: z.number().optional().nullable(),
   description: z.string().optional().nullable(),
   milestoneId: z.number().optional().nullable(),
+  startDate: z.date().optional().nullable(),
   deadline: z.date().optional().nullable(),
   createdById: z.number(),
   projectMembersId: z.array(z.number()).optional().nullable(),

@@ -32,6 +32,11 @@ export const TaskInformation = () => {
       </p>
 
       <p>
+        <span className="font-semibold">Start Date:</span>{" "}
+        {task.startDate ? <DateFormat date={task.startDate}></DateFormat> : "No Start Date"}
+      </p>
+
+      <p>
         <span className="font-semibold">Deadline:</span>{" "}
         {task.deadline ? <DateFormat date={task.deadline}></DateFormat> : "No Deadline"}
       </p>

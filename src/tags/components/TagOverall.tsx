@@ -25,7 +25,7 @@ export const TagOverall = ({ people, tasks, milestones }: TagOverallProps) => {
   const projectId = useParam("projectId", "number")
   const processedPeople: TagPeopleData[] = processTagPeople(people, projectId!)
   const processedTasks: ProjectTasksData[] = processProjectTasks(tasks)
-  const processedMilestones = processTagMilestones(milestones)
+  const processedMilestones = processTagMilestones(milestones, projectId!)
 
   const numIndividuals = processedPeople.filter((p) => p.type === "Individual").length
   const numTeams = processedPeople.filter((p) => p.type === "Team").length

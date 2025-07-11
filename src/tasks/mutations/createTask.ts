@@ -15,6 +15,7 @@ export default resolver.pipe(
       formVersionId,
       description,
       milestoneId,
+      startDate,
       deadline,
       createdById,
       projectMembersId,
@@ -40,6 +41,7 @@ export default resolver.pipe(
         name,
         description,
         containerTaskOrder,
+        startDate,
         deadline,
         project: {
           connect: { id: projectId },

@@ -15,7 +15,6 @@ import { useTaskContext } from "src/tasks/components/TaskContext"
 import { ProjectMemberWithTaskLog } from "src/core/types"
 import { responseSubmitted } from "src/tasklogs/utils/responseSubmitted"
 import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
-import PageHeader from "src/core/components/PageHeader"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 
@@ -47,6 +46,7 @@ export const EditTask = () => {
     name: task.name,
     description: task.description!,
     containerId: task.containerId,
+    startDate: task.startDate,
     deadline: task.deadline,
     projectMembersId: projectMembersId,
     teamsId: teamsId,
