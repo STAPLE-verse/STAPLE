@@ -18,12 +18,14 @@ import updateProject from "src/projects/mutations/updateProject"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import CollapseCard from "src/core/components/CollapseCard"
+import { cleanProjectData } from "src/summary/utils/processProjectData"
 
 const Summary = () => {
   // Get data
   // Get projects
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProjectData, { id: projectId })
+  const cleanProject = cleanProjectData(project)
   const [updateProjectMutation] = useMutation(updateProject)
 
   // State to store metadata
@@ -100,7 +102,7 @@ const Summary = () => {
   }
 
   return (
-    <main className="flex flex-col mx-auto w-full">
+    <main className="flex flex-col mx-auto w-full text-lg">
       <h1 className="flex justify-center items-center mb-4 text-3xl">
         Project Summary
         <InformationCircleIcon
@@ -113,22 +115,12 @@ const Summary = () => {
           className="z-[1099] ourtooltips"
         />
       </h1>
-      {/* buttons */}
-      <div className="flex flex-row justify-center mb-4">
-        {project.metadata && <></>}
 
-        <DownloadJSON
-          data={project}
-          fileName={`${project.name}`}
-          className="mx-2 btn btn-primary"
-          label="Download Project JSON"
-        />
-        <button className="btn btn-secondary">Launch Viewer (coming soon)</button>
-      </div>
-
-      {/* Project  information */}
       <CollapseCard title="Project Settings" className="mb-4" defaultOpen={true}>
-        Use project settings to change the name, description, and required project metadata.
+        <p>
+          This section includes basic project information such as the name, description, and
+          creation date. You can also update the project’s settings here.
+        </p>
         <br className="mb-4" />
         Name: {project.name}
         <br />
@@ -146,7 +138,13 @@ const Summary = () => {
           </Link>
         </div>
       </CollapseCard>
-      <CollapseCard title="Project Metadata">
+
+      <CollapseCard title="Project Metadata" className="mb-4">
+        <p>
+          This section displays and allows you to edit the structured metadata associated with your
+          project. If your project uses a STAPLE schema, you can view, edit, reset, or download the
+          metadata below.
+        </p>
         {project.formVersionId ? (
           <>
             <MetadataDisplay metadata={project.metadata} />
@@ -181,6 +179,31 @@ const Summary = () => {
         ) : (
           <div>No metadata available for this project.</div>
         )}
+      </CollapseCard>
+
+      <CollapseCard title="Project Summary Viewer" className="mb-4">
+        <p>
+          Use this section to view and download the complete project summary. You can export the
+          full project JSON or launch an interactive viewer (coming soon).
+        </p>
+        <br className="mb-4" />
+        {/* buttons */}
+        <div className="card-actions justify-end">
+          <DownloadJSON
+            data={cleanProject}
+            fileName={`${project.name}`}
+            className="btn btn-primary"
+            label="Download Project JSON"
+          />
+          <button className="btn btn-secondary">Launch Viewer (coming soon)</button>
+        </div>
+      </CollapseCard>
+
+      <CollapseCard title="Download STAPLE Schemas" className="mb-4">
+        <p>
+          Projects that use official STAPLE schemas will show those schemas here for download. This
+          is helpful for reuse, documentation, or validation in other systems.
+        </p>
       </CollapseCard>
     </main>
   )

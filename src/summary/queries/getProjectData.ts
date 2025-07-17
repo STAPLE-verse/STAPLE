@@ -22,6 +22,7 @@ export default resolver.pipe(resolver.zod(GetProjectData), resolver.authorize(),
         },
       },
       projectMembers: {
+        // where: { deleted: false }, include people but anonymize
         include: {
           users: {
             select: {
