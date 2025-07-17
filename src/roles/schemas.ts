@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { defaultRoleTemplates } from "./templates/defaultRoles"
 
 export const CreateRoleSchema = z.object({
   userId: z.number(),
@@ -25,4 +26,9 @@ export const RoleFormSchema = z.object({
 
 export const RoleIdsFormSchema = z.object({
   rolesId: z.array(z.number()).optional().nullable(),
+})
+
+export const ImportRolesSchema = z.object({
+  system: z.enum([...(Object.keys(defaultRoleTemplates) as [keyof typeof defaultRoleTemplates])]),
+  userId: z.number(),
 })

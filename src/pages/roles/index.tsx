@@ -8,6 +8,7 @@ import { NewRole } from "src/roles/components/NewRole"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import Card from "src/core/components/Card"
+import { DefaultRoles } from "src/roles/components/DefaultRoles"
 
 const RoleBuilderPage = () => {
   const currentUser = useCurrentUser()
@@ -38,8 +39,9 @@ const RoleBuilderPage = () => {
           />
         </h1>
 
-        <div className="flex justify-center mt-4 mb-2">
+        <div className="flex justify-center mt-4 mb-2 gap-2">
           <NewRole taxonomyList={taxonomyList} onRolesChanged={refetch} />
+          <DefaultRoles onRolesChanged={refetch} />
         </div>
         <Card title={""}>
           <Suspense fallback={<div>Loading...</div>}>
