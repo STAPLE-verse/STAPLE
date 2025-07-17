@@ -4,6 +4,7 @@ import mitt from "mitt"
 type AppEvents = {
   taskLogUpdated: void
   announcementCreated: void
+  milestoneTasksUpdated: void
   // Add more events here as needed:
   // modalClosed: void
   // userLoggedIn: { userId: number }
