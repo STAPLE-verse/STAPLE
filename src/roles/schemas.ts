@@ -29,6 +29,6 @@ export const RoleIdsFormSchema = z.object({
 })
 
 export const ImportRolesSchema = z.object({
-  system: z.enum([...(Object.keys(defaultRoleTemplates) as [keyof typeof defaultRoleTemplates])]),
+  system: z.array(z.enum(defaultRoleTemplates.map((r) => r.id) as [string, ...string[]])),
   userId: z.number(),
 })
