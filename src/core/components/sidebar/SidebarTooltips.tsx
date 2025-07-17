@@ -1,43 +1,42 @@
 import React from "react"
-import { Tooltip } from "react-tooltip"
+import TooltipWrapper from "../TooltipWrapper"
 
 const tooltipContents = [
-  { id: "project-home-tooltip", content: "Go back home to all projects" },
-
-  { id: "project-dashboard-tooltip", content: "See overall project information dashboard" },
-  { id: "project-tasks-tooltip", content: "View, add, edit, and complete project specific tasks" },
-  { id: "project-elements-tooltip", content: "Elements help you organize tasks into buckets" },
+  { id: "project-dashboard-tooltip", content: "Project dashboard" },
+  { id: "project-tags-tooltip", content: "Track members, milestones, and tasks" },
+  { id: "project-tasks-tooltip", content: "Project tasks" },
+  { id: "project-milestones-tooltip", content: "Group and track tasks" },
   {
     id: "project-projectMembers-tooltip",
-    content: "Add, edit, and view all people on the project",
+    content: "Manage project members",
   },
-  { id: "project-teams-tooltip", content: "Add, edit, and view project teams" },
+  { id: "project-teams-tooltip", content: "Manage project teams" },
   {
     id: "project-credit-tooltip",
-    content: "Add, edit, and view contribution explanations with roles",
+    content: "Manage project roles",
   },
-  { id: "project-form-tooltip", content: "Review and download project form data (metadata)" },
-  { id: "project-summary-tooltip", content: "Review and download project summary (metadata)" },
+  { id: "project-form-tooltip", content: "Manage project form metadata" },
+  { id: "project-summary-tooltip", content: "View project summary" },
   {
     id: "project-settings-tooltip",
-    content: "Add, edit, and view project overview information (metadata)",
+    content: "Manage project settings",
   },
-  { id: "dashboard-tooltip", content: "View the home page dashboard for all projects" },
-  { id: "projects-tooltip", content: "View all projects and open a specific one" },
-  { id: "tasks-tooltip", content: "View all tasks for all projects" },
-  { id: "forms-tooltip", content: "Build your own forms to collect data in a task (metadata)" },
-  { id: "notifications-tooltip", content: "View all notifications for projects" },
-  { id: "roles-tooltip", content: "View, add, and edit contribution categories with roles" },
-  { id: "help-tooltip", content: "Get help with STAPLE" },
-  { id: "project-notification-tooltip", content: "View notifications for this project" },
-  { id: "invite-tooltip", content: "View and accept project invitations" },
+  { id: "dashboard-tooltip", content: "Home dashboard" },
+  { id: "projects-tooltip", content: "View all projects" },
+  { id: "tasks-tooltip", content: "View all tasks" },
+  { id: "forms-tooltip", content: "Manage metadata forms" },
+  { id: "notifications-tooltip", content: "View all notifications" },
+  { id: "roles-tooltip", content: "Manage role categories" },
+  { id: "help-tooltip", content: "Get help" },
+  { id: "project-notification-tooltip", content: "Project notifications" },
+  { id: "invite-tooltip", content: "Project invitations" },
 ]
 
 const SidebarTooltips = () => {
   return (
     <>
       {tooltipContents.map((tooltip) => (
-        <Tooltip
+        <TooltipWrapper
           key={tooltip.id}
           id={tooltip.id}
           content={tooltip.content}

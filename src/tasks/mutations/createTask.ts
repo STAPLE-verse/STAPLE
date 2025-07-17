@@ -14,12 +14,14 @@ export default resolver.pipe(
       containerId,
       formVersionId,
       description,
-      elementId,
+      milestoneId,
+      startDate,
       deadline,
       createdById,
       projectMembersId,
       teamsId,
       rolesId,
+      tags,
     },
     ctx
   ) => {
@@ -39,6 +41,7 @@ export default resolver.pipe(
         name,
         description,
         containerTaskOrder,
+        startDate,
         deadline,
         project: {
           connect: { id: projectId },
@@ -54,14 +57,15 @@ export default resolver.pipe(
               connect: { id: formVersionId },
             }
           : undefined,
-        element: elementId
+        milestone: milestoneId
           ? {
-              connect: { id: elementId },
+              connect: { id: milestoneId },
             }
           : undefined,
         assignedMembers: {
           connect: combinedIds ? combinedIds.map((id) => ({ id })) : [],
         },
+        tags: tags ?? [],
       },
       include: {
         createdBy: {
@@ -122,7 +126,11 @@ export default resolver.pipe(
 
       // Get username corresponding to the PM who created the task
       // it will always be one user to create so link to that projectMember
-      const createdByUsername = task.createdBy.users[0] ? task.createdBy.users[0].username : null
+      const createdByUsername = task.createdBy.users[0]
+        ? task.createdBy.users[0].firstName && task.createdBy.users[0].lastName
+          ? `${task.createdBy.users[0].firstName} ${task.createdBy.users[0].lastName}`
+          : task.createdBy.users[0].username
+        : null
 
       await sendNotification(
         {

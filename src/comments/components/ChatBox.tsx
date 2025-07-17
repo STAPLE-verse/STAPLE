@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useMutation } from "@blitzjs/rpc"
 import addComment from "../mutations/addComment"
+import markAsRead from "../mutations/markAsRead"
 import { CommentWithAuthor } from "src/core/types"
 import { getContributorName } from "src/core/utils/getName"
 import { useParam } from "@blitzjs/next"
@@ -9,16 +10,19 @@ import { useCurrentContributor } from "src/contributors/hooks/useCurrentContribu
 interface ChatBoxProps {
   initialComments?: CommentWithAuthor[]
   taskLogId: number
+  refetchComments?: () => void
 }
 
 export default function ChatBox({
   initialComments = [], // Ensure default value as empty array
   taskLogId,
+  refetchComments,
 }: ChatBoxProps) {
   const [comments, setComments] = useState<CommentWithAuthor[]>(initialComments)
   const [newComment, setNewComment] = useState("")
   const chatRef = useRef<HTMLDivElement>(null)
   const [addCommentMutation] = useMutation(addComment)
+  const [markCommentsAsReadMutation] = useMutation(markAsRead)
 
   const projectId = useParam("projectId", "number")
   const { projectMember: currentContributor } = useCurrentContributor(projectId)
@@ -29,6 +33,33 @@ export default function ChatBox({
     }
   }, [comments])
 
+  useEffect(() => {
+    if (currentContributor && comments.length > 0) {
+      const unreadCommentIds = comments
+        .filter(
+          (comment) =>
+            comment.authorId !== currentContributor.id &&
+            !comment.commentReadStatus?.some(
+              (status) => status.projectMemberId === currentContributor.id && status.read
+            )
+        )
+        .map((comment) => comment.id)
+
+      if (unreadCommentIds.length > 0) {
+        markCommentsAsReadMutation({
+          commentIds: unreadCommentIds,
+          projectMemberId: currentContributor.id,
+        })
+          .then(() => {
+            if (refetchComments) refetchComments()
+          })
+          .catch((error) => {
+            console.error("Failed to mark comments as read:", error)
+          })
+      }
+    }
+  }, [comments, currentContributor, markCommentsAsReadMutation, refetchComments])
+
   const handleSendComment = async () => {
     if (!newComment.trim()) return // Prevent empty messages
 
@@ -38,8 +69,9 @@ export default function ChatBox({
         projectMemberId: currentContributor!.id,
         content: newComment,
       })
-      setComments((prev) => [...prev, createdComment]) // Update state directly
+      setComments((prev) => [...prev, { ...createdComment, commentReadStatus: [] }]) // Ensure new comment has empty commentReadStatus
       setNewComment("") // Clear input field
+      if (refetchComments) refetchComments() // Trigger refresh
     } catch (error) {
       console.error("Failed to send comment:", error)
     }
@@ -60,8 +92,15 @@ export default function ChatBox({
               >
                 <div className="chat-header">
                   {getContributorName(comment.author) || "Unknown"}
-                  <time className="text-xs opacity-50 ml-2">
-                    {comment.createdAt ? new Date(comment.createdAt).toLocaleTimeString() : "N/A"}
+                  <time className="text-s opacity-50 ml-2">
+                    {comment.createdAt
+                      ? new Date(comment.createdAt).toLocaleString([], {
+                          weekday: "short",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })
+                      : "N/A"}
                   </time>
                 </div>
                 <div
@@ -77,7 +116,7 @@ export default function ChatBox({
             )
           })
         ) : (
-          <p className="text-center text-gray-400 italic">No comments yet...</p>
+          <p className="text-center text-base italic">No comments yet...</p>
         )}
       </div>
 
@@ -85,7 +124,7 @@ export default function ChatBox({
       <div className="flex items-center mt-4 gap-2">
         <input
           type="text"
-          className="input w-full text-primary input-primary input-bordered border-2 bg-base-300 flex-1"
+          className="input w-full text-primary input-primary input-bordered border-2 bg-base-300 flex-1 mr-2"
           placeholder="Type a message..."
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}

@@ -1,17 +1,26 @@
-import { TaskLogWithTaskAndProject } from "src/core/types"
+import { TaskLogWithTaskProjectAndComments } from "src/core/types"
 
 export type AllTasksData = {
   name: string
   projectName: string
   deadline: Date | null
   completion: number
+  hasNewComments: boolean
+  newCommentsCount: {
+    countTotal: number
+    taskId: number
+    projectId: number
+  }
   view: {
     taskId: number
     projectId: number
   }
 }
 
-export function processAllTasks(latestTaskLog: TaskLogWithTaskAndProject[]): AllTasksData[] {
+export function processAllTasks(
+  latestTaskLog: TaskLogWithTaskProjectAndComments[],
+  originalTaskLogs?: TaskLogWithTaskProjectAndComments[]
+): AllTasksData[] {
   const taskSummary: Record<number, { total: number; completed: number }> = {}
 
   // Initialize the summary for each taskLog
@@ -32,9 +41,30 @@ export function processAllTasks(latestTaskLog: TaskLogWithTaskAndProject[]): All
     }
   })
 
+  // loop over originals and add it to the taskSummary[taskId]
+
+  const commentSummary: Record<number, number> = {}
+
+  originalTaskLogs?.forEach((log) => {
+    const taskId = log.taskId
+
+    log.comments?.forEach((comment) => {
+      const isUnread =
+        comment.commentReadStatus?.length === 0 || comment.commentReadStatus?.[0]?.read === false
+
+      if (isUnread) {
+        if (!commentSummary[taskId]) {
+          commentSummary[taskId] = 0
+        }
+        commentSummary[taskId] += 1
+      }
+    })
+  })
+
   // Generate the final result array
   const processedTasks: AllTasksData[] = Object.keys(taskSummary).map((taskId) => {
     const taskData = taskSummary[Number(taskId)]
+    const task = latestTaskLog.find((log) => log.taskId === Number(taskId))?.task
 
     // Ensure taskData is defined
     if (!taskData) {
@@ -43,6 +73,12 @@ export function processAllTasks(latestTaskLog: TaskLogWithTaskAndProject[]): All
         projectName: "Unknown Project",
         deadline: null,
         completion: 0,
+        hasNewComments: false,
+        newCommentsCount: {
+          countTotal: 0,
+          taskId: 0,
+          projectId: 0,
+        },
         view: {
           taskId: 0,
           projectId: 0,
@@ -53,15 +89,20 @@ export function processAllTasks(latestTaskLog: TaskLogWithTaskAndProject[]): All
     const { total, completed } = taskData
     const completionPercentage = total > 0 ? Math.round((completed / total) * 100) : 0
 
-    // Find the corresponding task log
-    const taskLog = latestTaskLog.find((log) => log.taskId === Number(taskId))
-    const task = taskLog?.task // Assuming task is part of the log
+    const unreadCount = commentSummary[Number(taskId)] || 0
+    const hasNewComments = unreadCount > 0
 
     return {
       name: task?.name || "Unknown Task",
       projectName: task?.project!.name || "Unknown Project",
       deadline: task?.deadline || null,
       completion: completionPercentage,
+      hasNewComments,
+      newCommentsCount: {
+        countTotal: unreadCount,
+        taskId: task?.id || 0,
+        projectId: task?.projectId || 0,
+      },
       view: {
         taskId: task?.id || 0,
         projectId: task?.projectId || 0,

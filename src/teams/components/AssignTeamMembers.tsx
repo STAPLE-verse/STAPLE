@@ -1,7 +1,6 @@
 import { useQuery } from "@blitzjs/rpc"
 import React from "react"
 import getContributors from "src/contributors/queries/getContributors"
-import Card from "src/core/components/Card"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 
 interface AssignTeamMembersProps {
@@ -20,7 +19,7 @@ const AssignTeamMembers: React.FC<AssignTeamMembersProps> = ({ projectId }) => {
 
   return (
     <div>
-      <label>Add Team Members: (Required)</label>
+      <label>Add Team Members:</label>
       <CheckboxFieldTable name="projectMemberUserIds" options={options} />
     </div>
   )

@@ -1,5 +1,7 @@
 import { useState } from "react"
 import Modal from "src/core/components/Modal"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 import { AddRoleForm } from "src/roles/components/AddRoleForm"
 import { RoleIdsFormSchema } from "src/roles/schemas"
 import { useMultiSelect } from "../../core/components/fields/MultiSelectContext"
@@ -48,7 +50,7 @@ export const AddRoleModal = ({ rows, projectId, refetch, type }) => {
     <>
       <button
         type="button"
-        className="btn btn-primary"
+        className="btn btn-primary flex items-center gap-2"
         onClick={handleToggleModal}
         disabled={rows.length < 1 || selectedIds.length < 1}
       >
@@ -56,21 +58,29 @@ export const AddRoleModal = ({ rows, projectId, refetch, type }) => {
       </button>
       <Modal open={openModal} size="w-7/8 max-w-xl">
         <div>
-          <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
+          <h1 className="flex justify-center items-center gap-2 mb-2 text-3xl">
+            Add Roles
+            <InformationCircleIcon
+              className="h-6 w-6 stroke-2 text-info"
+              data-tooltip-id="add-roles-tooltip"
+            />
+            <Tooltip
+              id="add-roles-tooltip"
+              content="You can add roles to contributors or tasks. The name of the project manager who defined the role is listed to help you choose the most relevant ones."
+              className="z-[1099] ourtooltips"
+            />
+          </h1>
           <div className="flex justify-start mt-4">
             <AddRoleForm
               projectId={projectId}
               schema={RoleIdsFormSchema}
               submitText="Update Role"
+              cancelText="Close"
               className="flex flex-col w-full"
               onSubmit={onSubmit}
               initialValues={initialValues}
+              onCancel={handleToggleModal}
             />
-          </div>
-          <div className="modal-action flex justify-end mt-4">
-            <button type="button" className="btn btn-secondary" onClick={handleToggleModal}>
-              Close
-            </button>
           </div>
         </div>
       </Modal>

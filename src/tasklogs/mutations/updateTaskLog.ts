@@ -52,7 +52,11 @@ export default resolver.pipe(
       },
     })
 
-    const completedByUsername = completedBy?.users?.[0]?.username ?? ""
+    const completedByUsername = completedBy?.users?.[0]
+      ? completedBy.users[0].firstName && completedBy.users[0].lastName
+        ? `${completedBy.users[0].firstName} ${completedBy.users[0].lastName}`
+        : completedBy.users[0].username
+      : "Unknown User"
 
     await sendNotification(
       {

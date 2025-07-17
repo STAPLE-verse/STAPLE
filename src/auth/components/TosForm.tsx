@@ -11,7 +11,7 @@ type TosFormProps = {
 
 export const TosForm = (props: TosFormProps) => {
   return (
-    <div className="flex flex-col max-w-3xl mx-auto w-full">
+    <div className="flex flex-col max-w-3xl mx-auto w-full justify-center flex-grow">
       <h1 className="text-center">Terms of Use and Privacy Policy</h1>
       <div className="flex flex-col gap-4">
         <p>
@@ -53,12 +53,15 @@ export const TosForm = (props: TosFormProps) => {
           name="tos"
           label="I have read and agree to these terms."
           className="checkbox checkbox-primary border-2"
-        ></LabeledCheckboxField>
+          labelProps={{ className: "text-lg" }}
+        />
       </Form>
-      <div className="divider pt-4 pb-4"></div>
-      <Link className="text-center" href={Routes.Home()}>
-        Cancel and go back to STAPLE Home Page
-      </Link>
+      <div className="divider pt-2 pb-2"></div>
+      <div className="flex flex-row justify-center">
+        <Link className="btn btn-info" href={Routes.Home()}>
+          Cancel and go back to STAPLE Home Page
+        </Link>
+      </div>
     </div>
   )
 }

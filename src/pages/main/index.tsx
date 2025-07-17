@@ -1,5 +1,4 @@
 import { Suspense, useEffect, useState } from "react"
-import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import React from "react"
@@ -22,6 +21,9 @@ import { Widget } from "db"
 import getUserWidgets from "src/widgets/queries/getUserWidgets"
 import initializeWidgets from "src/widgets/mutations/initializeWidgets"
 import toast from "react-hot-toast"
+import { useTranslation } from "react-i18next"
+import { Tooltip } from "react-tooltip"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
 
 const MainContent = () => {
   const [updateWidgetMutation] = useMutation(updateWidget)
@@ -29,6 +31,15 @@ const MainContent = () => {
 
   const currentUser = useCurrentUser()
   const userId = currentUser?.id!
+
+  //translations
+  const { t, i18n } = (useTranslation as any)()
+  useEffect(() => {
+    if (typeof window !== "undefined" && currentUser?.language) {
+      void i18n.changeLanguage(currentUser.language)
+      localStorage.setItem("i18nextLng", currentUser.language)
+    }
+  }, [currentUser?.language, i18n])
 
   const [widgets, setWidgets] = useState<Widget[]>([])
 
@@ -65,10 +76,19 @@ const MainContent = () => {
     : currentUser!.username
 
   return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl h-full space-y-4">
-      <div className="mb-4 justify-center flex">
-        <h3 className="text-3xl">Welcome, {name}!</h3>
-      </div>
+    <main className="flex flex-col mx-auto w-full h-full space-y-4">
+      <h3 className="text-3xl justify-center items-center flex">
+        {t("main.welcome")}, {name}!
+        <InformationCircleIcon
+          className="h-6 w-6 ml-2 text-info stroke-2"
+          data-tooltip-id="dashboard-overview"
+        />
+        <Tooltip
+          id="dashboard-overview"
+          content="Welcome to the main dashboard! You can rearrange these widgets by clicking and dragging the boxes. Use the buttons to navigate to tasks, notifications, and more. "
+          className="z-[1099] ourtooltips"
+        />
+      </h3>
 
       <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd} sensors={sensors}>
         <WidgetContainer widgets={constructedWidgets} />
@@ -78,6 +98,7 @@ const MainContent = () => {
 }
 
 export const MainPage = () => (
+  // @ts-expect-error children are clearly passed below
   <Layout title="Home">
     <Suspense fallback={<div>Loading...</div>}>
       <MainContent />

@@ -1,5 +1,5 @@
 import React from "react"
-import { FormBuilder } from "@ginkgo-bioworks/react-json-schema-form-builder"
+import FormBuilder from "src/formBuilder/FormBuilder"
 
 interface VisualBuilderTabProps {
   schema: object
@@ -17,11 +17,10 @@ const VisualBuilderTab: React.FC<VisualBuilderTabProps> = ({
   return (
     <div className="formHead-wrapper">
       <div className="w-full flex justify-end">
-        <button type="button" className="btn btn-primary" onClick={onSave}>
+        <button type="button" className="btn btn-primary mb-4" onClick={onSave}>
           Save Form
         </button>
       </div>
-      <br />
       <FormBuilder
         schema={JSON.stringify(schema)}
         uischema={JSON.stringify(uiSchema)}

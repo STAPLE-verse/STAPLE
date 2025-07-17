@@ -64,11 +64,7 @@ export const JsonFormModal = ({
         </div>
         <div className="modal-action flex justify-end">
           {resetHandler && (
-            <button
-              className="btn btn-secondary mr-2"
-              onClick={resetHandler}
-              disabled={!isCompleted}
-            >
+            <button className="btn btn-info mr-2" onClick={resetHandler} disabled={!isCompleted}>
               Reset Form Data
             </button>
           )}

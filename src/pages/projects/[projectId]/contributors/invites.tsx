@@ -13,8 +13,9 @@ const InvitesPagePM = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Project Contributor Invitations">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <h1 className="flex justify-center mb-2 text-3xl">Invited Contributors</h1>
 
         <Suspense fallback={<div>Loading...</div>}>

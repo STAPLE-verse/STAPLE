@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import Modal from "src/core/components/Modal"
-import { Tooltip } from "react-tooltip"
 import RoleSelect from "./RoleSelect"
+import TooltipWrapper from "src/core/components/TooltipWrapper"
 
 interface AddRoleInputProps {
   projectManagerIds: number[]
@@ -19,7 +19,7 @@ const AddRoleInput: React.FC<AddRoleInputProps> = ({
 
   return (
     <>
-      <Tooltip
+      <TooltipWrapper
         id="role-tooltip"
         content={tooltipContent}
         className="z-[1099] ourtooltips"
@@ -37,11 +37,16 @@ const AddRoleInput: React.FC<AddRoleInputProps> = ({
 
       <Modal open={openRolesModal} size="w-7/8 max-w-xl">
         <div>
+          <h1 className="flex justify-center mb-2 text-3xl">Add Roles</h1>
           <div className="flex justify-start mt-4">
             <RoleSelect projectManagerIds={projectManagerIds} />
           </div>
           <div className="modal-action flex justify-end mt-4">
             <button type="button" className="btn btn-primary" onClick={handleToggleRolesModal}>
+              Save
+            </button>
+
+            <button type="button" className="btn btn-secondary" onClick={handleToggleRolesModal}>
               Close
             </button>
           </div>

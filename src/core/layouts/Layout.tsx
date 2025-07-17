@@ -18,6 +18,7 @@ const Layout: BlitzLayout<{
   return (
     <>
       <Toaster position="bottom-center" reverseOrder={false} />
+      {/* @ts-expect-error false positive: JSX children are valid here */}
       <Head>
         <title>{title || "STAPLE"}</title>
       </Head>

@@ -12,6 +12,15 @@ export const CreateInviteSchema = z.object({
   addedBy: z.string(),
   email: z.string(),
   rolesId: z.array(z.number()).optional().nullable(),
+  tags: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+      })
+    )
+    .optional()
+    .nullable(),
 
   // template: __fieldName__: z.__zodType__(),
 })

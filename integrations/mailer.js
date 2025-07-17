@@ -36,7 +36,7 @@ export async function Amazon(msg) {
 
   try {
     const info = await transporter.sendMail(msg)
-    console.log("Email sent:", info)
+    //console.log("Email sent:", info)
   } catch (err) {
     console.error("Error sending email:", err)
   }

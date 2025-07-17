@@ -13,12 +13,12 @@ const ProfilePage = () => {
     const fullName = `${currentUser.firstName || ""} ${currentUser.lastName || ""}`
 
     return (
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <h1 className="text-3xl flex justify-center mb-2">{currentUser.username}&apos;s profile</h1>
         <div className="text-lg">
           <div className="card bg-base-300 w-full">
             <div className="card-body">
-              <div className="card-title" data-tooltip-id="element-tool">
+              <div className="card-title" data-tooltip-id="milestone-tool">
                 Profile Information
               </div>
               <span className="font-semibold">Username:</span> {currentUser.username}
@@ -45,6 +45,12 @@ const ProfilePage = () => {
               <br />
               <span className="font-semibold">Signup Date:</span>{" "}
               <DateFormat date={currentUser.createdAt}></DateFormat>
+              <span className="font-semibold">Tooltips:</span>
+              {currentUser.tooltips ? (
+                <span className="text-success">On</span>
+              ) : (
+                <span className="text-error">Off</span>
+              )}
               <div className="card-actions justify-end">
                 <Link className="btn btn-primary" href={Routes.EditProfilePage()}>
                   Edit Profile
@@ -67,6 +73,7 @@ ProfilePage.authenticate = true
 ProfilePage.getLayout = () => {
   return (
     <Suspense>
+      {/* @ts-expect-error children are clearly passed below*/}
       <Layout>
         <ProfilePage />
       </Layout>

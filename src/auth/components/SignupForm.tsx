@@ -43,7 +43,7 @@ export const SignupForm = (props: SignupFormProps) => {
   }
 
   return (
-    <div className="flex flex-col max-w-3xl mx-auto w-full mt-2">
+    <div className="flex flex-col max-w-3xl mx-auto w-full justify-center flex-grow">
       <div className="flex justify-center items-center w-full">
         <picture>
           <source
@@ -116,14 +116,14 @@ export const SignupForm = (props: SignupFormProps) => {
         />
       </Form>
 
-      <div className="flex flex-row justify-end mb-4 mt-4">
-        <Link className="btn btn-warning" href={Routes.LoginPage()}>
+      <div className="divider pt-2 pb-2"></div>
+
+      <div className="flex flex-row justify-center">
+        <Link className="btn btn-warning ml-2" href={Routes.LoginPage()}>
           I have an Account
         </Link>
-      </div>
 
-      <div className="flex flex-row justify-end mb-4">
-        <Link className="btn btn-secondary" href={Routes.Home()}>
+        <Link className="btn btn-secondary ml-2" href={Routes.Home()}>
           Go Back Home
         </Link>
       </div>

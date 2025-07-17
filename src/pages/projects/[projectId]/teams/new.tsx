@@ -7,12 +7,13 @@ import { TeamForm } from "src/teams/components/TeamForm"
 import { FORM_ERROR } from "final-form"
 import { TeamFormSchema } from "src/teams/schemas"
 import { Suspense } from "react"
-import Head from "next/head"
 import toast from "react-hot-toast"
 import createTeam from "src/teams/mutations/createTeam"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
-import PageHeader from "src/core/components/PageHeader"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
+import Card from "src/core/components/Card"
 
 const NewTeamContent = () => {
   const router = useRouter()
@@ -26,6 +27,7 @@ const NewTeamContent = () => {
         name: values.name,
         projectId: projectId!,
         userIds: values.projectMemberUserIds,
+        tags: values.tags || [],
       })
       await toast.promise(Promise.resolve(team), {
         loading: "Adding team...",
@@ -48,13 +50,23 @@ const NewTeamContent = () => {
   }
 
   return (
-    <TeamForm
-      projectId={projectId!}
-      className="flex flex-col"
-      submitText="Add Team"
-      schema={TeamFormSchema}
-      onSubmit={handleNewTeam}
-    />
+    <Card title="">
+      <TeamForm
+        projectId={projectId!}
+        className="flex flex-col"
+        submitText="Add Team"
+        schema={TeamFormSchema}
+        onSubmit={handleNewTeam}
+        cancelText="Cancel"
+        onCancel={() =>
+          router.push(
+            Routes.TeamsPage({
+              projectId: projectId!,
+            })
+          )
+        }
+      />
+    </Card>
   )
 }
 
@@ -62,9 +74,21 @@ const NewTeamPage = () => {
   useProjectMemberAuthorization([MemberPrivileges.PROJECT_MANAGER])
 
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Add New Team">
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <PageHeader title="Add New Team" />
+        <h1 className="flex justify-center items-center mb-2 text-3xl">
+          Add New Team
+          <InformationCircleIcon
+            className="ml-2 h-5 w-5 stroke-2 text-info"
+            data-tooltip-id="team-tooltip"
+          />
+          <Tooltip
+            id="team-tooltip"
+            content="Create a new team by adding members and defining a team name."
+            className="z-[1099] ourtooltips"
+          />
+        </h1>
         <Suspense fallback={<div>Loading...</div>}>
           <NewTeamContent />
         </Suspense>

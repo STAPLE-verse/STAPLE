@@ -9,8 +9,10 @@ export const ProjectTasksList = () => {
   const { tasks } = useProjecTasksListData(projectId)
 
   return (
-    <div>
-      <Table columns={ProjectTasksColumns} data={tasks} addPagination={true} />
+    <div className="rounded-b-box rounded-tr-box bg-base-300 p-4">
+      <div className="overflow-x-auto">
+        <Table columns={ProjectTasksColumns} data={tasks} addPagination={true} />
+      </div>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useMemo } from "react"
 import Layout from "src/core/layouts/Layout"
 import Table from "src/core/components/Table"
 import { usePaginatedQuery } from "@blitzjs/rpc"
@@ -12,6 +12,9 @@ import {
 import { MultiSelectProvider, useMultiSelect } from "src/core/components/fields/MultiSelectContext"
 import { DeleteNotificationButton } from "src/notifications/components/DeleteNotificationButton"
 import { MultiReadToggleButton } from "src/notifications/components/MultiReadToggleButton"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
+import Card from "src/core/components/Card"
 
 const NotificationContent = () => {
   const currentUser = useCurrentUser()
@@ -45,7 +48,10 @@ const NotificationContent = () => {
   const extendedNotifications = notifications as unknown as ExtendedNotification[]
 
   // Preprocess table data
-  const notificationTableData = processNotification(extendedNotifications)
+  const notificationTableData = useMemo(
+    () => processNotification(extendedNotifications),
+    [extendedNotifications]
+  )
 
   // Get columns and pass refetch
   const columns = useNotificationTableColumns(refetch, notificationTableData)
@@ -53,10 +59,21 @@ const NotificationContent = () => {
   const selectedNotifications = extendedNotifications.filter((n) => selectedIds.includes(n.id))
 
   return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-      <h1 className="flex justify-center mb-2 text-3xl">All Notifications</h1>
-      <Table columns={columns} data={notificationTableData} addPagination={true} />
-      <div className="flex justify-end mt-4 gap-4">
+    <main className="flex flex-col mx-auto w-full">
+      <h1 className="flex justify-center items-center text-3xl">
+        Notifications
+        <InformationCircleIcon
+          className="h-6 w-6 ml-2 text-info stroke-2"
+          data-tooltip-id="dashboard-overview"
+        />
+        <Tooltip
+          id="dashboard-overview"
+          content="This page shows all your notifications. You can mark them as read or click on a link to view the related item. Use the last column to select multiple notifications at once."
+          className="z-[1099] ourtooltips"
+        />
+      </h1>
+
+      <div className="flex justify-center mb-2 mt-4 gap-2">
         <DeleteNotificationButton ids={selectedIds} />
         <MultiReadToggleButton
           notifications={selectedNotifications}
@@ -64,11 +81,15 @@ const NotificationContent = () => {
           resetSelection={resetSelection}
         />
       </div>
+      <Card title={""}>
+        <Table columns={columns} data={notificationTableData} addPagination={true} />
+      </Card>
     </main>
   )
 }
 const NotificationsPage = () => {
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="All Notifications">
       <Suspense fallback={<div>Loading...</div>}>
         <MultiSelectProvider>

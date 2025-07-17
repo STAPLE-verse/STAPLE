@@ -6,7 +6,10 @@ import { UpdateUserSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(UpdateUserSchema),
   resolver.authorize(),
-  async ({ email, firstName, lastName, institution, username, language }, ctx: Ctx) => {
+  async (
+    { email, firstName, lastName, institution, username, language, gravatar, tooltips },
+    ctx: Ctx
+  ) => {
     const user = await db.user.findFirst({ where: { id: ctx.session.userId! } })
 
     if (!user) throw new NotFoundError()
@@ -20,7 +23,14 @@ export default resolver.pipe(
         institution: institution,
         username: username,
         language: language,
+        gravatar: gravatar,
+        tooltips: tooltips,
       },
+    })
+
+    // Sync session with updated tooltip setting
+    await ctx.session.$setPublicData({
+      tooltips: updatedUser.tooltips,
     })
 
     return updatedUser

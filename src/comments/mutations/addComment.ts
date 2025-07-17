@@ -77,13 +77,20 @@ export default resolver.pipe(
     // Send notification
     const assignedUserIds = taskLog.assignedTo.users.map((user) => user.id)
 
+    const createdByUsername = comment.author.users[0]
+      ? comment.author.users[0].firstName && comment.author.users[0].lastName
+        ? `${comment.author.users[0].firstName} ${comment.author.users[0].lastName}`
+        : comment.author.users[0].username
+      : "Unknown"
+
     await sendNotification(
       {
         templateId: "commentMade",
         recipients: assignedUserIds,
         data: {
           taskName: taskLog.task.name,
-          createdBy: comment.author.users[0]?.username || "Unknown",
+          createdBy: createdByUsername,
+          commentContent: comment.content,
         },
         projectId: projectId,
         routeData: {
@@ -104,11 +111,12 @@ export default resolver.pipe(
         recipients: projectManagerIds,
         data: {
           taskName: taskLog.task.name,
-          createdBy: comment.author.users[0]?.username || "Unknown",
+          createdBy: createdByUsername,
+          commentContent: comment.content,
         },
         projectId: projectId,
         routeData: {
-          path: Routes.TaskLogsPage({
+          path: Routes.ShowTaskPage({
             projectId: projectId,
             taskId: taskLog.task.id,
           }).href,
@@ -116,6 +124,41 @@ export default resolver.pipe(
       },
       ctx
     )
+
+    // Merge assigned and manager user IDs
+    const allRelevantUserIds = [...assignedUserIds, ...projectManagerIds]
+
+    // Find corresponding ProjectMember records for users assigned to the task and project managers
+    const relevantProjectMembers = await db.projectMember.findMany({
+      where: {
+        projectId: projectId,
+        name: null,
+        users: {
+          some: {
+            id: { in: allRelevantUserIds },
+          },
+        },
+      },
+    })
+
+    console.log("📌 AssignedTo ProjectMemberId:", taskLog.assignedToId)
+    console.log(
+      "📌 Creating commentReadStatus for:",
+      relevantProjectMembers.map((member) => ({
+        commentId: comment.id,
+        projectMemberId: member.id,
+        read: member.id === projectMemberId,
+      }))
+    )
+
+    // Create CommentReadStatus records
+    await db.commentReadStatus.createMany({
+      data: relevantProjectMembers.map((member) => ({
+        commentId: comment.id,
+        projectMemberId: member.id,
+        read: member.id === projectMemberId,
+      })),
+    })
 
     return comment
   }

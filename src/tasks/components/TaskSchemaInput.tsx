@@ -2,6 +2,7 @@ import { useQuery } from "@blitzjs/rpc"
 import { User } from "db"
 import React, { useState } from "react"
 import Modal from "src/core/components/Modal"
+import TooltipWrapper from "src/core/components/TooltipWrapper"
 import RadioFieldTable from "src/core/components/fields/RadioFieldTable"
 import getForms, { FormWithFormVersion } from "src/forms/queries/getForms"
 
@@ -11,9 +12,15 @@ export interface FormWithVersionAndUser extends FormWithFormVersion {
 
 interface TaskSchemaInputProps {
   projectManagerIds: number[]
+  className?: string
+  tooltipContent: string
 }
 
-export const TaskSchemaInput = ({ projectManagerIds }: TaskSchemaInputProps) => {
+export const TaskSchemaInput = ({
+  projectManagerIds,
+  className,
+  tooltipContent,
+}: TaskSchemaInputProps) => {
   const [openSchemaModal, setOpenSchemaModal] = useState(false)
   const handleToggleSchemaUpload = () => setOpenSchemaModal((prev) => !prev)
 
@@ -58,8 +65,20 @@ export const TaskSchemaInput = ({ projectManagerIds }: TaskSchemaInputProps) => 
   ]
 
   return (
-    <div className="mt-4">
-      <button type="button" className="btn btn-primary w-1/2" onClick={handleToggleSchemaUpload}>
+    <div>
+      <TooltipWrapper
+        id="form-tooltip"
+        content={tooltipContent}
+        className="z-[1099] ourtooltips"
+        place="right"
+        opacity={1}
+      />
+      <button
+        type="button"
+        data-tooltip-id="form-tooltip"
+        className={`btn btn-primary w-1/2 ${className ?? ""}`}
+        onClick={handleToggleSchemaUpload}
+      >
         Assign Form
       </button>
       <Modal open={openSchemaModal} size="w-1/2">

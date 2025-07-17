@@ -2,10 +2,10 @@ import { useRouter } from "next/router"
 import { useMutation } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
 import deleteTeam from "../mutations/deleteTeam"
-import { ProjectMemberWithUsers } from "src/core/types"
+import { TeamWithUsers } from "src/core/types"
 
 interface DeleteTeamProps {
-  team: ProjectMemberWithUsers
+  team: TeamWithUsers
 }
 
 const DeleteTeam = ({ team }: DeleteTeamProps) => {
@@ -20,7 +20,7 @@ const DeleteTeam = ({ team }: DeleteTeamProps) => {
   }
 
   return (
-    <button className="btn btn-secondary mt-4" onClick={handleDelete}>
+    <button className="btn btn-warning" onClick={handleDelete}>
       Delete Team
     </button>
   )

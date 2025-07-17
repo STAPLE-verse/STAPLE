@@ -1,21 +1,17 @@
 import { useMutation } from "@blitzjs/rpc"
 import { Status } from "db"
 import { useEffect, useState } from "react"
-import updateStatus from "../mutations/updateStatus"
+import updateTaskStatus from "../mutations/updateTaskStatus"
 import toast from "react-hot-toast"
-import { Tooltip } from "react-tooltip"
 import Modal from "src/core/components/Modal"
 import { useTaskContext } from "./TaskContext"
-import useTaskLogProgress from "src/tasklogs/hooks/useTaskLogProgress"
 import Stat from "src/core/components/Stat"
 
 export const CompleteTaskToggle = () => {
-  const [updateStatusMutation] = useMutation(updateStatus)
+  const [updateStatusMutation] = useMutation(updateTaskStatus)
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
 
-  const { task, projectMembers } = useTaskContext()
-
-  const taskLogProgress = useTaskLogProgress(projectMembers)
+  const { task, projectMembers, taskLogProgress } = useTaskContext()
 
   const [status, setStatus] = useState(task?.status || Status.NOT_COMPLETED)
 
@@ -65,7 +61,7 @@ export const CompleteTaskToggle = () => {
           type="checkbox"
           checked={status === Status.COMPLETED}
           onChange={handleStatus}
-          className="checkbox checkbox-primary border-2"
+          className="checkbox checkbox-primary border-2 mt-2"
         />
         <Modal open={isConfirmModalOpen} size="w-11/12 max-w-3xl">
           <div className="flex flex-col justify-center items-center space-y-4">

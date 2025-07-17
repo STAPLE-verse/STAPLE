@@ -47,7 +47,7 @@ export const MultiReadToggleButton = ({
   const noSelection = notifications.length === 0
 
   return (
-    <div className="flex gap-2 mt-4">
+    <div className="flex gap-2">
       {(allUnread || mixedStatus) && (
         <button
           className="btn btn-primary"
@@ -59,11 +59,7 @@ export const MultiReadToggleButton = ({
       )}
 
       {(allRead || mixedStatus) && (
-        <button
-          className="btn btn-secondary"
-          onClick={() => handleToggle(false)}
-          disabled={noSelection}
-        >
+        <button className="btn btn-info" onClick={() => handleToggle(false)} disabled={noSelection}>
           {mixedStatus ? "Mark All as Unread" : "Mark as Unread"}
         </button>
       )}

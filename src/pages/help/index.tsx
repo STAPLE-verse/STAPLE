@@ -1,12 +1,12 @@
 import { Suspense } from "react"
 import Layout from "src/core/layouts/Layout"
-import Head from "next/head"
 
 const HelpPage = () => {
   return (
+    // @ts-expect-error children are clearly passed below
     <Layout title="Get Help">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl flex justify-center mb-2">Get Help</h1>
+      <main className="flex flex-col mx-auto w-full">
+        <h1 className="text-3xl flex justify-center mb-4">Get Help</h1>
 
         <Suspense fallback={<div>Loading...</div>}>
           <div className="text-lg flex flex-row">
@@ -20,7 +20,7 @@ const HelpPage = () => {
               </div>
             </div>
 
-            <div className="card bg-base-300 w-1/2 mr-2">
+            <div className="card bg-base-300 w-1/2 ml-2">
               <div className="card-body">
                 <div className="card-title">Account Issues</div>
                 Need help with your account? Send us an email at:{" "}
@@ -34,7 +34,7 @@ const HelpPage = () => {
             </div>
           </div>
 
-          <div className="text-lg flex flex-row mt-2">
+          <div className="text-lg flex flex-row mt-4">
             <div className="card bg-base-300 w-1/2 mr-2">
               <div className="card-body">
                 <div className="card-title">Development</div>
@@ -46,7 +46,7 @@ const HelpPage = () => {
               </div>
             </div>
 
-            <div className="card bg-base-300 w-1/2 mr-2">
+            <div className="card bg-base-300 w-1/2 ml-2">
               <div className="card-body">
                 <div className="card-title">Feature Roadmap</div>
                 Want to suggest a feature or look at our STAPLE roadmap?{" "}
@@ -58,7 +58,7 @@ const HelpPage = () => {
             </div>
           </div>
 
-          <div className="text-lg flex flex-row mt-2">
+          <div className="text-lg flex flex-row mt-4">
             <div className="card bg-base-300 w-1/2 mr-2">
               <div className="card-body">
                 <div className="card-title">Slack</div>
@@ -72,7 +72,7 @@ const HelpPage = () => {
               </div>
             </div>
 
-            <div className="card bg-base-300 w-1/2 mr-2">
+            <div className="card bg-base-300 w-1/2 ml-2">
               <div className="card-body">
                 <div className="card-title">STAPLE Presentations</div>
                 In a workshop? Use our google doc to leave notes.{" "}

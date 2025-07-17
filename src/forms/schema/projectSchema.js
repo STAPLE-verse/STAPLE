@@ -3,8 +3,12 @@ export const JsonProject = `
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "title": "Project Information",
-  "required": [],
+  "required": ["name", "identifier", "keywords"],
   "properties": {
+    "name": {
+      "type": "string",
+      "title": "Project Name:"
+    },
     "abstract": {
       "type": "string",
       "title": "Abstract:"
@@ -29,6 +33,12 @@ export const JsonProject = `
     }
   },
   "description": "Default Project Metadata",
+  "_stapleSchema": {
+    "type": "string",
+    "default": "project-v1",
+    "title": "Schema version",
+    "readOnly": true
+  },
   "dependencies": {}
 }
 `

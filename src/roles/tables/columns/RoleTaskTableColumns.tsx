@@ -1,6 +1,8 @@
 import React from "react"
 import { createColumnHelper } from "@tanstack/react-table"
 import { MultiSelectCheckbox } from "../../../core/components/fields/MultiSelectCheckbox"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 export type RoleTaskTableData = {
   name: string
@@ -20,8 +22,11 @@ export const RoleTaskTableColumns = [
   }),
   columnHelper.accessor("description", {
     id: "description",
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Description",
+    cell: (info) => {
+      const value = info.getValue()
+      return <span>{value.length > 200 ? `${value.slice(0, 200)}...` : value}</span>
+    },
+    header: "Instructions",
   }),
   columnHelper.accessor("rolesNames", {
     id: "rolesNames",
@@ -34,6 +39,19 @@ export const RoleTaskTableColumns = [
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => <MultiSelectCheckbox id={info.getValue()} />,
-    header: "Add Multiple",
+    header: () => (
+      <div className="table-header-tooltip">
+        Select
+        <InformationCircleIcon
+          className="h-5 w-5 stroke-2 text-info"
+          data-tooltip-id="select-required-tooltip"
+        />
+        <Tooltip
+          id="select-required-tooltip"
+          content="You must first select at least one task or collaborator to add a role."
+          className="z-[1099] ourtooltips"
+        />
+      </div>
+    ),
   }),
 ]

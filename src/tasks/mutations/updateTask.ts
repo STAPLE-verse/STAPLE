@@ -86,7 +86,13 @@ export default resolver.pipe(
     const safeTeamsId: number[] = teamsId || []
 
     // Update task data
-    const task = await db.task.update({ where: { id }, data })
+    const task = await db.task.update({
+      where: { id },
+      data: {
+        ...data,
+        tags: data.tags ? data.tags : undefined,
+      },
+    })
 
     // Fetch existing assigned project members for the task
     const existingTask = await db.task.findUnique({

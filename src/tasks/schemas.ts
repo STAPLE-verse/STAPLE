@@ -6,12 +6,13 @@ export const FormTaskSchema = z
     name: z.string(),
     containerId: z.number(),
     description: z.string().optional().nullable(),
-    elementId: z.number().optional().nullable(),
+    milestoneId: z.number().optional().nullable(),
     projectMembersId: z.array(z.number()).optional().nullable(),
     teamsId: z.array(z.number()).optional().nullable(),
     rolesId: z.array(z.number()).optional().nullable(),
     deadline: z.date().optional().nullable(),
     formVersionId: z.number().optional().nullable(),
+    startDate: z.date().optional().nullable(),
   })
   .refine(
     (data) => {
@@ -32,12 +33,22 @@ export const CreateTaskSchema = z.object({
   containerId: z.number(),
   formVersionId: z.number().optional().nullable(),
   description: z.string().optional().nullable(),
-  elementId: z.number().optional().nullable(),
+  milestoneId: z.number().optional().nullable(),
+  startDate: z.date().optional().nullable(),
   deadline: z.date().optional().nullable(),
   createdById: z.number(),
   projectMembersId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.number()).optional().nullable(),
   rolesId: z.array(z.number()).optional().nullable(),
+  tags: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+      })
+    )
+    .optional()
+    .nullable(),
 })
 
 export const UpdateTaskSchema = z.object({
@@ -45,16 +56,26 @@ export const UpdateTaskSchema = z.object({
   name: z.string(),
   description: z.string().optional().nullable(),
   containerId: z.number(),
-  elementId: z.number().optional().nullable(),
+  milestoneId: z.number().optional().nullable(),
   projectMembersId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.any()).optional().nullable(),
   formVersionId: z.number().optional().nullable(),
   deadline: z.date().optional().nullable(),
   rolesId: z.array(z.number()).optional().nullable(),
+  startDate: z.date().optional().nullable(),
+  tags: z
+    .array(
+      z.object({
+        key: z.string(),
+        value: z.string(),
+      })
+    )
+    .optional()
+    .nullable(),
 })
 
-export const UpdateStatusSchema = z.object({
-  id: z.number(),
+export const UpdateTaskStatusSchema = z.object({
+  id: z.number().int().positive(),
   status: z.nativeEnum(Status),
 })
 
@@ -87,11 +108,26 @@ export const UpdateColumnOrderSchema = z.object({
   containerIds: z.array(z.number()),
 })
 
-export const UpdateTasksForElementSchema = z.object({
-  elementId: z.number(),
+export const UpdateTasksForMilestoneSchema = z.object({
+  milestoneId: z.number(),
   taskIds: z.array(z.number()),
 })
 
-export const UpdateTasksForElementFormSchema = z.object({
+export const UpdateTasksForMilestoneFormSchema = z.object({
   selectedTasks: z.array(z.number()),
+})
+
+export const DeleteColumnSchema = z.object({
+  id: z.number(),
+})
+
+export const UpdateColumnSchema = z.object({
+  id: z.number(),
+  name: z.string().min(1),
+})
+
+export const UpdateTaskDatesSchema = z.object({
+  id: z.number(),
+  startDate: z.date().optional(),
+  deadline: z.date().optional(),
 })

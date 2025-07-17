@@ -144,7 +144,7 @@ const Table = <TData,>({
           ))}
         </tfoot>
       </table>
-      {addPagination && (
+      {addPagination && table.getRowModel().rows.length > 0 && pageCount > 1 && (
         <>
           {/* Pagination buttons */}
           <div className="flex items-center gap-2">

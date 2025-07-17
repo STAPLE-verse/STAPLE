@@ -1,57 +1,35 @@
 import { arrayMove } from "@dnd-kit/sortable"
-import { findValueOfItems } from "../utils/findHelpers"
 import { DNDType } from "../hooks/useTaskBoardData"
-import { UniqueIdentifier } from "@dnd-kit/core"
+import { findContainerByItemId } from "../utils/findHelpers"
 
 const handleItemSorting = (
-  activeId: UniqueIdentifier,
-  overId: UniqueIdentifier,
+  taskId: number,
+  overTaskId: number,
   containers: DNDType[]
 ): DNDType[] => {
-  // Validation
-  // if (!activeId || !overId) {
-  //   console.error("Active or Over item is undefined")
-  //   return
-  // }
+  const newContainers = containers.map((container) => ({
+    ...container,
+    items: [...container.items],
+  }))
 
-  // if (!activeId.toString().includes("item") &&
-  //   !overId?.toString().includes("item")) {
-  //   console.error("Ids do not belong to sortable items.")
-  //   return
-  // }
+  const fromContainer = findContainerByItemId(taskId, newContainers)
+  const toContainer = findContainerByItemId(overTaskId, newContainers)
 
-  let newContainers = [...containers]
-  const activeContainer = findValueOfItems(activeId, "item", containers)
-  const overContainer = findValueOfItems(overId, "item", containers)
+  if (!fromContainer || !toContainer) return containers
 
-  // if (!activeContainer || !overContainer) {
-  //   console.error("Active or Over container not found")
-  //   return
-  // }
+  const fromItemIdx = fromContainer.items.findIndex((item) => item.id === taskId)
+  const toItemIdx = toContainer.items.findIndex((item) => item.id === overTaskId)
 
-  // Find the index of the active and over container
-  const activeContainerIndex = containers.findIndex(
-    (container) => container.id === activeContainer!.id
-  )
-  const overContainerIndex = containers.findIndex((container) => container.id === overContainer!.id)
-  // Find the index of the active and over item
-  const activeitemIndex = activeContainer!.items.findIndex((item) => item.id === activeId)
-  const overitemIndex = overContainer!.items.findIndex((item) => item.id === overId)
+  if (fromItemIdx === -1 || toItemIdx === -1) return containers
 
-  // In the same container
-  if (activeContainerIndex === overContainerIndex) {
-    newContainers[activeContainerIndex]!.items = arrayMove(
-      newContainers[activeContainerIndex]!.items,
-      activeitemIndex,
-      overitemIndex
-    )
-    // In different containers
+  if (fromContainer.id === toContainer.id) {
+    fromContainer.items = arrayMove(fromContainer.items, fromItemIdx, toItemIdx)
   } else {
-    const [removeditem] = newContainers[activeContainerIndex]!.items.splice(activeitemIndex, 1)
-    newContainers[overContainerIndex]!.items.splice(overitemIndex, 0, removeditem!)
+    const [movedItem] = fromContainer.items.splice(fromItemIdx, 1)
+    if (!movedItem) return containers
+    toContainer.items.splice(toItemIdx, 0, movedItem)
   }
 
-  // Return updated state
   return newContainers
 }
 

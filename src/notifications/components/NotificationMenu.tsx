@@ -1,9 +1,9 @@
 import { BellIcon } from "@heroicons/react/24/outline"
 import Link from "next/link"
-import { Tooltip } from "react-tooltip"
 import { Routes } from "@blitzjs/next"
 import { useNotificationMenuData } from "../hooks/useNotificationMenuData"
 import NotificationItem from "./NotificationItem"
+import TooltipWrapper from "src/core/components/TooltipWrapper"
 
 const NotificationsMenu = () => {
   const { unreadCount, latestUnreadNotifications } = useNotificationMenuData()
@@ -13,13 +13,17 @@ const NotificationsMenu = () => {
       <label tabIndex={0} className="btn btn-ghost btn-circle">
         <div className="indicator">
           <BellIcon className="w-5 h-5" data-tooltip-id="notifications-top-tooltip" />
-          <Tooltip
+          <TooltipWrapper
             id="notifications-top-tooltip"
-            content="View all notifications across projects."
+            content="View all notifications"
             className="z-[1099] ourtooltips"
             place="left"
           />
-          <span className="badge badge-sm indicator-item">{unreadCount}</span>
+          {unreadCount > 0 && (
+            <span className="badge badge-sm bg-primary text-primary-content indicator-item">
+              {unreadCount}
+            </span>
+          )}
         </div>
       </label>
 
@@ -44,7 +48,7 @@ const NotificationsMenu = () => {
               />
             ))
           ) : (
-            <span className="text-info">No new notifications.</span>
+            <span className="text-info text-lg mt-2 mb-2">No new notifications.</span>
           )}
 
           <div className="card-actions">

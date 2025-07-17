@@ -12,9 +12,10 @@ export default resolver.pipe(resolver.zod(GetProjectData), resolver.authorize(),
   const project = await db.project.findFirst({
     where: { id },
     include: {
+      formVersion: true,
       tasks: {
         include: {
-          element: true,
+          milestone: true,
           roles: true,
           taskLogs: true,
           formVersion: true,

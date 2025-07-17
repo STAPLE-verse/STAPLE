@@ -32,6 +32,7 @@ export default resolver.pipe(
             },
           },
         },
+        commentReadStatus: true,
       },
     })
 

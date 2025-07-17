@@ -29,7 +29,13 @@ export default resolver.pipe(
   resolver.authorize(),
   async ({ id, rolesId = [], privilege, projectId, userId, ...data }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const projectMember = await db.projectMember.update({ where: { id }, data })
+    const projectMember = await db.projectMember.update({
+      where: { id },
+      data: {
+        ...data,
+        tags: data.tags ?? undefined,
+      },
+    })
 
     await connectRoles(id, rolesId)
 

@@ -1,0 +1,82 @@
+import React, { useState, ReactElement } from "react"
+import { Popover, PopoverHeader, PopoverBody, UncontrolledTooltip, Button } from "reactstrap"
+import FBRadioGroup from "./radio/FBRadioGroup"
+import { getRandomId } from "./utils"
+import type { ModLabels } from "./types"
+import { PlusCircleIcon } from "@heroicons/react/24/outline"
+
+export default function Add({
+  addElem,
+  hidden,
+  tooltipDescription,
+  labels,
+}: {
+  addElem: (choice: string) => void
+  hidden?: boolean
+  tooltipDescription?: string
+  labels?: ModLabels
+}): ReactElement {
+  const [popoverOpen, setPopoverOpen] = useState(false)
+  const [createChoice, setCreateChoice] = useState("card")
+  const [elementId] = useState(getRandomId())
+
+  return (
+    <div style={{ display: hidden ? "none" : "initial" }}>
+      <span id={`${elementId}_add`} className="flex justify-center">
+        <PlusCircleIcon
+          className="h-6 w-6 stroke-secondary stroke-2"
+          onClick={() => setPopoverOpen(true)}
+        />
+      </span>
+      <UncontrolledTooltip placement="top" target={`${elementId}_add`}>
+        {tooltipDescription || "Add a new item or section"}
+      </UncontrolledTooltip>
+      <Popover
+        placement="bottom"
+        target={`${elementId}_add`}
+        isOpen={popoverOpen}
+        toggle={() => setPopoverOpen(false)}
+        className="add-details"
+        id={`${elementId}_add_popover`}
+      >
+        <PopoverHeader>
+          <span className="justify-center flex">Create New</span>
+        </PopoverHeader>
+        <PopoverBody>
+          <FBRadioGroup
+            className="choose-create text-lg"
+            defaultValue={createChoice}
+            horizontal={false}
+            options={[
+              {
+                value: "card",
+                label: labels?.addElementLabel ?? "Item",
+              },
+              {
+                value: "section",
+                label: labels?.addSectionLabel ?? "Section",
+              },
+            ]}
+            onChange={(selection) => {
+              setCreateChoice(selection)
+            }}
+          />
+          <div className="action-buttons">
+            <Button onClick={() => setPopoverOpen(false)} color="secondary">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                addElem(createChoice)
+                setPopoverOpen(false)
+              }}
+              color="primary"
+            >
+              Create
+            </Button>
+          </div>
+        </PopoverBody>
+      </Popover>
+    </div>
+  )
+}

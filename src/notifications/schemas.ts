@@ -1,4 +1,3 @@
-import { comment } from "postcss"
 import { z } from "zod"
 
 // Schemas of notifications
@@ -11,6 +10,7 @@ export const taskAssignedSchema = z.object({
 export const commentMadeSchema = z.object({
   taskName: z.string(),
   createdBy: z.string(),
+  commentContent: z.string(),
 })
 
 export const addedToProjectSchema = z.object({

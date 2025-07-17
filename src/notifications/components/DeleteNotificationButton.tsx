@@ -26,7 +26,7 @@ export const DeleteNotificationButton = ({ ids }: DeleteNotificationButtonProps)
   }
 
   return (
-    <button className="btn btn-secondary mt-4" onClick={handleDelete} disabled={ids.length === 0}>
+    <button className="btn btn-secondary" onClick={handleDelete} disabled={ids.length === 0}>
       Delete {ids.length > 1 ? "Notifications" : "Notification"}
     </button>
   )

@@ -3,7 +3,7 @@ import { useParam } from "@blitzjs/next" // Import useParam from Blitz
 import { TaskProvider } from "src/tasks/components/TaskContext"
 
 interface TaskLayoutProps {
-  children: ReactNode
+  children?: ReactNode
 }
 
 const TaskLayout = ({ children }: TaskLayoutProps) => {

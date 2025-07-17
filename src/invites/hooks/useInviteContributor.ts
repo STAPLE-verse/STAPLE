@@ -28,9 +28,14 @@ export function useInviteContributor(projectId: number) {
       const projectMember = await createInviteMutation({
         projectId: projectId,
         privilege: values.privilege,
-        addedBy: currentUser!.username,
+        addedBy: currentUser
+          ? currentUser.firstName?.trim() && currentUser.lastName?.trim()
+            ? `${currentUser.firstName} ${currentUser.lastName}`
+            : currentUser!.username
+          : "Unknown User",
         email: values.email,
         rolesId: values.rolesId,
+        tags: values.tags,
       })
 
       switch (projectMember.code) {

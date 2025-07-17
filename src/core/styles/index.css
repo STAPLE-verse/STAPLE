@@ -54,18 +54,39 @@
   margin: 0 auto;
   display: block;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: 12px;
   background-color: oklch(var(--b3));
   color: oklch(var(--bc));
   font-size: 16px;
+  text-align: center;
 }
 
 /* form overall header */
 .formHead-wrapper [class^="formHead"] h5 {
   font-size: 18px;
   color: oklch(var(--bc));
-  padding-bottom: 10px;
+  padding-bottom: 5px;
   font-family: inherit;
+}
+
+.formHead-wrapper [class^="formHead"] div {
+  width: 30%;
+  display: inline-block;
+  text-align: left;
+  padding: 10px;
+}
+
+.move-icon {
+  margin-right: 10px;
+}
+
+.card-title-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-grow: 1;
 }
 
 /* form title block and input backgrounds */
@@ -90,6 +111,10 @@
   font-size: 1rem;
   padding: 0.25rem 0.5rem;
   margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  border-radius: 8px;
+  height: 48px;
 }
 
 .formHead-wrapper .card-modal-select {
@@ -121,12 +146,6 @@
   z-index: 1000;
 }
 
-/* formbuilder checkboxes and radio text color */
-.fb-checkbox,
-.fb-radio-button {
-  color: oklch(var(--p));
-}
-
 /* formbuilder checkboxes */
 .fb-checkbox input[type="checkbox"],
 .rjsf input[type="checkbox"] {
@@ -138,7 +157,23 @@
   background-color: oklch(var(--b3)); /* Background color */
   cursor: pointer;
   margin-right: 10px;
-  margin-left: 10px;
+  display: inline-block;
+}
+
+.checkbox-style * {
+  display: inline-block;
+}
+
+.checkbox-style input {
+  margin-right: 5px;
+}
+
+.checkbox * {
+  display: inline-block;
+}
+
+.checkbox input {
+  margin-right: 5px;
 }
 
 /* formbuilder checkboxes */
@@ -153,9 +188,20 @@
 .rjsf input[type="checkbox"]:checked::before {
   content: "✔";
   color: oklch(var(--pc));
-  display: block;
   text-align: center;
   line-height: 20px; /* Center the checkmark */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  height: 100%;
+  width: 100%;
+}
+
+/*formBuilder footer*/
+.formFooter {
+  margin-top: 1em;
+  text-align: center;
 }
 
 /* form visual checkboxes */
@@ -202,22 +248,27 @@
   overflow: visible; /* or scroll */
   height: auto; /* ensures the element can grow as needed */
   transition: height 0.3s ease-out; /* animate height change */
+  padding: 20px;
 }
 
-/* form builder icons */
-.fa-circle-question,
-.fa-pencil,
-.fa-arrow-up,
-.fa-arrow-down,
-.fa-square-plus {
-  color: oklch(var(--s)) !important;
-  border: none !important;
+.collapseElement .disabled .toggle-collapse {
+  cursor: default;
 }
 
-/* form builder icons */
-.fa-trash {
-  color: oklch(var(--a)) !important;
-  border: none !important;
+.collapseElement h4 {
+  font-size: 18px;
+  display: block;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 10px 10px 10px;
+}
+
+.collapseElement .toggle-collapse {
+  font-size: 2.3rem;
+  cursor: pointer;
+  margin: auto 10px auto 10px;
 }
 
 /* form builder tool tips */
@@ -329,9 +380,14 @@ makes everything left aligned properly
   width: 100%;
 }
 
-/* form builder item box should be flex */
-.d-flex {
-  display: flex;
+.cardModal .card-modal-header {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.cardModal .card-modal-entries {
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 /* form builder change the way the item
@@ -348,6 +404,9 @@ visuals look to our */
   border-right: none !important;
   width: 100% !important;
   border: none !important;
+  margin-bottom: 1rem !important;
+  margin-top: 1rem !important;
+  border-radius: 12px;
 }
 
 /* form builder background for possible values*/
@@ -355,13 +414,32 @@ visuals look to our */
   background-color: oklch(var(--b3)) !important;
 }
 
+.card-enum-option {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0.5em;
+}
+
+.card-enum-option input {
+  width: 100%;
+}
+
+.card-enum-option .delete-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 /* form builder row and text colors */
 .formHead-wrapper [class^="cardEntries"] h5,
+.formHead-wrapper [class^="card-enum"] h5,
 .formHead-wrapper [class^="section-entries"] h5 {
   color: oklch(var(--bc)) !important;
   background-color: oklch(var(--b3));
   border: none !important;
-  padding-bottom: 3px;
+  padding-bottom: 4px;
+  font-size: 18px;
 }
 
 /* form builder control where the
@@ -371,8 +449,6 @@ tooltips */
 [id$="editinfo"],
 [id$="trashinfo"] {
   display: inline-block;
-  width: 50px;
-  height: 50px;
   padding: 0.25em;
 }
 
@@ -383,6 +459,10 @@ tooltips */
 [class^="section-head"],
 [class^="section-footer"] {
   border: none !important;
+}
+
+.card-entry {
+  margin-bottom: 16px;
 }
 
 /* form builder color the text color within the
@@ -418,13 +498,6 @@ span.arrow.tooltip-arrow {
   display: none;
 }
 
-/* form builder drop down hidden */
-[id^="react-select"] {
-  color: oklch(var(--p)) !important;
-  background-color: oklch(var(--pc)) !important;
-  z-index: 2000;
-}
-
 /* form builder new section or item */
 .popover,
 .popover-header,
@@ -453,8 +526,8 @@ span.arrow.tooltip-arrow {
   appearance: none; /* Remove the default appearance */
   -webkit-appearance: none; /* For WebKit-based browsers like Chrome and Safari */
   -moz-appearance: none; /* For Firefox */
-  width: 15px; /* Custom size */
-  height: 15px; /* Custom size */
+  width: 20px !important; /* Custom size */
+  height: 20px !important; /* Custom size */
   border: 2px solid oklch(var(--p)); /* Custom border color and size */
   border-radius: 50%; /* Make it circular */
   outline: none;
@@ -479,6 +552,29 @@ span.arrow.tooltip-arrow {
   background-color: oklch(var(--s)); /* Inner circle color */
   border-radius: 50%;
   transform: translate(-50%, -50%);
+}
+
+/* formbuilder checkboxes and radio text color */
+.fb-checkbox,
+.fb-radio-button {
+  color: oklch(var(--p));
+}
+
+.radio-group .fb-radio-button {
+  display: block;
+}
+
+.radio-group .fb-radio-button input[type="radio"] {
+  margin-right: 5px;
+  height: 1em;
+  vertical-align: middle;
+}
+
+.radio-group .fb-radio-button input[type="radio"] + label {
+  margin-top: 0;
+  margin-bottom: 0;
+  vertical-align: middle;
+  font-size: 1.125rem; /* 18px */
 }
 
 /* how the displayed survey looks */
@@ -591,6 +687,11 @@ span.arrow.tooltip-arrow {
   background-color: oklch(var(--nc)) !important;
   color: oklch(var(--n)) !important;
   font-weight: bold;
+  font-size: 16px !important;
+  max-width: 400px !important; /* Limits width to force wrapping */
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.2 !important;
 }
 
 /* focus for inputs overall */
@@ -598,4 +699,70 @@ input:focus {
   outline-color: oklch(var(--s)) !important;
   outline-offset: 0;
   outline-width: 3px !important;
+}
+
+.draggable {
+  cursor: grab;
+}
+
+.draggable:active {
+  cursor: grabbing;
+}
+
+.input-sm {
+  line-height: 1rem !important;
+}
+
+/* Wrapper to ensure tooltips render and wrap correctly in table headers */
+.table-header-tooltip {
+  position: relative;
+  overflow: visible;
+  white-space: normal;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.card-body {
+  padding: 1rem !important;
+  gap: 0rem !important;
+}
+
+.table :where(th, td) {
+  padding-left: 0.5rem !important;
+  padding-right: 0.5rem !important;
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  vertical-align: middle;
+}
+
+.CircularProgressbar-text {
+  text-anchor: middle;
+  dominant-baseline: middle;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+/*form builder popover */
+.add-details .popover {
+  width: 300px;
+  z-index: 1051 !important;
+}
+
+.add-details .popover-inner {
+  border: 1px solid #1d71ad;
+  border-radius: 4px;
+}
+
+.add-details .popover-header {
+  border-bottom: 1px solid #1d71ad;
+}
+
+.add-details .action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5em;
 }

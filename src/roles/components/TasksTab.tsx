@@ -17,12 +17,14 @@ const TasksTab = () => {
   })
 
   return (
-    <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+    <main className="flex flex-col mx-auto w-full">
       <MultiSelectProvider>
         <Suspense fallback={<div>Loading...</div>}>
-          <RoleTaskTable tasks={tasks} />
-          <div className="modal-action flex justify-end mt-4">
-            <AddRoleModal projectId={projectId} rows={tasks} refetch={refetch} type={"task"} />
+          <div className="rounded-b-box rounded-tr-box bg-base-300 p-4">
+            <RoleTaskTable tasks={tasks} />
+            <div className="modal-action flex justify-end mt-4">
+              <AddRoleModal projectId={projectId} rows={tasks} refetch={refetch} type={"task"} />
+            </div>
           </div>
         </Suspense>
       </MultiSelectProvider>

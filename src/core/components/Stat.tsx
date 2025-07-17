@@ -1,11 +1,11 @@
 import React, { ReactNode } from "react"
-import { Tooltip } from "react-tooltip"
 import clsx from "clsx"
 import { v4 as uuidv4 } from "uuid"
+import TooltipWrapper from "./TooltipWrapper"
 
 interface StatProps {
   title: string
-  children: ReactNode
+  children?: ReactNode
   tooltipContent?: string
   className?: string
   description?: ReactNode
@@ -20,7 +20,7 @@ const Stat = ({ title, children, tooltipContent, className, description }: StatP
         {title}
       </div>
       {tooltipContent && (
-        <Tooltip id={tooltipId!} content={tooltipContent} className="z-[1099] ourtooltips" />
+        <TooltipWrapper id={tooltipId!} content={tooltipContent} className="z-[1099] ourtooltips" />
       )}
       <div>{children}</div>
       {description && <div className="stat-desc text-lg text-inherit">{description}</div>}

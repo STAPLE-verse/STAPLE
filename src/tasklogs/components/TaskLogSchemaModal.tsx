@@ -1,14 +1,29 @@
 import { useParam } from "@blitzjs/next"
 import { CompletedAs } from "db"
 import CompleteSchema from "./CompleteSchema"
-import { useTaskContext } from "src/tasks/components/TaskContext"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import { useTaskContext } from "src/tasks/components/TaskContext"
 
-export const TaskLogSchemaModal = ({ taskLog }) => {
+export const useSafeTaskContext = () => {
+  try {
+    return useTaskContext()
+  } catch {
+    return undefined
+  }
+}
+
+export const TaskLogSchemaModal = ({
+  taskLog,
+  refetchTaskData,
+}: {
+  taskLog: any
+  refetchTaskData?: () => Promise<void>
+}) => {
   const projectId = useParam("projectId", "number")
   const { projectMember: currentProjectMember } = useCurrentContributor(projectId)
 
-  const { task } = useTaskContext()
+  const context = useSafeTaskContext()
+  const task = taskLog.task ?? context?.task
 
   return (
     <CompleteSchema
@@ -17,6 +32,7 @@ export const TaskLogSchemaModal = ({ taskLog }) => {
       completedAs={taskLog.assignedTo.name ? CompletedAs.TEAM : CompletedAs.INDIVIDUAL}
       schema={task.formVersion?.schema}
       ui={task.formVersion?.uiSchema}
+      refetchTaskData={refetchTaskData}
     />
   )
 }

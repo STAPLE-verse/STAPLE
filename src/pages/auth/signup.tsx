@@ -7,7 +7,6 @@ import { useEffect, useState } from "react"
 import { useMutation } from "@blitzjs/rpc"
 import signup from "src/auth/mutations/signup"
 import toast from "react-hot-toast"
-import { password_confirm } from "src/auth/schemas"
 
 type TosResponses = {
   tos: boolean
@@ -60,6 +59,7 @@ const SignupPage: BlitzPage = () => {
 
   return (
     <>
+      {/* @ts-expect-error false positive: JSX children are valid here */}
       <Head>
         <title>{"Sign Up"}</title>
       </Head>
