@@ -41,9 +41,30 @@ export function processAllTasks(
     }
   })
 
+  // loop over originals and add it to the taskSummary[taskId]
+
+  const commentSummary: Record<number, number> = {}
+
+  originalTaskLogs?.forEach((log) => {
+    const taskId = log.taskId
+
+    log.comments?.forEach((comment) => {
+      const isUnread =
+        comment.commentReadStatus?.length === 0 || comment.commentReadStatus?.[0]?.read === false
+
+      if (isUnread) {
+        if (!commentSummary[taskId]) {
+          commentSummary[taskId] = 0
+        }
+        commentSummary[taskId] += 1
+      }
+    })
+  })
+
   // Generate the final result array
   const processedTasks: AllTasksData[] = Object.keys(taskSummary).map((taskId) => {
     const taskData = taskSummary[Number(taskId)]
+    const task = latestTaskLog.find((log) => log.taskId === Number(taskId))?.task
 
     // Ensure taskData is defined
     if (!taskData) {
@@ -68,23 +89,8 @@ export function processAllTasks(
     const { total, completed } = taskData
     const completionPercentage = total > 0 ? Math.round((completed / total) * 100) : 0
 
-    // Find the corresponding task log
-    const taskLog = latestTaskLog.find((log) => log.taskId === Number(taskId))
-    const task = taskLog?.task // Assuming task is part of the log
-
-    // Find original log for this task/assignedTo if available
-    const originalLog = originalTaskLogs?.find(
-      (log) => log.taskId === Number(taskId) && log.assignedToId === taskLog?.assignedToId
-    )
-    const commentsSource = originalLog?.comments ?? taskLog?.comments ?? []
-
-    const hasNewComments = commentsSource.some((comment) =>
-      comment.commentReadStatus?.some((status) => !status.read)
-    )
-
-    const newCommentsCount = commentsSource.reduce((count, comment) => {
-      return count + (comment.commentReadStatus?.filter((status) => !status.read).length ?? 0)
-    }, 0)
+    const unreadCount = commentSummary[Number(taskId)] || 0
+    const hasNewComments = unreadCount > 0
 
     return {
       name: task?.name || "Unknown Task",
@@ -93,7 +99,7 @@ export function processAllTasks(
       completion: completionPercentage,
       hasNewComments,
       newCommentsCount: {
-        countTotal: newCommentsCount,
+        countTotal: unreadCount,
         taskId: task?.id || 0,
         projectId: task?.projectId || 0,
       },
