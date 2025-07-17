@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import Table from "src/core/components/Table"
-import { Prisma } from "@prisma/client"
+import { MemberPrivileges, Prisma } from "@prisma/client"
 import { processTaskLogHistoryModal } from "src/tasklogs/tables/processing/processTaskLogs"
 import { TaskLogCompletedBy } from "src/core/types"
 import { TaskLogHistoryFormColumns } from "../tables/columns/TaskLogHistoryFormColumns"
@@ -9,12 +9,14 @@ import ToggleModal from "src/core/components/ToggleModal"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import { useTaskContext } from "src/tasks/components/TaskContext"
+import { eventBus } from "src/core/utils/eventBus"
 
 type TaskLogHistoryModalProps = {
   taskLogs: TaskLogCompletedBy[]
   schema?: Prisma.JsonValue
   ui?: Prisma.JsonValue
   refetchTaskData?: () => Promise<void>
+  privilege: MemberPrivileges
 }
 
 export const TaskLogHistoryModal = ({
@@ -22,9 +24,10 @@ export const TaskLogHistoryModal = ({
   schema,
   ui,
   refetchTaskData,
+  privilege,
 }: TaskLogHistoryModalProps) => {
   const [internalTaskLogHistory, setInternalTaskLogHistory] = useState(
-    processTaskLogHistoryModal(taskLogs, schema, ui)
+    processTaskLogHistoryModal(taskLogs, privilege, schema, ui)
   )
 
   let contextRefetch: (() => Promise<void>) | undefined = undefined
@@ -40,8 +43,12 @@ export const TaskLogHistoryModal = ({
   }
 
   useEffect(() => {
-    setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, schema, ui))
-  }, [taskLogs, schema, ui])
+    setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, privilege, schema, ui))
+  }, [taskLogs, privilege, schema, ui])
+
+  const handleClose = () => {
+    eventBus.emit("taskLogUpdated")
+  }
 
   return (
     <ToggleModal
@@ -67,8 +74,9 @@ export const TaskLogHistoryModal = ({
         } else if (contextRefetch) {
           await contextRefetch()
         }
-        setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, schema, ui))
+        setInternalTaskLogHistory(processTaskLogHistoryModal(taskLogs, privilege, schema, ui))
       }}
+      onClose={handleClose}
     >
       <div className="modal-action flex flex-col">
         <Table

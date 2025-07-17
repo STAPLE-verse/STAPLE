@@ -18,9 +18,9 @@ import getProjectPrivilege from "src/projectprivileges/queries/getProjectPrivile
 import { UpdateProjectMemberFormSchema } from "src/projectmembers/schemas"
 import { ProjectMemberWithUsersAndRoles } from "src/core/types"
 import DeleteContributor from "src/contributors/components/DeleteContributor"
-import PageHeader from "src/core/components/PageHeader"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import { Tag } from "src/tasks/components/TaskForm"
 import Card from "src/core/components/Card"
 
 export const EditContributor = () => {
@@ -59,6 +59,14 @@ export const EditContributor = () => {
   const initialValues = {
     privilege: contributorPrivilege.privilege,
     rolesId: rolesId,
+    tags: Array.isArray(contributor.tags)
+      ? (contributor.tags as Tag[]).map((tag) => ({
+          id: `${tag.key}-${tag.value}`,
+          key: tag.key ?? "",
+          value: tag.value ?? "",
+          text: tag.value ?? "",
+        }))
+      : [],
   }
 
   // Handle events
@@ -79,6 +87,7 @@ export const EditContributor = () => {
         userId: contributorUser!.id,
         privilege: values.privilege,
         rolesId: values.rolesId,
+        tags: values.tags,
       })
 
       await toast.promise(Promise.resolve(updated), {
@@ -138,17 +147,19 @@ export const EditContributor = () => {
         />
       </h1>
       <Suspense fallback={<div>Loading...</div>}>
-        <ContributorForm
-          submitText="Update Contributor"
-          projectId={projectId!}
-          editedUserId={contributorUser!.id}
-          isEdit={true}
-          schema={UpdateProjectMemberFormSchema}
-          initialValues={initialValues}
-          cancelText="Cancel"
-          onCancel={handleCancel}
-          onSubmit={handleSubmit}
-        />
+        <Card title="">
+          <ContributorForm
+            submitText="Update Contributor"
+            projectId={projectId!}
+            editedUserId={contributorUser!.id}
+            isEdit={true}
+            schema={UpdateProjectMemberFormSchema}
+            initialValues={initialValues}
+            cancelText="Cancel"
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
+          />
+        </Card>
         <div className="divider pt-2 pb-2"></div>
         <div className="flex justify-center">
           <DeleteContributor

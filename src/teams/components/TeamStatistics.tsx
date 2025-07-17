@@ -12,6 +12,9 @@ import { Tooltip } from "react-tooltip"
 import { GetCircularProgressDisplay, GetIconDisplay } from "src/core/components/GetWidgetDisplay"
 import { UserGroupIcon } from "@heroicons/react/24/outline"
 import getTeam from "../queries/getTeam"
+import { completedTaskApprovalPercentage } from "src/widgets/utils/completedTaskApprovalPercentage"
+import { useEffect } from "react"
+import { eventBus } from "src/core/utils/eventBus"
 
 export const TeamStatistics = ({ teamId, projectId }) => {
   // get team number
@@ -21,7 +24,7 @@ export const TeamStatistics = ({ teamId, projectId }) => {
   const numberOfMembers = team?.users?.length || 0
 
   // get tasks for this teamId and projectId
-  const [{ tasks }] = useQuery(getTasks, {
+  const [{ tasks }, { refetch: refetchTasks }] = useQuery(getTasks, {
     include: {
       roles: true,
     },
@@ -36,7 +39,7 @@ export const TeamStatistics = ({ teamId, projectId }) => {
   })
 
   // get taskLogs for those tasks
-  const [fetchedTaskLogs] = useQuery(getTaskLogs, {
+  const [fetchedTaskLogs, { refetch: refetchTaskLogs }] = useQuery(getTaskLogs, {
     where: {
       taskId: { in: tasks.map((task) => task.id) },
       assignedToId: teamId,
@@ -44,7 +47,7 @@ export const TeamStatistics = ({ teamId, projectId }) => {
     include: {
       task: true,
     },
-  }) as unknown as TaskLogWithTask[]
+  })
 
   // Cast and handle the possibility of `undefined`
   const taskLogs: TaskLogWithTask[] = (fetchedTaskLogs ?? []) as TaskLogWithTask[]
@@ -52,13 +55,23 @@ export const TeamStatistics = ({ teamId, projectId }) => {
   // only the latest task log
   const allTaskLogs = getLatestTaskLogs<TaskLogWithTask>(taskLogs)
 
+  useEffect(() => {
+    const handleUpdate = () => {
+      void refetchTasks()
+      void refetchTaskLogs()
+    }
+    eventBus.on("taskLogUpdated", handleUpdate)
+    return () => eventBus.off("taskLogUpdated", handleUpdate)
+  }, [refetchTasks, refetchTaskLogs])
+
   // Calculate summary data
   const formPercent = completedFormPercentage(allTaskLogs)
   const taskPercent = completedTaskLogPercentage(allTaskLogs)
   const rolePieData = roleDistribution(tasks)
+  const approvalPercent = completedTaskApprovalPercentage(allTaskLogs)
 
   return (
-    <CollapseCard title={"Team Statistics"} className="w-full" defaultOpen={true}>
+    <CollapseCard title={"Team Statistics"} className="w-full mt-4" defaultOpen={true}>
       <div className="stats bg-base-300 text-lg font-bold w-full">
         {/* Task Status */}
         <div className="stat place-items-center">
@@ -94,6 +107,27 @@ export const TeamStatistics = ({ teamId, projectId }) => {
           )}
         </div>
 
+        {/* Task approval */}
+        <div className="stat place-items-center">
+          <div className="stat-title text-2xl text-inherit" data-tooltip-id="task-approval-tooltip">
+            Task Approval
+          </div>
+          <Tooltip
+            id="task-approval-tooltip"
+            content="Percent of overall tasks completed by the team"
+            className="z-[1099] ourtooltips"
+          />
+          {tasks.length === 0 ? (
+            <>No tasks were found</>
+          ) : (
+            <>
+              <div className="w-20 h-20 m-2">
+                <GetCircularProgressDisplay proportion={approvalPercent} />
+              </div>
+            </>
+          )}
+        </div>
+
         {/* Form Status */}
         <div className="stat place-items-center">
           <div className="stat-title text-2xl text-inherit" data-tooltip-id="form-status-tooltip">
@@ -109,7 +143,7 @@ export const TeamStatistics = ({ teamId, projectId }) => {
           ) : (
             <>
               <div className="w-20 h-20 m-2">
-                <GetCircularProgressDisplay proportion={taskPercent} />
+                <GetCircularProgressDisplay proportion={formPercent} />
               </div>
             </>
           )}

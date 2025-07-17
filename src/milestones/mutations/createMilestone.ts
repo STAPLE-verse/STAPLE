@@ -5,15 +5,23 @@ import { CreateMilestoneSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(CreateMilestoneSchema),
   resolver.authorize(),
-  async ({ projectId, name, description }) => {
+  async ({ projectId, name, description, taskIds, startDate, endDate, tags }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const milestone = await db.milestone.create({
       data: {
         name,
         description,
+        startDate,
+        endDate,
+        tags: tags ? tags : [],
         project: {
           connect: { id: projectId },
         },
+        task: taskIds?.length
+          ? {
+              connect: taskIds.map((id) => ({ id })),
+            }
+          : undefined,
       },
     })
 

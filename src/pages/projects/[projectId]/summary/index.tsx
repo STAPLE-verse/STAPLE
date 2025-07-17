@@ -127,9 +127,9 @@ const Summary = () => {
       </div>
 
       {/* Project  information */}
-      <CollapseCard title="Project Settings" className="mb-4">
+      <CollapseCard title="Project Settings" className="mb-4" defaultOpen={true}>
         Use project settings to change the name, description, and required project metadata.
-        <br />
+        <br className="mb-4" />
         Name: {project.name}
         <br />
         Created: <DateFormat date={project.createdAt}></DateFormat>

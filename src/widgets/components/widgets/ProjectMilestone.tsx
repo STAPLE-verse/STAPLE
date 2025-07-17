@@ -6,7 +6,7 @@ import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetIconDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
-import { MagnifyingGlassIcon, RectangleStackIcon } from "@heroicons/react/24/outline"
+import { MagnifyingGlassIcon, FlagIcon } from "@heroicons/react/24/outline"
 
 const MilestoneSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   // Get projectId from the route params
@@ -18,7 +18,7 @@ const MilestoneSummary: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
   return (
     <Widget
       title="Milestones"
-      display={<GetIconDisplay number={projectStats.allMilestones} icon={RectangleStackIcon} />}
+      display={<GetIconDisplay number={projectStats.allMilestones} icon={FlagIcon} />}
       link={
         <PrimaryLink
           route={Routes.MilestonesPage({ projectId: projectId! })}

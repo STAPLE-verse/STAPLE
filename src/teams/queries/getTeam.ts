@@ -53,6 +53,8 @@ export default resolver.pipe(
       projectId: team.projectId,
       name: team.name,
       users: usersWithContributorIds,
+      createdAt: team.createdAt,
+      tags: team.tags,
     }
   }
 )

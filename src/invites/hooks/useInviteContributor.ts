@@ -35,6 +35,7 @@ export function useInviteContributor(projectId: number) {
           : "Unknown User",
         email: values.email,
         rolesId: values.rolesId,
+        tags: values.tags,
       })
 
       switch (projectMember.code) {

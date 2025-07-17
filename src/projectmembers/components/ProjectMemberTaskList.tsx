@@ -1,3 +1,5 @@
+import { eventBus } from "src/core/utils/eventBus"
+import { useEffect } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getComments from "src/comments/queries/getComments"
 import CollapseCard from "src/core/components/CollapseCard"
@@ -38,6 +40,14 @@ const ProjectMemberTaskList = ({
     },
   })
 
+  useEffect(() => {
+    const handleTaskLogUpdate = () => {
+      void refetchTaskLogs()
+    }
+    eventBus.on("taskLogUpdated", handleTaskLogUpdate)
+    return () => eventBus.off("taskLogUpdated", handleTaskLogUpdate)
+  }, [refetchTaskLogs])
+
   const processedData = processTaskLogHistory(
     taskLogs as TaskLogTaskCompleted[],
     comments,
@@ -45,8 +55,6 @@ const ProjectMemberTaskList = ({
     currentContributor,
     () => refetchTaskLogs()
   )
-
-  console.log(processedData)
 
   return (
     <CollapseCard title="Contributor Tasks" className="mt-4">

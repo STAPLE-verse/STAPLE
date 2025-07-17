@@ -66,6 +66,8 @@ const NewTaskPage = () => {
             submitText="Create Task"
             schema={FormTaskSchema}
             onSubmit={handleNewTask}
+            onCancel={() => router.push(Routes.TasksPage({ projectId: projectId! }))}
+            cancelText="Cancel"
           />
         </Suspense>
       </main>

@@ -17,7 +17,7 @@ export default function NotificatioMessage({ message, routeData }: NotificatioMe
         pathname: routeData.path,
         query: routeData.params,
       }}
-      className="hover:underline text-primary"
+      className="hover:underline text-primary text-lg"
     >
       <div dangerouslySetInnerHTML={{ __html: cleanMessage }}></div>
     </Link>

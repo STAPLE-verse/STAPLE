@@ -6,8 +6,7 @@ import DateFormat from "src/core/components/DateFormat"
 import { InformationCircleIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
 import { ProjectTasksData } from "../processing/processProjectTasks"
 import { Tooltip } from "react-tooltip"
-import ChatBox from "src/comments/components/ChatBox"
-import ToggleModal from "src/core/components/ToggleModal"
+import PrimaryLink from "src/core/components/PrimaryLink"
 
 // Column helper
 const columnHelperProject = createColumnHelper<ProjectTasksData>()
@@ -39,30 +38,30 @@ export const ProjectTasksColumns = [
         Status
         <InformationCircleIcon
           className="h-4 w-4 ml-1 text-info stroke-2"
-          data-tooltip-id="status-tooltip"
+          data-tooltip-id="status-tooltip-1"
         />
         <Tooltip
-          id="status-tooltip"
+          id="status-tooltip-1"
           content="Status indicates the kanban column this task is currently in."
-          className="z-[1099] ourtooltips"
+          className="z-[1099] table-header-tooltip"
         />
       </div>
     ),
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
-      filterVariant: "text",
+      filterVariant: "select",
     },
   }),
-  columnHelperProject.accessor("description", {
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Description",
-    enableColumnFilter: true,
-    enableSorting: true,
-    meta: {
-      filterVariant: "text",
-    },
-  }),
+  //columnHelperProject.accessor("description", {
+  // cell: (info) => <span>{info.getValue()}</span>,
+  // header: "Description",
+  // enableColumnFilter: true,
+  // enableSorting: true,
+  // meta: {
+  //   filterVariant: "text",
+  // },
+  //}),
   columnHelperProject.accessor("deadline", {
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Due Date",
@@ -78,10 +77,10 @@ export const ProjectTasksColumns = [
         Completed
         <InformationCircleIcon
           className="h-4 w-4 ml-1 text-info stroke-2"
-          data-tooltip-id="task-status-tooltip"
+          data-tooltip-id="task-status-tooltip-1"
         />
         <Tooltip
-          id="task-status-tooltip"
+          id="task-status-tooltip-1"
           content="Marked complete by the project manager, regardless of whether all parts are finished."
           className="z-[1099] ourtooltips"
         />
@@ -100,16 +99,38 @@ export const ProjectTasksColumns = [
         Percent Complete
         <InformationCircleIcon
           className="h-6 w-6 ml-1 text-info stroke-2"
-          data-tooltip-id="task-percent-tooltip"
+          data-tooltip-id="task-percent-tooltip-1"
         />
         <Tooltip
-          id="task-percent-tooltip"
+          id="task-percent-tooltip-1"
           content="The percentage of individual assignments that have been completed for this task."
           className="z-[1099] ourtooltips"
         />
       </div>
     ),
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => <span>{info.getValue()}%</span>,
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "range",
+    },
+  }),
+  columnHelperProject.accessor("percentApproved", {
+    header: () => (
+      <div className="table-header-tooltip">
+        Percent Approved
+        <InformationCircleIcon
+          className="h-6 w-6 ml-1 text-info stroke-2"
+          data-tooltip-id="task-approved-tooltip-1"
+        />
+        <Tooltip
+          id="task-approved-tooltip-1"
+          content="The percentage of individual assignments that have been approved by the project manager for this task."
+          className="z-[1099] ourtooltips"
+        />
+      </div>
+    ),
+    cell: (info) => <span>{info.getValue()}%</span>,
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
@@ -123,36 +144,26 @@ export const ProjectTasksColumns = [
     enableSorting: false,
     cell: (info) => {
       const hasNewComments = info.row.original.newCommentsCount > 0
+      const { projectId, taskId } = info.row.original.view
       return (
         <div className="flex">
-          <ToggleModal
-            buttonLabel={
+          <PrimaryLink
+            route={Routes.ShowTaskPage({ projectId, taskId })}
+            text={
               <div className="relative">
                 <ChatBubbleOvalLeftEllipsisIcon
                   className={`h-7 w-7 ${hasNewComments ? "text-primary" : "opacity-30"}`}
                   aria-hidden="true"
                 />
                 {hasNewComments && (
-                  <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white">
+                  <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white">
                     {info.row.original.newCommentsCount}
                   </div>
                 )}
               </div>
             }
-            modalTitle={
-              <>
-                <span>Comments:</span>
-                <span className="italic ml-1">{info.row.original.name}</span>
-              </>
-            }
-            buttonClassName="btn-ghost"
-          >
-            <ChatBox
-              taskLogId={info.row.original.firstLogId!}
-              initialComments={info.row.original.comments}
-              refetchComments={info.row.original.refetchTasks}
-            />
-          </ToggleModal>
+            classNames="btn-ghost"
+          />
         </div>
       )
     },

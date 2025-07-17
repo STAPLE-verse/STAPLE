@@ -3,6 +3,7 @@ import TooltipWrapper from "../TooltipWrapper"
 
 const tooltipContents = [
   { id: "project-dashboard-tooltip", content: "Project dashboard" },
+  { id: "project-tags-tooltip", content: "Track members, milestones, and tasks" },
   { id: "project-tasks-tooltip", content: "Project tasks" },
   { id: "project-milestones-tooltip", content: "Group and track tasks" },
   {

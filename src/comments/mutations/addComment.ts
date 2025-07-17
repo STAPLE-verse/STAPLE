@@ -116,7 +116,7 @@ export default resolver.pipe(
         },
         projectId: projectId,
         routeData: {
-          path: Routes.TaskLogsPage({
+          path: Routes.ShowTaskPage({
             projectId: projectId,
             taskId: taskLog.task.id,
           }).href,
@@ -128,13 +128,28 @@ export default resolver.pipe(
     // Merge assigned and manager user IDs
     const allRelevantUserIds = [...assignedUserIds, ...projectManagerIds]
 
-    // Find corresponding ProjectMember records
+    // Find corresponding ProjectMember records for users assigned to the task and project managers
     const relevantProjectMembers = await db.projectMember.findMany({
       where: {
-        id: { in: allRelevantUserIds },
         projectId: projectId,
+        name: null,
+        users: {
+          some: {
+            id: { in: allRelevantUserIds },
+          },
+        },
       },
     })
+
+    console.log("📌 AssignedTo ProjectMemberId:", taskLog.assignedToId)
+    console.log(
+      "📌 Creating commentReadStatus for:",
+      relevantProjectMembers.map((member) => ({
+        commentId: comment.id,
+        projectMemberId: member.id,
+        read: member.id === projectMemberId,
+      }))
+    )
 
     // Create CommentReadStatus records
     await db.commentReadStatus.createMany({

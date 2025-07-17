@@ -42,7 +42,7 @@ export const TeamPage = () => {
         </h1>
 
         {privilege === MemberPrivileges.PROJECT_MANAGER && (
-          <div className="flex justify-center m-4 gap-2">
+          <div className="flex justify-center mt-4 gap-2">
             <Link
               href={Routes.EditTeamPage({
                 projectId: team.projectId,

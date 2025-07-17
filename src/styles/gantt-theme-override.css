@@ -3,49 +3,75 @@
 }
 
 .gantt-wrapper .bar text {
-  fill: oklch(var(--pc));
+  fill: oklch(var(--bc));
   font-weight: bold;
 }
 
 /* Project bar base (including selected state) */
+/* milestone background */
 .gantt-wrapper .bar > g > g > rect:first-child {
-  fill: oklch(var(--bc)) !important;
+  fill: oklch(var(--sc)) !important;
   opacity: 1 !important;
   fill-opacity: 1 !important;
 }
 
 /* Project bar progress (second rect, even when selected) */
+/* milestone fill for progress */
 .gantt-wrapper .bar > g > g > rect:nth-child(2) {
-  fill: oklch(var(--p)) !important;
+  fill: oklch(var(--s)) !important;
 }
 
 /* Project progress bar inner (15px height) */
+/* milestone background */
 .gantt-wrapper .bar > g > g > rect[height="15"] {
-  fill: oklch(var(--s)) !important;
+  fill: oklch(var(--pc)) !important;
+}
+
+/* milestone top bar we don't want */
+.gantt-wrapper .bar > g > g > rect:nth-child(3) {
+  display: none !important;
 }
 
 /* Main table body grid */
 .gantt-wrapper .grid .rows rect:nth-child(odd) {
-  fill: oklch(var(--b1)) !important;
+  fill: oklch(var(--b2)) !important;
 }
 
 .gantt-wrapper .grid .rows rect:nth-child(even) {
-  fill: oklch(var(--b2)) !important;
+  fill: oklch(var(--b3)) !important;
 }
 
 /* Background color of the calendar row */
 .gantt-wrapper .calendar rect {
-  fill: oklch(var(--bc)) !important;
+  fill: oklch(var(--b1)) !important;
+  stroke: oklch(var(--bc) / 0.08) !important;
+  stroke-width: 1.4;
 }
 
 /* Day text (e.g., "Tue, 17") */
 .gantt-wrapper .calendar > text {
-  fill: oklch(var(--pc)) !important;
+  fill: oklch(var(--bc)) !important;
   font-weight: bold;
 }
 
 /* Month text (e.g., "May") */
 .gantt-wrapper .calendarTop text {
-  fill: oklch(var(--s)) !important;
+  fill: oklch(var(--bc)) !important;
   font-weight: bold;
+  transform: translateY(-2px);
+}
+
+/*gantt chart*/
+.rowLines line {
+  stroke: oklch(var(--bc) / 0.08) !important;
+}
+
+/* vertical grid lines in gantt chart */
+.gridBody .ticks line {
+  stroke: oklch(var(--bc) / 0.08) !important;
+}
+
+/* header row grid lines */
+.gantt-wrapper .calendar line {
+  stroke: oklch(var(--bc) / 0.08) !important;
 }

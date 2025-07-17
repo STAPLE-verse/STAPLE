@@ -93,7 +93,14 @@ export default function ChatBox({
                 <div className="chat-header">
                   {getContributorName(comment.author) || "Unknown"}
                   <time className="text-s opacity-50 ml-2">
-                    {comment.createdAt ? new Date(comment.createdAt).toLocaleTimeString() : "N/A"}
+                    {comment.createdAt
+                      ? new Date(comment.createdAt).toLocaleString([], {
+                          weekday: "short",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })
+                      : "N/A"}
                   </time>
                 </div>
                 <div

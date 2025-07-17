@@ -1,6 +1,6 @@
 import { getContributorName } from "src/core/utils/getName"
 import { ExtendedTaskLog, TaskLogCompletedBy, TaskLogTaskCompleted } from "src/core/types"
-import { Prisma } from "@prisma/client"
+import { MemberPrivileges, Prisma } from "@prisma/client"
 import { ProjectMemberWithTaskLog } from "src/core/types"
 import { filterLatestTaskLog } from "../../utils/filterLatestTaskLog"
 import { filterFirstTaskLog } from "src/tasklogs/utils/filterFirstTaskLog"
@@ -25,6 +25,7 @@ export type ProcessedIndividualTaskLog = {
   ui?: Prisma.JsonValue | undefined
   refetchComments?: () => void
   overdue?: boolean
+  privilege: MemberPrivileges
 }
 
 export function processIndividualTaskLogs(
@@ -32,6 +33,7 @@ export function processIndividualTaskLogs(
   comments: CommentWithAuthor[],
   taskName: string,
   currentContributor: number,
+  privilege: MemberPrivileges,
   schema?: Prisma.JsonValue | undefined,
   ui?: Prisma.JsonValue | undefined,
   refetchComments?: () => void,
@@ -85,6 +87,7 @@ export function processIndividualTaskLogs(
       ui: ui,
       refetchComments: refetchComments,
       overdue,
+      privilege: privilege,
     }
   })
 }
@@ -105,6 +108,7 @@ export type ProcessedTeamTaskLog = {
   ui?: Prisma.JsonValue | undefined
   refetchComments?: () => void
   overdue?: boolean
+  privilege: MemberPrivileges
 }
 
 export function processTeamTaskLogs(
@@ -112,6 +116,7 @@ export function processTeamTaskLogs(
   comments: CommentWithAuthor[],
   taskName: string,
   currentContributor: number,
+  privilege: MemberPrivileges,
   schema?: Prisma.JsonValue | undefined,
   ui?: Prisma.JsonValue | undefined,
   refetchComments?: () => void,
@@ -171,6 +176,7 @@ export function processTeamTaskLogs(
       ui: ui,
       refetchComments: refetchComments,
       overdue,
+      privilege: privilege,
     }
   })
 }
@@ -250,6 +256,7 @@ export type ProcessedTaskLogHistoryModal = {
   lastUpdate: string
   status: string
   approved: boolean | null
+  privilege: MemberPrivileges
   formData?: {
     metadata: Prisma.JsonValue
     schema: Prisma.JsonValue
@@ -259,6 +266,7 @@ export type ProcessedTaskLogHistoryModal = {
 
 export function processTaskLogHistoryModal(
   taskLogs: TaskLogCompletedBy[],
+  privilege: MemberPrivileges,
   schema?: any,
   ui?: any
 ): ProcessedTaskLogHistoryModal[] {
@@ -279,6 +287,7 @@ export function processTaskLogHistoryModal(
       }),
       status: taskLog.status === "COMPLETED" ? "Completed" : "Not Completed",
       approved: taskLog.approved,
+      privilege: privilege,
     }
 
     if (schema && ui) {

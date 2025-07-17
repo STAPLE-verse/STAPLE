@@ -4,7 +4,6 @@ import Form from "src/core/components/fields/Form"
 import { FORM_ERROR } from "final-form"
 import { z } from "zod"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
-import { MemberPrivileges } from "db"
 import { Tooltip } from "react-tooltip"
 
 const AddContainerSchema = z.object({

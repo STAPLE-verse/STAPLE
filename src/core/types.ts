@@ -12,6 +12,7 @@ import {
   Status,
   CommentReadStatus,
   Prisma,
+  MemberPrivileges,
 } from "db"
 import { ReactNode } from "react"
 
@@ -82,6 +83,8 @@ export type TeamWithUsers = {
   projectId: number
   name: string
   users: TeamUserWithContributor[]
+  createdAt: Date
+  tags?: Prisma.JsonValue
 }
 
 export type ProjectMemberWithUsername = ProjectMember & {
@@ -125,6 +128,7 @@ export type TaskLogCompletedBy = TaskLog & {
 export type ProjectMemberWithTaskLog = ProjectMember & {
   taskLogAssignedTo: ExtendedTaskLog[]
   users: Pick<User, "id" | "username">[]
+  privilege: MemberPrivileges
 }
 
 export type TaskLogWithCompletedBy = TaskLog & {
@@ -190,4 +194,15 @@ export type TaskWithTaskLogs = Task & {
 }
 export type MilestoneWithTasks = Milestone & {
   task: TaskWithTaskLogs[]
+}
+
+export type ProjectWithNewCommentsCount = Project & {
+  tasks: {
+    taskLogs: {
+      comments: {
+        commentReadStatus: CommentReadStatus[]
+      }[]
+    }[]
+  }[]
+  newCommentsCount: number
 }

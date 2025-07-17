@@ -49,23 +49,6 @@ export const AllTasksColumns = [
       filterVariant: "range",
     },
   }),
-  columnHelperAll.accessor("view", {
-    header: "View",
-    id: "view",
-    enableColumnFilter: false,
-    enableSorting: false,
-    cell: (info) => (
-      <Link
-        className="btn btn-ghost"
-        href={Routes.ShowTaskPage({
-          projectId: info.getValue().projectId,
-          taskId: info.getValue().taskId,
-        })}
-      >
-        <MagnifyingGlassIcon width={25} className="stroke-primary" />
-      </Link>
-    ),
-  }),
   columnHelperAll.accessor("newCommentsCount", {
     header: "Comments",
     id: "newComments",
@@ -87,7 +70,7 @@ export const AllTasksColumns = [
                 className={`h-7 w-7 ${count > 0 ? "text-primary" : "opacity-30"}`}
               />
               {count > 0 && (
-                <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-error text-xs text-white">
+                <div className="flex items-center justify-center absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white">
                   {count}
                 </div>
               )}
@@ -96,5 +79,22 @@ export const AllTasksColumns = [
         </div>
       )
     },
+  }),
+  columnHelperAll.accessor("view", {
+    header: "View",
+    id: "view",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <Link
+        className="btn btn-ghost"
+        href={Routes.ShowTaskPage({
+          projectId: info.getValue().projectId,
+          taskId: info.getValue().taskId,
+        })}
+      >
+        <MagnifyingGlassIcon width={25} className="stroke-primary" />
+      </Link>
+    ),
   }),
 ]

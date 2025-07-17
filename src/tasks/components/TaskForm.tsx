@@ -171,7 +171,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           optionValue="id"
         />
 
-        <label>At least one:</label>
+        <label>Assign at least one person or team:</label>
         <ValidationErrorDisplay fieldName={"projectMembersId"} />
         {/* Contributors */}
         <ToggleModal
@@ -193,7 +193,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         </ToggleModal>
       </CollapseCard>
 
-      <CollapseCard title="Details: Instructions, Deadline, Forms, Roles">
+      <CollapseCard title="Details: Instructions, Dates, Forms, Roles">
         {/* Description */}
         <LabeledTextAreaField
           className="textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2 mb-4"
@@ -203,8 +203,12 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           type="textarea"
         />
 
+        <DateField name="startDate" label="Start Date:" />
+
         {/* Deadline */}
-        <DateField name="deadline" label="Deadline:" />
+        <div className="mt-4">
+          <DateField name="deadline" label="Deadline:" />
+        </div>
 
         {/* Form */}
         {formResponseSupplied ? (
@@ -240,9 +244,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
         />
 
         {/* Tag Input */}
-        <div className="w-1/2">
+        <div className="w-2/3 mt-4">
           <label className="text-base-content">
-            <span className="flex items-center">
+            <span className="flex items-center mb-2">
               Tags:
               <InformationCircleIcon
                 className="h-4 w-4 ml-1 text-info stroke-2"
@@ -270,7 +274,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
             clearAll
             onClearAll={onClearAll}
             classNames={{
-              tags: "p-2 rounded-md bg-base-300 react-tags-wrapper", // entire box for tags
+              tags: "rounded-md bg-base-300 react-tags-wrapper", // entire box for tags
               tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 mb-2 text-lg",
               remove: "ml-3 text-primary-content font-bold cursor-pointer remove",
               tagInput: "bg-base-300", // whole div around

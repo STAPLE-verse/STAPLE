@@ -23,6 +23,15 @@ export const useProjectNotificationTableColumns = (
         cell: (info) => <DateFormat date={info.getValue()} />,
         header: "Date",
       }),
+      columnHelper.accessor("type", {
+        header: "Type",
+        enableColumnFilter: true,
+        enableSorting: true,
+        cell: (info) => <span>{info.getValue()}</span>,
+        meta: {
+          filterVariant: "select",
+        },
+      }),
       columnHelper.accessor("cleanMessage", {
         id: "message",
         header: "Notification Message",

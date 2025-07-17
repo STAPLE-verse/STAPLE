@@ -22,8 +22,11 @@ export const RoleTaskTableColumns = [
   }),
   columnHelper.accessor("description", {
     id: "description",
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Description",
+    cell: (info) => {
+      const value = info.getValue()
+      return <span>{value.length > 200 ? `${value.slice(0, 200)}...` : value}</span>
+    },
+    header: "Instructions",
   }),
   columnHelper.accessor("rolesNames", {
     id: "rolesNames",

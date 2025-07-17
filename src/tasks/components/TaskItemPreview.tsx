@@ -1,6 +1,5 @@
 import clsx from "clsx"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faArrowsUpDownLeftRight } from "@fortawesome/free-solid-svg-icons"
+import { ArrowsPointingOutIcon } from "@heroicons/react/24/outline"
 
 type TaskItemPreviewProps = {
   title: string
@@ -18,10 +17,7 @@ const TaskItemPreview = ({ title, completed }: TaskItemPreviewProps) => {
       <div className="flex items-center justify-between">
         <b className="text-accent-content">{title}</b>
         <div className="flex justify-end items-center">
-          <FontAwesomeIcon
-            icon={faArrowsUpDownLeftRight}
-            className="w-6 h-6 text-neutral border-transparent rounded-2xl"
-          />
+          <ArrowsPointingOutIcon className="w-6 h-6 text-neutral border-transparent rounded-2xl" />
         </div>
       </div>
     </div>

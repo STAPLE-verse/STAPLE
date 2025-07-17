@@ -1,102 +1,79 @@
-import { Routes } from "@blitzjs/next"
-import { useQuery } from "@blitzjs/rpc"
-import Link from "next/link"
 import Table from "src/core/components/Table"
-import getTasks from "src/tasks/queries/getTasks"
 import { Milestone } from "@prisma/client"
 import DateFormat from "src/core/components/DateFormat"
-import { useState } from "react"
-import UpdateTasks from "./UpdateTasksMilestone"
 import { MilestoneTasksColumns } from "../tables/columns/MilestoneTasksColumns"
-import { processMilestoneTasks } from "../tables/processing/processMilestoneTasks"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
+import CollapseCard from "src/core/components/CollapseCard"
+import { MilestoneTasksData } from "../tables/processing/processMilestoneTasks"
+import { MilestoneSummary } from "./MilestoneSummary"
+import { ProjectTasksColumns } from "src/tasks/tables/columns/ProjectTasksColumns"
+import { ProjectTasksData } from "src/tasks/tables/processing/processProjectTasks"
 
 interface MilestoneInformationProps {
   milestone: Milestone
-  projectId: number | undefined
-  onTasksUpdated: () => void
+  processedTasks: ProjectTasksData[]
+  projectId: number
 }
 
 export const MilestoneInformation: React.FC<MilestoneInformationProps> = ({
   milestone,
+  processedTasks,
   projectId,
-  onTasksUpdated,
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const openModal = () => setIsModalOpen(true)
-  const closeModal = () => setIsModalOpen(false)
-
-  // Get tasks
-  const [{ tasks }, { refetch }] = useQuery(getTasks, {
-    where: {
-      project: { id: projectId! },
-    },
-    orderBy: { id: "asc" },
-  })
-
-  const milestoneTasks = tasks.filter((task) => task.milestoneId === milestone.id)
-
-  const processedTasks = processMilestoneTasks(milestoneTasks)
-
   return (
-    <div className="flex flex-row justify-center w-full">
-      <div className="card bg-base-300 w-1/3 mr-2">
-        <div className="card-body">
-          {/* Milestone name */}
-          <div className="card-title" data-tooltip-id="milestone-tool">
-            {milestone.name}
-          </div>
-          <TooltipWrapper
-            id="milestone-tool"
-            content="Overall milestone information"
-            className="z-[1099] ourtooltips"
-          />
-          {/* Milestone description */}
-          {milestone.description}
-          {/* Milestone last update */}
-          <p className="italic">
-            Last update: <DateFormat date={milestone.updatedAt}></DateFormat>
+    <>
+      <CollapseCard title="Milestone Information" defaultOpen={true}>
+        {/* Milestone name */}
+        <div className="card-title" data-tooltip-id="milestone-tool">
+          {milestone.name}
+        </div>
+        <TooltipWrapper
+          id="milestone-tool"
+          content="Overall milestone information"
+          className="z-[1099] ourtooltips"
+        />
+        {/* Milestone description */}
+        {milestone.description}
+
+        {/* Milestone start and end dates */}
+        {milestone.startDate && (
+          <p>
+            <strong>Start Date:</strong> <DateFormat date={milestone.startDate} />
           </p>
-          {/* Show update milestone page */}
-          <div className="card-actions justify-end">
-            <Link
-              className="btn btn-primary"
-              href={Routes.EditMilestonePage({ projectId: projectId!, milestoneId: milestone.id })}
-            >
-              Update Milestone
-            </Link>
+        )}
+        {milestone.endDate && (
+          <p>
+            <strong>End Date:</strong> <DateFormat date={milestone.endDate} />
+          </p>
+        )}
 
-            <button className="btn btn-secondary" onClick={openModal}>
-              Update Tasks
-            </button>
-            <UpdateTasks
-              milestoneId={milestone.id}
-              open={isModalOpen}
-              onClose={closeModal}
-              onTasksUpdated={refetch}
-              tasks={tasks}
-            />
-          </div>
-        </div>
-      </div>
+        {/* Milestone tags */}
+        {Array.isArray(milestone.tags) && milestone.tags.length > 0 && (
+          <p>
+            <strong>Tags:</strong>{" "}
+            {milestone.tags.map((tag: { key: string; value: string }, idx: number) => (
+              <span
+                key={idx}
+                className="bg-primary text-white text-md font-medium px-2 py-1 rounded-md mx-1 inline-block"
+              >
+                {tag.value}
+              </span>
+            ))}
+          </p>
+        )}
+        {/* Milestone last update */}
+        <p className="italic">
+          Last update: <DateFormat date={milestone.updatedAt}></DateFormat>
+        </p>
+      </CollapseCard>
 
-      {/* Tasks */}
-      <div className="card bg-base-300 w-2/3 h-auto">
-        <div className="card-body">
-          <div className="card-title" data-tooltip-id="tasks-tool">
-            Tasks
-          </div>
-          <TooltipWrapper
-            id="tasks-tool"
-            content="Tasks assigned to this milestone"
-            className="z-[1099] ourtooltips"
-          />
-          <div className="overflow-x-auto">
-            <Table columns={MilestoneTasksColumns} data={processedTasks} addPagination={true} />
-          </div>
+      <MilestoneSummary milestone={milestone} projectId={projectId} />
+
+      <CollapseCard title="Tasks" className="mt-4">
+        <div className="overflow-x-auto">
+          <Table columns={ProjectTasksColumns} data={processedTasks} addPagination={true} />
         </div>
-      </div>
-    </div>
+      </CollapseCard>
+    </>
   )
 }

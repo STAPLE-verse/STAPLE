@@ -19,7 +19,11 @@ const NotificationsMenu = () => {
             className="z-[1099] ourtooltips"
             place="left"
           />
-          <span className="badge badge-sm indicator-item">{unreadCount}</span>
+          {unreadCount > 0 && (
+            <span className="badge badge-sm bg-primary text-primary-content indicator-item">
+              {unreadCount}
+            </span>
+          )}
         </div>
       </label>
 
@@ -44,7 +48,7 @@ const NotificationsMenu = () => {
               />
             ))
           ) : (
-            <span className="text-info">No new notifications.</span>
+            <span className="text-info text-lg mt-2 mb-2">No new notifications.</span>
           )}
 
           <div className="card-actions">

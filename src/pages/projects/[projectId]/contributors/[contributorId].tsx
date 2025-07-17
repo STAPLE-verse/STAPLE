@@ -12,6 +12,7 @@ import DeleteContributor from "src/contributors/components/DeleteContributor"
 import ProjectMemberTaskList from "src/projectmembers/components/ProjectMemberTaskList"
 import { TaskLogProjectMemberColumns } from "src/tasklogs/tables/columns/TaskLogProjectMemberColumns"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import ContributorTeams from "src/contributors/components/ContributorTeams"
 
 export const ContributorPage = () => {
   const { privilege } = useMemberPrivileges()
@@ -42,7 +43,7 @@ export const ContributorPage = () => {
           />
         </h1>
         {privilege === MemberPrivileges.PROJECT_MANAGER && (
-          <div className="flex justify-center mt-4 mb-4 gap-2">
+          <div className="flex justify-center mt-4 gap-2">
             <Link
               href={Routes.EditContributorPage({
                 projectId: projectId!,
@@ -61,13 +62,16 @@ export const ContributorPage = () => {
         )}
 
         <ContributorInformation
-          teamNames={teamNames}
           contributorPrivilege={contributorPrivilege}
           contributorUser={contributorUser!}
         />
 
+        {teamNames.length > 0 && (
+          <ContributorTeams teamNames={teamNames} privilege={contributorPrivilege} />
+        )}
+
         <ProjectMemberTaskList
-          projectMemberId={contributorUser!.id}
+          projectMemberId={contributorId!}
           tableColumns={TaskLogProjectMemberColumns}
           currentContributor={currentContributor!.id}
         />

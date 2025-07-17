@@ -12,6 +12,6 @@ export const completedTaskLogPercentage = (
     return -1
   }
 
-  const completedFormTaskLogs = taskLogs.filter((taskLog) => taskLog.status === Status.COMPLETED)
-  return completedFormTaskLogs.length / taskLogs.length
+  const completedTaskLogs = taskLogs.filter((taskLog) => taskLog.status === Status.COMPLETED)
+  return completedTaskLogs.length / taskLogs.length
 }

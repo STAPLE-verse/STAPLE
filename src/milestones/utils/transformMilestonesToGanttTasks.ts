@@ -57,11 +57,11 @@ export const transformMilestonesToGanttTasks = (milestones: MilestoneWithTasks[]
     for (const t of validTasks) {
       const { completed, all } = calculateProgressForTask(t.assignedMembers, t.taskLogs)
       const taskProgress = all > 0 ? Math.round((completed / all) * 100) : 0
-      console.log(t.id, taskProgress)
+      //console.log(t.id, taskProgress)
       out.push({
         id: `task-${t.id}`,
         project: parentId,
-        name: t.name,
+        name: `📋 ${t.name}`,
         start: t.startDate ? new Date(t.startDate) : new Date(t.createdAt),
         end: new Date(t.deadline!),
         type: "task",

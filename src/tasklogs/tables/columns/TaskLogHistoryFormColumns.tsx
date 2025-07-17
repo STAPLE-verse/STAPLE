@@ -23,13 +23,19 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistoryModal>[
     id: "status",
   }),
   columnHelper.accessor("approved", {
-    cell: (info) => (
-      <ApproveDropdown
-        value={info.getValue()}
-        onChange={(newValue) => {}}
-        taskLogId={info.row.original.id}
-      />
-    ),
+    cell: (info) => {
+      const privilege = info.row.original.privilege
+      const value = info.getValue()
+      return privilege === "CONTRIBUTOR" ? (
+        <span>{value === null ? "Pending" : value === true ? "Approved" : "Not Approved"}</span>
+      ) : (
+        <ApproveDropdown
+          value={value}
+          onChange={(newValue) => {}}
+          taskLogId={info.row.original.id}
+        />
+      )
+    },
     header: "Approved",
     id: "approved",
   }),

@@ -129,7 +129,11 @@ export const ProjectTasksTabs = ({ projectPrivilege, projectId }) => {
           </Tab.Panels>
         </Tab.Group>
       )}
-      {projectPrivilege === MemberPrivileges.CONTRIBUTOR && <ProjectTasksList />}
+      {projectPrivilege === MemberPrivileges.CONTRIBUTOR && (
+        <div className="mt-4">
+          <ProjectTasksList />
+        </div>
+      )}
     </>
   )
 }

@@ -1,7 +1,4 @@
-import { useRouter } from "next/router"
-import { useMutation, useQuery } from "@blitzjs/rpc"
-import { Routes } from "@blitzjs/next"
-import deleteMilestone from "src/milestones/mutations/deleteMilestone"
+import { useQuery } from "@blitzjs/rpc"
 import "react-circular-progressbar/dist/styles.css"
 import { Milestone } from "@prisma/client"
 import { completedTaskPercentage } from "src/widgets/utils/completedTaskPercentage"
@@ -12,6 +9,7 @@ import getTasks from "src/tasks/queries/getTasks"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import { TaskLogWithTask } from "src/core/types"
+import CollapseCard from "src/core/components/CollapseCard"
 
 interface MilestoneSummaryProps {
   milestone: Milestone
@@ -19,10 +17,6 @@ interface MilestoneSummaryProps {
 }
 
 export const MilestoneSummary: React.FC<MilestoneSummaryProps> = ({ milestone, projectId }) => {
-  // Setup
-  const router = useRouter()
-  const [deleteMilestoneMutation] = useMutation(deleteMilestone)
-
   // Get tasks
   const [{ tasks }] = useQuery(getTasks, {
     include: {
@@ -55,58 +49,37 @@ export const MilestoneSummary: React.FC<MilestoneSummaryProps> = ({ milestone, p
   const taskPercent = completedTaskPercentage(tasks)
   const rolePercent = completedRolePercentage(tasks)
 
-  // Delete event
-  const handleDelete = async () => {
-    if (window.confirm("This milestone will be deleted. Is that ok?")) {
-      await deleteMilestoneMutation({ id: milestone.id })
-      await router.push(Routes.MilestonesPage({ projectId: projectId! }))
-    }
-  }
-
   return (
-    <div className="flex flex-row justify-center mt-2">
-      <div className="card bg-base-300 w-full">
-        <div className="card-body">
-          <div className="card-title">Project Manager Information</div>
+    <CollapseCard title="Milestone Statistics" className="mt-4">
+      <div className="stats flex justify-between items-center gap-4 bg-base-300 text-lg font-bold">
+        {/* Task status */}
+        <CircularPercentageWidget
+          data={taskPercent}
+          title={"Task Status"}
+          tooltip={"Percent of overall tasks completed by project manager"}
+          noData={tasks.length === 0}
+          noDataText="No tasks were assigned"
+        />
 
-          <div className="stats bg-base-300 text-lg font-bold">
-            {/* Task status */}
-            <CircularPercentageWidget
-              data={taskPercent}
-              title={"Task Status"}
-              tooltip={"Percent of overall tasks completed by project manager"}
-              noData={tasks.length === 0}
-              noDataText="No tasks were assigned"
-            />
-            {/* Form data */}
+        {/* Form data */}
 
-            <CircularPercentageWidget
-              data={formPercent}
-              title={"Form Data"}
-              tooltip={"Percent of required forms completed by contributors"}
-              noData={tasks.length === 0 && formPercent <= 0}
-              noDataText="No tasks with forms were assigned"
-            />
-            {/* Roles */}
-            <CircularPercentageWidget
-              data={rolePercent}
-              title={"Roles"}
-              tooltip={"Percent of tasks in this milestone with assigned roles"}
-              //erin you need to fix this
-              noData={tasks.length === 0}
-              noDataText="No tasks with roles were found"
-            />
-
-            {/* Delete milestone button */}
-            <div className="stat place-items-center">
-              <div className="stat-title text-2xl text-inherit">Delete Milestone</div>
-              <button type="button" className="btn btn-secondary" onClick={handleDelete}>
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
+        <CircularPercentageWidget
+          data={formPercent}
+          title={"Form Data"}
+          tooltip={"Percent of required forms completed by contributors"}
+          noData={tasks.length === 0 || formPercent <= 0}
+          noDataText="No tasks with forms were assigned"
+        />
+        {/* Roles */}
+        <CircularPercentageWidget
+          data={rolePercent}
+          title={"Roles"}
+          tooltip={"Percent of tasks in this milestone with assigned roles"}
+          //erin you need to fix this
+          noData={tasks.length === 0}
+          noDataText="No tasks with roles were found"
+        />
       </div>
-    </div>
+    </CollapseCard>
   )
 }

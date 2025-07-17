@@ -24,7 +24,7 @@ export function GetTableDisplay({ data, columns, type }) {
 //use for all circular task bars
 export function GetCircularProgressDisplay({ proportion }) {
   return (
-    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl">
       <CircularProgressbar
         value={proportion * 100}
         text={`${Math.round(proportion * 100)}%`}

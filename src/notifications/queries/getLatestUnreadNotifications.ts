@@ -1,6 +1,7 @@
 import { Ctx } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
+import { determineNotificationType } from "../utils/determineNotificationType"
 
 interface GetLatestUnreadNotificationsInput {
   projectId?: number
@@ -22,11 +23,20 @@ export default resolver.pipe(
     const notifications = await db.notification.findMany({
       where: whereClause,
       orderBy: { createdAt: "desc" }, // Use a timestamp field to get the latest notifications
-      take: 3,
     })
 
+    const countsByType: { [key: string]: number } = {}
+
+    notifications.forEach((n) => {
+      const type = determineNotificationType(n.message)
+      countsByType[type] = (countsByType[type] || 0) + 1
+    })
+
+    const topThree = notifications.slice(0, 3)
+
     return {
-      notifications,
+      notifications: topThree,
+      countsByType,
     }
   }
 )
