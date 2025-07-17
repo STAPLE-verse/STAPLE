@@ -44,7 +44,14 @@ export const ProjectSchemaInput = ({
         toast.success("Default form has been successfully created!")
 
         // Ensure versions exists and has at least one item
-        const formVersionId = newFormVersion.versions?.[0]?.id
+        const { data: updatedForms } = await refetchForms()
+
+        const allVersions = (updatedForms ?? []).flatMap((form) => form.formVersion ?? [])
+        const sortedVersions = allVersions.sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+        const formVersionId = sortedVersions[0]?.id
+
         if (formVersionId) {
           onDefaultFormCreated(formVersionId)
         } else {
@@ -64,7 +71,7 @@ export const ProjectSchemaInput = ({
     }
   }
 
-  const [userForms] = useQuery(getForms, {
+  const [userForms, { refetch: refetchForms }] = useQuery(getForms, {
     where: { userId: { in: userId }, archived: false },
   })
 

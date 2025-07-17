@@ -1,4 +1,6 @@
+import { eventBus } from "src/core/utils/eventBus"
 import { useQuery } from "@blitzjs/rpc"
+import React, { useEffect, useRef } from "react"
 import "react-circular-progressbar/dist/styles.css"
 import { Milestone } from "@prisma/client"
 import { completedTaskPercentage } from "src/widgets/utils/completedTaskPercentage"
@@ -18,25 +20,20 @@ interface MilestoneSummaryProps {
 
 export const MilestoneSummary: React.FC<MilestoneSummaryProps> = ({ milestone, projectId }) => {
   // Get tasks
-  const [{ tasks }] = useQuery(getTasks, {
-    include: {
-      roles: true,
-    },
-    where: {
-      projectId: projectId,
-      milestoneId: milestone.id,
-    },
+  const taskQuery = useQuery(getTasks, {
+    include: { roles: true },
+    where: { projectId: projectId, milestoneId: milestone.id },
   })
+  const [{ tasks }, { refetch: refetchTasks }] = taskQuery
 
   // get taskLogs for those tasks
-  const [fetchedTaskLogs] = useQuery(getTaskLogs, {
+  const taskLogsQuery = useQuery(getTaskLogs, {
     where: {
       taskId: { in: tasks.map((task) => task.id) },
     },
-    include: {
-      task: true,
-    },
-  }) as unknown as TaskLogWithTask[]
+    include: { task: true },
+  })
+  const [fetchedTaskLogs, { refetch: refetchLogs }] = taskLogsQuery as any
 
   // Cast and handle the possibility of `undefined`
   const taskLogs: TaskLogWithTask[] = (fetchedTaskLogs ?? []) as TaskLogWithTask[]
@@ -48,6 +45,16 @@ export const MilestoneSummary: React.FC<MilestoneSummaryProps> = ({ milestone, p
   const formPercent = completedFormPercentage(allTaskLogs)
   const taskPercent = completedTaskPercentage(tasks)
   const rolePercent = completedRolePercentage(tasks)
+
+  // Listen for custom event to refetch tasks/logs
+  useEffect(() => {
+    const handler = () => {
+      void refetchTasks()
+      void refetchLogs()
+    }
+    eventBus.on("milestoneTasksUpdated", handler)
+    return () => eventBus.off("milestoneTasksUpdated", handler)
+  }, [refetchTasks, refetchLogs])
 
   return (
     <CollapseCard title="Milestone Statistics" className="mt-4">
