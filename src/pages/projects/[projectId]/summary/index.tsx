@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react"
+import { Suspense, useState, useEffect } from "react"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { setQueryData, useMutation, useQuery } from "@blitzjs/rpc"
@@ -31,6 +31,33 @@ const Summary = () => {
   // State to store metadata
   const [assignmentMetadata, setAssignmentMetadata] = useState(project.metadata)
   const [viewerJobId, setViewerJobId] = useState<string | null>(null)
+  const [isViewerZipReady, setIsViewerZipReady] = useState(false)
+
+  useEffect(() => {
+    const savedJobId = localStorage.getItem("viewerJobId")
+    if (savedJobId) {
+      setViewerJobId(savedJobId)
+    }
+
+    const checkZipReady = async () => {
+      if (!savedJobId) return
+      try {
+        const res = await fetch(`/api/viewer-downloads/head?jobId=${savedJobId}`, {
+          method: "HEAD",
+        })
+        if (res.ok) {
+          setIsViewerZipReady(true)
+        } else {
+          setIsViewerZipReady(false)
+        }
+      } catch (err) {
+        setIsViewerZipReady(false)
+      }
+    }
+
+    const interval = setInterval(checkZipReady, 3000)
+    return () => clearInterval(interval)
+  }, [])
 
   const handleJsonFormSubmit = async (data) => {
     //console.log("Submitting form data:", data) // Debug log
@@ -117,7 +144,8 @@ const Summary = () => {
       }
       const data = await response.json()
       setViewerJobId(data.jobId)
-      toast.success("Summary built successfully!")
+      localStorage.setItem("viewerJobId", data.jobId)
+      toast.success("Summary build has started!")
       // Optionally handle data or open a new window if a URL is returned
       // if (data.url) window.open(data.url, "_blank");
     } catch (error) {
@@ -223,7 +251,10 @@ const Summary = () => {
           <button className="btn btn-secondary" onClick={handleLaunchViewer}>
             Generate Shareable Summary
           </button>
-          {viewerJobId && (
+          {viewerJobId && !isViewerZipReady && (
+            <p className="text-sm text-gray-500 mt-2">Building summary ...</p>
+          )}
+          {isViewerZipReady && viewerJobId && (
             <a
               href={`/api/viewer-downloads?jobId=${viewerJobId}`}
               className="btn btn-accent"
