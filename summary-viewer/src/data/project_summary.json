@@ -1,0 +1,779 @@
+{
+  "id": 9,
+  "createdAt": "2024-11-25T23:40:24.559Z",
+  "updatedAt": "2024-11-25T23:40:24.559Z",
+  "name": "Project Summary Test",
+  "description": "Here's a description.",
+  "abstract": "And here's an abstract. ",
+  "keywords": "some, key, words ",
+  "citation": "An apa citation would be nice. ",
+  "publisher": "Nature",
+  "identifier": "10.this.is.fake",
+  "metadata": {
+    "abstract": "Here's an abstract. ",
+    "citation": "I cite myself. ",
+    "keywords": "key, words ",
+    "publisher": "Publisher data",
+    "identifier": "Here's the DOI!"
+  },
+  "formVersionId": 11,
+  "tasks": [
+    {
+      "id": 5,
+      "createdAt": "2024-11-25T23:58:31.566Z",
+      "updatedAt": "2024-11-25T23:58:31.566Z",
+      "createdById": 17,
+      "deadline": "2025-01-06T17:00:00.000Z",
+      "name": "Pre-registration task 2",
+      "description": "Here we would link to the pre-registration. ",
+      "tags": null,
+      "containerTaskOrder": 0,
+      "containerId": 26,
+      "projectId": 9,
+      "elementId": 1,
+      "formVersionId": 1,
+      "status": "NOT_COMPLETED",
+      "element": {
+        "id": 1,
+        "createdAt": "2024-11-25T23:55:39.378Z",
+        "updatedAt": "2024-11-25T23:55:39.378Z",
+        "projectId": 9,
+        "name": "Pre-registration",
+        "description": "This element will contain the pre-registration. "
+      },
+      "roles": [
+        {
+          "id": 3,
+          "userId": 2,
+          "name": "Conceptualization",
+          "description": "Ideas; formulation or evolution of overarching research goals and aims.",
+          "taxonomy": "CRediT",
+          "projectId": null
+        }
+      ],
+      "taskLogs": [
+        {
+          "id": 8,
+          "createdAt": "2024-11-25T23:58:31.575Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": null,
+          "taskId": 5
+        },
+        {
+          "id": 32,
+          "createdAt": "2024-11-26T00:06:55.282Z",
+          "status": "COMPLETED",
+          "metadata": {
+            "email": "cheese@cheese.com",
+            "givenName": "Erin",
+            "familyName": "Doomlab",
+            "identifier": "https://orcid.org/0000-0000-0000-0001",
+            "additionalName": "is "
+          },
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": 17,
+          "taskId": 5
+        }
+      ],
+      "formVersion": {
+        "id": 1,
+        "name": "Contributor Information",
+        "formId": 1,
+        "version": 1,
+        "schema": {
+          "type": "object",
+          "title": "Contributor Information",
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "required": ["givenName", "familyName", "email", "identifier"],
+          "properties": {
+            "email": {
+              "type": "string",
+              "title": "Email:",
+              "format": "email",
+              "description": "Email to be used for official publications, this email can be different than your profile contact email."
+            },
+            "givenName": { "type": "string", "title": "First Name:" },
+            "familyName": { "type": "string", "title": "Family or Last Name:" },
+            "identifier": {
+              "type": "string",
+              "title": "ORCID:",
+              "default": "https://orcid.org/0000-0000-0000-0000",
+              "description": "Enter the complete ORCID url. You can get an ORCID for free from https://orcid.org/."
+            },
+            "additionalName": { "type": "string", "title": "Middle Name or Initial:" }
+          },
+          "description": "Please enter your information to document your contributions. This information will be used to share who contributed to a project.",
+          "dependencies": {}
+        },
+        "uiSchema": {
+          "ui:order": ["givenName", "additionalName", "familyName", "email", "identifier"]
+        },
+        "createdAt": "2024-11-18T15:25:05.597Z"
+      }
+    },
+    {
+      "id": 7,
+      "createdAt": "2024-11-26T00:01:48.970Z",
+      "updatedAt": "2024-11-26T00:01:48.970Z",
+      "createdById": 17,
+      "deadline": null,
+      "name": "Ethics Information Part 2",
+      "description": "Upload the final ethics stuff!",
+      "tags": null,
+      "containerTaskOrder": 0,
+      "containerId": 27,
+      "projectId": 9,
+      "elementId": 2,
+      "formVersionId": null,
+      "status": "NOT_COMPLETED",
+      "element": {
+        "id": 2,
+        "createdAt": "2024-11-25T23:55:55.925Z",
+        "updatedAt": "2024-11-25T23:55:55.925Z",
+        "projectId": 9,
+        "name": "Ethics Information",
+        "description": "This element will contain the ethics information. "
+      },
+      "roles": [
+        {
+          "id": 4,
+          "userId": 2,
+          "name": "Data Curation",
+          "description": "Management activities to annotate (produce metadata), scrub data and maintain research data (including software code, where it is necessary for interpreting the data itself) for initial use and later re-use.",
+          "taxonomy": "CRediT",
+          "projectId": null
+        },
+        {
+          "id": 5,
+          "userId": 2,
+          "name": "Investigation",
+          "description": "Conducting a research and investigation process, specifically performing the experiments, or data/evidence collection.",
+          "taxonomy": "CRediT",
+          "projectId": null
+        }
+      ],
+      "taskLogs": [
+        {
+          "id": 13,
+          "createdAt": "2024-11-26T00:01:48.978Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 18,
+          "completedById": null,
+          "taskId": 7
+        },
+        {
+          "id": 14,
+          "createdAt": "2024-11-26T00:01:48.978Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "TEAM",
+          "assignedToId": 19,
+          "completedById": null,
+          "taskId": 7
+        },
+        {
+          "id": 15,
+          "createdAt": "2024-11-26T00:01:48.978Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "TEAM",
+          "assignedToId": 20,
+          "completedById": null,
+          "taskId": 7
+        },
+        {
+          "id": 33,
+          "createdAt": "2024-11-26T00:07:07.746Z",
+          "status": "COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 18,
+          "completedById": 17,
+          "taskId": 7
+        },
+        {
+          "id": 34,
+          "createdAt": "2024-11-26T00:07:11.840Z",
+          "status": "COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 20,
+          "completedById": 17,
+          "taskId": 7
+        },
+        {
+          "id": 35,
+          "createdAt": "2024-11-26T00:07:33.994Z",
+          "status": "COMPLETED",
+          "metadata": null,
+          "completedAs": "TEAM",
+          "assignedToId": 19,
+          "completedById": 18,
+          "taskId": 7
+        }
+      ],
+      "formVersion": null
+    },
+    {
+      "id": 9,
+      "createdAt": "2024-11-26T00:04:08.315Z",
+      "updatedAt": "2024-11-26T00:04:08.315Z",
+      "createdById": 17,
+      "deadline": null,
+      "name": "Upload your data",
+      "description": "Upload your data and fill out the form. ",
+      "tags": null,
+      "containerTaskOrder": 2,
+      "containerId": 26,
+      "projectId": 9,
+      "elementId": 3,
+      "formVersionId": 2,
+      "status": "NOT_COMPLETED",
+      "element": {
+        "id": 3,
+        "createdAt": "2024-11-25T23:56:17.661Z",
+        "updatedAt": "2024-11-25T23:56:17.661Z",
+        "projectId": 9,
+        "name": "Data Collection",
+        "description": "This element contains data collection. "
+      },
+      "roles": [
+        {
+          "id": 4,
+          "userId": 2,
+          "name": "Data Curation",
+          "description": "Management activities to annotate (produce metadata), scrub data and maintain research data (including software code, where it is necessary for interpreting the data itself) for initial use and later re-use.",
+          "taxonomy": "CRediT",
+          "projectId": null
+        },
+        {
+          "id": 5,
+          "userId": 2,
+          "name": "Investigation",
+          "description": "Conducting a research and investigation process, specifically performing the experiments, or data/evidence collection.",
+          "taxonomy": "CRediT",
+          "projectId": null
+        }
+      ],
+      "taskLogs": [
+        {
+          "id": 18,
+          "createdAt": "2024-11-26T00:04:08.323Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 18,
+          "completedById": null,
+          "taskId": 9
+        },
+        {
+          "id": 19,
+          "createdAt": "2024-11-26T00:04:08.323Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "TEAM",
+          "assignedToId": 20,
+          "completedById": null,
+          "taskId": 9
+        },
+        {
+          "id": 20,
+          "createdAt": "2024-11-26T00:04:08.323Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": null,
+          "taskId": 9
+        },
+        {
+          "id": 21,
+          "createdAt": "2024-11-26T00:04:08.323Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "TEAM",
+          "assignedToId": 19,
+          "completedById": null,
+          "taskId": 9
+        },
+        {
+          "id": 31,
+          "createdAt": "2024-11-26T00:06:21.376Z",
+          "status": "COMPLETED",
+          "metadata": {
+            "funder": "Here's the data information",
+            "identifier": "update the data",
+            "description": "Adding data"
+          },
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": 17,
+          "taskId": 9
+        },
+        {
+          "id": 36,
+          "createdAt": "2024-11-26T00:07:55.386Z",
+          "status": "COMPLETED",
+          "metadata": {
+            "funder": "Aggieerin adding stuff",
+            "identifier": "Here's my number ",
+            "description": "Different person filling this out"
+          },
+          "completedAs": "TEAM",
+          "assignedToId": 20,
+          "completedById": 18,
+          "taskId": 9
+        }
+      ],
+      "formVersion": {
+        "id": 2,
+        "name": "Funding for Contributor or Project",
+        "formId": 2,
+        "version": 1,
+        "schema": {
+          "type": "object",
+          "title": "Funding for Contributor or Project",
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "required": ["funder", "description", "identifier"],
+          "properties": {
+            "funder": { "type": "string", "title": "Name of Funder:" },
+            "identifier": { "type": "string", "title": "Funding number or other identifier:" },
+            "description": { "type": "string", "title": "Description of the funding: " }
+          },
+          "description": "Information about the funding for a Contributor or Project",
+          "dependencies": {}
+        },
+        "uiSchema": { "ui:order": ["funder", "description", "identifier"] },
+        "createdAt": "2024-11-18T15:25:05.616Z"
+      }
+    },
+    {
+      "id": 4,
+      "createdAt": "2024-11-25T23:57:11.054Z",
+      "updatedAt": "2024-11-26T00:04:17.280Z",
+      "createdById": 17,
+      "deadline": "2024-11-29T17:00:00.000Z",
+      "name": "Pre-registration task 1",
+      "description": "This task has information about how to pre-register. ",
+      "tags": null,
+      "containerTaskOrder": 0,
+      "containerId": 25,
+      "projectId": 9,
+      "elementId": 1,
+      "formVersionId": null,
+      "status": "COMPLETED",
+      "element": {
+        "id": 1,
+        "createdAt": "2024-11-25T23:55:39.378Z",
+        "updatedAt": "2024-11-25T23:55:39.378Z",
+        "projectId": 9,
+        "name": "Pre-registration",
+        "description": "This element will contain the pre-registration. "
+      },
+      "roles": [
+        {
+          "id": 3,
+          "userId": 2,
+          "name": "Conceptualization",
+          "description": "Ideas; formulation or evolution of overarching research goals and aims.",
+          "taxonomy": "CRediT",
+          "projectId": null
+        }
+      ],
+      "taskLogs": [
+        {
+          "id": 7,
+          "createdAt": "2024-11-25T23:57:11.064Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": null,
+          "taskId": 4
+        },
+        {
+          "id": 22,
+          "createdAt": "2024-11-26T00:04:18.439Z",
+          "status": "COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": 17,
+          "taskId": 4
+        },
+        {
+          "id": 23,
+          "createdAt": "2024-11-26T00:04:20.667Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": 17,
+          "taskId": 4
+        },
+        {
+          "id": 24,
+          "createdAt": "2024-11-26T00:04:21.532Z",
+          "status": "COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": 17,
+          "taskId": 4
+        }
+      ],
+      "formVersion": null
+    },
+    {
+      "id": 6,
+      "createdAt": "2024-11-26T00:00:06.660Z",
+      "updatedAt": "2024-11-26T00:05:48.929Z",
+      "createdById": 17,
+      "deadline": null,
+      "name": "Ethics Information",
+      "description": "You need to submit your IRB. ",
+      "tags": null,
+      "containerTaskOrder": 1,
+      "containerId": 25,
+      "projectId": 9,
+      "elementId": 2,
+      "formVersionId": 2,
+      "status": "COMPLETED",
+      "element": {
+        "id": 2,
+        "createdAt": "2024-11-25T23:55:55.925Z",
+        "updatedAt": "2024-11-25T23:55:55.925Z",
+        "projectId": 9,
+        "name": "Ethics Information",
+        "description": "This element will contain the ethics information. "
+      },
+      "roles": [
+        {
+          "id": 5,
+          "userId": 2,
+          "name": "Investigation",
+          "description": "Conducting a research and investigation process, specifically performing the experiments, or data/evidence collection.",
+          "taxonomy": "CRediT",
+          "projectId": null
+        }
+      ],
+      "taskLogs": [
+        {
+          "id": 9,
+          "createdAt": "2024-11-26T00:00:06.677Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 18,
+          "completedById": null,
+          "taskId": 6
+        },
+        {
+          "id": 10,
+          "createdAt": "2024-11-26T00:00:06.677Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": null,
+          "taskId": 6
+        },
+        {
+          "id": 11,
+          "createdAt": "2024-11-26T00:01:19.491Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "TEAM",
+          "assignedToId": 19,
+          "completedById": null,
+          "taskId": 6
+        },
+        {
+          "id": 12,
+          "createdAt": "2024-11-26T00:01:19.491Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "TEAM",
+          "assignedToId": 20,
+          "completedById": null,
+          "taskId": 6
+        },
+        {
+          "id": 25,
+          "createdAt": "2024-11-26T00:04:51.512Z",
+          "status": "COMPLETED",
+          "metadata": {
+            "funder": "Here's some fake data",
+            "identifier": "Here's a number. ",
+            "description": "Description is fake"
+          },
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": 17,
+          "taskId": 6
+        },
+        {
+          "id": 26,
+          "createdAt": "2024-11-26T00:05:02.753Z",
+          "status": "COMPLETED",
+          "metadata": {
+            "funder": "Here's some fake data (erin is updating)",
+            "identifier": "Here's a number. ",
+            "description": "Description is fake"
+          },
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": 17,
+          "taskId": 6
+        },
+        {
+          "id": 27,
+          "createdAt": "2024-11-26T00:05:16.267Z",
+          "status": "COMPLETED",
+          "metadata": {
+            "funder": "Team data on this one.",
+            "identifier": "The team data number. ",
+            "description": "Adding team data."
+          },
+          "completedAs": "TEAM",
+          "assignedToId": 19,
+          "completedById": 17,
+          "taskId": 6
+        },
+        {
+          "id": 28,
+          "createdAt": "2024-11-26T00:05:35.708Z",
+          "status": "COMPLETED",
+          "metadata": {
+            "funder": "Providing data for this person. ",
+            "identifier": "A number by doomlab. ",
+            "description": "Should show that doomlab did it. "
+          },
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 18,
+          "completedById": 17,
+          "taskId": 6
+        }
+      ],
+      "formVersion": {
+        "id": 2,
+        "name": "Funding for Contributor or Project",
+        "formId": 2,
+        "version": 1,
+        "schema": {
+          "type": "object",
+          "title": "Funding for Contributor or Project",
+          "$schema": "http://json-schema.org/draft-04/schema#",
+          "required": ["funder", "description", "identifier"],
+          "properties": {
+            "funder": { "type": "string", "title": "Name of Funder:" },
+            "identifier": { "type": "string", "title": "Funding number or other identifier:" },
+            "description": { "type": "string", "title": "Description of the funding: " }
+          },
+          "description": "Information about the funding for a Contributor or Project",
+          "dependencies": {}
+        },
+        "uiSchema": { "ui:order": ["funder", "description", "identifier"] },
+        "createdAt": "2024-11-18T15:25:05.616Z"
+      }
+    },
+    {
+      "id": 8,
+      "createdAt": "2024-11-26T00:03:37.641Z",
+      "updatedAt": "2024-11-26T00:05:59.087Z",
+      "createdById": 17,
+      "deadline": "2024-12-06T17:00:00.000Z",
+      "name": "Data Collection Part 1",
+      "description": "Indicate your data collection progress. ",
+      "tags": null,
+      "containerTaskOrder": 1,
+      "containerId": 26,
+      "projectId": 9,
+      "elementId": 3,
+      "formVersionId": null,
+      "status": "COMPLETED",
+      "element": {
+        "id": 3,
+        "createdAt": "2024-11-25T23:56:17.661Z",
+        "updatedAt": "2024-11-25T23:56:17.661Z",
+        "projectId": 9,
+        "name": "Data Collection",
+        "description": "This element contains data collection. "
+      },
+      "roles": [
+        {
+          "id": 4,
+          "userId": 2,
+          "name": "Data Curation",
+          "description": "Management activities to annotate (produce metadata), scrub data and maintain research data (including software code, where it is necessary for interpreting the data itself) for initial use and later re-use.",
+          "taxonomy": "CRediT",
+          "projectId": null
+        },
+        {
+          "id": 5,
+          "userId": 2,
+          "name": "Investigation",
+          "description": "Conducting a research and investigation process, specifically performing the experiments, or data/evidence collection.",
+          "taxonomy": "CRediT",
+          "projectId": null
+        }
+      ],
+      "taskLogs": [
+        {
+          "id": 16,
+          "createdAt": "2024-11-26T00:03:37.649Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 18,
+          "completedById": null,
+          "taskId": 8
+        },
+        {
+          "id": 17,
+          "createdAt": "2024-11-26T00:03:37.649Z",
+          "status": "NOT_COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": null,
+          "taskId": 8
+        },
+        {
+          "id": 29,
+          "createdAt": "2024-11-26T00:06:00.200Z",
+          "status": "COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 17,
+          "completedById": 17,
+          "taskId": 8
+        },
+        {
+          "id": 30,
+          "createdAt": "2024-11-26T00:06:03.311Z",
+          "status": "COMPLETED",
+          "metadata": null,
+          "completedAs": "INDIVIDUAL",
+          "assignedToId": 18,
+          "completedById": 17,
+          "taskId": 8
+        }
+      ],
+      "formVersion": null
+    }
+  ],
+  "projectMembers": [
+    {
+      "id": 17,
+      "createdAt": "2024-11-25T23:40:24.563Z",
+      "updatedAt": "2024-11-25T23:40:24.563Z",
+      "projectId": 9,
+      "name": null,
+      "deleted": false,
+      "users": [
+        {
+          "institution": null,
+          "username": "doomlab",
+          "firstName": null,
+          "lastName": null,
+          "email": "buchananlab@gmail.com"
+        }
+      ],
+      "roles": [
+        {
+          "id": 3,
+          "userId": 2,
+          "name": "Conceptualization",
+          "description": "Ideas; formulation or evolution of overarching research goals and aims.",
+          "taxonomy": "CRediT",
+          "projectId": null
+        },
+        {
+          "id": 4,
+          "userId": 2,
+          "name": "Data Curation",
+          "description": "Management activities to annotate (produce metadata), scrub data and maintain research data (including software code, where it is necessary for interpreting the data itself) for initial use and later re-use.",
+          "taxonomy": "CRediT",
+          "projectId": null
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "createdAt": "2024-11-25T23:59:16.709Z",
+      "updatedAt": "2024-11-25T23:59:16.709Z",
+      "projectId": 9,
+      "name": null,
+      "deleted": false,
+      "users": [
+        {
+          "institution": null,
+          "username": "aggieerin",
+          "firstName": null,
+          "lastName": null,
+          "email": "aggieerin@gmail.com"
+        }
+      ],
+      "roles": [
+        {
+          "id": 3,
+          "userId": 2,
+          "name": "Conceptualization",
+          "description": "Ideas; formulation or evolution of overarching research goals and aims.",
+          "taxonomy": "CRediT",
+          "projectId": null
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "createdAt": "2024-11-26T00:00:20.007Z",
+      "updatedAt": "2024-11-26T00:00:20.007Z",
+      "projectId": 9,
+      "name": "Team of People 1",
+      "deleted": false,
+      "users": [
+        {
+          "institution": null,
+          "username": "doomlab",
+          "firstName": null,
+          "lastName": null,
+          "email": "buchananlab@gmail.com"
+        },
+        {
+          "institution": null,
+          "username": "aggieerin",
+          "firstName": null,
+          "lastName": null,
+          "email": "aggieerin@gmail.com"
+        }
+      ],
+      "roles": []
+    },
+    {
+      "id": 20,
+      "createdAt": "2024-11-26T00:00:27.840Z",
+      "updatedAt": "2024-11-26T00:00:27.840Z",
+      "projectId": 9,
+      "name": "Team of People 2",
+      "deleted": false,
+      "users": [
+        {
+          "institution": null,
+          "username": "aggieerin",
+          "firstName": null,
+          "lastName": null,
+          "email": "aggieerin@gmail.com"
+        }
+      ],
+      "roles": []
+    }
+  ]
+}
