@@ -30,6 +30,7 @@ const Summary = () => {
 
   // State to store metadata
   const [assignmentMetadata, setAssignmentMetadata] = useState(project.metadata)
+  const [viewerJobId, setViewerJobId] = useState<string | null>(null)
 
   const handleJsonFormSubmit = async (data) => {
     //console.log("Submitting form data:", data) // Debug log
@@ -98,6 +99,30 @@ const Summary = () => {
     } catch (error) {
       console.error("Failed to reset metadata:", error)
       toast.error("Failed to reset metadata. Please try again.")
+    }
+  }
+
+  // Handler for launching the viewer
+  const handleLaunchViewer = async () => {
+    try {
+      const response = await fetch("/api/build-viewer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cleanProject),
+      })
+      if (!response.ok) {
+        throw new Error("Failed to launch viewer")
+      }
+      const data = await response.json()
+      setViewerJobId(data.jobId)
+      toast.success("Summary built successfully!")
+      // Optionally handle data or open a new window if a URL is returned
+      // if (data.url) window.open(data.url, "_blank");
+    } catch (error) {
+      console.error(error)
+      toast.error("Failed to build summary. Please try again.")
     }
   }
 
@@ -195,7 +220,18 @@ const Summary = () => {
             className="btn btn-primary"
             label="Download Project JSON"
           />
-          <button className="btn btn-secondary">Launch Viewer (coming soon)</button>
+          <button className="btn btn-secondary" onClick={handleLaunchViewer}>
+            Generate Shareable Summary
+          </button>
+          {viewerJobId && (
+            <a
+              href={`/api/viewer-downloads?jobId=${viewerJobId}`}
+              className="btn btn-accent"
+              download
+            >
+              Download Shareable Summary
+            </a>
+          )}
         </div>
       </CollapseCard>
 
