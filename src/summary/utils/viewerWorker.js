@@ -1,19 +1,22 @@
-import { Worker } from "bullmq"
-import { viewerQueue } from "src/summary/utils/viewerQueue"
-import fs from "fs"
-import path from "path"
-import { execSync } from "child_process"
-import archiver from "archiver"
+// @ts-nocheck
+const { Worker: QueueWorker } = require("bullmq")
+const { viewerQueue } = require("./viewerQueue")
+const fs = require("fs")
+const path = require("path")
+const { execSync } = require("child_process")
+const archiver = require("archiver")
 
 const viewerAppPath = path.resolve("summary-viewer") // update this!
 const buildOutputDir = path.join(process.cwd(), "viewer-builds")
 
 // Start the worker
-new Worker(
+new QueueWorker(
   "viewer-build",
   async (job) => {
     const { jobId, data } = job.data
     const jobFolder = path.join(buildOutputDir, `viewer_${jobId}`)
+    // Ensure the buildOutputDir exists before creating the ZIP file
+    fs.mkdirSync(buildOutputDir, { recursive: true })
     const jsonPath = path.resolve(viewerAppPath, "src/data/project_summary.json")
     fs.mkdirSync(path.dirname(jsonPath), { recursive: true })
     fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2))

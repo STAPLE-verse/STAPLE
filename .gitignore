@@ -64,3 +64,5 @@ db/migrations/
 tmp/*
 summary-viewer/docs/.nojekyll
 summary-viewer/docs/*
+viewer-builds/*
+summary-viewer/src/data/project_summary.json

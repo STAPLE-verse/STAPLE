@@ -10,7 +10,8 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "prepare": "husky install",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "run-viewer-worker": "node src/summary/utils/viewerWorker.js"
   },
   "prisma": {
     "schema": "db/schema.prisma"

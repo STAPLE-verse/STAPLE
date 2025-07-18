@@ -21,5 +21,13 @@
     "downlevelIteration": true
   },
   "exclude": ["node_modules", "**/*.e2e.ts", "cypress"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types", "integrations/mailer.js"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "types",
+    "integrations/mailer.js",
+    "src/summary/utils/viewerWorker.js",
+    "src/summary/utils/viewerQueue.js"
+  ]
 }
