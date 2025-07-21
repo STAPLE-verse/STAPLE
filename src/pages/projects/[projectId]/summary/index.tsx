@@ -32,17 +32,20 @@ const Summary = () => {
   const [assignmentMetadata, setAssignmentMetadata] = useState(project.metadata)
   const [viewerJobId, setViewerJobId] = useState<string | null>(null)
   const [isViewerZipReady, setIsViewerZipReady] = useState(false)
+  const [viewerBuildStarted, setViewerBuildStarted] = useState(false)
 
   useEffect(() => {
-    const savedJobId = localStorage.getItem("viewerJobId")
-    if (savedJobId) {
-      setViewerJobId(savedJobId)
+    if (!viewerJobId) {
+      const savedJobId = localStorage.getItem("viewerJobId")
+      if (savedJobId) {
+        setViewerJobId(savedJobId)
+      }
+      return
     }
 
     const checkZipReady = async () => {
-      if (!savedJobId) return
       try {
-        const res = await fetch(`/api/viewer-downloads/head?jobId=${savedJobId}`, {
+        const res = await fetch(`/api/viewer-downloads/head?jobId=${viewerJobId}`, {
           method: "HEAD",
         })
         if (res.ok) {
@@ -57,7 +60,7 @@ const Summary = () => {
 
     const interval = setInterval(checkZipReady, 3000)
     return () => clearInterval(interval)
-  }, [])
+  }, [viewerJobId])
 
   const handleJsonFormSubmit = async (data) => {
     //console.log("Submitting form data:", data) // Debug log
@@ -132,6 +135,7 @@ const Summary = () => {
   // Handler for launching the viewer
   const handleLaunchViewer = async () => {
     try {
+      setViewerBuildStarted(true)
       const response = await fetch("/api/build-viewer", {
         method: "POST",
         headers: {
@@ -251,7 +255,7 @@ const Summary = () => {
           <button className="btn btn-secondary" onClick={handleLaunchViewer}>
             Generate Shareable Summary
           </button>
-          {viewerJobId && !isViewerZipReady && (
+          {viewerBuildStarted && viewerJobId && !isViewerZipReady && (
             <p className="text-sm text-gray-500 mt-2">Building summary ...</p>
           )}
           {isViewerZipReady && viewerJobId && (

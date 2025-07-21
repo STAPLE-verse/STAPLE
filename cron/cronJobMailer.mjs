@@ -1,5 +1,3 @@
-import fs from "fs"
-import path from "path"
 import dotenv from "dotenv"
 dotenv.config({ path: "../.env.local" })
 import moment from "moment"
@@ -153,25 +151,9 @@ async function sendDailyNotifications() {
   try {
     const groupedNotifications = await fetchAndGroupNotifications()
     await sendGroupedNotifications(groupedNotifications)
-    await cleanUpViewerZips()
   } catch (error) {
     console.error("Error in sendDailyNotifications:", error)
   }
-}
-
-// clean up the viewer zip folder
-function cleanUpViewerZips() {
-  const zipDir = path.join(process.cwd(), "viewer-builds")
-  if (!fs.existsSync(zipDir)) return
-
-  const files = fs.readdirSync(zipDir)
-  for (const file of files) {
-    if (file.endsWith(".zip")) {
-      fs.unlinkSync(path.join(zipDir, file))
-    }
-  }
-
-  console.log(`[${new Date().toISOString()}] Viewer zip cleanup completed.`)
 }
 
 // Run the daily notifications job
