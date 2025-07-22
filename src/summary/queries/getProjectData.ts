@@ -13,6 +13,7 @@ export default resolver.pipe(resolver.zod(GetProjectData), resolver.authorize(),
     where: { id },
     include: {
       formVersion: true,
+      milestones: true,
       tasks: {
         include: {
           milestone: true,
