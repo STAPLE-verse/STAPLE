@@ -5,7 +5,7 @@ export default {
 
   pages: [
     { name: "Contributors", path: "/people_roles" },
-    { name: "Tasks", path: "/elements_tasks" },
+    { name: "Tasks", path: "/tasks" },
     { name: "Form Data", path: "/forms" },
     { name: "Events", path: "/timeline" },
   ],

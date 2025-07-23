@@ -173,8 +173,8 @@ const tasksDataFrame = jsonData.tasks.flatMap((task) =>
       name: task.name || "Unnamed Task",
       description: task.description || "No Description",
       status: task.status || "Unknown Status",
-      elementName: task.element?.name || "No Element Name",
-      elementDescription: task.element?.description || "No Element Description",
+      milestoneName: task.milestone?.name || "No Milestone Name",
+      milestoneDescription: task.milestone?.description || "No Milestone Description",
       taskLogCreatedAt: log.createdAt,
       taskLogStatus: log.status || "Unknown Status",
       taskLogMetadata: log.metadata || "No Metadata",
@@ -694,55 +694,63 @@ rolesByIndividual.forEach((member) => {
 ```
 
 ```js get-roles-teams
-const rolesByTeam = teamsDataArray.map((team) => {
-  const roleCounts = {}
-
-  // Filter task logs where the task is assigned to this team
-  const teamTaskLogs = latestTaskLogs.filter((log) => log.assignedToId === team.teamId)
-
-  // Count roles across all tasks assigned to this team
-  teamTaskLogs.forEach((log) => {
-    log.roles.forEach((role) => {
-      roleCounts[role.name] = (roleCounts[role.name] || 0) + 1
-    })
+const uniqueTeamIds = new Set()
+const rolesByTeam = teamsDataArray
+  .filter((team) => {
+    if (uniqueTeamIds.has(team.teamId)) return false
+    uniqueTeamIds.add(team.teamId)
+    return true
   })
+  .map((team) => {
+    const roleCounts = {}
 
-  // Calculate task and form completion details
-  const numberOfTasksCompleted = teamTaskLogs.filter(
-    (log) => log.taskLogStatus === "COMPLETED"
-  ).length
-  const totalTasks = teamTaskLogs.length
-  const numberOfMetadataForms = teamTaskLogs.filter(
-    (log) => log.taskLogMetadata !== "No Metadata" && log.taskLogStatus === "COMPLETED"
-  ).length
-  const totalForms = teamTaskLogs.filter((log) => log.taskLogMetadata !== "No Metadata").length
+    // Filter task logs where the task is assigned to this team
+    const teamTaskLogs = latestTaskLogs.filter((log) => log.assignedToId === team.teamId)
 
-  // Calculate percentages
-  const tasksPercentComplete = ((numberOfTasksCompleted / totalTasks) * 100).toFixed(1)
-  const formsPercentComplete = ((numberOfMetadataForms / totalForms) * 100).toFixed(1)
+    // Count roles across all tasks assigned to this team
+    teamTaskLogs.forEach((log) => {
+      log.roles.forEach((role) => {
+        roleCounts[role.name] = (roleCounts[role.name] || 0) + 1
+      })
+    })
 
-  // Return the team data with all required columns
-  return {
-    teamId: team.teamId,
-    teamName: team.teamName,
-    roles: Object.entries(roleCounts).map(([roleName, count]) => ({
-      name: roleName,
-      count,
-    })),
-    numberOfTasksCompleted: numberOfTasksCompleted || 0,
-    totalTasks: totalTasks || 0,
-    numberOfMetadataForms: numberOfMetadataForms || 0,
-    totalForms: totalForms || 0,
-    tasksPercentComplete: tasksPercentComplete || 0,
-    formsPercentComplete: formsPercentComplete || 0,
-  }
-})
+    // Calculate task and form completion details
+    const numberOfTasksCompleted = teamTaskLogs.filter(
+      (log) => log.taskLogStatus === "COMPLETED"
+    ).length
+    const totalTasks = teamTaskLogs.length
+    const numberOfMetadataForms = teamTaskLogs.filter(
+      (log) => log.taskLogMetadata !== "No Metadata" && log.taskLogStatus === "COMPLETED"
+    ).length
+    const totalForms = teamTaskLogs.filter((log) => log.taskLogMetadata !== "No Metadata").length
 
-console.log(rolesByTeam)
+    // Calculate percentages
+    const tasksPercentComplete = ((numberOfTasksCompleted / totalTasks) * 100).toFixed(1)
+    const formsPercentComplete = ((numberOfMetadataForms / totalForms) * 100).toFixed(1)
+
+    // Return the team data with all required columns
+    return {
+      teamId: team.teamId,
+      teamName: team.teamName,
+      roles: Object.entries(roleCounts).map(([roleName, count]) => ({
+        name: roleName,
+        count,
+      })),
+      numberOfTasksCompleted: numberOfTasksCompleted || 0,
+      totalTasks: totalTasks || 0,
+      numberOfMetadataForms: numberOfMetadataForms || 0,
+      totalForms: totalForms || 0,
+      tasksPercentComplete: tasksPercentComplete || 0,
+      formsPercentComplete: formsPercentComplete || 0,
+    }
+  })
 ```
 
 ```js make-donuts-teams
+const renderedTeamIds = new Set()
 rolesByTeam.forEach((team) => {
+  if (renderedTeamIds.has(team.teamId)) return
+  renderedTeamIds.add(team.teamId)
   const data = {
     values: team.roles.map((role) => role.count),
     labels: team.roles.map((role) => role.name),
@@ -792,6 +800,100 @@ rolesByTeam.forEach((team) => {
   card.addEventListener("click", () => {
     showDetails("team", team.teamId, team.teamName, "team-details-section")
   })
+})
+```
+
+```js tasks-with-names-formatted
+const tasksWithNames = tasksDataFrame.map((task) => {
+  // Find the assigned team or individual name
+  const assignedName = (() => {
+    const assignedTeam = groupMembersDataFrame.find(
+      (team) => team.projectMemberId === task.assignedToId
+    )
+
+    if (assignedTeam) {
+      return assignedTeam.groupName || "Unnamed Team"
+    }
+
+    const assignedMember = projectMembersDataFrame.find(
+      (member) => member.projectMemberId === task.assignedToId
+    )
+
+    if (assignedMember) {
+      const fullName = `${assignedMember.firstName?.trim() || "Not Provided"} ${
+        assignedMember.lastName?.trim() || "Not Provided"
+      }`.trim()
+      return fullName === "Not Provided Not Provided"
+        ? `No Name Provided (${assignedMember.username || "No Username"})`
+        : `${fullName} (${assignedMember.username || "No Username"})`
+    }
+    return "Unassigned" // Fallback if no match is found
+  })()
+
+  // Find the completed by team or individual name
+  const completedByName = (() => {
+    if (task.completedById === "Task Created") {
+      return "Task Created" // Special case handling
+    }
+
+    const completedByTeam = groupMembersDataFrame.find(
+      (team) => team.projectMemberId === task.completedById
+    )
+
+    if (completedByTeam) {
+      return completedByTeam.groupName || "Unnamed Team"
+    }
+
+    const completedByMember = projectMembersDataFrame.find(
+      (member) => member.projectMemberId === task.completedById
+    )
+
+    if (completedByMember) {
+      const fullName = `${completedByMember.firstName?.trim() || "Not Provided"} ${
+        completedByMember.lastName?.trim() || "Not Provided"
+      }`.trim()
+      return fullName === "Not Provided Not Provided"
+        ? `No Name Provided (${completedByMember.username || "No Username"})`
+        : `${fullName} (${completedByMember.username || "No Username"})`
+    }
+    return "Unknown" // Fallback if no match is found
+  })()
+
+  // DEBUG LOGGING: Warn if mapping fails for assignedTo or completedBy
+  if (!assignedName || !completedByName) {
+    console.warn("DEBUG: Missing mapping", {
+      taskId: task.taskId,
+      assignedToId: task.assignedToId,
+      completedById: task.completedById,
+      assignedName,
+      completedByName,
+    })
+  }
+
+  // Combine role names into a single string
+  const combinedRoles = task.roles.map((role) => role.name).join(", ")
+
+  // Format taskLogMetadata as a JSON string if it contains data
+  const formattedMetadata =
+    task.taskLogMetadata && typeof task.taskLogMetadata === "object"
+      ? JSON.stringify(task.taskLogMetadata, null, 2) // Pretty-printed JSON
+      : task.taskLogMetadata
+
+  // Convert taskLogStatus to a user-friendly format
+  const formattedStatus = task.taskLogStatus === "COMPLETED" ? "Completed" : "Not Completed"
+
+  const formattedTaskStatus = task.taskStatus === "COMPLETED" ? "Completed" : "Not Completed"
+
+  // Return a new object with updated values
+  return {
+    ...task, // Spread the existing task data
+    assignedTo: assignedName, // Replace assignedToId with the formatted name
+    completedBy: completedByName, // Handle "Task Created" case and unknowns
+    roles: combinedRoles, // Combine roles into a single string
+    taskLogMetadata: formattedMetadata, // Pretty-print JSON if applicable
+    taskLogStatus: formattedStatus, // User-friendly status
+    status: formattedTaskStatus,
+  }
 })
 ```
 
@@ -885,8 +987,8 @@ function showDetails(type, id, name, detailsSectionId) {
       { data: "name", title: "Task Name", visible: true },
       { data: "description", title: "Task Description", visible: true },
       { data: "status", title: "Task Completed", visible: true },
-      { data: "elementName", title: "Element Name", visible: true },
-      { data: "elementDescription", title: "Element Description", visible: true },
+      { data: "milestoneName", title: "Milestone Name", visible: true },
+      { data: "milestoneDescription", title: "Milestone Description", visible: true },
       { data: "taskLogCreatedAt", title: "Task Log Date", visible: true },
       { data: "taskLogStatus", title: "Task Log Completed", visible: true },
       { data: "taskLogMetadata", title: "Form Data", visible: true },
@@ -917,89 +1019,6 @@ function showDetails(type, id, name, detailsSectionId) {
     },
   })
 }
-```
-
-```js tasks-with-names-formatted
-const tasksWithNames = tasksDataFrame.map((task) => {
-  // Find the assigned team or individual name
-  const assignedName = (() => {
-    const assignedTeam = groupMembersDataFrame.find(
-      (team) => team.projectMemberId === task.assignedToId
-    )
-
-    if (assignedTeam) {
-      return assignedTeam.groupName || "Unnamed Team"
-    }
-
-    const assignedMember = projectMembersDataFrame.find(
-      (member) => member.projectMemberId === task.assignedToId
-    )
-
-    if (assignedMember) {
-      const fullName = `${assignedMember.firstName?.trim() || "Not Provided"} ${
-        assignedMember.lastName?.trim() || "Not Provided"
-      }`.trim()
-      return fullName === "Not Provided Not Provided"
-        ? `No Name Provided (${assignedMember.username || "No Username"})`
-        : `${fullName} (${assignedMember.username || "No Username"})`
-    }
-    return "Unassigned" // Fallback if no match is found
-  })()
-
-  // Find the completed by team or individual name
-  const completedByName = (() => {
-    if (task.completedById === "Task Created") {
-      return "Task Created" // Special case handling
-    }
-
-    const completedByTeam = groupMembersDataFrame.find(
-      (team) => team.projectMemberId === task.completedById
-    )
-
-    if (completedByTeam) {
-      return completedByTeam.groupName || "Unnamed Team"
-    }
-
-    const completedByMember = projectMembersDataFrame.find(
-      (member) => member.projectMemberId === task.completedById
-    )
-
-    if (completedByMember) {
-      const fullName = `${completedByMember.firstName?.trim() || "Not Provided"} ${
-        completedByMember.lastName?.trim() || "Not Provided"
-      }`.trim()
-      return fullName === "Not Provided Not Provided"
-        ? `No Name Provided (${completedByMember.username || "No Username"})`
-        : `${fullName} (${completedByMember.username || "No Username"})`
-    }
-    return "Unknown" // Fallback if no match is found
-  })()
-
-  // Combine role names into a single string
-  const combinedRoles = task.roles.map((role) => role.name).join(", ")
-
-  // Format taskLogMetadata as a JSON string if it contains data
-  const formattedMetadata =
-    task.taskLogMetadata && typeof task.taskLogMetadata === "object"
-      ? JSON.stringify(task.taskLogMetadata, null, 2) // Pretty-printed JSON
-      : task.taskLogMetadata
-
-  // Convert taskLogStatus to a user-friendly format
-  const formattedStatus = task.taskLogStatus === "COMPLETED" ? "Completed" : "Not Completed"
-
-  const formattedTaskStatus = task.taskStatus === "COMPLETED" ? "Completed" : "Not Completed"
-
-  // Return a new object with updated values
-  return {
-    ...task, // Spread the existing task data
-    assignedTo: assignedName, // Replace assignedToId with the formatted name
-    completedBy: completedByName, // Handle "Task Created" case and unknowns
-    roles: combinedRoles, // Combine roles into a single string
-    taskLogMetadata: formattedMetadata, // Pretty-print JSON if applicable
-    taskLogStatus: formattedStatus, // User-friendly status
-    status: formattedTaskStatus,
-  }
-})
 ```
 
 ```js combined-roles
@@ -1130,8 +1149,8 @@ const combinedTaskData = tasksWithNames.map((task) => ({
   name: task.name || "Unnamed Task",
   description: task.description || "No Description",
   status: task.status || "Unknown Status",
-  elementName: task.elementName || "No Element Name",
-  elementDescription: task.elementDescription || "No Element Description",
+  milestoneName: task.milestoneName || "No Milestone Name",
+  milestoneDescription: task.milestoneDescription || "No Milestone Description",
   taskLogCreatedAt: task.taskLogCreatedAt || "N/A",
   taskLogStatus: task.taskLogStatus || "Not Completed",
   taskLogMetadata: task.taskLogMetadata || "No Metadata",
@@ -1173,8 +1192,8 @@ function createCombinedTaskTable() {
       { data: "name", title: "Task Name", visible: true },
       { data: "description", title: "Task Description", visible: true },
       { data: "status", title: "Task Completed", visible: true },
-      { data: "elementName", title: "Element Name", visible: true },
-      { data: "elementDescription", title: "Element Description", visible: true },
+      { data: "milestoneName", title: "Milestone Name", visible: true },
+      { data: "milestoneDescription", title: "Milestone Description", visible: true },
       { data: "taskLogCreatedAt", title: "Task Log Date", visible: true },
       { data: "taskLogStatus", title: "Task Log Completed", visible: true },
       { data: "taskLogMetadata", title: "Form Data", visible: true },
@@ -1278,7 +1297,7 @@ createCombinedTaskTable()
     </div>
   </a>
 
-  <a href="elements_tasks" class="card-link">
+  <a href="tasks" class="card-link">
     <div class="stat-card">
       <h3>Tasks Completed</h3>
       <p id="completed-tasks-chart"></p>

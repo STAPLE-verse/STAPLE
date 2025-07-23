@@ -102,13 +102,13 @@ This project summary was created using the STAPLE app. STAPLE empowers researche
     <center><a href="people_roles">Check out the contributors</a></center>
   </div>
   <div class="card">
-    <center><a href="elements_tasks">Check out the elements and tasks</a></center>
+    <center><a href="tasks">Check out the tasks</a></center>
   </div>
   <div class="card">
     <center><a href="forms">Check out the metadata</a></center>
   </div>
   <div class="card">
-    <center><a href="timeline">Check out the timeline</a></center>
+    <center><a href="timeline">Check out the timeline and milestones</a></center>
   </div>
     <div class="card">
     <center><a id="dynamic-download"></a></center>

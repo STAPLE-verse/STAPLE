@@ -28,6 +28,9 @@ const Summary = () => {
   const cleanProject = cleanProjectData(project)
   const [updateProjectMutation] = useMutation(updateProject)
 
+  // Define localStorage key for viewerJobId
+  const localStorageKey = `viewerJobId-${projectId}`
+
   // State to store metadata
   const [assignmentMetadata, setAssignmentMetadata] = useState(project.metadata)
   const [viewerJobId, setViewerJobId] = useState<string | null>(null)
@@ -36,7 +39,7 @@ const Summary = () => {
 
   useEffect(() => {
     if (!viewerJobId) {
-      const savedJobId = localStorage.getItem("viewerJobId")
+      const savedJobId = localStorage.getItem(localStorageKey)
       if (savedJobId) {
         setViewerJobId(savedJobId)
       }
@@ -148,7 +151,7 @@ const Summary = () => {
       }
       const data = await response.json()
       setViewerJobId(data.jobId)
-      localStorage.setItem("viewerJobId", data.jobId)
+      localStorage.setItem(localStorageKey, data.jobId)
       toast.success("Summary build has started!")
       // Optionally handle data or open a new window if a URL is returned
       // if (data.url) window.open(data.url, "_blank");
