@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="generator" content="Observable Framework v1.13.3" />
+    <title>Contributors | Project Summary</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap"
+      crossorigin
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="./_observablehq/theme-air,deep-space.9d6d3ba1.css"
+    />
+    <link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.ea9fd553.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css"
+    />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./_file/style.ef1f7908.css" />
+
+    <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+
+    <script type="module">
+      // json data
+      const jsonData = {
+        id: 1,
+        createdAt: "2025-05-03T18:07:10.660Z",
+        updatedAt: "2025-05-15T00:15:36.259Z",
+        name: "Testing Project",
+        description: "Here's a project to test things in ",
+        abstract: null,
+        keywords: null,
+        citation: null,
+        publisher: null,
+        identifier: null,
+        metadata: {
+          abstract: "Here's the project metadata",
+          citation: "cite cite",
+          keywords: "here, be, words",
+        },
+        formVersionId: 1,
+        formVersion: {
+          id: 1,
+          name: "Project Information",
+          formId: 1,
+          version: 1,
+          schema: {
+            type: "object",
+            title: "Project Information",
+            required: [],
+            properties: {
+              abstract: {
+                type: "string",
+                title: "Abstract:",
+              },
+              citation: {
+                type: "string",
+                title: "Citation:",
+              },
+              keywords: {
+                type: "string",
+                title: "Keywords:",
+                description: "Keywords separated by commas.",
+              },
+              publisher: {
+                type: "string",
+                title: "Publisher:",
+              },
+              identifier: {
+                type: "string",
+                title: "Identifier:",
+                description: "DOI, ISSN, etc.",
+              },
+            },
+            description: "Default Project Metadata",
+            dependencies: {},
+          },
+          uiSchema: {
+            abstract: {
+              "ui:widget": "textarea",
+            },
+            citation: {
+              "ui:widget": "textarea",
+            },
+            "ui:order": ["abstract", "keywords", "citation", "publisher", "identifier"],
+          },
+          createdAt: "2025-05-03T18:07:09.238Z",
+        },
+        milestones: [
+          {
+            id: 6,
+            createdAt: "2025-06-01T18:09:38.331Z",
+            updatedAt: "2025-06-01T18:09:38.331Z",
+            projectId: 1,
+            name: "Here's a description",
+            description: "fdsafdsa",
+            tags: [
+              {
+                key: "let's add the",
+                value: "let's add the",
+              },
+              {
+                key: "task",
+                value: "task",
+              },
+              {
+                key: "tags",
+                value: "tags",
+              },
+            ],
+            startDate: "2025-06-15T04:59:59.999Z",
+            endDate: "2025-07-06T04:59:59.999Z",
+          },
+          {
+            id: 7,
+            createdAt: "2025-06-01T18:11:26.867Z",
+            updatedAt: "2025-06-01T18:11:26.867Z",
+            projectId: 1,
+            name: "Maybe it will save",
+            description: "save the tasks!",
+            tags: [
+              {
+                key: "tags",
+                value: "tags",
+              },
+              {
+                key: "stuff",
+                value: "stuff",
+              },
+            ],
+            startDate: null,
+            endDate: null,
+          },
+          {
+            id: 3,
+            createdAt: "2025-06-01T17:11:10.595Z",
+            updatedAt: "2025-06-01T18:27:52.266Z",
+            projectId: 1,
+            name: "Blah blah blah",
+            description: null,
+            tags: null,
+            startDate: "2025-06-18T00:00:00.000Z",
+            endDate: "2025-06-13T00:00:00.000Z",
+          },
+          {
+            id: 4,
+            createdAt: "2025-06-01T17:11:35.438Z",
+            updatedAt: "2025-06-01T18:28:01.635Z",
+            projectId: 1,
+            name: "Stuff stuff ",
+            description: null,
+            tags: null,
+            startDate: "2025-06-23T00:00:00.000Z",
+            endDate: "2025-06-27T00:00:00.000Z",
+          },
+          {
+            id: 2,
+            createdAt: "2025-06-01T17:08:48.674Z",
+            updatedAt: "2025-06-01T21:39:18.448Z",
+            projectId: 1,
+            name: "Test New Milestone",
+            description: "Objective 1",
+            tags: [
+              {
+                key: "tags",
+                value: "tags",
+              },
+              {
+                key: "are",
+                value: "are",
+              },
+              {
+                key: "here",
+                value: "here",
+              },
+            ],
+            startDate: "2025-06-11T04:59:59.999Z",
+            endDate: "2025-06-21T04:59:59.999Z",
+          },
+          {
+            id: 1,
+            createdAt: "2025-05-29T23:59:14.272Z",
+            updatedAt: "2025-06-01T22:01:46.908Z",
+            projectId: 1,
+            name: "element name",
+            description: "here's a description",
+            tags: [
+              {
+                key: "i-i-i-i",
+                value: "i",
+              },
+              {
+                key: "have-have-have-have",
+                value: "have",
+              },
+              {
+                key: "added-added-added-added",
+                value: "added",
+              },
+            ],
+            startDate: "2025-06-10T04:59:59.999Z",
+            endDate: "2025-06-28T04:59:59.999Z",
+          },
+          {
+            id: 8,
+            createdAt: "2025-06-01T22:02:40.753Z",
+            updatedAt: "2025-06-01T22:04:15.821Z",
+            projectId: 1,
+            name: "New Milestone with no dates",
+            description: "here's a new one",
+            tags: [
+              {
+                key: "stuff",
+                value: "stuff",
+              },
+              {
+                key: "things",
+                value: "things",
+              },
+            ],
+            startDate: "2025-06-02T00:00:00.000Z",
+            endDate: "2025-06-26T00:00:00.000Z",
+          },
+          {
+            id: 9,
+            createdAt: "2025-06-02T17:39:24.341Z",
+            updatedAt: "2025-06-02T17:39:24.341Z",
+            projectId: 1,
+            name: "new milestone",
+            description: "fdsfdsfd",
+            tags: [
+              {
+                key: "fds",
+                value: "fds",
+              },
+              {
+                key: "fdsfdsjk",
+                value: "fdsfdsjk",
+              },
+            ],
+            startDate: "2025-06-05T04:59:59.999Z",
+            endDate: "2025-06-21T04:59:59.999Z",
+          },
+          {
+            id: 10,
+            createdAt: "2025-06-16T23:15:29.489Z",
+            updatedAt: "2025-06-16T23:15:29.489Z",
+            projectId: 1,
+            name: "Here's a new milestone",
+            description: "sjfkdslajfkdsl",
+            tags: [
+              {
+                key: "stuff",
+                value: "stuff",
+              },
+              {
+                key: "things",
+                value: "things",
+              },
+            ],
+            startDate: "2025-06-20T04:59:59.999Z",
+            endDate: "2025-06-28T04:59:59.999Z",
+          },
+          {
+            id: 5,
+            createdAt: "2025-06-01T17:23:49.325Z",
+            updatedAt: "2025-06-19T17:56:00.537Z",
+            projectId: 1,
+            name: "new milestone",
+            description: "description",
+            tags: [
+              {
+                key: "form data",
+                value: "form data",
+              },
+            ],
+            startDate: "2025-06-24T04:59:59.999Z",
+            endDate: "2025-06-28T04:59:59.999Z",
+          },
+        ],
+        tasks: [
+          {
+            id: 6,
+            createdAt: "2025-05-29T23:09:34.877Z",
+            updatedAt: "2025-06-16T22:54:44.005Z",
+            createdById: 1,
+            deadline: "2025-06-19T21:25:00.000Z",
+            startDate: "2025-06-07T16:00:00.000Z",
+            name: "Task with no tags",
+            description: null,
+            tags: [],
+            containerTaskOrder: 0,
+            containerId: 3,
+            projectId: 1,
+            milestoneId: 5,
+            formVersionId: null,
+            status: "NOT_COMPLETED",
+            elementId: null,
+            milestone: {
+              id: 5,
+              createdAt: "2025-06-01T17:23:49.325Z",
+              updatedAt: "2025-06-19T17:56:00.537Z",
+              projectId: 1,
+              name: "new milestone",
+              description: "description",
+              tags: [
+                {
+                  key: "form data",
+                  value: "form data",
+                },
+              ],
+              startDate: "2025-06-24T04:59:59.999Z",
+              endDate: "2025-06-28T04:59:59.999Z",
+            },
+            roles: [],
+            taskLogs: [
+              {
+                id: 28,
+                createdAt: "2025-05-29T23:09:34.882Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "TEAM",
+                assignedToId: 2,
+                completedById: null,
+                taskId: 6,
+                approved: null,
+              },
+              {
+                id: 29,
+                createdAt: "2025-05-29T23:09:34.882Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "INDIVIDUAL",
+                assignedToId: 3,
+                completedById: null,
+                taskId: 6,
+                approved: null,
+              },
+              {
+                id: 35,
+                createdAt: "2025-06-01T19:14:55.437Z",
+                status: "COMPLETED",
+                metadata: null,
+                completedAs: "INDIVIDUAL",
+                assignedToId: 3,
+                completedById: 3,
+                taskId: 6,
+                approved: null,
+              },
+            ],
+            formVersion: null,
+          },
+          {
+            id: 7,
+            createdAt: "2025-06-01T01:05:55.052Z",
+            updatedAt: "2025-06-16T22:55:43.152Z",
+            createdById: 1,
+            deadline: "2025-06-12T21:10:00.000Z",
+            startDate: "2025-06-08T21:10:00.000Z",
+            name: "Form Data Task",
+            description: "Let's make this form version work ",
+            tags: [
+              {
+                key: "form data",
+                value: "form data",
+              },
+            ],
+            containerTaskOrder: 0,
+            containerId: 1,
+            projectId: 1,
+            milestoneId: 5,
+            formVersionId: 1,
+            status: "NOT_COMPLETED",
+            elementId: null,
+            milestone: {
+              id: 5,
+              createdAt: "2025-06-01T17:23:49.325Z",
+              updatedAt: "2025-06-19T17:56:00.537Z",
+              projectId: 1,
+              name: "new milestone",
+              description: "description",
+              tags: [
+                {
+                  key: "form data",
+                  value: "form data",
+                },
+              ],
+              startDate: "2025-06-24T04:59:59.999Z",
+              endDate: "2025-06-28T04:59:59.999Z",
+            },
+            roles: [
+              {
+                id: 1,
+                userId: 1,
+                name: "Investigation",
+                description: "Doing the data collection",
+                taxonomy: "CRediT",
+                projectId: null,
+              },
+            ],
+            taskLogs: [
+              {
+                id: 30,
+                createdAt: "2025-06-01T01:05:55.064Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "TEAM",
+                assignedToId: 2,
+                completedById: null,
+                taskId: 7,
+                approved: null,
+              },
+              {
+                id: 31,
+                createdAt: "2025-06-01T01:05:55.064Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "INDIVIDUAL",
+                assignedToId: 3,
+                completedById: null,
+                taskId: 7,
+                approved: null,
+              },
+              {
+                id: 32,
+                createdAt: "2025-06-01T01:05:55.064Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "INDIVIDUAL",
+                assignedToId: 1,
+                completedById: null,
+                taskId: 7,
+                approved: false,
+              },
+              {
+                id: 33,
+                createdAt: "2025-06-01T03:22:36.719Z",
+                status: "COMPLETED",
+                metadata: {
+                  abstract: "fdsafds",
+                  citation: "fdsfds",
+                  keywords: "fdsafds",
+                },
+                completedAs: "INDIVIDUAL",
+                assignedToId: 1,
+                completedById: 1,
+                taskId: 7,
+                approved: null,
+              },
+              {
+                id: 34,
+                createdAt: "2025-06-01T03:54:30.110Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "TEAM",
+                assignedToId: 4,
+                completedById: null,
+                taskId: 7,
+                approved: null,
+              },
+            ],
+            formVersion: {
+              id: 1,
+              name: "Project Information",
+              formId: 1,
+              version: 1,
+              schema: {
+                type: "object",
+                title: "Project Information",
+                $schema: "http://json-schema.org/draft-04/schema#",
+                required: [],
+                properties: {
+                  abstract: {
+                    type: "string",
+                    title: "Abstract:",
+                  },
+                  citation: {
+                    type: "string",
+                    title: "Citation:",
+                  },
+                  keywords: {
+                    type: "string",
+                    title: "Keywords:",
+                    description: "Keywords separated by commas.",
+                  },
+                  publisher: {
+                    type: "string",
+                    title: "Publisher:",
+                  },
+                  identifier: {
+                    type: "string",
+                    title: "Identifier:",
+                    description: "DOI, ISSN, etc.",
+                  },
+                },
+                description: "Default Project Metadata",
+                dependencies: {},
+              },
+              uiSchema: {
+                abstract: {
+                  "ui:widget": "textarea",
+                },
+                citation: {
+                  "ui:widget": "textarea",
+                },
+                "ui:order": ["abstract", "keywords", "citation", "publisher", "identifier"],
+              },
+              createdAt: "2025-05-03T18:07:09.238Z",
+            },
+          },
+          {
+            id: 5,
+            createdAt: "2025-05-29T23:09:09.067Z",
+            updatedAt: "2025-06-16T22:57:39.636Z",
+            createdById: 1,
+            deadline: "2025-06-18T13:24:59.999Z",
+            startDate: "2025-06-05T07:34:09.067Z",
+            name: "here's a task with tags",
+            description:
+              '\nfreestar\nՀայերեն Shqip ‫العربية Български Català 中文简体 Hrvatski Česky Dansk Nederlands English Eesti Filipino Suomi Français ქართული Deutsch Ελληνικά ‫עברית हिन्दी Magyar Indonesia Italiano Latviski Lietuviškai македонски Melayu Norsk Polski Português Româna Pyccкий Српски Slovenčina Slovenščina Español Svenska ไทย Türkçe Українська Tiếng Việt\nLorem Ipsum\n"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."\n"There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain..."\nfreestar\nfreestar\nWhat is Lorem Ipsum?\n\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\nWhy do we use it?\n\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).\n\nWhere does it come from?\n\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.\n\nThe standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.\nWhere can I get some?\n\nThere are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.\n\t\n\tparagraphs\n\twords\n\tbytes\n\tlists\n\t\tStart with \'Lorem\nipsum dolor sit amet...\'\n\t\n\nDonate: If you use this site regularly and would like to help keep the site on the Internet, please consider donating a small sum to help pay for the hosting and bandwidth bill. There is no minimum donation, any sum is appreciated - click here to donate using PayPal. Thank you for your support. Donate bitcoin: 16UQLq1HZ3CNwhvgrarV6pMoA2CDjb4tyF\nTranslations: Can you help translate this site into a foreign language ? Please email us with details if you can help.\nThere is a set of mock banners available here in three colours and in a range of standard banner sizes:\nBannersBannersBanners\nNodeJS Python Interface GTK Lipsum Rails .NET\nfreestar\nThe standard Lorem Ipsum passage, used since the 1500s\n\n"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."\nSection 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC\n\n"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"\n1914 translation by H. Rackham\n\n"But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?"\nSection 1.10.33 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC\n\n"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."\n1914 translation by H. Rackham\n\n"On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains."\nhelp@lipsum.com\nPrivacy Policy ·\nFreestar\n',
+            tags: [
+              {
+                key: "tags",
+                value: "tags",
+              },
+              {
+                key: "stuff",
+                value: "stuff",
+              },
+              {
+                key: "things",
+                value: "things",
+              },
+            ],
+            containerTaskOrder: 0,
+            containerId: 2,
+            projectId: 1,
+            milestoneId: 5,
+            formVersionId: null,
+            status: "COMPLETED",
+            elementId: null,
+            milestone: {
+              id: 5,
+              createdAt: "2025-06-01T17:23:49.325Z",
+              updatedAt: "2025-06-19T17:56:00.537Z",
+              projectId: 1,
+              name: "new milestone",
+              description: "description",
+              tags: [
+                {
+                  key: "form data",
+                  value: "form data",
+                },
+              ],
+              startDate: "2025-06-24T04:59:59.999Z",
+              endDate: "2025-06-28T04:59:59.999Z",
+            },
+            roles: [],
+            taskLogs: [
+              {
+                id: 27,
+                createdAt: "2025-05-29T23:09:09.075Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "INDIVIDUAL",
+                assignedToId: 1,
+                completedById: null,
+                taskId: 5,
+                approved: null,
+              },
+              {
+                id: 45,
+                createdAt: "2025-07-08T17:18:16.606Z",
+                status: "COMPLETED",
+                metadata: null,
+                completedAs: "INDIVIDUAL",
+                assignedToId: 1,
+                completedById: 1,
+                taskId: 5,
+                approved: false,
+              },
+            ],
+            formVersion: null,
+          },
+        ],
+        projectMembers: [
+          {
+            id: 4,
+            createdAt: "2025-06-01T03:54:17.756Z",
+            updatedAt: "2025-06-01T03:54:17.756Z",
+            projectId: 1,
+            name: "Aggieerin team",
+            deleted: false,
+            tags: null,
+            users: [],
+            roles: [],
+          },
+          {
+            id: 5,
+            createdAt: "2025-06-01T23:05:15.869Z",
+            updatedAt: "2025-06-01T23:05:15.869Z",
+            projectId: 1,
+            name: null,
+            deleted: false,
+            tags: [
+              {
+                key: "here",
+                value: "here",
+              },
+              {
+                key: "are",
+                value: "are",
+              },
+              {
+                key: "tags",
+                value: "tags",
+              },
+            ],
+            users: [
+              {
+                institution: null,
+                username: "buchananlabplus1",
+                firstName: null,
+                lastName: null,
+                email: "buchananlab+1@gmail.com",
+              },
+            ],
+            roles: [],
+          },
+          {
+            id: 2,
+            createdAt: "2025-05-03T18:11:27.977Z",
+            updatedAt: "2025-06-02T17:12:28.151Z",
+            projectId: 1,
+            name: "The DOOM",
+            deleted: false,
+            tags: null,
+            users: [
+              {
+                institution: null,
+                username: "doomlab",
+                firstName: "Erin",
+                lastName: "Buchanan",
+                email: "buchananlab@gmail.com",
+              },
+              {
+                institution: null,
+                username: "buchananlabplus1",
+                firstName: null,
+                lastName: null,
+                email: "buchananlab+1@gmail.com",
+              },
+            ],
+            roles: [],
+          },
+          {
+            id: 1,
+            createdAt: "2025-05-03T18:07:10.665Z",
+            updatedAt: "2025-06-16T15:30:00.404Z",
+            projectId: 1,
+            name: null,
+            deleted: false,
+            tags: [
+              {
+                key: "here-here-here",
+                value: "here",
+              },
+              {
+                key: "are-are-are",
+                value: "are",
+              },
+              {
+                key: "my-my-my",
+                value: "my",
+              },
+              {
+                key: "form data",
+                value: "form data",
+              },
+            ],
+            users: [
+              {
+                institution: null,
+                username: "doomlab",
+                firstName: "Erin",
+                lastName: "Buchanan",
+                email: "buchananlab@gmail.com",
+              },
+            ],
+            roles: [
+              {
+                id: 1,
+                userId: 1,
+                name: "Investigation",
+                description: "Doing the data collection",
+                taxonomy: "CRediT",
+                projectId: null,
+              },
+            ],
+          },
+          {
+            id: 6,
+            createdAt: "2025-06-01T23:13:23.216Z",
+            updatedAt: "2025-06-16T15:36:19.542Z",
+            projectId: 1,
+            name: "Tag Team",
+            deleted: false,
+            tags: [
+              {
+                key: "add",
+                value: "add",
+              },
+              {
+                key: "team",
+                value: "team",
+              },
+              {
+                key: "tags",
+                value: "tags",
+              },
+              {
+                key: "form data",
+                value: "form data",
+              },
+            ],
+            users: [
+              {
+                institution: null,
+                username: "doomlab",
+                firstName: "Erin",
+                lastName: "Buchanan",
+                email: "buchananlab@gmail.com",
+              },
+              {
+                institution: null,
+                username: "buchananlabplus1",
+                firstName: null,
+                lastName: null,
+                email: "buchananlab+1@gmail.com",
+              },
+            ],
+            roles: [],
+          },
+          {
+            id: 3,
+            createdAt: "2025-05-22T19:10:14.814Z",
+            updatedAt: "2025-07-17T22:23:57.710Z",
+            projectId: 1,
+            name: null,
+            deleted: true,
+            tags: [
+              {
+                key: "yo",
+                value: "yo",
+              },
+              {
+                key: "yo new",
+                value: "yo new",
+              },
+            ],
+            users: [
+              {
+                institution: "deleted_1",
+                username: "deleted_1",
+                firstName: "deleted_1",
+                lastName: "deleted_1",
+                email: "deleted_1",
+              },
+            ],
+            roles: [
+              {
+                id: 1,
+                userId: 1,
+                name: "Investigation",
+                description: "Doing the data collection",
+                taxonomy: "CRediT",
+                projectId: null,
+              },
+            ],
+          },
+        ],
+      }
+
+      // Wait for the DOM to be fully loaded
+      document.addEventListener("DOMContentLoaded", async function () {
+        // Ensure Plot and d3 are loaded and available
+        const [Plot, d3] = await Promise.all([
+          import("https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.17/+esm"),
+          import("https://cdn.jsdelivr.net/npm/d3@7/+esm"),
+        ])
+
+        // theme colors
+        const getComputedThemeColors = () => {
+          const root = getComputedStyle(document.documentElement)
+          return {
+            primary3: root.getPropertyValue("--primary-color-3").trim(),
+            primary4: root.getPropertyValue("--primary-color-4").trim(),
+            secondary: root.getPropertyValue("--secondary-color").trim(),
+          }
+        }
+        const themeColors = getComputedThemeColors()
+
+        // create html table
+        function createHtmlTable(data, containerId, tableId) {
+          const container = document.getElementById(containerId)
+
+          if (!container) {
+            console.error(`Container with id "${containerId}" not found.`)
+            return
+          }
+
+          // Create the table
+          const table = document.createElement("table")
+          table.id = tableId // Assign the provided tableId
+          table.className = "custom-table"
+
+          // Create table header
+          const thead = document.createElement("thead")
+          const headerRow = document.createElement("tr")
+
+          // Use the keys of the first object in the data as headers
+          const headers = Object.keys(data[0])
+          headers.forEach((key) => {
+            const th = document.createElement("th")
+            th.textContent = key.replace(/([A-Z])/g, " $1") // Add spaces before uppercase letters
+            headerRow.appendChild(th)
+          })
+
+          thead.appendChild(headerRow)
+          table.appendChild(thead)
+
+          // Create table body
+          const tbody = document.createElement("tbody")
+
+          data.forEach((item) => {
+            const row = document.createElement("tr")
+            headers.forEach((key) => {
+              const td = document.createElement("td")
+              td.textContent = item[key] || "N/A" // Fallback to "N/A" if the value is null/undefined
+              row.appendChild(td)
+            })
+            tbody.appendChild(row)
+          })
+
+          table.appendChild(tbody)
+
+          // Clear any existing content in the container and add the table
+          container.innerHTML = ""
+          container.appendChild(table)
+        }
+
+        //create donut chart
+        function createDonutChart(data, containerId, titleText) {
+          // Prepare data for Plotly donut chart
+          const chartData = [
+            {
+              values: data.values, // Array of counts (e.g., tasks completed vs. remaining)
+              labels: data.labels, // Array of labels (e.g., ["Completed", "Remaining"])
+              type: "pie",
+              hole: 0.5, // Donut chart effect
+              textinfo: "none", // Hide text in the center
+              hoverinfo: "label+percent", // Show labels and percentages on hover
+              marker: {
+                colors: data.colors || d3.schemeCategory10, // Provide colors or use default scheme
+              },
+            },
+          ]
+
+          // Layout for the chart
+          const chartLayout = {
+            //title: {
+            //  text: titleText, // Title for the chart
+            //  font: { size: 16 },
+            //},
+            showlegend: false, // Show legend
+            height: 100, // Adjust chart height
+            width: 100, // Adjust chart width
+            margin: { t: 10, b: 10, l: 10, r: 10 }, // Add padding for the chart
+            plot_bgcolor: "rgba(0, 0, 0, 0)", // Transparent plot background
+            paper_bgcolor: "rgba(0, 0, 0, 0)", // Transparent paper background
+          }
+
+          // Render the chart in the specified container
+          Plotly.newPlot(containerId, chartData, chartLayout)
+        }
+
+        // create role table
+        function createRoleTable() {
+          // Create a table container dynamically
+          const container = document.getElementById("role-table-container")
+          if (!container) {
+            console.error("Table container for roles not found!")
+            return
+          }
+
+          // Create the table element
+          const table = document.createElement("table")
+          table.id = "role-table"
+          table.className = "display"
+
+          // Clear the container and append the table
+          container.innerHTML = ""
+          container.appendChild(table)
+
+          // Initialize the DataTable
+          $("#role-table").DataTable({
+            data: updatedRolesDataFrame,
+            columns: [
+              { data: "name", title: "Role Name", visible: true }, // Renamed column
+              { data: "description", title: "Description", visible: true },
+              { data: "taxonomy", title: "Taxonomy", visible: true },
+              { data: "countInTasks", title: "Task Count", visible: true },
+              { data: "countInMembers", title: "Member Count", visible: true },
+              { data: "totalCount", title: "Total Count", visible: false },
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            scrollX: true,
+            dom: "frtipB", // Enable Buttons (B) in the DOM
+            buttons: [
+              {
+                extend: "csvHtml5",
+                text: "Download CSV",
+                title: "Role_Data",
+                className: "btn btn-primary",
+                exportOptions: {
+                  columns: ":visible", // Export visible columns only
+                  format: {
+                    header: function (data, columnIdx) {
+                      return $("#role-table thead th").eq(columnIdx).text().trim()
+                    },
+                  },
+                },
+              },
+              {
+                extend: "excelHtml5",
+                text: "Download Excel",
+                title: "Role_Data",
+                className: "btn btn-success",
+                exportOptions: {
+                  columns: ":visible", // Export visible columns only
+                  format: {
+                    header: function (data, columnIdx) {
+                      return $("#role-table thead th").eq(columnIdx).text().trim()
+                    },
+                  },
+                },
+              },
+            ],
+            language: {
+              search: "Search All: ", // Customize the label for the search box
+            },
+            initComplete: function () {
+              // Optional: Add custom search inputs for each column
+              this.api()
+                .columns()
+                .every(function () {
+                  const column = this
+                  const header = $(column.header())
+                  const input = $(
+                    '<input type="text" placeholder="Search ' + header.text() + '" />'
+                  )
+                    .appendTo($(header).empty())
+                    .on("keyup change clear", function () {
+                      if (column.search() !== this.value) {
+                        column.search(this.value).draw()
+                      }
+                    })
+                })
+            },
+          })
+        }
+
+        // show details cards
+        function showDetails(type, id, name, detailsSectionId) {
+          const detailsSection = document.getElementById(detailsSectionId)
+
+          if (!detailsSection) {
+            console.error(`Details section with ID "${detailsSectionId}" not found.`)
+            return
+          }
+
+          // Clear existing content and add the header first
+          detailsSection.innerHTML = `
+          <h2>${name} Details</h2>
+          <p>Here’s a summary of tasks and contributions for ${name}. The table contains the 
+          entire set of task logs for each person with the roles assigned to those task. You 
+          can download the table information by using the buttons at the bottom.</p>
+        `
+
+          // Filter relevant data
+          const relevantData =
+            type === "member"
+              ? tasksWithNames.filter((task) => task.assignedTo.includes(name))
+              : tasksWithNames.filter((task) => {
+                  const team = groupMembersDataFrame.find((team) => team.projectMemberId === id)
+                  return team && task.assignedTo.includes(team.groupName)
+                })
+
+          if (relevantData.length === 0) {
+            detailsSection.innerHTML += "<p>No tasks found for this selection.</p>"
+            return
+          }
+
+          // Create a container for the table (after the header)
+          const tableContainer = document.createElement("div")
+          tableContainer.id = `details-table-container-${id}`
+
+          // Append the container to the section
+          detailsSection.appendChild(tableContainer)
+
+          // Create and render the table within the container
+          const tableId = `details-table-${id}`
+          createHtmlTable(relevantData, tableContainer.id, tableId)
+
+          // Apply DataTables functionality
+          $(`#${tableId}`).DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            scrollX: true,
+            dom: "frtipB", // Enable Buttons (B) in the DOM
+            buttons: [
+              {
+                extend: "csvHtml5",
+                text: "Download CSV", // Customize button text
+                title: "Roles_Data", // Name of the downloaded file
+                className: "btn btn-primary", // Optional: Add a CSS class
+                exportOptions: {
+                  columns: ":visible", // Export visible columns only
+                  format: {
+                    header: function (data, columnIdx) {
+                      return (
+                        $(`#${tableId}`).DataTable().settings().init().columns[columnIdx].title ||
+                        ""
+                      )
+                    },
+                  },
+                },
+              },
+              {
+                extend: "excelHtml5",
+                text: "Download Excel",
+                title: "Roles_Data", // Name of the downloaded file
+                className: "btn btn-success", // Optional: Add a CSS class
+                exportOptions: {
+                  columns: ":visible", // Export visible columns only
+                  format: {
+                    header: function (data, columnIdx) {
+                      return (
+                        $(`#${tableId}`).DataTable().settings().init().columns[columnIdx].title ||
+                        ""
+                      )
+                    },
+                  },
+                },
+              },
+            ],
+            columns: [
+              { data: "taskId", title: "Task Id", visible: false },
+              { data: "createdAt", title: "Created Date", visible: true },
+              { data: "updatedAt", title: "Updated Date", visible: true },
+              { data: "createdById", title: "Created By Id", visible: false },
+              {
+                data: "formVersionId",
+                title: "Form Version Id",
+                visible: false,
+              },
+              { data: "deadline", title: "Deadline", visible: true },
+              { data: "name", title: "Task Name", visible: true },
+              { data: "description", title: "Task Description", visible: true },
+              { data: "status", title: "Task Completed", visible: true },
+              { data: "milestoneName", title: "Milestone Name", visible: true },
+              {
+                data: "milestoneDescription",
+                title: "Milestone Description",
+                visible: true,
+              },
+              {
+                data: "taskLogCreatedAt",
+                title: "Task Log Date",
+                visible: true,
+              },
+              {
+                data: "taskLogStatus",
+                title: "Task Log Completed",
+                visible: true,
+              },
+              { data: "taskLogMetadata", title: "Form Data", visible: true },
+              {
+                data: "completedById",
+                title: "Completed By Id",
+                visible: false,
+              },
+              { data: "assignedToId", title: "Assigned To Id", visible: false },
+              { data: "roles", title: "Roles", visible: true },
+              { data: "assignedTo", title: "Assigned To", visible: true },
+              { data: "completedBy", title: "Completed By", visible: true },
+            ],
+            language: {
+              search: "Search All: ", // Customize the label for the search box
+            },
+            initComplete: function () {
+              // Optional: Add custom search inputs for each column
+              this.api()
+                .columns()
+                .every(function () {
+                  const column = this
+                  const header = $(column.header())
+                  const input = $(
+                    '<input type="text" placeholder="Search ' + header.text() + '" />'
+                  )
+                    .appendTo($(header).empty())
+                    .on("keyup change clear", function () {
+                      if (column.search() !== this.value) {
+                        column.search(this.value).draw()
+                      }
+                    })
+                })
+            },
+          })
+        }
+
+        //task data frame
+        // Extract project members where there is exactly one user in the `users` array
+        const filteredMembers = jsonData.projectMembers.filter((member) => member.name === null)
+
+        // Map the data into a dataframe-like array of objects
+        const projectMembersDataFrame = filteredMembers.map((member) => {
+          const user = member.users[0]
+          const roles = member.roles.map((role) => role.name).join(", ")
+          return {
+            projectMemberId: member.id,
+            username: user.username || "Not Provided",
+            firstName: user.firstName || "Not Provided",
+            lastName: user.lastName || "Not Provided",
+            roles: roles || "No Roles",
+            createdAt: member.createdAt,
+            updatedAt: member.updatedAt,
+          }
+        })
+
+        // Extract project members where there is more than one user in the `users` array
+        const groupMembers = jsonData.projectMembers.filter((member) => member.name !== null)
+
+        // Map the data into a dataframe-like array of objects, each user gets their own row
+        const groupMembersDataFrame = groupMembers.flatMap((member) => {
+          return member.users.map((user) => ({
+            projectMemberId: member.id,
+            groupName: member.name || "Unnamed Group",
+            username: user.username || "Not Provided",
+            firstName: user.firstName || "Not Provided",
+            lastName: user.lastName || "Not Provided",
+            roles: member.roles.map((role) => role.name).join(", ") || "No Roles",
+            createdAt: member.createdAt,
+            updatedAt: member.updatedAt,
+          }))
+        })
+
+        // Extract tasks data and expand to include task logs
+        const tasksDataFrame = jsonData.tasks.flatMap((task) =>
+          task.taskLogs
+            //.filter((log) => log.completedById !== null) // Skip logs where completedById is null
+            .map((log) => ({
+              taskId: task.id,
+              createdAt: task.createdAt,
+              updatedAt: task.updatedAt,
+              createdById: task.createdById,
+              formVersionId: task.formVersionId || "Not Provided",
+              deadline: task.deadline || "No Deadline",
+              name: task.name || "Unnamed Task",
+              description: task.description || "No Description",
+              status: task.status || "Unknown Status",
+              milestoneName: task.milestone?.name || "No Milestone Name",
+              milestoneDescription: task.milestone?.description || "No Milestone Description",
+              taskLogCreatedAt: log.createdAt,
+              taskLogStatus: log.status || "Unknown Status",
+              taskLogMetadata: log.metadata || "No Metadata",
+              completedById: log.completedById || "Task Created",
+              assignedToId: log.assignedToId,
+              roles: task.roles.map((role) => ({
+                id: role.id,
+                name: role.name,
+                description: role.description,
+                taxonomy: role.taxonomy,
+              })),
+            }))
+        )
+
+        //tasks with names
+        const tasksWithNames = tasksDataFrame.map((task) => {
+          // Find the assigned team or individual name
+          const assignedName = (() => {
+            const assignedTeam = groupMembersDataFrame.find(
+              (team) => team.projectMemberId === task.assignedToId
+            )
+
+            if (assignedTeam) {
+              return assignedTeam.groupName || "Unnamed Team"
+            }
+
+            const assignedMember = projectMembersDataFrame.find(
+              (member) => member.projectMemberId === task.assignedToId
+            )
+
+            if (assignedMember) {
+              const fullName = `${assignedMember.firstName?.trim() || "Not Provided"} ${
+                assignedMember.lastName?.trim() || "Not Provided"
+              }`.trim()
+              return fullName === "Not Provided Not Provided"
+                ? `No Name Provided (${assignedMember.username || "No Username"})`
+                : `${fullName} (${assignedMember.username || "No Username"})`
+            }
+            return "Unassigned" // Fallback if no match is found
+          })()
+
+          // Find the completed by team or individual name
+          const completedByName = (() => {
+            if (task.completedById === "Task Created") {
+              return "Task Created" // Special case handling
+            }
+
+            const completedByTeam = groupMembersDataFrame.find(
+              (team) => team.projectMemberId === task.completedById
+            )
+
+            if (completedByTeam) {
+              return completedByTeam.groupName || "Unnamed Team"
+            }
+
+            const completedByMember = projectMembersDataFrame.find(
+              (member) => member.projectMemberId === task.completedById
+            )
+
+            if (completedByMember) {
+              const fullName = `${completedByMember.firstName?.trim() || "Not Provided"} ${
+                completedByMember.lastName?.trim() || "Not Provided"
+              }`.trim()
+              return fullName === "Not Provided Not Provided"
+                ? `No Name Provided (${completedByMember.username || "No Username"})`
+                : `${fullName} (${completedByMember.username || "No Username"})`
+            }
+            return "Unknown" // Fallback if no match is found
+          })()
+
+          // DEBUG LOGGING: Warn if mapping fails for assignedTo or completedBy
+          if (!assignedName || !completedByName) {
+            console.warn("DEBUG: Missing mapping", {
+              taskId: task.taskId,
+              assignedToId: task.assignedToId,
+              completedById: task.completedById,
+              assignedName,
+              completedByName,
+            })
+          }
+
+          // Combine role names into a single string
+          const combinedRoles = task.roles.map((role) => role.name).join(", ")
+
+          // Format taskLogMetadata as a JSON string if it contains data
+          const formattedMetadata =
+            task.taskLogMetadata && typeof task.taskLogMetadata === "object"
+              ? JSON.stringify(task.taskLogMetadata, null, 2) // Pretty-printed JSON
+              : task.taskLogMetadata
+
+          // Convert taskLogStatus to a user-friendly format
+          const formattedStatus = task.taskLogStatus === "COMPLETED" ? "Completed" : "Not Completed"
+
+          const formattedTaskStatus =
+            task.taskStatus === "COMPLETED" ? "Completed" : "Not Completed"
+
+          // Return a new object with updated values
+          return {
+            ...task, // Spread the existing task data
+            assignedTo: assignedName, // Replace assignedToId with the formatted name
+            completedBy: completedByName, // Handle "Task Created" case and unknowns
+            roles: combinedRoles, // Combine roles into a single string
+            taskLogMetadata: formattedMetadata, // Pretty-print JSON if applicable
+            taskLogStatus: formattedStatus, // User-friendly status
+            status: formattedTaskStatus,
+          }
+        })
+
+        //latest task logs
+        // Deduplicate task logs to only include the latest log for each combination of `taskId` and `assignedToId`
+        const latestTaskLogs = Array.from(
+          tasksDataFrame
+            .reduce((map, log) => {
+              const key = `${log.taskId}-${log.assignedToId}`
+              const existingLog = map.get(key)
+
+              // Keep the log with the latest `createdAt`
+              if (
+                !existingLog ||
+                new Date(log.taskLogCreatedAt) > new Date(existingLog.taskLogCreatedAt)
+              ) {
+                map.set(key, log)
+              }
+
+              return map
+            }, new Map())
+            .values()
+        )
+        // Group task logs by user and count completed tasks and metadata forms
+        const individualsWithTaskData = projectMembersDataFrame.map((individual) => {
+          // Filter task logs completed by the individual
+          const completedTaskLogs = latestTaskLogs.filter(
+            (log) =>
+              log.assignedToId === individual.projectMemberId && log.taskLogStatus === "COMPLETED"
+          )
+
+          const allTaskLogs = latestTaskLogs.filter(
+            (log) => log.assignedToId === individual.projectMemberId
+          )
+
+          // Count completed tasks
+          const numberOfTasksCompleted = completedTaskLogs.length
+          const numberOfTasks = allTaskLogs.length
+
+          // Count metadata forms
+          const numberOfMetadataForms = completedTaskLogs.filter(
+            (log) => log.taskLogMetadata !== "No Metadata"
+          ).length
+
+          const allMetaDataForms = allTaskLogs.filter(
+            (log) => log.taskLogMetadata !== "No Metadata"
+          ).length
+
+          // Construct name, replacing "Not Provided Not Provided" with "No Name Provided"
+          const fullName =
+            `${individual.firstName} ${individual.lastName}`.trim() === "Not Provided Not Provided"
+              ? "No Name Provided"
+              : `${individual.firstName} ${individual.lastName}`
+
+          return {
+            projectMemberId: individual.projectMemberId,
+            name: `${fullName} (${individual.username})`,
+            numberOfTasksCompleted,
+            numberOfTasks,
+            numberOfMetadataForms,
+            allMetaDataForms,
+            username: individual.username,
+          }
+        })
+
+        //team task summary
+        // Group task logs by team ID (assignedToId) and calculate completed tasks and metadata forms
+        const teamsWithTaskData = groupMembers.reduce((teamsMap, team) => {
+          // Initialize or update team entry
+          const teamData = teamsMap.get(team.id) || {
+            teamId: team.id,
+            teamName: team.name || "Unnamed Team",
+            memberNames: [],
+            numberOfTasksCompleted: 0,
+            numberOfMetadataForms: 0,
+          }
+
+          // Add team member names
+          team.users.forEach((user) => {
+            const memberName = `${user.firstName?.trim() || "No Name"} ${
+              user.lastName?.trim() || "Provided"
+            } (${user.username || "No Username"})`
+            if (!teamData.memberNames.includes(memberName)) {
+              teamData.memberNames.push(memberName)
+            }
+          })
+
+          // Filter task logs completed by this team
+          const completedTaskLogs = latestTaskLogs.filter(
+            (log) => log.assignedToId === team.id && log.taskLogStatus === "COMPLETED"
+          )
+
+          // Update team-level task counts
+          teamData.numberOfTasksCompleted += completedTaskLogs.length
+          teamData.numberOfMetadataForms += completedTaskLogs.filter(
+            (log) => log.taskLogMetadata !== "No Metadata"
+          ).length
+
+          // Store updated team data
+          teamsMap.set(team.id, teamData)
+
+          return teamsMap
+        }, new Map())
+
+        // Convert the teams map to an array for rendering
+        const teamsDataArray = Array.from(teamsWithTaskData.values())
+
+        // unique counts
+        // Get full names
+        const uniqueMemberNames = new Set(
+          individualsWithTaskData.map((individual) => individual.name)
+        )
+
+        // Count the unique members
+        const numberOfUniqueMembers = uniqueMemberNames.size
+
+        const uniqueTeamNames = new Set(teamsDataArray.map((team) => team.name))
+        const numberOfUniqueTeams = teamsWithTaskData.size
+
+        // Extract all roles from project members
+        const memberRoles = jsonData.projectMembers.flatMap((member) => member.roles)
+
+        // Extract all roles from tasks
+        const taskRoles = tasksDataFrame.flatMap((task) => task.roles)
+
+        // Combine all roles from both sources
+        const allRoles = [...memberRoles, ...taskRoles]
+
+        // Deduplicate roles based on `name`, `description`, and `taxonomy`
+        const uniqueRolesDataFrame = Array.from(
+          new Map(
+            allRoles.map((role) => [
+              `${role.name}-${role.description}-${role.taxonomy}`, // Unique key for deduplication
+              role,
+            ])
+          ).values()
+        )
+
+        // Transform the unique roles into a dataframe-like structure
+        const rolesDataFrame = uniqueRolesDataFrame.map((role) => ({
+          name: role.name || "No Name",
+          description: role.description || "No Description",
+          taxonomy: role.taxonomy || "No Taxonomy",
+        }))
+
+        // Step 1: Count roles in latestTaskLogs
+        const roleCountsFromTasks = latestTaskLogs.reduce((acc, log) => {
+          log.roles.forEach((role) => {
+            acc[role.name] = (acc[role.name] || 0) + 1 // Increment count for this role
+          })
+          return acc
+        }, {})
+
+        // Step 2: Count roles in projectMembersDataFrame
+        const roleCountsFromMembers = projectMembersDataFrame.reduce((acc, member) => {
+          member.roles.split(", ").forEach((role) => {
+            acc[role] = (acc[role] || 0) + 1 // Increment count for this role
+          })
+          return acc
+        }, {})
+
+        // Step 3: Merge counts into uniqueRolesDataFrame
+        const updatedRolesDataFrame = rolesDataFrame.map((role) => {
+          const countFromTasks = roleCountsFromTasks[role.name] || 0
+          const countFromMembers = roleCountsFromMembers[role.name] || 0
+
+          return {
+            ...role,
+            countInTasks: countFromTasks, // Add count from latestTaskLogs
+            countInMembers: countFromMembers, // Add count from projectMembersDataFrame
+            totalCount: countFromTasks + countFromMembers, // Total occurrences
+          }
+        })
+
+        // Extract labels (role names) and values (total counts) from updatedRolesDataFrame
+        const roleLabels = updatedRolesDataFrame.map((role) => role.name)
+        const roleValues = updatedRolesDataFrame.map((role) => role.totalCount)
+
+        // Data for Plotly donut chart
+        const roleData = [
+          {
+            values: roleValues,
+            labels: roleLabels,
+            type: "pie",
+            hole: 0.5, // Creates the donut chart effect
+            textinfo: "none", // Hide default labels (percentages or values inside the chart)
+            hoverinfo: "label+percent", // Show detailed hover information
+            marker: {
+              colors: d3.schemeCategory10, // Use a predefined color scheme for variety
+            },
+          },
+        ]
+
+        // Layout for the donut chart
+        const roleLayout = {
+          showlegend: false, // Show legend
+          height: 150, // Adjust chart height
+          width: 150, // Adjust chart width
+          margin: { t: 10, b: 10, l: 10, r: 10 }, // Add margins
+          plot_bgcolor: "rgba(0, 0, 0, 0)", // Transparent plot background
+          paper_bgcolor: "rgba(0, 0, 0, 0)", // Transparent paper background
+        }
+
+        // Render the donut chart
+        Plotly.newPlot("roles-donut-chart", roleData, roleLayout)
+
+        // Count the total number of rows
+        const totalTasks = latestTaskLogs.length
+
+        // Count the number of tasks with a status of "COMPLETED"
+        const completedTasks = latestTaskLogs.filter(
+          (log) => log.taskLogStatus === "COMPLETED"
+        ).length
+        const completedPercentage = ((completedTasks / totalTasks) * 100).toFixed(1) // Calculate percentage
+
+        const dataCompletedTasks = [
+          {
+            values: [completedTasks, totalTasks - completedTasks],
+            labels: ["Completed", "Remaining"],
+            type: "pie",
+            hole: 0.8, // Creates the donut effect
+            textinfo: "none", // Hide default labels
+            hoverinfo: "label+percent",
+            marker: {
+              colors: [themeColors.primary3, themeColors.secondary],
+            },
+          },
+        ]
+
+        // Layout for the donut chart
+        const layout = {
+          annotations: [
+            {
+              font: {
+                size: 20,
+                color: themeColors.primary3,
+                weight: "bold", // Make the font bold
+                family: "Arial, sans-serif",
+              },
+              showarrow: false,
+              text: `${completedPercentage}%`, // Show percentage in the center
+              x: 0.5,
+              y: 0.5,
+            },
+          ],
+          showlegend: false, // Hide legend for simplicity
+          height: 150, // Adjust height for the card
+          width: 150, // Adjust width for the card
+          margin: { t: 10, b: 10, l: 10, r: 10 }, // Tighten the chart's margins
+          plot_bgcolor: "rgba(0, 0, 0, 0)", // Transparent plot background
+          paper_bgcolor: "rgba(0, 0, 0, 0)", // Transparent chart area background
+        }
+
+        // Render the chart
+        Plotly.newPlot("completed-tasks-chart", dataCompletedTasks, layout)
+
+        // completed form chart
+        // Count the total number of form tasks
+        const totalForms = latestTaskLogs.filter(
+          (log) => log.taskLogMetadata !== "No Metadata"
+        ).length
+
+        // Count the number of tasks with a status of "COMPLETED"
+        const completedForms = latestTaskLogs.filter(
+          (log) => log.taskLogMetadata !== "No Metadata" && log.taskLogStatus === "COMPLETED"
+        ).length
+        const completedFormPercentage = ((completedForms / totalForms) * 100).toFixed(1) // Calculate percentage
+
+        const dataCompletedForms = [
+          {
+            values: [completedForms, totalForms - completedForms],
+            labels: ["Completed", "Remaining"],
+            type: "pie",
+            hole: 0.8, // Creates the donut effect
+            textinfo: "none", // Hide default labels
+            hoverinfo: "label+percent",
+            marker: {
+              colors: [themeColors.primary4, themeColors.secondary],
+            },
+          },
+        ]
+        // Layout for the donut chart
+        const layoutForm = {
+          annotations: [
+            {
+              font: {
+                size: 20,
+                color: themeColors.primary4,
+                weight: "bold", // Make the font bold
+                family: "Arial, sans-serif",
+              },
+              showarrow: false,
+              text: `${completedFormPercentage}%`, // Show percentage in the center
+              x: 0.5,
+              y: 0.5,
+            },
+          ],
+          showlegend: false, // Hide legend for simplicity
+          height: 150, // Adjust height for the card
+          width: 150, // Adjust width for the card
+          margin: { t: 10, b: 10, l: 10, r: 10 }, // Tighten the chart's margins
+          plot_bgcolor: "rgba(0, 0, 0, 0)", // Transparent plot background
+          paper_bgcolor: "rgba(0, 0, 0, 0)", // Transparent chart area background
+        }
+
+        // Render the chart
+        Plotly.newPlot("completed-forms-chart", dataCompletedForms, layoutForm)
+
+        //get roles individuals
+        const rolesByIndividual = projectMembersDataFrame.map((individual) => {
+          // Extract roles assigned to the individual
+          const individualRoles = individual.roles.split(", ").map((role) => ({
+            name: role.trim(),
+            source: "Assigned",
+          }))
+
+          // Extract roles from tasks completed by the individual
+          const taskRoles = latestTaskLogs
+            .filter((log) => log.assignedToId === individual.projectMemberId)
+            .flatMap((log) => log.roles.map((role) => ({ name: role.name, source: "Task" })))
+
+          // Combine and count role occurrences
+          const roleCounts = [...individualRoles, ...taskRoles].reduce((acc, role) => {
+            acc[role.name] = (acc[role.name] || 0) + 1
+            return acc
+          }, {})
+
+          // Construct the individual's full name
+          const fullName = `${individual.firstName?.trim() || "Not Provided"} ${
+            individual.lastName?.trim() || "Not Provided"
+          }`.trim()
+
+          const formattedName =
+            fullName === "Not Provided Not Provided"
+              ? `No Name Provided (${individual.username || "No Username"})`
+              : `${fullName} (${individual.username || "No Username"})`
+
+          // Find the corresponding individual task data
+          const individualTaskData = individualsWithTaskData.find(
+            (data) => data.projectMemberId === individual.projectMemberId
+          )
+
+          // Include completion data in the result
+          return {
+            projectMemberId: individual.projectMemberId,
+            name: formattedName,
+            roles: Object.entries(roleCounts).map(([roleName, count]) => ({
+              name: roleName,
+              count,
+            })),
+            numberOfTasksCompleted: individualTaskData?.numberOfTasksCompleted || 0,
+            numberOfTasks: individualTaskData?.numberOfTasks || 0,
+            numberOfMetadataForms: individualTaskData?.numberOfMetadataForms || 0,
+            allMetaDataForms: individualTaskData?.allMetaDataForms || 0,
+          }
+        })
+
+        // make role cards
+        rolesByIndividual.forEach((member) => {
+          // Data for the donut chart
+          const data = {
+            values: member.roles.map((role) => role.count),
+            labels: member.roles.map((role) => role.name),
+            colors: d3.schemeCategory10,
+          }
+
+          // Calculate completion percentages for tasks and forms
+          const tasksPercentComplete = (
+            (member.numberOfTasksCompleted / member.numberOfTasks) *
+            100
+          ).toFixed(1)
+          const formsPercentComplete = (
+            (member.numberOfMetadataForms / member.allMetaDataForms) *
+            100
+          ).toFixed(1)
+
+          // Create the card container
+          const card = document.createElement("div")
+          card.className = "small-card clickable"
+
+          // Add the member's name as a title
+          const title = document.createElement("h3")
+          title.textContent = member.name
+          card.appendChild(title)
+
+          // Create a container for the donut chart
+          const containerId = `member-role-chart-${member.projectMemberId}`
+          const chartDiv = document.createElement("div")
+          chartDiv.id = containerId
+          card.appendChild(chartDiv)
+
+          // Add progress bars for tasks and forms
+          const progressBars = `
+        <div class="progress-container">
+          <div class="progress-bar" style="width: ${tasksPercentComplete}%; background-color: ${themeColors.primary3};" title="Tasks: ${tasksPercentComplete}% Completed"></div>
+        </div>
+        <div class="progress-container">
+          <div class="progress-bar" style="width: ${formsPercentComplete}%; background-color: ${themeColors.primary4};" title="Forms: ${formsPercentComplete}% Submitted"></div>
+        </div>
+      `
+          card.innerHTML += progressBars // Append progress bars to the card
+
+          // Append the card to the members section and render the chart
+          const memberRoleChartContainer = document.getElementById("members-section")
+          if (memberRoleChartContainer) {
+            memberRoleChartContainer.appendChild(card)
+            createDonutChart(data, containerId, `${member.name}`)
+          } else {
+            console.error("Main container for member charts not found!")
+          }
+
+          // Event listener for details
+          card.addEventListener("click", () => {
+            showDetails("member", member.projectMemberId, member.name, "member-details-section")
+          })
+        })
+
+        //roles by teams
+        const uniqueTeamIds = new Set()
+        const rolesByTeam = teamsDataArray
+          .filter((team) => {
+            if (uniqueTeamIds.has(team.teamId)) return false
+            uniqueTeamIds.add(team.teamId)
+            return true
+          })
+          .map((team) => {
+            const roleCounts = {}
+
+            // Filter task logs where the task is assigned to this team
+            const teamTaskLogs = latestTaskLogs.filter((log) => log.assignedToId === team.teamId)
+
+            // Count roles across all tasks assigned to this team
+            teamTaskLogs.forEach((log) => {
+              log.roles.forEach((role) => {
+                roleCounts[role.name] = (roleCounts[role.name] || 0) + 1
+              })
+            })
+
+            // Calculate task and form completion details
+            const numberOfTasksCompleted = teamTaskLogs.filter(
+              (log) => log.taskLogStatus === "COMPLETED"
+            ).length
+            const totalTasks = teamTaskLogs.length
+            const numberOfMetadataForms = teamTaskLogs.filter(
+              (log) => log.taskLogMetadata !== "No Metadata" && log.taskLogStatus === "COMPLETED"
+            ).length
+            const totalForms = teamTaskLogs.filter(
+              (log) => log.taskLogMetadata !== "No Metadata"
+            ).length
+
+            // Calculate percentages
+            const tasksPercentComplete = ((numberOfTasksCompleted / totalTasks) * 100).toFixed(1)
+            const formsPercentComplete = ((numberOfMetadataForms / totalForms) * 100).toFixed(1)
+
+            // Return the team data with all required columns
+            return {
+              teamId: team.teamId,
+              teamName: team.teamName,
+              roles: Object.entries(roleCounts).map(([roleName, count]) => ({
+                name: roleName,
+                count,
+              })),
+              numberOfTasksCompleted: numberOfTasksCompleted || 0,
+              totalTasks: totalTasks || 0,
+              numberOfMetadataForms: numberOfMetadataForms || 0,
+              totalForms: totalForms || 0,
+              tasksPercentComplete: tasksPercentComplete || 0,
+              formsPercentComplete: formsPercentComplete || 0,
+            }
+          })
+
+        // team donuts
+        const renderedTeamIds = new Set()
+        rolesByTeam.forEach((team) => {
+          if (renderedTeamIds.has(team.teamId)) return
+          renderedTeamIds.add(team.teamId)
+          const data = {
+            values: team.roles.map((role) => role.count),
+            labels: team.roles.map((role) => role.name),
+            colors: d3.schemeCategory10,
+          }
+
+          // Create the card container
+          const card = document.createElement("div")
+          card.className = "small-card clickable" // Make it clickable
+
+          // Add the team's name as a title
+          const title = document.createElement("h3")
+          title.textContent = team.teamName
+          card.appendChild(title)
+
+          // Create a container for the donut chart
+          const containerId = `team-role-chart-${team.teamId}`
+          const chartDiv = document.createElement("div")
+          chartDiv.id = containerId
+          card.appendChild(chartDiv)
+
+          // Add progress bars for tasks and forms
+          const progressBars = `
+            <div class="progress-container">
+              <div class="progress-bar" 
+                  style="width: ${team.tasksPercentComplete}%; background-color: ${themeColors.primary3};" 
+                  title="Tasks: ${team.tasksPercentComplete}% Completed"></div>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar" 
+                  style="width: ${team.formsPercentComplete}%; background-color: ${themeColors.primary4};" 
+                  title="Forms: ${team.formsPercentComplete}% Submitted"></div>
+            </div>
+          `
+          card.innerHTML += progressBars // Append progress bars to the card
+
+          // Append the card to the teams section and render the chart
+          const teamRoleChartContainer = document.getElementById("teams-section")
+          if (teamRoleChartContainer) {
+            teamRoleChartContainer.appendChild(card)
+            createDonutChart(data, containerId, `${team.teamName}`)
+          } else {
+            console.error("Main container for team charts not found!")
+          }
+
+          // Event listener for details
+          card.addEventListener("click", () => {
+            showDetails("team", team.teamId, team.teamName, "team-details-section")
+          })
+        })
+
+        //roles table
+        // Combine roles by individual and team
+        const combinedRolesData = [
+          ...rolesByIndividual.map((individual) => ({
+            name: individual.name,
+            type: "Individual",
+            roles: individual.roles.map((role) => `${role.name} (${role.count})`).join(", "),
+            tasksCompleted: individual.numberOfTasksCompleted || 0,
+            totalTasks: individual.numberOfTasks || 0,
+            formsSubmitted: individual.numberOfMetadataForms || 0,
+            totalForms: individual.allMetaDataForms || 0,
+          })),
+          ...rolesByTeam.map((team) => ({
+            name: team.teamName,
+            type: "Team",
+            roles: team.roles.map((role) => `${role.name} (${role.count})`).join(", "),
+            tasksCompleted: team.numberOfTasksCompleted || 0,
+            totalTasks: team.totalTasks || 0, // Default to 0 if missing
+            formsSubmitted: team.numberOfMetadataForms || 0,
+            totalForms: team.totalForms || 0, // Default to 0 if missing
+          })),
+        ]
+
+        // create combo table
+        function createCombinedRolesTable() {
+          // Create a table container dynamically
+          const container = document.getElementById("roles-table-container")
+          if (!container) {
+            console.error("Table container for roles not found!")
+            return
+          }
+
+          // Create the table element
+          const table = document.createElement("table")
+          table.id = "combined-roles-table"
+          table.className = "display"
+
+          // Clear the container and append the table
+          container.innerHTML = ""
+          container.appendChild(table)
+
+          // Initialize the DataTable
+          $(table).DataTable({
+            data: combinedRolesData,
+            columns: [
+              { data: "name", title: "Name" },
+              { data: "type", title: "Type" },
+              { data: "roles", title: "Roles" },
+              { data: "tasksCompleted", title: "Tasks Completed" },
+              { data: "totalTasks", title: "Total Tasks" },
+              { data: "formsSubmitted", title: "Forms Submitted" },
+              { data: "totalForms", title: "Total Forms" },
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            scrollX: true,
+            dom: "frtipB", // Enable Buttons
+            buttons: [
+              {
+                extend: "csvHtml5",
+                text: "Download CSV",
+                title: "Combined_Roles_Data",
+                className: "btn btn-primary",
+                exportOptions: {
+                  columns: ":visible", // Export visible columns only
+                  format: {
+                    header: function (data, columnIdx) {
+                      return $("#combined-roles-table thead th").eq(columnIdx).text().trim()
+                    },
+                  },
+                },
+              },
+              {
+                extend: "excelHtml5",
+                text: "Download Excel",
+                title: "Combined_Roles_Data",
+                className: "btn btn-success",
+                exportOptions: {
+                  columns: ":visible", // Export visible columns only
+                  format: {
+                    header: function (data, columnIdx) {
+                      return $("#combined-roles-table thead th").eq(columnIdx).text().trim()
+                    },
+                  },
+                },
+              },
+            ],
+            language: {
+              search: "Search All: ", // Customize the label for the search box
+            },
+            initComplete: function () {
+              // Optional: Add custom search inputs for each column
+              this.api()
+                .columns()
+                .every(function () {
+                  const column = this
+                  const header = $(column.header())
+                  const input = $(
+                    '<input type="text" placeholder="Search ' + header.text() + '" />'
+                  )
+                    .appendTo($(header).empty())
+                    .on("keyup change clear", function () {
+                      if (column.search() !== this.value) {
+                        column.search(this.value).draw()
+                      }
+                    })
+                })
+            },
+          })
+        }
+
+        // create last table
+        function createCombinedTaskTable() {
+          const container = document.getElementById("combined-task-table-container")
+          if (!container) {
+            console.error("Table container for tasks not found!")
+            return
+          }
+
+          // Create the table element
+          const table = document.createElement("table")
+          table.id = "combined-task-table"
+          table.className = "display"
+
+          // Clear the container and append the table
+          container.innerHTML = ""
+          container.appendChild(table)
+
+          // Initialize the DataTable
+          $(table).DataTable({
+            data: combinedTaskData,
+            columns: [
+              { data: "taskId", title: "Task Id", visible: false },
+              { data: "createdAt", title: "Created Date", visible: true },
+              { data: "updatedAt", title: "Updated Date", visible: true },
+              { data: "createdById", title: "Created By Id", visible: false },
+              {
+                data: "formVersionId",
+                title: "Form Version Id",
+                visible: false,
+              },
+              { data: "deadline", title: "Deadline", visible: true },
+              { data: "name", title: "Task Name", visible: true },
+              { data: "description", title: "Task Description", visible: true },
+              { data: "status", title: "Task Completed", visible: true },
+              { data: "milestoneName", title: "Milestone Name", visible: true },
+              {
+                data: "milestoneDescription",
+                title: "Milestone Description",
+                visible: true,
+              },
+              {
+                data: "taskLogCreatedAt",
+                title: "Task Log Date",
+                visible: true,
+              },
+              {
+                data: "taskLogStatus",
+                title: "Task Log Completed",
+                visible: true,
+              },
+              { data: "taskLogMetadata", title: "Form Data", visible: true },
+              {
+                data: "completedById",
+                title: "Completed By Id",
+                visible: false,
+              },
+              { data: "assignedToId", title: "Assigned To Id", visible: false },
+              { data: "roles", title: "Roles", visible: true },
+              { data: "assignedTo", title: "Assigned To", visible: true },
+              { data: "completedBy", title: "Completed By", visible: true },
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            scrollX: true,
+            dom: "frtipB",
+            buttons: [
+              {
+                extend: "csvHtml5",
+                text: "Download CSV",
+                title: "Combined_Tasks_Data",
+                className: "btn btn-primary",
+                exportOptions: {
+                  columns: ":visible", // Export visible columns only
+                  format: {
+                    header: function (data, columnIdx) {
+                      return $(table).DataTable().settings().init().columns[columnIdx].title || ""
+                    },
+                  },
+                },
+              },
+              {
+                extend: "excelHtml5",
+                text: "Download Excel",
+                title: "Combined_Tasks_Data",
+                className: "btn btn-success",
+                exportOptions: {
+                  columns: ":visible", // Export visible columns only
+                  format: {
+                    header: function (data, columnIdx) {
+                      return $(table).DataTable().settings().init().columns[columnIdx].title || ""
+                    },
+                  },
+                },
+              },
+            ],
+            language: {
+              search: "Search All: ", // Customize the search label
+            },
+            initComplete: function () {
+              // Optional: Add custom search inputs for each column
+              this.api()
+                .columns()
+                .every(function () {
+                  const column = this
+                  const header = $(column.header())
+                  const input = $(
+                    '<input type="text" placeholder="Search ' + header.text() + '" />'
+                  )
+                    .appendTo($(header).empty())
+                    .on("keyup change clear", function () {
+                      if (column.search() !== this.value) {
+                        column.search(this.value).draw()
+                      }
+                    })
+                })
+            },
+          })
+        }
+
+        // get combination data for last table
+        // Combine task data for both members and teams
+        const combinedTaskData = tasksWithNames.map((task) => ({
+          taskId: task.taskId,
+          createdAt: task.createdAt || "N/A",
+          updatedAt: task.updatedAt || "N/A",
+          createdById: task.createdById || "N/A",
+          formVersionId: task.formVersionId || "N/A",
+          deadline: task.deadline || "No Deadline",
+          name: task.name || "Unnamed Task",
+          description: task.description || "No Description",
+          status: task.status || "Unknown Status",
+          milestoneName: task.milestoneName || "No Milestone Name",
+          milestoneDescription: task.milestoneDescription || "No Milestone Description",
+          taskLogCreatedAt: task.taskLogCreatedAt || "N/A",
+          taskLogStatus: task.taskLogStatus || "Not Completed",
+          taskLogMetadata: task.taskLogMetadata || "No Metadata",
+          completedById: task.completedById || "N/A",
+          assignedToId: task.assignedToId || "N/A",
+          roles: task.roles || "No Roles",
+          assignedTo: task.assignedTo || "Unassigned",
+          completedBy: task.completedBy || "Unknown",
+        }))
+
+        // Call this function to initialize the table
+        createCombinedRolesTable()
+
+        // Call the function to initialize the table
+        createRoleTable()
+
+        // Call the function to initialize the table
+        createCombinedTaskTable()
+      })
+    </script>
+  </head>
+  <body>
+    <input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar" />
+    <label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+    <nav id="observablehq-sidebar">
+      <ol>
+        <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+        <li class="observablehq-link">
+          <a href="./index.html">Project Summary</a>
+        </li>
+      </ol>
+      <ol>
+        <li class="observablehq-link observablehq-link-active">
+          <a href="./people_roles.html">Contributors</a>
+        </li>
+        <li class="observablehq-link"><a href="./tasks.html">Tasks</a></li>
+        <li class="observablehq-link"><a href="./forms.html">Form Data</a></li>
+        <li class="observablehq-link"><a href="./timeline.html">Events</a></li>
+      </ol>
+    </nav>
+    <script>
+      {
+        const e = document.querySelector("#observablehq-sidebar"),
+          o = document.querySelector("#observablehq-sidebar-toggle"),
+          r = sessionStorage.getItem("observablehq-sidebar")
+        r ? (o.checked = r === "true") : (o.indeterminate = !0)
+        for (const t of document.querySelectorAll("#observablehq-sidebar summary")) {
+          const s = t.parentElement
+          switch (sessionStorage.getItem(`observablehq-sidebar:${t.textContent}`)) {
+            case "true":
+              s.open = !0
+              break
+            case "false":
+              s.classList.contains("observablehq-section-active") || (s.open = !1)
+              break
+          }
+        }
+        addEventListener("beforeunload", () =>
+          sessionStorage.setItem("observablehq-sidebar-scrolly", `${e.scrollTop}`)
+        )
+        const a = sessionStorage.getItem("observablehq-sidebar-scrolly")
+        a != null &&
+          ((e.style.cssText = "overflow: hidden;"), (e.scrollTop = +a), (e.style.cssText = ""))
+      }
+    </script>
+
+    <div id="observablehq-center">
+      <main id="observablehq-main" class="observablehq">
+        <div class="hero">
+          <h1>Contributor Information</h1>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <h1>Overall Statistics</h1>
+          </div>
+          <p>
+            This page displays statistics and information about each contributor including tasks,
+            task logs, and assigned roles. Click on each box to learn more and view the data.
+          </p>
+          <div class="statistics-container">
+            <a href="#members" class="card-link">
+              <div class="stat-card">
+                <h3>Total Members</h3>
+                <p id="stat-number-1"></p>
+                <i class="fas fa-users" id="stat-number-1" aria-hidden="true"></i>
+              </div>
+            </a>
+            <a href="#teams" class="card-link">
+              <div class="stat-card">
+                <h3>Total Teams</h3>
+                <p id="stat-number-2"></p>
+                <i class="fas fa-user-friends" id="stat-number-2" aria-hidden="true"></i>
+              </div>
+            </a>
+            <a href="#roles" class="card-link">
+              <div class="stat-card">
+                <h3>Roles</h3>
+                <p id="roles-donut-chart"></p>
+              </div>
+            </a>
+            <a href="./tasks.html" class="card-link">
+              <div class="stat-card">
+                <h3>Tasks Completed</h3>
+                <p id="completed-tasks-chart"></p>
+              </div>
+            </a>
+            <a href="./forms.html" class="card-link">
+              <div class="stat-card">
+                <h3>Forms Submitted</h3>
+                <p id="completed-forms-chart"></p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="custom-collapse">
+          <input type="checkbox" class="toggle-checkbox" id="collapse-toggle-members" />
+          <label for="collapse-toggle-members" class="collapse-title">
+            <div class="card-title" id="members"><h1>Members</h1></div>
+            <i class="expand-icon">+</i>
+          </label>
+          <div class="collapse-content">
+            <p>
+              This section contains the role information for each member. Click on an individual
+              card to learn more about their contribution to the project.
+            </p>
+            <div id="members-section"></div>
+            <div id="member-details-section" class="details-container">
+              <p>Select a card to view details about the contributor or team.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="custom-collapse">
+          <input type="checkbox" class="toggle-checkbox" id="collapse-toggle-teams" />
+          <label for="collapse-toggle-teams" class="collapse-title">
+            <div class="card-title" id="teams"><h1>Teams</h1></div>
+            <i class="expand-icon">+</i>
+          </label>
+          <div class="collapse-content">
+            <p>
+              This section contains the role information for each team. Click on an individual card
+              to learn more about their contribution to the project.
+            </p>
+            <div id="teams-section"></div>
+            <div id="team-details-section" class="details-container">
+              <p>Select a card to view details about the contributor or team.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="custom-collapse">
+          <input type="checkbox" class="toggle-checkbox" id="collapse-toggle-roles" />
+          <label for="collapse-toggle-roles" class="collapse-title">
+            <div class="card-title" id="roles"><h1>Roles</h1></div>
+            <i class="expand-icon">+</i>
+          </label>
+          <div class="collapse-content">
+            <p>
+              This section contains the descriptive information of all roles, and the overall roles
+              summarized across tasks and members.
+            </p>
+            <div id="role-table-container"></div>
+          </div>
+        </div>
+
+        <div class="custom-collapse">
+          <input type="checkbox" class="toggle-checkbox" id="collapse-toggle-roles-combined" />
+          <label for="collapse-toggle-roles-combined" class="collapse-title">
+            <div class="card-title" id="roles-combined">
+              <h1>Combined Roles Data</h1>
+            </div>
+            <i class="expand-icon">+</i>
+          </label>
+          <div class="collapse-content">
+            <p>
+              This table includes combined roles data for both individuals and teams, along with
+              task and form completion statistics. You can download it using the buttons below.
+            </p>
+            <div id="roles-table-container"></div>
+          </div>
+        </div>
+
+        <div class="custom-collapse">
+          <input type="checkbox" class="toggle-checkbox" id="collapse-toggle-tasks-combined" />
+          <label for="collapse-toggle-tasks-combined" class="collapse-title">
+            <div class="card-title" id="tasks-combined">
+              <h1>Combined Task Data</h1>
+            </div>
+            <i class="expand-icon">+</i>
+          </label>
+          <div class="collapse-content">
+            <p>
+              This table includes task data for both individuals and teams, along with their
+              assigned roles, statuses, and form data. You can download the information using the
+              buttons below.
+            </p>
+            <div id="combined-task-table-container"></div>
+          </div>
+        </div>
+      </main>
+
+      <footer id="observablehq-footer">
+        <nav>
+          <a rel="prev" href="./index.html"><span>Project Summary</span></a
+          ><a rel="next" href="./tasks.html"><span>Tasks</span></a>
+        </nav>
+        <div>
+          Built with
+          <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer"
+            >Observable</a
+          >
+          on <a title="2025-07-27T20:51:27">Jul 27, 2025</a>.
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

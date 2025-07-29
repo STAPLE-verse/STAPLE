@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="generator" content="Observable Framework v1.13.3" />
+    <title>Contributors | Project Summary</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap"
+      crossorigin
+    />
+    <link rel="preload" as="style" href="./_observablehq/theme-air,deep-space.9d6d3ba1.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap"
+      crossorigin
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="./_observablehq/theme-air,deep-space.9d6d3ba1.css"
+    />
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.17/+esm"
+    ></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/d3@7/+esm"></script>
+    <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css"
+    />
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <link rel="stylesheet" href="./_file/style.ef1f7908.css" />
+
+    <script type="module">
+      // Load Plot and d3 (if needed elsewhere)
+      const [Plot, d3] = await Promise.all([
+        import("https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.17/+esm"),
+        import("https://cdn.jsdelivr.net/npm/d3@7/+esm"),
+      ])
+
+      // Embed the JSON data directly here
+      const jsonData = {
+        id: 1,
+        createdAt: "2025-05-03T18:07:10.660Z",
+        updatedAt: "2025-05-15T00:15:36.259Z",
+        name: "Testing Project",
+        description: "Here's a project to test things in ",
+        abstract: null,
+        keywords: null,
+        citation: null,
+        publisher: null,
+        identifier: null,
+        metadata: {
+          abstract: "Here's the project metadata",
+          citation: "cite cite",
+          keywords: "here, be, words",
+        },
+        formVersionId: 1,
+        formVersion: {
+          id: 1,
+          name: "Project Information",
+          formId: 1,
+          version: 1,
+          schema: {
+            type: "object",
+            title: "Project Information",
+            required: [],
+            properties: {
+              abstract: {
+                type: "string",
+                title: "Abstract:",
+              },
+              citation: {
+                type: "string",
+                title: "Citation:",
+              },
+              keywords: {
+                type: "string",
+                title: "Keywords:",
+                description: "Keywords separated by commas.",
+              },
+              publisher: {
+                type: "string",
+                title: "Publisher:",
+              },
+              identifier: {
+                type: "string",
+                title: "Identifier:",
+                description: "DOI, ISSN, etc.",
+              },
+            },
+            description: "Default Project Metadata",
+            dependencies: {},
+          },
+          uiSchema: {
+            abstract: {
+              "ui:widget": "textarea",
+            },
+            citation: {
+              "ui:widget": "textarea",
+            },
+            "ui:order": ["abstract", "keywords", "citation", "publisher", "identifier"],
+          },
+          createdAt: "2025-05-03T18:07:09.238Z",
+        },
+        milestones: [
+          {
+            id: 6,
+            createdAt: "2025-06-01T18:09:38.331Z",
+            updatedAt: "2025-06-01T18:09:38.331Z",
+            projectId: 1,
+            name: "Here's a description",
+            description: "fdsafdsa",
+            tags: [
+              {
+                key: "let's add the",
+                value: "let's add the",
+              },
+              {
+                key: "task",
+                value: "task",
+              },
+              {
+                key: "tags",
+                value: "tags",
+              },
+            ],
+            startDate: "2025-06-15T04:59:59.999Z",
+            endDate: "2025-07-06T04:59:59.999Z",
+          },
+          {
+            id: 7,
+            createdAt: "2025-06-01T18:11:26.867Z",
+            updatedAt: "2025-06-01T18:11:26.867Z",
+            projectId: 1,
+            name: "Maybe it will save",
+            description: "save the tasks!",
+            tags: [
+              {
+                key: "tags",
+                value: "tags",
+              },
+              {
+                key: "stuff",
+                value: "stuff",
+              },
+            ],
+            startDate: null,
+            endDate: null,
+          },
+          {
+            id: 3,
+            createdAt: "2025-06-01T17:11:10.595Z",
+            updatedAt: "2025-06-01T18:27:52.266Z",
+            projectId: 1,
+            name: "Blah blah blah",
+            description: null,
+            tags: null,
+            startDate: "2025-06-18T00:00:00.000Z",
+            endDate: "2025-06-13T00:00:00.000Z",
+          },
+          {
+            id: 4,
+            createdAt: "2025-06-01T17:11:35.438Z",
+            updatedAt: "2025-06-01T18:28:01.635Z",
+            projectId: 1,
+            name: "Stuff stuff ",
+            description: null,
+            tags: null,
+            startDate: "2025-06-23T00:00:00.000Z",
+            endDate: "2025-06-27T00:00:00.000Z",
+          },
+          {
+            id: 2,
+            createdAt: "2025-06-01T17:08:48.674Z",
+            updatedAt: "2025-06-01T21:39:18.448Z",
+            projectId: 1,
+            name: "Test New Milestone",
+            description: "Objective 1",
+            tags: [
+              {
+                key: "tags",
+                value: "tags",
+              },
+              {
+                key: "are",
+                value: "are",
+              },
+              {
+                key: "here",
+                value: "here",
+              },
+            ],
+            startDate: "2025-06-11T04:59:59.999Z",
+            endDate: "2025-06-21T04:59:59.999Z",
+          },
+          {
+            id: 1,
+            createdAt: "2025-05-29T23:59:14.272Z",
+            updatedAt: "2025-06-01T22:01:46.908Z",
+            projectId: 1,
+            name: "element name",
+            description: "here's a description",
+            tags: [
+              {
+                key: "i-i-i-i",
+                value: "i",
+              },
+              {
+                key: "have-have-have-have",
+                value: "have",
+              },
+              {
+                key: "added-added-added-added",
+                value: "added",
+              },
+            ],
+            startDate: "2025-06-10T04:59:59.999Z",
+            endDate: "2025-06-28T04:59:59.999Z",
+          },
+          {
+            id: 8,
+            createdAt: "2025-06-01T22:02:40.753Z",
+            updatedAt: "2025-06-01T22:04:15.821Z",
+            projectId: 1,
+            name: "New Milestone with no dates",
+            description: "here's a new one",
+            tags: [
+              {
+                key: "stuff",
+                value: "stuff",
+              },
+              {
+                key: "things",
+                value: "things",
+              },
+            ],
+            startDate: "2025-06-02T00:00:00.000Z",
+            endDate: "2025-06-26T00:00:00.000Z",
+          },
+          {
+            id: 9,
+            createdAt: "2025-06-02T17:39:24.341Z",
+            updatedAt: "2025-06-02T17:39:24.341Z",
+            projectId: 1,
+            name: "new milestone",
+            description: "fdsfdsfd",
+            tags: [
+              {
+                key: "fds",
+                value: "fds",
+              },
+              {
+                key: "fdsfdsjk",
+                value: "fdsfdsjk",
+              },
+            ],
+            startDate: "2025-06-05T04:59:59.999Z",
+            endDate: "2025-06-21T04:59:59.999Z",
+          },
+          {
+            id: 10,
+            createdAt: "2025-06-16T23:15:29.489Z",
+            updatedAt: "2025-06-16T23:15:29.489Z",
+            projectId: 1,
+            name: "Here's a new milestone",
+            description: "sjfkdslajfkdsl",
+            tags: [
+              {
+                key: "stuff",
+                value: "stuff",
+              },
+              {
+                key: "things",
+                value: "things",
+              },
+            ],
+            startDate: "2025-06-20T04:59:59.999Z",
+            endDate: "2025-06-28T04:59:59.999Z",
+          },
+          {
+            id: 5,
+            createdAt: "2025-06-01T17:23:49.325Z",
+            updatedAt: "2025-06-19T17:56:00.537Z",
+            projectId: 1,
+            name: "new milestone",
+            description: "description",
+            tags: [
+              {
+                key: "form data",
+                value: "form data",
+              },
+            ],
+            startDate: "2025-06-24T04:59:59.999Z",
+            endDate: "2025-06-28T04:59:59.999Z",
+          },
+        ],
+        tasks: [
+          {
+            id: 6,
+            createdAt: "2025-05-29T23:09:34.877Z",
+            updatedAt: "2025-06-16T22:54:44.005Z",
+            createdById: 1,
+            deadline: "2025-06-19T21:25:00.000Z",
+            startDate: "2025-06-07T16:00:00.000Z",
+            name: "Task with no tags",
+            description: null,
+            tags: [],
+            containerTaskOrder: 0,
+            containerId: 3,
+            projectId: 1,
+            milestoneId: 5,
+            formVersionId: null,
+            status: "NOT_COMPLETED",
+            elementId: null,
+            milestone: {
+              id: 5,
+              createdAt: "2025-06-01T17:23:49.325Z",
+              updatedAt: "2025-06-19T17:56:00.537Z",
+              projectId: 1,
+              name: "new milestone",
+              description: "description",
+              tags: [
+                {
+                  key: "form data",
+                  value: "form data",
+                },
+              ],
+              startDate: "2025-06-24T04:59:59.999Z",
+              endDate: "2025-06-28T04:59:59.999Z",
+            },
+            roles: [],
+            taskLogs: [
+              {
+                id: 28,
+                createdAt: "2025-05-29T23:09:34.882Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "TEAM",
+                assignedToId: 2,
+                completedById: null,
+                taskId: 6,
+                approved: null,
+              },
+              {
+                id: 29,
+                createdAt: "2025-05-29T23:09:34.882Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "INDIVIDUAL",
+                assignedToId: 3,
+                completedById: null,
+                taskId: 6,
+                approved: null,
+              },
+              {
+                id: 35,
+                createdAt: "2025-06-01T19:14:55.437Z",
+                status: "COMPLETED",
+                metadata: null,
+                completedAs: "INDIVIDUAL",
+                assignedToId: 3,
+                completedById: 3,
+                taskId: 6,
+                approved: null,
+              },
+            ],
+            formVersion: null,
+          },
+          {
+            id: 7,
+            createdAt: "2025-06-01T01:05:55.052Z",
+            updatedAt: "2025-06-16T22:55:43.152Z",
+            createdById: 1,
+            deadline: "2025-06-12T21:10:00.000Z",
+            startDate: "2025-06-08T21:10:00.000Z",
+            name: "Form Data Task",
+            description: "Let's make this form version work ",
+            tags: [
+              {
+                key: "form data",
+                value: "form data",
+              },
+            ],
+            containerTaskOrder: 0,
+            containerId: 1,
+            projectId: 1,
+            milestoneId: 5,
+            formVersionId: 1,
+            status: "NOT_COMPLETED",
+            elementId: null,
+            milestone: {
+              id: 5,
+              createdAt: "2025-06-01T17:23:49.325Z",
+              updatedAt: "2025-06-19T17:56:00.537Z",
+              projectId: 1,
+              name: "new milestone",
+              description: "description",
+              tags: [
+                {
+                  key: "form data",
+                  value: "form data",
+                },
+              ],
+              startDate: "2025-06-24T04:59:59.999Z",
+              endDate: "2025-06-28T04:59:59.999Z",
+            },
+            roles: [
+              {
+                id: 1,
+                userId: 1,
+                name: "Investigation",
+                description: "Doing the data collection",
+                taxonomy: "CRediT",
+                projectId: null,
+              },
+            ],
+            taskLogs: [
+              {
+                id: 30,
+                createdAt: "2025-06-01T01:05:55.064Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "TEAM",
+                assignedToId: 2,
+                completedById: null,
+                taskId: 7,
+                approved: null,
+              },
+              {
+                id: 31,
+                createdAt: "2025-06-01T01:05:55.064Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "INDIVIDUAL",
+                assignedToId: 3,
+                completedById: null,
+                taskId: 7,
+                approved: null,
+              },
+              {
+                id: 32,
+                createdAt: "2025-06-01T01:05:55.064Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "INDIVIDUAL",
+                assignedToId: 1,
+                completedById: null,
+                taskId: 7,
+                approved: false,
+              },
+              {
+                id: 33,
+                createdAt: "2025-06-01T03:22:36.719Z",
+                status: "COMPLETED",
+                metadata: {
+                  abstract: "fdsafds",
+                  citation: "fdsfds",
+                  keywords: "fdsafds",
+                },
+                completedAs: "INDIVIDUAL",
+                assignedToId: 1,
+                completedById: 1,
+                taskId: 7,
+                approved: null,
+              },
+              {
+                id: 34,
+                createdAt: "2025-06-01T03:54:30.110Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "TEAM",
+                assignedToId: 4,
+                completedById: null,
+                taskId: 7,
+                approved: null,
+              },
+            ],
+            formVersion: {
+              id: 1,
+              name: "Project Information",
+              formId: 1,
+              version: 1,
+              schema: {
+                type: "object",
+                title: "Project Information",
+                $schema: "http://json-schema.org/draft-04/schema#",
+                required: [],
+                properties: {
+                  abstract: {
+                    type: "string",
+                    title: "Abstract:",
+                  },
+                  citation: {
+                    type: "string",
+                    title: "Citation:",
+                  },
+                  keywords: {
+                    type: "string",
+                    title: "Keywords:",
+                    description: "Keywords separated by commas.",
+                  },
+                  publisher: {
+                    type: "string",
+                    title: "Publisher:",
+                  },
+                  identifier: {
+                    type: "string",
+                    title: "Identifier:",
+                    description: "DOI, ISSN, etc.",
+                  },
+                },
+                description: "Default Project Metadata",
+                dependencies: {},
+              },
+              uiSchema: {
+                abstract: {
+                  "ui:widget": "textarea",
+                },
+                citation: {
+                  "ui:widget": "textarea",
+                },
+                "ui:order": ["abstract", "keywords", "citation", "publisher", "identifier"],
+              },
+              createdAt: "2025-05-03T18:07:09.238Z",
+            },
+          },
+          {
+            id: 5,
+            createdAt: "2025-05-29T23:09:09.067Z",
+            updatedAt: "2025-06-16T22:57:39.636Z",
+            createdById: 1,
+            deadline: "2025-06-18T13:24:59.999Z",
+            startDate: "2025-06-05T07:34:09.067Z",
+            name: "here's a task with tags",
+            description:
+              '\nfreestar\nՀայերեն Shqip ‫العربية Български Català 中文简体 Hrvatski Česky Dansk Nederlands English Eesti Filipino Suomi Français ქართული Deutsch Ελληνικά ‫עברית हिन्दी Magyar Indonesia Italiano Latviski Lietuviškai македонски Melayu Norsk Polski Português Româna Pyccкий Српски Slovenčina Slovenščina Español Svenska ไทย Türkçe Українська Tiếng Việt\nLorem Ipsum\n"Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit..."\n"There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain..."\nfreestar\nfreestar\nWhat is Lorem Ipsum?\n\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\nWhy do we use it?\n\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).\n\nWhere does it come from?\n\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.\n\nThe standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.\nWhere can I get some?\n\nThere are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn\'t anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.\n\t\n\tparagraphs\n\twords\n\tbytes\n\tlists\n\t\tStart with \'Lorem\nipsum dolor sit amet...\'\n\t\n\nDonate: If you use this site regularly and would like to help keep the site on the Internet, please consider donating a small sum to help pay for the hosting and bandwidth bill. There is no minimum donation, any sum is appreciated - click here to donate using PayPal. Thank you for your support. Donate bitcoin: 16UQLq1HZ3CNwhvgrarV6pMoA2CDjb4tyF\nTranslations: Can you help translate this site into a foreign language ? Please email us with details if you can help.\nThere is a set of mock banners available here in three colours and in a range of standard banner sizes:\nBannersBannersBanners\nNodeJS Python Interface GTK Lipsum Rails .NET\nfreestar\nThe standard Lorem Ipsum passage, used since the 1500s\n\n"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."\nSection 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC\n\n"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"\n1914 translation by H. Rackham\n\n"But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?"\nSection 1.10.33 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC\n\n"At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."\n1914 translation by H. Rackham\n\n"On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains."\nhelp@lipsum.com\nPrivacy Policy ·\nFreestar\n',
+            tags: [
+              {
+                key: "tags",
+                value: "tags",
+              },
+              {
+                key: "stuff",
+                value: "stuff",
+              },
+              {
+                key: "things",
+                value: "things",
+              },
+            ],
+            containerTaskOrder: 0,
+            containerId: 2,
+            projectId: 1,
+            milestoneId: 5,
+            formVersionId: null,
+            status: "COMPLETED",
+            elementId: null,
+            milestone: {
+              id: 5,
+              createdAt: "2025-06-01T17:23:49.325Z",
+              updatedAt: "2025-06-19T17:56:00.537Z",
+              projectId: 1,
+              name: "new milestone",
+              description: "description",
+              tags: [
+                {
+                  key: "form data",
+                  value: "form data",
+                },
+              ],
+              startDate: "2025-06-24T04:59:59.999Z",
+              endDate: "2025-06-28T04:59:59.999Z",
+            },
+            roles: [],
+            taskLogs: [
+              {
+                id: 27,
+                createdAt: "2025-05-29T23:09:09.075Z",
+                status: "NOT_COMPLETED",
+                metadata: null,
+                completedAs: "INDIVIDUAL",
+                assignedToId: 1,
+                completedById: null,
+                taskId: 5,
+                approved: null,
+              },
+              {
+                id: 45,
+                createdAt: "2025-07-08T17:18:16.606Z",
+                status: "COMPLETED",
+                metadata: null,
+                completedAs: "INDIVIDUAL",
+                assignedToId: 1,
+                completedById: 1,
+                taskId: 5,
+                approved: false,
+              },
+            ],
+            formVersion: null,
+          },
+        ],
+        projectMembers: [
+          {
+            id: 4,
+            createdAt: "2025-06-01T03:54:17.756Z",
+            updatedAt: "2025-06-01T03:54:17.756Z",
+            projectId: 1,
+            name: "Aggieerin team",
+            deleted: false,
+            tags: null,
+            users: [],
+            roles: [],
+          },
+          {
+            id: 5,
+            createdAt: "2025-06-01T23:05:15.869Z",
+            updatedAt: "2025-06-01T23:05:15.869Z",
+            projectId: 1,
+            name: null,
+            deleted: false,
+            tags: [
+              {
+                key: "here",
+                value: "here",
+              },
+              {
+                key: "are",
+                value: "are",
+              },
+              {
+                key: "tags",
+                value: "tags",
+              },
+            ],
+            users: [
+              {
+                institution: null,
+                username: "buchananlabplus1",
+                firstName: null,
+                lastName: null,
+                email: "buchananlab+1@gmail.com",
+              },
+            ],
+            roles: [],
+          },
+          {
+            id: 2,
+            createdAt: "2025-05-03T18:11:27.977Z",
+            updatedAt: "2025-06-02T17:12:28.151Z",
+            projectId: 1,
+            name: "The DOOM",
+            deleted: false,
+            tags: null,
+            users: [
+              {
+                institution: null,
+                username: "doomlab",
+                firstName: "Erin",
+                lastName: "Buchanan",
+                email: "buchananlab@gmail.com",
+              },
+              {
+                institution: null,
+                username: "buchananlabplus1",
+                firstName: null,
+                lastName: null,
+                email: "buchananlab+1@gmail.com",
+              },
+            ],
+            roles: [],
+          },
+          {
+            id: 1,
+            createdAt: "2025-05-03T18:07:10.665Z",
+            updatedAt: "2025-06-16T15:30:00.404Z",
+            projectId: 1,
+            name: null,
+            deleted: false,
+            tags: [
+              {
+                key: "here-here-here",
+                value: "here",
+              },
+              {
+                key: "are-are-are",
+                value: "are",
+              },
+              {
+                key: "my-my-my",
+                value: "my",
+              },
+              {
+                key: "form data",
+                value: "form data",
+              },
+            ],
+            users: [
+              {
+                institution: null,
+                username: "doomlab",
+                firstName: "Erin",
+                lastName: "Buchanan",
+                email: "buchananlab@gmail.com",
+              },
+            ],
+            roles: [
+              {
+                id: 1,
+                userId: 1,
+                name: "Investigation",
+                description: "Doing the data collection",
+                taxonomy: "CRediT",
+                projectId: null,
+              },
+            ],
+          },
+          {
+            id: 6,
+            createdAt: "2025-06-01T23:13:23.216Z",
+            updatedAt: "2025-06-16T15:36:19.542Z",
+            projectId: 1,
+            name: "Tag Team",
+            deleted: false,
+            tags: [
+              {
+                key: "add",
+                value: "add",
+              },
+              {
+                key: "team",
+                value: "team",
+              },
+              {
+                key: "tags",
+                value: "tags",
+              },
+              {
+                key: "form data",
+                value: "form data",
+              },
+            ],
+            users: [
+              {
+                institution: null,
+                username: "doomlab",
+                firstName: "Erin",
+                lastName: "Buchanan",
+                email: "buchananlab@gmail.com",
+              },
+              {
+                institution: null,
+                username: "buchananlabplus1",
+                firstName: null,
+                lastName: null,
+                email: "buchananlab+1@gmail.com",
+              },
+            ],
+            roles: [],
+          },
+          {
+            id: 3,
+            createdAt: "2025-05-22T19:10:14.814Z",
+            updatedAt: "2025-07-17T22:23:57.710Z",
+            projectId: 1,
+            name: null,
+            deleted: true,
+            tags: [
+              {
+                key: "yo",
+                value: "yo",
+              },
+              {
+                key: "yo new",
+                value: "yo new",
+              },
+            ],
+            users: [
+              {
+                institution: "deleted_1",
+                username: "deleted_1",
+                firstName: "deleted_1",
+                lastName: "deleted_1",
+                email: "deleted_1",
+              },
+            ],
+            roles: [
+              {
+                id: 1,
+                userId: 1,
+                name: "Investigation",
+                description: "Doing the data collection",
+                taxonomy: "CRediT",
+                projectId: null,
+              },
+            ],
+          },
+        ],
+      }
+
+      function extractFinalSubmittedMetadata(jsonData) {
+        // Step 1: Use a map to track the final submission for each task-person combination
+        const finalSubmissionMap = new Map()
+        if (!jsonData.tasks) return []
+        jsonData.tasks.forEach((task) => {
+          if (!task.taskLogs) return
+          task.taskLogs.forEach((log) => {
+            if (log.metadata && log.metadata !== "No Metadata") {
+              const key = `${task.id}-${log.assignedToId}` // Unique key per task-person combo
+              // If key doesn't exist or if this log is later, update the map
+              if (
+                !finalSubmissionMap.has(key) ||
+                new Date(log.createdAt) > new Date(finalSubmissionMap.get(key).taskLogCreatedAt)
+              ) {
+                finalSubmissionMap.set(key, {
+                  taskId: task.id,
+                  taskName: task.name || "Unnamed Task",
+                  assignedToId: log.assignedToId || "Unknown",
+                  taskLogCreatedAt: log.createdAt,
+                  metadata: log.metadata,
+                })
+              }
+            }
+          })
+        })
+        // Step 2: Convert the map values to an array and return
+        return Array.from(finalSubmissionMap.values())
+      }
+
+      const finalMetadataArray = extractFinalSubmittedMetadata(jsonData)
+
+      function createMetadataDropdownAndDataTable(containerId, dataTableContainerId) {
+        // Step 1: Get unique task names from the metadata array
+        const taskNames = [...new Set(finalMetadataArray.map((entry) => entry.taskName))]
+
+        // Step 2: Create the dropdown menu
+        const dropdownContainer = document.getElementById(containerId)
+        dropdownContainer.innerHTML = "<h3>Select a Task</h3>"
+
+        const selectElement = document.createElement("select")
+        selectElement.className = "metadata-select"
+        selectElement.innerHTML = `<option value="">-- Select a Task --</option>`
+
+        // Step 3: Populate the dropdown options
+        taskNames.forEach((taskName) => {
+          const option = document.createElement("option")
+          option.value = taskName
+          option.textContent = taskName
+          selectElement.appendChild(option)
+        })
+
+        dropdownContainer.appendChild(selectElement)
+
+        // Step 4: Set up event listener to display the DataTable
+        selectElement.addEventListener("change", () => {
+          const selectedTask = selectElement.value
+          if (selectedTask) {
+            displayDynamicMetadataTable(selectedTask, dataTableContainerId)
+          }
+        })
+      }
+
+      function displayDynamicMetadataTable(selectedTaskName, containerId) {
+        // Step 5: Filter metadata for the selected task name
+        const filteredMetadata = finalMetadataArray.filter(
+          (entry) => entry.taskName === selectedTaskName
+        )
+
+        // Step 6: Convert metadata to table data and get dynamic columns
+        const { tableData, allKeys } = convertMetadataToTableData(filteredMetadata)
+
+        // Clear previous table content
+        const container = document.getElementById(containerId)
+        container.innerHTML = `<h3>Metadata Table for "${selectedTaskName}"</h3>`
+
+        // Create and append the table
+        const table = document.createElement("table")
+        table.id = "dynamic-metadata-table"
+        table.className = "display"
+        container.appendChild(table)
+
+        // Initialize DataTable with dynamic columns
+        $("#dynamic-metadata-table").DataTable({
+          data: tableData,
+          destroy: true, // Recreate the table each time
+          columns: [
+            { data: "taskName", title: "Task Name" },
+            {
+              data: "assignedToId",
+              title: "Assigned To",
+              render: function (data) {
+                return convertAssignedToIdToName(data) // Convert ID to name
+              },
+            },
+            { data: "taskLogCreatedAt", title: "Log Created At" },
+            ...allKeys.map((key) => ({ data: key, title: key })), // Dynamically add metadata columns
+          ],
+          paging: true,
+          searching: true,
+          ordering: true,
+          responsive: true,
+          scrollX: true,
+          dom: "frtipB", // Enable buttons for export
+          buttons: [
+            {
+              extend: "csvHtml5",
+              text: "Download CSV", // Customize button text
+              title: `${selectedTaskName}_Metadata`,
+              className: "btn btn-primary", // Optional: Add a CSS class
+              exportOptions: {
+                columns: ":visible", // Export visible columns only
+                format: {
+                  header: function (data, columnIdx) {
+                    return $("#dynamic-metadata-table thead th").eq(columnIdx).text().trim()
+                  },
+                },
+              },
+            },
+            {
+              extend: "excelHtml5",
+              text: "Download Excel",
+              title: `${selectedTaskName}_Metadata`,
+              className: "btn btn-success", // Optional: Add a CSS class
+              exportOptions: {
+                columns: ":visible", // Export visible columns only
+                format: {
+                  header: function (data, columnIdx) {
+                    return $("#dynamic-metadata-table thead th").eq(columnIdx).text().trim()
+                  },
+                },
+              },
+            },
+          ],
+          language: {
+            search: "Search All: ", // Customize the label for the search box
+          },
+          initComplete: function () {
+            // Optional: Add custom search inputs for each column
+            this.api()
+              .columns()
+              .every(function () {
+                const column = this
+                const header = $(column.header())
+                const input = $('<input type="text" placeholder="Search ' + header.text() + '" />')
+                  .appendTo($(header).empty())
+                  .on("keyup change clear", function () {
+                    if (column.search() !== this.value) {
+                      column.search(this.value).draw()
+                    }
+                  })
+              })
+          },
+        })
+      }
+
+      function convertAssignedToIdToName(assignedToId) {
+        // Find the project member by assignedToId
+        if (!jsonData.projectMembers) return "Unknown"
+        const member = jsonData.projectMembers.find((member) => member.id === assignedToId)
+        if (!member) {
+          return "Unknown" // Handle cases where no member is found
+        }
+        // Use member.name if available
+        if (member.name) {
+          return member.name
+        }
+        // Otherwise, combine first name, last name, and username
+        const user = member.users && member.users[0] // Defensive
+        if (user) {
+          const firstName = user.firstName || ""
+          const lastName = user.lastName || ""
+          // Check if both names are empty or null
+          if (!firstName.trim() && !lastName.trim()) {
+            return "No Name Provided"
+          }
+          return `${firstName} ${lastName} (${user.username})`.trim()
+        }
+        return "Unknown"
+      }
+
+      function convertMetadataToTableData(metadataArray) {
+        // Collect all unique metadata keys
+        const allKeys = new Set()
+        metadataArray.forEach((entry) => {
+          Object.keys(entry.metadata).forEach((key) => allKeys.add(key))
+        })
+
+        // Convert metadata to table-friendly rows
+        const tableData = metadataArray.map((entry) => {
+          const row = {
+            taskId: entry.taskId, // No longer included in DataTable display
+            taskName: entry.taskName,
+            assignedToId: entry.assignedToId,
+            taskLogCreatedAt: entry.taskLogCreatedAt,
+          }
+          // Fill metadata dynamically
+          allKeys.forEach((key) => {
+            row[key] = entry.metadata[key] || "N/A" // Handle missing keys
+          })
+          return row
+        })
+
+        return { tableData, allKeys: Array.from(allKeys) }
+      }
+
+      // Call the function to initialize the dropdown and DataTable
+      createMetadataDropdownAndDataTable(
+        "metadata-dropdown-container",
+        "metadata-datatable-container"
+      )
+    </script>
+  </head>
+  <body>
+    <input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar" />
+    <label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+    <nav id="observablehq-sidebar">
+      <ol>
+        <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+        <li class="observablehq-link">
+          <a href="./index.html">Project Summary</a>
+        </li>
+      </ol>
+      <ol>
+        <li class="observablehq-link">
+          <a href="./people_roles.html">Contributors</a>
+        </li>
+        <li class="observablehq-link"><a href="./tasks.html">Tasks</a></li>
+        <li class="observablehq-link observablehq-link-active">
+          <a href="./forms.html">Form Data</a>
+        </li>
+        <li class="observablehq-link"><a href="./timeline.html">Events</a></li>
+      </ol>
+    </nav>
+    <script>
+      {
+        const e = document.querySelector("#observablehq-sidebar"),
+          o = document.querySelector("#observablehq-sidebar-toggle"),
+          r = sessionStorage.getItem("observablehq-sidebar")
+        r ? (o.checked = r === "true") : (o.indeterminate = !0)
+        for (const t of document.querySelectorAll("#observablehq-sidebar summary")) {
+          const s = t.parentElement
+          switch (sessionStorage.getItem(`observablehq-sidebar:${t.textContent}`)) {
+            case "true":
+              s.open = !0
+              break
+            case "false":
+              s.classList.contains("observablehq-section-active") || (s.open = !1)
+              break
+          }
+        }
+        addEventListener("beforeunload", () =>
+          sessionStorage.setItem("observablehq-sidebar-scrolly", `${e.scrollTop}`)
+        )
+        const a = sessionStorage.getItem("observablehq-sidebar-scrolly")
+        a != null &&
+          ((e.style.cssText = "overflow: hidden;"), (e.scrollTop = +a), (e.style.cssText = ""))
+      }
+    </script>
+    <div id="observablehq-center">
+      <main id="observablehq-main" class="observablehq">
+        <div class="hero">
+          <h1>Form Metadata Information</h1>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <h1>Form Data</h1>
+          </div>
+          <p>
+            This page displays statistics and information about tasks assigned in the project. Tasks
+            completed indicate the number of tasks marked as completed by the project manager while
+            the task logs completed indicates the number of member marked completed tasks.
+          </p>
+          <div class="card-container">
+            <div id="metadata-dropdown-container" class="dropdown-container"></div>
+            <div id="metadata-datatable-container" class="datatable-container"></div>
+          </div>
+        </div>
+      </main>
+      <footer id="observablehq-footer">
+        <nav>
+          <a rel="prev" href="./tasks.html"><span>Tasks</span></a
+          ><a rel="next" href="./timeline.html"><span>Events</span></a>
+        </nav>
+        <div>
+          Built with
+          <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer"
+            >Observable</a
+          >
+          on <a title="2025-07-27T20:51:27">Jul 27, 2025</a>.
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
