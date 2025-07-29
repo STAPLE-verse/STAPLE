@@ -20,7 +20,7 @@ import { Tooltip } from "react-tooltip"
 import CollapseCard from "src/core/components/CollapseCard"
 import { cleanProjectData } from "src/summary/utils/processProjectData"
 import { mapStapleToJsonLd } from "src/forms/utils/mapStapleToJsonLd"
-import StapleSchemaDownloads from "src/summary/components/stapleSchemaDownloads"
+import StapleSchemaDownloads from "src/summary/components/StapleSchemaDownloads"
 
 const Summary = () => {
   // Get data
@@ -169,7 +169,9 @@ const Summary = () => {
     project?.metadata !== null &&
     "_stapleSchema" in project.metadata
   const projectJsonLd = hasStapleSchema
-    ? mapStapleToJsonLd(project.metadata, {
+    ? // @ts-expect-error project.metadata is verified to be non-null object above
+
+      mapStapleToJsonLd(project.metadata, {
         startDate: project.createdAt.toISOString(),
         endDate: project.updatedAt.toISOString(),
       })
