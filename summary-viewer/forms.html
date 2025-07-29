@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="generator" content="Observable Framework v1.13.3" />
+    <title>Contributors | Project Summary</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap"
+      crossorigin
+    />
+    <link rel="preload" as="style" href="./_observablehq/theme-air,deep-space.9d6d3ba1.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap"
+      crossorigin
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="./_observablehq/theme-air,deep-space.9d6d3ba1.css"
+    />
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.17/+esm"
+    ></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/d3@7/+esm"></script>
+    <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css"
+    />
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+    <link rel="stylesheet" href="./_file/style.ef1f7908.css" />
+
+    <script type="module">
+      // Load Plot and d3 (if needed elsewhere)
+      const [Plot, d3] = await Promise.all([
+        import("https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.17/+esm"),
+        import("https://cdn.jsdelivr.net/npm/d3@7/+esm"),
+      ])
+
+      // Embed the JSON data directly here
+      const jsonData = __INJECT_JSON__
+      document.addEventListener("DOMContentLoaded", () => {
+        function extractFinalSubmittedMetadata(jsonData) {
+          // Step 1: Use a map to track the final submission for each task-person combination
+          const finalSubmissionMap = new Map()
+          if (!jsonData.tasks) return []
+          jsonData.tasks.forEach((task) => {
+            if (!task.taskLogs) return
+            task.taskLogs.forEach((log) => {
+              if (log.metadata && log.metadata !== "No Metadata") {
+                const key = `${task.id}-${log.assignedToId}` // Unique key per task-person combo
+                // If key doesn't exist or if this log is later, update the map
+                if (
+                  !finalSubmissionMap.has(key) ||
+                  new Date(log.createdAt) > new Date(finalSubmissionMap.get(key).taskLogCreatedAt)
+                ) {
+                  finalSubmissionMap.set(key, {
+                    taskId: task.id,
+                    taskName: task.name || "Unnamed Task",
+                    assignedToId: log.assignedToId || "Unknown",
+                    taskLogCreatedAt: log.createdAt,
+                    metadata: log.metadata,
+                  })
+                }
+              }
+            })
+          })
+          // Step 2: Convert the map values to an array and return
+          return Array.from(finalSubmissionMap.values())
+        }
+
+        const finalMetadataArray = extractFinalSubmittedMetadata(jsonData)
+
+        function createMetadataDropdownAndDataTable(containerId, dataTableContainerId) {
+          // Step 1: Get unique task names from the metadata array
+          const taskNames = [...new Set(finalMetadataArray.map((entry) => entry.taskName))]
+
+          // Step 2: Create the dropdown menu
+          const dropdownContainer = document.getElementById(containerId)
+          dropdownContainer.innerHTML = "<h3>Select a Task</h3>"
+
+          const selectElement = document.createElement("select")
+          selectElement.className = "metadata-select"
+          selectElement.innerHTML = `<option value="">-- Select a Task --</option>`
+
+          // Step 3: Populate the dropdown options
+          taskNames.forEach((taskName) => {
+            const option = document.createElement("option")
+            option.value = taskName
+            option.textContent = taskName
+            selectElement.appendChild(option)
+          })
+
+          dropdownContainer.appendChild(selectElement)
+
+          // Step 4: Set up event listener to display the DataTable
+          selectElement.addEventListener("change", () => {
+            const selectedTask = selectElement.value
+            if (selectedTask) {
+              displayDynamicMetadataTable(selectedTask, dataTableContainerId)
+            }
+          })
+        }
+
+        function displayDynamicMetadataTable(selectedTaskName, containerId) {
+          // Step 5: Filter metadata for the selected task name
+          const filteredMetadata = finalMetadataArray.filter(
+            (entry) => entry.taskName === selectedTaskName
+          )
+
+          // Step 6: Convert metadata to table data and get dynamic columns
+          const { tableData, allKeys } = convertMetadataToTableData(filteredMetadata)
+
+          // Clear previous table content
+          const container = document.getElementById(containerId)
+          container.innerHTML = `<h3>Metadata Table for "${selectedTaskName}"</h3>`
+
+          // Create and append the table
+          const table = document.createElement("table")
+          table.id = "dynamic-metadata-table"
+          table.className = "display"
+          container.appendChild(table)
+
+          // Initialize DataTable with dynamic columns
+          $("#dynamic-metadata-table").DataTable({
+            data: tableData,
+            destroy: true, // Recreate the table each time
+            columns: [
+              { data: "taskName", title: "Task Name" },
+              {
+                data: "assignedToId",
+                title: "Assigned To",
+                render: function (data) {
+                  return convertAssignedToIdToName(data) // Convert ID to name
+                },
+              },
+              { data: "taskLogCreatedAt", title: "Log Created At" },
+              ...allKeys.map((key) => ({ data: key, title: key })), // Dynamically add metadata columns
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            responsive: true,
+            scrollX: true,
+            dom: "frtipB", // Enable buttons for export
+            buttons: [
+              {
+                extend: "csvHtml5",
+                text: "Download CSV", // Customize button text
+                title: `${selectedTaskName}_Metadata`,
+                className: "btn btn-primary", // Optional: Add a CSS class
+                exportOptions: {
+                  columns: ":visible", // Export visible columns only
+                  format: {
+                    header: function (data, columnIdx) {
+                      return $("#dynamic-metadata-table thead th").eq(columnIdx).text().trim()
+                    },
+                  },
+                },
+              },
+              {
+                extend: "excelHtml5",
+                text: "Download Excel",
+                title: `${selectedTaskName}_Metadata`,
+                className: "btn btn-success", // Optional: Add a CSS class
+                exportOptions: {
+                  columns: ":visible", // Export visible columns only
+                  format: {
+                    header: function (data, columnIdx) {
+                      return $("#dynamic-metadata-table thead th").eq(columnIdx).text().trim()
+                    },
+                  },
+                },
+              },
+            ],
+            language: {
+              search: "Search All: ", // Customize the label for the search box
+            },
+            initComplete: function () {
+              // Optional: Add custom search inputs for each column
+              this.api()
+                .columns()
+                .every(function () {
+                  const column = this
+                  const header = $(column.header())
+                  const input = $(
+                    '<input type="text" placeholder="Search ' + header.text() + '" />'
+                  )
+                    .appendTo($(header).empty())
+                    .on("keyup change clear", function () {
+                      if (column.search() !== this.value) {
+                        column.search(this.value).draw()
+                      }
+                    })
+                })
+            },
+          })
+        }
+
+        function convertAssignedToIdToName(assignedToId) {
+          // Find the project member by assignedToId
+          if (!jsonData.projectMembers) return "Unknown"
+          const member = jsonData.projectMembers.find((member) => member.id === assignedToId)
+          if (!member) {
+            return "Unknown" // Handle cases where no member is found
+          }
+          // Use member.name if available
+          if (member.name) {
+            return member.name
+          }
+          // Otherwise, combine first name, last name, and username
+          const user = member.users && member.users[0] // Defensive
+          if (user) {
+            const firstName = user.firstName || ""
+            const lastName = user.lastName || ""
+            // Check if both names are empty or null
+            if (!firstName.trim() && !lastName.trim()) {
+              return "No Name Provided"
+            }
+            return `${firstName} ${lastName} (${user.username})`.trim()
+          }
+          return "Unknown"
+        }
+
+        function convertMetadataToTableData(metadataArray) {
+          // Collect all unique metadata keys
+          const allKeys = new Set()
+          metadataArray.forEach((entry) => {
+            Object.keys(entry.metadata).forEach((key) => allKeys.add(key))
+          })
+
+          // Convert metadata to table-friendly rows
+          const tableData = metadataArray.map((entry) => {
+            const row = {
+              taskId: entry.taskId, // No longer included in DataTable display
+              taskName: entry.taskName,
+              assignedToId: entry.assignedToId,
+              taskLogCreatedAt: entry.taskLogCreatedAt,
+            }
+            // Fill metadata dynamically
+            allKeys.forEach((key) => {
+              row[key] = entry.metadata[key] || "N/A" // Handle missing keys
+            })
+            return row
+          })
+
+          return { tableData, allKeys: Array.from(allKeys) }
+        }
+
+        // Call the function to initialize the dropdown and DataTable
+        createMetadataDropdownAndDataTable(
+          "metadata-dropdown-container",
+          "metadata-datatable-container"
+        )
+      })
+    </script>
+  </head>
+  <body>
+    <input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar" />
+    <label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+    <nav id="observablehq-sidebar">
+      <ol>
+        <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+        <li class="observablehq-link">
+          <a href="./index.html">Project Summary</a>
+        </li>
+      </ol>
+      <ol>
+        <li class="observablehq-link">
+          <a href="./people_roles.html">Contributors</a>
+        </li>
+        <li class="observablehq-link"><a href="./tasks.html">Tasks</a></li>
+        <li class="observablehq-link observablehq-link-active">
+          <a href="./forms.html">Form Data</a>
+        </li>
+        <li class="observablehq-link"><a href="./timeline.html">Events</a></li>
+      </ol>
+    </nav>
+    <script>
+      {
+        const e = document.querySelector("#observablehq-sidebar"),
+          o = document.querySelector("#observablehq-sidebar-toggle"),
+          r = sessionStorage.getItem("observablehq-sidebar")
+        r ? (o.checked = r === "true") : (o.indeterminate = !0)
+        for (const t of document.querySelectorAll("#observablehq-sidebar summary")) {
+          const s = t.parentElement
+          switch (sessionStorage.getItem(`observablehq-sidebar:${t.textContent}`)) {
+            case "true":
+              s.open = !0
+              break
+            case "false":
+              s.classList.contains("observablehq-section-active") || (s.open = !1)
+              break
+          }
+        }
+        addEventListener("beforeunload", () =>
+          sessionStorage.setItem("observablehq-sidebar-scrolly", `${e.scrollTop}`)
+        )
+        const a = sessionStorage.getItem("observablehq-sidebar-scrolly")
+        a != null &&
+          ((e.style.cssText = "overflow: hidden;"), (e.scrollTop = +a), (e.style.cssText = ""))
+      }
+    </script>
+    <div id="observablehq-center">
+      <main id="observablehq-main" class="observablehq">
+        <div class="hero">
+          <h1>Form Metadata Information</h1>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            <h1>Form Data</h1>
+          </div>
+          <p>
+            This page displays statistics and information about tasks assigned in the project. Tasks
+            completed indicate the number of tasks marked as completed by the project manager while
+            the task logs completed indicates the number of member marked completed tasks.
+          </p>
+          <div class="card-container">
+            <div id="metadata-dropdown-container" class="dropdown-container"></div>
+            <div id="metadata-datatable-container" class="datatable-container"></div>
+          </div>
+        </div>
+      </main>
+      <footer id="observablehq-footer">
+        <nav>
+          <a rel="prev" href="./tasks.html"><span>Tasks</span></a
+          ><a rel="next" href="./timeline.html"><span>Events</span></a>
+        </nav>
+        <div>
+          Built with
+          <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer"
+            >Observable</a
+          >
+          on <a title="2025-07-27T20:51:27">Jul 27, 2025</a>.
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

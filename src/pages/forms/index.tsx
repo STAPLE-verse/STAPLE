@@ -26,7 +26,7 @@ const AllFormsPage = () => {
       user: { id: currentUser?.id },
       archived: false,
     },
-    orderBy: { id: "asc" },
+    orderBy: { id: "desc" },
   })
 
   return (
