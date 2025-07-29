@@ -6,7 +6,7 @@ const path = require("path")
 const { execSync } = require("child_process")
 const archiver = require("archiver")
 
-const viewerAppPath = path.resolve("summary-viewer") // update this!
+const viewerAppPath = path.resolve("summary-viewer")
 const buildOutputDir = path.join(process.cwd(), "viewer-builds")
 
 // Start the worker
@@ -17,31 +17,40 @@ new QueueWorker(
     const jobFolder = path.join(buildOutputDir, `viewer_${jobId}`)
     // Ensure the buildOutputDir exists before creating the ZIP file
     fs.mkdirSync(buildOutputDir, { recursive: true })
-    const jsonPath = path.resolve(viewerAppPath, "src/data/project_summary.json")
+    // Write project_summary.json
+    const jsonPath = path.resolve(jobFolder, "project_summary.json")
     fs.mkdirSync(path.dirname(jsonPath), { recursive: true })
     fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2))
 
-    console.log(`[ViewerWorker] Starting build for job ${jobId}`)
+    const templateDir = path.join(jobFolder)
+    fs.cpSync(viewerAppPath, jobFolder, { recursive: true })
 
-    // Run your viewer build (replace with your actual script)
-    execSync(`npm run build`, {
-      cwd: viewerAppPath,
-      stdio: "inherit",
-      env: {
-        ...process.env,
-        PROJECT_JSON_PATH: jsonPath,
-        OUTPUT_DIR: jobFolder,
-      },
+    // Inject data into HTML templates and copy to jobFolder
+    const templateFiles = [
+      "index.html",
+      "forms.html",
+      "people_roles.html",
+      "tasks.html",
+      "timeline.html",
+    ]
+
+    templateFiles.forEach((filename) => {
+      const templatePath = path.join(templateDir, filename)
+      const content = fs.readFileSync(templatePath, "utf-8")
+      const injected = content.replace(
+        /const jsonData = __INJECT_JSON__/,
+        `const jsonData = ${JSON.stringify(data, null, 2)};`
+      )
+      fs.writeFileSync(path.join(jobFolder, filename), injected)
     })
 
-    console.log(`[ViewerWorker] Build complete for job ${jobId}`)
-
+    // Zip the jobFolder contents
     const zipPath = path.join(buildOutputDir, `viewer_${jobId}.zip`)
     const output = fs.createWriteStream(zipPath)
     const archive = archiver("zip", { zlib: { level: 9 } })
 
     archive.pipe(output)
-    archive.directory(path.join(viewerAppPath, "docs"), false)
+    archive.directory(jobFolder, false)
     await archive.finalize()
 
     console.log(`[ViewerWorker] ZIP created at ${zipPath}`)

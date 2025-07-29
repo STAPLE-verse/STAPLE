@@ -297,6 +297,3 @@ const SummaryPage = () => {
 }
 
 export default SummaryPage
-function updateProjectMutation(arg0: { id: number; name: string; metadata: any }) {
-  throw new Error("Function not implemented.")
-}

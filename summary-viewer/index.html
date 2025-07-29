@@ -25,6 +25,51 @@
       href="./_observablehq/theme-air,deep-space.9d6d3ba1.css"
     />
     <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./_file/style.ef1f7908.css" />
+
+    <script type="module">
+      const jsonData = __INJECT_JSON__
+      // Wait for DOMContentLoaded and update DOM with jsonData
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("project-title").textContent = jsonData.name
+        document.getElementById("project-created-at").textContent = new Date(
+          jsonData.createdAt
+        ).toLocaleDateString()
+        document.getElementById("project-updated-at").textContent = new Date(
+          jsonData.updatedAt
+        ).toLocaleDateString()
+        document.getElementById("project-description").textContent = jsonData.description
+
+        const metadataDiv = document.getElementById("project-metadata")
+        metadataDiv.innerHTML = "" // clear "Loading…" placeholder
+        if (jsonData.metadata) {
+          Object.entries(jsonData.metadata).forEach(([key, value]) => {
+            const p = document.createElement("p")
+            p.innerHTML = `<strong>${key}:</strong> ${value}`
+            metadataDiv.appendChild(p)
+          })
+        }
+
+        // Download handler
+        document.getElementById("download-json").addEventListener("click", (e) => {
+          e.preventDefault()
+          const jsonString = JSON.stringify(jsonData, null, 2)
+          const blob = new Blob([jsonString], { type: "application/json" })
+          const url = URL.createObjectURL(blob)
+
+          const a = document.createElement("a")
+          a.href = url
+          a.download = "project_summary.json"
+          a.click()
+
+          URL.revokeObjectURL(url)
+        })
+      })
+    </script>
   </head>
   <body>
     <input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar" />
@@ -70,11 +115,6 @@
     </script>
     <div id="observablehq-center">
       <main id="observablehq-main" class="observablehq">
-        <link
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-          rel="stylesheet"
-        />
-        <link rel="stylesheet" href="./_file/style.ef1f7908.css" />
         <div class="hero">
           <h1 id="project-title">Loading…</h1>
         </div>
@@ -120,58 +160,6 @@
             <div id="project-metadata">Loading…</div>
           </div>
         </div>
-
-        <script type="module">
-          // Wait for DOMContentLoaded and update DOM with jsonData
-          document.addEventListener("DOMContentLoaded", () => {
-            const jsonData = {
-              id: 1,
-              createdAt: "2025-05-03T18:07:10.660Z",
-              updatedAt: "2025-05-15T00:15:36.259Z",
-              name: "Testing Project",
-              description: "Here's a project to test things in",
-              metadata: {
-                abstract: "Here's the project metadata",
-                citation: "cite cite",
-                keywords: "here, be, words",
-              },
-            }
-
-            document.getElementById("project-title").textContent = jsonData.name
-            document.getElementById("project-created-at").textContent = new Date(
-              jsonData.createdAt
-            ).toLocaleDateString()
-            document.getElementById("project-updated-at").textContent = new Date(
-              jsonData.updatedAt
-            ).toLocaleDateString()
-            document.getElementById("project-description").textContent = jsonData.description
-
-            const metadataDiv = document.getElementById("project-metadata")
-            metadataDiv.innerHTML = "" // clear "Loading…" placeholder
-            if (jsonData.metadata) {
-              Object.entries(jsonData.metadata).forEach(([key, value]) => {
-                const p = document.createElement("p")
-                p.innerHTML = `<strong>${key}:</strong> ${value}`
-                metadataDiv.appendChild(p)
-              })
-            }
-
-            // Download handler
-            document.getElementById("download-json").addEventListener("click", (e) => {
-              e.preventDefault()
-              const jsonString = JSON.stringify(jsonData, null, 2)
-              const blob = new Blob([jsonString], { type: "application/json" })
-              const url = URL.createObjectURL(blob)
-
-              const a = document.createElement("a")
-              a.href = url
-              a.download = "project_summary.json"
-              a.click()
-
-              URL.revokeObjectURL(url)
-            })
-          })
-        </script>
         <div class="grid grid-cols-3">
           <div class="card">
             <center><a href="./people_roles.html">Check out the contributors</a></center>
