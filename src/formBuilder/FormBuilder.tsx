@@ -43,7 +43,18 @@ export default function FormBuilder({
     mods && mods.deactivatedFormInputs
   )
 
-  const unsupportedFeatures = checkForUnsupportedFeatures(schemaData, uiSchemaData, allFormInputs)
+  const unsupportedFeatures = checkForUnsupportedFeatures(
+    schemaData,
+    uiSchemaData,
+    allFormInputs
+  ).filter(
+    (msg) =>
+      !msg.includes("Object Property: _stapleSchema") &&
+      !msg.includes("Property Parameter: readOnly in _stapleSchema") &&
+      !msg.includes("UI Widget: hidden for _stapleSchema") &&
+      !msg.includes("UI schema property: _stapleSchema") &&
+      !msg.includes("allOf")
+  )
 
   const elementNum = countElementsFromSchema(schemaData)
   const defaultCollapseStates = [...Array(elementNum)].map(() => false)

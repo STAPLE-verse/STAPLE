@@ -766,3 +766,105 @@ input:focus {
   justify-content: space-between;
   margin-top: 0.5em;
 }
+
+/* Add visible text to array add buttons across all forms */
+.rjsf .array-item-add button::after {
+  content: "➕ Add";
+  font-weight: bold;
+  margin-left: -0.5rem;
+}
+
+/* Improve visibility and sizing of array move up/down and remove buttons */
+.rjsf .array-item-move-up {
+  background-color: oklch(var(--s));
+  color: oklch(var(--sc));
+  font-weight: bold;
+  padding: 0.25rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0;
+  margin-right: 0;
+  min-width: unset;
+  min-height: unset;
+  max-width: unset;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rjsf .array-item-move-down {
+  background-color: oklch(var(--a));
+  color: oklch(var(--ac));
+  font-weight: bold;
+  padding: 0.25rem 0.75rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0;
+  margin-right: 0;
+  min-width: unset;
+  min-height: unset;
+  max-width: unset;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rjsf .array-item-move-up::after {
+  content: "▲ Move Up";
+  margin-left: -0.5rem;
+}
+
+.rjsf .array-item-move-down::after {
+  content: "▼ Move Down";
+  margin-left: -0.5rem;
+}
+
+.rjsf .array-item-remove {
+  background-color: oklch(var(--er));
+  color: oklch(var(--erc));
+  font-weight: bold;
+  padding: 0.25rem 0.75rem;
+  font-size: 1.125rem;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0;
+  margin-right: 0;
+  min-width: unset;
+  min-height: unset;
+  max-width: unset;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rjsf .array-item-remove {
+  margin-right: 1rem !important;
+}
+
+.rjsf .array-item {
+  margin-bottom: 1rem;
+}
+
+.rjsf .array-item-remove::after {
+  content: "➖ Remove";
+  font-weight: bold;
+  font-size: 1rem;
+  margin-left: -0.5rem;
+}
+
+.rjsf .array-item-remove:hover {
+  background-color: oklch(var(--er) / 0.85);
+  color: oklch(var(--erc));
+}
+
+.checkbox p[id$="__description"] {
+  margin-right: 0.5rem;
+}

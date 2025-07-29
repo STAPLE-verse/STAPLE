@@ -1,6 +1,6 @@
 export const JsonProject = `
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "title": "Project Information",
   "required": ["name", "identifier", "keywords"],
@@ -30,21 +30,29 @@ export const JsonProject = `
       "type": "string",
       "title": "Identifier:",
       "description": "DOI, ISSN, etc."
+    },
+    "license": {
+      "type": "string",
+      "title": "License:",
+      "description": "Name or URL of the license under which this project is shared"
+    },
+    "_stapleSchema": {
+      "type": "string",
+      "default": "project-v1",
+      "title": "Schema version",
+      "readOnly": true
     }
   },
   "description": "Default Project Metadata",
-  "_stapleSchema": {
-    "type": "string",
-    "default": "project-v1",
-    "title": "Schema version",
-    "readOnly": true
-  },
   "dependencies": {}
 }
 `
 
 export const JsonProjectUI = `
 {
+  "_stapleSchema": {
+    "ui:widget": "hidden"
+  },
   "abstract": {
     "ui:widget": "textarea"
   },
@@ -52,11 +60,14 @@ export const JsonProjectUI = `
     "ui:widget": "textarea"
   },
   "ui:order": [
+    "name",
     "abstract",
     "keywords",
     "citation",
     "publisher",
-    "identifier"
+    "identifier",
+    "license",
+    "_stapleSchema"
   ]
 }
 `

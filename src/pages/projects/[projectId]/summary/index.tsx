@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react"
+import { Suspense, useState, useEffect } from "react"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { setQueryData, useMutation, useQuery } from "@blitzjs/rpc"
@@ -18,16 +18,54 @@ import updateProject from "src/projects/mutations/updateProject"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import CollapseCard from "src/core/components/CollapseCard"
+import { cleanProjectData } from "src/summary/utils/processProjectData"
+import { mapStapleToJsonLd } from "src/forms/utils/mapStapleToJsonLd"
+import StapleSchemaDownloads from "src/summary/components/StapleSchemaDownloads"
 
 const Summary = () => {
   // Get data
   // Get projects
   const projectId = useParam("projectId", "number")
   const [project] = useQuery(getProjectData, { id: projectId })
+  const cleanProject = cleanProjectData(project)
   const [updateProjectMutation] = useMutation(updateProject)
+
+  // Define localStorage key for viewerJobId
+  const localStorageKey = `viewerJobId-${projectId}`
 
   // State to store metadata
   const [assignmentMetadata, setAssignmentMetadata] = useState(project.metadata)
+  const [viewerJobId, setViewerJobId] = useState<string | null>(null)
+  const [isViewerZipReady, setIsViewerZipReady] = useState(false)
+  const [viewerBuildStarted, setViewerBuildStarted] = useState(false)
+
+  useEffect(() => {
+    if (!viewerJobId) {
+      const savedJobId = localStorage.getItem(localStorageKey)
+      if (savedJobId) {
+        setViewerJobId(savedJobId)
+      }
+      return
+    }
+
+    const checkZipReady = async () => {
+      try {
+        const res = await fetch(`/api/viewer-downloads/head?jobId=${viewerJobId}`, {
+          method: "HEAD",
+        })
+        if (res.ok) {
+          setIsViewerZipReady(true)
+        } else {
+          setIsViewerZipReady(false)
+        }
+      } catch (err) {
+        setIsViewerZipReady(false)
+      }
+    }
+
+    const interval = setInterval(checkZipReady, 3000)
+    return () => clearInterval(interval)
+  }, [viewerJobId, localStorageKey])
 
   const handleJsonFormSubmit = async (data) => {
     //console.log("Submitting form data:", data) // Debug log
@@ -99,8 +137,48 @@ const Summary = () => {
     }
   }
 
+  // Handler for launching the viewer
+  const handleLaunchViewer = async () => {
+    try {
+      setViewerBuildStarted(true)
+      const response = await fetch("/api/build-viewer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(cleanProject),
+      })
+      if (!response.ok) {
+        throw new Error("Failed to launch viewer")
+      }
+      const data = await response.json()
+      setViewerJobId(data.jobId)
+      localStorage.setItem(localStorageKey, data.jobId)
+      toast.success("Summary build has started!")
+      // Optionally handle data or open a new window if a URL is returned
+      // if (data.url) window.open(data.url, "_blank");
+    } catch (error) {
+      console.error(error)
+      toast.error("Failed to build summary. Please try again.")
+    }
+  }
+
+  //add information about staple schema from the project
+  const hasStapleSchema =
+    typeof project?.metadata === "object" &&
+    project?.metadata !== null &&
+    "_stapleSchema" in project.metadata
+  const projectJsonLd = hasStapleSchema
+    ? // @ts-expect-error project.metadata is verified to be non-null object above
+
+      mapStapleToJsonLd(project.metadata, {
+        startDate: project.createdAt.toISOString(),
+        endDate: project.updatedAt.toISOString(),
+      })
+    : null
+
   return (
-    <main className="flex flex-col mx-auto w-full">
+    <main className="flex flex-col mx-auto w-full text-lg">
       <h1 className="flex justify-center items-center mb-4 text-3xl">
         Project Summary
         <InformationCircleIcon
@@ -113,22 +191,12 @@ const Summary = () => {
           className="z-[1099] ourtooltips"
         />
       </h1>
-      {/* buttons */}
-      <div className="flex flex-row justify-center mb-4">
-        {project.metadata && <></>}
 
-        <DownloadJSON
-          data={project}
-          fileName={`${project.name}`}
-          className="mx-2 btn btn-primary"
-          label="Download Project JSON"
-        />
-        <button className="btn btn-secondary">Launch Viewer (coming soon)</button>
-      </div>
-
-      {/* Project  information */}
       <CollapseCard title="Project Settings" className="mb-4" defaultOpen={true}>
-        Use project settings to change the name, description, and required project metadata.
+        <p>
+          This section includes basic project information such as the name, description, and
+          creation date. You can also update the project’s settings here.
+        </p>
         <br className="mb-4" />
         Name: {project.name}
         <br />
@@ -146,11 +214,17 @@ const Summary = () => {
           </Link>
         </div>
       </CollapseCard>
-      <CollapseCard title="Project Metadata">
+
+      <CollapseCard title="Project Metadata" className="mb-4">
+        <p>
+          This section displays and allows you to edit the structured metadata associated with your
+          project. If your project uses a STAPLE schema, you can view, edit, reset, or download the
+          metadata below.
+        </p>
         {project.formVersionId ? (
           <>
             <MetadataDisplay metadata={project.metadata} />
-            <div className="justify-end flex">
+            <div className="flex flex-wrap gap-2 justify-start max-w-xl">
               <DownloadJSON
                 data={project.metadata}
                 fileName={project.name}
@@ -182,6 +256,57 @@ const Summary = () => {
           <div>No metadata available for this project.</div>
         )}
       </CollapseCard>
+
+      <CollapseCard title="Project Summary Viewer" className="mb-4">
+        <p>
+          Use this section to view and download the complete project summary. You can export the
+          full project JSON or launch an interactive viewer (coming soon).
+        </p>
+        <br className="mb-4" />
+        {/* buttons */}
+        <div className="card-actions justify-end">
+          <DownloadJSON
+            data={cleanProject}
+            fileName={`${project.name}`}
+            className="btn btn-primary"
+            label="Download Project JSON"
+          />
+          <button className="btn btn-secondary" onClick={handleLaunchViewer}>
+            Generate Shareable Summary
+          </button>
+          {viewerBuildStarted && viewerJobId && !isViewerZipReady && (
+            <p className="text-sm text-gray-500 mt-2">Building summary ...</p>
+          )}
+          {isViewerZipReady && viewerJobId && (
+            <a
+              href={`/api/viewer-downloads?jobId=${viewerJobId}`}
+              className="btn btn-accent"
+              download
+            >
+              Download Shareable Summary
+            </a>
+          )}
+        </div>
+      </CollapseCard>
+
+      <CollapseCard title="Download STAPLE Schemas" className="mb-4">
+        <p>
+          Projects that use official STAPLE schemas will show those schemas here for download. This
+          is helpful for reuse, documentation, or validation in other systems.
+        </p>
+        <div className="flex flex-wrap gap-2 mt-4 justify-start">
+          {hasStapleSchema && projectJsonLd && (
+            <DownloadJSON
+              data={projectJsonLd}
+              fileName={`${project.name}-schemaorg`}
+              className="btn btn-primary"
+              type="button"
+              label="Download Project JSON-LD"
+            />
+          )}
+          <StapleSchemaDownloads projectId={projectId!} />
+        </div>
+      </CollapseCard>
     </main>
   )
 }
@@ -200,6 +325,3 @@ const SummaryPage = () => {
 }
 
 export default SummaryPage
-function updateProjectMutation(arg0: { id: number; name: string; metadata: any }) {
-  throw new Error("Function not implemented.")
-}

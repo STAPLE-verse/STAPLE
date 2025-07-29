@@ -1,4 +1,5 @@
 import React from "react"
+import { eventBus } from "src/core/utils/eventBus"
 import Modal from "src/core/components/Modal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import Form from "src/core/components/fields/Form"
@@ -40,6 +41,7 @@ const UpdateTasksMilestone: React.FC<UpdateTasksMilestoneProps> = ({
     })
 
     onTasksUpdated()
+    eventBus.emit("milestoneTasksUpdated")
     onClose()
   }
 

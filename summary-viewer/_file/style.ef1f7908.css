@@ -1,0 +1,404 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--sans-serif);
+  margin: 2rem 0 2rem;
+  text-wrap: balance;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 50px;
+  font-weight: 900;
+  background: linear-gradient(30deg, var(--theme-foreground-focus), currentColor);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero h2 {
+  margin: 0;
+  max-width: 34em;
+  font-size: 20px;
+  font-style: initial;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--theme-foreground-muted);
+}
+
+body .card,
+.observablehq-link,
+p {
+  font-size: 18px; /* Change this value to your preferred size */
+  font-family: var(--sans-serif); /* Ensure consistent styling */
+}
+
+:root {
+  --card-bg-light: #f8f9fa; /* Light mode background */
+  --card-bg-dark: #2c2f33; /* Dark mode background */
+  --card-border-light: #ddd; /* Light mode border */
+  --card-border-dark: #444; /* Dark mode border */
+  --card-text-light: #333; /* Light mode text */
+  --card-text-dark: #ddd; /* Dark mode text */
+
+  --primary-color-light: #1f77b4; /* Light mode primary color */
+  --primary-color-light-2: #ff7f0e; /* Light mode primary color */
+  --primary-color-light-3: #2ca20c; /* Light mode primary color */
+  --primary-color-light-4: #d62728; /* Light mode primary color */
+  --secondary-color-light: #d3d3d3; /* Light mode secondary color */
+
+  --primary-color-dark: #1f77b4; /* Dark mode primary color */
+  --primary-color-dark-2: #ff7f0e; /* Dark mode primary color */
+  --primary-color-dark-3: #2ca20c; /* Light mode primary color */
+  --primary-color-dark-4: #d62728; /* Light mode primary color */
+  --secondary-color-dark: #3a3b3c; /* Dark mode secondary color */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-bg: var(--card-bg-dark);
+    --card-border: var(--card-border-dark);
+    --card-text: var(--card-text-dark);
+    --primary-color: var(--primary-color-dark);
+    --primary-color-2: var(--primary-color-dark-2);
+    --primary-color-3: var(--primary-color-dark-3);
+    --primary-color-4: var(--primary-color-dark-4);
+    --secondary-color: var(--secondary-color-dark);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --card-bg: var(--card-bg-light);
+    --card-border: var(--card-border-light);
+    --card-text: var(--card-text-light);
+    --primary-color: var(--primary-color-light);
+    --primary-color-2: var(--primary-color-light-2);
+    --primary-color-3: var(--primary-color-light-3);
+    --primary-color-4: var(--primary-color-light-4);
+    --secondary-color: var(--secondary-color-light);
+  }
+}
+
+.hero,
+.grid {
+  max-width: none; /* Remove the restriction on these containers */
+  width: 100%; /* Allow full width */
+}
+
+.grid .card {
+  max-width: none; /* Ensure cards are also unrestricted */
+  margin: 1rem; /* Add spacing between cards */
+}
+
+p,
+table,
+figure,
+figcaption,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ol,
+.katex-display {
+  max-width: 100%; /* Ensure all these elements can use full width */
+}
+
+.statistics-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.stat-card {
+  background-color: var(--card-bg); /* Uses your existing light/dark mode variable */
+  border: 1px solid var(--card-border);
+  color: var(--card-text);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex; /* Enable flexbox */
+  flex-direction: column; /* Align items in a column */
+  justify-content: space-between; /* Center content vertically */
+  align-items: center; /* Center content horizontally */
+  text-align: center; /* Center-align text inside the card */
+  height: 200px; /* Adjust height as needed */
+  width: 200px; /* Adjust width as needed */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow */
+  font-family: Arial, sans-serif; /* Ensure consistent font */
+}
+
+.stat-card i {
+  font-size: 3rem; /* Adjust icon size */
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.stat-card h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.stat-card p {
+  margin: 8px 0 0;
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+.dt-button.btn {
+  margin-left: 10px !important;
+  margin-top: 10px !important;
+  padding: 10px !important;
+  border-radius: 4px;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.dt-button.btn-primary {
+  background-color: #007bff !important;
+  color: #fff !important;
+}
+
+.dt-button.btn-success {
+  background-color: #28a745 !important;
+  color: #fff !important;
+}
+
+.dataTable td,
+.dataTable th {
+  font-size: 16px; /* Adjust as needed */
+  line-height: 1.5; /* Optional for better readability */
+}
+
+.grid .card {
+  margin: 0rem;
+}
+
+#observablehq-footer nav {
+  max-width: 100% !important;
+  font-size: 16px;
+}
+
+#observablehq-footer span {
+  font-size: 16px !important;
+  margin-top: 10px;
+}
+
+.card a {
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.card-link:hover {
+  filter: brightness(1.2); /* Brighten slightly on hover */
+}
+
+a {
+  text-decoration-line: none !important;
+}
+
+#stat-number-1 {
+  font-size: 40px !important;
+  color: var(--primary-color);
+  font-weight: bold; /* Optional: Make it bold */
+}
+
+#stat-number-2 {
+  font-size: 40px !important;
+  color: var(--primary-color-2);
+  font-weight: bold; /* Optional: Make it bold */
+}
+
+#stat-number-3 {
+  font-size: 40px !important;
+  color: var(--primary-color-3);
+  font-weight: bold; /* Optional: Make it bold */
+}
+
+#members-section,
+#teams-section {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping for small screens */
+  gap: 20px; /* Add space between cards */
+  justify-content: space-evenly; /* Distribute cards evenly */
+  margin: 20px 0; /* Add margin for spacing */
+}
+
+.small-card {
+  background-color: var(--card-bg); /* Uses your existing light/dark mode variable */
+  border: 1px solid var(--card-border);
+  color: var(--card-text);
+  font-size: 16px;
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  padding: 15px; /* Internal padding for content */
+  text-align: center; /* Center-align text and charts */
+  flex: 1 1 300px; /* Allow flexible width with a minimum size */
+  max-width: 150px; /* Optional: Limit maximum width of cards */
+}
+
+.plot-container {
+  display: flex; /* Enable flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  flex: 1; /* Allow the container to grow and fill available space */
+  height: 100%; /* Ensure it takes the full height of the parent */
+  width: 100%; /* Optional: Ensure it takes the full width of the parent */
+}
+
+/*figure this one out*/
+.user-select-none {
+  z-index: 9999; /* Ensure tooltips appear above other elements */
+  overflow: visible !important;
+  position: relative;
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+.custom-collapse {
+  border: solid 1px var(--theme-foreground-faintest);
+  border-radius: 8px;
+  background: var(--theme-background-alt);
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  margin-bottom: 1rem;
+}
+
+/* Collapsible Title Styling */
+.collapse-title {
+  padding: 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--theme-background-alt);
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.collapse-title:hover {
+  background: var(--theme-background-alt);
+}
+
+/* Collapsible Content Hidden by Default */
+.collapse-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease;
+  padding: 0 15px;
+  background: var(--theme-background-alt);
+}
+
+/* Toggle Icon Styling */
+.expand-icon {
+  font-size: 24px;
+  transition: transform 0.3s ease;
+}
+
+/* Checkbox Hidden */
+.toggle-checkbox {
+  display: none;
+}
+
+/* When Checkbox is Checked: Show Content and Rotate Icon */
+.toggle-checkbox:checked ~ .collapse-content {
+  max-height: 500px;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.toggle-checkbox:checked + .collapse-title .expand-icon {
+  transform: rotate(45deg); /* Rotate + to mimic x or expanded state */
+}
+
+.small-card.clickable {
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.small-card.clickable:hover {
+  filter: brightness(1.2);
+}
+
+.details-container {
+  margin-top: 20px;
+  padding: 15px;
+  background: var(--theme-background-alt);
+}
+
+.details-container h2 {
+  margin-bottom: 10px;
+}
+
+.progress-container {
+  background-color: var(--secondary-color);
+  border-radius: 10px;
+  overflow: hidden;
+  height: 10px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.5s ease-in-out;
+}
+
+.dropdown-container {
+  margin-bottom: 20px;
+}
+
+.card-container h3 {
+  color: var(--theme-foreground-alt);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+  text-wrap: balance;
+  font-size: 22px;
+}
+
+.interval-select,
+.color-scheme-select {
+  margin-right: 10px;
+  padding: 5px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+svg[class^="plot-"][class$="-ramp"] text {
+  font-size: 14px !important;
+  font-weight: bold;
+}
+
+.heatmap-navigation {
+  text-align: center;
+  margin-top: 10px;
+}
+
+#cal-heatmap-index {
+  width: 100%; /* Take the full width of the container */
+  max-width: 100%;
+  height: auto;
+  white-space: nowrap;
+  position: relative;
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.scrollable-heatmap {
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: nowrap;
+  padding-bottom: 5px; /*for the scroll bar*/
+}
+
+.ch-domain-text {
+  font-size: 14px !important;
+}

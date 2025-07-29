@@ -52,7 +52,10 @@ const ShowMilestonePage = () => {
       },
     },
   })
-  const milestoneTasks = tasks.filter((task) => task.milestoneId === null)
+  const milestoneTasks = tasks.filter((task) => task.milestoneId === milestone.id)
+  const updateTasks = tasks.filter(
+    (task) => task.milestoneId === milestone.id || task.milestoneId === null
+  )
   const processedTasks = processProjectTasks(milestoneTasks)
 
   return (
@@ -102,7 +105,7 @@ const ShowMilestonePage = () => {
             open={isModalOpen}
             onClose={closeModal}
             onTasksUpdated={refetchTasks}
-            tasks={milestoneTasks}
+            tasks={updateTasks}
           />
 
           <button type="button" className="btn btn-warning" onClick={handleDelete}>

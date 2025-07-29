@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast"
 import { useMutation } from "@blitzjs/rpc"
 import { Status } from "db"
 import { CompletedAs as CompletedAsType } from "db"
@@ -48,6 +49,7 @@ const CompleteSchema = ({
     })
 
     setAssignmentMetadata(data.formData)
+    toast.success("Form submitted successfully!")
 
     // TODO: Add handler to close modal
 
