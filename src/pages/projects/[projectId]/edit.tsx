@@ -75,7 +75,7 @@ export const EditProject = () => {
       })
 
       await setQueryData(updated)
-      await router.push(Routes.ShowProjectPage({ projectId: updated.id }))
+      await router.push(Routes.SummaryPage({ projectId: updated.id }))
     } catch (error: any) {
       console.error(error)
       return {

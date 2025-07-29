@@ -19,6 +19,8 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import CollapseCard from "src/core/components/CollapseCard"
 import { cleanProjectData } from "src/summary/utils/processProjectData"
+import { mapStapleToJsonLd } from "src/forms/utils/mapStapleToJsonLd"
+import StapleSchemaDownloads from "src/summary/components/stapleSchemaDownloads"
 
 const Summary = () => {
   // Get data
@@ -63,7 +65,7 @@ const Summary = () => {
 
     const interval = setInterval(checkZipReady, 3000)
     return () => clearInterval(interval)
-  }, [viewerJobId])
+  }, [viewerJobId, localStorageKey])
 
   const handleJsonFormSubmit = async (data) => {
     //console.log("Submitting form data:", data) // Debug log
@@ -161,6 +163,18 @@ const Summary = () => {
     }
   }
 
+  //add information about staple schema from the project
+  const hasStapleSchema =
+    typeof project?.metadata === "object" &&
+    project?.metadata !== null &&
+    "_stapleSchema" in project.metadata
+  const projectJsonLd = hasStapleSchema
+    ? mapStapleToJsonLd(project.metadata, {
+        startDate: project.createdAt.toISOString(),
+        endDate: project.updatedAt.toISOString(),
+      })
+    : null
+
   return (
     <main className="flex flex-col mx-auto w-full text-lg">
       <h1 className="flex justify-center items-center mb-4 text-3xl">
@@ -208,7 +222,7 @@ const Summary = () => {
         {project.formVersionId ? (
           <>
             <MetadataDisplay metadata={project.metadata} />
-            <div className="justify-end flex">
+            <div className="flex flex-wrap gap-2 justify-start max-w-xl">
               <DownloadJSON
                 data={project.metadata}
                 fileName={project.name}
@@ -278,6 +292,18 @@ const Summary = () => {
           Projects that use official STAPLE schemas will show those schemas here for download. This
           is helpful for reuse, documentation, or validation in other systems.
         </p>
+        <div className="flex flex-wrap gap-2 mt-4 justify-start">
+          {hasStapleSchema && projectJsonLd && (
+            <DownloadJSON
+              data={projectJsonLd}
+              fileName={`${project.name}-schemaorg`}
+              className="btn btn-primary"
+              type="button"
+              label="Download Project JSON-LD"
+            />
+          )}
+          <StapleSchemaDownloads projectId={projectId!} />
+        </div>
       </CollapseCard>
     </main>
   )
