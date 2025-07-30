@@ -41,12 +41,14 @@ export const MetadataDisplay = ({ metadata }) => {
   return (
     <div className="flex flex-col mt-2">
       <strong>Project Form Data:</strong> <br />
-      {Object.entries(metadata).map(([key, value]) => (
-        <span key={key}>
-          {toProperCase(key)}: {renderValue(value)}
-          <br />
-        </span>
-      ))}
+      {Object.entries(metadata)
+        .filter(([key]) => key !== "_stapleSchema")
+        .map(([key, value]) => (
+          <span key={key}>
+            {toProperCase(key)}: {renderValue(value)}
+            <br />
+          </span>
+        ))}
     </div>
   )
 }
