@@ -93,6 +93,7 @@ model ProjectMember {
   comments                Comment[]
   tags                    Json?
   commentReadStatus       CommentReadStatus[]
+  notes                   Note[]
 }
 
 model ProjectPrivilege {
@@ -161,6 +162,7 @@ model Project {
   formVersion      FormVersion?       @relation(fields: [formVersionId], references: [id])
   formVersionId    Int?
   elements         Element[]
+  notes            Note[]
 }
 
 enum Status {
@@ -358,4 +360,36 @@ model Element {
   task        Task[]
   parents     Element[] @relation("ElementToElement")
   children    Element[] @relation("ElementToElement")
+}
+
+enum NoteVisibility {
+  PRIVATE
+  SHARED // reserved for potential future shared notes within a project
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  projectId Int
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  authorId Int
+  author   ProjectMember @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // content
+  title           String?
+  contentMarkdown String? // portable storage for search/export
+  contentJSON     Json? // optional rich-state (e.g., Lexical) for fidelity
+
+  // metadata
+  visibility NoteVisibility @default(PRIVATE)
+  pinned     Boolean        @default(false)
+  archived   Boolean        @default(false)
+  tags       Json?
+
+  @@index([projectId, authorId], name: "note_project_author_idx")
+  @@index([authorId, pinned], name: "note_author_pinned_idx")
 }
