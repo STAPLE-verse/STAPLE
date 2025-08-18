@@ -12,7 +12,8 @@
       "roles": "Roles",
       "summary": "Resumen",
       "settings": "Configuración",
-      "tags": "Etiquetas"
+      "tags": "Etiquetas",
+      "notes": "Notas"
     },
     "home": {
       "dashboard": "Panel",

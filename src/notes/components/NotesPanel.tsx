@@ -8,7 +8,7 @@ import NoteEditor from "./NotesEditor"
 
 export default function NotesPanel({ projectId }: { projectId: number }) {
   const [includeArchived, setIncludeArchived] = useState(false)
-  const [notes, { refetch }] = useQuery(
+  const [notes, { refetch, isLoading, error }] = useQuery(
     listNotes,
     { projectId, includeArchived },
     { suspense: false }
@@ -16,6 +16,14 @@ export default function NotesPanel({ projectId }: { projectId: number }) {
   const [deleteNoteMutation] = useMutation(deleteNote)
   const [updateNoteMutation] = useMutation(updateNote)
   const [creating, setCreating] = useState(false)
+
+  if (error) {
+    return (
+      <div className="alert alert-error">
+        <span>{error.message || "Failed to load notes."}</span>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">
@@ -47,6 +55,8 @@ export default function NotesPanel({ projectId }: { projectId: number }) {
           }}
         />
       )}
+
+      {isLoading && !notes?.length && <div className="text-sm opacity-70">Loading your notes…</div>}
 
       <ul className="space-y-3">
         {notes?.map((n) => (
@@ -97,8 +107,15 @@ export default function NotesPanel({ projectId }: { projectId: number }) {
             </div>
           </li>
         ))}
-        {!notes?.length && !creating && (
-          <div className="text-sm opacity-70">No notes yet. Create your first one!</div>
+        {!notes?.length && !creating && !isLoading && (
+          <div className="card bg-base-100 shadow border border-dashed border-base-300">
+            <div className="card-body items-center text-center p-6">
+              <div className="text-sm opacity-70 mb-3">No notes yet.</div>
+              <button className="btn btn-sm btn-primary" onClick={() => setCreating(true)}>
+                Create your first note
+              </button>
+            </div>
+          </div>
         )}
       </ul>
     </div>
