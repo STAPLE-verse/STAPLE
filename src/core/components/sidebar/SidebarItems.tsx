@@ -15,6 +15,7 @@ import {
   WrenchIcon,
   FingerPrintIcon,
   SwatchIcon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/outline"
 import { Routes } from "@blitzjs/next"
 import { MemberPrivileges } from "db"
@@ -60,6 +61,13 @@ export const ProjectSidebarItems = (projectId: number, t: TFunction): SidebarIte
       text: t("sidebar.project.tasks"),
       route: Routes.TasksPage({ projectId: projectId }),
       tooltipId: "project-tasks-tooltip",
+      privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
+    },
+    {
+      icon: PencilSquareIcon,
+      text: t("sidebar.project.notes"),
+      route: Routes.NotesPage({ projectId: projectId }),
+      tooltipId: "project-notes-tooltip",
       privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
     },
     {

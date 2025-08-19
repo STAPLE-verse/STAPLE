@@ -12,7 +12,8 @@
       "roles": "Roles",
       "summary": "Summary",
       "settings": "Settings",
-      "tags": "Tags"
+      "tags": "Tags",
+      "notes": "Notes"
     },
     "home": {
       "dashboard": "Dashboard",
