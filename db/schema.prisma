@@ -364,7 +364,8 @@ model Element {
 
 enum NoteVisibility {
   PRIVATE
-  SHARED // reserved for potential future shared notes within a project
+  PM_ONLY
+  CONTRIBUTORS @map("SHARED")
 }
 
 model Note {

@@ -23,10 +23,9 @@ export default resolver.pipe(
     const isAuthor = note.author.users.some((u) => u.id === userId)
     if (!isAuthor) throw new Error("Not your note.")
 
-    return db.note.update({
+    return db.note.delete({
       where: { id },
-      data: { archived: true, pinned: false },
-      select: { id: true, archived: true },
+      select: { id: true },
     })
   }
 )

@@ -4,10 +4,8 @@ import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjec
 import { MemberPrivileges } from "db"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
-import dynamic from "next/dynamic"
 import { useParam } from "@blitzjs/next"
-
-const NotesPanel = dynamic(() => import("src/notes/components/NotesPanel"), { ssr: false })
+import { NotesPanel } from "src/notes/components/NotesPanel"
 
 const NotesPage = () => {
   // Allow Contributors and PMs to access their own notes
