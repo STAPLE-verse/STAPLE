@@ -51,8 +51,10 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
         <NoteEditor
           projectId={projectId}
           className="shadow"
-          onCreated={async () => {
+          onCreated={async (id) => {
+            // First create → switch to edit mode so the editor stays open
             setCreating(false)
+            setEditingId(id)
             await refetch()
           }}
           onSaved={async () => {
