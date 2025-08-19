@@ -12,7 +12,7 @@ export const ProjectFormsColumns = [
   columnHelper.accessor("taskName", {
     cell: (info) => (
       <Link
-        className="btn btn-secondary"
+        className="btn btn-secondary w-full"
         href={Routes.ShowTaskPage({
           taskId: info.row.original.taskId,
           projectId: info.row.original.projectId,
@@ -31,7 +31,7 @@ export const ProjectFormsColumns = [
         uiSchema={info.row.original.formUi}
         metadata={{}} // Adjust metadata as needed
         label={info.row.original.formName}
-        classNames="btn-primary"
+        classNames="btn-primary w-full"
         submittable={false}
       />
     ),
