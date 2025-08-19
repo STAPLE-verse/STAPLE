@@ -224,7 +224,7 @@ const Summary = () => {
         {project.formVersionId ? (
           <>
             <MetadataDisplay metadata={project.metadata} />
-            <div className="flex flex-wrap gap-2 justify-start max-w-xl">
+            <div className="flex flex-wrap gap-2 justify-end max-w-xl">
               <DownloadJSON
                 data={project.metadata}
                 fileName={project.name}
