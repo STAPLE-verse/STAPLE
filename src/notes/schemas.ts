@@ -1,13 +1,14 @@
 import { z } from "zod"
+import { NoteVisibility } from "@prisma/client"
 
-export const NoteVisibilityEnum = z.enum(["PRIVATE", "SHARED"])
+export const NoteVisibilityEnum = z.nativeEnum(NoteVisibility)
 
 export const CreateNoteInput = z.object({
   projectId: z.number().int().positive(),
   title: z.string().max(200).optional(),
   contentMarkdown: z.string().optional(),
   contentJSON: z.any().optional(),
-  visibility: NoteVisibilityEnum.default("PRIVATE"),
+  visibility: NoteVisibilityEnum.default(NoteVisibility.PRIVATE),
   pinned: z.boolean().optional(),
 })
 
