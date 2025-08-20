@@ -2,9 +2,14 @@ import db from "db"
 import { resolver } from "@blitzjs/rpc"
 import { CreateNoteInput } from "src/notes/schemas"
 import { NoteVisibility, MemberPrivileges } from "@prisma/client"
+import { z } from "zod"
 
 export default resolver.pipe(
-  resolver.zod(CreateNoteInput),
+  resolver.zod(
+    CreateNoteInput.extend({
+      visibility: z.nativeEnum(NoteVisibility).optional(),
+    })
+  ),
   resolver.authorize(),
   async ({ projectId, ...data }, ctx) => {
     const userId = ctx.session.userId!
