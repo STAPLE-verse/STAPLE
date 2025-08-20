@@ -7,7 +7,7 @@ import { z } from "zod"
 export default resolver.pipe(
   resolver.zod(
     CreateNoteInput.extend({
-      visibility: z.nativeEnum(NoteVisibility).optional(),
+      visibility: z.union([z.nativeEnum(NoteVisibility), z.literal("SHARED")]).optional(),
     })
   ),
   resolver.authorize(),
