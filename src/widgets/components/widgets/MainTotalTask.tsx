@@ -86,7 +86,7 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
         />
       }
       tooltipId="tool-tasks"
-      tooltipContent="Percent of tasks completed and new comments on tasks"
+      tooltipContent="Percent of tasks completed and new comments on only tasks assigned to you"
       size={size}
       newCommentsCount={newCommentsCount}
     />

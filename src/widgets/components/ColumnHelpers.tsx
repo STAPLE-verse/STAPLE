@@ -1,11 +1,16 @@
 import { Routes } from "@blitzjs/next"
-import { ChatBubbleOvalLeftEllipsisIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import {
+  ChatBubbleOvalLeftEllipsisIcon,
+  MagnifyingGlassIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline"
 import { Prisma, Notification, Task, TaskLog } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import NotificationMessage from "src/notifications/components/NotificationMessage"
 import Link from "next/link"
 import DateFormat from "src/core/components/DateFormat"
 import { ProjectWithNewCommentsCount } from "src/core/types"
+import { Tooltip } from "react-tooltip"
 
 // Tasks table
 type TaskWithProject = Prisma.TaskGetPayload<{
@@ -78,7 +83,20 @@ export const projectColumns: ColumnDef<ProjectWithNewCommentsCount>[] = [
   }),
   projectColumnHelper.accessor("newCommentsCount", {
     id: "newComments",
-    header: "Comments",
+    header: () => (
+      <div className="table-header-tooltip">
+        <span>Comments</span>
+        <InformationCircleIcon
+          className="h-5 w-5 ml-2 text-info stroke-2"
+          data-tooltip-id="project-comments-tip"
+        />
+        <Tooltip
+          id="project-comments-tip"
+          content="Unread messages for the project. Project managers see all messages, not just their tasks."
+          className="z-[1099] ourtooltips"
+        />
+      </div>
+    ),
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) => (

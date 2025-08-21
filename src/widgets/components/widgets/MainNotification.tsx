@@ -19,7 +19,7 @@ const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
     <Widget
       title="Notifications"
       display={
-        <div className="flex justify-around gap-4">
+        <div className="flex justify-around gap-6 mt-4">
           {["Task", "Comment", "Project", "Other"].map((type) => (
             <div key={type} className="flex flex-col items-center relative">
               <Link href={Routes.NotificationsPage()} className="relative h-20 w-20 text-primary">
@@ -46,7 +46,7 @@ const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
         />
       }
       tooltipId="tool-notifications"
-      tooltipContent="Number of notifications all projects"
+      tooltipContent="Number of notifications all projects, clear them by marking them read."
       size={size}
     />
   )
