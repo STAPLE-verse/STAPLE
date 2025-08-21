@@ -47,7 +47,7 @@ const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
     <Widget
       title="Notifications"
       display={
-        <div className="flex justify-around gap-4">
+        <div className="flex justify-around gap-6 mt-4">
           {["Task", "Comment", "Project", "Other"].map((type) => (
             <div key={type} className="flex flex-col items-center relative">
               <Link
@@ -77,7 +77,7 @@ const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
         />
       }
       tooltipId="tool-notification"
-      tooltipContent="Number of notifications for this project"
+      tooltipContent="Number of notifications for this project, clear them by marking them read."
       size={size}
     />
   )

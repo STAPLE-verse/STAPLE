@@ -1,75 +1,91 @@
-import { ProjectWithNewCommentsCount } from "src/core/types"
 import { Ctx } from "blitz"
 import { resolver } from "@blitzjs/rpc"
-import getProjects from "./getProjects"
+import db from "db"
 
-export default resolver.pipe(resolver.authorize(), async (undefined, ctx: Ctx) => {
-  const { projects } = await getProjects(
-    {
-      where: {
-        projectMembers: {
-          some: {
-            users: {
-              some: { id: ctx.session.userId as number },
-            },
-            deleted: false,
-          },
-        },
-      },
-      orderBy: { updatedAt: "asc" },
-      take: 3,
-      include: {
-        tasks: {
-          where: {
-            taskLogs: {
-              some: {
-                assignedTo: {
-                  id: ctx.session.userId as number,
-                },
-              },
-            },
-          },
-          include: {
-            taskLogs: {
-              include: {
-                comments: {
-                  include: {
-                    commentReadStatus: {
-                      where: {
-                        read: false,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
+// Return shape for the dashboard widget
+type ProjectDashboardItem = {
+  id: number
+  name: string
+  updatedAt: Date | null
+  newCommentsCount: number
+}
+
+export default resolver.pipe(resolver.authorize(), async (_: unknown, ctx: Ctx) => {
+  const userId = ctx.session.userId as number
+
+  // 1) Projects for user + their projectMemberId per project (minimal select)
+  const projects = await db.project.findMany({
+    where: {
+      projectMembers: { some: { users: { some: { id: userId } }, deleted: false } },
+    },
+    select: {
+      id: true,
+      name: true,
+      createdAt: true,
+      projectMembers: {
+        where: { users: { some: { id: userId } } },
+        select: { id: true },
+        take: 1,
       },
     },
-    ctx
-  )
+  })
 
-  return {
-    projects: projects.map((project: ProjectWithNewCommentsCount) => {
-      const newCommentsCount = project.tasks.reduce((acc, task) => {
-        return (
-          acc +
-          task.taskLogs.reduce((logAcc, log) => {
-            return (
-              logAcc +
-              log.comments.reduce((commentAcc, comment) => {
-                return commentAcc + (comment.commentReadStatus?.length || 0)
-              }, 0)
-            )
-          }, 0)
-        )
-      }, 0)
-
-      return {
-        ...project,
-        newCommentsCount,
-      }
-    }),
+  if (projects.length === 0) {
+    return { projects: [] as ProjectDashboardItem[] }
   }
+
+  const projectIds = projects.map((p) => p.id)
+
+  // 2) Fetch recent TaskLogs for these projects and reduce to latest per project
+  //    (order and cap to avoid scanning excessive rows in huge workspaces)
+  const recentLogs = await db.taskLog.findMany({
+    where: { task: { projectId: { in: projectIds } } },
+    select: { createdAt: true, task: { select: { projectId: true } } },
+    orderBy: { createdAt: "desc" },
+    take: 2000,
+  })
+
+  const latestByProject = new Map<number, Date>()
+  for (const l of recentLogs) {
+    const pid = l.task.projectId
+    if (!latestByProject.has(pid)) latestByProject.set(pid, l.createdAt)
+  }
+
+  // If a project has no TaskLogs in the recentLogs window, there would be no latestByProject entry.
+  // Fallback to the project's own createdAt so lastUpdate is never null.
+  const decorated = projects.map((p: any) => ({
+    id: p.id,
+    name: p.name,
+    myProjectMemberId: p.projectMembers[0]?.id as number | undefined,
+    lastUpdate: (latestByProject.get(p.id) ?? p.createdAt) as Date,
+  }))
+
+  const top3 = decorated
+    .sort((a, b) => (b.lastUpdate?.getTime() ?? 0) - (a.lastUpdate?.getTime() ?? 0))
+    .slice(0, 3)
+
+  // 4) For each project, compute unread = total comments in project - read:false for this pmId
+  const results: ProjectDashboardItem[] = []
+  for (const p of top3) {
+    const pmId = p.myProjectMemberId
+    let unread = 0
+    if (pmId) {
+      unread = await db.commentReadStatus.count({
+        where: {
+          projectMemberId: pmId,
+          read: false,
+          comment: { taskLog: { task: { projectId: p.id } } },
+        },
+      })
+    }
+
+    results.push({
+      id: p.id,
+      name: p.name,
+      updatedAt: p.lastUpdate,
+      newCommentsCount: unread,
+    })
+  }
+
+  return { projects: results }
 })
