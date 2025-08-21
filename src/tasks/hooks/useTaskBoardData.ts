@@ -2,12 +2,15 @@ import { useQuery } from "@blitzjs/rpc"
 import { useEffect, useMemo, useState } from "react"
 import getColumns from "../queries/getColumns"
 import { KanbanBoard, Task, Status } from "db"
+import { useCurrentUser } from "src/users/hooks/useCurrentUser"
+import getProjectMember from "src/projectmembers/queries/getProjectMember"
 
 interface ColumnWithTasks extends KanbanBoard {
   tasks: (Task & {
     taskLogs: {
       comments: {
         commentReadStatus: {
+          projectMemberId: number
           read: boolean
         }[]
       }[]
@@ -32,6 +35,20 @@ export type DNDType = {
 export default function useTaskBoardData(projectId: number) {
   // Create state for storing the columns with the tasks
   const [containers, setContainers] = useState<DNDType[]>([])
+
+  const currentUser = useCurrentUser()
+  const [projectMember] = useQuery(getProjectMember, {
+    where: {
+      projectId: projectId!,
+      name: null, // name IS NULL
+      users: {
+        some: { id: currentUser!.id }, // must include the current user
+        every: { id: currentUser!.id }, // and include no one else
+      },
+    },
+  })
+
+  console.log(projectMember.id)
 
   // Get data
   const [columns, { refetch }]: [ColumnWithTasks[], any] = useQuery(getColumns, {
@@ -72,14 +89,16 @@ export default function useTaskBoardData(projectId: number) {
               (log.comments?.reduce((commentTotal, comment) => {
                 return (
                   commentTotal +
-                  (comment.commentReadStatus?.filter((status) => !status.read).length ?? 0)
+                  (comment.commentReadStatus?.filter(
+                    (status) => !status.read && status.projectMemberId === projectMember.id
+                  ).length ?? 0)
                 )
               }, 0) ?? 0)
             )
           }, 0) ?? 0,
       })),
     }))
-  }, [columns])
+  }, [columns, projectMember])
 
   useEffect(() => {
     setContainers(transformedData)
