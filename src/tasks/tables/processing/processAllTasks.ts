@@ -49,8 +49,9 @@ export function processAllTasks(
     const taskId = log.taskId
 
     log.comments?.forEach((comment) => {
-      const isUnread =
-        comment.commentReadStatus?.length === 0 || comment.commentReadStatus?.[0]?.read === false
+      // Count as unread only if there exists an explicit read-status row with read === false
+      // This avoids false positives when the include filtered out read:true rows or returned no rows
+      const isUnread = (comment.commentReadStatus ?? []).some((s) => s.read === false)
 
       if (isUnread) {
         if (!commentSummary[taskId]) {
