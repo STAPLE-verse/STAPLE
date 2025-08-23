@@ -35,6 +35,14 @@ import { HeadingNode, QuoteNode } from "@lexical/rich-text"
 import { CodeNode } from "@lexical/code"
 import { LinkNode } from "@lexical/link"
 
+const normalizeVisibility = (
+  v: "PRIVATE" | "PM_ONLY" | "CONTRIBUTORS" | "SHARED" | undefined
+): "PRIVATE" | "PM_ONLY" | "CONTRIBUTORS" => {
+  if (v === "SHARED") return "CONTRIBUTORS"
+  if (v === "PRIVATE" || v === "PM_ONLY" || v === "CONTRIBUTORS") return v
+  return "PRIVATE"
+}
+
 function ResetFormatOnEnterPlugin() {
   const [editor] = useLexicalComposerContext()
   useEffect(() => {
@@ -198,16 +206,25 @@ export default function NoteEditor({
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null)
   const [title, setTitle] = useState<string>(initialTitle || "")
   const [visibility, setVisibility] = useState<"PRIVATE" | "PM_ONLY" | "CONTRIBUTORS">(
-    initialVisibility
+    normalizeVisibility(initialVisibility as any)
   )
   const didInitialChange = useRef(false)
+
+  useEffect(() => {
+    setVisibility(normalizeVisibility(initialVisibility as any))
+  }, [initialVisibility])
+
+  const effectiveReadOnly = useMemo(() => {
+    if (visibility === "CONTRIBUTORS" && canSetContributors) return false
+    return readOnly
+  }, [readOnly, visibility, canSetContributors])
 
   const initialConfig = useMemo(
     () => ({
       namespace: "staple-notes",
       nodes: [ListNode, ListItemNode, HeadingNode, QuoteNode, CodeNode, LinkNode],
       onError: (e: any) => console.error(e),
-      editable: !readOnly,
+      editable: !effectiveReadOnly,
       editorState: (editor: any) => {
         if (initialJSON) {
           editor.setEditorState(editor.parseEditorState(initialJSON))
@@ -220,7 +237,7 @@ export default function NoteEditor({
         }
       },
     }),
-    [initialJSON, initialMarkdown, readOnly]
+    [initialJSON, initialMarkdown, effectiveReadOnly]
   )
 
   const save = useCallback(
@@ -234,7 +251,7 @@ export default function NoteEditor({
       })
       contentJSON = editorState.toJSON()
 
-      const visibilityForMutation = (visibility === "CONTRIBUTORS" ? "SHARED" : visibility) as any
+      const visibilityForMutation = visibility as any
 
       if (!currentNoteId) {
         const created = await createNoteMutation({
@@ -287,7 +304,7 @@ export default function NoteEditor({
           onSaveAndClose={(state) => save(state, true)}
           isSaving={isSaving}
           lastSavedAt={lastSavedAt}
-          readOnly={readOnly}
+          readOnly={effectiveReadOnly}
           onClose={onClose}
           visibility={visibility}
           onVisibilityChange={setVisibility}
@@ -307,7 +324,7 @@ export default function NoteEditor({
           <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
           <OnChangePlugin
             onChange={(state) => {
-              if (readOnly) return
+              if (effectiveReadOnly) return
               if (!didInitialChange.current) {
                 didInitialChange.current = true
                 return
