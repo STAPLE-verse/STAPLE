@@ -1,5 +1,9 @@
-import { forwardRef, ComponentPropsWithoutRef, PropsWithoutRef } from "react"
+import { forwardRef, ComponentPropsWithoutRef, PropsWithoutRef, useState } from "react"
 import { useField, UseFieldConfig } from "react-final-form"
+
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 
 export interface LabeledTextAreaFieldProps
   extends PropsWithoutRef<JSX.IntrinsicElements["textarea"]> {
@@ -27,18 +31,76 @@ export const LabeledTextAreaField = forwardRef<HTMLTextAreaElement, LabeledTextA
     })
 
     const normalizedError = Array.isArray(error) ? error.join(", ") : error || submitError
+    const [mode, setMode] = useState<"edit" | "preview">("edit")
 
     return (
       <div {...outerProps} data-testid="labeledarea-testid">
         <label {...labelProps}>
           {label}
-          <textarea
-            {...input}
-            disabled={submitting}
-            {...props}
-            ref={ref}
-            data-testid="labeledtarget-testid"
-          />
+
+          {/* Toolbar */}
+          <div className="flex items-center mt-2">
+            <div className="join">
+              <button
+                type="button"
+                className={`btn btn-sm join-item ${mode === "edit" ? "btn-primary" : "btn-ghost"}`}
+                onClick={() => setMode("edit")}
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                className={`btn btn-sm join-item ${
+                  mode === "preview" ? "btn-primary" : "btn-ghost"
+                }`}
+                onClick={() => setMode("preview")}
+              >
+                Preview
+              </button>
+            </div>
+            <span className="text-sm text-base-content ml-3 italic">
+              Supports{" "}
+              <a
+                href="https://www.markdownguide.org/cheat-sheet/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline"
+              >
+                Markdown
+              </a>{" "}
+              formatting.
+            </span>
+          </div>
+
+          {mode === "edit" ? (
+            <textarea
+              {...input}
+              disabled={submitting}
+              {...props}
+              ref={ref}
+              data-testid="labeledtarget-testid"
+              rows={6}
+              wrap="soft"
+            />
+          ) : (
+            <div className="markdown-preview mb-4" data-testid="labeledpreview-testid">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm, remarkBreaks]}
+                components={{
+                  a: ({ node, ...props }) => (
+                    <a
+                      {...props}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary"
+                    />
+                  ),
+                }}
+              >
+                {input.value || "_Nothing to preview yet…_"}
+              </ReactMarkdown>
+            </div>
+          )}
         </label>
 
         {touched && normalizedError && (
@@ -61,6 +123,11 @@ export const LabeledTextAreaField = forwardRef<HTMLTextAreaElement, LabeledTextA
             border-radius: 3px;
             appearance: none;
             margin-top: 0.5rem;
+            resize: both;
+            overflow: auto;
+            max-width: 100%;
+            white-space: pre-wrap;
+            line-height: 1.5;
           }
 
           textarea:focus {
