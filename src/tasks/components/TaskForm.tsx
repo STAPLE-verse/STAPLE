@@ -149,7 +149,17 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       }}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
-          e.preventDefault() // Prevent form submission on Enter
+          const el = e.target as HTMLElement
+          const tag = el?.tagName?.toLowerCase()
+          const isTextArea = tag === "textarea"
+          const isContentEditable = (el as any)?.isContentEditable === true
+          const insideReactTags = !!el?.closest?.(".react-tags-wrapper")
+
+          // Allow Enter for textareas, contentEditable fields, and the ReactTags input.
+          // Prevent only when it would submit the form from other inputs/buttons.
+          if (!isTextArea && !isContentEditable && !insideReactTags) {
+            e.preventDefault()
+          }
         }
       }}
     >
