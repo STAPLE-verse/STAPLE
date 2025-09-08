@@ -41,6 +41,9 @@ export default resolver.pipe(
         where: {
           projectMember: {
             projectId: projectId,
+            users: {
+              some: { id: userId as number },
+            },
           },
           read: false,
         },

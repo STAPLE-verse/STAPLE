@@ -22,7 +22,12 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
     ? [...notes].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
     : []
 
-  const canEdit = (n: any) => !!(n && (n as any).editable)
+  const canEditRow = (n: any) => {
+    if (!n) return false
+    const ownerEditable = !!n.editable
+    const pmOverride = !!n.canSetContributors && n.visibility === "CONTRIBUTORS"
+    return ownerEditable || pmOverride
+  }
 
   return (
     <div className="space-y-4">
@@ -76,7 +81,11 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
               initialTitle={n.title ?? ""}
               initialMarkdown={n.contentMarkdown ?? ""}
               initialJSON={n.contentJSON}
+              initialVisibility={n.visibility}
               className="shadow"
+              readOnly={!canEditRow(n)}
+              canSetContributors={!!n.canSetContributors}
+              onClose={() => setEditingId(null)}
               onSaved={async () => {
                 setEditingId(null)
                 await refetch()
@@ -126,7 +135,7 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
                   <div className="flex items-center gap-2">
                     <button
                       className={`btn ${n.pinned ? "btn-warning" : "btn-secondary"}`}
-                      disabled={!canEdit(n)}
+                      disabled={!canEditRow(n)}
                       onClick={async () => {
                         await updateNoteMutation({ id: n.id, pinned: !n.pinned })
                         await refetch()
@@ -137,7 +146,7 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
                     {!n.archived && (
                       <button
                         className="btn btn-outline"
-                        disabled={!canEdit(n)}
+                        disabled={!canEditRow(n)}
                         onClick={async () => {
                           await updateNoteMutation({ id: n.id, archived: true })
                           await refetch()
@@ -149,7 +158,7 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
                     {n.archived && (
                       <button
                         className="btn btn-outline"
-                        disabled={!canEdit(n)}
+                        disabled={!canEditRow(n)}
                         onClick={async () => {
                           await updateNoteMutation({ id: n.id, archived: false })
                           // Optimistically update local cache to reflect unarchive
@@ -164,17 +173,16 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
                       </button>
                     )}
                     <button className="btn btn-primary" onClick={() => setEditingId(n.id)}>
-                      {canEdit(n) ? "Edit" : "View"}
+                      {canEditRow(n) ? "Edit" : "View"}
                     </button>
                     <button
                       className="btn btn-error"
+                      disabled={!canEditRow(n)}
                       onClick={async () => {
                         if (window.confirm("This note will be permanently deleted. Continue?")) {
                           await deleteNoteMutation({ id: n.id })
-                          // Close modal/editing state regardless of delete success
                           setEditingId(null)
                           setCreating(false)
-                          // Optimistically update local cache
                           await setQueryData((prev) =>
                             Array.isArray(prev) ? prev.filter((x) => x.id !== n.id) : []
                           )

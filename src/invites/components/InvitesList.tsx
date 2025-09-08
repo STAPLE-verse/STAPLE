@@ -14,7 +14,7 @@ export const InvitesListView = ({ invites }) => {
 export const InvitesList = ({ currentUser }) => {
   // Get invitations
   const [invites] = useQuery(getInvites, {
-    where: { email: currentUser!.email },
+    where: { email: currentUser!.email.toLowerCase() },
     orderBy: { id: "asc" },
     include: { project: true },
   })

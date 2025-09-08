@@ -57,7 +57,12 @@ export default resolver.pipe(
 
     return notes.map((r) => ({
       ...r,
-      editable: r.authorId === member.id || (isPM && r.visibility === NoteVisibility.PM_ONLY),
+      canSetContributors: isPM,
+      editable:
+        r.authorId === member.id ||
+        (isPM &&
+          (r.visibility === NoteVisibility.PM_ONLY ||
+            r.visibility === NoteVisibility.CONTRIBUTORS)),
     }))
   }
 )
