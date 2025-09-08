@@ -31,11 +31,7 @@
     />
     <link rel="stylesheet" href="./_file/style.ef1f7908.css" />
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"
-      integrity="sha256-0NEg2+tQZLbX5qM7iV1QAtLqC4GlF55r7fYk0uC0w8M="
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"
       integrity="sha256-zJcGfQliQ1AqL4oT6tub2lQNb1P0d4Hq8w29KQb8qbI="
@@ -86,12 +82,12 @@
         ).toLocaleDateString()
         const descEl = document.getElementById("project-description")
         const mdSrc = jsonData.description || ""
-        // Configure marked for GFM + single-line breaks
-        if (window.marked && marked.setOptions) {
-          marked.setOptions({ gfm: true, breaks: true })
-        }
-        const rendered = window.marked ? marked.parse(mdSrc) : mdSrc
-        const safeHtml = window.DOMPurify ? DOMPurify.sanitize(rendered) : rendered
+        const md = window.markdownit({ html: false, linkify: true, breaks: true })
+        const rendered = md.render(mdSrc)
+        const safeHtml =
+          window.DOMPurify && typeof DOMPurify.sanitize === "function"
+            ? DOMPurify.sanitize(rendered)
+            : rendered
         descEl.innerHTML = safeHtml
         // Ensure links open safely in a new tab and are visibly clickable
         descEl.querySelectorAll("a").forEach((a) => {

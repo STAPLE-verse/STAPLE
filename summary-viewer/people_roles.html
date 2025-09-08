@@ -40,11 +40,7 @@
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"
-      integrity="sha256-0NEg2+tQZLbX5qM7iV1QAtLqC4GlF55r7fYk0uC0w8M="
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"
       integrity="sha256-zJcGfQliQ1AqL4oT6tub2lQNb1P0d4Hq8w29KQb8qbI="
@@ -85,11 +81,9 @@
 
       // Wait for the DOM to be fully loaded
       document.addEventListener("DOMContentLoaded", async function () {
-        if (window.marked && marked.setOptions) {
-          marked.setOptions({ gfm: true, breaks: true })
-        }
         const renderMarkdown = (src) => {
-          const html = window.marked ? marked.parse(src || "") : src || ""
+          const md = window.markdownit({ html: false, linkify: true, breaks: true })
+          const html = md.render(src || "")
           return window.DOMPurify ? DOMPurify.sanitize(html) : html
         }
         // Ensure Plot and d3 are loaded and available
@@ -153,7 +147,8 @@
                 keyLower === "projectdescription" ||
                 keyLower.endsWith("description")
               if (isMarkdownField) {
-                td.innerHTML = `<div class="markdown-display">${renderMarkdown(val)}</div>`
+                td.setAttribute("data-raw", String(val))
+                td.innerHTML = `<div class="markdown-display">${renderMarkdown(String(val))}</div>`
               } else {
                 td.textContent = val
               }
@@ -280,6 +275,15 @@
             language: {
               search: "Search All: ", // Customize the label for the search box
             },
+            drawCallback: function () {
+              const api = this.api()
+              $(api.table().body())
+                .find(".markdown-display a")
+                .each(function () {
+                  this.setAttribute("target", "_blank")
+                  this.setAttribute("rel", "noopener noreferrer")
+                })
+            },
             initComplete: function () {
               // Optional: Add custom search inputs for each column
               this.api()
@@ -343,7 +347,7 @@
           const tableId = `details-table-${id}`
           createHtmlTable(relevantData, tableContainer.id, tableId)
 
-          // Post-process: render markdown in any description cells
+          // Post-process: render markdown in any description cells (use raw markdown if available)
           const detailTable = document.getElementById(tableId)
           if (detailTable) {
             detailTable.querySelectorAll("td").forEach((td) => {
@@ -354,9 +358,8 @@
                   [td.cellIndex]?.textContent?.trim()
                   .toLowerCase() || ""
               if (header.includes("description")) {
-                td.innerHTML = `<div class="markdown-display">${renderMarkdown(
-                  td.textContent
-                )}</div>`
+                const raw = td.getAttribute("data-raw") || td.textContent || ""
+                td.innerHTML = `<div class="markdown-display">${renderMarkdown(raw)}</div>`
               }
             })
           }
@@ -417,13 +420,25 @@
               },
               { data: "deadline", title: "Deadline", visible: true },
               { data: "name", title: "Task Name", visible: true },
-              { data: "description", title: "Task Description", visible: true },
+              {
+                data: "description",
+                title: "Task Description",
+                visible: true,
+                render: (data, type) =>
+                  type === "display"
+                    ? `<div class="markdown-display">${renderMarkdown(data)}</div>`
+                    : data ?? "",
+              },
               { data: "status", title: "Task Completed", visible: true },
               { data: "milestoneName", title: "Milestone Name", visible: true },
               {
                 data: "milestoneDescription",
                 title: "Milestone Description",
                 visible: true,
+                render: (data, type) =>
+                  type === "display"
+                    ? `<div class="markdown-display">${renderMarkdown(data)}</div>`
+                    : data ?? "",
               },
               {
                 data: "taskLogCreatedAt",
@@ -446,6 +461,28 @@
               { data: "assignedTo", title: "Assigned To", visible: true },
               { data: "completedBy", title: "Completed By", visible: true },
             ],
+            drawCallback: function () {
+              const api = this.api()
+
+              // Re-render markdown for any Description columns from preserved raw text
+              api.columns().every(function (idx) {
+                const title = $(api.column(idx).header()).text().trim().toLowerCase()
+                if (title.includes("description")) {
+                  $(api.column(idx).nodes()).each(function (_, td) {
+                    const raw = td.getAttribute("data-raw") || td.textContent || ""
+                    td.innerHTML = '<div class="markdown-display">' + renderMarkdown(raw) + "</div>"
+                  })
+                }
+              })
+
+              // Ensure links open safely
+              $(api.table().body())
+                .find(".markdown-display a")
+                .each(function () {
+                  this.setAttribute("target", "_blank")
+                  this.setAttribute("rel", "noopener noreferrer")
+                })
+            },
             language: {
               search: "Search All: ", // Customize the label for the search box
             },
@@ -1182,7 +1219,7 @@
         // create combo table
         function createCombinedRolesTable() {
           // Create a table container dynamically
-          const container = document.getElementById("roles-table-container")
+          const container = document.getElementById("combined-roles-table-container")
           if (!container) {
             console.error("Table container for roles not found!")
             return
@@ -1248,6 +1285,28 @@
             language: {
               search: "Search All: ", // Customize the label for the search box
             },
+            drawCallback: function () {
+              const api = this.api()
+
+              // If a Description-like column is present now or later, render it as Markdown
+              api.columns().every(function (idx) {
+                const title = $(api.column(idx).header()).text().trim().toLowerCase()
+                if (title.includes("description")) {
+                  $(api.column(idx).nodes()).each(function (_, td) {
+                    const raw = td.getAttribute("data-raw") || td.textContent || ""
+                    td.innerHTML = '<div class="markdown-display">' + renderMarkdown(raw) + "</div>"
+                  })
+                }
+              })
+
+              // Ensure links open safely
+              $(api.table().body())
+                .find(".markdown-display a")
+                .each(function () {
+                  this.setAttribute("target", "_blank")
+                  this.setAttribute("rel", "noopener noreferrer")
+                })
+            },
             initComplete: function () {
               // Optional: Add custom search inputs for each column
               this.api()
@@ -1301,13 +1360,25 @@
               },
               { data: "deadline", title: "Deadline", visible: true },
               { data: "name", title: "Task Name", visible: true },
-              { data: "description", title: "Task Description", visible: true },
+              {
+                data: "description",
+                title: "Task Description",
+                visible: true,
+                render: (data, type) =>
+                  type === "display"
+                    ? `<div class="markdown-display">${renderMarkdown(data)}</div>`
+                    : data ?? "",
+              },
               { data: "status", title: "Task Completed", visible: true },
               { data: "milestoneName", title: "Milestone Name", visible: true },
               {
                 data: "milestoneDescription",
                 title: "Milestone Description",
                 visible: true,
+                render: (data, type) =>
+                  type === "display"
+                    ? `<div class="markdown-display">${renderMarkdown(data)}</div>`
+                    : data ?? "",
               },
               {
                 data: "taskLogCreatedAt",
@@ -1334,35 +1405,6 @@
               // no-op
             },
             createdRow: function () {},
-            initComplete: function (settings) {
-              const api = this.api()
-              const headerIdxByTitle = {}
-              api.columns().every(function (idx) {
-                headerIdxByTitle[$(api.column(idx).header()).text().trim()] = idx
-              })
-              const descIdx = headerIdxByTitle["Task Description"]
-              const mdescIdx = headerIdxByTitle["Milestone Description"]
-              if (descIdx != null) {
-                api
-                  .column(descIdx)
-                  .nodes()
-                  .to$()
-                  .each(function (_, td) {
-                    const val = $(td).text()
-                    $(td).html(`<div class="markdown-display">${renderMarkdown(val)}</div>`)
-                  })
-              }
-              if (mdescIdx != null) {
-                api
-                  .column(mdescIdx)
-                  .nodes()
-                  .to$()
-                  .each(function (_, td) {
-                    const val = $(td).text()
-                    $(td).html(`<div class="markdown-display">${renderMarkdown(val)}</div>`)
-                  })
-              }
-            },
             paging: true,
             searching: true,
             ordering: true,
@@ -1403,21 +1445,38 @@
               search: "Search All: ", // Customize the search label
             },
             initComplete: function () {
-              // Optional: Add custom search inputs for each column
-              this.api()
-                .columns()
-                .every(function () {
-                  const column = this
-                  const header = $(column.header())
-                  const input = $(
-                    '<input type="text" placeholder="Search ' + header.text() + '" />'
-                  )
-                    .appendTo($(header).empty())
-                    .on("keyup change clear", function () {
-                      if (column.search() !== this.value) {
-                        column.search(this.value).draw()
-                      }
-                    })
+              const api = this.api()
+
+              // Per-column search inputs
+              api.columns().every(function () {
+                const column = this
+                const header = $(column.header())
+                const input = $('<input type="text" placeholder="Search ' + header.text() + '" />')
+                  .appendTo($(header).empty())
+                  .on("keyup change clear", function () {
+                    if (column.search() !== this.value) {
+                      column.search(this.value).draw()
+                    }
+                  })
+              })
+
+              // Post-process: for any column with 'Description' in the header, render Markdown
+              api.columns().every(function (idx) {
+                const title = $(api.column(idx).header()).text().trim().toLowerCase()
+                if (title.includes("description")) {
+                  $(api.column(idx).nodes()).each(function (_, td) {
+                    const raw = td.textContent || ""
+                    td.innerHTML = '<div class="markdown-display">' + renderMarkdown(raw) + "</div>"
+                  })
+                }
+              })
+
+              // Ensure any links in markdown open safely
+              $(api.table().body())
+                .find(".markdown-display a")
+                .each(function () {
+                  this.setAttribute("target", "_blank")
+                  this.setAttribute("rel", "noopener noreferrer")
                 })
             },
           })
@@ -1617,7 +1676,7 @@
               This table includes combined roles data for both individuals and teams, along with
               task and form completion statistics. You can download it using the buttons below.
             </p>
-            <div id="roles-table-container"></div>
+            <div id="combined-roles-table-container"></div>
           </div>
         </div>
 
