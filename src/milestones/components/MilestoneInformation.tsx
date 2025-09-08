@@ -36,9 +36,11 @@ export const MilestoneInformation: React.FC<MilestoneInformationProps> = ({
           className="z-[1099] ourtooltips"
         />
         {/* Milestone description */}
-        <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
-          {milestone.description || ""}
-        </ReactMarkdown>
+        <div className="markdown-display">
+          <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+            {milestone.description || ""}
+          </ReactMarkdown>
+        </div>
 
         {/* Milestone start and end dates */}
         {milestone.startDate && (

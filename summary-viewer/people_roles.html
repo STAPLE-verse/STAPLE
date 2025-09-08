@@ -40,11 +40,58 @@
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 
+    <script
+      src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"
+      integrity="sha256-0NEg2+tQZLbX5qM7iV1QAtLqC4GlF55r7fYk0uC0w8M="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"
+      integrity="sha256-zJcGfQliQ1AqL4oT6tub2lQNb1P0d4Hq8w29KQb8qbI="
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      .markdown-display ul,
+      .markdown-display ol {
+        margin: 0.5rem 1.25rem !important;
+      }
+      .markdown-display ul {
+        list-style: disc !important;
+        list-style-position: outside !important;
+        padding-left: 1.5rem !important;
+      }
+      .markdown-display ol {
+        list-style: decimal !important;
+        list-style-position: outside !important;
+        padding-left: 1.5rem !important;
+      }
+      .markdown-display li {
+        margin: 0.25rem 0 !important;
+      }
+      .markdown-display p {
+        margin: 0.5rem 0;
+      }
+      .markdown-display code {
+        padding: 0.1rem 0.25rem;
+        border-radius: 3px;
+        background: rgba(0, 0, 0, 0.06);
+      }
+      .markdown-display a {
+        text-decoration: underline;
+      }
+    </style>
     <script type="module">
       const jsonData = __INJECT_JSON__
 
       // Wait for the DOM to be fully loaded
       document.addEventListener("DOMContentLoaded", async function () {
+        if (window.marked && marked.setOptions) {
+          marked.setOptions({ gfm: true, breaks: true })
+        }
+        const renderMarkdown = (src) => {
+          const html = window.marked ? marked.parse(src || "") : src || ""
+          return window.DOMPurify ? DOMPurify.sanitize(html) : html
+        }
         // Ensure Plot and d3 are loaded and available
         const [Plot, d3] = await Promise.all([
           import("https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.17/+esm"),
@@ -98,7 +145,18 @@
             const row = document.createElement("tr")
             headers.forEach((key) => {
               const td = document.createElement("td")
-              td.textContent = item[key] || "N/A" // Fallback to "N/A" if the value is null/undefined
+              const val = item[key] ?? "N/A"
+              const keyLower = key.toLowerCase()
+              const isMarkdownField =
+                keyLower === "description" ||
+                keyLower === "milestonedescription" ||
+                keyLower === "projectdescription" ||
+                keyLower.endsWith("description")
+              if (isMarkdownField) {
+                td.innerHTML = `<div class="markdown-display">${renderMarkdown(val)}</div>`
+              } else {
+                td.textContent = val
+              }
               row.appendChild(td)
             })
             tbody.appendChild(row)
@@ -168,8 +226,16 @@
           $("#role-table").DataTable({
             data: updatedRolesDataFrame,
             columns: [
-              { data: "name", title: "Role Name", visible: true }, // Renamed column
-              { data: "description", title: "Description", visible: true },
+              { data: "name", title: "Role Name", visible: true },
+              {
+                data: "description",
+                title: "Description",
+                visible: true,
+                render: (data, type) =>
+                  type === "display"
+                    ? `<div class="markdown-display">${renderMarkdown(data)}</div>`
+                    : data ?? "",
+              },
               { data: "taxonomy", title: "Taxonomy", visible: true },
               { data: "countInTasks", title: "Task Count", visible: true },
               { data: "countInMembers", title: "Member Count", visible: true },
@@ -276,6 +342,24 @@
           // Create and render the table within the container
           const tableId = `details-table-${id}`
           createHtmlTable(relevantData, tableContainer.id, tableId)
+
+          // Post-process: render markdown in any description cells
+          const detailTable = document.getElementById(tableId)
+          if (detailTable) {
+            detailTable.querySelectorAll("td").forEach((td) => {
+              const header =
+                td
+                  .closest("table")
+                  .querySelectorAll("thead th")
+                  [td.cellIndex]?.textContent?.trim()
+                  .toLowerCase() || ""
+              if (header.includes("description")) {
+                td.innerHTML = `<div class="markdown-display">${renderMarkdown(
+                  td.textContent
+                )}</div>`
+              }
+            })
+          }
 
           // Apply DataTables functionality
           $(`#${tableId}`).DataTable({
@@ -1246,6 +1330,39 @@
               { data: "assignedTo", title: "Assigned To", visible: true },
               { data: "completedBy", title: "Completed By", visible: true },
             ],
+            drawCallback: function () {
+              // no-op
+            },
+            createdRow: function () {},
+            initComplete: function (settings) {
+              const api = this.api()
+              const headerIdxByTitle = {}
+              api.columns().every(function (idx) {
+                headerIdxByTitle[$(api.column(idx).header()).text().trim()] = idx
+              })
+              const descIdx = headerIdxByTitle["Task Description"]
+              const mdescIdx = headerIdxByTitle["Milestone Description"]
+              if (descIdx != null) {
+                api
+                  .column(descIdx)
+                  .nodes()
+                  .to$()
+                  .each(function (_, td) {
+                    const val = $(td).text()
+                    $(td).html(`<div class="markdown-display">${renderMarkdown(val)}</div>`)
+                  })
+              }
+              if (mdescIdx != null) {
+                api
+                  .column(mdescIdx)
+                  .nodes()
+                  .to$()
+                  .each(function (_, td) {
+                    const val = $(td).text()
+                    $(td).html(`<div class="markdown-display">${renderMarkdown(val)}</div>`)
+                  })
+              }
+            },
             paging: true,
             searching: true,
             ordering: true,

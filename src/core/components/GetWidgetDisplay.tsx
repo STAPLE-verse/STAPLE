@@ -72,9 +72,10 @@ export function GetIconDisplay({ number, icon: Icon }) {
 
 export function GetProjectSummaryDisplay({ project, projectManagers }) {
   return (
-    <div>
+    <div className="markdown-display">
       <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
-        {project.description || ""}
+        {(project.description || "").slice(0, 100) +
+          ((project.description?.length ?? 0) > 100 ? "…" : "")}
       </ReactMarkdown>
       <p className="italic">
         Last update: <DateFormat date={project.updatedAt}></DateFormat>

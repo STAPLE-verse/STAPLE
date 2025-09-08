@@ -48,11 +48,60 @@
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.35.3.min.js"></script>
 
+    <script
+      src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"
+      integrity="sha256-0NEg2+tQZLbX5qM7iV1QAtLqC4GlF55r7fYk0uC0w8M="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"
+      integrity="sha256-zJcGfQliQ1AqL4oT6tub2lQNb1P0d4Hq8w29KQb8qbI="
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      .markdown-display ul,
+      .markdown-display ol {
+        margin: 0.5rem 1.25rem !important;
+      }
+      .markdown-display ul {
+        list-style: disc !important;
+        list-style-position: outside !important;
+        padding-left: 1.5rem !important;
+      }
+      .markdown-display ol {
+        list-style: decimal !important;
+        list-style-position: outside !important;
+        padding-left: 1.5rem !important;
+      }
+      .markdown-display li {
+        margin: 0.25rem 0 !important;
+      }
+      .markdown-display p {
+        margin: 0.5rem 0;
+      }
+      .markdown-display code {
+        padding: 0.1rem 0.25rem;
+        border-radius: 3px;
+        background: rgba(0, 0, 0, 0.06);
+      }
+      .markdown-display a {
+        text-decoration: underline;
+      }
+    </style>
+
     <script type="module">
       const jsonData = __INJECT_JSON__
 
       // Wait for the DOM to be fully loaded
       document.addEventListener("DOMContentLoaded", async function () {
+        if (window.marked && marked.setOptions) {
+          marked.setOptions({ gfm: true, breaks: true })
+        }
+        const renderMarkdown = (src) => {
+          const html = window.marked ? marked.parse(src || "") : src || ""
+          const safe = window.DOMPurify ? DOMPurify.sanitize(html) : html
+          return safe
+        }
         const getComputedThemeColors = () => {
           const root = getComputedStyle(document.documentElement)
           return {
@@ -455,13 +504,25 @@
               },
               { data: "deadline", title: "Deadline", visible: true },
               { data: "name", title: "Task Name", visible: true },
-              { data: "description", title: "Task Description", visible: true },
+              {
+                data: "description",
+                title: "Task Description",
+                visible: true,
+                render: (data, type) =>
+                  type === "display"
+                    ? `<div class="markdown-display">${renderMarkdown(data)}</div>`
+                    : data ?? "",
+              },
               { data: "status", title: "Task Completed", visible: true },
               { data: "milestoneName", title: "Milestone Name", visible: true },
               {
                 data: "milestoneDescription",
                 title: "Milestone Description",
                 visible: true,
+                render: (data, type) =>
+                  type === "display"
+                    ? `<div class="markdown-display">${renderMarkdown(data)}</div>`
+                    : data ?? "",
               },
               {
                 data: "taskLogCreatedAt",
@@ -542,6 +603,13 @@
                 })
             },
           })
+          const containerEl = document.getElementById(containerId)
+          if (containerEl) {
+            containerEl.querySelectorAll(".markdown-display a").forEach((a) => {
+              a.setAttribute("target", "_blank")
+              a.setAttribute("rel", "noopener noreferrer")
+            })
+          }
         }
 
         // Call the function to create the dropdown and set up the table display

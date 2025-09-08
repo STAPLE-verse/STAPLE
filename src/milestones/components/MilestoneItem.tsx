@@ -37,7 +37,7 @@ const MilestoneItem: React.FC<MilestoneItemProps> = ({
       <div className="collapse-title text-xl font-medium">{milestone.name}</div>
       <div className="collapse-content">
         {/* Milestone description */}
-        <div className="mb-2">
+        <div className="mb-2 markdown-display">
           <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
             {milestone.description || ""}
           </ReactMarkdown>
