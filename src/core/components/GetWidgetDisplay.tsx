@@ -2,6 +2,9 @@ import Table from "src/core/components/Table"
 import { projectManagersColumns } from "src/widgets/components/ColumnHelpers"
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import DateFormat from "./DateFormat"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 
 // use for all tables in widgets
 export function GetTableDisplay({ data, columns, type }) {
@@ -70,7 +73,9 @@ export function GetIconDisplay({ number, icon: Icon }) {
 export function GetProjectSummaryDisplay({ project, projectManagers }) {
   return (
     <div>
-      {project.description}
+      <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+        {project.description || ""}
+      </ReactMarkdown>
       <p className="italic">
         Last update: <DateFormat date={project.updatedAt}></DateFormat>
       </p>

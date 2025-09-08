@@ -21,6 +21,9 @@ import CollapseCard from "src/core/components/CollapseCard"
 import { cleanProjectData } from "src/summary/utils/processProjectData"
 import { mapStapleToJsonLd } from "src/forms/utils/mapStapleToJsonLd"
 import StapleSchemaDownloads from "src/summary/components/StapleSchemaDownloads"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 
 const Summary = () => {
   // Get data
@@ -193,18 +196,36 @@ const Summary = () => {
       </h1>
 
       <CollapseCard title="Project Settings" className="mb-4" defaultOpen={true}>
-        <p>
+        <p className="italic">
           This section includes basic project information such as the name, description, and
           creation date. You can also update the project’s settings here.
         </p>
-        <br className="mb-4" />
-        Name: {project.name}
+        <span className="font-bold">Name:</span> {project.name}
         <br />
-        Created: <DateFormat date={project.createdAt}></DateFormat>
+        <span className="font-bold">Created:</span>{" "}
+        <DateFormat date={project.createdAt}></DateFormat>
         <br />
-        Last Update: <DateFormat date={project.updatedAt}></DateFormat>
+        <span className="font-bold">Last Update:</span>{" "}
+        <DateFormat date={project.updatedAt}></DateFormat>
         <br />
-        Description: {project.description}
+        <span className="font-bold">Description:</span>
+        <div className="markdown-display">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkBreaks]}
+            components={{
+              a: ({ node, ...props }) => (
+                <a
+                  {...props}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline"
+                />
+              ),
+            }}
+          >
+            {project.description || ""}
+          </ReactMarkdown>
+        </div>
         <div className="card-actions justify-end">
           <Link
             className="btn btn-primary"

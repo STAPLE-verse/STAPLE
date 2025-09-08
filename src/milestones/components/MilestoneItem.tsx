@@ -1,6 +1,9 @@
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { useState } from "react"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 import { MilestoneWithTasks } from "src/core/types"
 import { Task } from "db"
 import DateRange from "src/core/components/DateRange"
@@ -34,7 +37,11 @@ const MilestoneItem: React.FC<MilestoneItemProps> = ({
       <div className="collapse-title text-xl font-medium">{milestone.name}</div>
       <div className="collapse-content">
         {/* Milestone description */}
-        <p className="mb-2">{milestone.description}</p>
+        <div className="mb-2">
+          <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+            {milestone.description || ""}
+          </ReactMarkdown>
+        </div>
         {/* Milestone date range */}
         <p className="italic mb-2">
           <DateRange
