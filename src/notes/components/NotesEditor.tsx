@@ -15,7 +15,6 @@ import {
   COMMAND_PRIORITY_LOW,
   TextFormatType,
 } from "lexical"
-import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin"
 import {
   TRANSFORMERS,
   $convertToMarkdownString,
@@ -34,6 +33,10 @@ import { UNDO_COMMAND, REDO_COMMAND } from "lexical"
 import { HeadingNode, QuoteNode } from "@lexical/rich-text"
 import { CodeNode } from "@lexical/code"
 import { LinkNode } from "@lexical/link"
+
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 
 const normalizeVisibility = (
   v: "PRIVATE" | "PM_ONLY" | "CONTRIBUTORS" | "SHARED" | undefined
@@ -95,6 +98,8 @@ function Toolbar({
   visibility,
   onVisibilityChange,
   canSetContributors,
+  mode,
+  onChangeMode,
 }: {
   title: string
   onTitleChange: (v: string) => void
@@ -106,6 +111,8 @@ function Toolbar({
   visibility: "PRIVATE" | "PM_ONLY" | "CONTRIBUTORS"
   onVisibilityChange: (v: "PRIVATE" | "PM_ONLY" | "CONTRIBUTORS") => void
   canSetContributors?: boolean
+  mode: "edit" | "preview"
+  onChangeMode: (m: "edit" | "preview") => void
 }) {
   const [editor] = useLexicalComposerContext()
 
@@ -157,6 +164,24 @@ function Toolbar({
       >
         Redo
       </button>
+      <div className="divider divider-horizontal m-0" />
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          className={`btn btn-outline ${mode === "edit" ? "border-2 border-primary" : ""}`}
+          onClick={() => onChangeMode("edit")}
+          disabled={readOnly}
+        >
+          Edit
+        </button>
+        <button
+          type="button"
+          className={`btn btn-outline ${mode === "preview" ? "border-2 border-primary" : ""}`}
+          onClick={() => onChangeMode("preview")}
+        >
+          Preview
+        </button>
+      </div>
       <div className="ml-auto flex items-center gap-2">
         {!readOnly && (
           <span className="opacity-70">
@@ -210,9 +235,18 @@ export default function NoteEditor({
   )
   const didInitialChange = useRef(false)
 
+  const [mode, setMode] = useState<"edit" | "preview">(readOnly ? "preview" : "edit")
+  const [previewMarkdown, setPreviewMarkdown] = useState<string>(initialMarkdown || "")
+
   useEffect(() => {
     setVisibility(normalizeVisibility(initialVisibility as any))
   }, [initialVisibility])
+
+  useEffect(() => {
+    if (initialMarkdown) {
+      setPreviewMarkdown(initialMarkdown)
+    }
+  }, [initialMarkdown])
 
   const effectiveReadOnly = useMemo(() => {
     if (visibility === "CONTRIBUTORS" && canSetContributors) return false
@@ -249,6 +283,7 @@ export default function NoteEditor({
       editorState.read(() => {
         contentMarkdown = $convertToMarkdownString(TRANSFORMERS)
       })
+      setPreviewMarkdown(contentMarkdown)
       contentJSON = editorState.toJSON()
 
       const visibilityForMutation = visibility as any
@@ -309,30 +344,58 @@ export default function NoteEditor({
           visibility={visibility}
           onVisibilityChange={setVisibility}
           canSetContributors={canSetContributors}
+          mode={mode}
+          onChangeMode={setMode}
         />
         <div className="p-3">
-          <RichTextPlugin
-            contentEditable={
-              <ContentEditable className="min-h-[180px] outline-none prose max-w-none dark:prose-invert text-lg" />
-            }
-            placeholder={<div className="opacity-50">Write a note…</div>}
-            ErrorBoundary={LexicalErrorBoundary as any}
-          />
-          <HistoryPlugin />
-          <ListPlugin />
-          <ResetFormatOnEnterPlugin />
-          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-          <OnChangePlugin
-            onChange={(state) => {
-              if (effectiveReadOnly) return
-              if (!didInitialChange.current) {
-                didInitialChange.current = true
-                return
-              }
-              setIsSaving(true)
-              debouncedSave(state)
-            }}
-          />
+          {mode === "edit" ? (
+            <>
+              <RichTextPlugin
+                contentEditable={
+                  <ContentEditable className="min-h-[180px] outline-none prose max-w-none dark:prose-invert text-lg" />
+                }
+                placeholder={<div className="opacity-50">Write a note…</div>}
+                ErrorBoundary={LexicalErrorBoundary as any}
+              />
+              <HistoryPlugin />
+              <ListPlugin />
+              <ResetFormatOnEnterPlugin />
+              <OnChangePlugin
+                onChange={(state) => {
+                  if (effectiveReadOnly) return
+                  if (!didInitialChange.current) {
+                    didInitialChange.current = true
+                    return
+                  }
+                  // Update live preview markdown and save debounced
+                  state.read(() => {
+                    const md = $convertToMarkdownString(TRANSFORMERS)
+                    setPreviewMarkdown(md)
+                  })
+                  setIsSaving(true)
+                  debouncedSave(state)
+                }}
+              />
+            </>
+          ) : (
+            <div className="markdown-display prose max-w-none dark:prose-invert text-lg p-3 bg-base-200 rounded-md border border-base-300">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm, remarkBreaks]}
+                components={{
+                  a: ({ node, ...props }) => (
+                    <a
+                      {...props}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline"
+                    />
+                  ),
+                }}
+              >
+                {previewMarkdown || "_Nothing to preview yet…_"}
+              </ReactMarkdown>
+            </div>
+          )}
         </div>
       </LexicalComposer>
     </div>

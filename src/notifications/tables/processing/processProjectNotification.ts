@@ -11,6 +11,7 @@ export type ProjectNotificationData = {
   notification: ExtendedNotification
   routeData: RouteData | null
   type: string
+  isMarkdown: boolean
 }
 
 export function processProjectNotification(
@@ -18,6 +19,7 @@ export function processProjectNotification(
 ): ProjectNotificationData[] {
   return notifications.map((notification) => {
     const cleanMessage = stripHtmlTags(notification.message || "")
+    const isMarkdown = determineNotificationType(notification.message || "Other") === "Project"
 
     return {
       id: notification.id,
@@ -27,6 +29,7 @@ export function processProjectNotification(
       notification: notification,
       routeData: notification.routeData as RouteData,
       type: determineNotificationType(notification.message || "Other"),
+      isMarkdown,
     }
   })
 }

@@ -31,6 +31,44 @@
     />
     <link rel="stylesheet" href="./_file/style.ef1f7908.css" />
 
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"
+      integrity="sha256-zJcGfQliQ1AqL4oT6tub2lQNb1P0d4Hq8w29KQb8qbI="
+      crossorigin="anonymous"
+    ></script>
+
+    <style>
+      .markdown-display ul,
+      .markdown-display ol {
+        margin: 0.5rem 1.25rem !important;
+      }
+      .markdown-display ul {
+        list-style: disc !important;
+        list-style-position: outside !important;
+        padding-left: 1.5rem !important;
+      }
+      .markdown-display ol {
+        list-style: decimal !important;
+        list-style-position: outside !important;
+        padding-left: 1.5rem !important;
+      }
+      .markdown-display li {
+        margin: 0.25rem 0 !important;
+      }
+      .markdown-display p {
+        margin: 0.5rem 0;
+      }
+      .markdown-display code {
+        padding: 0.1rem 0.25rem;
+        border-radius: 3px;
+        background: rgba(0, 0, 0, 0.06);
+      }
+      .markdown-display a.md-link {
+        text-decoration: underline;
+      }
+    </style>
+
     <script type="module">
       const jsonData = __INJECT_JSON__
       // Wait for DOMContentLoaded and update DOM with jsonData
@@ -42,7 +80,21 @@
         document.getElementById("project-updated-at").textContent = new Date(
           jsonData.updatedAt
         ).toLocaleDateString()
-        document.getElementById("project-description").textContent = jsonData.description
+        const descEl = document.getElementById("project-description")
+        const mdSrc = jsonData.description || ""
+        const md = window.markdownit({ html: false, linkify: true, breaks: true })
+        const rendered = md.render(mdSrc)
+        const safeHtml =
+          window.DOMPurify && typeof DOMPurify.sanitize === "function"
+            ? DOMPurify.sanitize(rendered)
+            : rendered
+        descEl.innerHTML = safeHtml
+        // Ensure links open safely in a new tab and are visibly clickable
+        descEl.querySelectorAll("a").forEach((a) => {
+          a.setAttribute("target", "_blank")
+          a.setAttribute("rel", "noopener noreferrer")
+          a.classList.add("md-link")
+        })
 
         const metadataDiv = document.getElementById("project-metadata")
         metadataDiv.innerHTML = "" // clear "Loading…" placeholder
@@ -155,7 +207,10 @@
               <b>Project Metadata and Settings Last Update:</b>
               <span id="project-updated-at">Loading…</span>
             </p>
-            <p><b>Project Description:</b> <span id="project-description">Loading…</span></p>
+            <div>
+              <p><b>Project Description:</b></p>
+              <div id="project-description" class="markdown-display">Loading…</div>
+            </div>
             <p><b>Project Metadata:</b></p>
             <div id="project-metadata">Loading…</div>
           </div>

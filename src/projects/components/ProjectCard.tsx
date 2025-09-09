@@ -1,4 +1,7 @@
 import React from "react"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
@@ -8,7 +11,11 @@ const ProjectCard = ({ project }) => (
     <input type="checkbox" />
     <div className="collapse-title text-xl font-medium">{project.name}</div>
     <div className="collapse-content">
-      <p className="mb-2">{project.description}</p>
+      <div className="mb-2 markdown-display">
+        <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+          {project.description || ""}
+        </ReactMarkdown>
+      </div>
       <p className="italic mb-2">
         Last update: <DateFormat date={project.updatedAt} />
       </p>

@@ -44,6 +44,7 @@ export const useNotificationTableColumns = (refetch: () => void, data: Notificat
           <NotificationMessage
             message={info.row.original.rawMessage}
             routeData={info.row.original.routeData}
+            isMarkdown={info.row.original.isMarkdown}
           />
         ),
         meta: {

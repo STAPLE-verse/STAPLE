@@ -8,6 +8,9 @@ import { MilestoneTasksData } from "../tables/processing/processMilestoneTasks"
 import { MilestoneSummary } from "./MilestoneSummary"
 import { ProjectTasksColumns } from "src/tasks/tables/columns/ProjectTasksColumns"
 import { ProjectTasksData } from "src/tasks/tables/processing/processProjectTasks"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 
 interface MilestoneInformationProps {
   milestone: Milestone
@@ -33,7 +36,11 @@ export const MilestoneInformation: React.FC<MilestoneInformationProps> = ({
           className="z-[1099] ourtooltips"
         />
         {/* Milestone description */}
-        {milestone.description}
+        <div className="markdown-display">
+          <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+            {milestone.description || ""}
+          </ReactMarkdown>
+        </div>
 
         {/* Milestone start and end dates */}
         {milestone.startDate && (
