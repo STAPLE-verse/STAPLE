@@ -45,7 +45,7 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog | Processe
         return (
           <>
             <Link
-              className="btn btn-primary w-2/3"
+              className="btn btn-primary w-full"
               data-tooltip-id="showIndividualModalTooltip"
               href={Routes.ShowContributorPage({
                 projectId: projectId,

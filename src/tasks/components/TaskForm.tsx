@@ -21,6 +21,7 @@ import DateField from "src/core/components/fields/DateField"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import LabeledTextAreaField from "src/core/components/fields/LabeledTextAreaField"
+import { useForm } from "react-final-form"
 
 export type Tag = {
   id: string
@@ -129,6 +130,48 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     setTags([])
   }
 
+  const contributorIds = contributorOptions.map((c) => c.id)
+  const teamIds = teamOptions.map((t) => t.id)
+
+  const ContributorsBulkButtons: React.FC<{
+    contributorCount: number
+    contributorIds: number[]
+    teamIds: number[]
+  }> = ({ contributorCount, contributorIds, teamIds }) => {
+    const formApi = useForm()
+    const selectAllContributors = () => formApi.change("projectMembersId", contributorIds)
+    const clearAllContributors = () => formApi.change("projectMembersId", [])
+    return (
+      <div className="flex justify-center items-center gap-3 mb-3">
+        <button type="button" className="btn btn-primary" onClick={selectAllContributors}>
+          Select all contributors ({contributorCount})
+        </button>
+        <button type="button" className="btn btn-secondary" onClick={clearAllContributors}>
+          Clear
+        </button>
+      </div>
+    )
+  }
+
+  const TeamsBulkButtons: React.FC<{ teamCount: number; teamIds: number[] }> = ({
+    teamCount,
+    teamIds,
+  }) => {
+    const formApi = useForm()
+    const selectAllTeams = () => formApi.change("teamsId", teamIds)
+    const clearAllTeams = () => formApi.change("teamsId", [])
+    return (
+      <div className="flex justify-center items-center gap-3 mb-3">
+        <button type="button" className="btn btn-primary" onClick={selectAllTeams}>
+          Select all teams ({teamCount})
+        </button>
+        <button type="button" className="btn btn-secondary" onClick={clearAllTeams}>
+          Clear
+        </button>
+      </div>
+    )
+  }
+
   return (
     <Form<S>
       {...formProps}
@@ -190,7 +233,14 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           buttonClassName="w-1/2 mb-4 mt-2"
           saveButton={true}
         >
-          <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
+          <div className="col-span-full w-full grid grid-cols-1 gap-4">
+            <ContributorsBulkButtons
+              contributorCount={contributorOptions.length}
+              contributorIds={contributorIds}
+              teamIds={teamIds}
+            />
+            <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
+          </div>
         </ToggleModal>
         {/* Teams */}
         <ToggleModal
@@ -199,7 +249,10 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
           buttonClassName="w-1/2"
           saveButton={true}
         >
-          <CheckboxFieldTable name="teamsId" options={teamOptions} />
+          <div className="col-span-full w-full grid grid-cols-1 gap-4">
+            <TeamsBulkButtons teamCount={teamOptions.length} teamIds={teamIds} />
+            <CheckboxFieldTable name="teamsId" options={teamOptions} />
+          </div>
         </ToggleModal>
       </CollapseCard>
 
