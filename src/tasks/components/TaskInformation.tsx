@@ -1,3 +1,6 @@
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 import { useQuery } from "@blitzjs/rpc"
 import { useContext } from "react"
 import { TaskContext } from "./TaskContext"
@@ -85,7 +88,27 @@ export const TaskInformation = () => {
       </p>
       <div className="divider pt-1 pb-1"></div>
       <span className="font-semibold text-xl">Instructions:</span>{" "}
-      {task.description ? task.description : "No instructions"}
+      {task.description ? (
+        <div className="markdown-display mt-2">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkBreaks]}
+            components={{
+              a: ({ node, ...props }) => (
+                <a
+                  {...props}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline"
+                />
+              ),
+            }}
+          >
+            {task.description}
+          </ReactMarkdown>
+        </div>
+      ) : (
+        <span className="italic">No instructions</span>
+      )}
     </CollapseCard>
   )
 }

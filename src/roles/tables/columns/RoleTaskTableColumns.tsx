@@ -1,4 +1,7 @@
 import React from "react"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 import { createColumnHelper } from "@tanstack/react-table"
 import { MultiSelectCheckbox } from "../../../core/components/fields/MultiSelectCheckbox"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
@@ -23,8 +26,13 @@ export const RoleTaskTableColumns = [
   columnHelper.accessor("description", {
     id: "description",
     cell: (info) => {
-      const value = info.getValue()
-      return <span>{value.length > 200 ? `${value.slice(0, 200)}...` : value}</span>
+      const value = info.getValue() || ""
+      const truncated = value.length > 200 ? `${value.slice(0, 200)}...` : value
+      return (
+        <div className="markdown-display">
+          <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{truncated}</ReactMarkdown>
+        </div>
+      )
     },
     header: "Instructions",
   }),
