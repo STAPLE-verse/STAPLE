@@ -17,6 +17,8 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
 
   // Fetch all tasks
   // Get latest logs that this user is involved in
+  // Fetch all tasks
+  // Get latest logs that this user is involved in
   const [fetchedTaskLogs] = useQuery(getTaskLogs, {
     where: {
       assignedTo: {
@@ -46,7 +48,6 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
     },
     orderBy: { id: "asc" },
   })
-
   // Cast and handle the possibility of `undefined`
   const taskLogs: TaskLogWithTaskProjectAndComments[] = (fetchedTaskLogs ??
     []) as TaskLogWithTaskProjectAndComments[]
@@ -63,7 +64,18 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
   const taskProportion =
     processedTasks.length > 0 ? totalCompletion / 100 / processedTasks.length : 0
 
-  //console.log(processedTasks)
+  // calculate total number of new comments
+  const newCommentsCount = taskLogs.reduce((total, taskLog) => {
+    return (
+      total +
+      (taskLog.comments?.reduce((commentSum, comment) => {
+        return (
+          commentSum + (comment.commentReadStatus?.filter((status) => !status.read).length ?? 0)
+        )
+      }, 0) ?? 0)
+    )
+  }, 0)
+
   const { t } = (useTranslation as any)()
   return (
     <Widget
