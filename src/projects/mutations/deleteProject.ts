@@ -10,8 +10,8 @@ export default resolver.pipe(
     await db.projectWidget.deleteMany({ where: { projectId: id } })
     // Delete tasks if the parent project is deleted
     await db.task.deleteMany({ where: { projectId: id } })
-    // Delete elements if the parent project is deleted
-    await db.element.deleteMany({ where: { projectId: id } })
+    // Delete milestones if the parent project is deleted
+    await db.milestone.deleteMany({ where: { projectId: id } })
     // Delete project specific projectMembers if project is deleted
     await db.projectMember.deleteMany({ where: { projectId: id } })
     // Delete project privileges

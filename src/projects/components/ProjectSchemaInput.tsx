@@ -7,6 +7,8 @@ import getForms from "src/forms/queries/getForms"
 import createForm from "src/forms/mutations/createForm"
 import { getDefaultSchemaLists } from "src/forms/utils/getDefaultSchemaList"
 import { toast } from "react-hot-toast"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 interface ProjectSchemaInputProps {
   userId: number
@@ -42,7 +44,14 @@ export const ProjectSchemaInput = ({
         toast.success("Default form has been successfully created!")
 
         // Ensure versions exists and has at least one item
-        const formVersionId = newFormVersion.versions?.[0]?.id
+        const { data: updatedForms } = await refetchForms()
+
+        const allVersions = (updatedForms ?? []).flatMap((form) => form.formVersion ?? [])
+        const sortedVersions = allVersions.sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+        const formVersionId = sortedVersions[0]?.id
+
         if (formVersionId) {
           onDefaultFormCreated(formVersionId)
         } else {
@@ -62,7 +71,7 @@ export const ProjectSchemaInput = ({
     }
   }
 
-  const [userForms] = useQuery(getForms, {
+  const [userForms, { refetch: refetchForms }] = useQuery(getForms, {
     where: { userId: { in: userId }, archived: false },
   })
 
@@ -110,7 +119,18 @@ export const ProjectSchemaInput = ({
       </button>
       <Modal open={openSchemaModal} size="w-1/2">
         <div>
-          <h1 className="flex justify-center mb-2 text-3xl">Select Form</h1>
+          <h1 className="flex justify-center items-center gap-2 mb-2 text-3xl">
+            Select Form
+            <InformationCircleIcon
+              className="h-5 w-5 stroke-2 text-info"
+              data-tooltip-id="form-select-tooltip"
+            />
+            <Tooltip
+              id="form-select-tooltip"
+              content="You can select a form to add to your project to add more information about your project or use standards from your field of study."
+              className="z-[1099] ourtooltips"
+            />
+          </h1>
           <p>
             If you have a form that includes our default description label, it is marked as
             (Default) below. If you want to make and use a new version of that form to use, click

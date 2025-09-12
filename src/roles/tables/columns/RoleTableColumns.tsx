@@ -2,6 +2,9 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { DeleteRole } from "src/roles/components/DeleteRole"
 import { EditRole } from "src/roles/components/EditRole"
 import { RoleTableData } from "../processing/processRoleTableData"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 
 const columnHelper = createColumnHelper<RoleTableData>()
 
@@ -12,12 +15,19 @@ export const RoleTableColumns = [
     header: "Role Name",
   }),
   columnHelper.accessor("description", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => {
+      const value = info.getValue() || ""
+      return (
+        <div className="markdown-display">
+          <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{value}</ReactMarkdown>
+        </div>
+      )
+    },
     header: "Description",
   }),
   columnHelper.accessor("taxonomy", {
     cell: (info) => <span>{info.getValue()}</span>,
-    header: "Taxonomy",
+    header: "System",
   }),
   columnHelper.accessor("id", {
     id: "edit",

@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import Head from "next/head"
 import { useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
@@ -9,6 +8,7 @@ import { NewRole } from "src/roles/components/NewRole"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import Card from "src/core/components/Card"
+import { DefaultRoles } from "src/roles/components/DefaultRoles"
 
 const RoleBuilderPage = () => {
   const currentUser = useCurrentUser()
@@ -25,9 +25,9 @@ const RoleBuilderPage = () => {
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="Contribution Roles">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <h1 className="flex justify-center text-3xl items-center">
-          All Roles{" "}
+          Roles{" "}
           <InformationCircleIcon
             className="h-6 w-6 ml-2 text-info stroke-2"
             data-tooltip-id="dashboard-overview"
@@ -39,8 +39,9 @@ const RoleBuilderPage = () => {
           />
         </h1>
 
-        <div className="flex justify-center m-4">
+        <div className="flex justify-center mt-4 mb-2 gap-2">
           <NewRole taxonomyList={taxonomyList} onRolesChanged={refetch} />
+          <DefaultRoles onRolesChanged={refetch} />
         </div>
         <Card title={""}>
           <Suspense fallback={<div>Loading...</div>}>

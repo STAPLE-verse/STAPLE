@@ -88,7 +88,7 @@ export default resolver.pipe(
       {
         userId,
         projectId,
-        type: "ElementSummary",
+        type: "MilestoneSummary",
         show: true,
         position: 9,
         size: WidgetSize.SMALL,

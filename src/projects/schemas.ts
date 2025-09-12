@@ -55,5 +55,7 @@ export const UpdateProjectRoleSchema = z.object({
 
 export const FormAnnouncementSchema = z.object({
   announcementText: z.string(),
+  projectMembersId: z.array(z.number()).optional(),
+  teamsId: z.array(z.number()).optional(),
   // template: __fieldName__: z.__zodType__(),
 })

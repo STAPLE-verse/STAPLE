@@ -52,7 +52,6 @@ export const DateField = forwardRef<HTMLInputElement, DateFieldProps>(
             border-primary rounded w-1/2 border-2
             bg-base-300 text-primary"
             type="date" // Changed to date type
-            min={moment().format("YYYY-MM-DD")}
             max="2050-01-01"
             onChange={handleChange}
             disabled={submitting}

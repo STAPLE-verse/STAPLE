@@ -1,18 +1,25 @@
 import { Routes } from "@blitzjs/next"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
-import { Prisma, Project, Notification, Task, TaskLog } from "@prisma/client"
+import {
+  ChatBubbleOvalLeftEllipsisIcon,
+  MagnifyingGlassIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline"
+import { Prisma, Notification, Task, TaskLog } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import NotificationMessage from "src/notifications/components/NotificationMessage"
 import Link from "next/link"
 import DateFormat from "src/core/components/DateFormat"
+import { ProjectWithNewCommentsCount } from "src/core/types"
+import { Tooltip } from "react-tooltip"
 
 // Tasks table
-type TasWithProject = Prisma.TaskGetPayload<{
+type TaskWithProject = Prisma.TaskGetPayload<{
   include: {
     project: true
   }
 }>
-const taskColumnHelper = createColumnHelper<TasWithProject>()
-export const tasksColumns: ColumnDef<TasWithProject>[] = [
+const taskColumnHelper = createColumnHelper<TaskWithProject>()
+export const tasksColumns: ColumnDef<TaskWithProject>[] = [
   taskColumnHelper.accessor("name", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Name",
@@ -60,8 +67,8 @@ export const tasksColumns: ColumnDef<TasWithProject>[] = [
 ]
 
 // Projects table
-const projectColumnHelper = createColumnHelper<Project>()
-export const projectColumns: ColumnDef<Project>[] = [
+const projectColumnHelper = createColumnHelper<ProjectWithNewCommentsCount>()
+export const projectColumns: ColumnDef<ProjectWithNewCommentsCount>[] = [
   projectColumnHelper.accessor("name", {
     cell: (info) => <span className="font-semibold"> {info.getValue()} </span>,
     header: "Name",
@@ -73,6 +80,44 @@ export const projectColumns: ColumnDef<Project>[] = [
     header: "Updated",
     enableColumnFilter: false,
     enableSorting: false,
+  }),
+  projectColumnHelper.accessor("newCommentsCount", {
+    id: "newComments",
+    header: () => (
+      <div className="table-header-tooltip">
+        <span>Comments</span>
+        <InformationCircleIcon
+          className="h-5 w-5 ml-2 text-info stroke-2"
+          data-tooltip-id="project-comments-tip"
+        />
+        <Tooltip
+          id="project-comments-tip"
+          content="Unread messages for the project. Project managers see all messages, not just their tasks."
+          className="z-[1099] ourtooltips"
+        />
+      </div>
+    ),
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => (
+      <div className="relative flex items-center justify-center w-fit">
+        <Link
+          className="btn btn-sm btn-ghost"
+          href={Routes.ShowProjectPage({
+            projectId: info.row.original.id,
+          })}
+        >
+          <ChatBubbleOvalLeftEllipsisIcon
+            className={`h-7 w-7 ${info.getValue() > 0 ? "text-primary" : "opacity-30"}`}
+          />
+          {info.getValue() > 0 && (
+            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-xs text-white flex items-center justify-center">
+              {info.getValue()}
+            </span>
+          )}
+        </Link>
+      </div>
+    ),
   }),
   projectColumnHelper.accessor("id", {
     id: "view",
@@ -96,8 +141,13 @@ export const projectColumns: ColumnDef<Project>[] = [
 const notificationColumnHelper = createColumnHelper<Notification>()
 export const notificationColumns: ColumnDef<Notification>[] = [
   notificationColumnHelper.accessor("message", {
-    cell: (info) => <div dangerouslySetInnerHTML={{ __html: info.getValue() }} />,
     header: "Message",
+    cell: (info) => (
+      <NotificationMessage
+        message={info.getValue()}
+        routeData={(info.row.original as any).routeData}
+      />
+    ),
     enableColumnFilter: false,
     enableSorting: false,
   }),

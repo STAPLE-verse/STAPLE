@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 const THEMES = [
   { value: "light", label: "☼ Light" },
@@ -43,26 +43,25 @@ const ThemeSelect = () => {
     document.documentElement.setAttribute("data-theme", selectedTheme)
   }
 
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme)
-  }, [theme])
-
   return (
-    <select
-      value={theme}
-      onChange={handleThemeChange}
-      className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box"
-      title="Change Theme"
-    >
-      <option value="" disabled>
-        Select Theme
-      </option>
-      {THEMES.map((theme) => (
-        <option key={theme.value} value={theme.value}>
-          {theme.label}
+    <>
+      <label>Select Theme: </label>
+      <select
+        value={theme}
+        onChange={handleThemeChange}
+        className="select text-primary select-bordered border-primary border-2 w-1/2 mb-4 w-1/2"
+        title="Change Theme"
+      >
+        <option value="" disabled>
+          Select Theme
         </option>
-      ))}
-    </select>
+        {THEMES.map((theme) => (
+          <option key={theme.value} value={theme.value}>
+            {theme.label}
+          </option>
+        ))}
+      </select>
+    </>
   )
 }
 

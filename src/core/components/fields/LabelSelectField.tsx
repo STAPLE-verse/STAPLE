@@ -6,6 +6,7 @@ export interface LabeledSelectFieldProps extends PropsWithoutRef<JSX.IntrinsicEl
   name: string
   /** Field label. */
   label: string
+  description?: string
   type?: "number" | "string"
   options: any
   optionText: string
@@ -20,6 +21,7 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
     {
       name,
       label,
+      description,
       outerProps,
       options,
       optionText,
@@ -49,23 +51,22 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
 
     return (
       <div {...outerProps}>
-        <label>
-          {label}
-          <select {...input} disabled={submitting} multiple={multiple} {...props} ref={ref}>
-            <option disabled={disableFirstOption} value="">
-              {firstOptionText}
-            </option>
-            {options &&
-              options.length !== 0 &&
-              options.map((v) => {
-                return (
-                  <option key={v.id} value={v[optionValue]}>
-                    {v[optionText]}
-                  </option>
-                )
-              })}
-          </select>
-        </label>
+        <label>{label} </label>
+        {description && <p className="text-base mt-1">{description}</p>}
+        <select {...input} disabled={submitting} multiple={multiple} {...props} ref={ref}>
+          <option disabled={disableFirstOption} value="">
+            {firstOptionText}
+          </option>
+          {options &&
+            options.length !== 0 &&
+            options.map((v) => {
+              return (
+                <option key={v.id} value={v[optionValue]}>
+                  {v[optionText]}
+                </option>
+              )
+            })}
+        </select>
 
         {touched && normalizedError && (
           <div role="alert" style={{ color: "red" }}>
@@ -81,7 +82,7 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
             font-size: 1.25rem;
           }
           select {
-            font-size: 1rem;
+            font-size: 1rem !important;
             padding: 0.25rem 0.75rem !important;
             border-radius: 3px;
             appearance: none;

@@ -5,42 +5,44 @@ import db from "db"
 const createAnnouncementSchema = z.object({
   announcementText: z.string(),
   projectId: z.number(),
+  projectMembersId: z.array(z.number()).optional(),
+  teamsId: z.array(z.number()).optional(),
 })
 
 export default resolver.pipe(
   resolver.zod(createAnnouncementSchema),
   resolver.authorize(),
-  async ({ announcementText, projectId }) => {
-    // Get all projectMembers for the project
-    const projectMembers = await db.projectMember.findMany({
-      where: {
-        projectId: projectId,
-      },
-      include: {
-        users: true,
-      },
-    })
+  async ({ announcementText, projectId, projectMembersId = [], teamsId = [] }) => {
+    const selectedIds = [...projectMembersId, ...teamsId]
+    let finalRecipients: number[] = []
 
-    // Get userIds
-    const userIds = projectMembers
-      .flatMap((pm) => pm.users.map((user) => user.id)) // Flatten the nested arrays and extract IDs
-      .filter((id) => id !== undefined) // Optionally filter out any undefined values
+    if (selectedIds.length === 0) {
+      const allProjectMembers = await db.projectMember.findMany({
+        where: { projectId, deleted: false },
+        include: { users: true },
+      })
+      finalRecipients = allProjectMembers.flatMap((pm) => pm.users.map((u) => u.id))
+    } else {
+      const selectedMembers = await db.projectMember.findMany({
+        where: { id: { in: selectedIds }, deleted: false },
+        include: { users: true },
+      })
+      finalRecipients = selectedMembers.flatMap((pm) => pm.users.map((u) => u.id))
+    }
 
-    // Step 3: Remove duplicates (if needed)
-    const uniqueUserIds = [...new Set(userIds)]
+    const uniqueUserIds = [...new Set(finalRecipients)]
 
-    // Create notification
-    const annoucement = await db.notification.create({
+    const announcement = await db.notification.create({
       data: {
         message: announcementText,
         recipients: {
           connect: uniqueUserIds.map((id) => ({ id })),
         },
         announcement: true,
-        projectId: projectId,
+        projectId,
       },
     })
 
-    return annoucement
+    return announcement
   }
 )

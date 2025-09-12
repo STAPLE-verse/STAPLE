@@ -9,12 +9,14 @@ export type ProcessedMetadata = {
   [key: string]: any
 }
 
-export function processMetadata(projectMembers): ProcessedMetadata[] {
+export function processMetadata(
+  projectMembers: { taskLogAssignedTo: ExtendedTaskLog[] }[]
+): ProcessedMetadata[] {
   const latestCompletedTaskLogs: ExtendedTaskLog[] = []
   // Iterate over each project member
   projectMembers.forEach((member) => {
     // Get the latest task log for this project member using the provided function
-    const latestLog = filterLatestTaskLog(member.taskLogAssignedTo)
+    const latestLog = filterLatestTaskLog(member.taskLogAssignedTo) as ExtendedTaskLog
 
     // Check if the latest log exists and is completed
     if (latestLog && latestLog.status === "COMPLETED") {

@@ -1,14 +1,11 @@
 import { Form, FormProps } from "src/core/components/fields/Form"
 import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
-import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import getColumns from "../queries/getColumns"
-import getElements from "src/elements/queries/getElements"
 import { useQuery } from "@blitzjs/rpc"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import TaskSchemaInput from "./TaskSchemaInput"
-import DateField from "src/core/components/fields/DateField"
 import { z } from "zod"
 import AddRoleInput from "src/roles/components/AddRoleInput"
 import ToggleModal from "src/core/components/ToggleModal"
@@ -18,7 +15,13 @@ import { ProjectMemberWithUsers } from "src/core/types"
 import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManagerUserIds"
 import { useState } from "react"
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
-import classNames from "classnames"
+import CollapseCard from "src/core/components/CollapseCard"
+import getMilestones from "src/milestones/queries/getMilestones"
+import DateField from "src/core/components/fields/DateField"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
+import LabeledTextAreaField from "src/core/components/fields/LabeledTextAreaField"
+import { useForm } from "react-final-form"
 
 export type Tag = {
   id: string
@@ -40,8 +43,8 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     where: { project: { id: projectId! } },
   })
 
-  // Elements
-  const [{ elements: elements }] = useQuery(getElements, {
+  // Milestones
+  const [{ milestones: milestones }] = useQuery(getMilestones, {
     orderBy: { id: "asc" },
     where: { project: { id: projectId! } },
   })
@@ -73,7 +76,10 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   const contributorOptions = individualProjectMembers.map((contributor) => {
     return {
       // there is only one user for contributors
-      label: contributor.users?.[0]?.username || "Unknown",
+      label:
+        contributor.users?.[0]?.firstName && contributor.users?.[0]?.lastName
+          ? `${contributor.users[0].firstName} ${contributor.users[0].lastName}`
+          : contributor.users?.[0]?.username || "Unknown",
       id: contributor.id,
     }
   })
@@ -124,6 +130,48 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
     setTags([])
   }
 
+  const contributorIds = contributorOptions.map((c) => c.id)
+  const teamIds = teamOptions.map((t) => t.id)
+
+  const ContributorsBulkButtons: React.FC<{
+    contributorCount: number
+    contributorIds: number[]
+    teamIds: number[]
+  }> = ({ contributorCount, contributorIds, teamIds }) => {
+    const formApi = useForm()
+    const selectAllContributors = () => formApi.change("projectMembersId", contributorIds)
+    const clearAllContributors = () => formApi.change("projectMembersId", [])
+    return (
+      <div className="flex justify-center items-center gap-3 mb-3">
+        <button type="button" className="btn btn-primary" onClick={selectAllContributors}>
+          Select all contributors ({contributorCount})
+        </button>
+        <button type="button" className="btn btn-secondary" onClick={clearAllContributors}>
+          Clear
+        </button>
+      </div>
+    )
+  }
+
+  const TeamsBulkButtons: React.FC<{ teamCount: number; teamIds: number[] }> = ({
+    teamCount,
+    teamIds,
+  }) => {
+    const formApi = useForm()
+    const selectAllTeams = () => formApi.change("teamsId", teamIds)
+    const clearAllTeams = () => formApi.change("teamsId", [])
+    return (
+      <div className="flex justify-center items-center gap-3 mb-3">
+        <button type="button" className="btn btn-primary" onClick={selectAllTeams}>
+          Select all teams ({teamCount})
+        </button>
+        <button type="button" className="btn btn-secondary" onClick={clearAllTeams}>
+          Clear
+        </button>
+      </div>
+    )
+  }
+
   return (
     <Form<S>
       {...formProps}
@@ -144,105 +192,170 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
       }}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
-          e.preventDefault() // Prevent form submission on Enter
+          const el = e.target as HTMLElement
+          const tag = el?.tagName?.toLowerCase()
+          const isTextArea = tag === "textarea"
+          const isContentEditable = (el as any)?.isContentEditable === true
+          const insideReactTags = !!el?.closest?.(".react-tags-wrapper")
+
+          // Allow Enter for textareas, contentEditable fields, and the ReactTags input.
+          // Prevent only when it would submit the form from other inputs/buttons.
+          if (!isTextArea && !isContentEditable && !insideReactTags) {
+            e.preventDefault()
+          }
         }
       }}
     >
-      {/* Name */}
-      <LabeledTextField
-        className="input w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
-        name="name"
-        label="Task Name: (Required)"
-        placeholder="Add Task Name"
-        type="text"
-      />
-      {/* Column */}
-      <LabelSelectField
-        className="select w-1/2 text-lg text-primary select-primary select-bordered border-2 bg-base-300"
-        name="containerId"
-        label="Current Column: (Required)"
-        options={columns}
-        optionText="name"
-        optionValue="id"
-      />
-      <label>At least one:</label>
-      <ValidationErrorDisplay fieldName={"projectMembersId"} />
-      {/* Contributors */}
-      <ToggleModal
-        buttonLabel="Assign Contributor(s)"
-        modalTitle="Select Contributors"
-        buttonClassName="w-1/2"
-        saveButton={true}
-      >
-        <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
-      </ToggleModal>
-      {/* Teams */}
-      <ToggleModal
-        buttonLabel="Assign Team(s)"
-        modalTitle="Select Teams"
-        buttonClassName="w-1/2"
-        saveButton={true}
-      >
-        <CheckboxFieldTable name="teamsId" options={teamOptions} />
-      </ToggleModal>
-      Optional: you can do this later
-      <hr></hr>
-
-      {/* Tag Input */}
-      <div className="w-1/2">
-        <label className="text-base-content">Tags:</label>
-        <i>
-          Use a comma, semicolon, enter, or tab to create separate tags. To edit a tag, click on it,
-          and then hit the enter key when you are finished.
-        </i>
-        <ReactTags
-          tags={tags}
-          name="tags"
-          separators={[SEPARATORS.TAB, SEPARATORS.COMMA, SEPARATORS.ENTER, SEPARATORS.SEMICOLON]}
-          handleDelete={handleDelete}
-          handleAddition={handleAddition}
-          handleDrag={handleDrag}
-          handleTagClick={handleTagClick}
-          onTagUpdate={onTagUpdate}
-          inputFieldPosition="inline"
-          editable
-          clearAll
-          onClearAll={onClearAll}
-          classNames={{
-            tags: "mt-2 p-2 rounded-md bg-base-300 react-tags-wrapper", // entire box for tags
-            tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 mb-2 text-lg",
-            remove: "ml-3 text-primary-content font-bold cursor-pointer remove",
-            tagInput: "bg-base-300", // whole div around
-            tagInputField:
-              "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4", // just input field
-
-            selected: "bg-base-300",
-            editTagInput: "bg-base-300",
-            editTagInputField:
-              "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4 mb-4",
-            clearAll: "font-bold ml-3",
-            suggestions: "suggestions-dropdown",
-            activeSuggestion: "active-suggestion-class",
-          }}
-          placeholder="Add tags"
+      <CollapseCard title="Required Fields: Name, Status, People" className="" defaultOpen={true}>
+        <LabeledTextField
+          className="input w-1/2 text-primary input-primary input-bordered border-2 bg-base-300 mb-4"
+          name="name"
+          label="Task Name:"
+          placeholder="Add Task Name"
+          type="text"
         />
-      </div>
+        <LabelSelectField
+          className="select w-1/2 text-lg text-primary select-primary select-bordered border-2 bg-base-300 mb-4"
+          name="containerId"
+          label="Current Status:"
+          description="Status indicates the column placement on the kanban board."
+          options={columns}
+          optionText="name"
+          optionValue="id"
+        />
 
-      {/* Form */}
-      {formResponseSupplied ? (
-        <TaskSchemaInput projectManagerIds={projectManagerUserIds} />
-      ) : (
-        <p className="w-1/2 text-red-500">
-          The task is already being completed by the contributors. Please, create a new task if you
-          would like to change the attached form.
-        </p>
-      )}
-      {/* Roles */}
-      <AddRoleInput
-        projectManagerIds={projectManagerUserIds}
-        buttonLabel="Assign Role(s)"
-        tooltipContent="Add roles to task"
-      />
+        <label>Assign at least one person or team:</label>
+        <ValidationErrorDisplay fieldName={"projectMembersId"} />
+        {/* Contributors */}
+        <ToggleModal
+          buttonLabel="Assign Contributor(s)"
+          modalTitle="Select Contributors"
+          buttonClassName="w-1/2 mb-4 mt-2"
+          saveButton={true}
+        >
+          <div className="col-span-full w-full grid grid-cols-1 gap-4">
+            <ContributorsBulkButtons
+              contributorCount={contributorOptions.length}
+              contributorIds={contributorIds}
+              teamIds={teamIds}
+            />
+            <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
+          </div>
+        </ToggleModal>
+        {/* Teams */}
+        <ToggleModal
+          buttonLabel="Assign Team(s)"
+          modalTitle="Select Teams"
+          buttonClassName="w-1/2"
+          saveButton={true}
+        >
+          <div className="col-span-full w-full grid grid-cols-1 gap-4">
+            <TeamsBulkButtons teamCount={teamOptions.length} teamIds={teamIds} />
+            <CheckboxFieldTable name="teamsId" options={teamOptions} />
+          </div>
+        </ToggleModal>
+      </CollapseCard>
+
+      <CollapseCard title="Details: Instructions, Dates, Forms, Roles">
+        {/* Description */}
+        <LabeledTextAreaField
+          className="textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2 mb-4"
+          name="description"
+          label="Task Instructions:"
+          placeholder="Add Instructions"
+          type="textarea"
+        />
+
+        <DateField name="startDate" label="Start Date:" />
+
+        {/* Deadline */}
+        <div className="mt-4">
+          <DateField name="deadline" label="Deadline:" />
+        </div>
+
+        {/* Form */}
+        {formResponseSupplied ? (
+          <TaskSchemaInput
+            projectManagerIds={projectManagerUserIds}
+            className="mt-4 mb-4"
+            tooltipContent="Add a required form to gather responses for the task"
+          />
+        ) : (
+          <p className="w-1/2 text-red-500">
+            The task is already being completed by the contributors. Please, create a new task if
+            you would like to change the attached form.
+          </p>
+        )}
+        {/* Roles */}
+        <AddRoleInput
+          projectManagerIds={projectManagerUserIds}
+          buttonLabel="Assign Role(s)"
+          tooltipContent="Add roles to task"
+        />
+      </CollapseCard>
+
+      <CollapseCard title="Organization: Milestones, Tags">
+        {/* Elements */}
+        <LabelSelectField
+          className="select w-1/2 text-primary select-primary select-bordered border-2 bg-base-300"
+          name="milestoneId"
+          label="Assign milestone:"
+          options={milestones}
+          optionText="name"
+          optionValue="id"
+          disableFirstOption={false}
+        />
+
+        {/* Tag Input */}
+        <div className="w-2/3 mt-4">
+          <label className="text-base-content">
+            <span className="flex items-center mb-2">
+              Tags:
+              <InformationCircleIcon
+                className="h-4 w-4 ml-1 text-info stroke-2"
+                data-tooltip-id="tags-overview"
+              />
+              <Tooltip
+                id="tags-overview"
+                content="Use a comma, semicolon, enter, or tab to create separate tags. To edit a tag, click on
+            it, and then hit the enter key when you are finished."
+                className="z-[1099] ourtooltips"
+              />
+            </span>
+          </label>
+          <ReactTags
+            tags={tags}
+            name="tags"
+            separators={[SEPARATORS.TAB, SEPARATORS.COMMA, SEPARATORS.ENTER, SEPARATORS.SEMICOLON]}
+            handleDelete={handleDelete}
+            handleAddition={handleAddition}
+            handleDrag={handleDrag}
+            handleTagClick={handleTagClick}
+            onTagUpdate={onTagUpdate}
+            inputFieldPosition="inline"
+            editable
+            clearAll
+            onClearAll={onClearAll}
+            classNames={{
+              tags: "rounded-md bg-base-300 react-tags-wrapper", // entire box for tags
+              tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 mb-2 text-lg",
+              remove: "ml-3 text-primary-content font-bold cursor-pointer remove",
+              tagInput: "bg-base-300", // whole div around
+              tagInputField:
+                "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4", // just input field
+
+              selected: "bg-base-300",
+              editTagInput: "bg-base-300",
+              editTagInputField:
+                "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4 mb-4",
+              clearAll: "font-bold ml-3",
+              suggestions: "suggestions-dropdown",
+              activeSuggestion: "active-suggestion-class",
+            }}
+            placeholder="Add tags"
+          />
+        </div>
+      </CollapseCard>
     </Form>
   )
 }

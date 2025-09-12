@@ -18,7 +18,10 @@ import getProjectPrivilege from "src/projectprivileges/queries/getProjectPrivile
 import { UpdateProjectMemberFormSchema } from "src/projectmembers/schemas"
 import { ProjectMemberWithUsersAndRoles } from "src/core/types"
 import DeleteContributor from "src/contributors/components/DeleteContributor"
-import PageHeader from "src/core/components/PageHeader"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
+import { Tag } from "src/tasks/components/TaskForm"
+import Card from "src/core/components/Card"
 
 export const EditContributor = () => {
   const [updateProjectMemberMutation] = useMutation(updateProjectMember)
@@ -56,6 +59,14 @@ export const EditContributor = () => {
   const initialValues = {
     privilege: contributorPrivilege.privilege,
     rolesId: rolesId,
+    tags: Array.isArray(contributor.tags)
+      ? (contributor.tags as Tag[]).map((tag) => ({
+          id: `${tag.key}-${tag.value}`,
+          key: tag.key ?? "",
+          value: tag.value ?? "",
+          text: tag.value ?? "",
+        }))
+      : [],
   }
 
   // Handle events
@@ -76,6 +87,7 @@ export const EditContributor = () => {
         userId: contributorUser!.id,
         privilege: values.privilege,
         rolesId: values.rolesId,
+        tags: values.tags,
       })
 
       await toast.promise(Promise.resolve(updated), {
@@ -120,20 +132,36 @@ export const EditContributor = () => {
 
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-      <PageHeader className="mb-2" title={`Edit Contributor ${getContributorName(contributor)}`} />
-      <Suspense fallback={<div>Loading...</div>}>
-        <ContributorForm
-          submitText="Update Contributor"
-          projectId={projectId!}
-          editedUserId={contributorUser!.id}
-          isEdit={true}
-          schema={UpdateProjectMemberFormSchema}
-          initialValues={initialValues}
-          cancelText="Cancel"
-          onCancel={handleCancel}
-          onSubmit={handleSubmit}
+      <h1 className="flex justify-center items-center text-3xl mb-4">
+        Edit Contributor: <span className="italic ml-1"> {getContributorName(contributor)}</span>
+        <InformationCircleIcon
+          className="h-6 w-6 ml-2 text-info stroke-2"
+          data-tooltip-id="contributors-overview"
         />
-        <div className="flex justify-end mt-2">
+        <Tooltip
+          id="contributors-overview"
+          content="This page allows you to update the contributor's
+          administration privileges. Project managers can see and edit
+          all parts of the project, and you must have at least one at all times."
+          className="z-[1099] ourtooltips"
+        />
+      </h1>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Card title="">
+          <ContributorForm
+            submitText="Update Contributor"
+            projectId={projectId!}
+            editedUserId={contributorUser!.id}
+            isEdit={true}
+            schema={UpdateProjectMemberFormSchema}
+            initialValues={initialValues}
+            cancelText="Cancel"
+            onCancel={handleCancel}
+            onSubmit={handleSubmit}
+          />
+        </Card>
+        <div className="divider pt-2 pb-2"></div>
+        <div className="flex justify-center">
           <DeleteContributor
             projectId={projectId!}
             contributorUser={contributorUser!}

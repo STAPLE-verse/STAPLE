@@ -18,7 +18,7 @@ export const TriggerDefaultForms = () => {
   }
 
   return (
-    <div className="flex flex-col items-center mt-4">
+    <div className="flex flex-col items-center mt-2">
       <button onClick={handleCreateDefaultForms} className="btn btn-primary">
         Create Default Forms for Users
       </button>

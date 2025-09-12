@@ -37,9 +37,22 @@ export default resolver.pipe(
         where: { projectId: projectId, status: Status.COMPLETED },
       })
 
+      const newCommentsCount = await db.commentReadStatus.count({
+        where: {
+          projectMember: {
+            projectId: projectId,
+            users: {
+              some: { id: userId as number },
+            },
+          },
+          read: false,
+        },
+      })
+
       return {
         allTask,
         completedTask,
+        newCommentsCount,
       }
     } else if (privilege === MemberPrivileges.CONTRIBUTOR) {
       // If CONTRIBUTOR, return only tasks assigned to the projectMember
@@ -63,6 +76,22 @@ export default resolver.pipe(
       // Get only the latest log for each task / projectmember
       const latestTaskLogs = await getLatestTaskLogs(taskLogs)
 
+      const taskLogIds = latestTaskLogs.map((log) => log.id)
+
+      const newCommentsCount = await db.commentReadStatus.count({
+        where: {
+          comment: {
+            taskLogId: { in: taskLogIds },
+          },
+          projectMember: {
+            users: {
+              some: { id: userId },
+            },
+          },
+          read: false,
+        },
+      })
+
       // Get the completed logs
       const projectTaskLogs = latestTaskLogs.filter((taskLog) => {
         return taskLog.status === Status.COMPLETED
@@ -76,6 +105,7 @@ export default resolver.pipe(
       return {
         allTask,
         completedTask,
+        newCommentsCount,
       }
     }
 

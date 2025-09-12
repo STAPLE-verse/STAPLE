@@ -5,6 +5,7 @@ export default function useTaskLogProgress(projectMembers: ProjectMemberWithTask
   // Filter and count statuses
   let notCompletedAssignmentsCount = 0
   let completedAssignmentsCount = 0
+  let approvedAssignmentsCount = 0
 
   projectMembers.forEach((projectMember) => {
     const taskLogs = projectMember.taskLogAssignedTo
@@ -17,11 +18,19 @@ export default function useTaskLogProgress(projectMembers: ProjectMemberWithTask
       } else if (latestTaskLog!.status === "COMPLETED") {
         completedAssignmentsCount += 1
       }
+
+      if (latestTaskLog!.approved === true) {
+        approvedAssignmentsCount += 1
+      }
     } else {
       // If there are no status logs, assume the assignment is not completed
       notCompletedAssignmentsCount += 1
     }
   })
 
-  return { all: projectMembers.length, completed: completedAssignmentsCount }
+  return {
+    all: projectMembers.length,
+    completed: completedAssignmentsCount,
+    approved: approvedAssignmentsCount,
+  }
 }

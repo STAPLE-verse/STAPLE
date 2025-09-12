@@ -1,4 +1,6 @@
 import React from "react"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 import Modal from "src/core/components/Modal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import Form from "src/core/components/fields/Form"
@@ -51,7 +53,18 @@ const AddFormTemplates: React.FC<AddFormTemplatesProps> = ({
 
   return (
     <Modal open={open} size="large">
-      <h2 className="flex justify-center mb-2 text-3xl">Select Form Templates</h2>
+      <h2 className="text-3xl justify-center mb-2 flex items-center">
+        Select Form Templates
+        <InformationCircleIcon
+          className="ml-2 h-5 w-5 stroke-2 text-info"
+          data-tooltip-id="form-templates-tooltip"
+        />
+        <Tooltip
+          id="form-templates-tooltip"
+          content="These are suggestions for metadata that you can add to your account and then edit to match your needs."
+          className="z-[1099] ourtooltips"
+        />
+      </h2>
       {open && (
         <Form
           schema={AddFormTemplatesSchema}

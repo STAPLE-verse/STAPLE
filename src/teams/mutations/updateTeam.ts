@@ -5,7 +5,7 @@ import { UpdateTeamSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(UpdateTeamSchema),
   resolver.authorize(),
-  async ({ id, name, userIds }) => {
+  async ({ id, name, userIds, tags }) => {
     const team = await db.projectMember.update({
       where: { id },
       data: {
@@ -15,6 +15,7 @@ export default resolver.pipe(
             id: userId,
           })),
         },
+        tags: tags ?? undefined,
       },
       include: {
         users: true, // Include the users relation in the result

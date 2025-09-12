@@ -2,7 +2,6 @@ import { useParam } from "@blitzjs/next"
 import { ProjectTasksColumns } from "src/tasks/tables/columns/ProjectTasksColumns"
 import Table from "src/core/components/Table"
 import useProjecTasksListData from "../hooks/useProjectTasksListData"
-import Card from "src/core/components/Card"
 
 export const ProjectTasksList = () => {
   const projectId = useParam("projectId", "number")
@@ -10,8 +9,10 @@ export const ProjectTasksList = () => {
   const { tasks } = useProjecTasksListData(projectId)
 
   return (
-    <Card title={""}>
-      <Table columns={ProjectTasksColumns} data={tasks} addPagination={true} />
-    </Card>
+    <div className="rounded-b-box rounded-tr-box bg-base-300 p-4">
+      <div className="overflow-x-auto">
+        <Table columns={ProjectTasksColumns} data={tasks} addPagination={true} />
+      </div>
+    </div>
   )
 }

@@ -1,8 +1,8 @@
 import ProjectMemberNumber from "../components/widgets/ProjectMemberNumber"
-import ElementSummary from "../components/widgets/ElementSummary"
-import FormNumber from "../components/widgets/FormNumber"
-import RolesSummary from "../components/widgets/RolesSummary"
-import LastProject from "../components/widgets/LastProject"
+import MilestoneSummary from "../components/widgets/ProjectMilestone"
+import FormNumber from "../components/widgets/ProjectForms"
+import RolesSummary from "../components/widgets/ProjectRoles"
+import LastProject from "../components/widgets/MainLastProject"
 import MainNotification from "../components/widgets/MainNotification"
 import MainOverdueTasks from "../components/widgets/MainOverDueTasks"
 import MainUpcomingTasks from "../components/widgets/MainUpcomingTasks"
@@ -10,14 +10,14 @@ import ProjectNotification from "../components/widgets/ProjectNotification"
 import ProjectOverdueTasks from "../components/widgets/ProjectOverdueTasks"
 import ProjectSummary from "../components/widgets/ProjectSummary"
 import ProjectUpcomingTasks from "../components/widgets/ProjectUpcomingTasks"
-import TaskTotal from "../components/widgets/TaskTotal"
-import TeamNumber from "../components/widgets/TeamNumber"
-import AllTaskTotal from "../components/widgets/AllTaskTotal"
-import TotalContributors from "../components/widgets/TotalContributors"
-import TotalForms from "../components/widgets/TotalForms"
-import TotalInvites from "../components/widgets/TotalInvites"
-import TotalProjects from "../components/widgets/TotalProjects"
-import TotalRoles from "../components/widgets/TotalRoles"
+import TaskTotal from "../components/widgets/ProjectTasks"
+import TeamNumber from "../components/widgets/ProjectTeams"
+import AllTaskTotal from "../components/widgets/MainTotalTask"
+import TotalContributors from "../components/widgets/MainTotalContributors"
+import TotalForms from "../components/widgets/MainTotalForms"
+import TotalInvites from "../components/widgets/MainTotalInvites"
+import TotalProjects from "../components/widgets/MainTotalProjects"
+import TotalRoles from "../components/widgets/MainTotalRoles"
 
 export const widgetRegistry = {
   main: {
@@ -41,7 +41,7 @@ export const widgetRegistry = {
     TeamNumber: TeamNumber,
     FormNumber: FormNumber,
     TaskTotal: TaskTotal,
-    ElementSummary: ElementSummary,
+    MilestoneSummary: MilestoneSummary,
     RolesSummary: RolesSummary,
   },
 }

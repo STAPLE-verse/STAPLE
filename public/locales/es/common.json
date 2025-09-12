@@ -3,7 +3,7 @@
     "project": {
       "home": "Inicio",
       "dashboard": "Panel",
-      "elements": "Elementos",
+      "milestones": "Hitos",
       "tasks": "Tareas",
       "contributors": "Colaboradores",
       "teams": "Equipos",
@@ -12,7 +12,8 @@
       "roles": "Roles",
       "summary": "Resumen",
       "settings": "Configuración",
-      "tags": "Etiquetas"
+      "tags": "Etiquetas",
+      "notes": "Notas"
     },
     "home": {
       "dashboard": "Panel",

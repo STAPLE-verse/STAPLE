@@ -33,6 +33,7 @@ export default resolver.pipe(
             connect: { id: userId },
           },
           projectId: invite.projectId,
+          tags: invite.tags as any,
         },
       })
     }

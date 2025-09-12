@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="generator" content="Observable Framework v1.13.3" />
+    <title>Project Summary</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap"
+      crossorigin
+    />
+    <link rel="preload" as="style" href="./_observablehq/theme-air,deep-space.9d6d3ba1.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&amp;display=swap"
+      crossorigin
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="./_observablehq/theme-air,deep-space.9d6d3ba1.css"
+    />
+    <link rel="icon" href="./_file/observable.1af93621.png" type="image/png" sizes="32x32" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./_file/style.ef1f7908.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"
+      integrity="sha256-zJcGfQliQ1AqL4oT6tub2lQNb1P0d4Hq8w29KQb8qbI="
+      crossorigin="anonymous"
+    ></script>
+
+    <style>
+      .markdown-display ul,
+      .markdown-display ol {
+        margin: 0.5rem 1.25rem !important;
+      }
+      .markdown-display ul {
+        list-style: disc !important;
+        list-style-position: outside !important;
+        padding-left: 1.5rem !important;
+      }
+      .markdown-display ol {
+        list-style: decimal !important;
+        list-style-position: outside !important;
+        padding-left: 1.5rem !important;
+      }
+      .markdown-display li {
+        margin: 0.25rem 0 !important;
+      }
+      .markdown-display p {
+        margin: 0.5rem 0;
+      }
+      .markdown-display code {
+        padding: 0.1rem 0.25rem;
+        border-radius: 3px;
+        background: rgba(0, 0, 0, 0.06);
+      }
+      .markdown-display a.md-link {
+        text-decoration: underline;
+      }
+    </style>
+
+    <script type="module">
+      const jsonData = __INJECT_JSON__
+      // Wait for DOMContentLoaded and update DOM with jsonData
+      document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("project-title").textContent = jsonData.name
+        document.getElementById("project-created-at").textContent = new Date(
+          jsonData.createdAt
+        ).toLocaleDateString()
+        document.getElementById("project-updated-at").textContent = new Date(
+          jsonData.updatedAt
+        ).toLocaleDateString()
+        const descEl = document.getElementById("project-description")
+        const mdSrc = jsonData.description || ""
+        const md = window.markdownit({ html: false, linkify: true, breaks: true })
+        const rendered = md.render(mdSrc)
+        const safeHtml =
+          window.DOMPurify && typeof DOMPurify.sanitize === "function"
+            ? DOMPurify.sanitize(rendered)
+            : rendered
+        descEl.innerHTML = safeHtml
+        // Ensure links open safely in a new tab and are visibly clickable
+        descEl.querySelectorAll("a").forEach((a) => {
+          a.setAttribute("target", "_blank")
+          a.setAttribute("rel", "noopener noreferrer")
+          a.classList.add("md-link")
+        })
+
+        const metadataDiv = document.getElementById("project-metadata")
+        metadataDiv.innerHTML = "" // clear "Loading…" placeholder
+        if (jsonData.metadata) {
+          Object.entries(jsonData.metadata).forEach(([key, value]) => {
+            const p = document.createElement("p")
+            p.innerHTML = `<strong>${key}:</strong> ${value}`
+            metadataDiv.appendChild(p)
+          })
+        }
+
+        // Download handler
+        document.getElementById("download-json").addEventListener("click", (e) => {
+          e.preventDefault()
+          const jsonString = JSON.stringify(jsonData, null, 2)
+          const blob = new Blob([jsonString], { type: "application/json" })
+          const url = URL.createObjectURL(blob)
+
+          const a = document.createElement("a")
+          a.href = url
+          a.download = "project_summary.json"
+          a.click()
+
+          URL.revokeObjectURL(url)
+        })
+      })
+    </script>
+  </head>
+  <body>
+    <input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar" />
+    <label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+    <nav id="observablehq-sidebar">
+      <ol>
+        <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+        <li class="observablehq-link observablehq-link-active">
+          <a href="./index.html">Project Summary</a>
+        </li>
+      </ol>
+      <ol>
+        <li class="observablehq-link"><a href="./people_roles.html">Contributors</a></li>
+        <li class="observablehq-link"><a href="./tasks.html">Tasks</a></li>
+        <li class="observablehq-link"><a href="./forms.html">Form Data</a></li>
+        <li class="observablehq-link"><a href="./timeline.html">Events</a></li>
+      </ol>
+    </nav>
+    <script>
+      {
+        const e = document.querySelector("#observablehq-sidebar"),
+          o = document.querySelector("#observablehq-sidebar-toggle"),
+          r = sessionStorage.getItem("observablehq-sidebar")
+        r ? (o.checked = r === "true") : (o.indeterminate = !0)
+        for (const t of document.querySelectorAll("#observablehq-sidebar summary")) {
+          const s = t.parentElement
+          switch (sessionStorage.getItem(`observablehq-sidebar:${t.textContent}`)) {
+            case "true":
+              s.open = !0
+              break
+            case "false":
+              s.classList.contains("observablehq-section-active") || (s.open = !1)
+              break
+          }
+        }
+        addEventListener("beforeunload", () =>
+          sessionStorage.setItem("observablehq-sidebar-scrolly", `${e.scrollTop}`)
+        )
+        const a = sessionStorage.getItem("observablehq-sidebar-scrolly")
+        a != null &&
+          ((e.style.cssText = "overflow: hidden;"), (e.scrollTop = +a), (e.style.cssText = ""))
+      }
+    </script>
+    <div id="observablehq-center">
+      <main id="observablehq-main" class="observablehq">
+        <div class="hero">
+          <h1 id="project-title">Loading…</h1>
+        </div>
+        <div class="flex flex-row">
+          <div class="card">
+            <div class="statistics-container">
+              <a href="https://app.staple.science" target="_blank" rel="noopener noreferrer">
+                <picture>
+                  <source
+                    srcset="./_file/img/logo_white_big.2c934504.png"
+                    media="(prefers-color-scheme: dark)"
+                    width="200"
+                  />
+                  <img
+                    src="./_file/img/logo_black_big.ee6d5ee3.png"
+                    alt="STAPLE Logo"
+                    width="200"
+                  />
+                </picture>
+              </a>
+            </div>
+            <p>
+              This project summary was created using the STAPLE app. STAPLE empowers researchers to
+              manage their projects with clarity, ensuring open and transparent documentation
+              throughout the project lifecycle. By providing tools for seamless data and metadata
+              tracking, STAPLE supports the principles of open science and fosters collaboration
+              across disciplines. Learn more at
+              <a href="https://staple.science" target="_blank" rel="noopener noreferrer"
+                >https://staple.science</a
+              >.
+            </p>
+          </div>
+        </div>
+        <div class="flex flex-row">
+          <div class="card">
+            <p><b>Project Start Date:</b> <span id="project-created-at">Loading…</span></p>
+            <p>
+              <b>Project Metadata and Settings Last Update:</b>
+              <span id="project-updated-at">Loading…</span>
+            </p>
+            <div>
+              <p><b>Project Description:</b></p>
+              <div id="project-description" class="markdown-display">Loading…</div>
+            </div>
+            <p><b>Project Metadata:</b></p>
+            <div id="project-metadata">Loading…</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-3">
+          <div class="card">
+            <center><a href="./people_roles.html">Check out the contributors</a></center>
+          </div>
+          <div class="card">
+            <center><a href="./tasks.html">Check out the tasks</a></center>
+          </div>
+          <div class="card">
+            <center><a href="./forms.html">Check out the metadata</a></center>
+          </div>
+          <div class="card">
+            <center><a href="./timeline.html">Check out the timeline and milestones</a></center>
+          </div>
+          <div class="card">
+            <center>
+              <a href="#" class="link-button" id="download-json">Download the JSON</a>
+            </center>
+          </div>
+        </div>
+      </main>
+      <footer id="observablehq-footer">
+        <nav>
+          <a rel="next" href="./people_roles.html"><span>Contributors</span></a>
+        </nav>
+        <div>
+          Built with
+          <a href="https://observablehq.com/" target="_blank" rel="noopener noreferrer"
+            >Observable</a
+          >
+          on <a title="2025-07-27T20:51:27">Jul 27, 2025</a>.
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

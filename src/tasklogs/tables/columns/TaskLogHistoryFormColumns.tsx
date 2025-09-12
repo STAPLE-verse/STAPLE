@@ -1,12 +1,12 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
-import { ProcessedTaskLogHistory } from "../processing/processTaskLogs"
-
+import { ProcessedTaskLogHistoryModal } from "../processing/processTaskLogs"
+import { ApproveDropdown } from "src/tasklogs/components/ApproveTask"
 // Column helper
-const columnHelper = createColumnHelper<ProcessedTaskLogHistory>()
+const columnHelper = createColumnHelper<ProcessedTaskLogHistoryModal>()
 
 // ColumnDefs
-export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistory>[] = [
+export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistoryModal>[] = [
   columnHelper.accessor("projectMemberName", {
     cell: (info) => <span>{info.getValue()}</span>,
     header: "Changed By",
@@ -22,6 +22,23 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistory>[] = [
     header: "Status",
     id: "status",
   }),
+  columnHelper.accessor("approved", {
+    cell: (info) => {
+      const privilege = info.row.original.privilege
+      const value = info.getValue()
+      return privilege === "CONTRIBUTOR" ? (
+        <span>{value === null ? "Pending" : value === true ? "Approved" : "Not Approved"}</span>
+      ) : (
+        <ApproveDropdown
+          value={value}
+          onChange={(newValue) => {}}
+          taskLogId={info.row.original.id}
+        />
+      )
+    },
+    header: "Approved",
+    id: "approved",
+  }),
   columnHelper.accessor("formData", {
     cell: (info) => (
       <>
@@ -30,7 +47,7 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistory>[] = [
             metadata={info.getValue()?.metadata}
             schema={info.getValue()!.schema}
             uiSchema={info.getValue()!.ui}
-            label="View Form Data"
+            label="View Response"
             classNames="btn-primary"
             submittable={false}
           />
@@ -39,6 +56,6 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistory>[] = [
         )}
       </>
     ),
-    header: "Form Data",
+    header: "Response",
   }),
 ]

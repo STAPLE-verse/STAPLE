@@ -60,4 +60,9 @@ STAPLE.Rproj
 
 # local migrations
 db/migrations/local/
-db/migrations
+db/migrations/
+tmp/*
+summary-viewer/docs/.nojekyll
+summary-viewer/docs/*
+viewer-builds/*
+summary-viewer/src/data/project_summary.json

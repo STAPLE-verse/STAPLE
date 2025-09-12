@@ -46,8 +46,8 @@ const ProjectNavbar = () => {
       href: Routes.TasksPage({ projectId: projectId! }),
     },
     {
-      name: "Elements",
-      href: Routes.ElementsPage({ projectId: projectId! }),
+      name: "Milestones",
+      href: Routes.MilestonesPage({ projectId: projectId! }),
     },
     {
       name: "Contributors",

@@ -1,5 +1,4 @@
 import { Suspense, useState } from "react"
-import Head from "next/head"
 import { useRouter } from "next/router"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
@@ -53,7 +52,7 @@ const InvitesPage = () => {
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="Project Invitations">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <h1 className="flex justify-center items-center text-3xl">
           Project Invitations
           <InformationCircleIcon
@@ -67,7 +66,7 @@ const InvitesPage = () => {
           />
         </h1>
 
-        <div className="m-4 justify-center flex flex-row">
+        <div className="mt-4 mb-2 justify-center flex flex-row">
           <button type="button" className="btn btn-primary" onClick={handleToggleNewInviteModal}>
             Accept by Code
           </button>

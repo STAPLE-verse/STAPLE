@@ -2,11 +2,14 @@ import Table from "src/core/components/Table"
 import { projectManagersColumns } from "src/widgets/components/ColumnHelpers"
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
 import DateFormat from "./DateFormat"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 
 // use for all tables in widgets
 export function GetTableDisplay({ data, columns, type }) {
   if (data.length === 0) {
-    return <p className="italic p-2">{type}</p>
+    return <p className="italic mb-2">No {type}</p>
   }
   return (
     <Table
@@ -24,7 +27,7 @@ export function GetTableDisplay({ data, columns, type }) {
 //use for all circular task bars
 export function GetCircularProgressDisplay({ proportion }) {
   return (
-    <div className="flex flex-grow justify-center items-center font-bold text-3xl size-circle">
+    <div className="flex flex-grow justify-center items-center font-bold text-3xl">
       <CircularProgressbar
         value={proportion * 100}
         text={`${Math.round(proportion * 100)}%`}
@@ -69,8 +72,11 @@ export function GetIconDisplay({ number, icon: Icon }) {
 
 export function GetProjectSummaryDisplay({ project, projectManagers }) {
   return (
-    <div>
-      {project.description}
+    <div className="markdown-display">
+      <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+        {(project.description || "").slice(0, 100) +
+          ((project.description?.length ?? 0) > 100 ? "…" : "")}
+      </ReactMarkdown>
       <p className="italic">
         Last update: <DateFormat date={project.updatedAt}></DateFormat>
       </p>

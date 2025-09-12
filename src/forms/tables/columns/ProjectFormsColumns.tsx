@@ -1,20 +1,72 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { DocumentTextIcon, InformationCircleIcon } from "@heroicons/react/24/outline"
 import { ProjectFormData } from "../processing/processProjectForms"
+import { Tooltip } from "react-tooltip"
+import { JsonFormModal } from "src/core/components/JsonFormModal"
 
 const columnHelper = createColumnHelper<ProjectFormData>()
 
 export const ProjectFormsColumns = [
   columnHelper.accessor("taskName", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => (
+      <Link
+        className="btn btn-secondary w-full"
+        href={Routes.ShowTaskPage({
+          taskId: info.row.original.taskId,
+          projectId: info.row.original.projectId,
+        })}
+      >
+        {info.getValue()}
+      </Link>
+    ),
     header: "Task",
   }),
-  columnHelper.accessor("formName", {
-    id: "formVersionSchema",
-    cell: (info) => <span>{info.getValue()}</span>,
-    header: "Form Required",
+  columnHelper.accessor((row) => "review", {
+    id: "review",
+    cell: (info) => (
+      <JsonFormModal
+        schema={info.row.original.formSchema}
+        uiSchema={info.row.original.formUi}
+        metadata={{}} // Adjust metadata as needed
+        label={info.row.original.formName}
+        classNames="btn-primary w-full"
+        submittable={false}
+      />
+    ),
+    header: (
+      <div className="table-header-tooltip">
+        Required Form
+        <InformationCircleIcon
+          className="h-4 w-4 ml-1 text-info stroke-2"
+          data-tooltip-id="dashboard-overview"
+        />
+        <Tooltip
+          id="dashboard-overview"
+          content="Use the buttons in this column to review the required form for each task."
+          className="z-[1099] ourtooltips"
+        />
+      </div>
+    ),
+  }),
+  columnHelper.accessor("percentComplete", {
+    header: "Completion",
+    enableColumnFilter: true,
+    enableSorting: true,
+    cell: (info) => <div>{info.getValue()}%</div>,
+    meta: {
+      filterVariant: "range",
+    },
+  }),
+  columnHelper.accessor("percentApproved", {
+    header: "Approved",
+    enableColumnFilter: true,
+    enableSorting: true,
+    cell: (info) => <div>{info.getValue()}%</div>,
+    meta: {
+      filterVariant: "range",
+    },
   }),
   // Check if the id is correct
   columnHelper.accessor("taskId", {
@@ -29,9 +81,9 @@ export const ProjectFormsColumns = [
           projectId: info.row.original.projectId,
         })}
       >
-        <MagnifyingGlassIcon width={25} className="stroke-primary" />
+        <DocumentTextIcon width={25} className="stroke-primary" />
       </Link>
     ),
-    header: "View",
+    header: "Responses",
   }),
 ]

@@ -1,7 +1,5 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
-import Head from "next/head"
-import Link from "next/link"
 import { useRouter } from "next/router"
 import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
@@ -14,14 +12,22 @@ import updateTeam from "src/teams/mutations/updateTeam"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "db"
 import getProjectMember from "src/projectmembers/queries/getProjectMember"
-import PageHeader from "src/core/components/PageHeader"
 import { ProjectMemberWithUsers } from "src/core/types"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
+import Card from "src/core/components/Card"
+import DeleteTeam from "src/teams/components/DeleteTeam"
+import getTeam from "src/teams/queries/getTeam"
 
 export const EditTeam = () => {
   const [updateTeamMutation] = useMutation(updateTeam)
   const router = useRouter()
   const teamId = useParam("teamId", "number")
   const projectId = useParam("projectId", "number")
+
+  const [team] = useQuery(getTeam, {
+    id: teamId!,
+  })
 
   const [teamProjectMember, { setQueryData }] = useQuery(getProjectMember, {
     where: {
@@ -39,6 +45,16 @@ export const EditTeam = () => {
   const initialValues = {
     name: teamProjectMember.name ? teamProjectMember.name : undefined,
     projectMemberUserIds: userIds,
+    tags:
+      Array.isArray(teamProjectMember.tags) &&
+      teamProjectMember.tags.every((tag) => typeof tag === "object" && tag !== null)
+        ? teamProjectMember.tags.map((tag) => ({
+            id: (tag as any).key ?? "",
+            text: (tag as any).value ?? "",
+            key: (tag as any).key ?? "",
+            value: (tag as any).value ?? "",
+          }))
+        : [],
   }
 
   // Handle events
@@ -48,6 +64,7 @@ export const EditTeam = () => {
         name: values.name,
         id: teamProjectMember.id,
         userIds: values.projectMemberUserIds,
+        tags: values.tags,
       })
       await toast.promise(Promise.resolve(updated), {
         loading: "Updating team...",
@@ -69,25 +86,50 @@ export const EditTeam = () => {
     }
   }
 
+  // Handle cancel event
+  const handleCancel = async () => {
+    await router.push(
+      Routes.ShowTeamPage({
+        projectId: projectId!,
+        teamId: teamId!,
+      })
+    )
+  }
+
   return (
     <>
       <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
-        <PageHeader title={`Edit ${teamProjectMember.name}`} />
-        <Suspense fallback={<div>Loading...</div>}>
-          <TeamForm
-            projectId={projectId!}
-            initialValues={initialValues}
-            submitText="Update Team"
-            schema={TeamFormSchema}
-            onSubmit={handleEditTeam}
+        <h1 className="flex justify-center items-center mb-2 text-3xl">
+          Edit Team: <span className="italic ml-1">{teamProjectMember.name}</span>
+          <InformationCircleIcon
+            className="ml-2 h-5 w-5 stroke-2 text-info"
+            data-tooltip-id="team-tooltip"
           />
+          <Tooltip
+            id="team-tooltip"
+            content="Use this page to edit the team name and membership."
+            className="z-[1099] ourtooltips"
+          />
+        </h1>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Card title="">
+            <TeamForm
+              projectId={projectId!}
+              initialValues={initialValues}
+              submitText="Update Team"
+              schema={TeamFormSchema}
+              onSubmit={handleEditTeam}
+              cancelText="Cancel"
+              onCancel={handleCancel}
+            />
+          </Card>
 
-          <Link
-            className="btn btn-secondary self-end mt-4"
-            href={Routes.ShowTeamPage({ projectId: projectId!, teamId: teamId! })}
-          >
-            Cancel
-          </Link>
+          <div className="divider pt-2 pb-2"></div>
+          <div className="flex justify-center">
+            <DeleteTeam team={team} />
+          </div>
+
+          {/* The cancel button is now handled by the TeamForm's onCancel */}
         </Suspense>
       </main>
     </>

@@ -4,6 +4,7 @@ import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
 import { LabeledTextAreaField } from "src/core/components/fields/LabeledTextAreaField"
 import { z } from "zod"
 import ProjectSchemaInput from "./ProjectSchemaInput"
+import CollapseCard from "src/core/components/CollapseCard"
 
 interface ProjectFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   formResponseSupplied?: boolean
@@ -53,46 +54,49 @@ export function ProjectForm<S extends z.ZodType<any, any>>(props: ProjectFormPro
       onSubmit={handleSubmit}
       encType="multipart/form-data"
     >
-      <LabeledTextField
-        name="name"
-        label="Name: (Required)"
-        placeholder="Name"
-        type="text"
-        className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
-      />
-      <br />
-      <LabeledTextAreaField
-        className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2"
-        name="description"
-        label="Description:"
-        placeholder="Description"
-      />
+      <CollapseCard title="Edit Name and Description" className="mb-4" defaultOpen={true}>
+        <LabeledTextField
+          name="name"
+          label="Name: (Required)"
+          placeholder="Name"
+          type="text"
+          className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
+        />
+        <br />
+        <LabeledTextAreaField
+          className="mb-4 textarea text-primary textarea-bordered textarea-primary textarea-lg w-1/2 bg-base-300 border-2"
+          name="description"
+          label="Description:"
+          placeholder="Description"
+        />
+      </CollapseCard>
 
-      <label>Project Details: </label>
+      <CollapseCard title="Edit Project Required Form" className="">
+        {formResponseSupplied ? (
+          <div className="mt-4">
+            <p className="w-1/2 text-lg">
+              You have previously selected a form to describe this project. If you change to a new
+              form, you will retain the old information, and it will be transferred to the new form
+              as long as the object names (question labels) match. The non-matches are kept in the
+              background, and if you want to clear it out, please reset the form data under Edit
+              Form.
+            </p>
+          </div>
+        ) : (
+          <div className="mt-4 w-1/2">
+            <p className="text-lg">
+              Add project details by adding a form. Not sure where to start? Click Add Form and
+              select the default. You can change this later under settings.
+            </p>
+          </div>
+        )}
 
-      {formResponseSupplied ? (
-        <div className="mt-4">
-          <p className="w-1/2 text-lg">
-            You have previously selected a form to describe this project. If you change to a new
-            form, you will retain the old information, and it will be transferred to the new form as
-            long as the object names (question labels) match. The non-matches are kept in the
-            background, and if you want to clear it out, please reset the form data under Edit Form.
-          </p>
-        </div>
-      ) : (
-        <div className="mt-4 w-1/2">
-          <p className="text-lg">
-            Add project details by adding a form. Not sure where to start? Click Add Form and select
-            the default. You can change this later under settings.
-          </p>
-        </div>
-      )}
-
-      <ProjectSchemaInput
-        userId={userId}
-        onDefaultFormCreated={handleDefaultFormCreated}
-        selectedFormVersionId={formVersionId ?? null}
-      />
+        <ProjectSchemaInput
+          userId={userId}
+          onDefaultFormCreated={handleDefaultFormCreated}
+          selectedFormVersionId={formVersionId ?? null}
+        />
+      </CollapseCard>
     </Form>
   )
 }

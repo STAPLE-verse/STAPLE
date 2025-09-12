@@ -11,22 +11,48 @@ import { SortableContext, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 // get specific components for this board
 import TaskContainer from "src/tasks/components/TaskContainer"
 import TaskItems from "src/tasks/components/TaskItems"
-import AddContainer from "./AddContainer"
 import useTaskBoardData from "../hooks/useTaskBoardData"
 // Get helper functions
 import { findContainerTitle, findContainerItems, findItemValue } from "../utils/findHelpers"
 import useDragHandlers from "../hooks/useDragHandlers"
 import { useParam } from "@blitzjs/next"
-import TooltipWrapper from "src/core/components/TooltipWrapper"
+import { makeDragId } from "../utils/dragId"
+import TaskItemPreview from "./TaskItemPreview"
+import TaskContainerPreview from "./TaskContainerPreview"
+import { useEffect, useCallback } from "react"
+import { useMutation } from "@blitzjs/rpc"
+import createColumnMutation from "src/tasks/mutations/createColumn"
 
-const TaskBoard = () => {
+const TaskBoard = ({
+  onAddColumn,
+}: {
+  onAddColumn?: (fn: (name: string) => Promise<void>) => void
+}) => {
   // Setup
   const projectId = useParam("projectId", "number")
-  const { containers, refetch, updateContainers } = useTaskBoardData(projectId)
-  const { handleDragStart, handleDragMove, handleDragEnd, activeId } = useDragHandlers({
+  const { containers, updateContainers, refetch } = useTaskBoardData(projectId!)
+  const { handleDragStart, handleDragMove, handleDragEnd, activeData } = useDragHandlers({
     containers,
     updateContainers,
+    refetch,
   })
+
+  const [createColumn] = useMutation(createColumnMutation)
+
+  const addColumn = useCallback(
+    async (name: string) => {
+      await createColumn({ projectId: projectId!, name })
+      await refetch()
+    },
+    [projectId, createColumn, refetch]
+  )
+
+  useEffect(() => {
+    if (onAddColumn) {
+      // @ts-ignore
+      onAddColumn(addColumn)
+    }
+  }, [onAddColumn, addColumn])
 
   // DND Handlers
   const sensors = useSensors(
@@ -37,21 +63,9 @@ const TaskBoard = () => {
   )
 
   return (
-    <div className="mx-auto max-w-7xl py-10">
-      <div className="flex items-center justify-between gap-y-2">
-        <h1 className="text-3xl font-bold" data-tooltip-id="kanban-tooltip">
-          Project Tasks
-        </h1>
-        <TooltipWrapper
-          id="kanban-tooltip"
-          content="Completed tasks appear in a shade of green"
-          className="z-[1099] ourtooltips"
-        />
-        <AddContainer projectId={projectId} refetch={refetch}></AddContainer>
-      </div>
-
-      <div className="mt-10">
-        <div className="grid grid-cols-3 gap-6">
+    <div className="rounded-b-box rounded-tr-box bg-base-300">
+      <div className="rounded-b-box rounded-tr-box bg-base-300 p-4">
+        <div className="grid grid-cols-3 gap-4 bg-base-300">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCorners}
@@ -59,55 +73,51 @@ const TaskBoard = () => {
             onDragMove={handleDragMove}
             onDragEnd={handleDragEnd}
           >
-            {/*@ts-expect-error Suppress missing children error from SortableContext*/}
-            <SortableContext items={containers.map((i) => i.id)}>
+            {/* @ts-ignore: suppress children error */}
+            <SortableContext items={containers.map((c) => makeDragId("container", c.id))}>
               {containers.map((container) => (
-                <div key={container.id}>
-                  <TaskContainer id={container.id} title={container.title}>
-                    {/*@ts-expect-error Suppress missing children error from SortableContext*/}
-                    <SortableContext items={container.items.map((i) => i.id)}>
-                      <div className="flex items-start flex-col gap-y-4">
-                        {container.items.map((i) => (
-                          <div key={i.id}>
-                            <TaskItems
-                              title={i.title}
-                              id={i.id}
-                              projectId={projectId!}
-                              completed={i.completed}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </TaskContainer>
-                </div>
+                <TaskContainer
+                  id={container.id}
+                  title={container.title}
+                  // @ts-ignore: suppress key error, can't change key assignment
+                  key={container.id}
+                  onRefetch={refetch}
+                >
+                  {/* @ts-ignore: suppress children error */}
+                  <SortableContext
+                    items={container.items.map((item) => makeDragId("item", item.id))}
+                  >
+                    <div className="flex items-start flex-col gap-y-4">
+                      {container.items.map((i) => (
+                        <TaskItems
+                          title={i.title}
+                          id={i.id}
+                          // @ts-ignore: suppress key error, can't change key assignment
+                          key={makeDragId("item", i.id)}
+                          projectId={projectId!}
+                          completed={i.completed}
+                          containerId={container.id}
+                          newCommentsCount={i.newCommentsCount}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </TaskContainer>
               ))}
             </SortableContext>
 
             <DragOverlay adjustScale={false}>
-              {/* Drag Overlay For item Item */}
-              {activeId && activeId.toString().includes("item") && (
-                <TaskItems
-                  id={activeId}
-                  title={findItemValue(activeId, containers, "title") || ""}
-                  completed={findItemValue(activeId, containers, "completed") || false}
-                  projectId={projectId!}
+              {activeData?.type === "item" && (
+                <TaskItemPreview
+                  title={findItemValue(activeData.taskId, containers, "title") || ""}
+                  completed={findItemValue(activeData.taskId, containers, "completed") || false}
                 />
               )}
-              {/* Drag Overlay For Container */}
-              {activeId && activeId.toString().includes("container") && (
-                <TaskContainer id={activeId} title={findContainerTitle(activeId, containers)}>
-                  {findContainerItems(activeId, containers).map((i) => (
-                    <div key={i.id}>
-                      <TaskItems
-                        title={i.title}
-                        id={i.id}
-                        completed={i.completed}
-                        projectId={projectId!}
-                      />
-                    </div>
-                  ))}
-                </TaskContainer>
+              {activeData?.type === "container" && (
+                <TaskContainerPreview
+                  title={findContainerTitle(activeData.columnId, containers)}
+                  items={findContainerItems(activeData.columnId, containers)}
+                />
               )}
             </DragOverlay>
           </DndContext>

@@ -14,7 +14,8 @@ export default resolver.pipe(
       containerId,
       formVersionId,
       description,
-      elementId,
+      milestoneId,
+      startDate,
       deadline,
       createdById,
       projectMembersId,
@@ -40,6 +41,7 @@ export default resolver.pipe(
         name,
         description,
         containerTaskOrder,
+        startDate,
         deadline,
         project: {
           connect: { id: projectId },
@@ -55,9 +57,9 @@ export default resolver.pipe(
               connect: { id: formVersionId },
             }
           : undefined,
-        element: elementId
+        milestone: milestoneId
           ? {
-              connect: { id: elementId },
+              connect: { id: milestoneId },
             }
           : undefined,
         assignedMembers: {

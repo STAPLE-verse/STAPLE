@@ -39,8 +39,8 @@ export const EditProfile = () => {
 
   return (
     <>
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="text-3xl flex mb-2">Edit Profile</h1>
+      <main className="flex flex-col mx-auto w-full">
+        <h1 className="text-3xl flex mb-2 justify-center">Edit Profile</h1>
         <Suspense fallback={<div>Loading...</div>}>
           <ProfileForm
             submitText="Update Profile"
@@ -78,8 +78,8 @@ export const EditProfile = () => {
               }
             }}
           />
-
-          <div className="flex justify-end mt-4">
+          <div className="divider pt-2 pb-2"></div>
+          <div className="flex justify-center">
             <button
               type="button"
               className="btn btn-warning"

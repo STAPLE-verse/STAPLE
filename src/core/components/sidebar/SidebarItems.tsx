@@ -3,7 +3,7 @@ import {
   ClipboardDocumentListIcon,
   Cog6ToothIcon,
   RectangleGroupIcon,
-  RectangleStackIcon,
+  FlagIcon,
   UsersIcon,
   UserGroupIcon,
   BeakerIcon,
@@ -15,6 +15,7 @@ import {
   WrenchIcon,
   FingerPrintIcon,
   SwatchIcon,
+  PencilSquareIcon,
 } from "@heroicons/react/24/outline"
 import { Routes } from "@blitzjs/next"
 import { MemberPrivileges } from "db"
@@ -45,14 +46,14 @@ export const ProjectSidebarItems = (projectId: number, t: TFunction): SidebarIte
       icon: SwatchIcon,
       text: t("sidebar.project.tags"),
       route: Routes.TagsPage({ projectId: projectId }),
-      tooltipId: "project-dashboard-tooltip",
+      tooltipId: "project-tags-tooltip",
       privilege: [MemberPrivileges.PROJECT_MANAGER],
     },
     {
-      icon: RectangleStackIcon,
-      text: t("sidebar.project.elements"),
-      route: Routes.ElementsPage({ projectId: projectId }),
-      tooltipId: "project-elements-tooltip",
+      icon: FlagIcon,
+      text: t("sidebar.project.milestones"),
+      route: Routes.MilestonesPage({ projectId: projectId }),
+      tooltipId: "project-milestones-tooltip",
       privilege: [MemberPrivileges.PROJECT_MANAGER],
     },
     {
@@ -60,6 +61,13 @@ export const ProjectSidebarItems = (projectId: number, t: TFunction): SidebarIte
       text: t("sidebar.project.tasks"),
       route: Routes.TasksPage({ projectId: projectId }),
       tooltipId: "project-tasks-tooltip",
+      privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
+    },
+    {
+      icon: PencilSquareIcon,
+      text: t("sidebar.project.notes"),
+      route: Routes.NotesPage({ projectId: projectId }),
+      tooltipId: "project-notes-tooltip",
       privilege: [MemberPrivileges.CONTRIBUTOR, MemberPrivileges.PROJECT_MANAGER],
     },
     {

@@ -38,6 +38,7 @@ export default resolver.pipe(
           email: input.email,
           invitationCode: generateToken(20),
           addedBy: input.addedBy,
+          tags: input.tags ?? undefined,
           roles: {
             connect: input.rolesId?.map((c) => ({ id: c })) || [],
           },
@@ -76,6 +77,7 @@ export default resolver.pipe(
             email: input.email,
             invitationCode: generateToken(20),
             addedBy: input.addedBy,
+            tags: input.tags ?? undefined,
             roles: {
               connect: input.rolesId?.map((c) => ({ id: c })) || [],
             },

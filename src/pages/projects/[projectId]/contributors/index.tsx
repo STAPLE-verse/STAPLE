@@ -1,6 +1,5 @@
 import { Suspense } from "react"
 import { Routes } from "@blitzjs/next"
-import Head from "next/head"
 import Link from "next/link"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
@@ -15,6 +14,9 @@ import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { useContributorsData } from "src/contributors/hooks/useContributorsData"
 import Loading from "src/core/components/Loading"
 import { CurrentUser } from "src/users/queries/getCurrentUser"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
+import Card from "src/core/components/Card"
 
 interface ContributorListProps {
   privilege: MemberPrivileges
@@ -32,7 +34,9 @@ export const ContributorList = ({ privilege, currentUser, projectId }: Contribut
 
   return (
     <Suspense fallback={<Loading />}>
-      <Table columns={tableColumns} data={contributorTableData} addPagination={true} />
+      <Card title="">
+        <Table columns={tableColumns} data={contributorTableData} addPagination={true} />
+      </Card>
     </Suspense>
   )
 }
@@ -45,8 +49,35 @@ const ContributorsPage = () => {
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="All Contributors">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
-        <h1 className="flex justify-center mb-2 text-3xl">Contributors</h1>
+      <main className="flex flex-col mx-auto w-full">
+        <h1 className="flex justify-center items-center text-3xl">
+          Contributors
+          <InformationCircleIcon
+            className="h-6 w-6 ml-2 text-info stroke-2"
+            data-tooltip-id="contributors-overview"
+          />
+          <Tooltip
+            id="contributors-overview"
+            content="On this page, you can view the contributors (or yourself) on the project. Use see contributions to review an overview of the contributor and edit to update their project role."
+            className="z-[1099] ourtooltips"
+          />
+        </h1>
+        {privilege === MemberPrivileges.PROJECT_MANAGER && (
+          <div className="flex justify-center">
+            <Link
+              className="btn btn-primary mb-2 mt-4"
+              href={Routes.NewContributorPage({ projectId: projectId! })}
+            >
+              Invite Contributor
+            </Link>
+            <Link
+              className="btn btn-secondary mx-2 mb-2 mt-4"
+              href={Routes.InvitesPagePM({ projectId: projectId! })}
+            >
+              View Invitations
+            </Link>
+          </div>
+        )}
         <Suspense fallback={<Loading />}>
           <ContributorList
             privilege={privilege!}
@@ -54,22 +85,6 @@ const ContributorsPage = () => {
             projectId={projectId!}
           />
         </Suspense>
-        {privilege === MemberPrivileges.PROJECT_MANAGER && (
-          <div>
-            <Link
-              className="btn btn-primary mb-4 mt-4"
-              href={Routes.NewContributorPage({ projectId: projectId! })}
-            >
-              Invite Contributor
-            </Link>
-            <Link
-              className="btn btn-secondary mx-2 mb-4 mt-4"
-              href={Routes.InvitesPagePM({ projectId: projectId! })}
-            >
-              View Invitations
-            </Link>
-          </div>
-        )}
       </main>
     </Layout>
   )

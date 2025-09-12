@@ -1,134 +1,155 @@
-import { useCallback, useState } from "react"
-import { UniqueIdentifier, DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core"
-import { DNDType } from "./useTaskBoardData"
+import { useCallback, useRef, useState } from "react"
+import { DragStartEvent, DragMoveEvent, DragEndEvent } from "@dnd-kit/core"
 import { useMutation } from "@blitzjs/rpc"
+import toast from "react-hot-toast"
+
 import updateTaskOrder from "../mutations/updateTaskOrder"
+import updateColumnOrder from "../mutations/updateColumnOrder"
+import updateTaskStatus from "../mutations/updateTaskStatus"
+
 import handleItemSorting from "../utils/handleItemSorting"
 import handleItemDropping from "../utils/handleItemDropping"
 import handleContainerSorting from "../utils/handleContainerSorting"
-import updateColumnOrder from "../mutations/updateColumnOrder"
+import { DNDType } from "./useTaskBoardData"
+import { Status } from "db"
+import { parseDragId } from "../utils/dragId"
 
 interface DragHandlersProps {
   containers: DNDType[]
   updateContainers: (containers: DNDType[]) => void
+  refetch: () => void
 }
 
-const useDragHandlers = ({ containers, updateContainers }: DragHandlersProps) => {
-  // Setup
-  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
+export type DragItemData =
+  | { type: "item"; taskId: number; columnId: number }
+  | { type: "container"; columnId: number }
+
+const useDragHandlers = ({ containers, updateContainers, refetch }: DragHandlersProps) => {
+  const [activeData, setActiveData] = useState<DragItemData | null>(null)
   const [updateTaskOrderMutation] = useMutation(updateTaskOrder)
   const [updateColumnOrderMutation] = useMutation(updateColumnOrder)
+  const [updateTaskStatusMutation] = useMutation(updateTaskStatus)
+  const lastOverId = useRef<string | null>(null)
 
-  // On drag start
+  // DRAG START
   const handleDragStart = useCallback((event: DragStartEvent) => {
-    const { active } = event
-    setActiveId(active.id)
+    setActiveData(event.active.data.current as DragItemData)
   }, [])
 
-  // On drag move
+  // DRAG MOVE — used only for visual feedback
   const handleDragMove = useCallback(
     (event: DragMoveEvent) => {
       const { active, over } = event
-      let newContainers = [...containers]
 
-      // Handle items sorting
-      if (
-        active.id.toString().includes("item") &&
-        over?.id.toString().includes("item") &&
-        active &&
-        over &&
-        active.id !== over.id
-      ) {
-        newContainers = handleItemSorting(active.id, over.id, containers)
+      if (!over || active.id === over.id) return
+
+      if (over?.id) {
+        lastOverId.current = String(over.id)
       }
 
-      // Handling item drop into a container
-      if (
-        active.id.toString().includes("item") &&
-        over?.id.toString().includes("container") &&
-        active &&
-        over &&
-        active.id !== over.id
-      ) {
-        newContainers = handleItemDropping(active.id, over.id, containers)
+      const activeParsed = parseDragId(String(active.id))
+      const overParsed = parseDragId(String(over.id))
+      if (!activeParsed || !overParsed) return
+
+      let newContainers = containers.map((c) => ({
+        ...c,
+        items: [...c.items],
+      }))
+
+      // ↕ Container sorting
+      if (activeParsed.type === "container" && overParsed.type === "container") {
+        const result = handleContainerSorting(activeParsed.id, overParsed.id, newContainers)
+        if (result) {
+          newContainers = result.newContainers
+        }
       }
 
-      if (newContainers) {
-        updateContainers(newContainers)
+      // Item sorting (same container)
+      if (activeParsed.type === "item" && overParsed.type === "item") {
+        newContainers = handleItemSorting(activeParsed.id, overParsed.id, newContainers)
       }
+
+      // ↔ Item dropping into empty container
+      if (activeParsed.type === "item" && overParsed.type === "container") {
+        newContainers = handleItemDropping(activeParsed.id, overParsed.id, newContainers)
+      }
+
+      updateContainers(newContainers)
     },
     [containers, updateContainers]
   )
 
-  // This is the function that handles the sorting of the containers and items when the user is done dragging.
+  // DRAG END — handles persistence
   const handleDragEnd = useCallback(
     async (event: DragEndEvent) => {
-      const { active, over } = event
-      let newContainers = [...containers]
+      const { active } = event
+      const overId = lastOverId.current
 
-      // Handling Container Sorting
-      if (
-        active.id.toString().includes("container") &&
-        over?.id.toString().includes("container") &&
-        active &&
-        over &&
-        active.id !== over.id
-      ) {
-        const containerSortingRes = handleContainerSorting(active.id, over.id, containers)
+      if (!overId || active.id === overId || !activeData) return
 
-        if (containerSortingRes) {
-          newContainers = containerSortingRes.newContainers
-          const newColumnOrder = containerSortingRes.newColumnOrder
+      const overParsed = parseDragId(String(overId))
+      if (!overParsed) return
 
-          await updateColumnOrderMutation({ containerIds: newColumnOrder })
+      let refetchNeeded = false
 
-          updateContainers(newContainers)
-        }
-      } else {
-        // Handling item Sorting
-        if (
-          active.id.toString().includes("item") &&
-          over?.id.toString().includes("item") &&
-          active &&
-          over &&
-          active.id !== over.id
-        ) {
-          newContainers = handleItemSorting(active.id, over.id, containers)
-          if (newContainers) updateContainers(newContainers)
-        }
+      // Persist new column order if we moved containers
+      if (activeData.type === "container" && overParsed.type === "container") {
+        const newColumnOrder = containers.map((c) => c.id)
+        await updateColumnOrderMutation({ containerIds: newColumnOrder })
+        refetchNeeded = true
+      }
 
-        // Handling item dropping into Container
-        if (
-          active.id.toString().includes("item") &&
-          over?.id.toString().includes("container") &&
-          active &&
-          over &&
-          active.id !== over.id
-        ) {
-          newContainers = handleItemDropping(active.id, over.id, containers)
-          if (newContainers) updateContainers(newContainers)
-        }
+      // Persist new task order always
+      const updatePayload = containers.flatMap((container) =>
+        container.items.map((item, idx) => ({
+          taskId: item.id,
+          containerId: container.id,
+          containerTaskOrder: idx,
+        }))
+      )
 
-        if (newContainers) {
-          const updateTasksList = newContainers.flatMap((container) =>
-            container.items.map((item, itemIdx) => ({
-              taskId: parseInt(item.id.replace("item-", "")),
-              containerId: parseInt(String(container.id).replace("container-", "")),
-              containerTaskOrder: itemIdx,
-            }))
-          )
+      if (updatePayload.length > 0) {
+        await updateTaskOrderMutation({ tasks: updatePayload })
+        refetchNeeded = true
+      }
 
-          await updateTaskOrderMutation({ tasks: updateTasksList })
+      // Check for completion status
+      if (activeData.type === "item") {
+        // Find the container that now contains the item
+        const container = containers.find((c) =>
+          c.items.some((item) => item.id === activeData.taskId)
+        )
+
+        const isDone = container?.title.trim().toLowerCase() === "done"
+
+        if (isDone) {
+          await updateTaskStatusMutation({
+            id: activeData.taskId,
+            status: Status.COMPLETED,
+          })
+          toast.success("Task marked as completed")
+          refetchNeeded = true
         }
       }
 
-      setActiveId(null)
+      if (refetchNeeded) {
+        await refetch()
+      }
+
+      setActiveData(null)
     },
-    [containers, updateColumnOrderMutation, updateContainers, updateTaskOrderMutation]
+    [
+      activeData,
+      containers,
+      updateColumnOrderMutation,
+      updateTaskOrderMutation,
+      updateTaskStatusMutation,
+      refetch,
+    ]
   )
 
   return {
-    activeId,
+    activeData,
     handleDragStart,
     handleDragMove,
     handleDragEnd,

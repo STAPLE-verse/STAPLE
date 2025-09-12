@@ -1,5 +1,4 @@
 import { Suspense } from "react"
-import Head from "next/head"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import React from "react"
@@ -25,7 +24,7 @@ const FormBuilderPage = () => {
   return (
     // @ts-expect-error children are clearly passed below
     <Layout title="Form Builder">
-      <main className="flex flex-col mt-2 mx-auto w-full max-w-7xl">
+      <main className="flex flex-col mx-auto w-full">
         <Suspense fallback={<div>Loading...</div>}>
           <FormPlayground saveForm={saveForm} />
         </Suspense>

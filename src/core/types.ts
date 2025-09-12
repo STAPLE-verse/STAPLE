@@ -8,7 +8,11 @@ import {
   Comment,
   KanbanBoard,
   FormVersion,
-  Element,
+  Milestone,
+  Status,
+  CommentReadStatus,
+  Prisma,
+  MemberPrivileges,
 } from "db"
 import { ReactNode } from "react"
 
@@ -18,6 +22,13 @@ export type RoleWithUser = Role & {
 
 export type TaskWithRoles = Task & {
   roles?: Role[]
+  approved?: boolean | null // added approved here
+}
+
+export type TaskWithRolesForms = Task & {
+  roles?: Role[]
+  approved?: boolean | null // added approved here
+  formVersion: FormVersion
 }
 
 export type TaskLogWithTask = TaskLog & {
@@ -28,6 +39,27 @@ export type TaskLogWithTaskAndProject = TaskLog & {
   task: Task & {
     project: Project
   }
+}
+
+export type TaskLogWithTaskProjectAndComments = TaskLog & {
+  task: Task & {
+    project: Project
+  }
+  comments: (Comment & {
+    commentReadStatus: {
+      id: number
+      createdAt: Date
+      commentId: number
+      projectMemberId: number
+      read: boolean
+      projectMember: {
+        id: number
+        users: {
+          id: number
+        }[]
+      }
+    }[]
+  })[]
 }
 
 export type TaskLogWithTaskRoles = TaskLog & {
@@ -51,6 +83,8 @@ export type TeamWithUsers = {
   projectId: number
   name: string
   users: TeamUserWithContributor[]
+  createdAt: Date
+  tags?: Prisma.JsonValue
 }
 
 export type ProjectMemberWithUsername = ProjectMember & {
@@ -63,6 +97,7 @@ export type CommentWithAuthor = Comment & {
   author: ProjectMember & {
     users: Pick<User, "id" | "username" | "firstName" | "lastName">[]
   }
+  commentReadStatus: CommentReadStatus[]
 }
 
 export type ProjectMemberWithUsersAndRoles = ProjectMember & {
@@ -70,9 +105,9 @@ export type ProjectMemberWithUsersAndRoles = ProjectMember & {
   roles: Array<Pick<Role, "id" | "name">>
 }
 
-// Define the TaskLogWithTaskCompleted type
-export type TaskLogWithTaskCompleted = TaskLog & {
-  task: TaskWithRoles
+// Define the TaskLogWithTaskForm type
+export type TaskLogWithTaskForm = TaskLog & {
+  task: TaskWithRolesForms
   completedBy: ProjectMemberWithUsers
 }
 
@@ -86,9 +121,14 @@ export type ExtendedTaskLog = TaskLog & {
   assignedTo: ExtendedProjectMember
 }
 
+export type TaskLogCompletedBy = TaskLog & {
+  completedBy: ExtendedProjectMember
+}
+
 export type ProjectMemberWithTaskLog = ProjectMember & {
   taskLogAssignedTo: ExtendedTaskLog[]
   users: Pick<User, "id" | "username">[]
+  privilege: MemberPrivileges
 }
 
 export type TaskLogWithCompletedBy = TaskLog & {
@@ -96,9 +136,20 @@ export type TaskLogWithCompletedBy = TaskLog & {
   assignedTo: ExtendedProjectMember
 }
 
+export type TaskLogTaskCompleted = TaskLog & {
+  completedBy: ExtendedProjectMember
+  assignedTo: ExtendedProjectMember
+  task: Task & {
+    formVersion?: {
+      schema?: Prisma.JsonValue
+      uiSchema?: Prisma.JsonValue
+    }
+  }
+}
+
 export type ExtendedTask = Task & {
   container: KanbanBoard
-  element: Element | null
+  milestone: Milestone | null
   formVersion: FormVersion | null
   roles: []
   assignedMembers: ProjectMemberWithTaskLog[]
@@ -115,11 +166,43 @@ export type ProjectWithMembers = Project & {
   projectMembers: ProjectMemberWithUsers[]
 }
 
-export type BreadcrumbEntityType = "project" | "task" | "element" | "team" | "contributor" | "form"
+export type BreadcrumbEntityType =
+  | "project"
+  | "task"
+  | "milestone"
+  | "team"
+  | "contributor"
+  | "form"
 
 export type BreadcrumbItem = {
   label: ReactNode
   href: string
   isLast: boolean
   isValid: boolean
+}
+
+export type ProjectMemberRef = { id: number }
+
+export type TaskWithTaskLogs = Task & {
+  assignedMembers: ProjectMemberRef[]
+  taskLogs: {
+    id: number
+    status: Status
+    createdAt: Date
+    assignedToId: number
+  }[]
+}
+export type MilestoneWithTasks = Milestone & {
+  task: TaskWithTaskLogs[]
+}
+
+export type ProjectWithNewCommentsCount = Project & {
+  tasks: {
+    taskLogs: {
+      comments: {
+        commentReadStatus: CommentReadStatus[]
+      }[]
+    }[]
+  }[]
+  newCommentsCount: number
 }

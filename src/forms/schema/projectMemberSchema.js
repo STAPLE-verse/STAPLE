@@ -1,6 +1,6 @@
 export const JsonProjectMember = `
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "title": "Contributor Information",
   "required": [
@@ -33,8 +33,15 @@ export const JsonProjectMember = `
     "additionalName": {
       "type": "string",
       "title": "Middle Name or Initial:"
+    },
+    "_stapleSchema": {
+    "type": "string",
+    "default": "projectmember-v1",
+    "title": "Schema version",
+    "readOnly": true
     }
   },
+
   "description": "Please enter your information to document your contributions. This information will be used to share who contributed to a project.",
   "dependencies": {}
 }
@@ -42,12 +49,16 @@ export const JsonProjectMember = `
 
 export const JsonProjectMemberUI = `
 {
+  "_stapleSchema": {
+    "ui:widget": "hidden"
+  },
   "ui:order": [
     "givenName",
     "additionalName",
     "familyName",
     "email",
-    "identifier"
+    "identifier",
+    "_stapleSchema"
   ]
 }
 `

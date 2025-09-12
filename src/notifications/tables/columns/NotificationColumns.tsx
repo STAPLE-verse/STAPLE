@@ -12,12 +12,12 @@ const columnHelper = createColumnHelper<NotificationTableData>()
 
 // ColumnDefs
 export const useNotificationTableColumns = (refetch: () => void, data: NotificationTableData[]) => {
-  const allIds = data.map((item) => item.id)
+  const allIds = useMemo(() => data.map((item) => item.id), [data])
 
   return useMemo(
     () => [
       columnHelper.accessor("createdAt", {
-        cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
+        cell: (info) => <DateFormat date={info.getValue()} />,
         header: "Date",
       }),
       columnHelper.accessor("projectName", {
@@ -25,6 +25,15 @@ export const useNotificationTableColumns = (refetch: () => void, data: Notificat
         enableColumnFilter: true,
         enableSorting: true,
         cell: (info) => <span>{info.getValue()}</span>,
+      }),
+      columnHelper.accessor("type", {
+        header: "Type",
+        enableColumnFilter: true,
+        enableSorting: true,
+        cell: (info) => <span>{info.getValue()}</span>,
+        meta: {
+          filterVariant: "select",
+        },
       }),
       columnHelper.accessor("cleanMessage", {
         id: "message",
@@ -35,6 +44,7 @@ export const useNotificationTableColumns = (refetch: () => void, data: Notificat
           <NotificationMessage
             message={info.row.original.rawMessage}
             routeData={info.row.original.routeData}
+            isMarkdown={info.row.original.isMarkdown}
           />
         ),
         meta: {

@@ -76,22 +76,24 @@ enum MemberPrivileges {
 }
 
 model ProjectMember {
-  id                      Int          @id @default(autoincrement())
-  createdAt               DateTime     @default(now())
-  updatedAt               DateTime     @updatedAt
+  id                      Int                 @id @default(autoincrement())
+  createdAt               DateTime            @default(now())
+  updatedAt               DateTime            @updatedAt
   projectId               Int
-  project                 Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project                 Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
   name                    String?
   users                   User[]
-  createdTasks            Task[]       @relation("CreatedTasks")
-  assignedTasks           Task[]       @relation("AssignedTasks")
+  createdTasks            Task[]              @relation("CreatedTasks")
+  assignedTasks           Task[]              @relation("AssignedTasks")
   roles                   Role[]
-  deleted                 Boolean      @default(false)
-  taskLogAssignedTo       TaskLog[]    @relation("assignedTo")
-  taskLogCompletedBy      TaskLog[]    @relation("completedBy")
+  deleted                 Boolean             @default(false)
+  taskLogAssignedTo       TaskLog[]           @relation("assignedTo")
+  taskLogCompletedBy      TaskLog[]           @relation("completedBy")
   reassignmentInvitations Invitation[]
   comments                Comment[]
-  tags               Json?
+  tags                    Json?
+  commentReadStatus       CommentReadStatus[]
+  notes                   Note[]
 }
 
 model ProjectPrivilege {
@@ -115,6 +117,7 @@ model Invitation {
   email           String
   privilege       MemberPrivileges @default(CONTRIBUTOR)
   addedBy         String
+  tags            Json?
   reassignmentFor Int? // Foreign key to ProjectMember
   projectMember   ProjectMember?   @relation(fields: [reassignmentFor], references: [id]) // Relation to ProjectMember
 }
@@ -147,7 +150,7 @@ model Project {
   identifier       String?
   // project relations
   tasks            Task[]
-  elements         Element[]
+  milestones       Milestone[]
   containers       KanbanBoard[]
   projectMembers   ProjectMember[]
   roles            Role[]
@@ -158,6 +161,8 @@ model Project {
   metadata         Json? // Add metadata field
   formVersion      FormVersion?       @relation(fields: [formVersionId], references: [id])
   formVersionId    Int?
+  elements         Element[]
+  notes            Note[]
 }
 
 enum Status {
@@ -173,6 +178,7 @@ model Task {
   createdById        Int
   // task metadata
   deadline           DateTime?
+  startDate          DateTime?
   name               String
   description        String?
   tags               Json?
@@ -183,8 +189,8 @@ model Task {
   // task relations
   projectId          Int
   project            Project         @relation(fields: [projectId], references: [id])
-  elementId          Int?
-  element            Element?        @relation(fields: [elementId], references: [id])
+  milestoneId        Int?
+  milestone          Milestone?      @relation(fields: [milestoneId], references: [id])
   formVersionId      Int?
   formVersion        FormVersion?    @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
   status             Status          @default(NOT_COMPLETED)
@@ -192,6 +198,8 @@ model Task {
   roles              Role[]
   // who or which team should be assigned the task
   assignedMembers    ProjectMember[] @relation("AssignedTasks")
+  elementId          Int?
+  element            Element?        @relation(fields: [elementId], references: [id])
 }
 
 model TaskLog {
@@ -212,17 +220,19 @@ model TaskLog {
   taskId        Int
   task          Task           @relation(fields: [taskId], references: [id], onDelete: Cascade)
   comments      Comment[]
+  approved      Boolean?
 }
 
 model Comment {
-  id        Int           @id @default(autoincrement())
-  createdAt DateTime      @default(now()) // When the comment was created
-  updatedAt DateTime      @updatedAt // Auto-update on edits
-  content   String // The comment text
-  taskLogId Int
-  taskLog   TaskLog       @relation(fields: [taskLogId], references: [id], onDelete: Cascade)
-  authorId  Int
-  author    ProjectMember @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  id                Int                 @id @default(autoincrement())
+  createdAt         DateTime            @default(now()) // When the comment was created
+  updatedAt         DateTime            @updatedAt // Auto-update on edits
+  content           String // The comment text
+  taskLogId         Int
+  taskLog           TaskLog             @relation(fields: [taskLogId], references: [id], onDelete: Cascade)
+  authorId          Int
+  author            ProjectMember       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  commentReadStatus CommentReadStatus[]
 }
 
 enum CompletedAs {
@@ -241,18 +251,20 @@ model KanbanBoard {
   project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
-model Element {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+model Milestone {
+  id          Int         @id @default(autoincrement())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   projectId   Int
-  project     Project   @relation(fields: [projectId], references: [id])
+  project     Project     @relation(fields: [projectId], references: [id])
   name        String
   description String?
   task        Task[]
-  parents     Element[] @relation("ElementToElement")
-  children    Element[] @relation("ElementToElement")
+  parents     Milestone[] @relation("MilestoneToMilestone")
+  children    Milestone[] @relation("MilestoneToMilestone")
   tags        Json?
+  startDate   DateTime?
+  endDate     DateTime?
 }
 
 model Form {
@@ -323,4 +335,62 @@ model ProjectWidget {
   privilege MemberPrivileges[] @default([CONTRIBUTOR, PROJECT_MANAGER])
 
   @@unique([userId, projectId, type])
+}
+
+model CommentReadStatus {
+  id              Int           @id @default(autoincrement())
+  createdAt       DateTime      @default(now())
+  commentId       Int
+  comment         Comment       @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  projectMemberId Int
+  projectMember   ProjectMember @relation(fields: [projectMemberId], references: [id], onDelete: Cascade)
+  read            Boolean       @default(false)
+
+  @@unique([commentId, projectMemberId], name: "commentId_projectMemberId")
+}
+
+model Element {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  projectId   Int
+  project     Project   @relation(fields: [projectId], references: [id])
+  name        String
+  description String?
+  task        Task[]
+  parents     Element[] @relation("ElementToElement")
+  children    Element[] @relation("ElementToElement")
+}
+
+enum NoteVisibility {
+  PRIVATE
+  PM_ONLY
+  CONTRIBUTORS @map("SHARED")
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  projectId Int
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  authorId Int
+  author   ProjectMember @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // content
+  title           String?
+  contentMarkdown String? // portable storage for search/export
+  contentJSON     Json? // optional rich-state (e.g., Lexical) for fidelity
+
+  // metadata
+  visibility NoteVisibility @default(PRIVATE)
+  pinned     Boolean        @default(false)
+  archived   Boolean        @default(false)
+  tags       Json?
+
+  @@index([projectId, authorId], name: "note_project_author_idx")
+  @@index([authorId, pinned], name: "note_author_pinned_idx")
 }

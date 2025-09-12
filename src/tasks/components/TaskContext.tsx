@@ -1,12 +1,16 @@
-import React, { createContext, ReactNode, useContext } from "react"
+import { useEffect } from "react"
+import { eventBus } from "src/core/utils/eventBus"
+import React, { createContext, ReactNode, useContext, useState } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import getTask from "src/tasks/queries/getTask"
 import { ExtendedTask, ProjectMemberWithTaskLog } from "src/core/types"
+import useTaskLogProgress from "src/tasklogs/hooks/useTaskLogProgress"
 
 interface TaskContextType {
   task: ExtendedTask
   projectMembers: ProjectMemberWithTaskLog[]
   refetchTaskData: () => void
+  taskLogProgress: ReturnType<typeof useTaskLogProgress>
 }
 
 // Creating props interface
@@ -24,7 +28,7 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
   const [task, { refetch: refetchTaskData }] = useQuery(getTask, {
     where: { id: taskId },
     include: {
-      element: true,
+      milestone: true,
       container: true,
       formVersion: true,
       roles: true,
@@ -63,11 +67,24 @@ export const TaskProvider = ({ taskId, children }: TaskProviderProps) => {
     },
   }) as [ExtendedTask, any]
 
+  const [version, setVersion] = useState(0)
+  const taskLogProgress = useTaskLogProgress([...task.assignedMembers])
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      void refetchTaskData()
+      setVersion((v) => v + 1)
+    }
+    eventBus.on("taskLogUpdated", handleUpdate)
+    return () => eventBus.off("taskLogUpdated", handleUpdate)
+  }, [refetchTaskData])
+
   // Set context value
   const contextValue = {
     task,
     projectMembers: task.assignedMembers,
     refetchTaskData,
+    taskLogProgress,
   }
 
   return <TaskContext.Provider value={contextValue}>{children}</TaskContext.Provider>

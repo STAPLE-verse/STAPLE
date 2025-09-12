@@ -15,13 +15,22 @@ export const useProjectNotificationTableColumns = (
   refetch: () => void,
   data: ProjectNotificationData[]
 ) => {
-  const allIds = data.map((item) => item.id)
+  const allIds = useMemo(() => data.map((item) => item.id), [data])
 
   return useMemo(
     () => [
       columnHelper.accessor("createdAt", {
         cell: (info) => <DateFormat date={info.getValue()} />,
         header: "Date",
+      }),
+      columnHelper.accessor("type", {
+        header: "Type",
+        enableColumnFilter: true,
+        enableSorting: true,
+        cell: (info) => <span>{info.getValue()}</span>,
+        meta: {
+          filterVariant: "select",
+        },
       }),
       columnHelper.accessor("cleanMessage", {
         id: "message",
@@ -32,6 +41,7 @@ export const useProjectNotificationTableColumns = (
           <NotificationMessage
             message={info.row.original.rawMessage}
             routeData={info.row.original.routeData}
+            isMarkdown={info.row.original.isMarkdown}
           />
         ),
         meta: {
