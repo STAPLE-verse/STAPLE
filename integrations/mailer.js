@@ -3,6 +3,7 @@ import nodemailer from "nodemailer"
 import * as aws from "@aws-sdk/client-ses"
 import { Resend } from "resend"
 
+// use for Gmail
 export async function Mailer(msg) {
   const pass = process.env.EMAIL_PASS
 
@@ -20,6 +21,7 @@ export async function Mailer(msg) {
   })
 }
 
+// use for Amazon
 export async function Amazon(msg) {
   const ses = new aws.SES({
     apiVersion: "2010-12-01",
@@ -42,6 +44,7 @@ export async function Amazon(msg) {
   }
 }
 
+// use for Resend
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function ResendMsg(msg) {
