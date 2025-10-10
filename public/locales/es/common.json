@@ -74,5 +74,10 @@
   "widgets": {
     "upcomingtask": "No hay tareas pendientes",
     "overduetask": "No overdue task TEST"
+  },
+  "breadcrumbs": {
+    "projects": "Proyectos",
+    "home": "Inicio",
+    "main": "Tablero"
   }
 }

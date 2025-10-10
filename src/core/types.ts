@@ -174,6 +174,13 @@ export type BreadcrumbEntityType =
   | "contributor"
   | "form"
 
+export const BREADCRUMB_I18N_KEYS = {
+  projects: "breadcrumbs.projects",
+  home: "breadcrumbs.home",
+} as const
+
+export type BreadcrumbKnownKey = keyof typeof BREADCRUMB_I18N_KEYS
+
 export type BreadcrumbItem = {
   label: ReactNode
   href: string

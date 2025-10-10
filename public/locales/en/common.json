@@ -74,5 +74,10 @@
   "widgets": {
     "upcomingtask": "No upcoming task",
     "overduetask": "No overdue task"
+  },
+  "breadcrumbs": {
+    "projects": "Projects",
+    "home": "Home",
+    "main": "Main"
   }
 }
