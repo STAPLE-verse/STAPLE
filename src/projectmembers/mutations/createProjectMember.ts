@@ -53,6 +53,26 @@ export default resolver.pipe(
         },
       })
 
+      // Auto-assign this member to tasks configured to add all new contributors
+      const projectId = projectInvite.projectId
+      const tasksToAutoAssign = await db.task.findMany({
+        where: { projectId, autoAssignNew: { in: ["ALL", "CONTRIBUTOR"] } },
+        select: { id: true },
+      })
+
+      if (tasksToAutoAssign.length > 0) {
+        await Promise.all(
+          tasksToAutoAssign.map((t) =>
+            db.task.update({
+              where: { id: t.id },
+              data: {
+                assignedMembers: { connect: { id: projectMember.id } },
+              },
+            })
+          )
+        )
+      }
+
       // Get information for the notification
       const project = await db.project.findFirst({ where: { id: projectInvite.projectId } })
 
