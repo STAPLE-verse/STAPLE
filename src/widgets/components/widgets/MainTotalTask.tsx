@@ -10,10 +10,13 @@ import getTaskLogs from "src/tasklogs/queries/getTaskLogs"
 import { TaskLogWithTaskProjectAndComments } from "src/core/types"
 import getLatestTaskLogs from "src/tasklogs/hooks/getLatestTaskLogs"
 import { processAllTasks } from "src/tasks/tables/processing/processAllTasks"
+import { useTranslation } from "react-i18next"
 
 const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const currentUser = useCurrentUser()
 
+  // Fetch all tasks
+  // Get latest logs that this user is involved in
   // Fetch all tasks
   // Get latest logs that this user is involved in
   const [fetchedTaskLogs] = useQuery(getTaskLogs, {
@@ -45,7 +48,6 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
     },
     orderBy: { id: "asc" },
   })
-
   // Cast and handle the possibility of `undefined`
   const taskLogs: TaskLogWithTaskProjectAndComments[] = (fetchedTaskLogs ??
     []) as TaskLogWithTaskProjectAndComments[]
@@ -74,9 +76,10 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
     )
   }, 0)
 
+  const { t } = (useTranslation as any)()
   return (
     <Widget
-      title="Tasks"
+      title={t("main.dashboard.alltasks")} // This is the Tasks widget in the main dashboard
       display={<GetCircularProgressDisplay proportion={taskProportion} />}
       link={
         <PrimaryLink
@@ -86,7 +89,7 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
         />
       }
       tooltipId="tool-tasks"
-      tooltipContent="Percent of tasks completed and new comments on only tasks assigned to you"
+      tooltipContent={t("main.dashboard.tooltips.alltasks")}
       size={size}
       newCommentsCount={newCommentsCount}
     />

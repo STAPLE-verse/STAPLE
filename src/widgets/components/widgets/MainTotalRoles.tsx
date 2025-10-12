@@ -7,6 +7,7 @@ import Widget from "../Widget"
 import { FingerPrintIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getRoles from "src/roles/queries/getRoles"
+import { useTranslation } from "react-i18next"
 
 const TotalRoles: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const currentUser = useCurrentUser()
@@ -17,10 +18,10 @@ const TotalRoles: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) 
     },
     orderBy: { id: "asc" },
   })
-
+  const { t } = (useTranslation as any)()
   return (
     <Widget
-      title="Roles"
+      title={t("main.dashboard.roles")}
       display={<GetIconDisplay number={roles.length} icon={FingerPrintIcon} />}
       link={
         <PrimaryLink
@@ -30,7 +31,7 @@ const TotalRoles: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) 
         />
       }
       tooltipId="tool-roles-total"
-      tooltipContent="Total number of role labels"
+      tooltipContent={t("main.dashboard.tooltips.roles")}
       size={size}
     />
   )

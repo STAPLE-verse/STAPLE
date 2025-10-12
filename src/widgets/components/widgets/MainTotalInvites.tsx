@@ -7,6 +7,7 @@ import Widget from "../Widget"
 import { EnvelopeIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getInvites from "src/invites/queries/getInvites"
+import { useTranslation } from "react-i18next"
 
 const TotalInvites: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const currentUser = useCurrentUser()
@@ -15,10 +16,10 @@ const TotalInvites: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
     where: { email: currentUser!.email },
     orderBy: { id: "asc" },
   })
-
+  const { t } = (useTranslation as any)()
   return (
     <Widget
-      title="Invitations"
+      title={t("main.dashboard.invites")}
       display={<GetIconDisplay number={invites.length} icon={EnvelopeIcon} />}
       link={
         <PrimaryLink
@@ -28,7 +29,7 @@ const TotalInvites: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
         />
       }
       tooltipId="tool-invites-total"
-      tooltipContent="Number of project invites"
+      tooltipContent={t("main.dashboard.tooltips.invites")}
       size={size}
     />
   )
