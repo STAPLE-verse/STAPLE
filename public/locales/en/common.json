@@ -78,6 +78,21 @@
   "breadcrumbs": {
     "projects": "Projects",
     "home": "Home",
-    "main": "Main"
+    "main": "Main",
+    "invites": "Invitations",
+    "tasks": "Tasks",
+    "notifications": "Notifications",
+    "forms": "Forms",
+    "roles": "Roles",
+    "updates": "Administration",
+    "help": "Help",
+    "summary": "Summary",
+    "settings": "Setttings",
+    "tags": "Tags",
+    "notes": "Notes",
+    "milestones": "Milestones",
+    "contributors": "Contributors",
+    "teams": "Teams",
+    "edit": "Settings"
   }
 }

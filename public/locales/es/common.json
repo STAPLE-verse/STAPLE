@@ -78,6 +78,21 @@
   "breadcrumbs": {
     "projects": "Proyectos",
     "home": "Inicio",
-    "main": "Tablero"
+    "main": "Tablero",
+    "invites": "Invitaciones",
+    "tasks": "Tareas",
+    "notifications": "Notificaciones",
+    "forms": "Formularios",
+    "roles": "Roles",
+    "updates": "Administración",
+    "help": "Ayuda",
+    "summary": "Resumen",
+    "settings": "Configuración",
+    "tags": "Etiquetas",
+    "notes": "Notas",
+    "milestones": "Hitos",
+    "contributors": "Colaboradores",
+    "teams": "Equipos",
+    "edit": "Ajustes"
   }
 }
