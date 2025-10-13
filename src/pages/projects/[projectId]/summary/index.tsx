@@ -245,18 +245,18 @@ const Summary = () => {
         {project.formVersionId ? (
           <>
             <MetadataDisplay metadata={project.metadata} />
-            <div className="flex flex-wrap gap-2 justify-end max-w-xl">
+            <div className="flex flex-wrap md:flex-nowrap gap-2 justify-end">
               <DownloadJSON
                 data={project.metadata}
                 fileName={project.name}
-                className="btn btn-primary"
+                className="btn btn-primary whitespace-nowrap"
                 type="button"
                 label="Download Metadata JSON"
               />
               <DownloadXLSX
                 data={project.metadata}
                 fileName={project.name}
-                className="btn btn-secondary mx-2"
+                className="btn btn-secondary whitespace-nowrap"
                 type="button"
                 label="Download Metadata XLSX"
               />
@@ -265,7 +265,7 @@ const Summary = () => {
                 uiSchema={getJsonSchema(project.formVersion?.uiSchema)}
                 metadata={project.metadata}
                 label={"Edit Project Metadata"}
-                classNames="btn-info"
+                classNames="btn-info whitespace-nowrap"
                 onSubmit={handleJsonFormSubmit}
                 onError={handleJsonFormError}
                 resetHandler={handleResetMetadata}
