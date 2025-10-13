@@ -20,7 +20,7 @@ function createDailyNotification(email, notificationContent) {
         <h3>STAPLE Daily Notifications</h3>
 
         <p>
-          This email is to notify you about recent updates to your project.
+          This email is to notify you about recent updates to your project(s). You can view all notifications on the <a href="https://app.staple.science/notifications?src=daily_email">Notifications page</a> (you may be asked to log in).
           Here are new announcements, tasks, and other project updates:
         </p>
 
