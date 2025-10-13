@@ -30,7 +30,7 @@ export const ShowTeamModal = ({ teamId, disabled }) => {
     <div>
       <button
         type="button"
-        className="btn btn-primary w-2/3"
+        className="btn btn-primary w-full"
         data-tooltip-id="showTeamModalTooltip"
         data-testid="open-modal"
         onClick={() => handleToggle()}
