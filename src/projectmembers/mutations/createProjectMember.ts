@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
+import db, { CompletedAs } from "db"
 import { CreateProjectMemberSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
 import { getPrivilegeText } from "src/core/utils/getPrivilegeText"
@@ -70,6 +70,56 @@ export default resolver.pipe(
               },
             })
           )
+        )
+        // Also create TaskLog rows for these auto-assignments
+        await Promise.all(
+          tasksToAutoAssign.map((t) =>
+            db.taskLog.create({
+              data: {
+                taskId: t.id,
+                assignedToId: projectMember.id,
+                completedAs: CompletedAs.INDIVIDUAL,
+              },
+            })
+          )
+        )
+        // Send a notification for each auto-assigned task
+        const user = await db.user.findFirst({ where: { id: userId } })
+
+        await Promise.all(
+          tasksToAutoAssign.map(async (t) => {
+            const task = await db.task.findFirst({
+              where: { id: t.id },
+              select: {
+                name: true,
+                deadline: true,
+                createdBy: { include: { users: true } },
+              },
+            })
+
+            const createdByUsername = task!.createdBy.users[0]
+              ? task!.createdBy.users[0].firstName && task!.createdBy.users[0].lastName
+                ? `${task!.createdBy.users[0].firstName} ${task!.createdBy.users[0].lastName}`
+                : task!.createdBy.users[0].username
+              : null
+
+            await sendNotification(
+              {
+                templateId: "taskAssigned",
+                recipients: [userId],
+                data: {
+                  taskName: task?.name || "Unnamed Task",
+                  createdBy: createdByUsername || "Auto Assigned",
+                  deadline: task?.deadline || null,
+                },
+                projectId,
+                routeData: {
+                  path: Routes.ShowTaskPage({ projectId, taskId: t.id }).href,
+                },
+              },
+              ctx
+            )
+          })
         )
       }
 
