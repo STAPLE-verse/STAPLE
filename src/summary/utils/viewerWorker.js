@@ -14,7 +14,7 @@ new QueueWorker(
   "viewer-build",
   async (job) => {
     const { jobId, data } = job.data
-    const jobFolder = path.join(buildOutputDir, `viewer_${jobId}`)
+    const jobFolder = path.join(buildOutputDir, `Project_Summary_${jobId}`)
     // Ensure the buildOutputDir exists before creating the ZIP file
     fs.mkdirSync(buildOutputDir, { recursive: true })
     // Write project_summary.json
@@ -27,11 +27,11 @@ new QueueWorker(
 
     // Inject data into HTML templates and copy to jobFolder
     const templateFiles = [
-      "index.html",
-      "forms.html",
-      "people_roles.html",
-      "tasks.html",
-      "timeline.html",
+      "Home.html",
+      "Form_Data.html",
+      "Contributors.html",
+      "Tasks.html",
+      "Events.html",
     ]
 
     templateFiles.forEach((filename) => {
@@ -45,7 +45,7 @@ new QueueWorker(
     })
 
     // Zip the jobFolder contents
-    const zipPath = path.join(buildOutputDir, `viewer_${jobId}.zip`)
+    const zipPath = path.join(buildOutputDir, `Project_Summary_${jobId}.zip`)
     const output = fs.createWriteStream(zipPath)
     const archive = archiver("zip", { zlib: { level: 9 } })
 

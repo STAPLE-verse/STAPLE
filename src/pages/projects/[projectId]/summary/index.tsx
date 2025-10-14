@@ -278,10 +278,37 @@ const Summary = () => {
         )}
       </CollapseCard>
 
-      <CollapseCard title="Project Summary Viewer" className="mb-4">
+      <CollapseCard title="Project Summary Download" className="mb-4">
         <p>
-          Use this section to view and download the complete project summary. You can export the
-          full project JSON or launch an interactive viewer (coming soon).
+          Use this section to generate and download the Interactive Project Summary Viewer and other
+          exports. Both options below are interactive websites but will only contain information
+          about the project at the time of download.
+          <ol>
+            <li>
+              <strong className="text-primary">Project JSON:</strong> a machine‑readable version of
+              your project that can be used to index data on search engines like Google or loaded
+              into our external project summary viewer (
+              <a
+                href="https://staple-viewer.example.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline"
+              >
+                link
+              </a>
+              ).
+            </li>
+            <li>
+              <strong className="text-secondary">Shareable Summary (recommended):</strong> a
+              human‑readable, shareable snapshot of your project. It’s the same experience as our
+              external viewer, but bundled so you can keep everything together and share it offline
+              or host it yourself. The download is a .zip — Windows users must unzip it first
+              (Right‑click → "Extract All…"), then open <code>Home.html</code> inside the extracted
+              folder. Once you click{" "}
+              <strong className="text-secondary">Generate Shareable Summary</strong>, a new button
+              will appear when the .zip file is ready for download.
+            </li>
+          </ol>
         </p>
         <br className="mb-4" />
         {/* buttons */}
