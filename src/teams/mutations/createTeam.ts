@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { CompletedAs } from "db"
+import db, { CompletedAs, AutoAssignNew } from "db"
 import { CreateTeamSchema } from "../schemas"
 import { Routes } from "@blitzjs/next"
 import sendNotification from "src/notifications/mutations/sendNotification"
@@ -50,7 +50,7 @@ export default resolver.pipe(
         data: {
           teamName: name || "Unnamed Team",
           projectName: project?.name || "Unnamed Project",
-          addedby: addedBy,
+          addedBy: addedBy,
         },
         projectId,
         routeData: {
@@ -62,8 +62,8 @@ export default resolver.pipe(
 
     // Auto-assign this team to tasks configured to add all new teams
     const tasksToAutoAssign = await db.task.findMany({
-      where: { projectId, autoAssignNew: { in: ["ALL", "TEAM"] } },
-      select: { id: true },
+      where: { projectId, autoAssignNew: { in: [AutoAssignNew.ALL, AutoAssignNew.TEAM] } },
+      select: { id: true, name: true, deadline: true, createdBy: { include: { users: true } } },
     })
 
     if (tasksToAutoAssign.length > 0) {
@@ -102,10 +102,10 @@ export default resolver.pipe(
             select: { name: true, deadline: true, createdBy: { include: { users: true } } },
           })
 
-          const createdByUsername = task!.createdBy.users[0]
-            ? task!.createdBy.users[0].firstName && task!.createdBy.users[0].lastName
-              ? `${task!.createdBy.users[0].firstName} ${task!.createdBy.users[0].lastName}`
-              : task!.createdBy.users[0].username
+          const createdByUsername = task?.createdBy?.users?.[0]
+            ? task!.createdBy!.users![0].firstName && task!.createdBy!.users![0].lastName
+              ? `${task!.createdBy!.users![0].firstName} ${task!.createdBy!.users![0].lastName}`
+              : task!.createdBy!.users![0].username
             : null
 
           await sendNotification(

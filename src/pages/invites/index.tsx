@@ -7,8 +7,9 @@ import Modal from "src/core/components/Modal"
 import { InviteForm } from "src/invites/components/InviteForm"
 import { InviteFormSchema } from "src/invites/schemas"
 import toast from "react-hot-toast"
-import createProjectMember from "src/projectmembers/mutations/createProjectMember"
-import { useMutation } from "@blitzjs/rpc"
+import acceptInvite from "src/invites/mutations/acceptInvite"
+import getInviteByCode from "src/invites/queries/getInviteByCode"
+import { useMutation, invoke } from "@blitzjs/rpc"
 import { Routes } from "@blitzjs/next"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import Card from "src/core/components/Card"
@@ -22,27 +23,36 @@ const InvitesPage = () => {
   const handleToggleNewInviteModal = () => {
     setOpenNewInviteModal((prev) => !prev)
   }
-  const [createProjectMemberMutation] = useMutation(createProjectMember)
+  const [acceptInviteMutation] = useMutation(acceptInvite)
   const [formError, setFormError] = useState<string | null>(null)
 
   const handleInviteCode = async (values) => {
     try {
-      const invite = await createProjectMemberMutation({
-        invitationCode: values.invitationCode,
-        userId: values.userId,
-      })
+      if (!currentUser?.id) {
+        setFormError("You must be logged in to accept an invite.")
+        return
+      }
 
-      if (invite.code == "no_code") {
+      // 1) Look up the invite by code via RPC invoke
+      const invite = await invoke(getInviteByCode, { code: values.invitationCode })
+      if (!invite) {
         setFormError("No matching invitation code found.")
-      } else {
-        await toast.promise(Promise.resolve(invite), {
+        return
+      }
+
+      // 2) Accept the invite via the canonical mutation
+      const result = await toast.promise(
+        acceptInviteMutation({ id: invite.id, userId: currentUser.id }),
+        {
           loading: "Adding project...",
           success: "Project added!",
-          error: "Failed add project...",
-        })
-        setFormError(null)
-        await router.push(Routes.ShowProjectPage({ projectId: invite.projectId }))
-      }
+          error: "Failed to add project...",
+        }
+      )
+
+      setFormError(null)
+      const projectId = result?.projectId ?? invite.projectId
+      await router.push(Routes.ShowProjectPage({ projectId }))
     } catch (error: any) {
       console.error(error)
       setFormError("An error occurred during the submission. Please try again.")
@@ -78,7 +88,7 @@ const InvitesPage = () => {
                   schema={InviteFormSchema}
                   submitText="Add Project"
                   className="flex flex-col w-full"
-                  onSubmit={(data) => handleInviteCode({ ...data, userId: currentUser?.id })}
+                  onSubmit={(data) => handleInviteCode(data)}
                   userId={currentUser!.id}
                   cancelText="Close"
                   onCancel={handleToggleNewInviteModal}
