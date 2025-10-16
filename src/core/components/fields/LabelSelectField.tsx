@@ -41,7 +41,12 @@ export const LabelSelectField = forwardRef<HTMLSelectElement, LabeledSelectField
         if (value === "") {
           return null
         }
-        return type === "number" ? Number(value) : value
+        if (type === "number") {
+          const n = Number(value)
+          // If coercion fails (e.g., value is "TEAM"), keep the string instead of NaN
+          return Number.isNaN(n) ? value : n
+        }
+        return value
       },
     })
 

@@ -283,6 +283,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
             options={autoAssignOptions}
             optionText="name"
             optionValue="id"
+            type="string" // 👈 add this line
           />
         </div>
       </CollapseCard>
