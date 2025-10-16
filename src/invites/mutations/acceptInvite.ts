@@ -1,5 +1,5 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
+import db, { AutoAssignNew, CompletedAs } from "db"
 import { AcceptInviteSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
 import { getPrivilegeText } from "src/core/utils/getPrivilegeText"
@@ -9,6 +9,7 @@ export default resolver.pipe(
   resolver.zod(AcceptInviteSchema),
   resolver.authorize(),
   async ({ id, userId }, ctx) => {
+    console.log("[acceptInvite] INVOKED", { id, userId })
     // Find the invitation and related roles
     const invite = await db.invitation.findUnique({
       where: { id },
@@ -58,6 +59,91 @@ export default resolver.pipe(
         },
       })
     }
+
+    // --- Auto-assign this member to tasks marked for contributors or all ---
+    console.log("[acceptInvite] Starting auto-assign check", {
+      projectId: invite.projectId,
+      userId,
+    })
+
+    const tasksToAutoAssign = await db.task.findMany({
+      where: {
+        projectId: invite.projectId,
+        autoAssignNew: { in: [AutoAssignNew.ALL, AutoAssignNew.CONTRIBUTOR] },
+      },
+      select: {
+        id: true,
+        name: true,
+        deadline: true,
+        autoAssignNew: true,
+        createdBy: { include: { users: true } },
+      },
+    })
+    console.log("[acceptInvite] tasksToAutoAssign count", tasksToAutoAssign.length)
+
+    try {
+      if (tasksToAutoAssign.length > 0) {
+        await Promise.all(
+          tasksToAutoAssign.map((t) =>
+            db.task.update({
+              where: { id: t.id },
+              data: {
+                assignedMembers: { connect: { id: projectMember.id } },
+              },
+            })
+          )
+        )
+        console.log("[acceptInvite] Connected projectMember to tasks", {
+          projectMemberId: projectMember.id,
+          taskIds: tasksToAutoAssign.map((t) => t.id),
+        })
+
+        // Create TaskLog entries for these auto-assignments
+        await Promise.all(
+          tasksToAutoAssign.map((t) =>
+            db.taskLog.create({
+              data: {
+                taskId: t.id,
+                assignedToId: projectMember.id,
+                completedAs: CompletedAs.INDIVIDUAL,
+              },
+            })
+          )
+        )
+        console.log("[acceptInvite] Created TaskLog entries", { count: tasksToAutoAssign.length })
+
+        // Send a notification for each auto-assigned task
+        await Promise.all(
+          tasksToAutoAssign.map(async (t) => {
+            const createdByUsername = t.createdBy?.users?.[0]
+              ? t.createdBy.users[0].firstName && t.createdBy.users[0].lastName
+                ? `${t.createdBy.users[0].firstName} ${t.createdBy.users[0].lastName}`
+                : t.createdBy.users[0].username
+              : "Auto Assigned"
+
+            await sendNotification(
+              {
+                templateId: "taskAssigned",
+                recipients: [userId],
+                data: {
+                  taskName: t.name || "Unnamed Task",
+                  createdBy: createdByUsername,
+                  deadline: t.deadline || null,
+                },
+                projectId: invite.projectId,
+                routeData: {
+                  path: Routes.ShowTaskPage({ projectId: invite.projectId, taskId: t.id }).href,
+                },
+              },
+              ctx
+            )
+          })
+        )
+      }
+    } catch (err) {
+      console.error("[acceptInvite] Auto-assign flow error", err)
+    }
+    // --- end auto-assign block ---
 
     // Get information for the notification
     const project = await db.project.findFirst({ where: { id: invite.projectId } })

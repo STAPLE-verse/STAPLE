@@ -132,6 +132,12 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
 
   const contributorIds = contributorOptions.map((c) => c.id)
   const teamIds = teamOptions.map((t) => t.id)
+  const autoAssignOptions = [
+    { id: "NONE", name: "Do not auto-assign" },
+    { id: "CONTRIBUTOR", name: "Auto-assign new contributors" },
+    { id: "TEAM", name: "Auto-assign new teams" },
+    { id: "ALL", name: "Auto-assign new contributors & teams" },
+  ]
 
   const ContributorsBulkButtons: React.FC<{
     contributorCount: number
@@ -254,6 +260,32 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
             <CheckboxFieldTable name="teamsId" options={teamOptions} />
           </div>
         </ToggleModal>
+        {/* Auto-assign new members/teams */}
+        <div className="w-1/2 mt-2">
+          <LabelSelectField
+            className="select w-full text-lg text-primary select-primary select-bordered border-2 bg-base-300"
+            name="autoAssignNew"
+            label={
+              <span className="flex items-center">
+                Auto-assign future additions
+                <InformationCircleIcon
+                  className="h-4 w-4 ml-1 text-info stroke-2"
+                  data-tooltip-id="auto-assign-info"
+                />
+                <Tooltip
+                  id="auto-assign-info"
+                  content="Choose who should be automatically added to this task when they are added to the project."
+                  className="z-[1099] ourtooltips"
+                />
+              </span>
+            }
+            description="Applies when new contributors or teams are added to this project."
+            options={autoAssignOptions}
+            optionText="name"
+            optionValue="id"
+            type="string" // 👈 add this line
+          />
+        </div>
       </CollapseCard>
 
       <CollapseCard title="Details: Instructions, Dates, Forms, Roles">

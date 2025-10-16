@@ -170,6 +170,13 @@ enum Status {
   NOT_COMPLETED
 }
 
+enum AutoAssignNew {
+  NONE
+  CONTRIBUTOR
+  TEAM
+  ALL
+}
+
 model Task {
   id                 Int             @id @default(autoincrement())
   createdAt          DateTime        @default(now())
@@ -200,6 +207,7 @@ model Task {
   assignedMembers    ProjectMember[] @relation("AssignedTasks")
   elementId          Int?
   element            Element?        @relation(fields: [elementId], references: [id])
+  autoAssignNew      AutoAssignNew   @default(NONE)
 }
 
 model TaskLog {

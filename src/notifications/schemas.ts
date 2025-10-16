@@ -19,6 +19,12 @@ export const addedToProjectSchema = z.object({
   privilege: z.string(),
 })
 
+export const addedToTeamSchema = z.object({
+  teamName: z.string(),
+  addedBy: z.string(),
+  projectName: z.string(),
+})
+
 export const changedAssignmentSchema = z.object({
   taskName: z.string(),
   assignmentStatus: z.string(),
@@ -29,6 +35,7 @@ export const changedAssignmentSchema = z.object({
 export const templateToSchemaMap: Record<string, z.ZodSchema> = {
   taskAssigned: taskAssignedSchema,
   addedToProject: addedToProjectSchema,
+  addedToTeam: addedToTeamSchema,
   changedAssignment: changedAssignmentSchema,
   commentMade: commentMadeSchema,
   // Add other mappings
