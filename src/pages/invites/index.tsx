@@ -51,7 +51,7 @@ const InvitesPage = () => {
       )
 
       setFormError(null)
-      const projectId = result?.projectId ?? invite.projectId
+      const projectId = (result?.id as number | undefined) ?? invite.projectId
       await router.push(Routes.ShowProjectPage({ projectId }))
     } catch (error: any) {
       console.error(error)

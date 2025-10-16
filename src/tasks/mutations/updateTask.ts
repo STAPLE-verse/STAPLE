@@ -85,13 +85,20 @@ export default resolver.pipe(
     const safeProjectMembersId: number[] = projectMembersId || []
     const safeTeamsId: number[] = teamsId || []
 
+    // Build a safe update payload: do not send null to Prisma enum fields
+    const { autoAssignNew, ...restData } = data as any
+    const updateData: any = {
+      ...restData,
+      tags: data.tags ? data.tags : undefined,
+    }
+    if (autoAssignNew !== null && autoAssignNew !== undefined) {
+      updateData.autoAssignNew = autoAssignNew
+    }
+
     // Update task data
     const task = await db.task.update({
       where: { id },
-      data: {
-        ...data,
-        tags: data.tags ? data.tags : undefined,
-      },
+      data: updateData,
     })
 
     // Fetch existing assigned project members for the task
