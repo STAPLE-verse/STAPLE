@@ -9,13 +9,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: "Missing or invalid jobId" })
   }
 
-  const zipPath = path.join(process.cwd(), "viewer-builds", `viewer_${jobId}.zip`)
+  const zipPath = path.join(process.cwd(), "viewer-builds", `Project_Summary_${jobId}.zip`)
 
   if (!fs.existsSync(zipPath)) {
     return res.status(404).json({ error: "ZIP not found or not ready" })
   }
 
   res.setHeader("Content-Type", "application/zip")
-  res.setHeader("Content-Disposition", `attachment; filename=viewer_${jobId}.zip`)
+  res.setHeader("Content-Disposition", `attachment; filename=Project_Summary_${jobId}.zip`)
   fs.createReadStream(zipPath).pipe(res)
 }
