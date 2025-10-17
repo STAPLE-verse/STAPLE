@@ -236,7 +236,7 @@ alt="STAPLE Logo" height="200"></center>
       <h3>STAPLE Password Change</h3>
 
       This email is to notify you that you recently updated your
-      password. If you did not make this change, please
+      password at https://app.staple.science. If you did not make this change, please
       contact us immediately.
       <p>
       If you need more help, you can reply to this email to create a ticket.
@@ -289,7 +289,7 @@ alt="STAPLE Logo" height="200"></center>
       <h3>STAPLE Profile Change</h3>
 
       This email is to notify you that you recently updated your
-      profile information. If you did not make this change, please
+      profile information at https://app.staple.science. If you did not make this change, please
       contact us immediately.
       <p>
       If you need more help, you can reply to this email to create a ticket.
