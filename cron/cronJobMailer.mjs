@@ -7,8 +7,12 @@ import { resolver } from "@blitzjs/rpc"
 
 const db = new PrismaClient() // Create Prisma client instance
 
+function fmtDate(date) {
+  return moment(date).format("MMM D, YYYY")
+}
+
 // Helper function to create email content
-function createDailyNotification(email, notificationContent) {
+function createDailyNotification(email, notificationContent, overdueContent) {
   const html_message = `
     <html>
       <body>
@@ -20,11 +24,15 @@ function createDailyNotification(email, notificationContent) {
         <h3>STAPLE Daily Notifications</h3>
 
         <p>
-          This email is to notify you about recent updates to your project(s). You can view all notifications on the <a href="https://app.staple.science/auth/login?next=%2Fnotifications">Notifications page</a> (you may be asked to log in).
-          Here are new announcements, tasks, and other project updates:
-        </p>
+          This email is to notify you about overdue tasks and recent updates to your project(s).
+          You can view all notifications on the <a href="https://app.staple.science/auth/login?next=%2Fnotifications">Notifications page</a>.
+          </p>
 
-        ${notificationContent}
+        <h3>⏰ Overdue Tasks</h3>
+        <div style="margin:0 0 16px;">${overdueContent}</div>
+
+        <h3>📢 Project Updates</h3>
+        <div style="margin:0 0 16px;">${notificationContent}</div>
       </body>
     </html>
   `
@@ -79,6 +87,85 @@ export async function fetchAndGroupNotifications() {
   }, {})
 }
 
+// Function to fetch and group overdue tasks by email and project
+export async function fetchAndGroupOverdueTasks() {
+  const now = new Date()
+
+  const tasks = await db.task.findMany({
+    where: {
+      deadline: { lt: now },
+    },
+    include: {
+      project: { select: { name: true } },
+      assignedMembers: {
+        include: {
+          users: { select: { email: true } },
+        },
+      },
+      taskLogs: {
+        select: {
+          id: true,
+          createdAt: true,
+          assignedToId: true,
+          status: true,
+          completedById: true,
+          completedAs: true,
+        },
+        orderBy: { createdAt: "desc" },
+      },
+    },
+    orderBy: { deadline: "asc" },
+  })
+
+  // A task counts as overdue for a member only if that member has a latest log and it is NOT_COMPLETED.
+  // If there is no log for that member, assume not assigned → do not include.
+  const isUnfinishedLatest = (log) => {
+    if (!log) return false
+    const s = (log.status || "").toString().toUpperCase()
+    return s === "NOT_COMPLETED"
+  }
+
+  // Group as: email -> projectName -> [task rows]
+  return tasks.reduce((acc, task) => {
+    const projectName = task?.project?.name || "No Project"
+    const taskName = task?.name || `Task #${task?.id}`
+    const due = task?.deadline ? fmtDate(task.deadline) : "no due date"
+    const pastDeadline = task?.deadline && task.deadline < now
+
+    // Map latest TaskLog by assignee (assignedToId) — schema note: TaskLog does not have projectmemberId
+    const latestByMember = new Map()
+    for (const log of task.taskLogs || []) {
+      if (!latestByMember.has(log.assignedToId)) {
+        latestByMember.set(log.assignedToId, log)
+      }
+    }
+
+    const members = task?.assignedMembers || []
+    if (members.length === 0) return acc
+
+    for (const m of members) {
+      const latest = latestByMember.get(m.id)
+      const isUnfinished = isUnfinishedLatest(latest)
+
+      if (pastDeadline && isUnfinished) {
+        const line = `${projectName} - ${taskName} - Due: ${due}`
+        const users = m?.users || []
+        for (const u of users) {
+          const email = u?.email
+          if (!email) continue
+          if (!acc[email]) acc[email] = {}
+          if (!acc[email][projectName]) acc[email][projectName] = []
+          acc[email][projectName].push(line)
+        }
+
+        // TODO: If assignment is to a team, add logic here to notify team distribution list or members
+      }
+    }
+
+    return acc
+  }, {})
+}
+
 // Function to introduce a delay (in milliseconds)
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -105,19 +192,43 @@ const checkRateLimit = async () => {
   }
 }
 // Function to send grouped notifications
-export async function sendGroupedNotifications(groupedNotifications) {
+export async function sendGroupedNotifications(groupedNotifications, groupedOverdues) {
   const delayTime = 500 // Delay time between each email in milliseconds (e.g., 1 second)
 
-  for (const [email, projects] of Object.entries(groupedNotifications)) {
-    const notificationContent = Object.entries(projects)
-      .map(([projectName, messages]) => {
-        const projectHeader = `<h4>Project: ${projectName}</h4>`
-        const messagesList = messages.map((message) => `<li>${message}</li>`).join("")
-        return projectHeader + `<ul>${messagesList}</ul>`
-      })
-      .join("")
+  const allEmails = new Set([
+    ...Object.keys(groupedNotifications || {}),
+    ...Object.keys(groupedOverdues || {}),
+  ])
 
-    const emailContent = createDailyNotification(email, notificationContent)
+  for (const email of allEmails) {
+    const projects = groupedNotifications?.[email] || {}
+
+    const notificationContent =
+      Object.entries(projects)
+        .map(([projectName, messages]) => {
+          const projectHeader = `<h4>Project: ${projectName}</h4>`
+          const messagesList = messages.map((message) => `<li>${message}</li>`).join("")
+          return projectHeader + `<ul>${messagesList}</ul>`
+        })
+        .join("") || "<p>No new updates in the last 24 hours.</p>"
+
+    // Build overdue content for this recipient (if any)
+    const overdueProjects = groupedOverdues?.[email] || {}
+    const overdueContent =
+      Object.entries(overdueProjects)
+        .map(([projectName, rows]) => {
+          const projectHeader = `<h4>Project: ${projectName}</h4>`
+          const items = rows.map((row) => `<li>${row}</li>`).join("")
+          return projectHeader + `<ul>${items}</ul>`
+        })
+        .join("") || "<p>No overdue tasks 🎉</p>"
+
+    const emailContent = createDailyNotification(email, notificationContent, overdueContent)
+
+    console.log(
+      `[Mailer] Prepared email for ${email}: hasOverdues=${!!Object.keys(overdueProjects)
+        .length}, hasUpdates=${!!Object.keys(projects).length}`
+    )
 
     // Check rate limit before sending email
     await checkRateLimit()
@@ -130,10 +241,18 @@ export async function sendGroupedNotifications(groupedNotifications) {
         body: JSON.stringify(emailContent),
       })
 
+      const respText = await response.text().catch(() => "<no body>")
       if (!response.ok) {
-        console.error(`Failed to send email to ${email}:`, response.statusText)
+        console.error(
+          `Failed to send email to ${email}: ${response.status} ${response.statusText} — ${respText}`
+        )
       } else {
-        console.log(`Email sent successfully to ${email}`)
+        console.log(
+          `Email sent successfully to ${email}: ${response.status} — ${respText.substring(
+            0,
+            120
+          )}...`
+        )
       }
 
       emailCount++ // Increment the email count after sending each email
@@ -144,13 +263,18 @@ export async function sendGroupedNotifications(groupedNotifications) {
       console.error(`Error sending email to ${email}:`, error)
     }
   }
+
+  console.log(`[Mailer] Processed ${allEmails.size} recipients.`)
 }
 
 // Function to fetch and send daily notifications
 async function sendDailyNotifications() {
   try {
-    const groupedNotifications = await fetchAndGroupNotifications()
-    await sendGroupedNotifications(groupedNotifications)
+    const [groupedNotifications, groupedOverdues] = await Promise.all([
+      fetchAndGroupNotifications(),
+      fetchAndGroupOverdueTasks(),
+    ])
+    await sendGroupedNotifications(groupedNotifications, groupedOverdues)
   } catch (error) {
     console.error("Error in sendDailyNotifications:", error)
   }
