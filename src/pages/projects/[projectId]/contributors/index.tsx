@@ -68,7 +68,7 @@ const ContributorsPage = () => {
               className="btn btn-primary mb-2 mt-4"
               href={Routes.NewContributorPage({ projectId: projectId! })}
             >
-              Invite Contributor
+              Invite Contributor(s)
             </Link>
             <Link
               className="btn btn-secondary mx-2 mb-2 mt-4"
