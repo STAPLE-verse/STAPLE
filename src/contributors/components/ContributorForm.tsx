@@ -4,14 +4,13 @@ import { z } from "zod"
 import { LabelSelectField } from "src/core/components/fields/LabelSelectField"
 import { useQuery } from "@blitzjs/rpc"
 import { MemberPrivileges } from "@prisma/client"
-import LabeledTextField from "src/core/components/fields/LabeledTextField"
 import AddRoleInput from "src/roles/components/AddRoleInput"
 import getProjectManagerUserIds from "src/projectmembers/queries/getProjectManagerUserIds"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
-import Card from "src/core/components/Card"
+import LabeledTextAreaField from "src/core/components/fields/LabeledTextAreaField"
 
 interface ContributorFormProps<S extends z.ZodType<any, any>> extends FormProps<S> {
   projectId: number
@@ -99,8 +98,14 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         )
       }}
       onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          e.preventDefault() // Prevent form submission on Enter
+        if (e.key === "Enter" && !e.shiftKey) {
+          const el = e.target as HTMLElement
+          const tagName = (el.tagName || "").toLowerCase()
+          const inTextarea = tagName === "textarea"
+          const inReactTags = !!el.closest(".react-tags-wrapper")
+          if (!inTextarea && !inReactTags) {
+            e.preventDefault() // Prevent accidental form submit from text inputs/buttons
+          }
         }
       }}
     >
@@ -116,12 +121,12 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         opacity={1}
       />
       {!isEdit && (
-        <LabeledTextField
+        <LabeledTextAreaField
           name="email"
-          label="Email:"
-          placeholder="Email"
-          type="text"
-          className="input mb-4 w-1/2 text-primary input-primary input-bordered border-2 bg-base-300"
+          label="Email(s):"
+          placeholder="Enter one or multiple emails (comma, semicolon, space, or newline separated)"
+          rows={4}
+          className="textarea textarea-primary textarea-bordered border-2 bg-base-300 text-primary mb-4 w-1/2"
         />
       )}
       <LabelSelectField

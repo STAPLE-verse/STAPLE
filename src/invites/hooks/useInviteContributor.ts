@@ -13,17 +13,26 @@ export function useInviteContributor(projectId: number) {
   const router = useRouter()
   const currentUser = useCurrentUser()
 
-  const handleEmailSending = async (emailData, successMessage, errorMessage) => {
+  const handleEmailSending = async (emailData, successMessage, errorMessage, silent = false) => {
     const emailSent = await sendInvitationEmail(emailData)
+    if (silent) {
+      return emailSent
+    }
     if (emailSent) {
       toast.success(successMessage)
     } else {
       console.error(errorMessage)
       toast.error(errorMessage)
     }
+    return emailSent
   }
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (
+    values: any,
+    options?: { silent?: boolean; skipRedirect?: boolean }
+  ) => {
+    const silent = !!options?.silent
+    const skipRedirect = !!options?.skipRedirect
     try {
       const projectMember = await createInviteMutation({
         projectId: projectId,
@@ -40,35 +49,45 @@ export function useInviteContributor(projectId: number) {
 
       switch (projectMember.code) {
         case "already_added":
+          if (silent) {
+            return { ok: false, reason: "already_added" }
+          }
           return { [FORM_ERROR]: "User is already a contributor on the project." }
 
         case "restore_possible":
           await handleEmailSending(
             createReassignmentInvitation(values, currentUser, projectMember.projectmember),
             "Reassignment invitation sent to the contributor!",
-            "Failed to send reassignment email"
+            "Failed to send reassignment email",
+            silent
           )
-          break
+          return { ok: true, code: projectMember.code }
 
         case "invite_sent":
           await handleEmailSending(
             createNewInvitation(values, currentUser, projectMember.projectmember),
             "Contributor invited to the project!",
-            "Failed to send invitation email"
+            "Failed to send invitation email",
+            silent
           )
-          break
+          return { ok: true, code: projectMember.code }
 
         default:
-          toast.error("Unexpected response code.")
-          break
+          if (!silent) toast.error("Unexpected response code.")
+          return { ok: false, code: projectMember.code }
       }
 
-      // Redirect to ContributorsPage after handling the invitation
-      await router.push(Routes.ContributorsPage({ projectId }))
+      if (!skipRedirect) {
+        await router.push(Routes.ContributorsPage({ projectId }))
+      }
     } catch (error: any) {
       console.error(error)
+      if (silent) {
+        return { ok: false, reason: error?.toString?.() ?? "unknown_error" }
+      }
       return { [FORM_ERROR]: error.toString() }
     }
+    return { ok: true }
   }
 
   return handleSubmit
