@@ -76,7 +76,7 @@ function NewContributor() {
         />
         <Tooltip
           id="contributors-overview"
-          content="You can invite one person or paste multiple emails separated by commas, spaces, semicolons, or new lines. Define roles, and give them tasks for classifying."
+          content="You can invite one person or paste multiple emails separated by commas, spaces, semicolons, or new lines. Define roles, and give them tags for classifying."
           className="z-[1099] ourtooltips"
         />
       </h1>
