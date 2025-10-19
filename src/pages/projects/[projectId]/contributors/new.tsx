@@ -69,7 +69,7 @@ function NewContributor() {
   return (
     <main className="flex flex-col mb-2 mt-2 mx-auto w-full max-w-7xl">
       <h1 className="flex justify-center items-center text-3xl">
-        Invite New Contributor
+        Invite New Contributor(s)
         <InformationCircleIcon
           className="h-6 w-6 ml-2 text-info stroke-2"
           data-tooltip-id="contributors-overview"
