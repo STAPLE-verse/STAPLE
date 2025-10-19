@@ -74,14 +74,9 @@ const HelpPage = () => {
 
             <div className="card bg-base-300 w-1/2 ml-2">
               <div className="card-body">
-                <div className="card-title">STAPLE Presentations</div>
-                In a workshop? Use our google doc to leave notes.{" "}
-                <a
-                  className="link-primary"
-                  href="https://docs.google.com/document/d/1y7QxO4BhTygyLUpiOtp735nUnAer_rfzhi0HUcckDVU/edit?usp=sharing"
-                >
-                  Leave notes here.
-                </a>{" "}
+                <div className="card-title">STAPLE Emails</div>
+                Invitations and notifications come from app@staple.science. The email may go to spam
+                and may need to be marked as safe to ensure all notification emails are received.
               </div>
             </div>
           </div>
