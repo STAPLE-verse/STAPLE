@@ -76,6 +76,18 @@ const ContributorsPage = () => {
             >
               View Invitations
             </Link>
+            <Link
+              href={Routes.RoleBuilderPage()}
+              className="btn btn-info mb-2 mt-4"
+              data-tooltip-id="roles-overview"
+            >
+              Go to Roles
+            </Link>
+            <Tooltip
+              id="roles-overview"
+              content="Set up project roles on the Roles page so you can assign them to contributors. You can add or edit roles later."
+              className="z-[1099] ourtooltips"
+            />
           </div>
         )}
         <Suspense fallback={<Loading />}>
