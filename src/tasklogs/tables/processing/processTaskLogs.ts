@@ -8,8 +8,9 @@ import { CommentWithAuthor } from "src/core/types"
 
 export type ProcessedIndividualTaskLog = {
   projectMemberName: string
-  lastUpdate: string
+  lastUpdate: Date | null
   status: string
+  approved: boolean | null
   taskLog: ExtendedTaskLog | undefined
   firstLogId: number | undefined
   comments: CommentWithAuthor[]
@@ -53,22 +54,13 @@ export function processIndividualTaskLogs(
 
     return {
       projectMemberName: getContributorName(projectMember),
-      lastUpdate: latestLog
-        ? latestLog.createdAt.toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false,
-          })
-        : "No update",
+      lastUpdate: latestLog ? latestLog.createdAt : null,
       status: latestLog
         ? latestLog.status === "COMPLETED"
           ? "Completed"
           : "Not Completed"
         : "Unknown",
+      approved: latestLog ? latestLog.approved : null,
       taskLog: latestLog,
       firstLogId: firstLog?.id,
       comments: taskLogComments,
@@ -95,8 +87,9 @@ export function processIndividualTaskLogs(
 export type ProcessedTeamTaskLog = {
   teamId: number
   deletedTeam: boolean
-  lastUpdate: string
+  lastUpdate: Date | null
   status: string
+  approved: boolean | null
   taskLog: ExtendedTaskLog | undefined
   firstLogId: number | undefined
   comments: CommentWithAuthor[]
@@ -143,22 +136,13 @@ export function processTeamTaskLogs(
     return {
       teamId: projectMember.id,
       deletedTeam: projectMember.deleted,
-      lastUpdate: latestLog
-        ? latestLog.createdAt.toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false,
-          })
-        : "No update",
+      lastUpdate: latestLog ? latestLog.createdAt : null,
       status: latestLog
         ? latestLog.status === "COMPLETED"
           ? "Completed"
           : "Not Completed"
         : "Unknown",
+      approved: latestLog ? latestLog.approved : null,
       taskLog: latestLog,
       users: projectMember.users,
       firstLogId: firstLog?.id,
