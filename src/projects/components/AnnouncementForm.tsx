@@ -9,6 +9,7 @@ import { ProjectMemberWithUsers } from "src/core/types"
 import { useSeparateProjectMembers } from "src/projectmembers/hooks/useSeparateProjectMembers"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import { z } from "zod"
+import { useForm, useFormState } from "react-final-form"
 
 export function AnnouncementForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   const projectId = useParam("projectId", "number") // ✅ Fetch `projectId` at the component level
@@ -49,6 +50,67 @@ export function AnnouncementForm<S extends z.ZodType<any, any>>(props: FormProps
     }
   })
 
+  const contributorAllIds = contributorOptions.map((o) => o.id)
+  const teamAllIds = teamOptions.map((o) => o.id)
+
+  const ContributorsSelectAll: React.FC = () => {
+    const form = useForm()
+    const { values } = useFormState()
+    const allSelected =
+      Array.isArray(values?.projectMembersId) &&
+      values.projectMembersId.length === contributorAllIds.length &&
+      contributorAllIds.length > 0
+    return (
+      <div className="flex flex-col items-center mb-3">
+        <div className="flex justify-center gap-3">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => form.change("projectMembersId", contributorAllIds)}
+          >
+            {`Select all contributors (${contributorAllIds.length})`}
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => form.change("projectMembersId", [])}
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  const TeamsSelectAll: React.FC = () => {
+    const form = useForm()
+    const { values } = useFormState()
+    const allSelected =
+      Array.isArray(values?.teamsId) &&
+      values.teamsId.length === teamAllIds.length &&
+      teamAllIds.length > 0
+    return (
+      <div className="flex flex-col items-center mb-3">
+        <div className="flex justify-center gap-3">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => form.change("teamsId", teamAllIds)}
+          >
+            {`Select all teams (${teamAllIds.length})`}
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => form.change("teamsId", [])}
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <Form<S> {...props}>
       <LabeledTextAreaField
@@ -69,7 +131,10 @@ export function AnnouncementForm<S extends z.ZodType<any, any>>(props: FormProps
         buttonClassName="w-full mb-4 btn-info"
         saveButton={true}
       >
-        <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
+        <div className="col-span-full w-full grid grid-cols-1 gap-4">
+          <ContributorsSelectAll />
+          <CheckboxFieldTable name="projectMembersId" options={contributorOptions} />
+        </div>
       </ToggleModal>
       {/* Teams */}
       <ToggleModal
@@ -78,7 +143,10 @@ export function AnnouncementForm<S extends z.ZodType<any, any>>(props: FormProps
         buttonClassName="w-full btn-info"
         saveButton={true}
       >
-        <CheckboxFieldTable name="teamsId" options={teamOptions} />
+        <div className="col-span-full w-full grid grid-cols-1 gap-4">
+          <TeamsSelectAll />
+          <CheckboxFieldTable name="teamsId" options={teamOptions} />
+        </div>
       </ToggleModal>
       {/* template: <__component__ name="__fieldName__" label="__Field_Name__" placeholder="__Field_Name__"  type="__inputType__" /> */}
     </Form>
