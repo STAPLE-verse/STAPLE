@@ -44,6 +44,18 @@ export const ProjectsList = ({ searchTerm }) => {
 
   const [{ projects, hasMore }] = usePaginatedQuery(getProjects, {
     where: where,
+    include: currentUser?.id
+      ? {
+          ProjectPrivilege: {
+            where: { userId: currentUser.id },
+            select: { userId: true, privilege: true },
+          },
+        }
+      : {
+          ProjectPrivilege: {
+            select: { userId: true, privilege: true },
+          },
+        },
     orderBy: { id: "desc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
