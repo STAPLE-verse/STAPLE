@@ -55,7 +55,7 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
               <HandRaisedIcon className="h-5 w-5 inline-block" />
             </span>
           )}
-          <DateFormat date={info.getValue()} preset="dateShort" fallback="—" />
+          <DateFormat date={info.getValue()} preset="dateShort" />
         </div>
       )
     },

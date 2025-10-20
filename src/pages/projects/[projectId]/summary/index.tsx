@@ -74,7 +74,7 @@ const Summary = () => {
     //console.log("Submitting form data:", data) // Debug log
     try {
       const updatedProject = await updateProjectMutation({
-        id: project.id,
+        id: projectId!,
         name: project.name,
         metadata: data.formData,
       })
@@ -111,7 +111,7 @@ const Summary = () => {
     try {
       // Reset the metadata to an empty object
       await updateProjectMutation({
-        id: project.id,
+        id: projectId!,
         name: project.name,
         metadata: {}, // Reset metadata to an empty object
       })
@@ -242,7 +242,7 @@ const Summary = () => {
           project. If your project uses a STAPLE schema, you can view, edit, reset, or download the
           metadata below.
         </p>
-        {project.formVersionId ? (
+        {project.formVersion ? (
           <>
             <MetadataDisplay metadata={project.metadata} />
             <div className="flex flex-wrap md:flex-nowrap gap-2 justify-end">
