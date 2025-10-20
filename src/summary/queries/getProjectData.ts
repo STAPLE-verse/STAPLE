@@ -26,6 +26,8 @@ export default resolver.pipe(resolver.zod(GetProjectData), resolver.authorize(),
       // relations we want
       tasks: {
         select: {
+          id: true,
+          formVersionId: true,
           // task timestamps
           createdAt: true,
           updatedAt: true,
@@ -55,6 +57,7 @@ export default resolver.pipe(resolver.zod(GetProjectData), resolver.authorize(),
           status: true,
           // needed for anonymization downstream
           anonymous: true,
+          milestoneId: true,
           // relations on task
           milestone: {
             select: {
@@ -78,10 +81,12 @@ export default resolver.pipe(resolver.zod(GetProjectData), resolver.authorize(),
           },
           taskLogs: {
             select: {
+              id: true,
               createdAt: true,
               status: true,
               metadata: true,
               completedAs: true,
+              assignedToId: true,
               assignedTo: {
                 select: {
                   id: true,
@@ -89,6 +94,7 @@ export default resolver.pipe(resolver.zod(GetProjectData), resolver.authorize(),
                   deleted: true,
                 },
               },
+              completedById: true,
               completedBy: {
                 select: {
                   id: true,
@@ -110,6 +116,7 @@ export default resolver.pipe(resolver.zod(GetProjectData), resolver.authorize(),
       },
       milestones: {
         select: {
+          id: true,
           createdAt: true,
           updatedAt: true,
           name: true,
@@ -128,6 +135,7 @@ export default resolver.pipe(resolver.zod(GetProjectData), resolver.authorize(),
         // "keep project members like I have it"
         select: {
           id: true,
+          createdAt: true,
           name: true,
           deleted: true,
           users: {
