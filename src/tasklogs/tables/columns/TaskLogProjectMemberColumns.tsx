@@ -10,6 +10,8 @@ import {
   HandRaisedIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline"
+import DateFormat from "src/core/components/DateFormat"
+import { CheckCircleIcon, XCircleIcon, ClockIcon } from "@heroicons/react/24/outline"
 import { TaskLogTaskCompleted } from "src/core/types"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
@@ -53,7 +55,7 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
               <HandRaisedIcon className="h-5 w-5 inline-block" />
             </span>
           )}
-          <span>{info.getValue()}</span>
+          <DateFormat date={info.getValue()} preset="dateShort" fallback="—" />
         </div>
       )
     },
@@ -74,9 +76,44 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
     id: "updatedAt",
   }),
   columnHelper.accessor("status", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => {
+      const value = info.getValue()
+      const isCompleted = value === "Completed"
+      return (
+        <div className="flex justify-center items-center">
+          {isCompleted ? (
+            <CheckCircleIcon className="h-6 w-6 text-success" title="Completed" />
+          ) : (
+            <XCircleIcon className="h-6 w-6 text-error" title="Not Completed" />
+          )}
+        </div>
+      )
+    },
     header: "Status",
     id: "status",
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "select",
+    },
+  }),
+  columnHelper.accessor("approved", {
+    cell: (info) => {
+      const value = info.getValue() as boolean | null
+      return (
+        <div className="flex justify-center items-center">
+          {value === true ? (
+            <CheckCircleIcon className="h-6 w-6 text-success" title="Approved" />
+          ) : value === false ? (
+            <XCircleIcon className="h-6 w-6 text-error" title="Not Approved" />
+          ) : (
+            <ClockIcon className="h-6 w-6 text-warning" title="Pending" />
+          )}
+        </div>
+      )
+    },
+    header: "Approved",
+    id: "approved",
     enableColumnFilter: true,
     enableSorting: true,
     meta: {
