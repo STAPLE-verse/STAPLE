@@ -74,6 +74,7 @@ const NewTaskPage = () => {
     if ("formVersionId" in task) initial.formVersionId = task.formVersionId ?? null
     if ("startDate" in task && task.startDate) initial.startDate = new Date(task.startDate)
     if ("containerId" in task) initial.containerId = task.containerId ?? null
+    if ("anonymous" in task) initial.anonymous = task.anonymous ?? false
 
     // Map contributors/teams from assignedMembers if present (kept minimal)
     if (Array.isArray((task as any).assignedMembers)) {

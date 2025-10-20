@@ -208,6 +208,7 @@ model Task {
   elementId          Int?
   element            Element?        @relation(fields: [elementId], references: [id])
   autoAssignNew      AutoAssignNew   @default(NONE)
+  anonymous          Boolean         @default(false)
 }
 
 model TaskLog {

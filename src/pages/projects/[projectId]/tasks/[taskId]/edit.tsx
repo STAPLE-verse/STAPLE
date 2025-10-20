@@ -54,6 +54,7 @@ export const EditTask = () => {
     rolesId: rolesId,
     milestoneId: task.milestoneId,
     autoAssignNew: task.autoAssignNew ?? "NONE",
+    anonymous: task.anonymous ?? false,
     tags: Array.isArray(task.tags)
       ? (task.tags as Tag[]).map((tag) => ({
           id: tag.key, // Use 'key' as the ID
