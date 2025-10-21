@@ -7,6 +7,7 @@ import Widget from "../Widget"
 import { ArchiveBoxIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProjects from "src/projects/queries/getProjects"
+import { useTranslation } from "react-i18next"
 
 const TotalProjects: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const currentUser = useCurrentUser()
@@ -21,10 +22,10 @@ const TotalProjects: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size 
       },
     },
   })
-
+  const { t } = (useTranslation as any)()
   return (
     <Widget
-      title="Projects"
+      title={t("main.dashboard.projects")}
       display={<GetIconDisplay number={projects.length} icon={ArchiveBoxIcon} />}
       link={
         <PrimaryLink
@@ -34,7 +35,7 @@ const TotalProjects: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size 
         />
       }
       tooltipId="tool-project-total"
-      tooltipContent="Total number of projects"
+      tooltipContent={t("main.dashboard.tooltips.projects")}
       size={size}
     />
   )

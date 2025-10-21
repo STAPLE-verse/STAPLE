@@ -79,6 +79,13 @@ const TaskContent = () => {
                 <></>
               )}
 
+              <Link
+                className="btn btn-success"
+                href={Routes.NewTaskPage({ projectId: task.projectId, copyFromTaskId: task.id })}
+              >
+                Copy Task
+              </Link>
+
               <DeleteTask taskId={task.id} projectId={task.projectId} />
             </>
           )}

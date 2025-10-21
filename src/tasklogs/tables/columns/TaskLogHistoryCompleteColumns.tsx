@@ -1,3 +1,5 @@
+import DateFormat from "src/core/components/DateFormat"
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { ApproveDropdown } from "src/tasklogs/components/ApproveTask"
 import { ProcessedTaskLogHistoryModal } from "../processing/processTaskLogs"
@@ -13,12 +15,24 @@ export const TaskLogHistoryCompleteColumns: ColumnDef<ProcessedTaskLogHistoryMod
     id: "changedBy",
   }),
   columnHelper.accessor("lastUpdate", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => <DateFormat date={info.getValue()} preset="full" />,
     header: "Last Update",
     id: "createdAt",
   }),
   columnHelper.accessor("status", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => {
+      const value = info.getValue()
+      const isCompleted = value === "Completed"
+      return (
+        <div className="flex justify-center items-center">
+          {isCompleted ? (
+            <CheckCircleIcon className="h-6 w-6 text-success" title="Completed" />
+          ) : (
+            <XCircleIcon className="h-6 w-6 text-error" title="Not Completed" />
+          )}
+        </div>
+      )
+    },
     header: "Status",
     id: "status",
   }),

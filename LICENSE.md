@@ -4,12 +4,12 @@ Copyright (c) 2025 STAPLE Development Team
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the “Software”), to deal
-in the Software without restriction, including without limitation the rights 
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, subject to the following conditions:
 
 1. **Attribution** must be given to the original authors of the STAPLE software.
-2. **Non-Commercial Use Only**: The Software may not be used, in whole or in part, for commercial purposes without prior written permission from the copyright holders. 
+2. **Non-Commercial Use Only**: The Software may not be used, in whole or in part, for commercial purposes without prior written permission from the copyright holders.
    - “Commercial purposes” include selling the Software, offering it as a service for a fee, or incorporating it into a commercial product or platform.
 3. The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 

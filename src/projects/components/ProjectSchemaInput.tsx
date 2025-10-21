@@ -80,6 +80,7 @@ export const ProjectSchemaInput = ({
   const schemas = typeduserForms
     .filter((form) => form.formVersion)
     .flatMap((form) => form.formVersion!)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
   // Add "(Default)" to the name of the default form
   const options = schemas.map((schema) => ({
@@ -91,17 +92,21 @@ export const ProjectSchemaInput = ({
   }))
 
   // Extra columns for the select table
-  const versionNumber = schemas.map((schema) => schema.version)
-
-  const extraData = versionNumber.map((version) => ({
-    version: version,
+  const extraData = schemas.map((schema) => ({
+    version: schema.version,
+    date: new Date(schema.createdAt).toLocaleDateString(),
   }))
-
   const extraColumns = [
     {
       id: "version",
       header: "Version",
       accessorKey: "version",
+      cell: (info) => <span>{info.getValue()}</span>,
+    },
+    {
+      id: "date",
+      header: "Created",
+      accessorKey: "date",
       cell: (info) => <span>{info.getValue()}</span>,
     },
   ]

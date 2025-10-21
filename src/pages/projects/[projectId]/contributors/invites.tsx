@@ -6,6 +6,8 @@ import Layout from "src/core/layouts/Layout"
 import useProjectMemberAuthorization from "src/projectprivileges/hooks/UseProjectMemberAuthorization"
 import { MemberPrivileges } from "@prisma/client"
 import { AllInvitesList } from "src/invites/components/AllInvitesList"
+import { Tooltip } from "react-tooltip"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
 
 // issue 37
 const InvitesPagePM = () => {
@@ -16,26 +18,49 @@ const InvitesPagePM = () => {
     // @ts-expect-error children are clearly passed below
     <Layout title="Project Contributor Invitations">
       <main className="flex flex-col mx-auto w-full">
-        <h1 className="flex justify-center mb-2 text-3xl">Invited Contributors</h1>
+        <h1 className="flex justify-center items-center text-3xl">
+          Invited Contributors
+          <InformationCircleIcon
+            className="h-6 w-6 ml-2 text-info stroke-2"
+            data-tooltip-id="contributors-overview"
+          />
+          <Tooltip
+            id="contributors-overview"
+            content="On this page, you can view the invitations for contributors. Give the contributor the invite code if they want to add the project but do not see the invitation. "
+            className="z-[1099] ourtooltips"
+          />
+        </h1>
 
-        <Suspense fallback={<div>Loading...</div>}>
-          <AllInvitesList />
-        </Suspense>
-        <div>
+        <div className="flex justify-center items-center">
           <Link
-            className="btn btn-primary mb-4 mt-4"
+            className="btn btn-primary mb-2 mt-4"
             href={Routes.NewContributorPage({ projectId: projectId! })}
           >
-            Invite Contributor
+            Invite Contributor(s)
           </Link>
 
           <Link
-            className="btn btn-secondary mx-2 mb-4 mt-4"
+            className="btn btn-secondary mx-2 mb-2 mt-4"
             href={Routes.ContributorsPage({ projectId: projectId! })}
           >
             View Contributors
           </Link>
+          <Link
+            href={Routes.RoleBuilderPage()}
+            className="btn btn-info mb-2 mt-4"
+            data-tooltip-id="roles-overview"
+          >
+            Go to Roles
+          </Link>
+          <Tooltip
+            id="roles-overview"
+            content="Set up project roles on the Roles page so you can assign them to contributors. You can add or edit roles later."
+            className="z-[1099] ourtooltips"
+          />
         </div>
+        <Suspense fallback={<div>Loading...</div>}>
+          <AllInvitesList />
+        </Suspense>
       </main>
     </Layout>
   )

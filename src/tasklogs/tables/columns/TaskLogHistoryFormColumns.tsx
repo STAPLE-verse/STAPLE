@@ -2,6 +2,8 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import { ProcessedTaskLogHistoryModal } from "../processing/processTaskLogs"
 import { ApproveDropdown } from "src/tasklogs/components/ApproveTask"
+import DateFormat from "src/core/components/DateFormat"
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline"
 // Column helper
 const columnHelper = createColumnHelper<ProcessedTaskLogHistoryModal>()
 
@@ -13,12 +15,24 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistoryModal>[
     id: "changedBy",
   }),
   columnHelper.accessor("lastUpdate", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => <DateFormat date={info.getValue()} preset="full" />,
     header: "Last Update",
     id: "createdAt",
   }),
   columnHelper.accessor("status", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => {
+      const value = info.getValue()
+      const isCompleted = value === "Completed"
+      return (
+        <div className="flex justify-center items-center">
+          {isCompleted ? (
+            <CheckCircleIcon className="h-6 w-6 text-success" title="Completed" />
+          ) : (
+            <XCircleIcon className="h-6 w-6 text-error" title="Not Completed" />
+          )}
+        </div>
+      )
+    },
     header: "Status",
     id: "status",
   }),

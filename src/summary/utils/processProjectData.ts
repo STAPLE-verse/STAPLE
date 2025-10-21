@@ -24,6 +24,20 @@ export function cleanProjectData(project: any) {
     return member
   })
 
+  // Scrub task fields for anonymous tasks
+  if (Array.isArray(project.tasks)) {
+    project.tasks = project.tasks.map((task: any) => {
+      if (task && task.anonymous) {
+        return {
+          ...task,
+          name: "Anonymous task",
+          description: "Anonymous task",
+        }
+      }
+      return task
+    })
+  }
+
   // Keep all task/user references as-is
   return project
 }

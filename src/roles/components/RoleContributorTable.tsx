@@ -1,5 +1,5 @@
 import Table from "src/core/components/Table"
-import { RoleContributorTableColumns } from "../tables/columns/RoleContributorTableColumns"
+import { useRoleContributorTableColumns } from "../tables/columns/RoleContributorTableColumns"
 
 export const RoleContributorTable = ({ contributors }) => {
   const processedData = contributors.map((contributor) => ({
@@ -10,5 +10,7 @@ export const RoleContributorTable = ({ contributors }) => {
     roleNames: contributor.roles ? contributor.roles.map((role) => role.name).join(", ") : "",
   }))
 
-  return <Table columns={RoleContributorTableColumns} data={processedData} addPagination={true} />
+  const columns = useRoleContributorTableColumns(processedData)
+
+  return <Table columns={columns} data={processedData} addPagination={true} />
 }

@@ -74,7 +74,7 @@ const Summary = () => {
     //console.log("Submitting form data:", data) // Debug log
     try {
       const updatedProject = await updateProjectMutation({
-        id: project.id,
+        id: projectId!,
         name: project.name,
         metadata: data.formData,
       })
@@ -111,7 +111,7 @@ const Summary = () => {
     try {
       // Reset the metadata to an empty object
       await updateProjectMutation({
-        id: project.id,
+        id: projectId!,
         name: project.name,
         metadata: {}, // Reset metadata to an empty object
       })
@@ -242,21 +242,21 @@ const Summary = () => {
           project. If your project uses a STAPLE schema, you can view, edit, reset, or download the
           metadata below.
         </p>
-        {project.formVersionId ? (
+        {project.formVersion ? (
           <>
             <MetadataDisplay metadata={project.metadata} />
-            <div className="flex flex-wrap gap-2 justify-end max-w-xl">
+            <div className="flex flex-wrap md:flex-nowrap gap-2 justify-end">
               <DownloadJSON
                 data={project.metadata}
                 fileName={project.name}
-                className="btn btn-primary"
+                className="btn btn-primary whitespace-nowrap"
                 type="button"
                 label="Download Metadata JSON"
               />
               <DownloadXLSX
                 data={project.metadata}
                 fileName={project.name}
-                className="btn btn-secondary mx-2"
+                className="btn btn-secondary whitespace-nowrap"
                 type="button"
                 label="Download Metadata XLSX"
               />
@@ -265,7 +265,7 @@ const Summary = () => {
                 uiSchema={getJsonSchema(project.formVersion?.uiSchema)}
                 metadata={project.metadata}
                 label={"Edit Project Metadata"}
-                classNames="btn-info"
+                classNames="btn-info whitespace-nowrap"
                 onSubmit={handleJsonFormSubmit}
                 onError={handleJsonFormError}
                 resetHandler={handleResetMetadata}
@@ -278,11 +278,39 @@ const Summary = () => {
         )}
       </CollapseCard>
 
-      <CollapseCard title="Project Summary Viewer" className="mb-4">
+      <CollapseCard title="Project Summary Download" className="mb-4">
         <p>
-          Use this section to view and download the complete project summary. You can export the
-          full project JSON or launch an interactive viewer (coming soon).
+          Use this section to generate and download the Interactive Project Summary Viewer and other
+          exports. Both options below are interactive websites but will only contain information
+          about the project at the time of download.
         </p>
+        <ol className="list list-disc ml-6 mt-4">
+          <li>
+            <strong className="text-primary">Project JSON:</strong> a machine‑readable version of
+            your project that can be used to index data on search engines like Google or loaded into
+            our external project summary viewer (
+            <a
+              href="https://staple.science/project-summary-external/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary underline"
+            >
+              link
+            </a>
+            ).
+          </li>
+          <li>
+            <strong className="text-secondary">Shareable Summary (recommended):</strong> a
+            human‑readable, shareable snapshot of your project. It’s the same experience as our
+            external viewer, but bundled so you can keep everything together and share it offline or
+            host it yourself. The download is a .zip — Windows users must unzip it first
+            (Right‑click → Extract All), then open <code>Home.html</code> inside the extracted
+            folder. Once you click{" "}
+            <strong className="text-secondary">Generate Shareable Summary</strong>, a new button
+            will appear when the .zip file is ready for download.
+          </li>
+        </ol>
+
         <br className="mb-4" />
         {/* buttons */}
         <div className="card-actions justify-end">
@@ -312,8 +340,8 @@ const Summary = () => {
 
       <CollapseCard title="Download STAPLE Schemas" className="mb-4">
         <p>
-          Projects that use official STAPLE schemas will show those schemas here for download. This
-          is helpful for reuse, documentation, or validation in other systems.
+          Projects that use official STAPLE schemas will show the JSON-LD schemas here for download.
+          These downloads are helpful for reuse, documentation, or validation in other systems.
         </p>
         <div className="flex flex-wrap gap-2 mt-4 justify-start">
           {hasStapleSchema && projectJsonLd && (

@@ -24,13 +24,75 @@
       "forms": "Formularios",
       "roles": "Roles",
       "admin": "Administración",
-      "help": "Ayuda"
+      "help": "Ayuda",
+      "tooltips": {
+        "dashboard": "Tablero de inicio",
+        "projects": "Ver todos los proyectos",
+        "invitations": "Invitaciones a proyectos",
+        "tasks": "Ver todas las tareas",
+        "notifications": "Ver todas las notificaciones",
+        "forms": "Gestionar formularios de metadatos",
+        "roles": "Gestionar categorías de roles",
+        "help": "Obtener ayuda"
+      }
     }
   },
   "main": {
     "welcome": "Bienvenido",
     "dashboard": {
-      "totalcontributors": "Contribuidores Totales"
+      "upcomingtask": "Tareas Pendientes",
+      "overduetask": "Tareas Vencidas",
+      "notifications": "Notificaciones",
+      "totalcontributors": "Contribuidores Totales",
+      "alltasks": "Tareas",
+      "projects": "Proyectos",
+      "forms": "Formularios",
+      "invites": "Invitaciones",
+      "roles": "Roles",
+      "lastupdatedprojects": "Últimos Proyectos Actualizados",
+      "alltasksbutton": "Ver todas las tareas",
+      "allprojectsbutton": "Ver todos los proyectos",
+      "allnotificationsbutton": "Ver todas las notificaciones",
+      "tooltips": {
+        "upcomingtask": "Tres tareas próximas para todos los proyectos",
+        "overduetask": "Tres tareas vencidas para todos los proyectos",
+        "notifications": "Tres notificaciones recientes para todos los proyectos",
+        "totalcontributors": "Total de contribuidores únicos en todos los proyectos",
+        "alltasks": "Porcentaje de tareas completadas",
+        "projects": "Total de proyectos",
+        "forms": "Total de plantillas de metadatos",
+        "invites": "Total de invitaciones a proyectos",
+        "roles": "Total de etiquetas de roles",
+        "lastupdatedprojects": "Tres proyectos recientemente actualizados"
+      }
     }
+  },
+  "projects": {
+    "title": "Todos los proyectos",
+    "createproject": "Crear proyecto"
+  },
+  "widgets": {
+    "upcomingtask": "No hay tareas pendientes",
+    "overduetask": "No overdue task TEST"
+  },
+  "breadcrumbs": {
+    "projects": "Proyectos",
+    "home": "Inicio",
+    "main": "Tablero",
+    "invites": "Invitaciones",
+    "tasks": "Tareas",
+    "notifications": "Notificaciones",
+    "forms": "Formularios",
+    "roles": "Roles",
+    "updates": "Administración",
+    "help": "Ayuda",
+    "summary": "Resumen",
+    "settings": "Configuración",
+    "tags": "Etiquetas",
+    "notes": "Notas",
+    "milestones": "Hitos",
+    "contributors": "Colaboradores",
+    "teams": "Equipos",
+    "edit": "Ajustes"
   }
 }

@@ -10,11 +10,14 @@ import { ShowTeamModal } from "src/teams/components/ShowTeamModal"
 import TooltipWrapper from "src/core/components/TooltipWrapper"
 import {
   ChatBubbleOvalLeftEllipsisIcon,
+  ClockIcon,
   HandRaisedIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline"
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid"
 import TaskLogHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
 import { Tooltip } from "react-tooltip"
+import DateFormat from "src/core/components/DateFormat"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedIndividualTaskLog | ProcessedTeamTaskLog>()
@@ -76,7 +79,7 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog | Processe
               <HandRaisedIcon className="h-5 w-5 inline-block" />
             </span>
           )}
-          <span>{info.getValue()}</span>
+          <DateFormat date={info.getValue()} preset="dateShort" />
         </div>
       )
     },
@@ -97,9 +100,42 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog | Processe
     id: "updatedAt",
   }),
   columnHelper.accessor("status", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => {
+      const value = info.getValue()
+      const isCompleted = value === "Completed"
+      return (
+        <div className="flex justify-center items-center">
+          {isCompleted ? (
+            <CheckCircleIcon className="h-6 w-6 text-success" title="Completed" />
+          ) : (
+            <XCircleIcon className="h-6 w-6 text-error" title="Not Completed" />
+          )}
+        </div>
+      )
+    },
     header: "Status",
     id: "status",
+    enableColumnFilter: true,
+    enableSorting: true,
+    meta: {
+      filterVariant: "select",
+    },
+  }),
+  columnHelper.accessor("approved", {
+    cell: (info) => {
+      const value = info.getValue() as boolean | null
+      let icon: JSX.Element
+      if (value === true) {
+        icon = <CheckCircleIcon className="h-6 w-6 text-success" title="Approved" />
+      } else if (value === false) {
+        icon = <XCircleIcon className="h-6 w-6 text-error" title="Not approved" />
+      } else {
+        icon = <ClockIcon className="h-6 w-6 text-warning" title="Pending" />
+      }
+      return <div className="flex justify-center items-center">{icon}</div>
+    },
+    header: "Approved",
+    id: "approved",
     enableColumnFilter: true,
     enableSorting: true,
     meta: {

@@ -49,6 +49,17 @@ export const AllTasksColumns = [
       filterVariant: "range",
     },
   }),
+  columnHelperAll.accessor("approved", {
+    header: "Approved",
+    enableColumnFilter: true,
+    enableSorting: true,
+    cell: (info) => (
+      <div className="flex w-full justify-center items-center">{info.getValue()}%</div>
+    ),
+    meta: {
+      filterVariant: "range",
+    },
+  }),
   columnHelperAll.accessor("newCommentsCount", {
     header: "Comments",
     id: "newComments",

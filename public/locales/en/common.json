@@ -24,13 +24,75 @@
       "forms": "Forms",
       "roles": "Roles",
       "admin": "Admin",
-      "help": "Help"
+      "help": "Help",
+      "tooltips": {
+        "dashboard": "Home dashboard",
+        "projects": "View all projects",
+        "invitations": "Project invitations",
+        "tasks": "View all tasks",
+        "notifications": "View all notifications",
+        "forms": "Manage metadata forms",
+        "roles": "Manage role categories",
+        "help": "Get help"
+      }
     }
   },
   "main": {
     "welcome": "Welcome",
     "dashboard": {
-      "totalcontributors": "Total Contributors"
+      "upcomingtask": "Upcoming Tasks",
+      "overduetask": "Overdue Tasks",
+      "notifications": "Notifications",
+      "totalcontributors": "Total Contributors",
+      "alltasks": "Tasks",
+      "projects": "Projects",
+      "forms": "Forms",
+      "invites": "Invitations",
+      "roles": "Roles",
+      "lastupdatedprojects": "Last Updated Projects",
+      "alltasksbutton": "All Tasks",
+      "allprojectsbutton": "All Projects",
+      "allnotificationsbutton": "All Notifications",
+      "tooltips": {
+        "upcomingtask": "Three upcoming tasks for all projects",
+        "overduetask": "Overdue Tasks",
+        "notifications": "Notifications",
+        "totalcontributors": "Total Contributors",
+        "alltasks": "Tasks",
+        "projects": "Projects",
+        "forms": "Forms",
+        "invites": "Invitations",
+        "roles": "Roles",
+        "lastupdatedprojects": "Last Updated Projects"
+      }
     }
+  },
+  "projects": {
+    "title": "All Projects",
+    "createproject": "Create Project"
+  },
+  "widgets": {
+    "upcomingtask": "No upcoming task",
+    "overduetask": "No overdue task"
+  },
+  "breadcrumbs": {
+    "projects": "Projects",
+    "home": "Home",
+    "main": "Main",
+    "invites": "Invitations",
+    "tasks": "Tasks",
+    "notifications": "Notifications",
+    "forms": "Forms",
+    "roles": "Roles",
+    "updates": "Administration",
+    "help": "Help",
+    "summary": "Summary",
+    "settings": "Setttings",
+    "tags": "Tags",
+    "notes": "Notes",
+    "milestones": "Milestones",
+    "contributors": "Contributors",
+    "teams": "Teams",
+    "edit": "Settings"
   }
 }

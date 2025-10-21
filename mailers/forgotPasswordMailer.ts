@@ -22,4 +22,6 @@ export async function forgotPasswordMailer({ to, token }: ResetPasswordMailer) {
 
   //send the email
   await ResendMsg(createForgotPasswordMsg(to, resetUrl))
+  // await Amazon(createForgotPasswordMsg(to, resetUrl)) # or amazon
+  // await Mailer(createForgotPasswordMsg(to, resetUrl)) # or gmail
 }

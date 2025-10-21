@@ -14,7 +14,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return
   }
 
-  const filePath = path.join(process.cwd(), "viewer-builds", `viewer_${jobId}.zip`)
+  const filePath = path.join(process.cwd(), "viewer-builds", `Project_Summary_${jobId}.zip`)
 
   if (fs.existsSync(filePath)) {
     res.status(200).end()

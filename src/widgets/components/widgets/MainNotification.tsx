@@ -11,13 +11,15 @@ import {
   BellAlertIcon,
 } from "@heroicons/react/24/outline"
 import Link from "next/link"
+import { useTranslation } from "react-i18next"
 
 const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const [{ notifications, countsByType }] = useQuery(getLatestUnreadNotifications, {})
 
+  const { t } = (useTranslation as any)()
   return (
     <Widget
-      title="Notifications"
+      title={t("main.dashboard.notifications")}
       display={
         <div className="flex justify-around gap-6 mt-4">
           {["Task", "Comment", "Project", "Other"].map((type) => (
@@ -41,12 +43,12 @@ const MainNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
       link={
         <PrimaryLink
           route={Routes.NotificationsPage()}
-          text="All Notifications"
+          text={t("main.dashboard.allnotificationsbutton")}
           classNames="btn-primary"
         />
       }
       tooltipId="tool-notifications"
-      tooltipContent="Number of notifications all projects, clear them by marking them read."
+      tooltipContent={t("main.dashboard.tooltips.notifications")}
       size={size}
     />
   )

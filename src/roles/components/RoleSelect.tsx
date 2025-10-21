@@ -3,6 +3,7 @@ import { useQuery } from "@blitzjs/rpc"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
 import getRoles from "src/roles/queries/getRoles"
 import { RoleWithUser } from "src/core/types"
+import { useForm, useFormState } from "react-final-form"
 
 interface RoleSelectProps {
   projectManagerIds: number[]
@@ -32,13 +33,41 @@ const RoleSelect: React.FC<RoleSelectProps> = ({ projectManagerIds }) => {
     },
   ]
 
+  const allRoleIds = roleOptions.map((o) => o.id)
+  const form = useForm()
+  const { values } = useFormState()
+  const allSelected =
+    Array.isArray((values as any)?.rolesId) &&
+    (values as any).rolesId.length === allRoleIds.length &&
+    allRoleIds.length > 0
+
   return (
-    <CheckboxFieldTable
-      name="rolesId"
-      options={roleOptions}
-      extraColumns={extraColumns}
-      extraData={extraData}
-    />
+    <div className="col-span-full w-full grid grid-cols-1 gap-4">
+      <div className="flex flex-col items-center mb-1">
+        <div className="flex justify-center gap-3">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => form.change("rolesId", allRoleIds)}
+          >
+            {`Select all roles (${allRoleIds.length})`}
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => form.change("rolesId", [])}
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+      <CheckboxFieldTable
+        name="rolesId"
+        options={roleOptions}
+        extraColumns={extraColumns}
+        extraData={extraData}
+      />
+    </div>
   )
 }
 

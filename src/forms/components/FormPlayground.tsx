@@ -44,8 +44,8 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
     saveForm(state)
   }
   const handleChange = (newSchema: object, newUiSchema: object) => {
-    console.log("🧪 incoming schema", newSchema)
-    console.log("🧪 incoming uischema", newUiSchema)
+    //("🧪 incoming schema", newSchema)
+    //console.log("🧪 incoming uischema", newUiSchema)
 
     setState({
       schema: newSchema,

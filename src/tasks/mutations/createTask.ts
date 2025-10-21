@@ -21,6 +21,8 @@ export default resolver.pipe(
       projectMembersId,
       teamsId,
       rolesId,
+      autoAssignNew,
+      anonymous,
       tags,
     },
     ctx
@@ -43,6 +45,8 @@ export default resolver.pipe(
         containerTaskOrder,
         startDate,
         deadline,
+        autoAssignNew: autoAssignNew ?? "NONE",
+        anonymous: anonymous ?? false,
         project: {
           connect: { id: projectId },
         },

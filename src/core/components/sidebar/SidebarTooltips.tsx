@@ -1,38 +1,39 @@
 import React from "react"
 import TooltipWrapper from "../TooltipWrapper"
-
-const tooltipContents = [
-  { id: "project-dashboard-tooltip", content: "Project dashboard" },
-  { id: "project-tags-tooltip", content: "Track members, milestones, and tasks" },
-  { id: "project-tasks-tooltip", content: "Project tasks" },
-  { id: "project-milestones-tooltip", content: "Group and track tasks" },
-  {
-    id: "project-projectMembers-tooltip",
-    content: "Manage project members",
-  },
-  { id: "project-teams-tooltip", content: "Manage project teams" },
-  {
-    id: "project-credit-tooltip",
-    content: "Manage project roles",
-  },
-  { id: "project-form-tooltip", content: "Manage project form metadata" },
-  { id: "project-summary-tooltip", content: "View project summary" },
-  {
-    id: "project-settings-tooltip",
-    content: "Manage project settings",
-  },
-  { id: "dashboard-tooltip", content: "Home dashboard" },
-  { id: "projects-tooltip", content: "View all projects" },
-  { id: "tasks-tooltip", content: "View all tasks" },
-  { id: "forms-tooltip", content: "Manage metadata forms" },
-  { id: "notifications-tooltip", content: "View all notifications" },
-  { id: "roles-tooltip", content: "Manage role categories" },
-  { id: "help-tooltip", content: "Get help" },
-  { id: "project-notification-tooltip", content: "Project notifications" },
-  { id: "invite-tooltip", content: "Project invitations" },
-]
+import { useTranslation } from "react-i18next"
 
 const SidebarTooltips = () => {
+  const { t } = (useTranslation as any)()
+  const tooltipContents = [
+    { id: "project-dashboard-tooltip", content: "Project dashboard" },
+    { id: "project-tasks-tooltip", content: "Project tasks" },
+    { id: "project-milestones-tooltip", content: "Group and track tasks" },
+    {
+      id: "project-projectMembers-tooltip",
+      content: "Manage project members",
+    },
+    { id: "project-teams-tooltip", content: "Manage project teams" },
+    {
+      id: "project-credit-tooltip",
+      content: "Manage project roles",
+    },
+    { id: "project-form-tooltip", content: "Manage project form metadata" },
+    { id: "project-summary-tooltip", content: "View project summary" },
+    {
+      id: "project-settings-tooltip",
+      content: "Manage project settings",
+    },
+    { id: "dashboard-tooltip", content: t("sidebar.home.tooltips.dashboard") },
+    { id: "projects-tooltip", content: "View all projects" },
+    { id: "tasks-tooltip", content: "View all tasks" },
+    { id: "forms-tooltip", content: "Manage metadata forms" },
+    { id: "notifications-tooltip", content: "View all notifications" },
+    { id: "roles-tooltip", content: "Manage role categories" },
+    { id: "help-tooltip", content: "Get help" },
+    { id: "project-notification-tooltip", content: "Project notifications" },
+    { id: "invite-tooltip", content: "Project invitations" },
+  ]
+
   return (
     <>
       {tooltipContents.map((tooltip) => (

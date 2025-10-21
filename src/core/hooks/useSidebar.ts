@@ -45,12 +45,12 @@ export const getSidebarState = (
       )
     })
     return {
-      sidebarTitle: "Home",
+      sidebarTitle: t("sidebar.project.home"),
       sidebarItems,
     }
   } else {
     return {
-      sidebarTitle: "Home",
+      sidebarTitle: t("sidebar.project.home"),
       sidebarItems: HomeSidebarItems(t).filter((_, index) => index !== 7),
     }
   }

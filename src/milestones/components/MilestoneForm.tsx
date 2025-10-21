@@ -10,6 +10,7 @@ import { Tooltip } from "react-tooltip"
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
 import ToggleModal from "src/core/components/ToggleModal"
 import CheckboxFieldTable from "src/core/components/fields/CheckboxFieldTable"
+import { useForm, useFormState } from "react-final-form"
 
 export type Tag = {
   id: string
@@ -33,6 +34,37 @@ export function MilestoneForm<S extends z.ZodType<any, any>>(props: MilestoneFor
         id: task.id,
       }
     })
+
+  const taskAllIds = taskOptions.map((o) => o.id)
+
+  const TasksSelectControls: React.FC = () => {
+    const form = useForm()
+    const { values } = useFormState()
+    const allSelected =
+      Array.isArray(values?.taskIds) &&
+      values.taskIds.length === taskAllIds.length &&
+      taskAllIds.length > 0
+    return (
+      <div className="flex flex-col items-center mb-3">
+        <div className="flex justify-center gap-3">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => form.change("taskIds", taskAllIds)}
+          >
+            {`Select all tasks (${taskAllIds.length})`}
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => form.change("taskIds", [])}
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   // information for tags
   const initialTags = props.initialValues?.tags ?? []
@@ -66,7 +98,7 @@ export function MilestoneForm<S extends z.ZodType<any, any>>(props: MilestoneFor
   }
 
   const handleTagClick = (index: number) => {
-    console.log("The tag at index " + index + " was clicked")
+    //console.log("The tag at index " + index + " was clicked")
   }
 
   const onClearAll = () => {
@@ -140,7 +172,10 @@ export function MilestoneForm<S extends z.ZodType<any, any>>(props: MilestoneFor
         buttonClassName="w-1/2"
         saveButton={true}
       >
-        <CheckboxFieldTable name="taskIds" options={taskOptions} />
+        <div className="col-span-full w-full grid grid-cols-1 gap-4">
+          <TasksSelectControls />
+          <CheckboxFieldTable name="taskIds" options={taskOptions} />
+        </div>
       </ToggleModal>
 
       <DateField name="startDate" label="Start Date:" />

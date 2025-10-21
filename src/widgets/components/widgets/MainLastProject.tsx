@@ -6,19 +6,24 @@ import PrimaryLink from "src/core/components/PrimaryLink"
 import Widget from "../Widget"
 import { GetTableDisplay } from "src/core/components/GetWidgetDisplay"
 import { projectColumns } from "../ColumnHelpers"
+import { useTranslation } from "react-i18next"
 
 const LastProject: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const [{ projects }] = useQuery(getDashboardProjects, undefined)
-
+  const { t } = (useTranslation as any)()
   return (
     <Widget
-      title="Last Updated Projects"
+      title={t("main.dashboard.lastupdatedprojects")}
       display={<GetTableDisplay data={projects} columns={projectColumns} type={"projects"} />}
       link={
-        <PrimaryLink route={Routes.ProjectsPage()} text="All Projects" classNames="btn-primary" />
+        <PrimaryLink
+          route={Routes.ProjectsPage()}
+          text={t("main.dashboard.allprojectsbutton")}
+          classNames="btn-primary"
+        />
       }
       tooltipId="tool-last-project"
-      tooltipContent="Three recently updated projects"
+      tooltipContent={t("main.dashboard.tooltips.lastupdatedprojects")}
       size={size}
     />
   )

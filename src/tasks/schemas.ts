@@ -1,4 +1,4 @@
-import { Status } from "@prisma/client"
+import { Status, AutoAssignNew } from "@prisma/client"
 import { z } from "zod"
 
 export const FormTaskSchema = z
@@ -13,6 +13,8 @@ export const FormTaskSchema = z
     deadline: z.date().optional().nullable(),
     formVersionId: z.number().optional().nullable(),
     startDate: z.date().optional().nullable(),
+    autoAssignNew: z.nativeEnum(AutoAssignNew).optional().nullable(),
+    anonymous: z.boolean(),
   })
   .refine(
     (data) => {
@@ -40,6 +42,8 @@ export const CreateTaskSchema = z.object({
   projectMembersId: z.array(z.number()).optional().nullable(),
   teamsId: z.array(z.number()).optional().nullable(),
   rolesId: z.array(z.number()).optional().nullable(),
+  autoAssignNew: z.nativeEnum(AutoAssignNew).optional().nullable(),
+  anonymous: z.boolean(),
   tags: z
     .array(
       z.object({
@@ -63,6 +67,8 @@ export const UpdateTaskSchema = z.object({
   deadline: z.date().optional().nullable(),
   rolesId: z.array(z.number()).optional().nullable(),
   startDate: z.date().optional().nullable(),
+  autoAssignNew: z.nativeEnum(AutoAssignNew).optional().nullable(),
+  anonymous: z.boolean(),
   tags: z
     .array(
       z.object({

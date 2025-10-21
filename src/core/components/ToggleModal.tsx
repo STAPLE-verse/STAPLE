@@ -40,7 +40,7 @@ const ToggleModal = ({
         {buttonLabel}
       </button>
       <Modal open={isOpen} size={modalSize}>
-        <div>
+        <div className="relative z-[9999] bg-base-100 p-4 rounded-lg shadow-lg">
           <h1 className="flex justify-center mb-2 text-3xl">{modalTitle}</h1>
           <div className="flex justify-start mt-4">{children}</div>
           <div className="modal-action flex justify-end mt-4">
@@ -54,6 +54,7 @@ const ToggleModal = ({
             </button>
           </div>
         </div>
+        <div className="fixed inset-0 pointer-events-none bg-black/50 backdrop-blur-sm z-[9998]"></div>
       </Modal>
     </div>
   )

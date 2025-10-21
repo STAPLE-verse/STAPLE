@@ -1,13 +1,14 @@
 import { Suspense } from "react"
 import { useQuery } from "@blitzjs/rpc"
 import React from "react"
-import { useParam } from "@blitzjs/next"
+import { Routes, useParam } from "@blitzjs/next"
 import getProjectMembers from "src/projectmembers/queries/getProjectMembers"
 import { MultiSelectProvider } from "../../core/components/fields/MultiSelectContext"
 import { RoleContributorTable } from "./RoleContributorTable"
 import { AddRoleModal } from "./AddRoleModal"
 import { ProjectMemberWithUsersAndRoles } from "src/core/types"
-import Card from "src/core/components/Card"
+import Link from "next/link"
+import { Tooltip } from "react-tooltip"
 
 const ContributorsTab = () => {
   const projectId = useParam("projectId", "number")
@@ -33,7 +34,19 @@ const ContributorsTab = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <div className="rounded-b-box rounded-tr-box bg-base-300 p-4">
             <RoleContributorTable contributors={contributors} />
-            <div className="modal-action flex justify-end mt-4">
+            <div className="modal-action flex justify-between mt-4">
+              <Link
+                href={Routes.RoleBuilderPage()}
+                className="btn btn-secondary"
+                data-tooltip-id="roles-overview"
+              >
+                Go to Create Roles
+              </Link>
+              <Tooltip
+                id="roles-overview"
+                content="Set up project roles on the Roles page so you can assign them on this page. You can add or edit roles later."
+                className="z-[1099] ourtooltips"
+              />
               <AddRoleModal
                 rows={contributors}
                 refetch={refetch}

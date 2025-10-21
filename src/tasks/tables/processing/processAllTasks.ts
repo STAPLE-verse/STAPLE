@@ -5,6 +5,7 @@ export type AllTasksData = {
   projectName: string
   deadline: Date | null
   completion: number
+  approved: number
   hasNewComments: boolean
   newCommentsCount: {
     countTotal: number
@@ -21,23 +22,28 @@ export function processAllTasks(
   latestTaskLog: TaskLogWithTaskProjectAndComments[],
   originalTaskLogs?: TaskLogWithTaskProjectAndComments[]
 ): AllTasksData[] {
-  const taskSummary: Record<number, { total: number; completed: number }> = {}
+  const taskSummary: Record<number, { total: number; completed: number; approved: number }> = {}
 
   // Initialize the summary for each taskLog
   latestTaskLog.forEach((log) => {
-    const { taskId, status } = log
+    const { taskId, status, approved } = log
 
     // Initialize the summary for this taskId if it doesn't exist
     if (!taskSummary[taskId]) {
-      taskSummary[taskId] = { total: 0, completed: 0 }
+      taskSummary[taskId] = { total: 0, completed: 0, approved: 0 }
     }
 
     // Use type assertion to avoid TypeScript's undefined warning
-    ;(taskSummary[taskId] as { total: number; completed: number }).total += 1
+    ;(taskSummary[taskId] as { total: number; completed: number; approved: number }).total += 1
 
     // Increment the completed count if the status is "COMPLETED"
     if (status === "COMPLETED") {
-      ;(taskSummary[taskId] as { total: number; completed: number }).completed += 1
+      ;(
+        taskSummary[taskId] as { total: number; completed: number; approved: number }
+      ).completed += 1
+    }
+    if (approved === true) {
+      ;(taskSummary[taskId] as { total: number; completed: number; approved: number }).approved += 1
     }
   })
 
@@ -74,6 +80,7 @@ export function processAllTasks(
         projectName: "Unknown Project",
         deadline: null,
         completion: 0,
+        approved: 0,
         hasNewComments: false,
         newCommentsCount: {
           countTotal: 0,
@@ -87,8 +94,9 @@ export function processAllTasks(
       }
     }
 
-    const { total, completed } = taskData
+    const { total, completed, approved } = taskData
     const completionPercentage = total > 0 ? Math.round((completed / total) * 100) : 0
+    const approvedPercentage = total > 0 ? Math.round((approved / total) * 100) : 0
 
     const unreadCount = commentSummary[Number(taskId)] || 0
     const hasNewComments = unreadCount > 0
@@ -98,6 +106,7 @@ export function processAllTasks(
       projectName: task?.project!.name || "Unknown Project",
       deadline: task?.deadline || null,
       completion: completionPercentage,
+      approved: approvedPercentage,
       hasNewComments,
       newCommentsCount: {
         countTotal: unreadCount,

@@ -83,6 +83,7 @@ export const TaskLogTable = ({ contributorFilter }: TaskLogTableProps) => {
   // Get columns definitions for tables
   const individualColumns = task.formVersionId ? TaskLogFormColumns : TaskLogCompleteColumns
   const allProcessedLogs = [...processedIndividualAssignments, ...processedTeamAssignments]
+
   return (
     <div className="rounded-b-box rounded-tr-box bg-base-300 p-4">
       <div className="overflow-x-auto">
