@@ -15,6 +15,8 @@ export default resolver.pipe(
   resolver.zod(CreateInviteSchema),
   resolver.authorize(),
   async (input) => {
+    input.email = input.email.toLowerCase()
+
     let textResult
 
     // Check if the user is already a soft-deleted project member
@@ -24,7 +26,7 @@ export default resolver.pipe(
         name: null,
         deleted: true,
         users: {
-          some: { email: input.email }, // Match by email
+          some: { email: { equals: input.email, mode: "insensitive" } }, // Match by email
         },
       },
     })
@@ -35,7 +37,7 @@ export default resolver.pipe(
         data: {
           projectId: input.projectId,
           privilege: input.privilege,
-          email: input.email,
+          email: input.email.toLowerCase(),
           invitationCode: generateToken(20),
           addedBy: input.addedBy,
           tags: input.tags ?? undefined,
@@ -58,7 +60,7 @@ export default resolver.pipe(
           projectId: input.projectId,
           name: null,
           users: {
-            some: { email: input.email }, // Use `some` to query an array field
+            some: { email: { equals: input.email, mode: "insensitive" } }, // Use `some` to query an array field
           },
         },
       })
@@ -74,7 +76,7 @@ export default resolver.pipe(
           data: {
             projectId: input.projectId,
             privilege: input.privilege,
-            email: input.email,
+            email: input.email.toLowerCase(),
             invitationCode: generateToken(20),
             addedBy: input.addedBy,
             tags: input.tags ?? undefined,

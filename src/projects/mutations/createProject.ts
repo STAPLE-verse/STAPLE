@@ -77,8 +77,17 @@ export default resolver.pipe(
           container: {
             connect: { id: firstContainerId }, // put it in default to do
           },
-          description:
-            "You added a description form to your project. You can complete that form by going to the project > clicking on settings in the left hand menu > and then edit form data.",
+          description: `### Next step: Complete your project description form
+
+You just added a **Project Description Form** to this project.
+
+**How to complete it:**
+1. Go to your **Project**.
+2. Click **Settings** in the left-hand menu.
+3. Open **Edit Form Data** and complete the required fields.
+
+_Why this matters:_ Completing this form helps make your project transparent and searchable via metadata.
+`,
           createdBy: {
             connect: { id: projectMember.id },
           },
