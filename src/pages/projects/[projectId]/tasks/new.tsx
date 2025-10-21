@@ -11,6 +11,7 @@ import { useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import toast from "react-hot-toast"
 import { useCurrentContributor } from "src/contributors/hooks/useCurrentContributor"
+import Link from "next/link"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 
@@ -210,6 +211,32 @@ const NewTaskPage = () => {
             className="z-[1099] ourtooltips"
           />
         </h1>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <Link
+            href={Routes.AllFormsPage()}
+            className="btn btn-primary"
+            data-tooltip-id="forms-overview"
+          >
+            Go to Forms
+          </Link>
+          <Link
+            href={Routes.RoleBuilderPage()}
+            className="btn btn-secondary"
+            data-tooltip-id="roles-overview"
+          >
+            Go to Roles
+          </Link>
+          <Tooltip
+            id="roles-overview"
+            content="Set up project roles on the Roles page so you can assign them to this task. You can add or edit roles later."
+            className="z-[1099] ourtooltips"
+          />
+          <Tooltip
+            id="forms-overview"
+            content="Create your form first if you plan to require one for this task. Adding a new form later requires creating a new task."
+            className="z-[1099] ourtooltips"
+          />
+        </div>
         <TaskFormWrapper
           projectId={projectId}
           schema={FormTaskSchema}
