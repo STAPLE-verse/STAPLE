@@ -31,22 +31,37 @@ export const TaskSchemaInput = ({
 
   const typedPmForms = pmForms as FormWithVersionAndUser[]
 
+  // Build a lookup from formVersion.id -> PM username for fast, reliable access
+  const versionIdToUsername = new Map<number, string>()
+  typedPmForms.forEach((form) => {
+    const username =
+      (form.user?.firstName && form.user?.lastName
+        ? `${form.user.firstName} ${form.user.lastName}`
+        : form.user?.username) ?? ""
+    const versions = Array.isArray(form.formVersion)
+      ? form.formVersion
+      : form.formVersion
+      ? [form.formVersion]
+      : []
+    versions.forEach((fv: any) => {
+      if (fv?.id != null) {
+        versionIdToUsername.set(fv.id, username)
+      }
+    })
+  })
+
   const schemas = typedPmForms
     .filter((form) => form.formVersion)
     .flatMap((form) => form.formVersion!)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
   const options = schemas.map((schema) => ({ id: schema.id, label: schema.name }))
 
   // Extra columns for the select table
-  const versionNumber = schemas.map((schema) => schema.version)
-
-  const pmNames = typedPmForms
-    .filter((form) => form.formVersion) // Keep only forms where formVersion is defined
-    .map((form) => form.user?.username) // Map to the username
-
-  const extraData = versionNumber.map((version, index) => ({
-    version: version,
-    username: pmNames[index], // Safely access pmNames[index]
+  const extraData = schemas.map((schema) => ({
+    version: schema.version,
+    username: versionIdToUsername.get(schema.id) ?? "",
+    date: new Date(schema.createdAt).toLocaleDateString(),
   }))
 
   const extraColumns = [
@@ -60,6 +75,12 @@ export const TaskSchemaInput = ({
       id: "pm",
       header: "Project Manager",
       accessorKey: "username",
+      cell: (info) => <span>{info.getValue()}</span>,
+    },
+    {
+      id: "date",
+      header: "Created",
+      accessorKey: "date",
       cell: (info) => <span>{info.getValue()}</span>,
     },
   ]
