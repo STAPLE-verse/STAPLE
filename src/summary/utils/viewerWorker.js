@@ -52,8 +52,6 @@ new QueueWorker(
     archive.pipe(output)
     archive.directory(jobFolder, false)
     await archive.finalize()
-
-    console.log(`[ViewerWorker] ZIP created at ${zipPath}`)
   },
   {
     connection: viewerQueue.opts.connection,

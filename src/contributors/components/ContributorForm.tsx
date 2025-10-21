@@ -72,7 +72,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
   }
 
   const handleTagClick = (index: number) => {
-    console.log("The tag at index " + index + " was clicked")
+    //console.log("The tag at index " + index + " was clicked")
   }
 
   const onClearAll = () => {

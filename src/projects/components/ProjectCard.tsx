@@ -10,7 +10,6 @@ import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
 
 const ProjectCard = ({ project }: { project: any }) => {
-  console.log(project)
   const myPrivilege = project?.ProjectPrivilege?.[0]?.privilege
   return (
     <div className="collapse collapse-arrow bg-base-300 mb-4">

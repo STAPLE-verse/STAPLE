@@ -141,16 +141,6 @@ export default resolver.pipe(
       },
     })
 
-    console.log("📌 AssignedTo ProjectMemberId:", taskLog.assignedToId)
-    console.log(
-      "📌 Creating commentReadStatus for:",
-      relevantProjectMembers.map((member) => ({
-        commentId: comment.id,
-        projectMemberId: member.id,
-        read: member.id === projectMemberId,
-      }))
-    )
-
     // Create CommentReadStatus records
     await db.commentReadStatus.createMany({
       data: relevantProjectMembers.map((member) => ({

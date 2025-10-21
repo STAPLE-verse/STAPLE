@@ -48,8 +48,6 @@ export default function useTaskBoardData(projectId: number) {
     },
   })
 
-  console.log(projectMember.id)
-
   // Get data
   const [columns, { refetch }]: [ColumnWithTasks[], any] = useQuery(getColumns, {
     orderBy: { containerOrder: "asc" },

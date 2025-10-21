@@ -9,7 +9,6 @@ export default resolver.pipe(
   resolver.zod(AcceptInviteSchema),
   resolver.authorize(),
   async ({ id, userId }, ctx) => {
-    console.log("[acceptInvite] INVOKED", { id, userId })
     // Find the invitation and related roles
     const invite = await db.invitation.findUnique({
       where: { id },
@@ -61,10 +60,6 @@ export default resolver.pipe(
     }
 
     // --- Auto-assign this member to tasks marked for contributors or all ---
-    console.log("[acceptInvite] Starting auto-assign check", {
-      projectId: invite.projectId,
-      userId,
-    })
 
     const tasksToAutoAssign = await db.task.findMany({
       where: {
@@ -79,7 +74,6 @@ export default resolver.pipe(
         createdBy: { include: { users: true } },
       },
     })
-    console.log("[acceptInvite] tasksToAutoAssign count", tasksToAutoAssign.length)
 
     try {
       if (tasksToAutoAssign.length > 0) {
@@ -93,10 +87,6 @@ export default resolver.pipe(
             })
           )
         )
-        console.log("[acceptInvite] Connected projectMember to tasks", {
-          projectMemberId: projectMember.id,
-          taskIds: tasksToAutoAssign.map((t) => t.id),
-        })
 
         // Create TaskLog entries for these auto-assignments
         await Promise.all(
@@ -110,7 +100,6 @@ export default resolver.pipe(
             })
           )
         )
-        console.log("[acceptInvite] Created TaskLog entries", { count: tasksToAutoAssign.length })
 
         // Send a notification for each auto-assigned task
         await Promise.all(

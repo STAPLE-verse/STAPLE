@@ -123,7 +123,7 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
   }
 
   const handleTagClick = (index: number) => {
-    console.log("The tag at index " + index + " was clicked")
+    // console.log("The tag at index " + index + " was clicked")
   }
 
   const onClearAll = () => {
