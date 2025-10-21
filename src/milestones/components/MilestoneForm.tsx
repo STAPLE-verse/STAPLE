@@ -98,7 +98,7 @@ export function MilestoneForm<S extends z.ZodType<any, any>>(props: MilestoneFor
   }
 
   const handleTagClick = (index: number) => {
-    console.log("The tag at index " + index + " was clicked")
+    //console.log("The tag at index " + index + " was clicked")
   }
 
   const onClearAll = () => {

@@ -22,7 +22,7 @@ export default resolver.pipe(
 
     // If the user is already a project manager, return early
     if (existingPrivilege) {
-      console.log("User is already a project manager. No widgets will be added.")
+      //console.log("User is already a project manager. No widgets will be added.")
       return
     }
 
