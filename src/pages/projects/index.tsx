@@ -5,6 +5,7 @@ import Layout from "src/core/layouts/Layout"
 import ProjectsList from "src/projects/components/ProjectsList"
 import SearchButton from "src/core/components/SearchButton"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { ShieldCheckIcon, UserIcon } from "@heroicons/react/24/solid"
 import { Tooltip } from "react-tooltip"
 import { useTranslation } from "react-i18next"
 
@@ -35,6 +36,17 @@ const ProjectsPage = () => {
           <Link className="btn btn-primary mb-4 mt-4" href={Routes.NewProjectPage()}>
             {t("projects.createproject")}
           </Link>
+
+          <div className="mt-4 flex items-center gap-4 text-sm opacity-80">
+            <div className="flex items-center gap-1">
+              <ShieldCheckIcon className="h-6 w-6 text-primary" aria-hidden="true" />
+              <span>Project Manager</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <UserIcon className="h-6 w-6 text-secondary" aria-hidden="true" />
+              <span>Contributor</span>
+            </div>
+          </div>
 
           <SearchButton onChange={handleSearch}></SearchButton>
         </div>
