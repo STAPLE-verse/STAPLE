@@ -13,7 +13,10 @@ const Modal = ({ children, open, size = "max-w-lg" }: Props) => {
     <OverlayModal
       show={open}
       renderBackdrop={(props) => (
-        <div {...props} className="fixed inset-0 bg-black opacity-50 z-[1040]" />
+        <div
+          {...props}
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1040] transition-opacity duration-200"
+        />
       )}
       className="fixed inset-0 flex items-center justify-center z-[1050] overflow-y-auto"
     >
