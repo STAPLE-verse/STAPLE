@@ -21,7 +21,7 @@ import DateField from "src/core/components/fields/DateField"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import LabeledTextAreaField from "src/core/components/fields/LabeledTextAreaField"
-import { useForm } from "react-final-form"
+import { useForm, Field } from "react-final-form"
 
 export type Tag = {
   id: string
@@ -285,6 +285,28 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
             optionValue="id"
             type="string" // 👈 add this line
           />
+        </div>
+        {/* Anonymous toggle */}
+        <div className="w-1/2 mt-4 flex flex-row">
+          <label>
+            <span className="flex items-center">
+              Anonymous task{" "}
+              <InformationCircleIcon
+                className="h-4 w-4 ml-2 text-info stroke-2"
+                data-tooltip-id="anonymous-info"
+              />
+              <Tooltip
+                id="anonymous-info"
+                content="If enabled, task details (instructions, title) will not be shown in the project summary."
+                className="z-[1099] ourtooltips"
+              />
+              <Field<boolean> name="anonymous" type="checkbox" initialValue={false}>
+                {({ input }) => (
+                  <input {...input} type="checkbox" className="toggle toggle-warning ml-4" />
+                )}
+              </Field>
+            </span>
+          </label>
         </div>
       </CollapseCard>
 
