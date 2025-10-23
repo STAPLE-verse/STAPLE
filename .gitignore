@@ -67,3 +67,4 @@ tmp/*
 viewer-builds/*.zip
 viewer-builds/Proj*
 viewer-builds/viewer*
+db/migrations/migration_lock.toml
