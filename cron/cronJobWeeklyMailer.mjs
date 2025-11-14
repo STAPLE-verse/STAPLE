@@ -1,7 +1,7 @@
 import dotenv from "dotenv"
 dotenv.config({ path: "../.env.local" })
 import moment from "moment"
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient, EmailFrequency } from "@prisma/client"
 import fetch from "node-fetch"
 import { resolver } from "@blitzjs/rpc"
 
@@ -12,7 +12,7 @@ function fmtDate(date) {
 }
 
 // Helper function to create email content
-function createDailyNotification(email, notificationContent, overdueContent) {
+function createWeeklyNotification(email, notificationContent, overdueContent) {
   const html_message = `
     <html>
       <body>
@@ -21,11 +21,12 @@ function createDailyNotification(email, notificationContent, overdueContent) {
             alt="STAPLE Logo" height="200">
         </center>
 
-        <h3>STAPLE Daily Notifications</h3>
+        <h3>STAPLE Weekly Notifications</h3>
 
         <p>
-          This email is to notify you about overdue tasks and recent updates to your project(s).
+          This email is to notify you about overdue tasks and updates to your project(s) from the last week.
           You can view all notifications on the <a href="https://app.staple.science/auth/login?next=%2Fnotifications">Notifications page</a>.
+          You change the frequency of these emails on your <a href="https://app.staple.science/auth/login?next=%2Fprofile">Profile page</a>.
           </p>
 
         <h3>⏰ Overdue Tasks</h3>
@@ -40,7 +41,7 @@ function createDailyNotification(email, notificationContent, overdueContent) {
   return {
     from: "STAPLE <app@staple.science>",
     to: email,
-    subject: "STAPLE Daily Notifications",
+    subject: "STAPLE Weekly Notifications",
     replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
     html: html_message,
   }
@@ -58,12 +59,12 @@ const getNotifications = resolver.pipe(
 
 // Function to fetch and group notifications by email and project
 export async function fetchAndGroupNotifications() {
-  const last24Hours = moment().subtract(24, "hours").toDate()
+  const last7Days = moment().subtract(7, "days").toDate()
 
   const notifications = await getNotifications({
     where: {
       createdAt: {
-        gte: last24Hours,
+        gte: last7Days,
       },
     },
     include: {
@@ -191,9 +192,9 @@ const checkRateLimit = async () => {
     }
   }
 }
-// Function to send grouped notifications
+// Function to send grouped notifications (weekly), respecting user email preferences
 export async function sendGroupedNotifications(groupedNotifications, groupedOverdues) {
-  const delayTime = 500 // Delay time between each email in milliseconds (e.g., 1 second)
+  const delayTime = 500 // Delay time between each email in milliseconds
 
   const allEmails = new Set([
     ...Object.keys(groupedNotifications || {}),
@@ -201,33 +202,72 @@ export async function sendGroupedNotifications(groupedNotifications, groupedOver
   ])
 
   for (const email of allEmails) {
+    // Look up the user to read their email frequency preferences
+    const user = await db.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        emailProjectActivityFrequency: true,
+        emailOverdueTaskFrequency: true,
+      },
+    })
+
+    if (!user) {
+      console.log(`[Mailer] No user found for email ${email}, skipping.`)
+      continue
+    }
+
+    // This is the WEEKLY mailer, so only honor WEEKLY preferences here
+    const wantsProjectWeekly = user.emailProjectActivityFrequency === EmailFrequency.WEEKLY
+    const wantsOverdueWeekly = user.emailOverdueTaskFrequency === EmailFrequency.WEEKLY
+
+    // If the user doesn't want any weekly emails, skip them entirely
+    if (!wantsProjectWeekly && !wantsOverdueWeekly) {
+      console.log(`[Mailer] User ${email} has no WEEKLY email prefs, skipping in weekly job.`)
+      continue
+    }
+
     const projects = groupedNotifications?.[email] || {}
-
-    const notificationContent =
-      Object.entries(projects)
-        .map(([projectName, messages]) => {
-          const projectHeader = `<h4>Project: ${projectName}</h4>`
-          const messagesList = messages.map((message) => `<li>${message}</li>`).join("")
-          return projectHeader + `<ul>${messagesList}</ul>`
-        })
-        .join("") || "<p>No new updates in the last 24 hours.</p>"
-
-    // Build overdue content for this recipient (if any)
     const overdueProjects = groupedOverdues?.[email] || {}
-    const overdueContent =
-      Object.entries(overdueProjects)
-        .map(([projectName, rows]) => {
-          const projectHeader = `<h4>Project: ${projectName}</h4>`
-          const items = rows.map((row) => `<li>${row}</li>`).join("")
-          return projectHeader + `<ul>${items}</ul>`
-        })
-        .join("") || "<p>No overdue tasks 🎉</p>"
 
-    const emailContent = createDailyNotification(email, notificationContent, overdueContent)
+    const hasProjectData = Object.keys(projects).length > 0
+    const hasOverdueData = Object.keys(overdueProjects).length > 0
+
+    const willHaveProjectSection = wantsProjectWeekly && hasProjectData
+    const willHaveOverdueSection = wantsOverdueWeekly && hasOverdueData
+
+    // If there is nothing relevant to send for this cadence, skip
+    if (!willHaveProjectSection && !willHaveOverdueSection) {
+      console.log(`[Mailer] No relevant weekly content for ${email} (prefs or data), skipping.`)
+      continue
+    }
+
+    // Build project updates section
+    const notificationContent = willHaveProjectSection
+      ? Object.entries(projects)
+          .map(([projectName, messages]) => {
+            const projectHeader = `<h4>Project: ${projectName}</h4>`
+            const messagesList = messages.map((message) => `<li>${message}</li>`).join("")
+            return projectHeader + `<ul>${messagesList}</ul>`
+          })
+          .join("") || "<p>No new updates in the last week.</p>"
+      : "<p>You are not subscribed to weekly project update emails.</p>"
+
+    // Build overdue tasks section
+    const overdueContent = willHaveOverdueSection
+      ? Object.entries(overdueProjects)
+          .map(([projectName, rows]) => {
+            const projectHeader = `<h4>Project: ${projectName}</h4>`
+            const items = rows.map((row) => `<li>${row}</li>`).join("")
+            return projectHeader + `<ul>${items}</ul>`
+          })
+          .join("") || "<p>No overdue tasks 🎉</p>"
+      : "<p>You are not subscribed to weekly overdue task emails.</p>"
+
+    const emailContent = createWeeklyNotification(email, notificationContent, overdueContent)
 
     console.log(
-      `[Mailer] Prepared email for ${email}: hasOverdues=${!!Object.keys(overdueProjects)
-        .length}, hasUpdates=${!!Object.keys(projects).length}`
+      `[Mailer] Prepared weekly email for ${email}: hasOverdues=${willHaveOverdueSection}, hasUpdates=${willHaveProjectSection}`
     )
 
     // Check rate limit before sending email
@@ -267,8 +307,8 @@ export async function sendGroupedNotifications(groupedNotifications, groupedOver
   console.log(`[Mailer] Processed ${allEmails.size} recipients.`)
 }
 
-// Function to fetch and send daily notifications
-async function sendDailyNotifications() {
+// Function to fetch and send weekly notifications
+async function sendWeeklyNotifications() {
   try {
     const [groupedNotifications, groupedOverdues] = await Promise.all([
       fetchAndGroupNotifications(),
@@ -276,17 +316,17 @@ async function sendDailyNotifications() {
     ])
     await sendGroupedNotifications(groupedNotifications, groupedOverdues)
   } catch (error) {
-    console.error("Error in sendDailyNotifications:", error)
+    console.error("Error in sendWeeklyNotifications:", error)
   }
 }
 
-// Run the daily notifications job
-sendDailyNotifications()
+// Run the weekly notifications job
+sendWeeklyNotifications()
   .then(() => {
-    console.log(`[${new Date().toISOString()}] Daily notifications job completed successfully.`)
+    console.log(`[${new Date().toISOString()}] Weekly notifications job completed successfully.`)
   })
   .catch((error) => {
-    console.error(`[${new Date().toISOString()}] Error in daily notifications job:`, error)
+    console.error(`[${new Date().toISOString()}] Error in weekly notifications job:`, error)
   })
   .finally(async () => {
     await db.$disconnect() // Disconnect from the database when done
