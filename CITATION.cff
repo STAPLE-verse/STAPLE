@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "If you use STAPLE in your research, please cite it using the following information."
+title: "STAPLE: Science Tracking Across the Project Lifespan"
+doi: "10.5281/zenodo.13916969"
+authors:
+  - family-names: "Buchanan"
+    given-names: "Erin M."
+    orcid: "https://orcid.org/0000-0002-9689-4189"
+  - family-names: "Kovacs"
+    given-names: "Marton"
+    orcid: "https://orcid.org/0000-0002-8142-8492"
+  - family-names: "Yedra"
+    given-names: "Engerst"
+    orcid: "https://orcid.org/0000-0002-9555-7148"
+  # Add more authors here, e.g.:
+  # - family-names: "Doe"
+  #   given-names: "Jane"
+  #   orcid: "https://orcid.org/XXXX-XXXX-XXXX-XXXX"
+
+preferred-citation:
+  type: software
+  title: "STAPLE: Science Tracking Across the Project Lifespan"
+  authors:
+    - family-names: "Buchanan"
+      given-names: "Erin M."
+      orcid: "https://orcid.org/0000-0002-9689-4189"
+    - family-names: "Kovacs"
+      given-names: "Marton"
+      orcid: "https://orcid.org/0000-0002-8142-8492"
+    - family-names: "Yedra"
+      given-names: "Engerst"
+      orcid: "https://orcid.org/0000-0002-9555-7148"
+  url: "https://github.com/STAPLE/STAPLE"
+
+contributors:
+  - family-names: "Hartgerink"
+    given-names: "Chris"
+    orcid: "https://orcid.org/0000-0003-1050-6809"
+  - family-names: "Sunami"
+    given-names: "Nami"
+    orcid: "https://orcid.org/0000-0001-5482-8370"
