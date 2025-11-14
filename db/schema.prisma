@@ -13,33 +13,35 @@ generator client {
 // --------------------------------------
 
 model User {
-  id               Int                @id @default(autoincrement())
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  hashedPassword   String?
-  role             String             @default("USER")
-  tos              Boolean?
-  tokens           Token[]
-  sessions         Session[]
+  id                            Int                @id @default(autoincrement())
+  createdAt                     DateTime           @default(now())
+  updatedAt                     DateTime           @updatedAt
+  hashedPassword                String?
+  role                          String             @default("USER")
+  tos                           Boolean?
+  tokens                        Token[]
+  sessions                      Session[]
   // notifications and dashboards
-  notifications    Notification[]     @relation("UserNotifications")
-  widgets          Widget[]
-  projectWidget    ProjectWidget[]
+  notifications                 Notification[]     @relation("UserNotifications")
+  widgets                       Widget[]
+  projectWidget                 ProjectWidget[]
+  emailProjectActivityFrequency EmailFrequency     @default(DAILY)
+  emailOverdueTaskFrequency     EmailFrequency     @default(DAILY)
   // profile information
-  orcid            String?
-  institution      String?
-  username         String             @unique
-  firstName        String?
-  lastName         String?
-  email            String             @unique
-  language         String             @default("en-US")
-  gravatar         String?
-  tooltips         Boolean            @default(true)
+  orcid                         String?
+  institution                   String?
+  username                      String             @unique
+  firstName                     String?
+  lastName                      String?
+  email                         String             @unique
+  language                      String             @default("en-US")
+  gravatar                      String?
+  tooltips                      Boolean            @default(true)
   // relational information
-  projects         ProjectMember[]
-  forms            Form[]
-  roles            Role[]
-  ProjectPrivilege ProjectPrivilege[]
+  projects                      ProjectMember[]
+  forms                         Form[]
+  roles                         Role[]
+  ProjectPrivilege              ProjectPrivilege[]
 }
 
 model Session {
@@ -317,6 +319,12 @@ enum WidgetSize {
   SMALL
   MEDIUM
   LARGE
+}
+
+enum EmailFrequency {
+  NEVER
+  DAILY
+  WEEKLY
 }
 
 model Widget {

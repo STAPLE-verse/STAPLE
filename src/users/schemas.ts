@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { EmailFrequency } from "db"
 
 export const email = z
   .string()
@@ -18,6 +19,8 @@ export const FormProfileSchema = z.object({
     .transform((str) => str.toLowerCase().trim())
     .nullable(),
   tooltips: z.boolean(),
+  emailProjectActivityFrequency: z.nativeEnum(EmailFrequency),
+  emailOverdueTaskFrequency: z.nativeEnum(EmailFrequency),
 })
 
 export const UpdateUserSchema = z.object({
@@ -33,4 +36,6 @@ export const UpdateUserSchema = z.object({
     .transform((str) => str.toLowerCase().trim())
     .nullable(),
   tooltips: z.boolean(),
+  emailProjectActivityFrequency: z.nativeEnum(EmailFrequency),
+  emailOverdueTaskFrequency: z.nativeEnum(EmailFrequency),
 })

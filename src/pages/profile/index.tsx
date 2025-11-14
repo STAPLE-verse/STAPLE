@@ -21,36 +21,54 @@ const ProfilePage = () => {
               <div className="card-title" data-tooltip-id="milestone-tool">
                 Profile Information
               </div>
-              <span className="font-semibold">Username:</span> {currentUser.username}
-              <br />
-              <span className="font-semibold">Email:</span> {currentUser.email}
-              <br />
-              <span className="font-semibold">Name:</span>{" "}
-              {currentUser.firstName && currentUser.lastName ? (
-                fullName
-              ) : (
-                <span className="italic">
-                  No name is provided. Use the Edit Profile button to add your name.
-                </span>
-              )}
-              <br />
-              <span className="font-semibold">Institution:</span>{" "}
-              {currentUser.institution ? (
-                currentUser.institution
-              ) : (
-                <span className="italic">
-                  No institution is provided. Use the Edit Profile button to add your information.
-                </span>
-              )}
-              <br />
-              <span className="font-semibold">Signup Date:</span>{" "}
-              <DateFormat date={currentUser.createdAt}></DateFormat>
-              <span className="font-semibold">Tooltips:</span>
-              {currentUser.tooltips ? (
-                <span className="text-success">On</span>
-              ) : (
-                <span className="text-error">Off</span>
-              )}
+              <div>
+                <span className="font-semibold">Username:</span> {currentUser.username}
+              </div>
+              <div>
+                <span className="font-semibold">Email:</span> {currentUser.email}
+              </div>
+              <div>
+                <span className="font-semibold">Name:</span>{" "}
+                {currentUser.firstName && currentUser.lastName ? (
+                  fullName
+                ) : (
+                  <span className="italic">No name provided</span>
+                )}
+              </div>
+              <div>
+                <span className="font-semibold">Institution:</span>{" "}
+                {currentUser.institution ? (
+                  currentUser.institution
+                ) : (
+                  <span className="italic">No institution provided</span>
+                )}
+              </div>
+              <div>
+                <span className="font-semibold">Signup Date:</span>{" "}
+                <DateFormat date={currentUser.createdAt} />
+              </div>
+              <div>
+                <span className="font-semibold">Tooltips:</span>{" "}
+                {currentUser.tooltips ? (
+                  <span className="text-success">On</span>
+                ) : (
+                  <span className="text-error">Off</span>
+                )}
+              </div>
+              <div>
+                <span className="font-semibold">Language:</span>{" "}
+                {currentUser.language || <span className="italic">No language selected</span>}
+              </div>
+              <div>
+                <span className="font-semibold">Project Activity Emails:</span>{" "}
+                {currentUser.emailProjectActivityFrequency.charAt(0) +
+                  currentUser.emailProjectActivityFrequency.slice(1).toLowerCase()}
+              </div>
+              <div>
+                <span className="font-semibold">Overdue Task Emails:</span>{" "}
+                {currentUser.emailOverdueTaskFrequency.charAt(0) +
+                  currentUser.emailOverdueTaskFrequency.slice(1).toLowerCase()}
+              </div>
               <div className="card-actions justify-end">
                 <Link className="btn btn-primary" href={Routes.EditProfilePage()}>
                   Edit Profile

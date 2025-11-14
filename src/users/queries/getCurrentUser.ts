@@ -14,6 +14,8 @@ export type CurrentUser = Prisma.UserGetPayload<{
     language: true
     gravatar: true
     tooltips: true
+    emailProjectActivityFrequency: true
+    emailOverdueTaskFrequency: true
   }
 }>
 
@@ -37,6 +39,8 @@ export default async function getCurrentUser(
       language: true,
       gravatar: true,
       tooltips: true,
+      emailProjectActivityFrequency: true,
+      emailOverdueTaskFrequency: true,
     },
   })
 
