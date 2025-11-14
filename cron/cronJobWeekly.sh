@@ -3,4 +3,4 @@ SCRIPT_DIR="/var/www/html/STAPLE/cron"
 # Change to the script's directory
 cd "$SCRIPT_DIR" || exit
 # Run the Node.js scriptnode cronJob.mjs
-node cronJobDailyMailer.mjs
+node cronJobWeeklyMailer.mjs

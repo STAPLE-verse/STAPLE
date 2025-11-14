@@ -33,6 +33,35 @@ export function ProfileForm<S extends z.ZodType<any, any>>(props: FormProps<S>) 
         />
       </CollapseCard>
 
+      <CollapseCard className="mb-4" title="Email Preferences">
+        <LabelSelectField
+          className="select text-primary select-bordered border-primary border-2 w-1/2 mb-4"
+          name="emailProjectActivityFrequency"
+          label="Project Activity Notifications:"
+          options={[
+            { id: "NEVER", name: "Never" },
+            { id: "DAILY", name: "Daily" },
+            { id: "WEEKLY", name: "Weekly" },
+          ]}
+          optionText="name"
+          optionValue="id"
+          type="string"
+        />
+        <LabelSelectField
+          className="select text-primary select-bordered border-primary border-2 w-1/2 mb-4"
+          name="emailOverdueTaskFrequency"
+          label="Overdue Task Notifications:"
+          options={[
+            { id: "NEVER", name: "Never" },
+            { id: "DAILY", name: "Daily" },
+            { id: "WEEKLY", name: "Weekly" },
+          ]}
+          optionText="name"
+          optionValue="id"
+          type="string"
+        />
+      </CollapseCard>
+
       <CollapseCard title="User Information: Name, Institution" className="mb-4">
         <p className="text-base italic mb-2">
           If you enter your first and last name, it will replace your username in project areas.

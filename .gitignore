@@ -62,7 +62,8 @@ STAPLE.Rproj
 db/migrations/local/
 db/migrations/
 tmp/*
-summary-viewer/docs/.nojekyll
-summary-viewer/docs/*
-viewer-builds/*
-summary-viewer/src/data/project_summary.json
+
+# ignore builds but keep the folder for folks
+viewer-builds/*.zip
+viewer-builds/Proj*
+viewer-builds/viewer*
