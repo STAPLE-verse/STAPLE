@@ -30,7 +30,7 @@ preferred-citation:
     - family-names: "Yedra"
       given-names: "Engerst"
       orcid: "https://orcid.org/0000-0002-9555-7148"
-  url: "https://github.com/STAPLE/STAPLE"
+  url: "https://github.com/STAPLE-verse/STAPLE"
 
 contributors:
   - family-names: "Hartgerink"
