@@ -7,7 +7,18 @@ export default resolver.pipe(
   resolver.zod(UpdateUserSchema),
   resolver.authorize(),
   async (
-    { email, firstName, lastName, institution, username, language, gravatar, tooltips },
+    {
+      email,
+      firstName,
+      lastName,
+      institution,
+      username,
+      language,
+      gravatar,
+      tooltips,
+      emailProjectActivityFrequency,
+      emailOverdueTaskFrequency,
+    },
     ctx: Ctx
   ) => {
     const user = await db.user.findFirst({ where: { id: ctx.session.userId! } })
@@ -25,6 +36,8 @@ export default resolver.pipe(
         language: language,
         gravatar: gravatar,
         tooltips: tooltips,
+        emailProjectActivityFrequency: emailProjectActivityFrequency,
+        emailOverdueTaskFrequency: emailOverdueTaskFrequency,
       },
     })
 
