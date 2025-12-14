@@ -55,8 +55,10 @@ export const AllTasksList = () => {
   const processedTasks = processAllTasks(latestLogs, taskLogs)
 
   return (
-    <Card title={""}>
-      <Table columns={AllTasksColumns} data={processedTasks} addPagination={true} />
+    <Card title="">
+      <div className="overflow-y-auto">
+        <Table columns={AllTasksColumns} data={processedTasks} addPagination={true} />
+      </div>
     </Card>
   )
 }
