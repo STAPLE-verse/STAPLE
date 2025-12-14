@@ -22,10 +22,10 @@ const NotesPage = () => {
           <h1 className="text-3xl">Notes</h1>
           <InformationCircleIcon
             className="h-5 w-5 stroke-2 text-info"
-            data-tooltip-id="project-notes-tooltip"
+            data-tooltip-id="project-notes-tooltip-main"
           />
           <Tooltip
-            id="project-notes-tooltip"
+            id="project-notes-tooltip-main"
             content="Create and manage your private project notes. Notes are visible only to you unless sharing is enabled later."
             className="z-[1099] ourtooltips"
           />
