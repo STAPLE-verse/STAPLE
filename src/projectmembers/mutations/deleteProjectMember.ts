@@ -26,6 +26,20 @@ export default resolver.pipe(
     // Get the userId from the associated users array
     const userId = projectMemberToDelete.users[0]!.id
 
+    // Reconstruct possible display names used in notification messages
+    const user = projectMemberToDelete.users[0]
+    const possibleDisplayNames: string[] = []
+
+    if (user!.firstName && user!.lastName) {
+      possibleDisplayNames.push(`${user!.firstName} ${user!.lastName}`)
+    }
+
+    if (user!.username) {
+      possibleDisplayNames.push(user!.username)
+    }
+
+    const notificationMarker = " (former contributor)"
+
     // Check if the project member has any privileges related to the project
     const projectPrivilege = await db.projectPrivilege.findFirst({
       where: {
@@ -63,6 +77,33 @@ export default resolver.pipe(
     await db.projectPrivilege.delete({
       where: { id: projectPrivilege.id },
     })
+
+    // Annotate existing notifications that reference this contributor by name
+    if (possibleDisplayNames.length > 0) {
+      const notifications = await db.notification.findMany({
+        where: {
+          projectId: projectMemberToDelete.projectId,
+          announcement: false,
+        },
+      })
+
+      await Promise.all(
+        notifications
+          .filter(
+            (n) =>
+              !n.message.includes(notificationMarker) &&
+              possibleDisplayNames.some((name) => n.message.includes(name))
+          )
+          .map((n) =>
+            db.notification.update({
+              where: { id: n.id },
+              data: {
+                message: `${n.message}${notificationMarker}`,
+              },
+            })
+          )
+      )
+    }
 
     // Delete the project member
     const projectMember = await db.projectMember.update({
