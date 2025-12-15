@@ -315,8 +315,13 @@
           paper_bgcolor: "rgba(0, 0, 0, 0)", // Transparent chart area background
         }
 
-        // Render the chart
-        Plotly.newPlot("completed-tasks-chart", dataCompletedTasks, layoutCompletedTasks)
+        // Render the chart (only if there are tasks)
+        if (totalTasks > 0) {
+          Plotly.newPlot("completed-tasks-chart", dataCompletedTasks, layoutCompletedTasks)
+        } else {
+          const el = document.getElementById("completed-tasks-chart")
+          if (el) el.innerHTML = '<p class="empty-note">No tasks created yet</p>'
+        }
 
         const latestTaskLogs = Array.from(
           tasksDataFrame
@@ -384,8 +389,13 @@
           paper_bgcolor: "rgba(0, 0, 0, 0)", // Transparent chart area background
         }
 
-        // Render the chart
-        Plotly.newPlot("completed-tasklogs-chart", dataCompletedTaskLogs, layout)
+        // Render the chart (only if there are task logs)
+        if (totalTaskLogs > 0) {
+          Plotly.newPlot("completed-tasklogs-chart", dataCompletedTaskLogs, layout)
+        } else {
+          const el = document.getElementById("completed-tasklogs-chart")
+          if (el) el.innerHTML = '<p class="empty-note">No task logs yet</p>'
+        }
 
         // Step 1: Group logs by taskId and assignedToId
         const taskLogMap = tasksDataFrame.reduce((map, log) => {
@@ -430,11 +440,18 @@
         })
 
         // Step 3: Calculate average completion time
-        const averageCompletionTime =
-          completedCount > 0
-            ? `${(totalCompletionTime / completedCount).toFixed(2)} Days`
-            : "0 days"
-        document.getElementById("stat-number-3").textContent = averageCompletionTime
+        const statNumEl = document.getElementById("stat-number-3")
+        const statIconEl = document.getElementById("stat-icon-3")
+
+        if (completedCount > 0) {
+          const averageCompletionTime = `${(totalCompletionTime / completedCount).toFixed(2)} Days`
+          if (statNumEl) statNumEl.textContent = averageCompletionTime
+          if (statIconEl) statIconEl.style.display = ""
+        } else {
+          if (statNumEl)
+            statNumEl.innerHTML = '<span class="empty-note">No completed tasks yet</span>'
+          if (statIconEl) statIconEl.style.display = "none"
+        }
 
         function createTaskDropdownAndDataTable(containerId, dataTableContainerId) {
           // Step 1: Get unique task names
@@ -682,7 +699,7 @@
             <div class="stat-card">
               <h4>Average Completion Time</h4>
               <p id="stat-number-3">Days</p>
-              <i class="fas fa-clock" id="stat-number-3" aria-hidden="true"></i>
+              <i class="fas fa-clock" id="stat-icon-3" aria-hidden="true"></i>
             </div>
           </div>
         </div>

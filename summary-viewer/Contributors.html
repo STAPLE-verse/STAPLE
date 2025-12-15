@@ -877,7 +877,7 @@
         } else {
           const rolesEl = document.getElementById("roles-donut-chart")
           if (rolesEl) {
-            rolesEl.innerHTML = '<p class="empty-note">No roles assigned yet</p>'
+            rolesEl.innerHTML = '<p class="empty-note">No roles</p>'
           }
         }
 
@@ -990,7 +990,7 @@
           Plotly.newPlot("completed-forms-chart", dataCompletedForms, layoutForm)
         } else {
           const el = document.getElementById("completed-forms-chart")
-          if (el) el.innerHTML = '<p class="empty-note">No forms submitted yet</p>'
+          if (el) el.innerHTML = '<p class="empty-note">No forms</p>'
         }
 
         //get roles individuals
@@ -1064,6 +1064,8 @@
           // Hide progress bar if percentage is NaN
           const showTasksBar = Number.isFinite(Number(tasksPercentComplete))
           const showFormsBar = Number.isFinite(Number(formsPercentComplete))
+          const showNoTasksNote = !showTasksBar
+          const showNoFormsNote = !showFormsBar
 
           // Create the card container
           const card = document.createElement("div")
@@ -1085,7 +1087,7 @@
           } else {
             const note = document.createElement("p")
             note.className = "empty-note"
-            note.textContent = "No roles assigned yet"
+            note.textContent = "No roles"
             card.appendChild(note)
           }
 
@@ -1099,7 +1101,7 @@
            style="width: ${tasksPercentComplete}%; background-color: ${themeColors.primary3};"
            title="Tasks: ${tasksPercentComplete}% Completed"></div>
     </div>`
-      : ``
+      : `<p class="empty-note">No tasks</p>`
   }
   ${
     showFormsBar
@@ -1109,7 +1111,7 @@
            style="width: ${formsPercentComplete}%; background-color: ${themeColors.primary4};"
            title="Forms: ${formsPercentComplete}% Submitted"></div>
     </div>`
-      : ``
+      : `<p class="empty-note">No forms</p>`
   }
 `
           card.innerHTML += progressBars // Append progress bars to the card
@@ -1220,7 +1222,7 @@
           } else {
             const note = document.createElement("p")
             note.className = "empty-note"
-            note.textContent = "No roles assigned yet"
+            note.textContent = "No roles"
             card.appendChild(note)
           }
 
@@ -1238,7 +1240,7 @@
            style="width: ${team.tasksPercentComplete}%; background-color: ${themeColors.primary3};"
            title="Tasks: ${team.tasksPercentComplete}% Completed"></div>
     </div>`
-      : ``
+      : `<p class="empty-note">No tasks</p>`
   }
   ${
     showTeamFormsBar
@@ -1248,7 +1250,7 @@
            style="width: ${team.formsPercentComplete}%; background-color: ${themeColors.primary4};"
            title="Forms: ${team.formsPercentComplete}% Submitted"></div>
     </div>`
-      : ``
+      : `<p class="empty-note">No forms</p>`
   }
 `
           card.innerHTML += progressBars // Append progress bars to the card
