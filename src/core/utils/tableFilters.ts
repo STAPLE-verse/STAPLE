@@ -88,7 +88,12 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> => {
   return Object.getPrototypeOf(value) === Object.prototype
 }
 
-const describePrimitive = (value: unknown, locale: string, keyHint?: string): string => {
+const describePrimitive = (
+  value: unknown,
+  locale: string,
+  keyHint?: string,
+  parentKey?: string
+): string => {
   if (value === null || value === undefined) {
     return ""
   }
@@ -118,12 +123,17 @@ const describePrimitive = (value: unknown, locale: string, keyHint?: string): st
 
   if (typeof value === "boolean") {
     const normalizedKey = keyHint?.toLowerCase() ?? ""
-    if (normalizedKey.includes("read")) {
+    const normalizedParent = parentKey?.toLowerCase() ?? ""
+    const combined = `${normalizedParent} ${normalizedKey}`
+
+    if (combined.includes("read")) {
       return value ? "read true yes" : "unread false no"
     }
-    if (normalizedKey.includes("status") || normalizedKey.includes("complete")) {
-      return value ? "completed true yes" : "not completed incomplete false no"
+
+    if (combined.includes("status") || combined.includes("complete")) {
+      return value ? "completed true yes" : "incomplete false no"
     }
+
     return value ? "true yes" : "false no"
   }
 
@@ -139,7 +149,7 @@ export const buildSearchableString = (
   const locale = options?.locale ?? DEFAULT_LOCALE
   const visited = new WeakSet<object>()
 
-  const helper = (input: unknown, depth: number, keyHint?: string): string => {
+  const helper = (input: unknown, depth: number, keyHint?: string, parentKey?: string): string => {
     if (depth > MAX_RECURSION_DEPTH) {
       return ""
     }
@@ -149,7 +159,7 @@ export const buildSearchableString = (
     }
 
     if (input instanceof Date || typeof input !== "object") {
-      return describePrimitive(input, locale, keyHint)
+      return describePrimitive(input, locale, keyHint, parentKey)
     }
 
     if (visited.has(input as object)) {
@@ -160,14 +170,14 @@ export const buildSearchableString = (
     let result = ""
 
     if (Array.isArray(input)) {
-      result = input.map((item) => helper(item, depth + 1, keyHint)).join(" ")
+      result = input.map((item) => helper(item, depth + 1, keyHint, parentKey)).join(" ")
     } else if (isPlainObject(input)) {
       result = Object.entries(input)
-        .map(([key, item]) => helper(item, depth + 1, key))
+        .map(([key, item]) => helper(item, depth + 1, key, keyHint ?? parentKey))
         .join(" ")
     } else {
       // Non-plain objects (e.g., Maps) fallback to string conversion
-      result = describePrimitive(String(input), locale, keyHint)
+      result = describePrimitive(String(input), locale, keyHint, parentKey)
     }
 
     visited.delete(input as object)

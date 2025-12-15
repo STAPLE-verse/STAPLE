@@ -17,12 +17,86 @@ import { ChevronUpIcon, ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/re
 import Filter from "src/core/components/Filter"
 import { buildSearchableString } from "src/core/utils/tableFilters"
 
-const specialSearchTokens = new Set(["read", "unread", "completed", "complete", "incomplete"])
+const specialSearchTokens = new Set(["read", "unread", "completed", "complete", "not completed"])
+
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 const containsWholeWord = (text: string, word: string) => {
   const escapedWord = escapeRegExp(word)
   const regex = new RegExp(`\\b${escapedWord}\\b`)
   return regex.test(text)
+}
+
+const matchesSpecialTokenInText = (text: string, token: string) => {
+  if (!text) {
+    return false
+  }
+
+  const normalized = text.toLowerCase()
+
+  if (token === "completed") {
+    return /(?<!not\s)\bcompleted\b/.test(normalized)
+  }
+
+  if (token === "complete") {
+    return /(?<!not\s)(?<!in)\bcomplete\b/.test(normalized)
+  }
+
+  if (token === "not completed") {
+    return /\bnot\s+completed\b/.test(normalized)
+  }
+
+  return containsWholeWord(normalized, token)
+}
+
+const matchesBooleanToken = (token: string, value: boolean, keyPath: string): boolean => {
+  const normalizedKey = keyPath.toLowerCase()
+  const isReadKey = normalizedKey.includes("read")
+  const isCompletionKey = normalizedKey.includes("status") || normalizedKey.includes("complete")
+
+  if (token === "read") {
+    return isReadKey && value === true
+  }
+
+  if (token === "unread") {
+    return isReadKey && value === false
+  }
+
+  if (token === "completed" || token === "complete") {
+    return isCompletionKey && value === true
+  }
+
+  if (token === "not completed") {
+    return isCompletionKey && value === false
+  }
+
+  return false
+}
+
+const matchesSpecialToken = (data: unknown, token: string, keyPath = ""): boolean => {
+  if (data === null || data === undefined) {
+    return false
+  }
+
+  if (typeof data === "boolean") {
+    return matchesBooleanToken(token, data, keyPath)
+  }
+
+  if (Array.isArray(data)) {
+    return data.some((item) => matchesSpecialToken(item, token, keyPath))
+  }
+
+  if (data instanceof Date) {
+    return false
+  }
+
+  if (typeof data === "object") {
+    return Object.entries(data as Record<string, unknown>).some(([key, value]) => {
+      const nextPath = keyPath ? `${keyPath}.${key}` : key
+      return matchesSpecialToken(value, token, nextPath)
+    })
+  }
+
+  return false
 }
 
 type TableProps<TData> = {
@@ -62,7 +136,10 @@ const defaultGlobalFilterFn: FilterFn<any> = (row, _columnId, filterValue) => {
   try {
     const rowValue = buildSearchableString(row.original ?? {})
     if (specialSearchTokens.has(searchValue)) {
-      return containsWholeWord(rowValue, searchValue)
+      if (matchesSpecialToken(row.original, searchValue)) {
+        return true
+      }
+      return matchesSpecialTokenInText(rowValue, searchValue)
     }
     return rowValue.includes(searchValue)
   } catch (error) {
