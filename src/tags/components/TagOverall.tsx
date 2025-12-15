@@ -81,7 +81,11 @@ export const TagOverall = ({ people, tasks, milestones }: TagOverallProps) => {
             content="Number of individual contributors"
             className="z-[1099] ourtooltips"
           />
-          <GetIconDisplay number={numIndividuals} icon={UsersIcon} />
+          {numIndividuals === 0 ? (
+            <span>No contributors</span>
+          ) : (
+            <GetIconDisplay number={numIndividuals} icon={UsersIcon} />
+          )}
         </div>
 
         <div className="stat w-1/3 place-items-center p-4">
@@ -93,7 +97,11 @@ export const TagOverall = ({ people, tasks, milestones }: TagOverallProps) => {
             content="Number of project teams"
             className="z-[1099] ourtooltips"
           />
-          <GetIconDisplay number={numTeams} icon={UserGroupIcon} />
+          {numTeams === 0 ? (
+            <span>No teams</span>
+          ) : (
+            <GetIconDisplay number={numTeams} icon={UserGroupIcon} />
+          )}
         </div>
 
         <div className="stat w-1/3 place-items-center p-4">
@@ -108,7 +116,11 @@ export const TagOverall = ({ people, tasks, milestones }: TagOverallProps) => {
             content="Number of tagged milestones"
             className="z-[1099] ourtooltips"
           />
-          <GetIconDisplay number={numMilestones} icon={FlagIcon} />
+          {numMilestones === 0 ? (
+            <span>No milestones</span>
+          ) : (
+            <GetIconDisplay number={numMilestones} icon={FlagIcon} />
+          )}
         </div>
 
         <div className="stat w-1/3 place-items-center p-4">
@@ -121,7 +133,7 @@ export const TagOverall = ({ people, tasks, milestones }: TagOverallProps) => {
             className="z-[1099] ourtooltips"
           />
           {tasks.length === 0 ? (
-            <>No tasks were found</>
+            <>No tasks</>
           ) : (
             <div className="w-20 h-20 m-2">
               <GetCircularProgressDisplay proportion={totalPercentComplete / 100} />
@@ -139,7 +151,7 @@ export const TagOverall = ({ people, tasks, milestones }: TagOverallProps) => {
             className="z-[1099] ourtooltips"
           />
           {tasks.length === 0 ? (
-            <>No tasks were found</>
+            <>No tasks</>
           ) : (
             <div className="w-20 h-20 m-2">
               <GetCircularProgressDisplay proportion={totalPercentApproved / 100} />
@@ -158,7 +170,7 @@ export const TagOverall = ({ people, tasks, milestones }: TagOverallProps) => {
           />
           <div className="h-24 flex items-center justify-center">
             {totalFormAssignments === 0 ? (
-              <span>No forms required</span>
+              <span>No forms</span>
             ) : (
               <div className="w-20 h-20 m-2">
                 <GetCircularProgressDisplay proportion={percentFormsComplete / 100} />
