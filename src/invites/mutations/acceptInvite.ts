@@ -5,6 +5,17 @@ import sendNotification from "src/notifications/mutations/sendNotification"
 import { getPrivilegeText } from "src/core/utils/getPrivilegeText"
 import { Routes } from "@blitzjs/next"
 
+const parseFormerTeamIds = (value: unknown): number[] => {
+  if (!Array.isArray(value)) return []
+  return value
+    .map((id) => {
+      if (typeof id === "number") return id
+      const parsed = Number(id)
+      return Number.isFinite(parsed) ? parsed : null
+    })
+    .filter((id): id is number => id !== null)
+}
+
 export default resolver.pipe(
   resolver.zod(AcceptInviteSchema),
   resolver.authorize(),
@@ -17,26 +28,77 @@ export default resolver.pipe(
     if (!invite) throw new Error("Invitation not found")
 
     let projectMember
+    let formerTeamIds: number[] = []
+
+    const reconnectFormerTeams = async (teamIds: number[]) => {
+      if (teamIds.length === 0) return
+
+      for (const teamId of teamIds) {
+        try {
+          await db.projectMember.update({
+            where: { id: teamId },
+            data: {
+              users: {
+                connect: { id: userId },
+              },
+            },
+          })
+        } catch (error) {
+          console.error(
+            `[acceptInvite] Failed to reconnect user ${userId} to team ${teamId}:`,
+            error
+          )
+        }
+      }
+    }
 
     // Check if this is a reassignment invitation
     if (invite.reassignmentFor) {
+      const reassignmentTarget = await db.projectMember.findUnique({
+        where: { id: invite.reassignmentFor },
+      })
+      if (!reassignmentTarget) {
+        throw new Error("Reassignment target not found")
+      }
+      formerTeamIds = parseFormerTeamIds(reassignmentTarget.formerTeamIds)
+
       // Restore the soft-deleted ProjectMember
       projectMember = await db.projectMember.update({
         where: { id: invite.reassignmentFor },
-        data: { deleted: false },
+        data: { deleted: false, tags: invite.tags as any, formerTeamIds: null },
       })
     } else {
-      // Create a new ProjectMember for fresh invitations
-      projectMember = await db.projectMember.create({
-        data: {
-          users: {
-            connect: { id: userId },
-          },
+      // Check whether this user already has a soft-deleted ProjectMember for this project
+      const existingProjectMember = await db.projectMember.findFirst({
+        where: {
           projectId: invite.projectId,
-          tags: invite.tags as any,
+          users: {
+            some: { id: userId },
+          },
         },
       })
+
+      if (existingProjectMember) {
+        formerTeamIds = parseFormerTeamIds(existingProjectMember.formerTeamIds)
+        projectMember = await db.projectMember.update({
+          where: { id: existingProjectMember.id },
+          data: { deleted: false, tags: invite.tags as any, formerTeamIds: null },
+        })
+      } else {
+        // Create a new ProjectMember for fresh invitations
+        projectMember = await db.projectMember.create({
+          data: {
+            users: {
+              connect: { id: userId },
+            },
+            projectId: invite.projectId,
+            tags: invite.tags as any,
+          },
+        })
+      }
     }
+
+    await reconnectFormerTeams(formerTeamIds)
 
     // Create the project privilege
     const projectPrivilege = await db.projectPrivilege.create({
