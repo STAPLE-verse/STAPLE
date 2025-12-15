@@ -14,6 +14,7 @@ export function GetTableDisplay({ data, columns, type }) {
   return (
     <Table
       columns={columns}
+      enableGlobalSearch={false}
       data={data}
       classNames={{
         thead: "text-base text-base-content",
