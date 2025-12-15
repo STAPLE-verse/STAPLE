@@ -1,4 +1,4 @@
-import { createColumnHelper } from "@tanstack/react-table"
+import { createColumnHelper, FilterFn } from "@tanstack/react-table"
 import { useMemo } from "react"
 import DateFormat from "src/core/components/DateFormat"
 import ReadToggle from "src/notifications/components/ReadToggle"
@@ -6,9 +6,26 @@ import { ProjectNotificationData } from "../processing/processProjectNotificatio
 import { MultiSelectCheckbox } from "src/core/components/fields/MultiSelectCheckbox"
 import NotificationMessage from "src/notifications/components/NotificationMessage"
 import { SelectAllCheckbox } from "src/core/components/fields/SelectAllCheckbox"
+import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 // Column helper
 const columnHelper = createColumnHelper<ProjectNotificationData>()
+const notificationDateFilter = createDateTextFilter({ emptyLabel: "no date" })
+const readStatusFilter: FilterFn<ProjectNotificationData> = (row, columnId, filterValue) => {
+  const selected = String(filterValue ?? "")
+    .trim()
+    .toLowerCase()
+
+  if (!selected) {
+    return true
+  }
+
+  const status = String(row.getValue(columnId) ?? "")
+    .trim()
+    .toLowerCase()
+
+  return status === selected
+}
 
 // ColumnDefs
 export const useProjectNotificationTableColumns = (
@@ -22,6 +39,12 @@ export const useProjectNotificationTableColumns = (
       columnHelper.accessor("createdAt", {
         cell: (info) => <DateFormat date={info.getValue()} />,
         header: "Date",
+        enableColumnFilter: true,
+        enableSorting: true,
+        filterFn: notificationDateFilter,
+        meta: {
+          filterVariant: "text",
+        },
       }),
       columnHelper.accessor("type", {
         header: "Type",
@@ -49,11 +72,22 @@ export const useProjectNotificationTableColumns = (
           isHtml: true,
         },
       }),
-      columnHelper.accessor("notification", {
-        enableColumnFilter: false,
+      columnHelper.accessor((row) => (row.notification.read ? "read" : "unread"), {
+        id: "readStatus",
+        enableColumnFilter: true,
         enableSorting: false,
-        cell: (info) => <ReadToggle notification={info.getValue()} refetch={refetch} />,
+        cell: (info) => (
+          <ReadToggle notification={info.row.original.notification} refetch={refetch} />
+        ),
         header: "Read",
+        filterFn: readStatusFilter,
+        meta: {
+          filterVariant: "select",
+          selectOptions: [
+            { label: "Unread", value: "unread" },
+            { label: "Read", value: "read" },
+          ],
+        },
       }),
       columnHelper.accessor("id", {
         id: "multiple",
