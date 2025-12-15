@@ -15,6 +15,7 @@ import React from "react"
 import { ChevronUpIcon, ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline"
 
 import Filter from "src/core/components/Filter"
+import { buildSearchableString } from "src/core/utils/tableFilters"
 
 type TableProps<TData> = {
   columns: ColumnDef<TData, any>[]
@@ -51,7 +52,7 @@ const defaultGlobalFilterFn: FilterFn<any> = (row, _columnId, filterValue) => {
   }
 
   try {
-    const rowValue = JSON.stringify(row.original ?? {}).toLowerCase()
+    const rowValue = buildSearchableString(row.original ?? {})
     return rowValue.includes(searchValue)
   } catch (error) {
     return false

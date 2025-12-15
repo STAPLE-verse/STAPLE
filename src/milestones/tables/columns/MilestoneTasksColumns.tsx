@@ -4,8 +4,10 @@ import { createColumnHelper } from "@tanstack/react-table"
 import Link from "next/link"
 import DateFormat from "src/core/components/DateFormat"
 import { MilestoneTasksData } from "../processing/processMilestoneTasks"
+import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 const columnHelperMilestone = createColumnHelper<MilestoneTasksData>()
+const milestoneDueDateFilter = createDateTextFilter({ emptyLabel: "no due date" })
 
 export const MilestoneTasksColumns = [
   columnHelperMilestone.accessor("name", {
@@ -22,6 +24,7 @@ export const MilestoneTasksColumns = [
     header: "Due Date",
     enableColumnFilter: true,
     enableSorting: true,
+    filterFn: milestoneDueDateFilter,
     meta: {
       filterVariant: "text",
     },

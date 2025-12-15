@@ -7,9 +7,11 @@ import { InformationCircleIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicon
 import { ProjectTasksData } from "../processing/processProjectTasks"
 import { Tooltip } from "react-tooltip"
 import PrimaryLink from "src/core/components/PrimaryLink"
+import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 // Column helper
 const columnHelperProject = createColumnHelper<ProjectTasksData>()
+const projectDueDateFilter = createDateTextFilter({ emptyLabel: "no due date" })
 
 // ColumnDefs
 export const ProjectTasksColumns = [
@@ -67,6 +69,7 @@ export const ProjectTasksColumns = [
     header: "Due Date",
     enableColumnFilter: true,
     enableSorting: true,
+    filterFn: projectDueDateFilter,
     meta: {
       filterVariant: "text",
     },
