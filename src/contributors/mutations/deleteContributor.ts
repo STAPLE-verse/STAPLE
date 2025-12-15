@@ -204,7 +204,7 @@ export default resolver.pipe(
       where: { id: contributorToDelete.id },
       data: {
         deleted: true,
-        formerTeamIds: formerTeamIds.length > 0 ? formerTeamIds : null,
+        formerTeamIds: formerTeamIds.length > 0 ? formerTeamIds : undefined,
       },
     })
 
