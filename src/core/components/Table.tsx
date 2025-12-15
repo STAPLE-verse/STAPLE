@@ -16,8 +16,18 @@ import { ChevronUpIcon, ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/re
 
 import Filter from "src/core/components/Filter"
 import { buildSearchableString } from "src/core/utils/tableFilters"
+import TooltipWrapper from "./TooltipWrapper"
 
-const specialSearchTokens = new Set(["read", "unread", "completed", "complete", "not completed"])
+const specialSearchTokens = new Set([
+  "read",
+  "unread",
+  "completed",
+  "complete",
+  "not completed",
+  "approved",
+  "not approved",
+  "pending",
+])
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 const containsWholeWord = (text: string, word: string) => {
@@ -48,10 +58,11 @@ const matchesSpecialTokenInText = (text: string, token: string) => {
   return containsWholeWord(normalized, token)
 }
 
-const matchesBooleanToken = (token: string, value: boolean, keyPath: string): boolean => {
+const matchesBooleanToken = (token: string, value: boolean | null, keyPath: string): boolean => {
   const normalizedKey = keyPath.toLowerCase()
   const isReadKey = normalizedKey.includes("read")
   const isCompletionKey = normalizedKey.includes("status") || normalizedKey.includes("complete")
+  const isApprovalKey = normalizedKey.includes("approve")
 
   if (token === "read") {
     return isReadKey && value === true
@@ -69,12 +80,24 @@ const matchesBooleanToken = (token: string, value: boolean, keyPath: string): bo
     return isCompletionKey && value === false
   }
 
+  if (token === "approved") {
+    return isApprovalKey && value === true
+  }
+
+  if (token === "not approved") {
+    return isApprovalKey && value === false
+  }
+
+  if (token === "pending") {
+    return isApprovalKey && (value === null || value === undefined)
+  }
+
   return false
 }
 
 const matchesSpecialToken = (data: unknown, token: string, keyPath = ""): boolean => {
   if (data === null || data === undefined) {
-    return false
+    return matchesBooleanToken(token, data as null, keyPath)
   }
 
   if (typeof data === "boolean") {
@@ -190,6 +213,8 @@ const Table = <TData,>({
   const pageCount = table.getPageCount()
   const pageIndex = table.getState().pagination.pageIndex
 
+  const globalSearchTooltipId = React.useId()
+
   React.useEffect(() => {
     if (!addPagination) {
       return
@@ -203,16 +228,23 @@ const Table = <TData,>({
   return (
     <>
       {enableGlobalSearch && (
-        <div className={`mb-4 flex justify-end ${classNames?.searchContainer || ""}`}>
+        <div className={`mb-2 mt-2 mr-2 flex justify-end ${classNames?.searchContainer || ""}`}>
           <input
             type="text"
             value={globalFilter ?? ""}
             onChange={(event) => setGlobalFilter(event.target.value)}
             placeholder={globalSearchPlaceholder}
             aria-label="Search table data"
+            data-tooltip-id={globalSearchTooltipId}
+            data-tooltip-content="Searches all data in table (including comments, log dates, and more)."
             className={`input input-primary input-bordered border-2 bg-base-300 rounded input-sm w-full max-w-xs focus:outline-secondary ${
               classNames?.searchInput || ""
             }`}
+          />
+          <TooltipWrapper
+            id={globalSearchTooltipId}
+            content="Global search scans all table data, including hidden columns and filters."
+            className="z-[1099] ourtooltips"
           />
         </div>
       )}

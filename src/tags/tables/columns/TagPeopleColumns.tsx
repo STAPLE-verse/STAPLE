@@ -6,7 +6,7 @@ import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 export type TagPeopleData = {
   name: string
-  createdAt: Date
+  createdAt: Date | null
   percentTasksComplete: number | null
   percentApproved: number | null
   percentFormsComplete: number | null
@@ -15,21 +15,37 @@ export type TagPeopleData = {
   type: string
   userId: number
   projectId: number
-  completionStatus: "Completed" | "Not completed"
 }
 
 const columnHelper = createColumnHelper<TagPeopleData>()
 const createdDateFilter = createDateTextFilter({ emptyLabel: "no date" })
-const completionStatusFilter: FilterFn<TagPeopleData> = (row, columnId, filterValue) => {
-  const selected = String(filterValue ?? "").trim()
 
-  if (!selected) {
+const nullableRangeFilter: FilterFn<TagPeopleData> = (row, columnId, filterValue) => {
+  const value = row.getValue<number | null>(columnId)
+
+  // Always include rows without numeric data
+  if (value === null || value === undefined) {
     return true
   }
 
-  return String(row.getValue(columnId) ?? "") === selected
-}
+  if (!Array.isArray(filterValue)) {
+    return true
+  }
 
+  const parseBound = (bound: unknown, fallback: number) => {
+    if (bound === null || bound === undefined || bound === "") {
+      return fallback
+    }
+
+    const numeric = typeof bound === "number" ? bound : Number(bound)
+    return Number.isNaN(numeric) ? fallback : numeric
+  }
+
+  const min = parseBound(filterValue[0], Number.NEGATIVE_INFINITY)
+  const max = parseBound(filterValue[1], Number.POSITIVE_INFINITY)
+
+  return value >= min && value <= max
+}
 export const TagPeopleColumns = [
   columnHelper.accessor("name", {
     header: "Name",
@@ -58,28 +74,20 @@ export const TagPeopleColumns = [
   }),
   columnHelper.accessor("percentTasksComplete", {
     header: "Tasks Complete",
-    cell: (info) => (info.getValue() === null ? "N/A" : `${info.getValue()}%`),
+    cell: (info) => (info.getValue() === null ? "No tasks" : `${info.getValue()}%`),
     enableColumnFilter: true,
     enableSorting: true,
+    filterFn: nullableRangeFilter,
     meta: {
       filterVariant: "range",
     },
   }),
-  columnHelper.accessor("completionStatus", {
-    header: "Status",
-    cell: (info) => info.getValue(),
-    enableColumnFilter: true,
-    enableSorting: true,
-    filterFn: completionStatusFilter,
-    meta: {
-      filterVariant: "select",
-    },
-  }),
   columnHelper.accessor("percentApproved", {
     header: "Tasks Approved",
-    cell: (info) => (info.getValue() === null ? "N/A" : `${info.getValue()}%`),
+    cell: (info) => (info.getValue() === null ? "No tasks" : `${info.getValue()}%`),
     enableColumnFilter: true,
     enableSorting: true,
+    filterFn: nullableRangeFilter,
     meta: {
       filterVariant: "range",
     },
@@ -88,10 +96,11 @@ export const TagPeopleColumns = [
     header: "Forms Complete",
     cell: (info) => {
       const row = info.row.original
-      return row.formAssignedCount === 0 ? "N/A" : `${info.getValue()}%`
+      return row.formAssignedCount === 0 ? "No forms" : `${info.getValue()}%`
     },
     enableColumnFilter: true,
     enableSorting: true,
+    filterFn: nullableRangeFilter,
     meta: {
       filterVariant: "range",
     },

@@ -1,5 +1,5 @@
 import React from "react"
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import { ColumnDef, FilterFn, createColumnHelper } from "@tanstack/react-table"
 import { ProcessedIndividualTaskLog } from "../processing/processTaskLogs"
 import { ProcessedTeamTaskLog } from "../processing/processTaskLogs"
 import ToggleModal from "src/core/components/ToggleModal"
@@ -19,12 +19,57 @@ import TaskLogHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
 import { Tooltip } from "react-tooltip"
 import { TaskLogSchemaModal } from "src/tasklogs/components/TaskLogSchemaModal"
 import { TaskLogToggleModal } from "src/tasklogs/components/TaskLogToggleModal"
+import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 type ProcessedTaskLog = (ProcessedIndividualTaskLog | ProcessedTeamTaskLog) & {
   refetchTaskData?: () => Promise<void>
 }
+
+const lastUpdateFilter = createDateTextFilter({ emptyLabel: "no date" })
 // Column helper
 const columnHelper = createColumnHelper<ProcessedTaskLog>()
+
+const statusFilter: FilterFn<ProcessedTaskLog> = (row, columnId, filterValue) => {
+  const selected = String(filterValue ?? "")
+    .trim()
+    .toLowerCase()
+
+  if (!selected) {
+    return true
+  }
+
+  const value = String(row.getValue(columnId) ?? "")
+    .trim()
+    .toLowerCase()
+
+  return value === selected
+}
+
+const approvalFilter: FilterFn<ProcessedTaskLog> = (row, columnId, filterValue) => {
+  const selected = String(filterValue ?? "")
+    .trim()
+    .toLowerCase()
+
+  if (!selected) {
+    return true
+  }
+
+  const value = row.getValue<boolean | null>(columnId)
+
+  if (selected === "approved") {
+    return value === true
+  }
+
+  if (selected === "not approved") {
+    return value === false
+  }
+
+  if (selected === "pending") {
+    return value === null
+  }
+
+  return true
+}
 
 // ColumnDefs
 // Table for assignment with a form
@@ -49,13 +94,13 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
     cell: (info) => {
       const isOverdue = info.row.original.overdue
       return (
-        <div className="flex items-center gap-1">
+        <div className="flex gap-1">
           {isOverdue && (
             <span className="text-error" title="Overdue">
               <HandRaisedIcon className="h-5 w-5 inline-block" />
             </span>
           )}
-          <DateFormat date={info.getValue()} preset="dateShort" />
+          <DateFormat date={info.getValue()} preset="date" />
         </div>
       )
     },
@@ -74,13 +119,19 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
       </div>
     ),
     id: "updatedAt",
+    enableColumnFilter: true,
+    enableSorting: true,
+    filterFn: lastUpdateFilter,
+    meta: {
+      filterVariant: "text",
+    },
   }),
   columnHelper.accessor("status", {
     cell: (info) => {
       const value = info.getValue()
       const isCompleted = value === "Completed"
       return (
-        <div className="flex justify-center items-center">
+        <div className="flex">
           {isCompleted ? (
             <CheckCircleIcon className="h-6 w-6 text-success" title="Completed" />
           ) : (
@@ -93,15 +144,20 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
     id: "status",
     enableColumnFilter: true,
     enableSorting: true,
+    filterFn: statusFilter,
     meta: {
       filterVariant: "select",
+      selectOptions: [
+        { label: "Completed", value: "completed" },
+        { label: "Not completed", value: "not completed" },
+      ],
     },
   }),
   columnHelper.accessor("approved", {
     cell: (info) => {
       const value = info.getValue() as boolean | null
       return (
-        <div className="flex justify-center items-center">
+        <div className="flex">
           {value === true ? (
             <CheckCircleIcon className="h-6 w-6 text-success" title="Approved" />
           ) : value === false ? (
@@ -116,8 +172,14 @@ export const TaskLogProjectMemberColumns: ColumnDef<ProcessedTaskLog>[] = [
     id: "approved",
     enableColumnFilter: true,
     enableSorting: true,
+    filterFn: approvalFilter,
     meta: {
       filterVariant: "select",
+      selectOptions: [
+        { label: "Approved", value: "approved" },
+        { label: "Pending", value: "pending" },
+        { label: "Not approved", value: "not approved" },
+      ],
     },
   }),
   columnHelper.accessor("taskHistory", {

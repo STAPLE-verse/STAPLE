@@ -1,4 +1,4 @@
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import { ColumnDef, FilterFn, createColumnHelper } from "@tanstack/react-table"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import { ProcessedTaskLogHistoryModal } from "../processing/processTaskLogs"
 import { ApproveDropdown } from "src/tasklogs/components/ApproveTask"
@@ -6,6 +6,48 @@ import DateFormat from "src/core/components/DateFormat"
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline"
 // Column helper
 const columnHelper = createColumnHelper<ProcessedTaskLogHistoryModal>()
+
+const statusFilter: FilterFn<ProcessedTaskLogHistoryModal> = (row, columnId, filterValue) => {
+  const selected = String(filterValue ?? "")
+    .trim()
+    .toLowerCase()
+
+  if (!selected) {
+    return true
+  }
+
+  const value = String(row.getValue(columnId) ?? "")
+    .trim()
+    .toLowerCase()
+
+  return value === selected
+}
+
+const approvalFilter: FilterFn<ProcessedTaskLogHistoryModal> = (row, columnId, filterValue) => {
+  const selected = String(filterValue ?? "")
+    .trim()
+    .toLowerCase()
+
+  if (!selected) {
+    return true
+  }
+
+  const value = row.getValue<boolean | null>(columnId)
+
+  if (selected === "approved") {
+    return value === true
+  }
+
+  if (selected === "not approved") {
+    return value === false
+  }
+
+  if (selected === "pending") {
+    return value === null
+  }
+
+  return true
+}
 
 // ColumnDefs
 export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistoryModal>[] = [
@@ -24,7 +66,7 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistoryModal>[
       const value = info.getValue()
       const isCompleted = value === "Completed"
       return (
-        <div className="flex justify-center items-center">
+        <div className="flex">
           {isCompleted ? (
             <CheckCircleIcon className="h-6 w-6 text-success" title="Completed" />
           ) : (
@@ -35,6 +77,16 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistoryModal>[
     },
     header: "Status",
     id: "status",
+    enableColumnFilter: true,
+    enableSorting: true,
+    filterFn: statusFilter,
+    meta: {
+      filterVariant: "select",
+      selectOptions: [
+        { label: "Completed", value: "completed" },
+        { label: "Not completed", value: "not completed" },
+      ],
+    },
   }),
   columnHelper.accessor("approved", {
     cell: (info) => {
@@ -52,6 +104,17 @@ export const TaskLogHistoryFormColumns: ColumnDef<ProcessedTaskLogHistoryModal>[
     },
     header: "Approved",
     id: "approved",
+    enableColumnFilter: true,
+    enableSorting: true,
+    filterFn: approvalFilter,
+    meta: {
+      filterVariant: "select",
+      selectOptions: [
+        { label: "Approved", value: "approved" },
+        { label: "Pending", value: "pending" },
+        { label: "Not approved", value: "not approved" },
+      ],
+    },
   }),
   columnHelper.accessor("formData", {
     cell: (info) => (
