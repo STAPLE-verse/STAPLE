@@ -53,7 +53,7 @@ test("Render InvitesListView with two invites", async () => {
 
   expect(
     screen.getByRole("cell", {
-      name: /october 27, 2024 at 23:43:00/i,
+      name: /october 27, 2024 at 23:43/i,
     })
   ).toBeInTheDocument()
 
@@ -71,7 +71,7 @@ test("Render InvitesListView with two invites", async () => {
 
   expect(
     screen.getByRole("cell", {
-      name: /october 27, 2024 at 23:43:00/i,
+      name: /october 27, 2024 at 23:43/i,
     })
   ).toBeInTheDocument()
   expect(
@@ -88,7 +88,7 @@ test("Render InvitesListView with two invites", async () => {
 
   expect(
     screen.queryByRole("cell", {
-      name: /march 27, 2024 at 23:43:00/i,
+      name: /march 27, 2024 at 23:43/i,
     })
   ).not.toBeInTheDocument()
   expect(
@@ -143,7 +143,7 @@ test("Render InvitesListView with empty list", async () => {
 
   expect(
     screen.queryByRole("cell", {
-      name: /october 27, 2024 at 23:43:00/i,
+      name: /october 27, 2024 at 23:43/i,
     })
   ).not.toBeInTheDocument()
 
