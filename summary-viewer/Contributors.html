@@ -308,6 +308,15 @@
         // show details cards
         function showDetails(type, id, name, detailsSectionId) {
           const detailsSection = document.getElementById(detailsSectionId)
+          if (detailsSectionId === "member-details-section") {
+            const p = document.getElementById("member-placeholder")
+            if (p) p.style.display = "none"
+          }
+
+          if (detailsSectionId === "team-details-section") {
+            const p = document.getElementById("team-placeholder")
+            if (p) p.style.display = "none"
+          }
 
           if (!detailsSection) {
             console.error(`Details section with ID "${detailsSectionId}" not found.`)
@@ -780,10 +789,18 @@
         // Count the unique members
         const numberOfUniqueMembers = uniqueMemberNames.size
         document.getElementById("stat-number-1").textContent = numberOfUniqueMembers
+        const memberPlaceholder = document.getElementById("member-placeholder")
+        if (memberPlaceholder) {
+          memberPlaceholder.style.display = numberOfUniqueMembers > 0 ? "block" : "none"
+        }
 
         const uniqueTeamNames = new Set(teamsDataArray.map((team) => team.name))
         const numberOfUniqueTeams = teamsWithTaskData.size
         document.getElementById("stat-number-2").textContent = numberOfUniqueTeams
+        const teamPlaceholder = document.getElementById("team-placeholder")
+        if (teamPlaceholder) {
+          teamPlaceholder.style.display = numberOfUniqueTeams > 0 ? "block" : "none"
+        }
 
         // Extract all roles from project members
         const memberRoles = jsonData.projectMembers.flatMap((member) => member.roles)
@@ -1704,9 +1721,7 @@
             </p>
             <div id="members-section"></div>
             <div id="member-details-section" class="details-container">
-              ${numberOfUniqueMembers > 0 ? '
-              <p>Select a card to view details about the contributor.</p>
-              ' : ''}
+              <p id="member-placeholder">Select a card to view details about the contributor.</p>
             </div>
           </div>
         </div>
@@ -1724,9 +1739,7 @@
             </p>
             <div id="teams-section"></div>
             <div id="team-details-section" class="details-container">
-              ${numberOfUniqueTeams > 0 ? '
-              <p>Select a card to view details about the team.</p>
-              ' : ''}
+              <p id="team-placeholder">Select a card to view details about the team.</p>
             </div>
           </div>
         </div>
