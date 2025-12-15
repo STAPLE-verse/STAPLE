@@ -86,6 +86,7 @@ export function GetProjectSummaryDisplay({ project, projectManagers }) {
       <Table
         columns={projectManagersColumns}
         data={projectManagers}
+        enableGlobalSearch={false}
         classNames={{
           thead: "text-base",
           tbody: "text-base",
