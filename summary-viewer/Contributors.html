@@ -1042,6 +1042,10 @@
             100
           ).toFixed(1)
 
+          // Hide progress bar if percentage is NaN
+          const showTasksBar = Number.isFinite(Number(tasksPercentComplete))
+          const showFormsBar = Number.isFinite(Number(formsPercentComplete))
+
           // Create the card container
           const card = document.createElement("div")
           card.className = "small-card clickable"
@@ -1059,13 +1063,27 @@
 
           // Add progress bars for tasks and forms
           const progressBars = `
-        <div class="progress-container">
-          <div class="progress-bar" style="width: ${tasksPercentComplete}%; background-color: ${themeColors.primary3};" title="Tasks: ${tasksPercentComplete}% Completed"></div>
-        </div>
-        <div class="progress-container">
-          <div class="progress-bar" style="width: ${formsPercentComplete}%; background-color: ${themeColors.primary4};" title="Forms: ${formsPercentComplete}% Submitted"></div>
-        </div>
-      `
+  ${
+    showTasksBar
+      ? `
+    <div class="progress-container">
+      <div class="progress-bar"
+           style="width: ${tasksPercentComplete}%; background-color: ${themeColors.primary3};"
+           title="Tasks: ${tasksPercentComplete}% Completed"></div>
+    </div>`
+      : ``
+  }
+  ${
+    showFormsBar
+      ? `
+    <div class="progress-container">
+      <div class="progress-bar"
+           style="width: ${formsPercentComplete}%; background-color: ${themeColors.primary4};"
+           title="Forms: ${formsPercentComplete}% Submitted"></div>
+    </div>`
+      : ``
+  }
+`
           card.innerHTML += progressBars // Append progress bars to the card
 
           // Append the card to the members section and render the chart
@@ -1163,19 +1181,33 @@
           chartDiv.id = containerId
           card.appendChild(chartDiv)
 
+          // NaN guards for progress bars
+          const showTeamTasksBar = Number.isFinite(Number(team.tasksPercentComplete))
+          const showTeamFormsBar = Number.isFinite(Number(team.formsPercentComplete))
+
           // Add progress bars for tasks and forms
           const progressBars = `
-            <div class="progress-container">
-              <div class="progress-bar"
-                  style="width: ${team.tasksPercentComplete}%; background-color: ${themeColors.primary3};"
-                  title="Tasks: ${team.tasksPercentComplete}% Completed"></div>
-            </div>
-            <div class="progress-container">
-              <div class="progress-bar"
-                  style="width: ${team.formsPercentComplete}%; background-color: ${themeColors.primary4};"
-                  title="Forms: ${team.formsPercentComplete}% Submitted"></div>
-            </div>
-          `
+  ${
+    showTeamTasksBar
+      ? `
+    <div class="progress-container">
+      <div class="progress-bar"
+           style="width: ${team.tasksPercentComplete}%; background-color: ${themeColors.primary3};"
+           title="Tasks: ${team.tasksPercentComplete}% Completed"></div>
+    </div>`
+      : ``
+  }
+  ${
+    showTeamFormsBar
+      ? `
+    <div class="progress-container">
+      <div class="progress-bar"
+           style="width: ${team.formsPercentComplete}%; background-color: ${themeColors.primary4};"
+           title="Forms: ${team.formsPercentComplete}% Submitted"></div>
+    </div>`
+      : ``
+  }
+`
           card.innerHTML += progressBars // Append progress bars to the card
 
           // Append the card to the teams section and render the chart
