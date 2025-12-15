@@ -1,5 +1,5 @@
 import React from "react"
-import { createColumnHelper } from "@tanstack/react-table"
+import { createColumnHelper, FilterFn } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
@@ -12,6 +12,15 @@ import { createDateTextFilter } from "src/core/utils/tableFilters"
 // Column helper
 const columnHelperProject = createColumnHelper<ProjectTasksData>()
 const projectDueDateFilter = createDateTextFilter({ emptyLabel: "no due date" })
+const completionStatusFilter: FilterFn<ProjectTasksData> = (row, columnId, filterValue) => {
+  const selected = String(filterValue ?? "").trim()
+
+  if (!selected) {
+    return true
+  }
+
+  return String(row.getValue(columnId) ?? "") === selected
+}
 
 // ColumnDefs
 export const ProjectTasksColumns = [
@@ -92,6 +101,7 @@ export const ProjectTasksColumns = [
     cell: (info) => <span>{info.getValue()}</span>,
     enableColumnFilter: true,
     enableSorting: true,
+    filterFn: completionStatusFilter,
     meta: {
       filterVariant: "select",
     },
