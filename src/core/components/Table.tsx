@@ -17,7 +17,7 @@ import { ChevronUpIcon, ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/re
 import Filter from "src/core/components/Filter"
 import { buildSearchableString } from "src/core/utils/tableFilters"
 
-const readSearchTokens = new Set(["read", "unread"])
+const specialSearchTokens = new Set(["read", "unread", "completed", "complete", "incomplete"])
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 const containsWholeWord = (text: string, word: string) => {
   const escapedWord = escapeRegExp(word)
@@ -61,7 +61,7 @@ const defaultGlobalFilterFn: FilterFn<any> = (row, _columnId, filterValue) => {
 
   try {
     const rowValue = buildSearchableString(row.original ?? {})
-    if (readSearchTokens.has(searchValue)) {
+    if (specialSearchTokens.has(searchValue)) {
       return containsWholeWord(rowValue, searchValue)
     }
     return rowValue.includes(searchValue)

@@ -121,6 +121,9 @@ const describePrimitive = (value: unknown, locale: string, keyHint?: string): st
     if (normalizedKey.includes("read")) {
       return value ? "read true yes" : "unread false no"
     }
+    if (normalizedKey.includes("status") || normalizedKey.includes("complete")) {
+      return value ? "completed true yes" : "not completed incomplete false no"
+    }
     return value ? "true yes" : "false no"
   }
 
