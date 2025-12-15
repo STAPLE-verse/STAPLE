@@ -1,5 +1,6 @@
 import {
   ColumnDef,
+  FilterFn,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
@@ -21,6 +22,8 @@ type TableProps<TData> = {
   filters?: {} //pass object with the type of filter for a given colunm based on colunm id
   enableSorting?: boolean
   enableFilters?: boolean
+  enableGlobalSearch?: boolean
+  globalSearchPlaceholder?: string
   addPagination?: boolean
   classNames?: {
     table?: string
@@ -33,6 +36,25 @@ type TableProps<TData> = {
     pageInfo?: string
     goToPageInput?: string
     pageSizeSelect?: string
+    searchContainer?: string
+    searchInput?: string
+  }
+}
+
+const defaultGlobalFilterFn: FilterFn<any> = (row, _columnId, filterValue) => {
+  const searchValue = String(filterValue ?? "")
+    .toLowerCase()
+    .trim()
+
+  if (!searchValue) {
+    return true
+  }
+
+  try {
+    const rowValue = JSON.stringify(row.original ?? {}).toLowerCase()
+    return rowValue.includes(searchValue)
+  } catch (error) {
+    return false
   }
 }
 
@@ -42,9 +64,12 @@ const Table = <TData,>({
   classNames,
   enableSorting = true,
   enableFilters = true,
+  enableGlobalSearch = true,
+  globalSearchPlaceholder = "Search...",
   addPagination = false,
 }: TableProps<TData>) => {
   const [sorting, setSorting] = React.useState([])
+  const [globalFilter, setGlobalFilter] = React.useState("")
 
   const table = useReactTable({
     data,
@@ -59,6 +84,7 @@ const Table = <TData,>({
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
     state: {
       sorting: sorting,
+      globalFilter: globalFilter,
     },
     initialState: {
       pagination: {
@@ -66,14 +92,41 @@ const Table = <TData,>({
       },
     },
     onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: defaultGlobalFilterFn,
     autoResetPageIndex: false,
   })
 
   const currentPage = table.getState().pagination.pageIndex + 1
   const pageCount = table.getPageCount()
+  const pageIndex = table.getState().pagination.pageIndex
+
+  React.useEffect(() => {
+    if (!addPagination) {
+      return
+    }
+
+    if (pageCount > 0 && pageIndex >= pageCount) {
+      table.setPageIndex(0)
+    }
+  }, [addPagination, pageCount, pageIndex, table])
 
   return (
     <>
+      {enableGlobalSearch && (
+        <div className={`mb-4 flex justify-end ${classNames?.searchContainer || ""}`}>
+          <input
+            type="text"
+            value={globalFilter ?? ""}
+            onChange={(event) => setGlobalFilter(event.target.value)}
+            placeholder={globalSearchPlaceholder}
+            aria-label="Search table data"
+            className={`input input-primary input-bordered border-2 bg-base-300 rounded input-sm w-full max-w-xs focus:outline-secondary ${
+              classNames?.searchInput || ""
+            }`}
+          />
+        </div>
+      )}
       <table className={classNames?.table || "table"}>
         <thead className={classNames?.thead || "text-xl text-base-content"}>
           {table.getHeaderGroups().map((headerGroup) => (
