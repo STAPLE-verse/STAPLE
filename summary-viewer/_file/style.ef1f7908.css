@@ -402,3 +402,10 @@ svg[class^="plot-"][class$="-ramp"] text {
 .ch-domain-text {
   font-size: 14px !important;
 }
+
+.empty-note {
+  font-size: 1rem !important;
+  opacity: 0.7;
+  margin-top: 0.25rem;
+  text-align: center;
+}
