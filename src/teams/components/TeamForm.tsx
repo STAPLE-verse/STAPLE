@@ -106,11 +106,14 @@ export function TeamForm<S extends z.ZodType<any, any>>(props: TeamFormProps<S>)
             <Tooltip
               id="tags-overview"
               content="Use a comma, semicolon, enter, or tab to create separate tags. To edit a tag, click on
-            it, and then hit the enter key when you are finished."
+           it, and then hit the enter key when you are finished."
               className="z-[1099] ourtooltips"
             />
           </span>
         </label>
+        <p className="text-md italic text-base-content/80 mb-2">
+          Tags only save after you press enter, comma, or semicolon.
+        </p>
         <ReactTags
           tags={tags}
           name="tags"
