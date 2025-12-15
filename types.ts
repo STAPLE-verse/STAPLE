@@ -19,5 +19,6 @@ declare module "@tanstack/react-table" {
   interface ColumnMeta<TData, TValue> {
     filterVariant?: "text" | "range" | "select" | "multiselect"
     isHtml?: boolean
+    selectOptions?: { label: string; value: string }[]
   }
 }

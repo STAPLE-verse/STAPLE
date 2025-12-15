@@ -1,5 +1,6 @@
 import {
   ColumnDef,
+  FilterFn,
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
@@ -14,6 +15,112 @@ import React from "react"
 import { ChevronUpIcon, ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline"
 
 import Filter from "src/core/components/Filter"
+import { buildSearchableString } from "src/core/utils/tableFilters"
+import TooltipWrapper from "./TooltipWrapper"
+
+const specialSearchTokens = new Set([
+  "read",
+  "unread",
+  "completed",
+  "complete",
+  "not completed",
+  "approved",
+  "not approved",
+  "pending",
+])
+
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+const containsWholeWord = (text: string, word: string) => {
+  const escapedWord = escapeRegExp(word)
+  const regex = new RegExp(`\\b${escapedWord}\\b`)
+  return regex.test(text)
+}
+
+const matchesSpecialTokenInText = (text: string, token: string) => {
+  if (!text) {
+    return false
+  }
+
+  const normalized = text.toLowerCase()
+
+  if (token === "completed") {
+    return /(?<!not\s)\bcompleted\b/.test(normalized)
+  }
+
+  if (token === "complete") {
+    return /(?<!not\s)(?<!in)\bcomplete\b/.test(normalized)
+  }
+
+  if (token === "not completed") {
+    return /\bnot\s+completed\b/.test(normalized)
+  }
+
+  return containsWholeWord(normalized, token)
+}
+
+const matchesBooleanToken = (token: string, value: boolean | null, keyPath: string): boolean => {
+  const normalizedKey = keyPath.toLowerCase()
+  const isReadKey = normalizedKey.includes("read")
+  const isCompletionKey = normalizedKey.includes("status") || normalizedKey.includes("complete")
+  const isApprovalKey = normalizedKey.includes("approve")
+
+  if (token === "read") {
+    return isReadKey && value === true
+  }
+
+  if (token === "unread") {
+    return isReadKey && value === false
+  }
+
+  if (token === "completed" || token === "complete") {
+    return isCompletionKey && value === true
+  }
+
+  if (token === "not completed") {
+    return isCompletionKey && value === false
+  }
+
+  if (token === "approved") {
+    return isApprovalKey && value === true
+  }
+
+  if (token === "not approved") {
+    return isApprovalKey && value === false
+  }
+
+  if (token === "pending") {
+    return isApprovalKey && (value === null || value === undefined)
+  }
+
+  return false
+}
+
+const matchesSpecialToken = (data: unknown, token: string, keyPath = ""): boolean => {
+  if (data === null || data === undefined) {
+    return matchesBooleanToken(token, data as null, keyPath)
+  }
+
+  if (typeof data === "boolean") {
+    return matchesBooleanToken(token, data, keyPath)
+  }
+
+  if (Array.isArray(data)) {
+    return data.some((item) => matchesSpecialToken(item, token, keyPath))
+  }
+
+  if (data instanceof Date) {
+    return false
+  }
+
+  if (typeof data === "object") {
+    return Object.entries(data as Record<string, unknown>).some(([key, value]) => {
+      const nextPath = keyPath ? `${keyPath}.${key}` : key
+      return matchesSpecialToken(value, token, nextPath)
+    })
+  }
+
+  return false
+}
 
 type TableProps<TData> = {
   columns: ColumnDef<TData, any>[]
@@ -21,6 +128,8 @@ type TableProps<TData> = {
   filters?: {} //pass object with the type of filter for a given colunm based on colunm id
   enableSorting?: boolean
   enableFilters?: boolean
+  enableGlobalSearch?: boolean
+  globalSearchPlaceholder?: string
   addPagination?: boolean
   classNames?: {
     table?: string
@@ -33,6 +142,31 @@ type TableProps<TData> = {
     pageInfo?: string
     goToPageInput?: string
     pageSizeSelect?: string
+    searchContainer?: string
+    searchInput?: string
+  }
+}
+
+const defaultGlobalFilterFn: FilterFn<any> = (row, _columnId, filterValue) => {
+  const searchValue = String(filterValue ?? "")
+    .toLowerCase()
+    .trim()
+
+  if (!searchValue) {
+    return true
+  }
+
+  try {
+    const rowValue = buildSearchableString(row.original ?? {})
+    if (specialSearchTokens.has(searchValue)) {
+      if (matchesSpecialToken(row.original, searchValue)) {
+        return true
+      }
+      return matchesSpecialTokenInText(rowValue, searchValue)
+    }
+    return rowValue.includes(searchValue)
+  } catch (error) {
+    return false
   }
 }
 
@@ -42,9 +176,12 @@ const Table = <TData,>({
   classNames,
   enableSorting = true,
   enableFilters = true,
+  enableGlobalSearch = true,
+  globalSearchPlaceholder = "Search...",
   addPagination = false,
 }: TableProps<TData>) => {
   const [sorting, setSorting] = React.useState([])
+  const [globalFilter, setGlobalFilter] = React.useState("")
 
   const table = useReactTable({
     data,
@@ -59,6 +196,7 @@ const Table = <TData,>({
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
     state: {
       sorting: sorting,
+      globalFilter: globalFilter,
     },
     initialState: {
       pagination: {
@@ -66,14 +204,50 @@ const Table = <TData,>({
       },
     },
     onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: defaultGlobalFilterFn,
     autoResetPageIndex: false,
   })
 
   const currentPage = table.getState().pagination.pageIndex + 1
   const pageCount = table.getPageCount()
+  const pageIndex = table.getState().pagination.pageIndex
+
+  const globalSearchTooltipId = React.useId()
+
+  React.useEffect(() => {
+    if (!addPagination) {
+      return
+    }
+
+    if (pageCount > 0 && pageIndex >= pageCount) {
+      table.setPageIndex(0)
+    }
+  }, [addPagination, pageCount, pageIndex, table])
 
   return (
     <>
+      {enableGlobalSearch && (
+        <div className={`mb-2 mt-2 mr-2 flex justify-end ${classNames?.searchContainer || ""}`}>
+          <input
+            type="text"
+            value={globalFilter ?? ""}
+            onChange={(event) => setGlobalFilter(event.target.value)}
+            placeholder={globalSearchPlaceholder}
+            aria-label="Search table data"
+            data-tooltip-id={globalSearchTooltipId}
+            data-tooltip-content="Searches all data in table (including comments, log dates, and more)."
+            className={`input input-primary input-bordered border-2 bg-base-300 rounded input-sm w-full max-w-xs focus:outline-secondary ${
+              classNames?.searchInput || ""
+            }`}
+          />
+          <TooltipWrapper
+            id={globalSearchTooltipId}
+            content="Global search scans all table data, including hidden columns and filters."
+            className="z-[1099] ourtooltips"
+          />
+        </div>
+      )}
       <table className={classNames?.table || "table"}>
         <thead className={classNames?.thead || "text-xl text-base-content"}>
           {table.getHeaderGroups().map((headerGroup) => (

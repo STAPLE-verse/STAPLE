@@ -3,6 +3,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import DateFormat from "src/core/components/DateFormat"
 import { AcceptInvite } from "src/invites/components/AcceptInvite"
 import { DeleteInvite } from "src/invites/components/DeleteInvite"
+import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 // Define return type for the columns
 export type InviteTableData = {
@@ -14,12 +15,19 @@ export type InviteTableData = {
 
 // use column helper
 const columnHelper = createColumnHelper<InviteTableData>()
+const inviteDateFilter = createDateTextFilter({ emptyLabel: "no date" })
 
 // ColumnDefs
 export const InviteColumns = [
   columnHelper.accessor("createdAt", {
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Date",
+    enableColumnFilter: true,
+    enableSorting: true,
+    filterFn: inviteDateFilter,
+    meta: {
+      filterVariant: "text",
+    },
   }),
   columnHelper.accessor("project.name", {
     cell: (info) => <span>{info.getValue()}</span>,

@@ -1,5 +1,5 @@
 import React from "react"
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import { ColumnDef, FilterFn, createColumnHelper } from "@tanstack/react-table"
 import { ProcessedIndividualTaskLog, ProcessedTeamTaskLog } from "../processing/processTaskLogs"
 import { TaskLogSchemaModal } from "../../components/TaskLogSchemaModal"
 import ToggleModal from "src/core/components/ToggleModal"
@@ -14,13 +14,66 @@ import {
   HandRaisedIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline"
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid"
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline"
 import TaskLogHistoryModal from "src/tasklogs/components/TaskLogHistoryModal"
 import { Tooltip } from "react-tooltip"
 import DateFormat from "src/core/components/DateFormat"
+import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 // Column helper
 const columnHelper = createColumnHelper<ProcessedIndividualTaskLog | ProcessedTeamTaskLog>()
+
+const lastUpdateFilter = createDateTextFilter({ emptyLabel: "no date" })
+
+const statusFilter: FilterFn<ProcessedIndividualTaskLog | ProcessedTeamTaskLog> = (
+  row,
+  columnId,
+  filterValue
+) => {
+  const selected = String(filterValue ?? "")
+    .trim()
+    .toLowerCase()
+
+  if (!selected) {
+    return true
+  }
+
+  const value = String(row.getValue(columnId) ?? "")
+    .trim()
+    .toLowerCase()
+
+  return value === selected
+}
+
+const approvalFilter: FilterFn<ProcessedIndividualTaskLog | ProcessedTeamTaskLog> = (
+  row,
+  columnId,
+  filterValue
+) => {
+  const selected = String(filterValue ?? "")
+    .trim()
+    .toLowerCase()
+
+  if (!selected) {
+    return true
+  }
+
+  const value = row.getValue<boolean | null>(columnId)
+
+  if (selected === "approved") {
+    return value === true
+  }
+
+  if (selected === "not approved") {
+    return value === false
+  }
+
+  if (selected === "pending") {
+    return value === null
+  }
+
+  return true
+}
 
 // ColumnDefs
 // Table for assignment with a form
@@ -79,7 +132,7 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog | Processe
               <HandRaisedIcon className="h-5 w-5 inline-block" />
             </span>
           )}
-          <DateFormat date={info.getValue()} preset="dateShort" />
+          <DateFormat date={info.getValue()} preset="date" />
         </div>
       )
     },
@@ -98,13 +151,19 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog | Processe
       </div>
     ),
     id: "updatedAt",
+    enableColumnFilter: true,
+    enableSorting: true,
+    filterFn: lastUpdateFilter,
+    meta: {
+      filterVariant: "text",
+    },
   }),
   columnHelper.accessor("status", {
     cell: (info) => {
       const value = info.getValue()
       const isCompleted = value === "Completed"
       return (
-        <div className="flex justify-center items-center">
+        <div className="flex">
           {isCompleted ? (
             <CheckCircleIcon className="h-6 w-6 text-success" title="Completed" />
           ) : (
@@ -117,8 +176,13 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog | Processe
     id: "status",
     enableColumnFilter: true,
     enableSorting: true,
+    filterFn: statusFilter,
     meta: {
       filterVariant: "select",
+      selectOptions: [
+        { label: "Completed", value: "completed" },
+        { label: "Not completed", value: "not completed" },
+      ],
     },
   }),
   columnHelper.accessor("approved", {
@@ -132,14 +196,20 @@ export const TaskLogFormColumns: ColumnDef<ProcessedIndividualTaskLog | Processe
       } else {
         icon = <ClockIcon className="h-6 w-6 text-warning" title="Pending" />
       }
-      return <div className="flex justify-center items-center">{icon}</div>
+      return <div className="flex">{icon}</div>
     },
     header: "Approved",
     id: "approved",
     enableColumnFilter: true,
     enableSorting: true,
+    filterFn: approvalFilter,
     meta: {
       filterVariant: "select",
+      selectOptions: [
+        { label: "Approved", value: "approved" },
+        { label: "Pending", value: "pending" },
+        { label: "Not approved", value: "not approved" },
+      ],
     },
   }),
   columnHelper.accessor("taskHistory", {

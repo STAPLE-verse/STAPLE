@@ -14,6 +14,7 @@ export function GetTableDisplay({ data, columns, type }) {
   return (
     <Table
       columns={columns}
+      enableGlobalSearch={false}
       data={data}
       classNames={{
         thead: "text-base text-base-content",
@@ -85,6 +86,7 @@ export function GetProjectSummaryDisplay({ project, projectManagers }) {
       <Table
         columns={projectManagersColumns}
         data={projectManagers}
+        enableGlobalSearch={false}
         classNames={{
           thead: "text-base",
           tbody: "text-base",

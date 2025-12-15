@@ -4,6 +4,7 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
+import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 export type TagMilestoneData = {
   id: number
@@ -19,6 +20,8 @@ export type TagMilestoneData = {
 }
 
 const columnHelper = createColumnHelper<TagMilestoneData>()
+const startDateFilter = createDateTextFilter({ emptyLabel: "no date" })
+const endDateFilter = createDateTextFilter({ emptyLabel: "no date" })
 
 export const TagMilestoneColumns = [
   columnHelper.accessor("name", {
@@ -38,10 +41,22 @@ export const TagMilestoneColumns = [
   columnHelper.accessor("startDate", {
     header: "Start Date",
     cell: (info) => <DateFormat date={info.getValue()} />,
+    enableColumnFilter: true,
+    enableSorting: true,
+    filterFn: startDateFilter,
+    meta: {
+      filterVariant: "text",
+    },
   }),
   columnHelper.accessor("endDate", {
     header: "End Date",
     cell: (info) => <DateFormat date={info.getValue()} />,
+    enableColumnFilter: true,
+    enableSorting: true,
+    filterFn: endDateFilter,
+    meta: {
+      filterVariant: "text",
+    },
   }),
   columnHelper.accessor("percentTasksComplete", {
     header: () => (
