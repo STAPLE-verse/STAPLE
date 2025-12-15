@@ -67,7 +67,7 @@ export default resolver.pipe(
           data: {
             teamName: team.name || existing?.name || "Unnamed Team",
             projectName: project?.name || "Unnamed Project",
-            addedby: addedBy,
+            addedBy,
           },
           projectId: existing.projectId,
           routeData: {
