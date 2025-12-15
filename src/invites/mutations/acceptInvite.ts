@@ -65,7 +65,11 @@ export default resolver.pipe(
       // Restore the soft-deleted ProjectMember
       projectMember = await db.projectMember.update({
         where: { id: invite.reassignmentFor },
-        data: { deleted: false, tags: invite.tags as any, formerTeamIds: null },
+        data: {
+          deleted: false,
+          tags: invite.tags as any,
+          formerTeamIds: formerTeamIds.length > 0 ? formerTeamIds : undefined,
+        },
       })
     } else {
       // Check whether this user already has a soft-deleted ProjectMember for this project
@@ -82,7 +86,11 @@ export default resolver.pipe(
         formerTeamIds = parseFormerTeamIds(existingProjectMember.formerTeamIds)
         projectMember = await db.projectMember.update({
           where: { id: existingProjectMember.id },
-          data: { deleted: false, tags: invite.tags as any, formerTeamIds: null },
+          data: {
+            deleted: false,
+            tags: invite.tags as any,
+            formerTeamIds: formerTeamIds.length > 0 ? formerTeamIds : undefined,
+          },
         })
       } else {
         // Create a new ProjectMember for fresh invitations

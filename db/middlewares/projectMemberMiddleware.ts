@@ -6,14 +6,12 @@ export default function projectMemberMiddleware(prisma) {
       params.model === "ProjectMember" &&
       (params.action === "findMany" || params.action === "findFirst")
     ) {
-      // Check if `deleted` is explicitly set to `undefined`
-      const hasExplicitUndefined =
-        "deleted" in params.args.where && params.args.where.deleted === undefined
+      const hasExplicitDeleted = "deleted" in (params.args.where || {})
 
-      if (!hasExplicitUndefined) {
+      if (!hasExplicitDeleted) {
         params.args.where = {
           ...params.args.where,
-          deleted: false, // ✅ Always filter out soft-deleted members
+          deleted: false, // ✅ Always filter out soft-deleted members unless caller overrides
         }
       }
     }
