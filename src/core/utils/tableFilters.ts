@@ -88,7 +88,7 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> => {
   return Object.getPrototypeOf(value) === Object.prototype
 }
 
-const describePrimitive = (value: unknown, locale: string): string => {
+const describePrimitive = (value: unknown, locale: string, keyHint?: string): string => {
   if (value === null || value === undefined) {
     return ""
   }
@@ -117,7 +117,11 @@ const describePrimitive = (value: unknown, locale: string): string => {
   }
 
   if (typeof value === "boolean") {
-    return value ? "true" : "false"
+    const normalizedKey = keyHint?.toLowerCase() ?? ""
+    if (normalizedKey.includes("read")) {
+      return value ? "read true yes" : "unread false no"
+    }
+    return value ? "true yes" : "false no"
   }
 
   return ""
@@ -132,7 +136,7 @@ export const buildSearchableString = (
   const locale = options?.locale ?? DEFAULT_LOCALE
   const visited = new WeakSet<object>()
 
-  const helper = (input: unknown, depth: number): string => {
+  const helper = (input: unknown, depth: number, keyHint?: string): string => {
     if (depth > MAX_RECURSION_DEPTH) {
       return ""
     }
@@ -142,7 +146,7 @@ export const buildSearchableString = (
     }
 
     if (input instanceof Date || typeof input !== "object") {
-      return describePrimitive(input, locale)
+      return describePrimitive(input, locale, keyHint)
     }
 
     if (visited.has(input as object)) {
@@ -153,14 +157,14 @@ export const buildSearchableString = (
     let result = ""
 
     if (Array.isArray(input)) {
-      result = input.map((item) => helper(item, depth + 1)).join(" ")
+      result = input.map((item) => helper(item, depth + 1, keyHint)).join(" ")
     } else if (isPlainObject(input)) {
-      result = Object.values(input)
-        .map((item) => helper(item, depth + 1))
+      result = Object.entries(input)
+        .map(([key, item]) => helper(item, depth + 1, key))
         .join(" ")
     } else {
       // Non-plain objects (e.g., Maps) fallback to string conversion
-      result = describePrimitive(String(input), locale)
+      result = describePrimitive(String(input), locale, keyHint)
     }
 
     visited.delete(input as object)

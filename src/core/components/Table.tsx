@@ -17,6 +17,14 @@ import { ChevronUpIcon, ChevronDownIcon, ChevronUpDownIcon } from "@heroicons/re
 import Filter from "src/core/components/Filter"
 import { buildSearchableString } from "src/core/utils/tableFilters"
 
+const readSearchTokens = new Set(["read", "unread"])
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+const containsWholeWord = (text: string, word: string) => {
+  const escapedWord = escapeRegExp(word)
+  const regex = new RegExp(`\\b${escapedWord}\\b`)
+  return regex.test(text)
+}
+
 type TableProps<TData> = {
   columns: ColumnDef<TData, any>[]
   data: TData[]
@@ -53,6 +61,9 @@ const defaultGlobalFilterFn: FilterFn<any> = (row, _columnId, filterValue) => {
 
   try {
     const rowValue = buildSearchableString(row.original ?? {})
+    if (readSearchTokens.has(searchValue)) {
+      return containsWholeWord(rowValue, searchValue)
+    }
     return rowValue.includes(searchValue)
   } catch (error) {
     return false
