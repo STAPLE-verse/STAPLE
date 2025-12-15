@@ -45,7 +45,7 @@ export const ProjectTasksColumns = [
         <Tooltip
           id="status-tooltip-1"
           content="Status indicates the kanban column this task is currently in."
-          className="z-[1099] table-header-tooltip"
+          className="z-[1099] ourtooltips"
         />
       </div>
     ),

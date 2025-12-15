@@ -6,6 +6,7 @@ import { NotificationTableData } from "../processing/processNotification"
 import NotificationMessage from "src/notifications/components/NotificationMessage"
 import { MultiSelectCheckbox } from "src/core/components/fields/MultiSelectCheckbox"
 import { SelectAllCheckbox } from "src/core/components/fields/SelectAllCheckbox"
+import { Tooltip } from "react-tooltip"
 import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 // Column helper
@@ -85,7 +86,19 @@ export const useNotificationTableColumns = (refetch: () => void, data: Notificat
         enableColumnFilter: false,
         enableSorting: false,
         cell: (info) => <MultiSelectCheckbox id={info.getValue()} />,
-        header: () => <SelectAllCheckbox allIds={allIds} />,
+        header: () => (
+          <div
+            className="flex items-center table-header-tooltip"
+            data-tooltip-id="notification-select-all"
+          >
+            <SelectAllCheckbox allIds={allIds} />
+            <Tooltip
+              id="notification-select-all"
+              content="This button selects all notifications, even those filtered out."
+              className="z-[1099] ourtooltips"
+            />
+          </div>
+        ),
       }),
     ],
     [refetch, allIds]

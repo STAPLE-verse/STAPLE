@@ -7,6 +7,7 @@ import { MultiSelectCheckbox } from "src/core/components/fields/MultiSelectCheck
 import NotificationMessage from "src/notifications/components/NotificationMessage"
 import { SelectAllCheckbox } from "src/core/components/fields/SelectAllCheckbox"
 import { createDateTextFilter } from "src/core/utils/tableFilters"
+import { Tooltip } from "react-tooltip"
 
 // Column helper
 const columnHelper = createColumnHelper<ProjectNotificationData>()
@@ -72,7 +73,7 @@ export const useProjectNotificationTableColumns = (
           isHtml: true,
         },
       }),
-      columnHelper.accessor((row) => (row.notification.read ? "read" : "unread"), {
+      columnHelper.accessor((row) => (row.notification.read ? "Read" : "Unread"), {
         id: "readStatus",
         enableColumnFilter: true,
         enableSorting: false,
@@ -83,10 +84,6 @@ export const useProjectNotificationTableColumns = (
         filterFn: readStatusFilter,
         meta: {
           filterVariant: "select",
-          selectOptions: [
-            { label: "Unread", value: "unread" },
-            { label: "Read", value: "read" },
-          ],
         },
       }),
       columnHelper.accessor("id", {
@@ -94,7 +91,19 @@ export const useProjectNotificationTableColumns = (
         enableColumnFilter: false,
         enableSorting: false,
         cell: (info) => <MultiSelectCheckbox id={info.getValue()} />,
-        header: () => <SelectAllCheckbox allIds={allIds} />,
+        header: () => (
+          <div
+            className="flex items-center table-header-tooltip"
+            data-tooltip-id="project-notification-select-all"
+          >
+            <SelectAllCheckbox allIds={allIds} />
+            <Tooltip
+              id="project-notification-select-all"
+              content="This button selects all notifications, even those filtered out."
+              className="ml-2 z-[1099] ourtooltips"
+            />
+          </div>
+        ),
       }),
     ],
     [refetch, allIds]

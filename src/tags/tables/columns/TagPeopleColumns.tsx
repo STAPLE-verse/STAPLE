@@ -1,7 +1,8 @@
-import { createColumnHelper } from "@tanstack/react-table"
+import { createColumnHelper, FilterFn } from "@tanstack/react-table"
 import DateFormat from "src/core/components/DateFormat"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
+import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 export type TagPeopleData = {
   name: string
@@ -14,9 +15,20 @@ export type TagPeopleData = {
   type: string
   userId: number
   projectId: number
+  completionStatus: "Completed" | "Not completed"
 }
 
 const columnHelper = createColumnHelper<TagPeopleData>()
+const createdDateFilter = createDateTextFilter({ emptyLabel: "no date" })
+const completionStatusFilter: FilterFn<TagPeopleData> = (row, columnId, filterValue) => {
+  const selected = String(filterValue ?? "").trim()
+
+  if (!selected) {
+    return true
+  }
+
+  return String(row.getValue(columnId) ?? "") === selected
+}
 
 export const TagPeopleColumns = [
   columnHelper.accessor("name", {
@@ -37,6 +49,12 @@ export const TagPeopleColumns = [
   columnHelper.accessor("createdAt", {
     header: "Start Date",
     cell: (info) => <DateFormat date={info.getValue()} />,
+    enableColumnFilter: true,
+    enableSorting: true,
+    filterFn: createdDateFilter,
+    meta: {
+      filterVariant: "text",
+    },
   }),
   columnHelper.accessor("percentTasksComplete", {
     header: "Tasks Complete",
@@ -45,6 +63,16 @@ export const TagPeopleColumns = [
     enableSorting: true,
     meta: {
       filterVariant: "range",
+    },
+  }),
+  columnHelper.accessor("completionStatus", {
+    header: "Status",
+    cell: (info) => info.getValue(),
+    enableColumnFilter: true,
+    enableSorting: true,
+    filterFn: completionStatusFilter,
+    meta: {
+      filterVariant: "select",
     },
   }),
   columnHelper.accessor("percentApproved", {

@@ -76,6 +76,7 @@ export function processTagPeople(
       type: person.name ? "Team" : "Individual",
       userId: person.id,
       projectId: projectId,
+      completionStatus: total > 0 && complete === total ? "Completed" : "Not completed",
     }
   })
 }
