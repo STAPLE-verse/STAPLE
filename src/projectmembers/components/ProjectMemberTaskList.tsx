@@ -48,16 +48,20 @@ const ProjectMemberTaskList = ({
     return () => eventBus.off("taskLogUpdated", handleTaskLogUpdate)
   }, [refetchTaskLogs])
 
+  const typedTaskLogs = taskLogs as TaskLogTaskCompleted[]
   const processedData = processTaskLogHistory(
-    taskLogs as TaskLogTaskCompleted[],
+    typedTaskLogs,
     comments,
     refetchComments,
     currentContributor,
     () => refetchTaskLogs()
   )
 
+  const hasTeamTasks = typedTaskLogs.some((log) => Boolean(log.assignedTo?.name))
+  const cardTitle = hasTeamTasks ? "Team Tasks" : "Contributor Tasks"
+
   return (
-    <CollapseCard title="Contributor Tasks" className="mt-4">
+    <CollapseCard title={cardTitle} className="mt-4">
       <Table columns={tableColumns} data={processedData} addPagination={true} />
     </CollapseCard>
   )
