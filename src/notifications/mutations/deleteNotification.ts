@@ -1,18 +1,32 @@
 import { resolver } from "@blitzjs/rpc"
-import db from "db"
+import db, { Prisma } from "db"
 import { z } from "zod"
 
-const DeleteNotificationSchema = z.object({
-  ids: z.array(z.number()), // Expecting an array of IDs
+const deleteByIdsSchema = z.object({
+  ids: z.array(z.number()).min(1),
 })
+
+const deleteAllSchema = z.object({
+  selectAll: z.literal(true),
+  where: z.custom<Prisma.NotificationWhereInput>((value) => typeof value === "object"),
+})
+
+const DeleteNotificationSchema = z.union([deleteByIdsSchema, deleteAllSchema])
 
 export default resolver.pipe(
   resolver.zod(DeleteNotificationSchema),
   resolver.authorize(),
-  async ({ ids }) => {
+  async (input) => {
+    if ("selectAll" in input) {
+      await db.notification.deleteMany({
+        where: input.where,
+      })
+      return { success: true }
+    }
+
     await db.notification.deleteMany({
       where: {
-        id: { in: ids },
+        id: { in: input.ids },
       },
     })
     return { success: true }

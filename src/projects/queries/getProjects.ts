@@ -7,7 +7,21 @@ interface GetProjectsInput
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, skip = 0, take = 100, include }: GetProjectsInput) => {
+  async ({ where, orderBy, skip = 0, take, include }: GetProjectsInput) => {
+    if (typeof take !== "number") {
+      const [projects, count] = await Promise.all([
+        db.project.findMany({
+          where,
+          orderBy,
+          skip,
+          ...(include ? { include } : {}),
+        }),
+        db.project.count({ where }),
+      ])
+
+      return { projects, nextPage: null, hasMore: false, count }
+    }
+
     const {
       items: projects,
       hasMore,

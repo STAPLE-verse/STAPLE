@@ -7,7 +7,21 @@ interface GetRolesInput
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, skip = 0, take = 100, include }: GetRolesInput) => {
+  async ({ where, orderBy, skip = 0, take, include }: GetRolesInput) => {
+    if (typeof take !== "number") {
+      const [roles, count] = await Promise.all([
+        db.role.findMany({
+          where,
+          orderBy,
+          include,
+          skip,
+        }),
+        db.role.count({ where }),
+      ])
+
+      return { roles, nextPage: null, hasMore: false, count }
+    }
+
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
       items: roles,

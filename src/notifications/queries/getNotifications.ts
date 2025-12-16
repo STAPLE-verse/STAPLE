@@ -10,7 +10,21 @@ interface GetNotificationsInput
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, include, skip = 0, take = 100 }: GetNotificationsInput) => {
+  async ({ where, orderBy, include, skip = 0, take }: GetNotificationsInput) => {
+    if (typeof take !== "number") {
+      const [notifications, count] = await Promise.all([
+        db.notification.findMany({ where, orderBy, include, skip }),
+        db.notification.count({ where }),
+      ])
+
+      return {
+        notifications,
+        nextPage: null,
+        hasMore: false,
+        count,
+      }
+    }
+
     const {
       items: notifications,
       hasMore,

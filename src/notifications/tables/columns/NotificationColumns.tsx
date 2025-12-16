@@ -94,7 +94,7 @@ export const useNotificationTableColumns = (refetch: () => void, data: Notificat
             <SelectAllCheckbox allIds={allIds} />
             <Tooltip
               id="notification-select-all"
-              content="This button selects all notifications, even those filtered out."
+              content="Selects all notifications on this page even when filtered."
               className="z-[1099] ourtooltips"
             />
           </div>

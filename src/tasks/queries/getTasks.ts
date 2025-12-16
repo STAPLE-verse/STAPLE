@@ -7,8 +7,16 @@ export interface GetTasksInput
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, include, skip = 0, take = 100 }: GetTasksInput) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+  async ({ where, orderBy, include, skip = 0, take }: GetTasksInput) => {
+    if (typeof take !== "number") {
+      const [tasks, count] = await Promise.all([
+        db.task.findMany({ where, orderBy, include, skip }),
+        db.task.count({ where }),
+      ])
+
+      return { tasks, nextPage: null, hasMore: false, count }
+    }
+
     const {
       items: tasks,
       hasMore,
