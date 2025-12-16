@@ -99,7 +99,7 @@ export const useProjectNotificationTableColumns = (
             <SelectAllCheckbox allIds={allIds} />
             <Tooltip
               id="project-notification-select-all"
-              content="This button selects all notifications, even those filtered out."
+              content="Selects all notifications on this page even when filtered."
               className="ml-2 z-[1099] ourtooltips"
             />
           </div>

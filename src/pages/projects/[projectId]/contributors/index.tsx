@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import { useParam } from "@blitzjs/next"
@@ -17,6 +17,7 @@ import { CurrentUser } from "src/users/queries/getCurrentUser"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import Card from "src/core/components/Card"
+import { PaginationState } from "@tanstack/react-table"
 
 interface ContributorListProps {
   privilege: MemberPrivileges
@@ -25,17 +26,48 @@ interface ContributorListProps {
 }
 
 export const ContributorList = ({ privilege, currentUser, projectId }: ContributorListProps) => {
-  const contributorTableData = useContributorsData(privilege, currentUser, projectId)
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+  const shouldPaginate = privilege !== MemberPrivileges.CONTRIBUTOR
+
+  const { data: contributorTableData, count } = useContributorsData(
+    privilege,
+    currentUser,
+    projectId,
+    shouldPaginate ? pagination : undefined
+  )
 
   const tableColumns =
     privilege === MemberPrivileges.CONTRIBUTOR
       ? StandardContributorColumns
       : ProjectManagerContributorColumns
 
+  const pageCount = shouldPaginate ? Math.max(1, Math.ceil(count / pagination.pageSize)) : 1
+
+  const handlePaginationChange = (
+    updater: PaginationState | ((state: PaginationState) => PaginationState)
+  ) => {
+    if (!shouldPaginate) {
+      return
+    }
+    setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
+  }
+
   return (
     <Suspense fallback={<Loading />}>
       <Card title="">
-        <Table columns={tableColumns} data={contributorTableData} addPagination={true} />
+        <Table
+          columns={tableColumns}
+          data={contributorTableData}
+          addPagination={true}
+          manualPagination={shouldPaginate}
+          paginationState={shouldPaginate ? pagination : undefined}
+          onPaginationChange={shouldPaginate ? handlePaginationChange : undefined}
+          pageCount={shouldPaginate ? pageCount : undefined}
+          pageSizeOptions={shouldPaginate ? [10, 25, 50, 100] : undefined}
+        />
       </Card>
     </Suspense>
   )

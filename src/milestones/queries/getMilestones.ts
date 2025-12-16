@@ -7,7 +7,16 @@ interface GetMilestonesInput
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, include, skip = 0, take = 100 }: GetMilestonesInput) => {
+  async ({ where, orderBy, include, skip = 0, take }: GetMilestonesInput) => {
+    if (typeof take !== "number") {
+      const [milestones, count] = await Promise.all([
+        db.milestone.findMany({ where, orderBy, include, skip }),
+        db.milestone.count({ where }),
+      ])
+
+      return { milestones, nextPage: null, hasMore: false, count }
+    }
+
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const {
       items: milestones,

@@ -1,15 +1,16 @@
-import { Suspense, useState } from "react"
+import { Suspense, useMemo, useState } from "react"
 import Layout from "src/core/layouts/Layout"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import { FormsList } from "src/forms/components/FormsList"
 import AddFormTemplates from "src/forms/components/AddFormTemplates"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
-import { useQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery } from "@blitzjs/rpc"
 import getForms from "src/forms/queries/getForms"
 import Card from "src/core/components/Card"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import { PaginationState } from "@tanstack/react-table"
 
 const AllFormsPage = () => {
   // AddFormTemplate modal settings
@@ -20,14 +21,36 @@ const AllFormsPage = () => {
   // Get user
   const currentUser = useCurrentUser()
 
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+
+  const paginationArgs = useMemo(
+    () => ({
+      skip: pagination.pageIndex * pagination.pageSize,
+      take: pagination.pageSize,
+    }),
+    [pagination]
+  )
+
   // Get forms
-  const [forms, { refetch }] = useQuery(getForms, {
+  const [{ forms, count }, { refetch }] = usePaginatedQuery(getForms, {
     where: {
       user: { id: currentUser?.id },
       archived: false,
     },
     orderBy: { id: "desc" },
+    ...paginationArgs,
   })
+
+  const pageCount = Math.max(1, Math.ceil((count ?? 0) / pagination.pageSize))
+
+  const handlePaginationChange = (
+    updater: PaginationState | ((state: PaginationState) => PaginationState)
+  ) => {
+    setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
+  }
 
   return (
     // @ts-expect-error children are clearly passed below
@@ -61,7 +84,14 @@ const AllFormsPage = () => {
             />
           </div>
           <Card title="">
-            <FormsList forms={forms} addPagination={true} />
+            <FormsList
+              forms={forms}
+              manualPagination={true}
+              paginationState={pagination}
+              onPaginationChange={handlePaginationChange}
+              pageCount={pageCount}
+              pageSizeOptions={[10, 25, 50, 100]}
+            />
           </Card>
         </Suspense>
       </main>

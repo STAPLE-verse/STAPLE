@@ -19,7 +19,7 @@ const AllTaskTotal: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }
   // Get latest logs that this user is involved in
   // Fetch all tasks
   // Get latest logs that this user is involved in
-  const [fetchedTaskLogs] = useQuery(getTaskLogs, {
+  const [{ taskLogs: fetchedTaskLogs }] = useQuery(getTaskLogs, {
     where: {
       assignedTo: {
         users: { some: { id: currentUser?.id } },

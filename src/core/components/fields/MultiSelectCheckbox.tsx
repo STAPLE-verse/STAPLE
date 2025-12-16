@@ -6,7 +6,8 @@ type MultiSelectCheckboxProps = {
 }
 
 export const MultiSelectCheckbox = React.memo(({ id }: MultiSelectCheckboxProps) => {
-  const { selectedIds, toggleSelection } = useMultiSelect()
+  const { selectedIds, toggleSelection, isGlobalSelection } = useMultiSelect()
+  const isChecked = isGlobalSelection || selectedIds.includes(id)
 
   return (
     <div>
@@ -15,7 +16,8 @@ export const MultiSelectCheckbox = React.memo(({ id }: MultiSelectCheckboxProps)
           <input
             type="checkbox"
             className="checkbox checkbox-primary border-2"
-            checked={selectedIds.includes(id)}
+            checked={isChecked}
+            disabled={isGlobalSelection}
             onChange={() => toggleSelection(id)}
           />
         </label>

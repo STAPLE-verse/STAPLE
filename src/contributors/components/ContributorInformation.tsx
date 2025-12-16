@@ -47,7 +47,7 @@ const ContributorInformation = ({
   })
 
   // get taskLogs for those tasks
-  const [fetchedTaskLogs, { refetch: refetchTaskLogs }] = useQuery(getTaskLogs, {
+  const [{ taskLogs: fetchedTaskLogs = [] }, { refetch: refetchTaskLogs }] = useQuery(getTaskLogs, {
     where: {
       taskId: { in: tasks.map((task) => task.id) },
       assignedToId: contributorId,
@@ -55,7 +55,7 @@ const ContributorInformation = ({
     include: {
       task: true,
     },
-  }) as unknown as [TaskLogWithTask[], { refetch: () => Promise<any> }]
+  })
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -67,7 +67,7 @@ const ContributorInformation = ({
   }, [refetchTasks, refetchTaskLogs])
 
   // Cast and handle the possibility of `undefined`
-  const taskLogs: TaskLogWithTask[] = (fetchedTaskLogs ?? []) as TaskLogWithTask[]
+  const taskLogs: TaskLogWithTask[] = fetchedTaskLogs as TaskLogWithTask[]
 
   // only the latest task log
   const allTaskLogs = getLatestTaskLogs<TaskLogWithTask>(taskLogs)

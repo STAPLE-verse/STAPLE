@@ -9,6 +9,8 @@ import {
   useReactTable,
   getPaginationRowModel,
   getFacetedMinMaxValues,
+  PaginationState,
+  OnChangeFn,
 } from "@tanstack/react-table"
 import React from "react"
 
@@ -131,6 +133,11 @@ type TableProps<TData> = {
   enableGlobalSearch?: boolean
   globalSearchPlaceholder?: string
   addPagination?: boolean
+  manualPagination?: boolean
+  paginationState?: PaginationState
+  onPaginationChange?: OnChangeFn<PaginationState>
+  pageCount?: number
+  pageSizeOptions?: number[]
   classNames?: {
     table?: string
     thead?: string
@@ -179,9 +186,26 @@ const Table = <TData,>({
   enableGlobalSearch = true,
   globalSearchPlaceholder = "Search...",
   addPagination = false,
+  manualPagination = false,
+  paginationState,
+  onPaginationChange,
+  pageCount: controlledPageCount,
+  pageSizeOptions = [5, 10, 20, 30, 40, 50],
 }: TableProps<TData>) => {
   const [sorting, setSorting] = React.useState([])
   const [globalFilter, setGlobalFilter] = React.useState("")
+  const [internalPagination, setInternalPagination] = React.useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 5,
+  })
+
+  const resolvedPaginationState = manualPagination
+    ? paginationState ?? { pageIndex: 0, pageSize: 5 }
+    : internalPagination
+
+  const handlePaginationChange: OnChangeFn<PaginationState> = manualPagination
+    ? onPaginationChange ?? (() => {})
+    : setInternalPagination
 
   const table = useReactTable({
     data,
@@ -192,19 +216,18 @@ const Table = <TData,>({
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    getPaginationRowModel: getPaginationRowModel(),
+    ...(manualPagination ? {} : { getPaginationRowModel: getPaginationRowModel() }),
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
+    manualPagination,
+    pageCount: manualPagination ? controlledPageCount : undefined,
     state: {
       sorting: sorting,
       globalFilter: globalFilter,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 5,
-      },
+      pagination: resolvedPaginationState,
     },
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
+    onPaginationChange: handlePaginationChange,
     globalFilterFn: defaultGlobalFilterFn,
     autoResetPageIndex: false,
   })
@@ -220,10 +243,10 @@ const Table = <TData,>({
       return
     }
 
-    if (pageCount > 0 && pageIndex >= pageCount) {
+    if (!manualPagination && pageCount > 0 && pageIndex >= pageCount) {
       table.setPageIndex(0)
     }
-  }, [addPagination, pageCount, pageIndex, table])
+  }, [addPagination, pageCount, pageIndex, table, manualPagination])
 
   return (
     <>
@@ -386,7 +409,7 @@ const Table = <TData,>({
                 classNames?.pageSizeSelect || ""
               }`}
             >
-              {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+              {pageSizeOptions.map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
