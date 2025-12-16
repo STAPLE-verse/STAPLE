@@ -10,6 +10,10 @@ import Card from "src/core/components/Card"
 import { useState } from "react"
 import { PaginationState } from "@tanstack/react-table"
 
+type TaskWithLogs = TaskLogWithTaskProjectAndComments["task"] & {
+  taskLogs: TaskLogWithTaskProjectAndComments[]
+}
+
 export const AllTasksList = () => {
   const currentUser = useCurrentUser()
   const [pagination, setPagination] = useState<PaginationState>({
@@ -66,12 +70,13 @@ export const AllTasksList = () => {
     take: pagination.pageSize,
   })
 
-  const taskLogs: TaskLogWithTaskProjectAndComments[] = tasks.flatMap((task) => {
+  const typedTasks = tasks as TaskWithLogs[]
+  const taskLogs: TaskLogWithTaskProjectAndComments[] = typedTasks.flatMap((task) => {
     const { taskLogs: taskLogsForTask, ...taskWithoutLogs } = task
     return taskLogsForTask.map((log) => ({
       ...log,
       task: taskWithoutLogs,
-    })) as TaskLogWithTaskProjectAndComments[]
+    }))
   })
 
   // process those logs to get the latest one for each task-projectmemberId
