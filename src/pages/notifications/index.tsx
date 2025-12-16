@@ -1,4 +1,4 @@
-import { Suspense, useMemo } from "react"
+import { Suspense, useMemo, useState } from "react"
 import Layout from "src/core/layouts/Layout"
 import Table from "src/core/components/Table"
 import { usePaginatedQuery } from "@blitzjs/rpc"
@@ -15,14 +15,25 @@ import { MultiReadToggleButton } from "src/notifications/components/MultiReadTog
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import Card from "src/core/components/Card"
+import { PaginationState } from "@tanstack/react-table"
+import { Prisma } from "db"
 
 const NotificationContent = () => {
   const currentUser = useCurrentUser()
-  const { selectedIds, resetSelection } = useMultiSelect()
+  const {
+    selectedIds,
+    resetSelection,
+    isGlobalSelection,
+    enableGlobalSelection,
+    disableGlobalSelection,
+  } = useMultiSelect()
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  })
 
-  // Get notifications
-  const [{ notifications }, { refetch }] = usePaginatedQuery(getNotifications, {
-    where: {
+  const baseWhere = useMemo<Prisma.NotificationWhereInput>(
+    () => ({
       recipients: {
         some: {
           id: currentUser!.id,
@@ -40,9 +51,24 @@ const NotificationContent = () => {
           },
         },
       },
-    },
+    }),
+    [currentUser]
+  )
+
+  const paginationArgs = useMemo(
+    () => ({
+      skip: pagination.pageIndex * pagination.pageSize,
+      take: pagination.pageSize,
+    }),
+    [pagination]
+  )
+
+  // Get notifications
+  const [{ notifications, count }, { refetch }] = usePaginatedQuery(getNotifications, {
+    where: baseWhere,
     orderBy: { createdAt: "desc" },
     include: { project: true },
+    ...paginationArgs,
   })
 
   const extendedNotifications = notifications as unknown as ExtendedNotification[]
@@ -57,6 +83,30 @@ const NotificationContent = () => {
   const columns = useNotificationTableColumns(refetch, notificationTableData)
 
   const selectedNotifications = extendedNotifications.filter((n) => selectedIds.includes(n.id))
+  const allPageIds = useMemo(
+    () => notificationTableData.map((item) => item.id),
+    [notificationTableData]
+  )
+
+  const isPageFullySelected =
+    !isGlobalSelection &&
+    allPageIds.length > 0 &&
+    allPageIds.every((id) => selectedIds.includes(id))
+  const totalSelectedCount = isGlobalSelection ? count : selectedIds.length
+  const selectionMode: "ids" | "all" = isGlobalSelection ? "all" : "ids"
+  const pageCount = Math.max(1, Math.ceil(count / pagination.pageSize))
+
+  const handlePaginationChange = (
+    updater: PaginationState | ((state: PaginationState) => PaginationState)
+  ) => {
+    setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
+    disableGlobalSelection()
+  }
+
+  const handleActionCompleted = async () => {
+    await refetch()
+    resetSelection()
+  }
 
   return (
     <main className="flex flex-col mx-auto w-full">
@@ -74,15 +124,52 @@ const NotificationContent = () => {
       </h1>
 
       <div className="flex justify-center mb-2 mt-4 gap-2">
-        <DeleteNotificationButton ids={selectedIds} />
+        <DeleteNotificationButton
+          ids={selectedIds}
+          where={baseWhere}
+          selectionMode={selectionMode}
+          totalSelectedCount={totalSelectedCount}
+          onCompleted={handleActionCompleted}
+        />
         <MultiReadToggleButton
           notifications={selectedNotifications}
           refetch={refetch}
           resetSelection={resetSelection}
+          selectionMode={selectionMode}
+          totalSelectedCount={totalSelectedCount}
+          where={baseWhere}
         />
       </div>
       <Card title={""}>
-        <Table columns={columns} data={notificationTableData} addPagination={true} />
+        {isPageFullySelected && count > allPageIds.length && (
+          <div className="alert alert-info mb-2 flex justify-between items-center">
+            <span className="text-md">
+              All {allPageIds.length} notifications on this page are selected. You can select every
+              notification in your inbox.
+            </span>
+            <button className="btn text-base text-md" onClick={enableGlobalSelection}>
+              Select all {count} notifications
+            </button>
+          </div>
+        )}
+        {isGlobalSelection && count > 0 && (
+          <div className="alert alert-info mb-2 flex justify-between items-center">
+            <span className="text-md">All {count} notifications are selected.</span>
+            <button className="btn text-base text-md" onClick={resetSelection}>
+              Clear selection
+            </button>
+          </div>
+        )}
+        <Table
+          columns={columns}
+          data={notificationTableData}
+          addPagination={true}
+          manualPagination={true}
+          paginationState={pagination}
+          onPaginationChange={handlePaginationChange}
+          pageCount={pageCount}
+          pageSizeOptions={[10, 25, 50, 100]}
+        />
       </Card>
     </main>
   )

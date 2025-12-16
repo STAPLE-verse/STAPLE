@@ -8,17 +8,12 @@ interface GetCommentsInput
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({
-    where,
-    orderBy,
-    skip = 0,
-    take = 100,
-  }: GetCommentsInput): Promise<CommentWithAuthor[]> => {
+  async ({ where, orderBy, skip = 0, take }: GetCommentsInput): Promise<CommentWithAuthor[]> => {
     const comments = await db.comment.findMany({
       where,
       orderBy: orderBy || { createdAt: "asc" }, // Default ordering by creation date
       skip,
-      take,
+      ...(typeof take === "number" ? { take } : {}),
       include: {
         author: {
           include: {

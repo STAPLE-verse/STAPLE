@@ -33,7 +33,7 @@ export const MilestoneSummary: React.FC<MilestoneSummaryProps> = ({ milestone, p
     },
     include: { task: true },
   })
-  const [fetchedTaskLogs, { refetch: refetchLogs }] = taskLogsQuery as any
+  const [{ taskLogs: fetchedTaskLogs }, { refetch: refetchLogs }] = taskLogsQuery as any
 
   // Cast and handle the possibility of `undefined`
   const taskLogs: TaskLogWithTask[] = (fetchedTaskLogs ?? []) as TaskLogWithTask[]

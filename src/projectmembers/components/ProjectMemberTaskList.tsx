@@ -19,7 +19,7 @@ const ProjectMemberTaskList = ({
   tableColumns,
   currentContributor,
 }: ProjectMemberTaskListProps) => {
-  const [taskLogs, { refetch: refetchTaskLogs }] = useQuery(getTaskLogs, {
+  const [{ taskLogs }, { refetch: refetchTaskLogs }] = useQuery(getTaskLogs, {
     where: { assignedToId: projectMemberId },
     orderBy: { createdAt: "desc" },
     include: {

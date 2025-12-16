@@ -1,5 +1,5 @@
-import { Suspense } from "react"
-import { useQuery } from "@blitzjs/rpc"
+import { Suspense, useMemo, useState } from "react"
+import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import Layout from "src/core/layouts/Layout"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getRoles from "src/roles/queries/getRoles"
@@ -9,18 +9,55 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import Card from "src/core/components/Card"
 import { DefaultRoles } from "src/roles/components/DefaultRoles"
+import { PaginationState } from "@tanstack/react-table"
 
 const RoleBuilderPage = () => {
   const currentUser = useCurrentUser()
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  })
 
-  const [{ roles }, { refetch }] = useQuery(getRoles, {
+  const paginationArgs = useMemo(
+    () => ({
+      skip: pagination.pageIndex * pagination.pageSize,
+      take: pagination.pageSize,
+    }),
+    [pagination]
+  )
+
+  const [{ roles, count }, { refetch: refetchPagedRoles }] = usePaginatedQuery(getRoles, {
+    where: { user: { id: currentUser?.id } },
+    orderBy: { id: "asc" },
+    ...paginationArgs,
+  })
+
+  const [{ roles: allRoles }, { refetch: refetchAllRoles }] = useQuery(getRoles, {
     where: { user: { id: currentUser?.id } },
     orderBy: { id: "asc" },
   })
 
-  const taxonomyList = Array.from(
-    new Set(roles.map((role) => (role.taxonomy || "").trim()).filter((taxonomy) => taxonomy !== ""))
+  const taxonomyList = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          allRoles.map((role) => (role.taxonomy || "").trim()).filter((taxonomy) => taxonomy !== "")
+        )
+      ),
+    [allRoles]
   )
+
+  const handleRolesChanged = async () => {
+    await Promise.all([refetchPagedRoles(), refetchAllRoles()])
+  }
+
+  const pageCount = Math.max(1, Math.ceil((count ?? 0) / pagination.pageSize))
+
+  const handlePaginationChange = (
+    updater: PaginationState | ((state: PaginationState) => PaginationState)
+  ) => {
+    setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
+  }
 
   return (
     // @ts-expect-error children are clearly passed below
@@ -40,12 +77,21 @@ const RoleBuilderPage = () => {
         </h1>
 
         <div className="flex justify-center mt-4 mb-2 gap-2">
-          <NewRole taxonomyList={taxonomyList} onRolesChanged={refetch} />
-          <DefaultRoles onRolesChanged={refetch} />
+          <NewRole taxonomyList={taxonomyList} onRolesChanged={handleRolesChanged} />
+          <DefaultRoles onRolesChanged={handleRolesChanged} />
         </div>
         <Card title={""}>
           <Suspense fallback={<div>Loading...</div>}>
-            <AllRolesList roles={roles} onRolesChanged={refetch} taxonomyList={taxonomyList} />
+            <AllRolesList
+              roles={roles}
+              onRolesChanged={handleRolesChanged}
+              taxonomyList={taxonomyList}
+              manualPagination={true}
+              paginationState={pagination}
+              onPaginationChange={handlePaginationChange}
+              pageCount={pageCount}
+              pageSizeOptions={[10, 25, 50, 100]}
+            />
           </Suspense>
         </Card>
       </main>

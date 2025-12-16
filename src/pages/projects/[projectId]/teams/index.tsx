@@ -1,7 +1,7 @@
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Routes } from "@blitzjs/next"
 import Link from "next/link"
-import { useQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import { ContributorTeamColumns } from "src/teams/tables/columns/ContributorTeamColumns"
@@ -16,6 +16,7 @@ import { ProjectMemberWithUsers } from "src/core/types"
 import Card from "src/core/components/Card"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import { PaginationState } from "@tanstack/react-table"
 
 interface AllTeamListProps {
   privilege: MemberPrivileges
@@ -24,8 +25,12 @@ interface AllTeamListProps {
 
 export const AllTeamList = ({ privilege, projectId }: AllTeamListProps) => {
   const currentUser = useCurrentUser()
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  })
 
-  const [{ projectMembers }] = useQuery(getProjectMembers, {
+  const [{ projectMembers, count }] = usePaginatedQuery(getProjectMembers, {
     where: {
       projectId: projectId,
       name: { not: null }, // Ensures the name in ProjectMember is non-null
@@ -38,6 +43,8 @@ export const AllTeamList = ({ privilege, projectId }: AllTeamListProps) => {
     include: {
       users: true, // Ensure that projectMembers are included
     },
+    skip: pagination.pageIndex * pagination.pageSize,
+    take: pagination.pageSize,
   })
 
   // Filter teams if the privilege is CONTRIBUTOR
@@ -52,9 +59,26 @@ export const AllTeamList = ({ privilege, projectId }: AllTeamListProps) => {
   const tableColumnsTeams =
     privilege === MemberPrivileges.CONTRIBUTOR ? ContributorTeamColumns : PmTeamColumns
 
+  const pageCount = Math.max(1, Math.ceil((count ?? 0) / pagination.pageSize))
+
+  const handlePaginationChange = (
+    updater: PaginationState | ((state: PaginationState) => PaginationState)
+  ) => {
+    setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
+  }
+
   return (
     <div>
-      <Table columns={tableColumnsTeams} data={teamData} addPagination={true} />
+      <Table
+        columns={tableColumnsTeams}
+        data={teamData}
+        addPagination={true}
+        manualPagination={true}
+        paginationState={pagination}
+        onPaginationChange={handlePaginationChange}
+        pageCount={pageCount}
+        pageSizeOptions={[10, 25, 50, 100]}
+      />
     </div>
   )
 }
