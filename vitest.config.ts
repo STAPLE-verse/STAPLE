@@ -11,6 +11,7 @@ loadEnvConfig(projectDir)
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
+    environment: "jsdom",
     dir: "./",
     globals: true,
     setupFiles: "./test/setup.ts",

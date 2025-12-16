@@ -1,5 +1,5 @@
 import React from "react"
-import { createColumnHelper } from "@tanstack/react-table"
+import { createColumnHelper, FilterFn } from "@tanstack/react-table"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
@@ -7,9 +7,20 @@ import { InformationCircleIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicon
 import { ProjectTasksData } from "../processing/processProjectTasks"
 import { Tooltip } from "react-tooltip"
 import PrimaryLink from "src/core/components/PrimaryLink"
+import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 // Column helper
 const columnHelperProject = createColumnHelper<ProjectTasksData>()
+const projectDueDateFilter = createDateTextFilter({ emptyLabel: "no due date" })
+const completionStatusFilter: FilterFn<ProjectTasksData> = (row, columnId, filterValue) => {
+  const selected = String(filterValue ?? "").trim()
+
+  if (!selected) {
+    return true
+  }
+
+  return String(row.getValue(columnId) ?? "") === selected
+}
 
 // ColumnDefs
 export const ProjectTasksColumns = [
@@ -43,7 +54,7 @@ export const ProjectTasksColumns = [
         <Tooltip
           id="status-tooltip-1"
           content="Status indicates the kanban column this task is currently in."
-          className="z-[1099] table-header-tooltip"
+          className="z-[1099] ourtooltips"
         />
       </div>
     ),
@@ -67,6 +78,7 @@ export const ProjectTasksColumns = [
     header: "Due Date",
     enableColumnFilter: true,
     enableSorting: true,
+    filterFn: projectDueDateFilter,
     meta: {
       filterVariant: "text",
     },
@@ -89,6 +101,7 @@ export const ProjectTasksColumns = [
     cell: (info) => <span>{info.getValue()}</span>,
     enableColumnFilter: true,
     enableSorting: true,
+    filterFn: completionStatusFilter,
     meta: {
       filterVariant: "select",
     },

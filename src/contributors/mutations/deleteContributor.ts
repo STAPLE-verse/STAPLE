@@ -26,6 +26,22 @@ export default resolver.pipe(
     // Get the userId from the associated users array
     const userId = contributorToDelete.users[0]!.id
 
+    // Reconstruct possible display names used in notification messages
+    const user = contributorToDelete.users[0]
+    const possibleDisplayNames: string[] = []
+
+    if (user!.firstName && user!.lastName) {
+      possibleDisplayNames.push(`${user!.firstName} ${user!.lastName}`)
+    }
+
+    if (user!.username) {
+      possibleDisplayNames.push(user!.username)
+    }
+
+    const notificationMarkerText = " (former contributor)"
+    const notificationMarkerHtml =
+      '<span class="text-base-content/70" data-former-contributor="true"> (former contributor)</span>'
+
     // Check if the project member has any privileges related to the project
     const projectPrivilege = await db.projectPrivilege.findFirst({
       where: {
@@ -75,6 +91,8 @@ export default resolver.pipe(
       },
     })
 
+    const formerTeamIds = teamProjectMembers.map((teamMember) => teamMember.id)
+
     // Disconnect the user from each team project member individually
     for (const teamMember of teamProjectMembers) {
       await db.projectMember.update({
@@ -85,6 +103,72 @@ export default resolver.pipe(
           },
         },
       })
+    }
+
+    // Annotate existing notifications that reference this contributor by name
+    if (possibleDisplayNames.length > 0) {
+      console.log(
+        `[deleteContributor] Annotating notifications for user ${userId} with names:`,
+        possibleDisplayNames
+      )
+
+      const notifications = await db.notification.findMany({
+        where: {
+          projectId: contributorToDelete.projectId,
+          announcement: false,
+          AND: [
+            {
+              NOT: {
+                message: {
+                  endsWith: notificationMarkerText,
+                },
+              },
+            },
+            {
+              NOT: {
+                message: {
+                  endsWith: notificationMarkerHtml,
+                },
+              },
+            },
+            {
+              OR: possibleDisplayNames.map((name) => ({
+                message: {
+                  contains: name,
+                  mode: "insensitive",
+                },
+              })),
+            },
+          ],
+        },
+        select: {
+          id: true,
+          message: true,
+        },
+      })
+
+      console.log(
+        `[deleteContributor] Found ${notifications.length} notifications requiring markers`
+      )
+
+      await Promise.all(
+        notifications.map((n) => {
+          const trimmed = n.message!.trim()
+          const containsHtml = /<\/?[a-z][\s\S]*>/i.test(trimmed)
+          const marker = containsHtml ? notificationMarkerHtml : notificationMarkerText
+
+          return db.notification.update({
+            where: { id: n.id },
+            data: {
+              message: `${trimmed}${marker}`,
+            },
+          })
+        })
+      )
+    } else {
+      console.log(
+        `[deleteContributor] No display names detected for user ${userId}, skipping notification annotations`
+      )
     }
 
     // Disconnect the notifications related to the project
@@ -118,7 +202,10 @@ export default resolver.pipe(
     // Mark the project member as deleted
     const projectMember = await db.projectMember.update({
       where: { id: contributorToDelete.id },
-      data: { deleted: true },
+      data: {
+        deleted: true,
+        formerTeamIds: formerTeamIds.length > 0 ? formerTeamIds : undefined,
+      },
     })
 
     return projectMember

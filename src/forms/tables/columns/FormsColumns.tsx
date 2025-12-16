@@ -7,9 +7,11 @@ import DateFormat from "src/core/components/DateFormat"
 import ArchiveFormButton from "../../components/ArchiveFormButton"
 import { MagnifyingGlassIcon, PencilSquareIcon } from "@heroicons/react/24/outline"
 import { FormTableData } from "../processing/processForms"
+import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 // Column helper
 const columnHelper = createColumnHelper<FormTableData>()
+const lastUpdateFilter = createDateTextFilter({ emptyLabel: "no date" })
 
 // ColumnDefs
 export const FormsColumns = [
@@ -20,6 +22,12 @@ export const FormsColumns = [
   columnHelper.accessor("updatedAt", {
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Last Update",
+    enableColumnFilter: true,
+    enableSorting: true,
+    filterFn: lastUpdateFilter,
+    meta: {
+      filterVariant: "text",
+    },
   }),
   columnHelper.accessor((row) => "view", {
     id: "view",

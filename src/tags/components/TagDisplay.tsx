@@ -31,14 +31,24 @@ const TagDisplay = () => {
   })
 
   // Flatten all tags into a single array
-  const flattenedTags = allTags.map((tag) => ({
-    id: tag.key,
-    text: tag.value,
-    className: "",
-  }))
-
-  // Optional: Remove duplicates
-  const uniqueTags = Array.from(new Map(flattenedTags.map((tag) => [tag.id, tag])).values())
+  const seenText = new Set<string>()
+  const uniqueTags = allTags
+    .map((tag) => ({
+      id: tag.key,
+      text: tag.value.trim(),
+      className: "",
+    }))
+    .filter((tag) => {
+      const normalized = tag.text.toLowerCase()
+      if (!normalized) {
+        return false
+      }
+      if (seenText.has(normalized)) {
+        return false
+      }
+      seenText.add(normalized)
+      return true
+    })
   // Sort tags alphabetically by their text value
   uniqueTags.sort((a, b) => a.text.localeCompare(b.text))
 

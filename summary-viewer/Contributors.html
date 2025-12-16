@@ -308,6 +308,15 @@
         // show details cards
         function showDetails(type, id, name, detailsSectionId) {
           const detailsSection = document.getElementById(detailsSectionId)
+          if (detailsSectionId === "member-details-section") {
+            const p = document.getElementById("member-placeholder")
+            if (p) p.style.display = "none"
+          }
+
+          if (detailsSectionId === "team-details-section") {
+            const p = document.getElementById("team-placeholder")
+            if (p) p.style.display = "none"
+          }
 
           if (!detailsSection) {
             console.error(`Details section with ID "${detailsSectionId}" not found.`)
@@ -780,10 +789,18 @@
         // Count the unique members
         const numberOfUniqueMembers = uniqueMemberNames.size
         document.getElementById("stat-number-1").textContent = numberOfUniqueMembers
+        const memberPlaceholder = document.getElementById("member-placeholder")
+        if (memberPlaceholder) {
+          memberPlaceholder.style.display = numberOfUniqueMembers > 0 ? "block" : "none"
+        }
 
         const uniqueTeamNames = new Set(teamsDataArray.map((team) => team.name))
         const numberOfUniqueTeams = teamsWithTaskData.size
         document.getElementById("stat-number-2").textContent = numberOfUniqueTeams
+        const teamPlaceholder = document.getElementById("team-placeholder")
+        if (teamPlaceholder) {
+          teamPlaceholder.style.display = numberOfUniqueTeams > 0 ? "block" : "none"
+        }
 
         // Extract all roles from project members
         const memberRoles = jsonData.projectMembers.flatMap((member) => member.roles)
@@ -870,7 +887,16 @@
         }
 
         // Render the donut chart
-        Plotly.newPlot("roles-donut-chart", roleData, roleLayout)
+        const hasAnyRoles = roleValues.some((v) => v > 0)
+
+        if (hasAnyRoles) {
+          Plotly.newPlot("roles-donut-chart", roleData, roleLayout)
+        } else {
+          const rolesEl = document.getElementById("roles-donut-chart")
+          if (rolesEl) {
+            rolesEl.innerHTML = '<p class="empty-note">No roles</p>'
+          }
+        }
 
         // Count the total number of rows
         const totalTasks = latestTaskLogs.length
@@ -920,7 +946,12 @@
         }
 
         // Render the chart
-        Plotly.newPlot("completed-tasks-chart", dataCompletedTasks, layout)
+        if (totalTasks > 0) {
+          Plotly.newPlot("completed-tasks-chart", dataCompletedTasks, layout)
+        } else {
+          const el = document.getElementById("completed-tasks-chart")
+          if (el) el.innerHTML = '<p class="empty-note">No tasks yet</p>'
+        }
 
         // completed form chart
         // Count the total number of form tasks
@@ -972,7 +1003,12 @@
         }
 
         // Render the chart
-        Plotly.newPlot("completed-forms-chart", dataCompletedForms, layoutForm)
+        if (totalForms > 0) {
+          Plotly.newPlot("completed-forms-chart", dataCompletedForms, layoutForm)
+        } else {
+          const el = document.getElementById("completed-forms-chart")
+          if (el) el.innerHTML = '<p class="empty-note">No forms</p>'
+        }
 
         //get roles individuals
         const rolesByIndividual = projectMembersDataFrame.map((individual) => {
@@ -1042,6 +1078,12 @@
             100
           ).toFixed(1)
 
+          // Hide progress bar if percentage is NaN
+          const showTasksBar = Number.isFinite(Number(tasksPercentComplete))
+          const showFormsBar = Number.isFinite(Number(formsPercentComplete))
+          const showNoTasksNote = !showTasksBar
+          const showNoFormsNote = !showFormsBar
+
           // Create the card container
           const card = document.createElement("div")
           card.className = "small-card clickable"
@@ -1051,28 +1093,57 @@
           title.textContent = member.name
           card.appendChild(title)
 
-          // Create a container for the donut chart
-          const containerId = `member-role-chart-${member.projectMemberId}`
-          const chartDiv = document.createElement("div")
-          chartDiv.id = containerId
-          card.appendChild(chartDiv)
+          // Create a container for the donut chart or an empty note
+          const hasRoles = member.roles.length > 0
+
+          let chartDiv = null
+          if (hasRoles) {
+            chartDiv = document.createElement("div")
+            chartDiv.id = `member-role-chart-${member.projectMemberId}`
+            card.appendChild(chartDiv)
+          } else {
+            const note = document.createElement("p")
+            note.className = "empty-note"
+            note.textContent = "No roles"
+            card.appendChild(note)
+          }
 
           // Add progress bars for tasks and forms
           const progressBars = `
-        <div class="progress-container">
-          <div class="progress-bar" style="width: ${tasksPercentComplete}%; background-color: ${themeColors.primary3};" title="Tasks: ${tasksPercentComplete}% Completed"></div>
-        </div>
-        <div class="progress-container">
-          <div class="progress-bar" style="width: ${formsPercentComplete}%; background-color: ${themeColors.primary4};" title="Forms: ${formsPercentComplete}% Submitted"></div>
-        </div>
-      `
+  ${
+    showTasksBar
+      ? `
+    <div class="progress-container">
+      <div class="progress-bar"
+           style="width: ${tasksPercentComplete}%; background-color: ${themeColors.primary3};"
+           title="Tasks: ${tasksPercentComplete}% Completed"></div>
+    </div>`
+      : `<p class="empty-note">No tasks</p>`
+  }
+  ${
+    showFormsBar
+      ? `
+    <div class="progress-container">
+      <div class="progress-bar"
+           style="width: ${formsPercentComplete}%; background-color: ${themeColors.primary4};"
+           title="Forms: ${formsPercentComplete}% Submitted"></div>
+    </div>`
+      : `<p class="empty-note">No forms</p>`
+  }
+`
           card.innerHTML += progressBars // Append progress bars to the card
 
-          // Append the card to the members section and render the chart
+          // Append the card to the members section and render the chart if appropriate
           const memberRoleChartContainer = document.getElementById("members-section")
           if (memberRoleChartContainer) {
             memberRoleChartContainer.appendChild(card)
-            createDonutChart(data, containerId, `${member.name}`)
+            if (hasRoles) {
+              createDonutChart(
+                data,
+                `member-role-chart-${member.projectMemberId}`,
+                `${member.name}`
+              )
+            }
           } else {
             console.error("Main container for member charts not found!")
           }
@@ -1157,32 +1228,57 @@
           title.textContent = team.teamName
           card.appendChild(title)
 
-          // Create a container for the donut chart
-          const containerId = `team-role-chart-${team.teamId}`
-          const chartDiv = document.createElement("div")
-          chartDiv.id = containerId
-          card.appendChild(chartDiv)
+          // Create a container for the donut chart or an empty note
+          const hasRoles = team.roles.length > 0
+
+          let chartDiv = null
+          if (hasRoles) {
+            chartDiv = document.createElement("div")
+            chartDiv.id = `team-role-chart-${team.teamId}`
+            card.appendChild(chartDiv)
+          } else {
+            const note = document.createElement("p")
+            note.className = "empty-note"
+            note.textContent = "No roles"
+            card.appendChild(note)
+          }
+
+          // NaN guards for progress bars
+          const showTeamTasksBar = Number.isFinite(Number(team.tasksPercentComplete))
+          const showTeamFormsBar = Number.isFinite(Number(team.formsPercentComplete))
 
           // Add progress bars for tasks and forms
           const progressBars = `
-            <div class="progress-container">
-              <div class="progress-bar"
-                  style="width: ${team.tasksPercentComplete}%; background-color: ${themeColors.primary3};"
-                  title="Tasks: ${team.tasksPercentComplete}% Completed"></div>
-            </div>
-            <div class="progress-container">
-              <div class="progress-bar"
-                  style="width: ${team.formsPercentComplete}%; background-color: ${themeColors.primary4};"
-                  title="Forms: ${team.formsPercentComplete}% Submitted"></div>
-            </div>
-          `
+  ${
+    showTeamTasksBar
+      ? `
+    <div class="progress-container">
+      <div class="progress-bar"
+           style="width: ${team.tasksPercentComplete}%; background-color: ${themeColors.primary3};"
+           title="Tasks: ${team.tasksPercentComplete}% Completed"></div>
+    </div>`
+      : `<p class="empty-note">No tasks</p>`
+  }
+  ${
+    showTeamFormsBar
+      ? `
+    <div class="progress-container">
+      <div class="progress-bar"
+           style="width: ${team.formsPercentComplete}%; background-color: ${themeColors.primary4};"
+           title="Forms: ${team.formsPercentComplete}% Submitted"></div>
+    </div>`
+      : `<p class="empty-note">No forms</p>`
+  }
+`
           card.innerHTML += progressBars // Append progress bars to the card
 
-          // Append the card to the teams section and render the chart
+          // Append the card to the teams section and render the chart if appropriate
           const teamRoleChartContainer = document.getElementById("teams-section")
           if (teamRoleChartContainer) {
             teamRoleChartContainer.appendChild(card)
-            createDonutChart(data, containerId, `${team.teamName}`)
+            if (hasRoles) {
+              createDonutChart(data, `team-role-chart-${team.teamId}`, `${team.teamName}`)
+            }
           } else {
             console.error("Main container for team charts not found!")
           }
@@ -1625,7 +1721,7 @@
             </p>
             <div id="members-section"></div>
             <div id="member-details-section" class="details-container">
-              <p>Select a card to view details about the contributor or team.</p>
+              <p id="member-placeholder">Select a card to view details about the contributor.</p>
             </div>
           </div>
         </div>
@@ -1643,7 +1739,7 @@
             </p>
             <div id="teams-section"></div>
             <div id="team-details-section" class="details-container">
-              <p>Select a card to view details about the contributor or team.</p>
+              <p id="team-placeholder">Select a card to view details about the team.</p>
             </div>
           </div>
         </div>

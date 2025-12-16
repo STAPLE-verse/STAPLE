@@ -54,6 +54,7 @@ export const TaskLogHistoryModal = ({
     <ToggleModal
       buttonLabel="Show History"
       buttonClassName="w-full"
+      modalSize="w-1/2 max-w-5xl"
       modalTitle={
         <div className="flex justify-center items-center">
           Task History
@@ -78,15 +79,14 @@ export const TaskLogHistoryModal = ({
       }}
       onClose={handleClose}
     >
-      <div className="modal-action flex flex-col">
+      <div className="modal-action flex flex-col w-full">
         <Table
           columns={schema && ui ? TaskLogHistoryFormColumns : TaskLogHistoryCompleteColumns}
           data={internalTaskLogHistory}
-          classNames={{
-            thead: "text-base",
-            tbody: "text-base",
-          }}
           addPagination={true}
+          classNames={{
+            table: "table w-full",
+          }}
         />
       </div>
     </ToggleModal>

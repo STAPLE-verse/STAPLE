@@ -55,8 +55,16 @@ export const AllTasksList = () => {
   const processedTasks = processAllTasks(latestLogs, taskLogs)
 
   return (
-    <Card title={""}>
-      <Table columns={AllTasksColumns} data={processedTasks} addPagination={true} />
+    <Card title="">
+      <div className="overflow-y-auto">
+        <Table columns={AllTasksColumns} data={processedTasks} addPagination={true} />
+        <span className="italic">
+          Note: This list only shows comment notifications for tasks that are explicitly assigned to
+          you. If you are a project manager but not assigned to a task, you will not see its comment
+          notifications here. Those comments will appear on the main dashboard and project task page
+          instead.
+        </span>
+      </div>
     </Card>
   )
 }

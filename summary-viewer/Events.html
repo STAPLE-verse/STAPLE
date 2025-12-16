@@ -480,6 +480,7 @@
         const tickvals = []
         const ticktext = []
         const allChartData = []
+        let rowCount = 0
 
         milestoneDataRaw.forEach((m) => {
           const milestoneId = String(m.id)
@@ -489,6 +490,7 @@
           )
 
           milestoneTasks.forEach((t) => {
+            rowCount += 1
             const yLabel = `task-${t.id}`
             tickvals.push(yLabel)
             ticktext.push("↳ " + t.name)
@@ -509,6 +511,7 @@
             })
           })
 
+          rowCount += 1
           tickvals.push(milestoneId)
           ticktext.push(m.name)
 
@@ -543,8 +546,9 @@
             type: "category",
             automargin: true,
             tickfont: { size: 14 },
+            tickpadding: 8,
           },
-          height: milestoneDataRaw.length * 40 + 100,
+          height: Math.min(rowCount * 40 + 120, 2000),
           showlegend: false,
           margin: { l: 150, r: 30, t: 50, b: 40 },
         }
@@ -740,7 +744,9 @@
             <i class="expand-icon">+</i>
           </label>
           <div class="collapse-content">
-            <div id="milestone-gantt-container"></div>
+            <div class="gantt-scroll-container">
+              <div id="milestone-gantt-container"></div>
+            </div>
           </div>
         </div>
         <div class="custom-collapse">

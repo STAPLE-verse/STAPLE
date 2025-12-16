@@ -4,6 +4,9 @@ import { Column } from "@tanstack/react-table"
 function Filter({ column }: { column: Column<any, unknown> }) {
   const { filterVariant } = column.columnDef.meta ?? {}
   const isHtml = column.columnDef.meta?.isHtml || false
+  const selectOptions = column.columnDef.meta?.selectOptions as
+    | { label: string; value: string }[]
+    | undefined
   const columnFilterValue = column.getFilterValue()
   const facetedUniqueValues = column.getFacetedUniqueValues()
 
@@ -64,16 +67,22 @@ function Filter({ column }: { column: Column<any, unknown> }) {
       className={sharedInputStyles}
     >
       <option value="">All</option>
-      {sortedUniqueValues.map((value, index) => (
-        // dynamically generated select options from faceted values feature
-        <option
-          value={value}
-          key={getUniqueKey(value, index)}
-          dangerouslySetInnerHTML={isHtml ? { __html: value } : undefined}
-        >
-          {!isHtml ? value : undefined}
-        </option>
-      ))}
+      {selectOptions
+        ? selectOptions.map((option, index) => (
+            <option value={option.value} key={getUniqueKey(option.value, index)}>
+              {option.label}
+            </option>
+          ))
+        : sortedUniqueValues.map((value, index) => (
+            // dynamically generated select options from faceted values feature
+            <option
+              value={value}
+              key={getUniqueKey(value, index)}
+              dangerouslySetInnerHTML={isHtml ? { __html: value } : undefined}
+            >
+              {!isHtml ? value : undefined}
+            </option>
+          ))}
     </select>
   ) : filterVariant === "multiselect" ? (
     <div className="dropdown">

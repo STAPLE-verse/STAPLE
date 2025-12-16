@@ -5,9 +5,12 @@ import { Routes } from "@blitzjs/next"
 import DateFormat from "src/core/components/DateFormat"
 import { MagnifyingGlassIcon, ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline"
 import { AllTasksData } from "../processing/processAllTasks"
+import { createDateTextFilter } from "src/core/utils/tableFilters"
 
 // Column helper
 const columnHelperAll = createColumnHelper<AllTasksData>()
+
+const dueDateTextFilter = createDateTextFilter({ emptyLabel: "no due date" })
 
 // ColumnDefs
 export const AllTasksColumns = [
@@ -34,6 +37,7 @@ export const AllTasksColumns = [
     enableSorting: true,
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
     header: "Due Date",
+    filterFn: dueDateTextFilter,
     meta: {
       filterVariant: "text",
     },

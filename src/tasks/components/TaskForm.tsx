@@ -377,6 +377,9 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
               />
             </span>
           </label>
+          <p className="text-md italic text-base-content/80 mb-2">
+            Tags only save after you press enter, comma, or semicolon.
+          </p>
           <ReactTags
             tags={tags}
             name="tags"

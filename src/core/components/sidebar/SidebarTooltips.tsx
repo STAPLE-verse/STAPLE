@@ -32,6 +32,8 @@ const SidebarTooltips = () => {
     { id: "help-tooltip", content: "Get help" },
     { id: "project-notification-tooltip", content: "Project notifications" },
     { id: "invite-tooltip", content: "Project invitations" },
+    { id: "project-notes-tooltip", content: "View notes" },
+    { id: "project-tags-tooltip", content: "View tag dashboard" },
   ]
 
   return (

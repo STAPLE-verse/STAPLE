@@ -96,6 +96,7 @@ model ProjectMember {
   tags                    Json?
   commentReadStatus       CommentReadStatus[]
   notes                   Note[]
+  formerTeamIds           Json?
 }
 
 model ProjectPrivilege {
