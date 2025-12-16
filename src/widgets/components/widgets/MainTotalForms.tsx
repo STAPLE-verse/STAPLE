@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next"
 const TotalForms: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size }) => {
   const currentUser = useCurrentUser()
   // Get forms
-  const [forms] = useQuery(getForms, {
+  const [{ forms }] = useQuery(getForms, {
     where: {
       user: { id: currentUser?.id },
       archived: false,

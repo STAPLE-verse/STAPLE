@@ -24,7 +24,7 @@ export const TaskSchemaInput = ({
   const [openSchemaModal, setOpenSchemaModal] = useState(false)
   const handleToggleSchemaUpload = () => setOpenSchemaModal((prev) => !prev)
 
-  const [pmForms] = useQuery(getForms, {
+  const [{ forms: pmForms }] = useQuery(getForms, {
     where: { userId: { in: projectManagerIds }, archived: false },
     include: { user: true },
   })
