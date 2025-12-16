@@ -204,6 +204,9 @@ export function MilestoneForm<S extends z.ZodType<any, any>>(props: MilestoneFor
             />
           </span>
         </label>
+        <p className="text-md italic text-base-content/80 mb-2">
+          Tags only save after you press enter, comma, or semicolon.
+        </p>
         <ReactTags
           tags={tags}
           name="tags"

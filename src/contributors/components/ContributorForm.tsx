@@ -130,7 +130,7 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
         />
       )}
       <LabelSelectField
-        className="select text-primary select-bordered border-primary border-2 w-1/2 mb-4 w-1/2"
+        className="select text-primary bg-base-300 select-bordered bg-base-300 border-primary border-2 w-1/2 mb-4 w-1/2"
         name="privilege"
         label="Select Privilege:"
         options={MemberPrivilegesOptions}
@@ -164,6 +164,9 @@ export function ContributorForm<S extends z.ZodType<any, any>>(props: Contributo
             />
           </span>
         </label>
+        <p className="text-md italic text-base-content/80 mb-2">
+          Tags only save after you press enter, comma, or semicolon.
+        </p>
         <ReactTags
           tags={tags}
           name="tags"

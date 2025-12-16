@@ -26,7 +26,8 @@ export function processNotification(
   return notifications.map((notification) => {
     const cleanMessage = stripHtmlTags(notification.message || "")
     const type = determineNotificationType(cleanMessage)
-    const isMarkdown = type === "Project"
+    const containsHtml = /<\/?[a-z][\s\S]*>/i.test(notification.message || "")
+    const isMarkdown = type === "Project" && !containsHtml
 
     return {
       id: notification.id,
