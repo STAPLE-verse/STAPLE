@@ -47,7 +47,7 @@ const ContributorInformation = ({
   })
 
   // get taskLogs for those tasks
-  const [fetchedTaskLogs, { refetch: refetchTaskLogs }] = useQuery(getTaskLogs, {
+  const [{ taskLogs: fetchedTaskLogs }, { refetch: refetchTaskLogs }] = useQuery(getTaskLogs, {
     where: {
       taskId: { in: tasks.map((task) => task.id) },
       assignedToId: contributorId,

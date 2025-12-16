@@ -19,7 +19,7 @@ const ProjectOverdueTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
   const currentUser = useCurrentUser()
 
   // get TaskLogs for this project and user
-  const [taskLogs] = useQuery(getTaskLogs, {
+  const [{ taskLogs }] = useQuery(getTaskLogs, {
     where: {
       task: { projectId: projectId },
       assignedTo: { users: { some: { id: currentUser?.id } } },

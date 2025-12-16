@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react"
-import { useQuery } from "@blitzjs/rpc"
+import { useEffect, useMemo, useState } from "react"
+import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTasks, { GetTasksInput } from "../queries/getTasks"
 import { MemberPrivileges } from "@prisma/client"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { processProjectTasks } from "../tables/processing/processProjectTasks"
 import getUserProjectMemberIds from "src/tasks/queries/getUserProjectMemberIds"
+import { PaginationState } from "@tanstack/react-table"
 
-export default function useProjectTasksListData(projectId: number | undefined) {
+export default function useProjectTasksListData(
+  projectId: number | undefined,
+  pagination: PaginationState
+) {
   const currentUser = useCurrentUser()
   const { privilege } = useMemberPrivileges()
   const [queryParams, setQueryParams] = useState<GetTasksInput | null>(null)
@@ -102,16 +106,23 @@ export default function useProjectTasksListData(projectId: number | undefined) {
     setQueryParams(baseParams)
   }, [privilege, currentUser, projectId, userMemberIds])
 
-  const [{ tasks: fetchedTasks }, { refetch }] = useQuery(
-    getTasks,
-    queryParams ?? {
+  const queryInput = useMemo(() => {
+    const base = queryParams ?? {
       where: { project: { id: -1 } }, // dummy query until params are ready
       orderBy: [{ id: "asc" }],
     }
-  )
+
+    return {
+      ...base,
+      skip: pagination.pageIndex * pagination.pageSize,
+      take: pagination.pageSize,
+    }
+  }, [queryParams, pagination])
+
+  const [{ tasks: fetchedTasks = [], count }, { refetch }] = usePaginatedQuery(getTasks, queryInput)
 
   const tasks = processProjectTasks(fetchedTasks, async () => {
     await refetch()
   })
-  return { tasks, refetchTasks: refetch }
+  return { tasks, refetchTasks: refetch, count }
 }
