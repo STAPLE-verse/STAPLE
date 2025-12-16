@@ -41,7 +41,7 @@ const NotificationContent = () => {
       },
       projectId: projectId ?? undefined,
     }),
-    [currentUser?.id, projectId]
+    [currentUser, projectId]
   )
 
   const paginationArgs = useMemo(

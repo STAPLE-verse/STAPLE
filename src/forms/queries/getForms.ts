@@ -10,18 +10,21 @@ export interface FormWithFormVersion extends Form {
 interface GetFormInput
   extends Pick<Prisma.FormFindManyArgs, "where" | "orderBy" | "include" | "skip" | "take"> {}
 
-const includeLatestVersion = (include?: Prisma.FormInclude) => ({
-  ...include,
-  versions: {
-    orderBy: { version: "desc" },
-    take: 1,
-  },
-})
+const includeLatestVersion = (include?: Prisma.FormInclude | null) =>
+  include === null
+    ? undefined
+    : {
+        ...(include ?? {}),
+        versions: {
+          orderBy: [{ version: "desc" as const }],
+          take: 1,
+        },
+      }
 
-const mapForms = (fetchedForms: (Form & { versions: FormVersion[] })[]): FormWithFormVersion[] => {
+const mapForms = (fetchedForms: (Form & { versions?: FormVersion[] })[]): FormWithFormVersion[] => {
   return fetchedForms.map((form) => ({
     ...form,
-    formVersion: form.versions[0] || null,
+    formVersion: form.versions?.[0] || null,
   }))
 }
 

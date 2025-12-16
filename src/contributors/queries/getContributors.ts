@@ -56,12 +56,12 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      orderBy,
       count: () => db.projectMember.count({ where: baseWhere }),
       query: (paginateArgs) =>
         db.projectMember.findMany({
           ...paginateArgs,
           where: baseWhere,
+          orderBy,
           include: {
             users: true,
           },

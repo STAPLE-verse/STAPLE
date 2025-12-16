@@ -52,7 +52,7 @@ const NotificationContent = () => {
         },
       },
     }),
-    [currentUser?.id]
+    [currentUser]
   )
 
   const paginationArgs = useMemo(

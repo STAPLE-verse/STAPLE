@@ -1,4 +1,4 @@
-import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
+import { usePaginatedQuery } from "@blitzjs/rpc"
 import getContributors from "src/contributors/queries/getContributors"
 import {
   processContributor,
@@ -7,7 +7,6 @@ import {
 import { MemberPrivileges } from "@prisma/client"
 import { useMemo } from "react"
 import { CurrentUser } from "src/users/queries/getCurrentUser"
-import { ProjectMemberWithUsers } from "src/core/types"
 import { PaginationState } from "@tanstack/react-table"
 
 type UseContributorsDataResult = {
@@ -30,28 +29,14 @@ export function useContributorsData(
     orderBy: { id: "asc" as const },
   }
 
-  let contributors: ProjectMemberWithUsers[] = []
-  let count = 0
-  let refetchFn: () => Promise<any>
+  const skip = pagination ? pagination.pageIndex * pagination.pageSize : 0
+  const take = pagination ? pagination.pageSize : undefined
 
-  if (shouldPaginate) {
-    const [{ contributors: pagedContributors, count: total }, { refetch }] = usePaginatedQuery(
-      getContributors,
-      {
-        ...baseArgs,
-        skip: pagination!.pageIndex * pagination!.pageSize,
-        take: pagination!.pageSize,
-      }
-    )
-    contributors = pagedContributors
-    count = total
-    refetchFn = refetch
-  } else {
-    const [{ contributors: allContributors }, { refetch }] = useQuery(getContributors, baseArgs)
-    contributors = allContributors
-    count = contributors.length
-    refetchFn = refetch
-  }
+  const [{ contributors, count }, { refetch }] = usePaginatedQuery(getContributors, {
+    ...baseArgs,
+    skip,
+    take,
+  })
 
   const filteredContributors = useMemo(() => {
     if (privilege === MemberPrivileges.CONTRIBUTOR) {
@@ -63,9 +48,12 @@ export function useContributorsData(
     return contributors
   }, [contributors, privilege, currentUser.id])
 
+  const resultCount =
+    privilege === MemberPrivileges.CONTRIBUTOR ? filteredContributors.length : count
+
   return {
     data: processContributor(filteredContributors, projectId),
-    count,
-    refetch: refetchFn,
+    count: resultCount,
+    refetch,
   }
 }
