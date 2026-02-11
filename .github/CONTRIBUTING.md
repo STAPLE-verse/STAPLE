@@ -18,7 +18,7 @@ In general, contributions we welcome are small unknown issues (see the list belo
 
 We always welcome certain contributions:
 
-- Documenting issues with STAPLE (maybe link to the issues guide?)
+- Documenting issues with STAPLE 
 - Fixing typos or grammatical errors
 - Adding unit tests to components, mutations, queries, or hooks
 - Improving type casting to be more robust
