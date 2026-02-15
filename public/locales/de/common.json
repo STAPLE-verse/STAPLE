@@ -99,8 +99,6 @@
     "index": {
       "forms": "Formen",
       "dashboard-overview": "This page shows all your metadata forms. You can create new forms to collect information about project metadata. These forms can be assigned to tasks in any project. We've provided templates to help you get started."
-    },
-    "edit": {},
-    "new": {}
+    }
   }
 }
