@@ -9,7 +9,7 @@
 
   "forwardPorts": [3000],
 
-  "postCreateCommand": "npm install && npx prisma generate && npx prisma db push",
+  "postCreateCommand": "npm install && npx prisma generate && npx prisma db push && npm -g install tsx && npm run db:seed",
 
   "containerEnv": {
     "DATABASE_URL": "postgresql://postgres:postgres@db:5432/staple",
