@@ -11,7 +11,8 @@
     "test:watch": "vitest",
     "prepare": "husky install",
     "postinstall": "patch-package",
-    "run-viewer-worker": "node src/summary/utils/viewerWorker.js"
+    "run-viewer-worker": "node src/summary/utils/viewerWorker.js",
+    "db:seed": "tsx prisma/seed.ts"
   },
   "prisma": {
     "schema": "db/schema.prisma"
