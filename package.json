@@ -12,7 +12,7 @@
     "prepare": "husky install",
     "postinstall": "patch-package",
     "run-viewer-worker": "node src/summary/utils/viewerWorker.js",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx .devcontainer/seed.ts"
   },
   "prisma": {
     "schema": "db/schema.prisma"
