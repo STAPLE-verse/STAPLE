@@ -11,6 +11,7 @@ import Card from "src/core/components/Card"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import { PaginationState } from "@tanstack/react-table"
+import { useTranslation } from "react-i18next"
 
 const AllFormsPage = () => {
   // AddFormTemplate modal settings
@@ -20,6 +21,7 @@ const AllFormsPage = () => {
 
   // Get user
   const currentUser = useCurrentUser()
+  const { t } = (useTranslation as any)()
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -54,18 +56,18 @@ const AllFormsPage = () => {
 
   return (
     // @ts-expect-error children are clearly passed below
-    <Layout title="Forms">
+    <Layout title={t("forms.index.forms")}>
       <main className="flex flex-col mx-auto w-full">
         <Suspense fallback={<div>Loading...</div>}>
           <h1 className="flex justify-center items-center text-3xl">
-            Forms{" "}
+            {t("forms.index.forms")}{" "}
             <InformationCircleIcon
               className="h-6 w-6 ml-2 text-info stroke-2"
               data-tooltip-id="dashboard-overview"
             />
             <Tooltip
               id="dashboard-overview"
-              content="This page shows all your metadata forms. You can create new forms to collect information about project metadata. These forms can be assigned to tasks in any project. We've provided templates to help you get started."
+              content={t("forms.index.dashboard-overview")}
               className="z-[1099] ourtooltips"
             />
           </h1>

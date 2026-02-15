@@ -1,0 +1,106 @@
+{
+  "sidebar": {
+    "project": {
+      "home": "Haus",
+      "dashboard": "Armaturenbrett",
+      "milestones": "Milestones",
+      "tasks": "Tasks",
+      "contributors": "Contributors",
+      "teams": "Teams",
+      "formData": "Form Data",
+      "notifications": "Notifications",
+      "roles": "Roles",
+      "summary": "Summary",
+      "settings": "Settings",
+      "tags": "Tags",
+      "notes": "Notes"
+    },
+    "home": {
+      "dashboard": "Armaturenbrett",
+      "projects": "Projects",
+      "invitations": "Invitations",
+      "tasks": "Tasks",
+      "notifications": "Notifications",
+      "forms": "Forms",
+      "roles": "Roles",
+      "admin": "Admin",
+      "help": "Help",
+      "tooltips": {
+        "dashboard": "Home Armaturenbrett",
+        "projects": "View all projects",
+        "invitations": "Project invitations",
+        "tasks": "View all tasks",
+        "notifications": "View all notifications",
+        "forms": "Manage metadata forms",
+        "roles": "Manage role categories",
+        "help": "Get help"
+      }
+    }
+  },
+  "main": {
+    "welcome": "Welcome",
+    "dashboard": {
+      "upcomingtask": "Upcoming Tasks",
+      "overduetask": "Overdue Tasks",
+      "notifications": "Notifications",
+      "totalcontributors": "Total Contributors",
+      "alltasks": "Tasks",
+      "projects": "Projects",
+      "forms": "Forms",
+      "invites": "Invitations",
+      "roles": "Roles",
+      "lastupdatedprojects": "Last Updated Projects",
+      "alltasksbutton": "All Tasks",
+      "allprojectsbutton": "All Projects",
+      "allnotificationsbutton": "All Notifications",
+      "tooltips": {
+        "upcomingtask": "Three upcoming tasks for all projects",
+        "overduetask": "Overdue Tasks",
+        "notifications": "Notifications",
+        "totalcontributors": "Total Contributors",
+        "alltasks": "Tasks",
+        "projects": "Projects",
+        "forms": "Forms",
+        "invites": "Invitations",
+        "roles": "Roles",
+        "lastupdatedprojects": "Last Updated Projects"
+      }
+    }
+  },
+  "projects": {
+    "title": "All Projects",
+    "createproject": "Create Project"
+  },
+  "widgets": {
+    "upcomingtask": "No upcoming task",
+    "overduetask": "No overdue task"
+  },
+  "breadcrumbs": {
+    "projects": "Projects",
+    "home": "Haus",
+    "main": "Main",
+    "invites": "Invitations",
+    "tasks": "Tasks",
+    "notifications": "Notifications",
+    "forms": "Forms",
+    "roles": "Roles",
+    "updates": "Administration",
+    "help": "Help",
+    "summary": "Summary",
+    "settings": "Setttings",
+    "tags": "Tags",
+    "notes": "Notes",
+    "milestones": "Milestones",
+    "contributors": "Contributors",
+    "teams": "Teams",
+    "edit": "Settings"
+  },
+  "forms": {
+    "index": {
+      "forms": "Formen",
+      "dashboard-overview": "This page shows all your metadata forms. You can create new forms to collect information about project metadata. These forms can be assigned to tasks in any project. We've provided templates to help you get started."
+    },
+    "edit": {},
+    "new": {}
+  }
+}
