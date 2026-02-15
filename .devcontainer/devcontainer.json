@@ -3,9 +3,9 @@
 
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
-  "remoteUser": "root",
+  "remoteUser": "node",
 
-  "workspaceFolder": "/root",
+  "workspaceFolder": "/workspace",
 
   "forwardPorts": [3000],
 
