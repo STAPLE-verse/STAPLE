@@ -21,3 +21,6 @@ services:
       POSTGRES_DB: staple
     volumes:
       - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
