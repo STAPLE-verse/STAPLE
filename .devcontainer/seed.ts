@@ -18,7 +18,7 @@ async function main() {
       role: "USER",
       firstName: "STAPLE",
       lastName: "Student",
-      language: "en-US",
+      language: "de",
     },
   })
 

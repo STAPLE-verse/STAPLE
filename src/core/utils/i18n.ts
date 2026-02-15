@@ -11,7 +11,7 @@ void i18n
   .use(initReactI18next)
   .init({
     fallbackLng: "en",
-    supportedLngs: ["en", "es"],
+    supportedLngs: ["en", "es", "de"],
     ns: ["common"], // Add other namespaces as needed
     defaultNS: "common",
     backend: {
