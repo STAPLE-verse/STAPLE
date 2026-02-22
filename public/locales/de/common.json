@@ -1,7 +1,7 @@
 {
   "sidebar": {
     "project": {
-      "home": "Haus",
+      "home": "Startseite",
       "dashboard": "Armaturenbrett",
       "milestones": "Milestones",
       "tasks": "Tasks",
@@ -77,7 +77,7 @@
   },
   "breadcrumbs": {
     "projects": "Projects",
-    "home": "Haus",
+    "home": "Startseite",
     "main": "Main",
     "invites": "Invitations",
     "tasks": "Tasks",
