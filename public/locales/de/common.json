@@ -12,8 +12,8 @@
       "roles": "Rollen und Verantwortlichkeiten",
       "summary": "Zusammenfassung",
       "settings": "Einstellungen",
-      "tags": "Markierungen",
-      "notes": "Notizen"
+      "tags": "Tags",
+      "notes": "Anmerkungen"
     },
     "home": {
       "dashboard": "Dashboard",
@@ -38,62 +38,62 @@
     }
   },
   "main": {
-    "welcome": "Welcome",
+    "welcome": "Willkommen",
     "dashboard": {
-      "upcomingtask": "Upcoming Tasks",
-      "overduetask": "Overdue Tasks",
-      "notifications": "Notifications",
-      "totalcontributors": "Total Contributors",
-      "alltasks": "Tasks",
-      "projects": "Projects",
-      "forms": "Forms",
-      "invites": "Invitations",
-      "roles": "Roles",
-      "lastupdatedprojects": "Last Updated Projects",
-      "alltasksbutton": "All Tasks",
-      "allprojectsbutton": "All Projects",
-      "allnotificationsbutton": "All Notifications",
+      "upcomingtask": "Anstehende Aufgaben",
+      "overduetask": "Überfällige Aufgaben",
+      "notifications": "Benachrichtigungen",
+      "totalcontributors": "Gesamtzahl der Mitwirkenden",
+      "alltasks": "Aufgaben",
+      "projects": "Projekte",
+      "forms": "Formulare",
+      "invites": "Einladungen",
+      "roles": "Rollen",
+      "lastupdatedprojects": "Zuletzt aktualisierte Projekte",
+      "alltasksbutton": "Alle Aufgaben",
+      "allprojectsbutton": "Alle Projekte",
+      "allnotificationsbutton": "Alle Benachrichtigungen",
       "tooltips": {
-        "upcomingtask": "Three upcoming tasks for all projects",
-        "overduetask": "Overdue Tasks",
-        "notifications": "Notifications",
-        "totalcontributors": "Total Contributors",
-        "alltasks": "Tasks",
-        "projects": "Projects",
-        "forms": "Forms",
-        "invites": "Invitations",
-        "roles": "Roles",
-        "lastupdatedprojects": "Last Updated Projects"
+        "upcomingtask": "Drei anstehende Aufgaben für alle Projekte",
+        "overduetask": "Überfällige Aufgaben",
+        "notifications": "Benachrichtigungen",
+        "totalcontributors": "Gesamtzahl der Mitwirkenden",
+        "alltasks": "Aufgaben",
+        "projects": "Projekte",
+        "forms": "Formulare",
+        "invites": "Einladungen",
+        "roles": "Rollen und Verantwortlichkeiten",
+        "lastupdatedprojects": "Zuletzt aktualisierte Projekte"
       }
     }
   },
   "projects": {
-    "title": "All Projects",
-    "createproject": "Create Project"
+    "title": "Alle Projekte",
+    "createproject": "Projekt erstellen"
   },
   "widgets": {
-    "upcomingtask": "No upcoming task",
-    "overduetask": "No overdue task"
+    "upcomingtask": "Keine anstehenden Aufgaben",
+    "overduetask": "Keine überfälligen Aufgaben"
   },
   "breadcrumbs": {
-    "projects": "Projects",
+    "projects": "Projekte",
     "home": "Startseite",
-    "main": "Main",
-    "invites": "Invitations",
-    "tasks": "Tasks",
-    "notifications": "Notifications",
-    "forms": "Forms",
-    "roles": "Roles",
+    "main": "Start",
+    "invites": "Einladungen",
+    "tasks": "Aufgaben",
+    "notifications": "Benachrichtigungen",
+    "forms": "Formulare",
+    "roles": "Rollen und Verantwortlichkeiten",
     "updates": "Administration",
-    "help": "Help",
-    "summary": "Summary",
-    "settings": "Setttings",
+    "help": "Hilfe",
+    "summary": "Zusammenfassung",
+    "settings": "Einstellungen",
     "tags": "Tags",
-    "notes": "Notes",
-    "milestones": "Milestones",
-    "contributors": "Contributors",
+    "notes": "Anmerkungen",
+    "milestones": "Meilensteine",
+    "contributors": "Mitwirkende",
     "teams": "Teams",
-    "edit": "Settings"
+    "edit": "Einstellungen"
   },
   "forms": {
     "index": {
