@@ -18,7 +18,7 @@ In general, contributions we welcome are small unknown issues (see the list belo
 
 We always welcome certain contributions:
 
-- Documenting issues with STAPLE 
+- Documenting issues with STAPLE
 - Fixing typos or grammatical errors
 - Adding unit tests to components, mutations, queries, or hooks
 - Improving type casting to be more robust
@@ -30,11 +30,11 @@ We always welcome certain contributions:
 
 In general, we discourage adding large unknown contributions without talking to us.
 
-If your contribution falls outside those we welcome anytime, please get in touch with us first. We do this to ensure you do not waste your time. 
-For example, if you are looking to make a substantial contribution to STAPLE, please open an issue first so we can discuss your approach. We want your 
+If your contribution falls outside those we welcome anytime, please get in touch with us first. We do this to ensure you do not waste your time.
+For example, if you are looking to make a substantial contribution to STAPLE, please open an issue first so we can discuss your approach. We want your
 effort to be successful, and getting feedback early helps ensure your contribution is aligned with the project.
 
-What we actively discourage is adding features and opening up pull requests for them without talking to us first. You do this at your own risk, and with no 
+What we actively discourage is adding features and opening up pull requests for them without talking to us first. You do this at your own risk, and with no
 guarantee that your contribution gets included.
 
 ## How to make a pull request
@@ -46,12 +46,12 @@ Use the five minute rule:
 
 Once you are ready to submit your code, please use the appropriate pull request template.
 
-Please note that STAPLE is a small team, and pull requests will be responded to as quickly as possible. Depending on the time of year, it may take a few 
+Please note that STAPLE is a small team, and pull requests will be responded to as quickly as possible. Depending on the time of year, it may take a few
 weeks. Feel free to check in if we have not responded within that time frame.
 
-All pull requests should be sent to the `dev` branch for initial review. We will respond with comments and/or requests for updates. After approval, we 
-will test the update on our [development website](https://test.staple.science). Once we verify that the update is integrated appropriated within 
-STAPLE, we will pull the changes in the `main` branch to put on the [production website](https://app.staple.science/).
+All pull requests should be sent to the `dev` branch for initial review. We will respond with comments and/or requests for updates. After approval, we
+will test the update on our [development website](https://test.staplescience.com). Once we verify that the update is integrated appropriated within
+STAPLE, we will pull the changes in the `main` branch to put on the [production website](https://app.staplescience.com/).
 
 Here is the current workflow for pull requests:
 

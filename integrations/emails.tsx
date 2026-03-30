@@ -1,6 +1,6 @@
 export function createForgotPasswordMsg(to, resetUrl) {
   return {
-    from: "STAPLE <app@staple.science>",
+    from: "STAPLE <app@staplescience.com>",
     to,
     subject: "Your Password Reset Instructions",
     replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
@@ -35,7 +35,7 @@ STAPLE: Science Tracking Across Project Lifespans
 
 <p style='margin-top:6.0pt;margin-right:0in;
 margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
-https://staple.science
+https://staplescience.com
 
 <p style='margin-top:6.0pt;margin-right:0in;
 margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
@@ -50,7 +50,7 @@ staple.helpdesk@gmail.com
 
 export function createSignUpMsg(email) {
   return {
-    from: "STAPLE <app@staple.science>",
+    from: "STAPLE <app@staplescience.com>",
     to: email.toLowerCase().trim(),
     subject: "STAPLE Account Created",
     replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
@@ -62,7 +62,7 @@ alt="STAPLE Logo" height="200"></center>
 
       <h3>Welcome to STAPLE</h3>
 
-      You requested a STAPLE account at https://app.staple.science.
+      You requested a STAPLE account at https://app.staplescience.com.
       You may now log in to your account.
       <p>
       If you need more help or did not request an account,
@@ -87,7 +87,7 @@ STAPLE: Science Tracking Across Project Lifespans
 
 <p style='margin-top:6.0pt;margin-right:0in;
 margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
-https://staple.science
+https://staplescience.com
 
 <p style='margin-top:6.0pt;margin-right:0in;
 margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
@@ -106,7 +106,7 @@ export function createNewInvitation(values, currentUser, projectmember) {
     : currentUser!.username
 
   return {
-    from: "STAPLE <app@staple.science>",
+    from: "STAPLE <app@staplescience.com>",
     to: values.email,
     subject: "STAPLE Project Invitation",
     replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
@@ -121,7 +121,7 @@ alt="STAPLE Logo" height="200"></center>
         You've been invited to collaborate on a STAPLE project by
         ${name}. STAPLE is project management software that
         allows you to document your research project to improve transparency. If you
-        wish to join the project, please log in at: https://app.staple.science/. You
+        wish to join the project, please log in at: https://app.staplescience.com/. You
         can join the project by clicking on Invitations on the sidebar menu and click "Accept"
         or decline the project invitation by clicking "Decline".
         <p>
@@ -151,7 +151,7 @@ STAPLE: Science Tracking Across Project Lifespans
 
 <p style='margin-top:6.0pt;margin-right:0in;
 margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
-https://staple.science
+https://staplescience.com
 
 <p style='margin-top:6.0pt;margin-right:0in;
 margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
@@ -166,7 +166,7 @@ staple.helpdesk@gmail.com
 
 export function createReassignmentInvitation(values, currentUser, projectMember) {
   return {
-    from: "STAPLE <app@staple.science>",
+    from: "STAPLE <app@staplescience.com>",
     to: values.email,
     subject: "STAPLE Project Reassignment Invitation",
     replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
@@ -184,7 +184,7 @@ alt="STAPLE Logo" height="200"></center>
           currentUser!.username
         }. This project was previously associated with your account but has since been marked as inactive.
         <p>
-        If you'd like to rejoin the project, please log in at: https://app.staple.science/.
+        If you'd like to rejoin the project, please log in at: https://app.staplescience.com/.
         You can find this invitation in the "Invitations" section of the sidebar menu and either accept or decline the reassignment.
         <p>
         If you need more help, you can reply to this email to create a support ticket.
@@ -208,7 +208,7 @@ STAPLE: Science Tracking Across Project Lifespans
 
 <p style='margin-top:6.0pt;margin-right:0in;
 margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
-https://staple.science
+https://staplescience.com
 
 <p style='margin-top:6.0pt;margin-right:0in;
 margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
@@ -223,7 +223,7 @@ staple.helpdesk@gmail.com
 
 export function createEditPasswordMsg(currentUser) {
   return {
-    from: "STAPLE <app@staple.science>",
+    from: "STAPLE <app@staplescience.com>",
     to: currentUser!.email,
     subject: "STAPLE Password Change",
     replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
@@ -236,7 +236,7 @@ alt="STAPLE Logo" height="200"></center>
       <h3>STAPLE Password Change</h3>
 
       This email is to notify you that you recently updated your
-      password at https://app.staple.science. If you did not make this change, please
+      password at https://app.staplescience.com. If you did not make this change, please
       contact us immediately.
       <p>
       If you need more help, you can reply to this email to create a ticket.
@@ -260,7 +260,7 @@ STAPLE: Science Tracking Across Project Lifespans
 
 <p style='margin-top:6.0pt;margin-right:0in;
 margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
-https://staple.science
+https://staplescience.com
 
 <p style='margin-top:6.0pt;margin-right:0in;
 margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
@@ -275,7 +275,7 @@ staple.helpdesk@gmail.com
 
 export function createEditProfileMsg(user) {
   return {
-    from: "STAPLE <app@staple.science>",
+    from: "STAPLE <app@staplescience.com>",
     to: user!.email,
     subject: "STAPLE Profile Change",
     replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
@@ -289,7 +289,7 @@ alt="STAPLE Logo" height="200"></center>
       <h3>STAPLE Profile Change</h3>
 
       This email is to notify you that you recently updated your
-      profile information at https://app.staple.science. If you did not make this change, please
+      profile information at https://app.staplescience.com. If you did not make this change, please
       contact us immediately.
       <p>
       If you need more help, you can reply to this email to create a ticket.
@@ -313,7 +313,7 @@ STAPLE: Science Tracking Across Project Lifespans
 
 <p style='margin-top:6.0pt;margin-right:0in;
 margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>
-https://staple.science
+https://staplescience.com
 
 <p style='margin-top:6.0pt;margin-right:0in;
 margin-bottom:6.0pt;margin-left:0in;text-align:center;line-height:normal'>

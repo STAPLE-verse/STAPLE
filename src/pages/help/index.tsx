@@ -14,7 +14,7 @@ const HelpPage = () => {
               <div className="card-body">
                 <div className="card-title">Documentation</div>
                 Need help navigating STAPLE and how to use the software?{" "}
-                <a className="link-primary" href="https://staple.science/documentation/">
+                <a className="link-primary" href="https://staplescience.com/documentation/">
                   Check out the documentation.
                 </a>
               </div>
@@ -50,7 +50,7 @@ const HelpPage = () => {
               <div className="card-body">
                 <div className="card-title">Feature Roadmap</div>
                 Want to suggest a feature or look at our STAPLE roadmap?{" "}
-                <a className="link-primary" href="https://roadmap.staple.science/">
+                <a className="link-primary" href="https://roadmap.staplescience.com/">
                   Check it out here.
                 </a>{" "}
                 You can create an account on the roadmap page with ORCID, Google, or GitHub.
@@ -75,8 +75,9 @@ const HelpPage = () => {
             <div className="card bg-base-300 w-1/2 ml-2">
               <div className="card-body">
                 <div className="card-title">STAPLE Emails</div>
-                Invitations and notifications come from app@staple.science. The email may go to spam
-                and may need to be marked as safe to ensure all notification emails are received.
+                Invitations and notifications come from app@staplescience.com. The email may go to
+                spam and may need to be marked as safe to ensure all notification emails are
+                received.
               </div>
             </div>
           </div>

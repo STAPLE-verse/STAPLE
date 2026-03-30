@@ -290,7 +290,7 @@ const Summary = () => {
             your project that can be used to index data on search engines like Google or loaded into
             our external project summary viewer (
             <a
-              href="https://staple.science/project-summary-external/"
+              href="https://staplescience.com/project-summary-external/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary underline"

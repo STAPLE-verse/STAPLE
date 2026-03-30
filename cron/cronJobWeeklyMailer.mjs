@@ -25,8 +25,8 @@ function createWeeklyNotification(email, notificationContent, overdueContent) {
 
         <p>
           This email is to notify you about overdue tasks and updates to your project(s) from the last week.
-          You can view all notifications on the <a href="https://app.staple.science/auth/login?next=%2Fnotifications">Notifications page</a>.
-          You change the frequency of these emails on your <a href="https://app.staple.science/auth/login?next=%2Fprofile">Profile page</a>.
+          You can view all notifications on the <a href="https://app.staplescience.com/auth/login?next=%2Fnotifications">Notifications page</a>.
+          You change the frequency of these emails on your <a href="https://app.staplescience.com/auth/login?next=%2Fprofile">Profile page</a>.
           </p>
 
         <h3>⏰ Overdue Tasks</h3>
@@ -39,7 +39,7 @@ function createWeeklyNotification(email, notificationContent, overdueContent) {
   `
 
   return {
-    from: "STAPLE <app@staple.science>",
+    from: "STAPLE <app@staplescience.com>",
     to: email,
     subject: "STAPLE Weekly Notifications",
     replyTo: "STAPLE Help <staple.helpdesk@gmail.com>",
@@ -275,7 +275,7 @@ export async function sendGroupedNotifications(groupedNotifications, groupedOver
 
     // Send email
     try {
-      const response = await fetch("https://app.staple.science/api/send-email", {
+      const response = await fetch("https://app.staplescience.com/api/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(emailContent),

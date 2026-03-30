@@ -88,8 +88,8 @@ function NewContributor() {
         values after they accept your invite.
       </p>
       <p className="mt-2 mb-2 text-lg">
-        Each person will receive an email from app@staple.science. The email may go to spam and may
-        need to be marked as safe to ensure all notification emails are received.
+        Each person will receive an email from app@staplescience.com. The email may go to spam and
+        may need to be marked as safe to ensure all notification emails are received.
       </p>
       <Card title="">
         <ContributorForm
