@@ -25,13 +25,13 @@ const downloadICSFile = (task, person) => {
     description: task.description || "",
     duration: { hours: 1 },
     location: "STAPLE App",
-    url: "https://app.staple.science",
+    url: "https://app.staplescience.com",
     organizer: {
       name:
         person?.users?.[0]?.firstName && person?.users?.[0]?.lastName
           ? `${person.users[0].firstName} ${person.users[0].lastName}`
           : person?.users?.[0]?.username || "Unknown Organizer",
-      email: person?.users?.[0]?.email || "no-email@staple.science",
+      email: person?.users?.[0]?.email || "no-email@staplescience.com",
     },
   }
 
