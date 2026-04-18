@@ -9,6 +9,7 @@ type RoleContributorTableProps = {
   onPaginationChange?: OnChangeFn<PaginationState>
   pageCount?: number
   pageSizeOptions?: number[]
+  onGlobalFilterChange?: (filter: string) => void
 }
 
 export const RoleContributorTable = ({
@@ -18,6 +19,7 @@ export const RoleContributorTable = ({
   onPaginationChange,
   pageCount,
   pageSizeOptions,
+  onGlobalFilterChange,
 }: RoleContributorTableProps) => {
   const processedData = contributors.map((contributor) => ({
     username: contributor.users[0].username,
@@ -39,6 +41,7 @@ export const RoleContributorTable = ({
       onPaginationChange={onPaginationChange}
       pageCount={pageCount}
       pageSizeOptions={pageSizeOptions}
+      onGlobalFilterChange={onGlobalFilterChange}
     />
   )
 }

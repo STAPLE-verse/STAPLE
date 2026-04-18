@@ -29,11 +29,12 @@ export const AllTeamList = ({ privilege, projectId }: AllTeamListProps) => {
     pageIndex: 0,
     pageSize: 10,
   })
+  const [search, setSearch] = useState("")
 
   const [{ projectMembers, count }] = usePaginatedQuery(getProjectMembers, {
     where: {
       projectId: projectId,
-      name: { not: null }, // Ensures the name in ProjectMember is non-null
+      name: { not: null, ...(search ? { contains: search, mode: "insensitive" } : {}) },
       users: {
         some: { id: { not: undefined } }, // Ensures there's at least one user
       },
@@ -67,6 +68,11 @@ export const AllTeamList = ({ privilege, projectId }: AllTeamListProps) => {
     setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
   }
 
+  const handleGlobalFilterChange = (filter: string) => {
+    setSearch(filter)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+  }
+
   return (
     <div>
       <Table
@@ -78,6 +84,7 @@ export const AllTeamList = ({ privilege, projectId }: AllTeamListProps) => {
         onPaginationChange={handlePaginationChange}
         pageCount={pageCount}
         pageSizeOptions={[10, 25, 50, 100]}
+        onGlobalFilterChange={handleGlobalFilterChange}
       />
     </div>
   )

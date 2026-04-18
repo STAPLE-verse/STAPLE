@@ -138,6 +138,7 @@ type TableProps<TData> = {
   onPaginationChange?: OnChangeFn<PaginationState>
   pageCount?: number
   pageSizeOptions?: number[]
+  onGlobalFilterChange?: (filter: string) => void
   classNames?: {
     table?: string
     thead?: string
@@ -191,6 +192,7 @@ const Table = <TData,>({
   onPaginationChange,
   pageCount: controlledPageCount,
   pageSizeOptions = [5, 10, 20, 30, 40, 50],
+  onGlobalFilterChange,
 }: TableProps<TData>) => {
   const [sorting, setSorting] = React.useState([])
   const [globalFilter, setGlobalFilter] = React.useState("")
@@ -239,14 +241,26 @@ const Table = <TData,>({
   const globalSearchTooltipId = React.useId()
 
   React.useEffect(() => {
-    if (!addPagination) {
-      return
-    }
-
+    if (!addPagination) return
     if (!manualPagination && pageCount > 0 && pageIndex >= pageCount) {
       table.setPageIndex(0)
     }
   }, [addPagination, pageCount, pageIndex, table, manualPagination])
+
+  const isFirstFilterRender = React.useRef(true)
+  React.useEffect(() => {
+    if (isFirstFilterRender.current) {
+      isFirstFilterRender.current = false
+      return
+    }
+    if (!addPagination) return
+    if (manualPagination) {
+      onGlobalFilterChange?.(globalFilter)
+    } else {
+      table.setPageIndex(0)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [globalFilter])
 
   return (
     <>

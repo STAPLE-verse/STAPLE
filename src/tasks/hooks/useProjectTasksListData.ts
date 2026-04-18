@@ -10,7 +10,8 @@ import { PaginationState } from "@tanstack/react-table"
 
 export default function useProjectTasksListData(
   projectId: number | undefined,
-  pagination: PaginationState
+  pagination: PaginationState,
+  search: string = ""
 ) {
   const currentUser = useCurrentUser()
   const { privilege } = useMemberPrivileges()
@@ -24,7 +25,10 @@ export default function useProjectTasksListData(
     if (!privilege || !currentUser || !projectId) return
 
     let baseParams: GetTasksInput = {
-      where: { project: { id: projectId } },
+      where: {
+        project: { id: projectId },
+        ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
+      },
       orderBy: [{ id: "asc" }],
       include: {
         container: {
@@ -104,7 +108,7 @@ export default function useProjectTasksListData(
     }
 
     setQueryParams(baseParams)
-  }, [privilege, currentUser, projectId, userMemberIds])
+  }, [privilege, currentUser, projectId, userMemberIds, search])
 
   const queryInput = useMemo(() => {
     const base = queryParams ?? {

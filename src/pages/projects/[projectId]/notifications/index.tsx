@@ -31,6 +31,7 @@ const NotificationContent = () => {
     pageIndex: 0,
     pageSize: 10,
   })
+  const [search, setSearch] = useState("")
 
   const baseWhere = useMemo<Prisma.NotificationWhereInput>(
     () => ({
@@ -40,8 +41,16 @@ const NotificationContent = () => {
         },
       },
       projectId: projectId ?? undefined,
+      ...(search
+        ? {
+            OR: [
+              { type: { contains: search, mode: "insensitive" } },
+              { project: { name: { contains: search, mode: "insensitive" } } },
+            ],
+          }
+        : {}),
     }),
-    [currentUser, projectId]
+    [currentUser, projectId, search]
   )
 
   const paginationArgs = useMemo(
@@ -90,6 +99,12 @@ const NotificationContent = () => {
     updater: PaginationState | ((state: PaginationState) => PaginationState)
   ) => {
     setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
+    disableGlobalSelection()
+  }
+
+  const handleGlobalFilterChange = (filter: string) => {
+    setSearch(filter)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
     disableGlobalSelection()
   }
 
@@ -158,6 +173,7 @@ const NotificationContent = () => {
           onPaginationChange={handlePaginationChange}
           pageCount={pageCount}
           pageSizeOptions={[10, 25, 50, 100]}
+          onGlobalFilterChange={handleGlobalFilterChange}
         />
       </Card>
     </main>

@@ -20,6 +20,7 @@ export const AllTasksList = () => {
     pageIndex: 0,
     pageSize: 10,
   })
+  const [search, setSearch] = useState("")
 
   const [{ tasks, count }] = usePaginatedQuery(getTasks, {
     where: {
@@ -32,6 +33,14 @@ export const AllTasksList = () => {
           },
         },
       },
+      ...(search
+        ? {
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { project: { name: { contains: search, mode: "insensitive" } } },
+            ],
+          }
+        : {}),
     },
     include: {
       project: true,
@@ -93,6 +102,11 @@ export const AllTasksList = () => {
     setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
   }
 
+  const handleGlobalFilterChange = (filter: string) => {
+    setSearch(filter)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+  }
+
   return (
     <Card title="">
       <div className="overflow-y-auto">
@@ -105,6 +119,7 @@ export const AllTasksList = () => {
           onPaginationChange={handlePaginationChange}
           pageCount={pageCount}
           pageSizeOptions={[10, 25, 50, 100]}
+          onGlobalFilterChange={handleGlobalFilterChange}
         />
         <span className="italic">
           Note: This list only shows comment notifications for tasks that are explicitly assigned to

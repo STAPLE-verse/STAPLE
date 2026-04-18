@@ -11,14 +11,20 @@ export const ProjectTasksList = () => {
     pageIndex: 0,
     pageSize: 10,
   })
+  const [search, setSearch] = useState("")
 
-  const { tasks, count } = useProjecTasksListData(projectId, pagination)
+  const { tasks, count } = useProjecTasksListData(projectId, pagination, search)
   const pageCount = Math.max(1, Math.ceil((count ?? 0) / pagination.pageSize))
 
   const handlePaginationChange = (
     updater: PaginationState | ((state: PaginationState) => PaginationState)
   ) => {
     setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
+  }
+
+  const handleGlobalFilterChange = (filter: string) => {
+    setSearch(filter)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }
 
   return (
@@ -33,6 +39,7 @@ export const ProjectTasksList = () => {
           onPaginationChange={handlePaginationChange}
           pageCount={pageCount}
           pageSizeOptions={[10, 25, 50, 100]}
+          onGlobalFilterChange={handleGlobalFilterChange}
         />
       </div>
     </div>
