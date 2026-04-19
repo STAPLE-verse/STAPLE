@@ -1,6 +1,6 @@
 import Table from "src/core/components/Table"
 import { useRoleContributorTableColumns } from "../tables/columns/RoleContributorTableColumns"
-import { PaginationState, OnChangeFn } from "@tanstack/react-table"
+import { ColumnFiltersState, PaginationState, OnChangeFn } from "@tanstack/react-table"
 
 type RoleContributorTableProps = {
   contributors: any[]
@@ -10,6 +10,7 @@ type RoleContributorTableProps = {
   pageCount?: number
   pageSizeOptions?: number[]
   onGlobalFilterChange?: (filter: string) => void
+  onColumnFiltersChange?: (filters: ColumnFiltersState) => void
 }
 
 export const RoleContributorTable = ({
@@ -20,6 +21,7 @@ export const RoleContributorTable = ({
   pageCount,
   pageSizeOptions,
   onGlobalFilterChange,
+  onColumnFiltersChange,
 }: RoleContributorTableProps) => {
   const processedData = contributors.map((contributor) => ({
     username: contributor.users[0].username,
@@ -42,6 +44,7 @@ export const RoleContributorTable = ({
       pageCount={pageCount}
       pageSizeOptions={pageSizeOptions}
       onGlobalFilterChange={onGlobalFilterChange}
+      onColumnFiltersChange={onColumnFiltersChange}
     />
   )
 }

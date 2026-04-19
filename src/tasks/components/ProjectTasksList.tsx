@@ -3,7 +3,7 @@ import { ProjectTasksColumns } from "src/tasks/tables/columns/ProjectTasksColumn
 import Table from "src/core/components/Table"
 import useProjecTasksListData from "../hooks/useProjectTasksListData"
 import { useState } from "react"
-import { PaginationState } from "@tanstack/react-table"
+import { ColumnFiltersState, PaginationState } from "@tanstack/react-table"
 
 export const ProjectTasksList = () => {
   const projectId = useParam("projectId", "number")
@@ -12,8 +12,9 @@ export const ProjectTasksList = () => {
     pageSize: 10,
   })
   const [search, setSearch] = useState("")
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
-  const { tasks, count } = useProjecTasksListData(projectId, pagination, search)
+  const { tasks, count } = useProjecTasksListData(projectId, pagination, search, columnFilters)
   const pageCount = Math.max(1, Math.ceil((count ?? 0) / pagination.pageSize))
 
   const handlePaginationChange = (
@@ -24,6 +25,11 @@ export const ProjectTasksList = () => {
 
   const handleGlobalFilterChange = (filter: string) => {
     setSearch(filter)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+  }
+
+  const handleColumnFiltersChange = (filters: ColumnFiltersState) => {
+    setColumnFilters(filters)
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }
 
@@ -40,6 +46,7 @@ export const ProjectTasksList = () => {
           pageCount={pageCount}
           pageSizeOptions={[10, 25, 50, 100]}
           onGlobalFilterChange={handleGlobalFilterChange}
+          onColumnFiltersChange={handleColumnFiltersChange}
         />
       </div>
     </div>

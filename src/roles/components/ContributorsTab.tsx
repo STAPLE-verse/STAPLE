@@ -8,12 +8,17 @@ import { AddRoleModal } from "./AddRoleModal"
 import { ProjectMemberWithUsersAndRoles } from "src/core/types"
 import Link from "next/link"
 import { Tooltip } from "react-tooltip"
-import { PaginationState } from "@tanstack/react-table"
+import { ColumnFiltersState, PaginationState } from "@tanstack/react-table"
 
 const ContributorsTab = () => {
   const projectId = useParam("projectId", "number")
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 })
   const [search, setSearch] = useState("")
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+  const roleNameFilter = columnFilters.find((f) => f.id === "roleNames")?.value as
+    | string
+    | undefined
 
   const [{ projectMembers: contributors, count }, { refetch }] = usePaginatedQuery(
     getProjectMembers,
@@ -34,6 +39,9 @@ const ContributorsTab = () => {
               }
             : {}),
         },
+        ...(roleNameFilter
+          ? { roles: { some: { name: { contains: roleNameFilter, mode: "insensitive" } } } }
+          : {}),
         deleted: undefined,
         name: { equals: null }, // Ensures ProjectMember is contributor and not team
       },
@@ -57,6 +65,11 @@ const ContributorsTab = () => {
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }
 
+  const handleColumnFiltersChange = (filters: ColumnFiltersState) => {
+    setColumnFilters(filters)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+  }
+
   return (
     <main className="flex flex-col mx-auto w-full">
       <MultiSelectProvider>
@@ -70,6 +83,7 @@ const ContributorsTab = () => {
               pageCount={pageCount}
               pageSizeOptions={[10, 25, 50, 100]}
               onGlobalFilterChange={handleGlobalFilterChange}
+              onColumnFiltersChange={handleColumnFiltersChange}
             />
             <div className="modal-action flex justify-between mt-4">
               <Link

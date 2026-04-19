@@ -15,7 +15,7 @@ import { MultiReadToggleButton } from "src/notifications/components/MultiReadTog
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import Card from "src/core/components/Card"
-import { PaginationState } from "@tanstack/react-table"
+import { ColumnFiltersState, PaginationState } from "@tanstack/react-table"
 import { Prisma } from "db"
 
 const NotificationContent = () => {
@@ -32,37 +32,45 @@ const NotificationContent = () => {
     pageSize: 10,
   })
   const [search, setSearch] = useState("")
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
-  const baseWhere = useMemo<Prisma.NotificationWhereInput>(
+  const coreWhere = useMemo<Prisma.NotificationWhereInput>(
     () => ({
-      recipients: {
-        some: {
-          id: currentUser!.id,
-        },
-      },
-      // Only include notifications for projects where the contributor is not deleted
+      recipients: { some: { id: currentUser!.id } },
       project: {
         projectMembers: {
           some: {
-            users: {
-              some: { id: currentUser!.id },
-            },
-            name: null, // Contributor (indicating it's not a team)
-            deleted: false, // Only include undeleted project members
+            users: { some: { id: currentUser!.id } },
+            name: null,
+            deleted: false,
           },
         },
       },
-      ...(search
-        ? {
-            OR: [
-              { type: { contains: search, mode: "insensitive" } },
-              { project: { name: { contains: search, mode: "insensitive" } } },
-            ],
-          }
-        : {}),
     }),
-    [currentUser, search]
+    [currentUser]
   )
+
+  const baseWhere = useMemo<Prisma.NotificationWhereInput>(() => {
+    const conditions: Prisma.NotificationWhereInput[] = [coreWhere]
+    if (search) {
+      conditions.push({
+        OR: [
+          { message: { contains: search, mode: "insensitive" } },
+          { project: { name: { contains: search, mode: "insensitive" } } },
+        ],
+      })
+    }
+    for (const filter of columnFilters) {
+      const value = String(filter.value ?? "").trim()
+      if (!value) continue
+      if (filter.id === "readStatus") {
+        conditions.push({ read: value === "Read" })
+      } else if (filter.id === "projectName") {
+        conditions.push({ project: { name: { contains: value, mode: "insensitive" } } })
+      }
+    }
+    return conditions.length === 1 ? conditions[0]! : { AND: conditions }
+  }, [coreWhere, search, columnFilters])
 
   const paginationArgs = useMemo(
     () => ({
@@ -114,6 +122,12 @@ const NotificationContent = () => {
 
   const handleGlobalFilterChange = (filter: string) => {
     setSearch(filter)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+    disableGlobalSelection()
+  }
+
+  const handleColumnFiltersChange = (filters: ColumnFiltersState) => {
+    setColumnFilters(filters)
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
     disableGlobalSelection()
   }
@@ -185,6 +199,7 @@ const NotificationContent = () => {
           pageCount={pageCount}
           pageSizeOptions={[10, 25, 50, 100]}
           onGlobalFilterChange={handleGlobalFilterChange}
+          onColumnFiltersChange={handleColumnFiltersChange}
         />
       </Card>
     </main>

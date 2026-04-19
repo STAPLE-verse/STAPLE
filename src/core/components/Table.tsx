@@ -1,5 +1,6 @@
 import {
   ColumnDef,
+  ColumnFiltersState,
   FilterFn,
   flexRender,
   getCoreRowModel,
@@ -139,6 +140,7 @@ type TableProps<TData> = {
   pageCount?: number
   pageSizeOptions?: number[]
   onGlobalFilterChange?: (filter: string) => void
+  onColumnFiltersChange?: (filters: ColumnFiltersState) => void
   classNames?: {
     table?: string
     thead?: string
@@ -193,9 +195,11 @@ const Table = <TData,>({
   pageCount: controlledPageCount,
   pageSizeOptions = [5, 10, 20, 30, 40, 50],
   onGlobalFilterChange,
+  onColumnFiltersChange,
 }: TableProps<TData>) => {
   const [sorting, setSorting] = React.useState([])
   const [globalFilter, setGlobalFilter] = React.useState("")
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [internalPagination, setInternalPagination] = React.useState<PaginationState>({
     pageIndex: 0,
     pageSize: 5,
@@ -224,10 +228,12 @@ const Table = <TData,>({
     pageCount: manualPagination ? controlledPageCount : undefined,
     state: {
       sorting: sorting,
+      columnFilters: columnFilters,
       globalFilter: globalFilter,
       pagination: resolvedPaginationState,
     },
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: handlePaginationChange,
     globalFilterFn: defaultGlobalFilterFn,
@@ -261,6 +267,20 @@ const Table = <TData,>({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [globalFilter])
+
+  const isFirstColumnFilterRender = React.useRef(true)
+  React.useEffect(() => {
+    if (isFirstColumnFilterRender.current) {
+      isFirstColumnFilterRender.current = false
+      return
+    }
+    if (!addPagination) return
+    if (manualPagination) {
+      onColumnFiltersChange?.(columnFilters)
+    }
+    table.setPageIndex(0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [columnFilters])
 
   return (
     <>

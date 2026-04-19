@@ -2,16 +2,17 @@ import { useEffect, useMemo, useState } from "react"
 import { usePaginatedQuery, useQuery } from "@blitzjs/rpc"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getTasks, { GetTasksInput } from "../queries/getTasks"
-import { MemberPrivileges } from "@prisma/client"
+import { MemberPrivileges, Status } from "@prisma/client"
 import { useMemberPrivileges } from "src/projectprivileges/components/MemberPrivilegesContext"
 import { processProjectTasks } from "../tables/processing/processProjectTasks"
 import getUserProjectMemberIds from "src/tasks/queries/getUserProjectMemberIds"
-import { PaginationState } from "@tanstack/react-table"
+import { ColumnFiltersState, PaginationState } from "@tanstack/react-table"
 
 export default function useProjectTasksListData(
   projectId: number | undefined,
   pagination: PaginationState,
-  search: string = ""
+  search: string = "",
+  columnFilters: ColumnFiltersState = []
 ) {
   const currentUser = useCurrentUser()
   const { privilege } = useMemberPrivileges()
@@ -24,10 +25,21 @@ export default function useProjectTasksListData(
   useEffect(() => {
     if (!privilege || !currentUser || !projectId) return
 
+    const nameFilter = columnFilters.find((f) => f.id === "name")?.value as string | undefined
+    const containerFilter = columnFilters.find((f) => f.id === "container")?.value as
+      | string
+      | undefined
+    const statusFilter = columnFilters.find((f) => f.id === "status")?.value as string | undefined
+
     let baseParams: GetTasksInput = {
       where: {
         project: { id: projectId },
         ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
+        ...(nameFilter ? { name: { contains: nameFilter, mode: "insensitive" } } : {}),
+        ...(containerFilter ? { container: { name: containerFilter } } : {}),
+        ...(statusFilter
+          ? { status: statusFilter === "Completed" ? Status.COMPLETED : Status.NOT_COMPLETED }
+          : {}),
       },
       orderBy: [{ id: "asc" }],
       include: {
@@ -108,7 +120,7 @@ export default function useProjectTasksListData(
     }
 
     setQueryParams(baseParams)
-  }, [privilege, currentUser, projectId, userMemberIds, search])
+  }, [privilege, currentUser, projectId, userMemberIds, search, columnFilters])
 
   const queryInput = useMemo(() => {
     const base = queryParams ?? {
