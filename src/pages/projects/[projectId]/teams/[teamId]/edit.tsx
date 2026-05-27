@@ -41,10 +41,12 @@ export const EditTeam = () => {
 
   const users = teamProjectMember.users
   const userIds = users.map((user) => user.id)
+  const pendingInvitationIds = (team.pendingInvitations ?? []).map((inv) => inv.id)
 
   const initialValues = {
     name: teamProjectMember.name ? teamProjectMember.name : undefined,
     projectMemberUserIds: userIds,
+    pendingInvitationIds,
     tags:
       Array.isArray(teamProjectMember.tags) &&
       teamProjectMember.tags.every((tag) => typeof tag === "object" && tag !== null)
@@ -63,7 +65,8 @@ export const EditTeam = () => {
       const updated = await updateTeamMutation({
         name: values.name,
         id: teamProjectMember.id,
-        userIds: values.projectMemberUserIds,
+        userIds: values.projectMemberUserIds ?? [],
+        invitationIds: values.pendingInvitationIds ?? [],
         tags: values.tags,
       })
       await toast.promise(Promise.resolve(updated), {

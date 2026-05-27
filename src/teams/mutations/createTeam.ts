@@ -7,7 +7,7 @@ import sendNotification from "src/notifications/mutations/sendNotification"
 export default resolver.pipe(
   resolver.zod(CreateTeamSchema),
   resolver.authorize(),
-  async ({ projectId, name, userIds, tags }, ctx) => {
+  async ({ projectId, name, userIds, invitationIds, tags }, ctx) => {
     const team = await db.projectMember.create({
       data: {
         name,
@@ -19,6 +19,12 @@ export default resolver.pipe(
             id: userId,
           })),
         },
+        ...(invitationIds &&
+          invitationIds.length > 0 && {
+            pendingInvitations: {
+              connect: invitationIds.map((invId) => ({ id: invId })),
+            },
+          }),
         ...(tags && { tags }),
       },
     })
