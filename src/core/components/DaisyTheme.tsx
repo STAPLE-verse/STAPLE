@@ -16,6 +16,9 @@ import {
   getSubmitButtonOptions,
   SubmitButtonProps,
 } from "@rjsf/utils"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 
 import { ThemeProps } from "@rjsf/core"
 
@@ -74,9 +77,12 @@ function MyDescriptionField<
   }
   if (typeof description === "string") {
     return (
-      <p id={id} className="text-md italic">
-        {description}
-      </p>
+      <div
+        id={id}
+        className="markdown-display prose max-w-none dark:prose-invert text-md italic mb-2"
+      >
+        <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{description}</ReactMarkdown>
+      </div>
     )
   } else {
     return (
