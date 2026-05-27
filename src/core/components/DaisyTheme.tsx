@@ -18,6 +18,11 @@ import {
   schemaRequiresTrueValue,
   descriptionId,
   ariaDescribedByIds,
+  enumOptionsIsSelected,
+  enumOptionsSelectValue,
+  enumOptionsDeselectValue,
+  enumOptionsValueForIndex,
+  optionId,
 } from "@rjsf/utils"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -250,6 +255,63 @@ const MyCheckboxWidget = (props: WidgetProps) => {
   )
 }
 
+const MyCheckboxesWidget = (props: WidgetProps) => {
+  const {
+    id,
+    disabled,
+    options,
+    value,
+    readonly,
+    onChange,
+    onBlur,
+    onFocus,
+    autofocus = false,
+  } = props
+  const { enumOptions, enumDisabled, emptyValue } = options
+  const checkboxesValues = Array.isArray(value) ? value : [value]
+
+  return (
+    <div className="checkboxes-group" id={id}>
+      {Array.isArray(enumOptions) &&
+        enumOptions.map((option, index) => {
+          const checked = enumOptionsIsSelected(option.value, checkboxesValues)
+          const itemDisabled =
+            Array.isArray(enumDisabled) && enumDisabled.indexOf(option.value) !== -1
+          const disabledCls = disabled || itemDisabled || readonly ? "disabled" : ""
+
+          return (
+            <label key={index} className={`checkboxes-option ${disabledCls}`}>
+              <input
+                type="checkbox"
+                id={optionId(id, index)}
+                name={id}
+                checked={checked}
+                value={String(index)}
+                disabled={disabled || itemDisabled || readonly}
+                autoFocus={autofocus && index === 0}
+                onChange={(event) => {
+                  if (event.target.checked) {
+                    onChange(enumOptionsSelectValue(index, checkboxesValues, enumOptions))
+                  } else {
+                    onChange(enumOptionsDeselectValue(index, checkboxesValues, enumOptions))
+                  }
+                }}
+                onBlur={({ target: { value: v } }) =>
+                  onBlur(id, enumOptionsValueForIndex(v, enumOptions, emptyValue))
+                }
+                onFocus={({ target: { value: v } }) =>
+                  onFocus(id, enumOptionsValueForIndex(v, enumOptions, emptyValue))
+                }
+                aria-describedby={ariaDescribedByIds(id)}
+              />
+              <span>{option.label}</span>
+            </label>
+          )
+        })}
+    </div>
+  )
+}
+
 // create Registry information
 // templates
 const myTemplates: Partial<TemplatesType> = {
@@ -282,6 +344,7 @@ const myWidgets: RegistryWidgetsType = {
   TextWidget: MyTextWidget,
   EmailWidget: MyEmailWidget,
   CheckboxWidget: MyCheckboxWidget,
+  CheckboxesWidget: MyCheckboxesWidget,
 }
 
 // create the overall theme to use on the other page

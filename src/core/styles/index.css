@@ -702,6 +702,23 @@ span.arrow.tooltip-arrow {
   margin-left: 30px;
 }
 
+.rjsf .checkboxes-group {
+  width: 100%;
+}
+
+.rjsf .checkboxes-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+.rjsf .checkboxes-option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .tooltip {
   z-index: 9999; /* A higher value than the modal */
 }
