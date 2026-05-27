@@ -6,11 +6,20 @@ import JSONBuilderTab from "./JSONBuilderTab"
 import validator from "@rjsf/validator-ajv8"
 import JsonForm from "src/core/components/JsonForm"
 import { noSubmitButton } from "../utils/extendSchema"
+import FormTagEditor from "./FormTagEditor"
+import FormFolderSelector from "./FormFolderSelector"
+import FormDeployments from "./FormDeployments"
+import CollapseCard from "src/core/components/CollapseCard"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 interface FormPlaygroundProps {
   initialSchema?: string
   initialUiSchema?: string
   saveForm: (formState: { schema: object; uischema: object; formData: object }) => void
+  formId?: number
+  initialTags?: string[]
+  initialFolderId?: number | null
 }
 
 interface FormState {
@@ -24,6 +33,9 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   initialSchema = "{}",
   initialUiSchema = "{}",
   saveForm,
+  formId,
+  initialTags = [],
+  initialFolderId = null,
 }) => {
   const [state, setState] = useState<FormState>({
     schema: JSON.parse(initialSchema),
@@ -79,7 +91,22 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
         >
           Preview
         </Tab>
+        {formId && (
+          <Tab
+            className={({ selected }) =>
+              classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
+            }
+          >
+            Details
+          </Tab>
+        )}
       </Tab.List>
+
+      <div className="w-full flex justify-end mb-4">
+        <button type="button" className="btn btn-primary" onClick={handleSave}>
+          Save Form
+        </button>
+      </div>
 
       <Tab.Panels>
         <Tab.Panel>
@@ -108,6 +135,48 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
             validator={validator}
           />
         </Tab.Panel>
+
+        {formId && (
+          <Tab.Panel>
+            <div className="flex flex-col gap-4">
+              <CollapseCard title="Organization: Tags, Folder" defaultOpen={true}>
+                <div className="flex flex-col gap-6 mt-2">
+                  <div className="w-2/3 mt-4">
+                    <label className="text-base-content text-base">
+                      <span className="flex items-center mb-2">
+                        Tags:
+                        <InformationCircleIcon
+                          className="h-4 w-4 ml-1 text-info stroke-2"
+                          data-tooltip-id="form-tags-overview"
+                        />
+                        <Tooltip
+                          id="form-tags-overview"
+                          content="Use a comma, semicolon, enter, or tab to create separate tags. To edit a tag, click on it, and then hit the enter key when you are finished."
+                          className="z-[1099] ourtooltips"
+                        />
+                      </span>
+                    </label>
+                    <p className="text-sm italic text-base-content/80 mb-2">
+                      Tags only save after you press enter, comma, or semicolon.
+                    </p>
+                    <FormTagEditor formId={formId} initialTags={initialTags} />
+                  </div>
+                  <div>
+                    <label className="text-base-content text-base">
+                      <span className="flex items-center mb-2">Folder:</span>
+                    </label>
+                    <FormFolderSelector formId={formId} currentFolderId={initialFolderId} />
+                  </div>
+                </div>
+              </CollapseCard>
+              <CollapseCard title="Assigned Tasks & Projects" defaultOpen={true}>
+                <div className="mt-2">
+                  <FormDeployments formId={formId} />
+                </div>
+              </CollapseCard>
+            </div>
+          </Tab.Panel>
+        )}
       </Tab.Panels>
     </Tab.Group>
   ) : null

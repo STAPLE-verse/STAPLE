@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useMutation } from "@blitzjs/rpc"
-import { WithContext as ReactTags } from "react-tag-input"
+import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
 import type { Tag } from "react-tag-input/types/components/SingleTag"
 import updateFormMeta from "src/forms/mutations/updateFormMeta"
 
@@ -34,26 +34,48 @@ export default function FormTagEditor({ formId, initialTags, onUpdate }: Props) 
     void save(newTags)
   }
 
+  const handleDrag = (tag: Tag, currPos: number, newPos: number) => {
+    const newTags = tags.slice()
+    newTags.splice(currPos, 1)
+    newTags.splice(newPos, 0, tag)
+    setTags(newTags)
+    void save(newTags)
+  }
+
+  const onClearAll = () => {
+    setTags([])
+    void save([])
+  }
+
   return (
-    <ReactTags
-      tags={tags}
-      handleAddition={handleAddition}
-      handleDelete={handleDelete}
-      inputFieldPosition="bottom"
-      placeholder="Add a tag…"
-      classNames={{
-        tags: "flex flex-wrap gap-1",
-        tag: "inline-flex items-center badge badge-primary gap-1",
-        remove: "cursor-pointer ml-1 opacity-60 hover:opacity-100",
-        tagInput: "mt-2",
-        tagInputField: "input input-sm input-bordered w-full max-w-xs",
-        suggestions: "absolute z-50 bg-base-200 border border-base-300 rounded shadow mt-1",
-        activeSuggestion: "bg-primary text-primary-content px-2 py-1",
-        selected: "",
-        editTagInput: "",
-        editTagInputField: "",
-        clearAll: "",
-      }}
-    />
+    <div className="w-full">
+      <ReactTags
+        tags={tags}
+        separators={[SEPARATORS.TAB, SEPARATORS.COMMA, SEPARATORS.ENTER, SEPARATORS.SEMICOLON]}
+        handleDelete={handleDelete}
+        handleAddition={handleAddition}
+        handleDrag={handleDrag}
+        inputFieldPosition="inline"
+        editable
+        clearAll
+        onClearAll={onClearAll}
+        placeholder="Add tags"
+        classNames={{
+          tags: "rounded-md bg-base-300 react-tags-wrapper",
+          tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 mb-2 text-base",
+          remove: "ml-3 text-primary-content font-bold cursor-pointer remove",
+          tagInput: "bg-base-300",
+          tagInputField:
+            "input input-primary input-bordered border-2 bg-base-300 text-primary text-base w-3/4",
+          selected: "bg-base-300",
+          editTagInput: "bg-base-300",
+          editTagInputField:
+            "input input-primary input-bordered border-2 bg-base-300 text-primary text-base w-3/4 mb-4",
+          clearAll: "font-bold ml-3",
+          suggestions: "suggestions-dropdown",
+          activeSuggestion: "active-suggestion-class",
+        }}
+      />
+    </div>
   )
 }

@@ -8,16 +8,23 @@ import ArchiveFormButton from "../../components/ArchiveFormButton"
 import { MagnifyingGlassIcon, PencilSquareIcon } from "@heroicons/react/24/outline"
 import { FormTableData } from "../processing/processForms"
 import { createDateTextFilter } from "src/core/utils/tableFilters"
+import FolderCell from "./FolderCell"
+import FolderHeaderSelect from "./FolderHeaderSelect"
+import TagHeaderSearch from "./TagHeaderSearch"
 
-// Column helper
 const columnHelper = createColumnHelper<FormTableData>()
 const lastUpdateFilter = createDateTextFilter({ emptyLabel: "no date" })
 
-// ColumnDefs
-export const FormsColumns = [
+export const getFormsColumns = (
+  onFolderFilterChange?: (folderId: number | null | "all") => void,
+  onTagFilterChange?: (tag: string) => void
+) => [
   columnHelper.accessor("name", {
     cell: (info) => (
-      <Link className="font-medium hover:underline" href={`/forms/${info.row.original.id}`}>
+      <Link
+        className="font-medium hover:underline"
+        href={Routes.FormEditPage({ formsId: info.row.original.id })}
+      >
         {info.getValue()}
       </Link>
     ),
@@ -27,15 +34,15 @@ export const FormsColumns = [
     id: "folder",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => {
-      const folder = info.getValue()
-      return folder ? (
-        <span className="badge badge-outline badge-sm">{folder.name}</span>
-      ) : (
-        <span className="text-base-content/40 text-sm">—</span>
-      )
-    },
-    header: "Folder",
+    cell: (info) => (
+      <FolderCell formId={info.row.original.id} currentFolderId={info.getValue()?.id ?? null} />
+    ),
+    header: () => (
+      <div className="flex flex-col gap-1">
+        <span>Folder</span>
+        <FolderHeaderSelect onChange={onFolderFilterChange} />
+      </div>
+    ),
   }),
   columnHelper.accessor("tags", {
     id: "tags",
@@ -44,17 +51,29 @@ export const FormsColumns = [
     cell: (info) => {
       const tags = info.getValue()
       if (!tags || tags.length === 0) return <span className="text-base-content/40 text-sm">—</span>
+      const visible = tags.slice(0, 3)
+      const hidden = tags.slice(3)
       return (
-        <div className="flex flex-wrap gap-1">
-          {tags.map((tag) => (
+        <div className="flex flex-wrap gap-1 items-center">
+          {visible.map((tag) => (
             <span key={tag} className="badge badge-primary badge-sm">
               {tag}
             </span>
           ))}
+          {hidden.length > 0 && (
+            <div className="tooltip tooltip-right" data-tip={hidden.join(", ")}>
+              <span className="badge badge-ghost badge-sm cursor-default">+{hidden.length}</span>
+            </div>
+          )}
         </div>
       )
     },
-    header: "Tags",
+    header: () => (
+      <div className="flex flex-col gap-1">
+        <span>Tags</span>
+        <TagHeaderSearch onChange={onTagFilterChange} />
+      </div>
+    ),
   }),
   columnHelper.accessor("updatedAt", {
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,

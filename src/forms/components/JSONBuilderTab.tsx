@@ -58,13 +58,7 @@ const JSONBuilderTab: React.FC<JSONBuilderTabProps> = ({ schema, uiSchema, onSav
             {restrictEdit ? "Disable Editing" : "Enable Editing"}
           </button>
         </div>
-        <div>
-          {restrictEdit && (
-            <button onClick={onSave} className="btn btn-primary">
-              Save Form
-            </button>
-          )}
-        </div>
+        <div></div>
       </div>
     </div>
   )
