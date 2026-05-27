@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useState } from "react"
+import { Suspense, useCallback, useMemo, useState } from "react"
 import Layout from "src/core/layouts/Layout"
 import Link from "next/link"
 import { Routes } from "@blitzjs/next"
@@ -25,6 +25,7 @@ const AllFormsPage = () => {
     pageSize: 10,
   })
   const [search, setSearch] = useState("")
+  const [selectedFolderId, setSelectedFolderId] = useState<number | null | "all">("all")
   const [newFolderName, setNewFolderName] = useState("")
   const [showNewFolder, setShowNewFolder] = useState(false)
 
@@ -38,11 +39,14 @@ const AllFormsPage = () => {
     [pagination]
   )
 
+  const folderFilter = selectedFolderId === "all" ? {} : { folderId: selectedFolderId }
+
   const [{ forms, count }, { refetch }] = usePaginatedQuery(getForms, {
     where: {
       user: { id: currentUser?.id },
       archived: false,
       ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
+      ...folderFilter,
     },
     orderBy: { id: "desc" },
     ...paginationArgs,
@@ -60,6 +64,11 @@ const AllFormsPage = () => {
     setSearch(filter)
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }
+
+  const handleFolderFilterChange = useCallback((folderId: number | null | "all") => {
+    setSelectedFolderId(folderId)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+  }, [])
 
   const handleCreateFolder = async () => {
     if (!newFolderName.trim()) return
@@ -133,6 +142,7 @@ const AllFormsPage = () => {
               pageCount={pageCount}
               pageSizeOptions={[10, 25, 50, 100]}
               onGlobalFilterChange={handleGlobalFilterChange}
+              onFolderFilterChange={handleFolderFilterChange}
             />
           </Card>
         </Suspense>

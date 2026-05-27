@@ -1,5 +1,6 @@
+import { useMemo } from "react"
 import Table from "src/core/components/Table"
-import { FormsColumns } from "src/forms/tables/columns/FormsColumns"
+import { getFormsColumns } from "src/forms/tables/columns/FormsColumns"
 import { processForms } from "../tables/processing/processForms"
 import { FormWithFormVersion } from "../queries/getForms"
 import { PaginationState, OnChangeFn } from "@tanstack/react-table"
@@ -12,6 +13,7 @@ type FormsListProps = {
   pageCount?: number
   pageSizeOptions?: number[]
   onGlobalFilterChange?: (filter: string) => void
+  onFolderFilterChange?: (folderId: number | null | "all") => void
 }
 
 export const FormsList = ({
@@ -22,13 +24,15 @@ export const FormsList = ({
   pageCount,
   pageSizeOptions,
   onGlobalFilterChange,
+  onFolderFilterChange,
 }: FormsListProps) => {
   const formsTableData = processForms(forms)
+  const columns = useMemo(() => getFormsColumns(onFolderFilterChange), [onFolderFilterChange])
 
   return (
     <main className="flex flex-col mx-auto w-full">
       <Table
-        columns={FormsColumns}
+        columns={columns}
         data={formsTableData}
         addPagination={true}
         manualPagination={manualPagination}

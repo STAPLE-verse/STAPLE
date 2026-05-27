@@ -8,13 +8,15 @@ import ArchiveFormButton from "../../components/ArchiveFormButton"
 import { MagnifyingGlassIcon, PencilSquareIcon } from "@heroicons/react/24/outline"
 import { FormTableData } from "../processing/processForms"
 import { createDateTextFilter } from "src/core/utils/tableFilters"
+import FolderCell from "./FolderCell"
+import FolderHeaderSelect from "./FolderHeaderSelect"
 
-// Column helper
 const columnHelper = createColumnHelper<FormTableData>()
 const lastUpdateFilter = createDateTextFilter({ emptyLabel: "no date" })
 
-// ColumnDefs
-export const FormsColumns = [
+export const getFormsColumns = (
+  onFolderFilterChange?: (folderId: number | null | "all") => void
+) => [
   columnHelper.accessor("name", {
     cell: (info) => (
       <Link className="font-medium hover:underline" href={`/forms/${info.row.original.id}`}>
@@ -27,15 +29,15 @@ export const FormsColumns = [
     id: "folder",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => {
-      const folder = info.getValue()
-      return folder ? (
-        <span className="badge badge-outline badge-sm">{folder.name}</span>
-      ) : (
-        <span className="text-base-content/40 text-sm">—</span>
-      )
-    },
-    header: "Folder",
+    cell: (info) => (
+      <FolderCell formId={info.row.original.id} currentFolderId={info.getValue()?.id ?? null} />
+    ),
+    header: () => (
+      <div className="flex flex-col gap-1">
+        <span>Folder</span>
+        <FolderHeaderSelect onChange={onFolderFilterChange} />
+      </div>
+    ),
   }),
   columnHelper.accessor("tags", {
     id: "tags",
