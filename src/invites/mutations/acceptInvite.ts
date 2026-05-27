@@ -226,12 +226,9 @@ export default resolver.pipe(
       ctx
     )
 
-    // Delete invitation(s) for that email and project Id
-    await db.invitation.deleteMany({
-      where: {
-        email: invite.email,
-        projectId: invite.projectId,
-      },
+    // Delete this specific invitation by id so it can only be used once
+    await db.invitation.delete({
+      where: { id: invite.id },
     })
 
     return project

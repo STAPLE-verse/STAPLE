@@ -8,7 +8,7 @@ import { AllTasksColumns } from "../tables/columns/AllTasksColumns"
 import { TaskLogWithTaskProjectAndComments } from "src/core/types"
 import Card from "src/core/components/Card"
 import { useState } from "react"
-import { PaginationState } from "@tanstack/react-table"
+import { ColumnFiltersState, PaginationState } from "@tanstack/react-table"
 
 type TaskWithLogs = TaskLogWithTaskProjectAndComments["task"] & {
   taskLogs: TaskLogWithTaskProjectAndComments[]
@@ -20,6 +20,13 @@ export const AllTasksList = () => {
     pageIndex: 0,
     pageSize: 10,
   })
+  const [search, setSearch] = useState("")
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+  const nameFilter = columnFilters.find((f) => f.id === "name")?.value as string | undefined
+  const projectNameFilter = columnFilters.find((f) => f.id === "projectName")?.value as
+    | string
+    | undefined
 
   const [{ tasks, count }] = usePaginatedQuery(getTasks, {
     where: {
@@ -32,6 +39,16 @@ export const AllTasksList = () => {
           },
         },
       },
+      ...(search
+        ? {
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { project: { name: { contains: search, mode: "insensitive" } } },
+            ],
+          }
+        : {}),
+      ...(nameFilter ? { name: { contains: nameFilter, mode: "insensitive" } } : {}),
+      ...(projectNameFilter ? { project: { name: projectNameFilter } } : {}),
     },
     include: {
       project: true,
@@ -93,6 +110,16 @@ export const AllTasksList = () => {
     setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
   }
 
+  const handleGlobalFilterChange = (filter: string) => {
+    setSearch(filter)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+  }
+
+  const handleColumnFiltersChange = (filters: ColumnFiltersState) => {
+    setColumnFilters(filters)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+  }
+
   return (
     <Card title="">
       <div className="overflow-y-auto">
@@ -105,6 +132,8 @@ export const AllTasksList = () => {
           onPaginationChange={handlePaginationChange}
           pageCount={pageCount}
           pageSizeOptions={[10, 25, 50, 100]}
+          onGlobalFilterChange={handleGlobalFilterChange}
+          onColumnFiltersChange={handleColumnFiltersChange}
         />
         <span className="italic">
           Note: This list only shows comment notifications for tasks that are explicitly assigned to

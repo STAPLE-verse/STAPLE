@@ -2,6 +2,7 @@ import React, { ReactElement } from "react"
 import { Input, FormGroup, FormFeedback } from "reactstrap"
 import classnames from "classnames"
 import GeneralParameterInputs from "./GeneralParameterInputs"
+import MarkdownDescriptionInput from "./MarkdownDescriptionInput"
 import SelectField from "src/core/components/fields/SelectField"
 import {
   defaultUiProps,
@@ -31,7 +32,6 @@ export default function CardGeneralParameterInputs({
   const [keyState, setKeyState] = React.useState(parameters.name)
   const [keyError, setKeyError] = React.useState<null | string>(null)
   const [titleState, setTitleState] = React.useState(parameters.title)
-  const [descriptionState, setDescriptionState] = React.useState(parameters.description)
   const [elementId] = React.useState(getRandomId())
   const categoryMap = categoryToNameMap(allFormInputs)
 
@@ -59,6 +59,7 @@ export default function CardGeneralParameterInputs({
       "date",
       "time",
       "checkbox",
+      "checkboxes",
       "radio",
       "dropdown",
       "shortAnswer",
@@ -168,18 +169,10 @@ export default function CardGeneralParameterInputs({
               type="help"
             />
           </h5>
-          <FormGroup>
-            <Input
-              value={descriptionState || ""}
-              placeholder="Description"
-              type="text"
-              onChange={(ev) => setDescriptionState(ev.target.value)}
-              onBlur={(ev) => {
-                onChange({ ...parameters, description: ev.target.value })
-              }}
-              className="card-text"
-            />
-          </FormGroup>
+          <MarkdownDescriptionInput
+            value={parameters.description || ""}
+            onChange={(val) => onChange({ ...parameters, description: val })}
+          />
         </div>
         <div
           className={classnames("card-entry", {

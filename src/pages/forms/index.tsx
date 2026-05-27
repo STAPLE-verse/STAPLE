@@ -32,6 +32,7 @@ const AllFormsPage = () => {
     pageIndex: 0,
     pageSize: 10,
   })
+  const [search, setSearch] = useState("")
   const [selectedFolderId, setSelectedFolderId] = useState<number | null | "all">("all")
   const [editingFolderId, setEditingFolderId] = useState<number | null>(null)
   const [editingFolderName, setEditingFolderName] = useState("")
@@ -57,6 +58,7 @@ const AllFormsPage = () => {
     where: {
       user: { id: currentUser?.id },
       archived: false,
+      ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
       ...folderFilter,
     },
     orderBy: { id: "desc" },
@@ -71,6 +73,9 @@ const AllFormsPage = () => {
     setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
   }
 
+  const handleGlobalFilterChange = (filter: string) => {
+    setSearch(filter)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   const handleFolderSelect = (id: number | null | "all") => {
     setSelectedFolderId(id)
     setPagination((p) => ({ ...p, pageIndex: 0 }))
@@ -130,6 +135,17 @@ const AllFormsPage = () => {
               onFormsUpdated={refetch}
             />
           </div>
+          <Card title="">
+            <FormsList
+              forms={forms}
+              manualPagination={true}
+              paginationState={pagination}
+              onPaginationChange={handlePaginationChange}
+              pageCount={pageCount}
+              pageSizeOptions={[10, 25, 50, 100]}
+              onGlobalFilterChange={handleGlobalFilterChange}
+            />
+          </Card>
 
           <div className="flex gap-4 mt-2">
             {/* Folder sidebar */}

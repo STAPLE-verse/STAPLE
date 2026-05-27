@@ -52,13 +52,15 @@
   width: 100%;
   border: none;
   margin: 0 auto;
-  display: block;
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
   border-radius: 12px;
   background-color: oklch(var(--b3));
   color: oklch(var(--bc));
   font-size: 16px;
-  text-align: center;
+  text-align: left;
 }
 
 /* form overall header */
@@ -69,11 +71,10 @@
   font-family: inherit;
 }
 
-.formHead-wrapper [class^="formHead"] div {
-  width: 30%;
-  display: inline-block;
-  text-align: left;
-  padding: 10px;
+.formHead-wrapper [class^="formHead"] > div {
+  width: 100%;
+  display: block;
+  padding: 0;
 }
 
 .move-icon {
@@ -115,6 +116,32 @@
   text-align: left;
   border-radius: 8px;
   height: 48px;
+}
+
+/* markdown description wrapper — nested divs must not inherit the formHead > div reset */
+.formHead-wrapper .form-description-wrapper > div {
+  display: block;
+  width: 100%;
+  padding: 0;
+}
+
+.formHead-wrapper .form-description-wrapper .form-desc-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.formHead-wrapper .form-description-wrapper .join,
+.formHead-wrapper .form-description-wrapper .join > * {
+  display: inline-flex;
+  width: auto;
+}
+
+.formHead-wrapper textarea.form-description {
+  height: auto !important;
+  min-height: 8rem;
+  resize: vertical;
 }
 
 .formHead-wrapper .card-modal-select {
@@ -207,19 +234,20 @@
 /* form visual checkboxes */
 .rjsf .checkbox {
   display: flex;
-  align-items: center;
-  width: 100%; /* Ensures the container takes up the full width */
+  flex-direction: column;
+  width: 100%;
 }
 
 /* form visual checkboxes */
 .rjsf .checkbox label {
-  flex: 1; /* Allows the label to expand to fit the content */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* form visual checkboxes */
 .rjsf .checkbox span {
-  flex: 1; /* Allows the span to take up more space */
-  white-space: normal; /* Allows text to wrap if needed */
+  white-space: normal;
 }
 
 /* form visual focus block */
@@ -672,6 +700,23 @@ span.arrow.tooltip-arrow {
 
 .rjsf .radio label span span {
   margin-left: 30px;
+}
+
+.rjsf .checkboxes-group {
+  width: 100%;
+}
+
+.rjsf .checkboxes-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+.rjsf .checkboxes-option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .tooltip {

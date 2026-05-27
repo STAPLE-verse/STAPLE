@@ -7,5 +7,14 @@ export const authConfig = {
 }
 
 export const { withBlitz } = setupBlitzClient({
-  plugins: [AuthClientPlugin(authConfig), BlitzRpcPlugin({})],
+  plugins: [
+    AuthClientPlugin(authConfig),
+    BlitzRpcPlugin({
+      reactQueryOptions: {
+        queries: {
+          refetchOnWindowFocus: false,
+        },
+      },
+    }),
+  ],
 })

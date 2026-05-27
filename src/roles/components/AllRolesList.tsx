@@ -13,6 +13,7 @@ interface AllRolesListProps {
   onPaginationChange?: OnChangeFn<PaginationState>
   pageCount?: number
   pageSizeOptions?: number[]
+  onGlobalFilterChange?: (filter: string) => void
 }
 
 export const AllRolesList = ({
@@ -24,6 +25,7 @@ export const AllRolesList = ({
   onPaginationChange,
   pageCount,
   pageSizeOptions,
+  onGlobalFilterChange,
 }: AllRolesListProps) => {
   // Process table data
   const roleTableData = processRoleTableData(roles, onRolesChanged, taxonomyList)
@@ -39,6 +41,7 @@ export const AllRolesList = ({
         onPaginationChange={onPaginationChange}
         pageCount={pageCount}
         pageSizeOptions={pageSizeOptions}
+        onGlobalFilterChange={onGlobalFilterChange}
       />
     </main>
   )

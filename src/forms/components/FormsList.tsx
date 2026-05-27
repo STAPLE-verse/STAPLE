@@ -11,6 +11,7 @@ type FormsListProps = {
   onPaginationChange?: OnChangeFn<PaginationState>
   pageCount?: number
   pageSizeOptions?: number[]
+  onGlobalFilterChange?: (filter: string) => void
 }
 
 export const FormsList = ({
@@ -20,6 +21,7 @@ export const FormsList = ({
   onPaginationChange,
   pageCount,
   pageSizeOptions,
+  onGlobalFilterChange,
 }: FormsListProps) => {
   const formsTableData = processForms(forms)
 
@@ -34,6 +36,7 @@ export const FormsList = ({
         onPaginationChange={onPaginationChange}
         pageCount={pageCount}
         pageSizeOptions={pageSizeOptions}
+        onGlobalFilterChange={onGlobalFilterChange}
       />
     </main>
   )
