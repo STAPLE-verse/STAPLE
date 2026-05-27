@@ -33,8 +33,8 @@ function MarkdownDescriptionInput({
   const [mode, setMode] = useState<"edit" | "preview">("edit")
 
   return (
-    <div>
-      <div className="flex items-center gap-2 mb-1">
+    <div className="form-description-wrapper">
+      <div className="form-desc-toolbar flex items-center gap-2 mb-1">
         <div className="join">
           <button
             type="button"

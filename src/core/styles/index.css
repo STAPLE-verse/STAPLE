@@ -52,13 +52,15 @@
   width: 100%;
   border: none;
   margin: 0 auto;
-  display: block;
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
   border-radius: 12px;
   background-color: oklch(var(--b3));
   color: oklch(var(--bc));
   font-size: 16px;
-  text-align: center;
+  text-align: left;
 }
 
 /* form overall header */
@@ -69,11 +71,10 @@
   font-family: inherit;
 }
 
-.formHead-wrapper [class^="formHead"] div {
-  width: 30%;
-  display: inline-block;
-  text-align: left;
-  padding: 10px;
+.formHead-wrapper [class^="formHead"] > div {
+  width: 100%;
+  display: block;
+  padding: 0;
 }
 
 .move-icon {
@@ -115,6 +116,32 @@
   text-align: left;
   border-radius: 8px;
   height: 48px;
+}
+
+/* markdown description wrapper — nested divs must not inherit the formHead > div reset */
+.formHead-wrapper .form-description-wrapper > div {
+  display: block;
+  width: 100%;
+  padding: 0;
+}
+
+.formHead-wrapper .form-description-wrapper .form-desc-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.formHead-wrapper .form-description-wrapper .join,
+.formHead-wrapper .form-description-wrapper .join > * {
+  display: inline-flex;
+  width: auto;
+}
+
+.formHead-wrapper textarea.form-description {
+  height: auto !important;
+  min-height: 8rem;
+  resize: vertical;
 }
 
 .formHead-wrapper .card-modal-select {
