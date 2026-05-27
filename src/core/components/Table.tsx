@@ -277,8 +277,9 @@ const Table = <TData,>({
     if (!addPagination) return
     if (manualPagination) {
       onColumnFiltersChange?.(columnFilters)
+    } else {
+      table.setPageIndex(0)
     }
-    table.setPageIndex(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [columnFilters])
 
