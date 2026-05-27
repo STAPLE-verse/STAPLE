@@ -15,6 +15,9 @@ import {
   getUiOptions,
   getSubmitButtonOptions,
   SubmitButtonProps,
+  schemaRequiresTrueValue,
+  descriptionId,
+  ariaDescribedByIds,
 } from "@rjsf/utils"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -192,6 +195,61 @@ const MyEmailWidget = (props: WidgetProps) => {
   )
 }
 
+const MyCheckboxWidget = (props: WidgetProps) => {
+  const {
+    id,
+    value,
+    disabled,
+    readonly,
+    label,
+    hideLabel,
+    onChange,
+    onBlur,
+    onFocus,
+    options,
+    schema,
+    uiSchema,
+    registry,
+  } = props
+  const DescriptionFieldTemplate = getTemplate("DescriptionFieldTemplate", registry, options)
+  const description = options.description ?? schema.description
+  const required = schemaRequiresTrueValue(schema)
+
+  return (
+    <div className="field-checkbox">
+      {!hideLabel && label && (
+        <label className="text-lg font-bold block mb-1" htmlFor={id}>
+          {label}
+          {required && <span className="italic">{REQUIRED_FIELD_SYMBOL}</span>}
+        </label>
+      )}
+      {!hideLabel && !!description && (
+        <DescriptionFieldTemplate
+          id={descriptionId(id)}
+          description={description}
+          schema={schema}
+          uiSchema={uiSchema}
+          registry={registry}
+        />
+      )}
+      <label className="flex items-center gap-2 mt-1 cursor-pointer">
+        <input
+          type="checkbox"
+          id={id}
+          name={id}
+          checked={typeof value === "undefined" ? false : value}
+          required={required}
+          disabled={disabled || readonly}
+          aria-describedby={ariaDescribedByIds(id)}
+          onChange={(e) => onChange(e.target.checked)}
+          onBlur={(e) => onBlur(id, e.target.checked)}
+          onFocus={(e) => onFocus(id, e.target.checked)}
+        />
+      </label>
+    </div>
+  )
+}
+
 // create Registry information
 // templates
 const myTemplates: Partial<TemplatesType> = {
@@ -223,6 +281,7 @@ const myTemplates: Partial<TemplatesType> = {
 const myWidgets: RegistryWidgetsType = {
   TextWidget: MyTextWidget,
   EmailWidget: MyEmailWidget,
+  CheckboxWidget: MyCheckboxWidget,
 }
 
 // create the overall theme to use on the other page
