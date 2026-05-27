@@ -21,6 +21,8 @@ export default resolver.pipe(
           orderBy: { version: "desc" },
           take: 1,
         },
+        folder: { select: { id: true, name: true } },
+        _count: { select: { versions: true } },
       },
     })
 

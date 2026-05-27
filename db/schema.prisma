@@ -40,6 +40,7 @@ model User {
   // relational information
   projects                      ProjectMember[]
   forms                         Form[]
+  folders                       Folder[]
   roles                         Role[]
   ProjectPrivilege              ProjectPrivilege[]
 }
@@ -279,6 +280,18 @@ model Milestone {
   endDate     DateTime?
 }
 
+model Folder {
+  id        Int      @id @default(autoincrement())
+  name      String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  forms     Form[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, userId])
+}
+
 model Form {
   id        Int           @id @default(autoincrement())
   createdAt DateTime      @default(now())
@@ -287,6 +300,9 @@ model Form {
   user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   versions  FormVersion[]
   archived  Boolean       @default(false)
+  tags      Json?
+  folderId  Int?
+  folder    Folder?       @relation(fields: [folderId], references: [id])
 }
 
 model FormVersion {

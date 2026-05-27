@@ -92,3 +92,22 @@ export const AddFormTemplatesSchema = z.object({
 export const ArchiveFormSchema = z.object({
   formId: z.number(),
 })
+
+export const UpdateFormMetaSchema = z.object({
+  id: z.number(),
+  tags: z.array(z.string()).optional(),
+  folderId: z.number().nullable().optional(),
+})
+
+export const CreateFolderSchema = z.object({
+  name: z.string().min(1),
+})
+
+export const DeleteFolderSchema = z.object({
+  id: z.number(),
+})
+
+export const RenameFolderSchema = z.object({
+  id: z.number(),
+  name: z.string().min(1),
+})
