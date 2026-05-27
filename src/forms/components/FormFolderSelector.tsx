@@ -37,7 +37,7 @@ export default function FormFolderSelector({ formId, currentFolderId, onUpdate }
   return (
     <div className="flex flex-col gap-2">
       <select
-        className="select select-bordered select-sm w-full max-w-xs"
+        className="select text-primary select-primary select-bordered border-2 bg-base-300 w-full max-w-xs"
         value={currentFolderId ?? ""}
         onChange={handleChange}
       >
@@ -66,7 +66,7 @@ export default function FormFolderSelector({ formId, currentFolderId, onUpdate }
           </button>
         </div>
       ) : (
-        <button className="btn btn-sm btn-ghost w-fit" onClick={() => setShowNewFolder(true)}>
+        <button className="btn btn-sm btn-primary w-fit" onClick={() => setShowNewFolder(true)}>
           + New folder
         </button>
       )}

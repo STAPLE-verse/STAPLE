@@ -8,6 +8,10 @@ import JsonForm from "src/core/components/JsonForm"
 import { noSubmitButton } from "../utils/extendSchema"
 import FormTagEditor from "./FormTagEditor"
 import FormFolderSelector from "./FormFolderSelector"
+import FormDeployments from "./FormDeployments"
+import CollapseCard from "src/core/components/CollapseCard"
+import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { Tooltip } from "react-tooltip"
 
 interface FormPlaygroundProps {
   initialSchema?: string
@@ -98,6 +102,12 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
         )}
       </Tab.List>
 
+      <div className="w-full flex justify-end mb-4">
+        <button type="button" className="btn btn-primary" onClick={handleSave}>
+          Save Form
+        </button>
+      </div>
+
       <Tab.Panels>
         <Tab.Panel>
           <VisualBuilderTab
@@ -128,21 +138,40 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
 
         {formId && (
           <Tab.Panel>
-            <div className="card bg-base-100 border border-base-300 rounded-xl p-6 w-full flex flex-col gap-8">
-              <div>
-                <h2 className="text-lg font-semibold mb-1">Tags</h2>
-                <p className="text-sm text-base-content/60 mb-3">
-                  Add tags to classify this form for easy filtering.
-                </p>
-                <FormTagEditor formId={formId} initialTags={initialTags} />
-              </div>
-              <div>
-                <h2 className="text-lg font-semibold mb-1">Folder</h2>
-                <p className="text-sm text-base-content/60 mb-3">
-                  Assign this form to a folder to keep your forms organized.
-                </p>
-                <FormFolderSelector formId={formId} currentFolderId={initialFolderId} />
-              </div>
+            <div className="flex flex-col gap-4">
+              <CollapseCard title="Organization: Tags, Folder" defaultOpen={true}>
+                <div className="flex flex-col gap-6 mt-2">
+                  <div>
+                    <label className="text-base-content">
+                      <span className="flex items-center mb-2">
+                        Tags:
+                        <InformationCircleIcon
+                          className="h-4 w-4 ml-1 text-info stroke-2"
+                          data-tooltip-id="tags-overview"
+                        />
+                        <Tooltip
+                          id="tags-overview"
+                          content="Use a comma, semicolon, enter, or tab to create separate tags. To edit a tag, click on
+            it, and then hit the enter key when you are finished."
+                          className="z-[1099] ourtooltips"
+                        />
+                      </span>
+                    </label>
+                    <FormTagEditor formId={formId} initialTags={initialTags} />
+                  </div>
+                  <div>
+                    <label className="text-base-content">
+                      <span className="flex items-center mb-2">Folder:</span>
+                    </label>
+                    <FormFolderSelector formId={formId} currentFolderId={initialFolderId} />
+                  </div>
+                </div>
+              </CollapseCard>
+              <CollapseCard title="Assigned Tasks & Projects" defaultOpen={true}>
+                <div className="mt-2">
+                  <FormDeployments formId={formId} />
+                </div>
+              </CollapseCard>
             </div>
           </Tab.Panel>
         )}
