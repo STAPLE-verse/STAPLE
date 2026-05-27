@@ -6,11 +6,16 @@ import JSONBuilderTab from "./JSONBuilderTab"
 import validator from "@rjsf/validator-ajv8"
 import JsonForm from "src/core/components/JsonForm"
 import { noSubmitButton } from "../utils/extendSchema"
+import FormTagEditor from "./FormTagEditor"
+import FormFolderSelector from "./FormFolderSelector"
 
 interface FormPlaygroundProps {
   initialSchema?: string
   initialUiSchema?: string
   saveForm: (formState: { schema: object; uischema: object; formData: object }) => void
+  formId?: number
+  initialTags?: string[]
+  initialFolderId?: number | null
 }
 
 interface FormState {
@@ -24,6 +29,9 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   initialSchema = "{}",
   initialUiSchema = "{}",
   saveForm,
+  formId,
+  initialTags = [],
+  initialFolderId = null,
 }) => {
   const [state, setState] = useState<FormState>({
     schema: JSON.parse(initialSchema),
@@ -79,6 +87,15 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
         >
           Preview
         </Tab>
+        {formId && (
+          <Tab
+            className={({ selected }) =>
+              classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
+            }
+          >
+            Details
+          </Tab>
+        )}
       </Tab.List>
 
       <Tab.Panels>
@@ -108,6 +125,27 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
             validator={validator}
           />
         </Tab.Panel>
+
+        {formId && (
+          <Tab.Panel>
+            <div className="card bg-base-100 border border-base-300 rounded-xl p-6 w-full flex flex-col gap-8">
+              <div>
+                <h2 className="text-lg font-semibold mb-1">Tags</h2>
+                <p className="text-sm text-base-content/60 mb-3">
+                  Add tags to classify this form for easy filtering.
+                </p>
+                <FormTagEditor formId={formId} initialTags={initialTags} />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold mb-1">Folder</h2>
+                <p className="text-sm text-base-content/60 mb-3">
+                  Assign this form to a folder to keep your forms organized.
+                </p>
+                <FormFolderSelector formId={formId} currentFolderId={initialFolderId} />
+              </div>
+            </div>
+          </Tab.Panel>
+        )}
       </Tab.Panels>
     </Tab.Group>
   ) : null

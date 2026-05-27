@@ -34,6 +34,9 @@ const FormEditPage = () => {
             saveForm={saveForm}
             initialSchema={JSON.stringify(currentForm.formVersion?.schema || {})}
             initialUiSchema={JSON.stringify(currentForm.formVersion?.uiSchema || {})}
+            formId={formsId}
+            initialTags={Array.isArray(currentForm.tags) ? (currentForm.tags as string[]) : []}
+            initialFolderId={currentForm.folderId ?? null}
           />
         </Suspense>
       </main>

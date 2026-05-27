@@ -19,7 +19,10 @@ export const getFormsColumns = (
 ) => [
   columnHelper.accessor("name", {
     cell: (info) => (
-      <Link className="font-medium hover:underline" href={`/forms/${info.row.original.id}`}>
+      <Link
+        className="font-medium hover:underline"
+        href={Routes.FormEditPage({ formsId: info.row.original.id })}
+      >
         {info.getValue()}
       </Link>
     ),
