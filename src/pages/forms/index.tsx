@@ -25,6 +25,7 @@ const AllFormsPage = () => {
     pageIndex: 0,
     pageSize: 10,
   })
+  const [search, setSearch] = useState("")
 
   const paginationArgs = useMemo(
     () => ({
@@ -39,6 +40,7 @@ const AllFormsPage = () => {
     where: {
       user: { id: currentUser?.id },
       archived: false,
+      ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
     },
     orderBy: { id: "desc" },
     ...paginationArgs,
@@ -50,6 +52,11 @@ const AllFormsPage = () => {
     updater: PaginationState | ((state: PaginationState) => PaginationState)
   ) => {
     setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
+  }
+
+  const handleGlobalFilterChange = (filter: string) => {
+    setSearch(filter)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }
 
   return (
@@ -91,6 +98,7 @@ const AllFormsPage = () => {
               onPaginationChange={handlePaginationChange}
               pageCount={pageCount}
               pageSizeOptions={[10, 25, 50, 100]}
+              onGlobalFilterChange={handleGlobalFilterChange}
             />
           </Card>
         </Suspense>
