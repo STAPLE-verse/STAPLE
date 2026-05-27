@@ -1,0 +1,75 @@
+import { useState } from "react"
+import { useQuery, useMutation } from "@blitzjs/rpc"
+import getFolders from "src/folders/queries/getFolders"
+import createFolder from "src/folders/mutations/createFolder"
+import updateFormMeta from "src/forms/mutations/updateFormMeta"
+
+type Props = {
+  formId: number
+  currentFolderId: number | null
+  onUpdate?: (folderId: number | null) => void
+}
+
+export default function FormFolderSelector({ formId, currentFolderId, onUpdate }: Props) {
+  const [folders, { refetch }] = useQuery(getFolders, {})
+  const [updateMeta] = useMutation(updateFormMeta)
+  const [createFolderMutation] = useMutation(createFolder)
+  const [newFolderName, setNewFolderName] = useState("")
+  const [showNewFolder, setShowNewFolder] = useState(false)
+
+  const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value
+    const folderId = val === "" ? null : parseInt(val, 10)
+    await updateMeta({ id: formId, folderId })
+    onUpdate?.(folderId)
+  }
+
+  const handleCreateFolder = async () => {
+    if (!newFolderName.trim()) return
+    const folder = await createFolderMutation({ name: newFolderName.trim() })
+    await updateMeta({ id: formId, folderId: folder.id })
+    setNewFolderName("")
+    setShowNewFolder(false)
+    await refetch()
+    onUpdate?.(folder.id)
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <select
+        className="select select-bordered select-sm w-full max-w-xs"
+        value={currentFolderId ?? ""}
+        onChange={handleChange}
+      >
+        <option value="">— No folder —</option>
+        {folders.map((f) => (
+          <option key={f.id} value={f.id}>
+            {f.name} ({f._count.forms})
+          </option>
+        ))}
+      </select>
+      {showNewFolder ? (
+        <div className="flex gap-2 items-center">
+          <input
+            className="input input-sm input-bordered flex-1 max-w-xs"
+            value={newFolderName}
+            placeholder="Folder name"
+            onChange={(e) => setNewFolderName(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && void handleCreateFolder()}
+            autoFocus
+          />
+          <button className="btn btn-sm btn-primary" onClick={() => void handleCreateFolder()}>
+            Create
+          </button>
+          <button className="btn btn-sm btn-ghost" onClick={() => setShowNewFolder(false)}>
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button className="btn btn-sm btn-ghost w-fit" onClick={() => setShowNewFolder(true)}>
+          + New folder
+        </button>
+      )}
+    </div>
+  )
+}

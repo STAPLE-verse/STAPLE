@@ -16,8 +16,45 @@ const lastUpdateFilter = createDateTextFilter({ emptyLabel: "no date" })
 // ColumnDefs
 export const FormsColumns = [
   columnHelper.accessor("name", {
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => (
+      <Link className="font-medium hover:underline" href={`/forms/${info.row.original.id}`}>
+        {info.getValue()}
+      </Link>
+    ),
     header: "Name",
+  }),
+  columnHelper.accessor("folder", {
+    id: "folder",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => {
+      const folder = info.getValue()
+      return folder ? (
+        <span className="badge badge-outline badge-sm">{folder.name}</span>
+      ) : (
+        <span className="text-base-content/40 text-sm">—</span>
+      )
+    },
+    header: "Folder",
+  }),
+  columnHelper.accessor("tags", {
+    id: "tags",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => {
+      const tags = info.getValue()
+      if (!tags || tags.length === 0) return <span className="text-base-content/40 text-sm">—</span>
+      return (
+        <div className="flex flex-wrap gap-1">
+          {tags.map((tag) => (
+            <span key={tag} className="badge badge-primary badge-sm">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )
+    },
+    header: "Tags",
   }),
   columnHelper.accessor("updatedAt", {
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
