@@ -67,6 +67,11 @@ const AllFormsPage = () => {
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }
 
+  const handleFolderSelect = (id: number | null | "all") => {
+    setSelectedFolderId(id)
+    setPagination((p) => ({ ...p, pageIndex: 0 }))
+  }
+
   const handleFolderFilterChange = useCallback((folderId: number | null | "all") => {
     setSelectedFolderId(folderId)
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
