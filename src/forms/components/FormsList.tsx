@@ -14,6 +14,7 @@ type FormsListProps = {
   pageSizeOptions?: number[]
   onGlobalFilterChange?: (filter: string) => void
   onFolderFilterChange?: (folderId: number | null | "all") => void
+  onTagFilterChange?: (tag: string) => void
 }
 
 export const FormsList = ({
@@ -25,9 +26,13 @@ export const FormsList = ({
   pageSizeOptions,
   onGlobalFilterChange,
   onFolderFilterChange,
+  onTagFilterChange,
 }: FormsListProps) => {
   const formsTableData = processForms(forms)
-  const columns = useMemo(() => getFormsColumns(onFolderFilterChange), [onFolderFilterChange])
+  const columns = useMemo(
+    () => getFormsColumns(onFolderFilterChange, onTagFilterChange),
+    [onFolderFilterChange, onTagFilterChange]
+  )
 
   return (
     <main className="flex flex-col mx-auto w-full">

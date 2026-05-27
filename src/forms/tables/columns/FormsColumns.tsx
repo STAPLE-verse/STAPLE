@@ -10,12 +10,14 @@ import { FormTableData } from "../processing/processForms"
 import { createDateTextFilter } from "src/core/utils/tableFilters"
 import FolderCell from "./FolderCell"
 import FolderHeaderSelect from "./FolderHeaderSelect"
+import TagHeaderSearch from "./TagHeaderSearch"
 
 const columnHelper = createColumnHelper<FormTableData>()
 const lastUpdateFilter = createDateTextFilter({ emptyLabel: "no date" })
 
 export const getFormsColumns = (
-  onFolderFilterChange?: (folderId: number | null | "all") => void
+  onFolderFilterChange?: (folderId: number | null | "all") => void,
+  onTagFilterChange?: (tag: string) => void
 ) => [
   columnHelper.accessor("name", {
     cell: (info) => (
@@ -49,17 +51,29 @@ export const getFormsColumns = (
     cell: (info) => {
       const tags = info.getValue()
       if (!tags || tags.length === 0) return <span className="text-base-content/40 text-sm">—</span>
+      const visible = tags.slice(0, 3)
+      const hidden = tags.slice(3)
       return (
-        <div className="flex flex-wrap gap-1">
-          {tags.map((tag) => (
+        <div className="flex flex-wrap gap-1 items-center">
+          {visible.map((tag) => (
             <span key={tag} className="badge badge-primary badge-sm">
               {tag}
             </span>
           ))}
+          {hidden.length > 0 && (
+            <div className="tooltip tooltip-right" data-tip={hidden.join(", ")}>
+              <span className="badge badge-ghost badge-sm cursor-default">+{hidden.length}</span>
+            </div>
+          )}
         </div>
       )
     },
-    header: "Tags",
+    header: () => (
+      <div className="flex flex-col gap-1">
+        <span>Tags</span>
+        <TagHeaderSearch onChange={onTagFilterChange} />
+      </div>
+    ),
   }),
   columnHelper.accessor("updatedAt", {
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
