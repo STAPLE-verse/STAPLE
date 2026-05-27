@@ -16,11 +16,6 @@ const VisualBuilderTab: React.FC<VisualBuilderTabProps> = ({
 }) => {
   return (
     <div className="formHead-wrapper">
-      <div className="w-full flex justify-end">
-        <button type="button" className="btn btn-primary mb-4" onClick={onSave}>
-          Save Form
-        </button>
-      </div>
       <FormBuilder
         schema={JSON.stringify(schema)}
         uischema={JSON.stringify(uiSchema)}
