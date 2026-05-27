@@ -76,6 +76,8 @@ const AllFormsPage = () => {
   const handleGlobalFilterChange = (filter: string) => {
     setSearch(filter)
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+  }
+
   const handleFolderSelect = (id: number | null | "all") => {
     setSelectedFolderId(id)
     setPagination((p) => ({ ...p, pageIndex: 0 }))
