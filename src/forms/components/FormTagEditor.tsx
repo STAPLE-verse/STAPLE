@@ -62,15 +62,15 @@ export default function FormTagEditor({ formId, initialTags, onUpdate }: Props) 
         placeholder="Add tags"
         classNames={{
           tags: "rounded-md bg-base-300 react-tags-wrapper",
-          tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 mb-2 text-lg",
+          tag: "inline-flex items-center bg-primary text-primary-content px-2 py-1 rounded-md mr-2 mb-2 text-base",
           remove: "ml-3 text-primary-content font-bold cursor-pointer remove",
           tagInput: "bg-base-300",
           tagInputField:
-            "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4",
+            "input input-primary input-bordered border-2 bg-base-300 text-primary text-base w-3/4",
           selected: "bg-base-300",
           editTagInput: "bg-base-300",
           editTagInputField:
-            "input input-primary input-bordered border-2 bg-base-300 text-primary text-lg w-3/4 mb-4",
+            "input input-primary input-bordered border-2 bg-base-300 text-primary text-base w-3/4 mb-4",
           clearAll: "font-bold ml-3",
           suggestions: "suggestions-dropdown",
           activeSuggestion: "active-suggestion-class",

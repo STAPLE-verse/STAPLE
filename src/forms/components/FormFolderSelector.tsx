@@ -37,19 +37,19 @@ export default function FormFolderSelector({ formId, currentFolderId, onUpdate }
   return (
     <div className="flex flex-col gap-2">
       <select
-        className="select text-primary select-primary select-bordered border-2 bg-base-300 w-full max-w-xs"
+        className="select text-base text-primary select-primary select-bordered border-2 bg-base-300 w-1/2"
         value={currentFolderId ?? ""}
         onChange={handleChange}
       >
         <option value="">— No folder —</option>
         {folders.map((f) => (
           <option key={f.id} value={f.id}>
-            {f.name} ({f._count.forms})
+            {f.name}
           </option>
         ))}
       </select>
       {showNewFolder ? (
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center mt-2">
           <input
             className="input input-sm input-bordered flex-1 max-w-xs"
             value={newFolderName}
@@ -61,7 +61,7 @@ export default function FormFolderSelector({ formId, currentFolderId, onUpdate }
           <button className="btn btn-sm btn-primary" onClick={() => void handleCreateFolder()}>
             Create
           </button>
-          <button className="btn btn-sm btn-ghost" onClick={() => setShowNewFolder(false)}>
+          <button className="btn btn-sm btn-secondary" onClick={() => setShowNewFolder(false)}>
             Cancel
           </button>
         </div>
