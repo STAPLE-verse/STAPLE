@@ -295,11 +295,10 @@ export function createFeedbackMsg({
       <center><img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
   alt="STAPLE Logo" height="200"></center>
       <h3>Feedback from ${fromUsername}</h3>
+      <p><strong>From:</strong> ${fromUsername} &lt;${fromEmail}&gt;</p>
       <p><strong>Subject:</strong> ${subject}</p>
       <p><strong>Message:</strong></p>
       <p>${message.replace(/\n/g, "<br>")}</p>
-      <hr>
-      <p style="color:#888;font-size:12px;">Sent from STAPLE by ${fromUsername} (${fromEmail})</p>
       </body>
       </html>
     `,

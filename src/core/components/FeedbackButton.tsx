@@ -1,25 +1,29 @@
-import { useState, useRef } from "react"
+import { useRef } from "react"
 import { useMutation } from "@blitzjs/rpc"
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline"
+import { z } from "zod"
 import sendFeedback from "src/core/mutations/sendFeedback"
 import toast from "react-hot-toast"
+import { Form } from "src/core/components/fields/Form"
+import { LabeledTextField } from "src/core/components/fields/LabeledTextField"
+import LabeledTextAreaField from "src/core/components/fields/LabeledTextAreaField"
+
+const FeedbackSchema = z.object({
+  subject: z.string().min(1, "Subject is required").max(200),
+  message: z.string().min(1, "Message is required").max(5000),
+})
 
 export const FeedbackButton = () => {
-  const [subject, setSubject] = useState("")
-  const [message, setMessage] = useState("")
-  const [sendFeedbackMutation, { isLoading }] = useMutation(sendFeedback)
+  const [sendFeedbackMutation] = useMutation(sendFeedback)
   const dialogRef = useRef<HTMLDialogElement>(null)
 
   const openModal = () => dialogRef.current?.showModal()
   const closeModal = () => dialogRef.current?.close()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (values: { subject: string; message: string }) => {
     try {
-      await sendFeedbackMutation({ subject, message })
+      await sendFeedbackMutation(values)
       toast.success("Feedback sent! We'll be in touch.")
-      setSubject("")
-      setMessage("")
       closeModal()
     } catch {
       toast.error("Failed to send feedback. Please try again.")
@@ -36,50 +40,38 @@ export const FeedbackButton = () => {
         <QuestionMarkCircleIcon className="w-6 h-6" />
       </button>
 
-      <dialog ref={dialogRef} className="modal">
-        <div className="modal-box">
+      <dialog
+        ref={dialogRef}
+        className="modal"
+        onClick={(e) => {
+          if (e.target === dialogRef.current) closeModal()
+        }}
+      >
+        <div className="modal-box" onClick={(e) => e.stopPropagation()}>
           <h3 className="font-bold text-lg mb-4">Send Feedback</h3>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Subject</span>
-              </label>
-              <input
-                type="text"
-                className="input input-bordered"
-                placeholder="Brief description of your feedback"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                required
-                maxLength={200}
-              />
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Message</span>
-              </label>
-              <textarea
-                className="textarea textarea-bordered h-32"
-                placeholder="Describe your issue or suggestion..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                required
-                maxLength={5000}
-              />
-            </div>
-            <div className="modal-action mt-2">
-              <button type="button" className="btn btn-ghost" onClick={closeModal}>
-                Cancel
-              </button>
-              <button type="submit" className="btn btn-primary" disabled={isLoading}>
-                {isLoading ? <span className="loading loading-spinner loading-sm" /> : "Send"}
-              </button>
-            </div>
-          </form>
+          <Form
+            schema={FeedbackSchema}
+            onSubmit={handleSubmit}
+            submitText="Send"
+            cancelText="Cancel"
+            onCancel={closeModal}
+            summitOnRight
+          >
+            <LabeledTextField
+              name="subject"
+              label="Subject"
+              placeholder="Brief description of your feedback"
+              className="input mb-4 w-full text-primary input-primary input-bordered border-2 bg-base-300"
+            />
+            <LabeledTextAreaField
+              name="message"
+              label="Message"
+              placeholder="Describe your issue or suggestion..."
+              className="textarea textarea-primary textarea-bordered border-2 bg-base-300 text-primary mb-4 w-full"
+              rows={6}
+            />
+          </Form>
         </div>
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
       </dialog>
     </>
   )
