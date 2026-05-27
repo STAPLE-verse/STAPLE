@@ -6,6 +6,7 @@ import Sidebar from "../components/sidebar/Sidebar"
 import { Toaster } from "react-hot-toast"
 import useSidebar from "src/core/hooks/useSidebar"
 import useExpanded from "src/core/hooks/useExpanded"
+import { FeedbackButton } from "../components/FeedbackButton"
 
 const Layout: BlitzLayout<{
   title?: string
@@ -33,6 +34,7 @@ const Layout: BlitzLayout<{
           <div className="flex-1 overflow-auto p-4">{children}</div>
         </div>
       </div>
+      <FeedbackButton />
     </>
   )
 }
