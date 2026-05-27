@@ -26,6 +26,7 @@ const AllFormsPage = () => {
   })
   const [search, setSearch] = useState("")
   const [selectedFolderId, setSelectedFolderId] = useState<number | null | "all">("all")
+  const [tagSearch, setTagSearch] = useState("")
   const [newFolderName, setNewFolderName] = useState("")
   const [showNewFolder, setShowNewFolder] = useState(false)
 
@@ -46,6 +47,7 @@ const AllFormsPage = () => {
       user: { id: currentUser?.id },
       archived: false,
       ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
+      ...(tagSearch ? { tags: { array_contains: tagSearch } } : {}),
       ...folderFilter,
     },
     orderBy: { id: "desc" },
@@ -67,6 +69,11 @@ const AllFormsPage = () => {
 
   const handleFolderFilterChange = useCallback((folderId: number | null | "all") => {
     setSelectedFolderId(folderId)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+  }, [])
+
+  const handleTagFilterChange = useCallback((tag: string) => {
+    setTagSearch(tag)
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }, [])
 
@@ -143,6 +150,7 @@ const AllFormsPage = () => {
               pageSizeOptions={[10, 25, 50, 100]}
               onGlobalFilterChange={handleGlobalFilterChange}
               onFolderFilterChange={handleFolderFilterChange}
+              onTagFilterChange={handleTagFilterChange}
             />
           </Card>
         </Suspense>
