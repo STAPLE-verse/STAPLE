@@ -59,6 +59,7 @@ export default function CardGeneralParameterInputs({
       "date",
       "time",
       "checkbox",
+      "checkboxes",
       "radio",
       "dropdown",
       "shortAnswer",

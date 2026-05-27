@@ -234,19 +234,20 @@
 /* form visual checkboxes */
 .rjsf .checkbox {
   display: flex;
-  align-items: center;
-  width: 100%; /* Ensures the container takes up the full width */
+  flex-direction: column;
+  width: 100%;
 }
 
 /* form visual checkboxes */
 .rjsf .checkbox label {
-  flex: 1; /* Allows the label to expand to fit the content */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* form visual checkboxes */
 .rjsf .checkbox span {
-  flex: 1; /* Allows the span to take up more space */
-  white-space: normal; /* Allows text to wrap if needed */
+  white-space: normal;
 }
 
 /* form visual focus block */
@@ -699,6 +700,23 @@ span.arrow.tooltip-arrow {
 
 .rjsf .radio label span span {
   margin-left: 30px;
+}
+
+.rjsf .checkboxes-group {
+  width: 100%;
+}
+
+.rjsf .checkboxes-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+.rjsf .checkboxes-option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .tooltip {

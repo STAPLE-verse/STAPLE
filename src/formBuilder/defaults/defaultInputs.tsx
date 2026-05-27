@@ -145,6 +145,53 @@ function MultipleChoice({
   )
 }
 
+function MultipleChoiceArray({
+  parameters,
+  onChange,
+}: {
+  parameters: CardComponentPropsType
+  onChange: (newParams: CardComponentPropsType) => void
+}) {
+  const items = (parameters.items as any) || {}
+  const enumArray = Array.isArray(items.enum) ? items.enum : []
+  const [elementId] = React.useState(getRandomId())
+
+  return (
+    <div className="card-enum">
+      <h5>Options</h5>
+      <FBCheckbox
+        onChangeValue={() => {
+          const hasNames = Array.isArray(items.enumNames)
+          onChange({
+            ...parameters,
+            items: {
+              ...items,
+              enumNames: hasNames ? null : enumArray.map((val: any) => `${val}`),
+            },
+          })
+        }}
+        isChecked={Array.isArray(items.enumNames)}
+        label="Display different text label than the stored value"
+        id={`${elementId}_different`}
+      />
+      <CardEnumOptions
+        initialValues={enumArray}
+        names={
+          Array.isArray(items.enumNames) ? items.enumNames.map((val: any) => `${val}`) : undefined
+        }
+        showNames={Array.isArray(items.enumNames)}
+        onChange={(newEnum, newEnumNames) =>
+          onChange({
+            ...parameters,
+            items: { ...items, enum: newEnum, enumNames: newEnumNames },
+          })
+        }
+        type="string"
+      />
+    </div>
+  )
+}
+
 const defaultInputs: { [key: string]: FormInput } = {
   dateTime: {
     displayName: "Date-Time",
@@ -195,7 +242,7 @@ const defaultInputs: { [key: string]: FormInput } = {
     modalBody: CardDefaultParameterInputs,
   },
   checkbox: {
-    displayName: "Checkbox",
+    displayName: "Yes / No",
     matchIf: [
       {
         types: ["boolean"],
@@ -207,8 +254,27 @@ const defaultInputs: { [key: string]: FormInput } = {
     cardBody: Checkbox,
     modalBody: CardDefaultParameterInputs,
   },
+  checkboxes: {
+    displayName: "Checkboxes (Multi-select)",
+    matchIf: [
+      {
+        types: ["array"],
+        widget: "checkboxes",
+      },
+    ],
+    defaultDataSchema: {
+      items: { type: "string", enum: [] },
+      uniqueItems: true,
+    },
+    defaultUiSchema: {
+      "ui:widget": "checkboxes",
+    },
+    type: "array",
+    cardBody: MultipleChoiceArray,
+    modalBody: CardDefaultParameterInputs,
+  },
   radio: {
-    displayName: "Radio",
+    displayName: "Radio (Single-select)",
     matchIf: [
       {
         types: ["string", "number", "integer", "array", "boolean", "null"],
