@@ -25,6 +25,7 @@ interface FormPlaygroundProps {
   currentVersionId?: number
   formArchived?: boolean
   infoOnly?: boolean
+  onAutoSave?: (state: { schema: object; uischema: object; formData: object }) => Promise<void>
   onVersionsUpdated?: () => Promise<void> | void
 }
 
@@ -46,6 +47,7 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   currentVersionId,
   formArchived = false,
   infoOnly = false,
+  onAutoSave,
   onVersionsUpdated,
 }) => {
   const [state, setState] = useState<FormState>({
@@ -80,7 +82,16 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   }
 
   return render ? (
-    <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+    <Tab.Group
+      selectedIndex={selectedIndex}
+      onChange={(index) => {
+        const leavingBuilderTab = formId ? selectedIndex !== 0 : true
+        if (onAutoSave && leavingBuilderTab && !infoOnly) {
+          void onAutoSave(state)
+        }
+        setSelectedIndex(index)
+      }}
+    >
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
         {formId && (
           <Tab
