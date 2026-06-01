@@ -2,6 +2,13 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
 
+type DeleteFormVersionResult =
+  | { action: "deleted" }
+  | {
+      action: "archived"
+      id: number
+    }
+
 const DeleteFormVersionSchema = z.object({
   id: z.number(),
 })
@@ -16,6 +23,7 @@ export default resolver.pipe(
         id: true,
         formId: true,
         version: true,
+        archived: true,
         tasks: { select: { id: true } },
         projects: { select: { id: true } },
       },
@@ -25,22 +33,29 @@ export default resolver.pipe(
       throw new Error("Form version not found.")
     }
 
-    const latestVersion = await db.formVersion.findFirst({
+    const versionCount = await db.formVersion.count({
       where: { formId: version.formId },
-      orderBy: { version: "desc" },
-      select: { id: true },
     })
-
-    if (latestVersion?.id === version.id) {
-      throw new Error("The current form version cannot be deleted.")
-    }
 
     if (version.tasks.length > 0 || version.projects.length > 0) {
-      throw new Error("This version is in use and cannot be deleted.")
+      await db.formVersion.update({
+        where: { id: version.id },
+        data: { archived: true },
+      })
+      return { action: "archived", id: version.id } satisfies DeleteFormVersionResult
     }
 
-    return db.formVersion.delete({
+    if (versionCount === 1) {
+      await db.formVersion.update({
+        where: { id: version.id },
+        data: { archived: true },
+      })
+      return { action: "archived", id: version.id } satisfies DeleteFormVersionResult
+    }
+
+    await db.formVersion.delete({
       where: { id: version.id },
     })
+    return { action: "deleted" } satisfies DeleteFormVersionResult
   }
 )

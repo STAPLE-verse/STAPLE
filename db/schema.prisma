@@ -314,6 +314,7 @@ model FormVersion {
   version   Int
   schema    Json
   uiSchema  Json?
+  archived  Boolean   @default(false)
   createdAt DateTime  @default(now())
   form      Form      @relation(fields: [formId], references: [id], onDelete: Cascade)
   tasks     Task[]

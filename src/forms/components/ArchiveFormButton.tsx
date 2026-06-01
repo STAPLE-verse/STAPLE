@@ -1,39 +1,41 @@
 import { useMutation } from "@blitzjs/rpc"
 import archiveForm from "../mutations/archiveForm"
 import toast from "react-hot-toast"
-import { Form } from "@prisma/client"
-import { TrashIcon } from "@heroicons/react/24/outline"
+import { ArchiveBoxIcon, ArrowUturnLeftIcon } from "@heroicons/react/24/outline"
 
 interface ArchiveFormButtonProps {
   formId: number
-  onArchived?: (form: Form) => void // Optional callback for when the form is archived
+  isArchived?: boolean
+  onDone?: () => void | Promise<void>
 }
 
-const ArchiveFormButton = ({ formId, onArchived }: ArchiveFormButtonProps) => {
+const ArchiveFormButton = ({ formId, isArchived = false, onDone }: ArchiveFormButtonProps) => {
   const [archiveFormMutation] = useMutation(archiveForm)
 
-  const handleArchive = async () => {
-    const isConfirmed = window.confirm(
-      "The form will be deleted. You cannot assign it to tasks anymore, but contributors can still finish tasks with this form assigned. Are you sure to continue?"
-    )
+  const handleToggle = async () => {
+    const message = isArchived
+      ? "This will unarchive the form and all of its versions. Are you sure?"
+      : "This will archive the form and all of its versions. Are you sure?"
 
-    if (!isConfirmed) {
-      return
-    }
+    if (!window.confirm(message)) return
 
     try {
-      const form = await archiveFormMutation({ formId })
-      toast.success("Form deleted successfully!")
-      if (onArchived) onArchived(form) // Trigger any additional logic when the form is archived
+      await archiveFormMutation({ formId, archived: !isArchived })
+      toast.success(isArchived ? "Form unarchived." : "Form archived.")
+      await onDone?.()
     } catch (error) {
-      console.error("Failed to delete form:", error)
-      toast.error("There was an error deleting the form.")
+      console.error("Failed to update form archive state:", error)
+      toast.error("There was an error updating the form.")
     }
   }
 
   return (
-    <button className="btn btn-ghost" onClick={handleArchive}>
-      <TrashIcon aria-hidden="true" width={25} className="stroke-primary" />
+    <button className="btn btn-ghost" onClick={handleToggle} type="button">
+      {isArchived ? (
+        <ArrowUturnLeftIcon aria-hidden="true" width={25} className="stroke-primary" />
+      ) : (
+        <ArchiveBoxIcon aria-hidden="true" width={25} className="stroke-primary" />
+      )}
     </button>
   )
 }

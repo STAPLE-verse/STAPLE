@@ -29,6 +29,7 @@ const AllFormsPage = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [newFolderName, setNewFolderName] = useState("")
   const [showNewFolder, setShowNewFolder] = useState(false)
+  const [showArchived, setShowArchived] = useState(false)
 
   const [createFolderMutation] = useMutation(createFolder)
 
@@ -49,7 +50,7 @@ const AllFormsPage = () => {
   const [{ forms, count }, { refetch }] = usePaginatedQuery(getForms, {
     where: {
       user: { id: currentUser?.id },
-      archived: false,
+      archived: showArchived,
       ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
       ...(tagSearch ? { tags: { array_contains: tagSearch } } : {}),
       ...folderFilter,
@@ -144,6 +145,20 @@ const AllFormsPage = () => {
               </button>
             )}
           </div>
+          <div className="flex justify-end items-center mt-2 mb-1 px-1">
+            <label className="label cursor-pointer gap-2">
+              <span className="label-text">Show archived</span>
+              <input
+                type="checkbox"
+                className="toggle toggle-sm"
+                checked={showArchived}
+                onChange={(e) => {
+                  setShowArchived(e.target.checked)
+                  setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+                }}
+              />
+            </label>
+          </div>
           <Card title="">
             <FormsList
               forms={forms}
@@ -155,6 +170,7 @@ const AllFormsPage = () => {
               onGlobalFilterChange={handleGlobalFilterChange}
               onFolderFilterChange={handleFolderFilterChange}
               onColumnFiltersChange={handleColumnFiltersChange}
+              onFormsUpdated={refetch}
             />
           </Card>
         </Suspense>

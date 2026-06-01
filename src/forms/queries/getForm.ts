@@ -5,6 +5,7 @@ import { z } from "zod"
 import { FormVersion } from "db"
 
 export type FormVersionWithRelations = FormVersion & {
+  archived?: boolean
   tasks: {
     id: number
     name: string
@@ -36,6 +37,7 @@ export default resolver.pipe(
             version: true,
             schema: true,
             uiSchema: true,
+            archived: true,
             createdAt: true,
             tasks: {
               select: {

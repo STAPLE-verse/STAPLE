@@ -5,6 +5,7 @@ import { Routes } from "@blitzjs/next"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import DateFormat from "src/core/components/DateFormat"
 import ArchiveFormButton from "../../components/ArchiveFormButton"
+import DeleteFormButton from "../../components/DeleteFormButton"
 import { MagnifyingGlassIcon, PencilSquareIcon } from "@heroicons/react/24/outline"
 import { FormTableData } from "../processing/processForms"
 import { createDateTextFilter } from "src/core/utils/tableFilters"
@@ -27,7 +28,8 @@ const exactTagFilter = (row: any, columnId: string, filterValue: unknown) => {
 }
 
 export const getFormsColumns = (
-  onFolderFilterChange?: (folderId: number | null | "all") => void
+  onFolderFilterChange?: (folderId: number | null | "all") => void,
+  onFormsUpdated?: () => Promise<void> | void
 ) => [
   columnHelper.accessor("name", {
     cell: (info) => (
@@ -126,7 +128,20 @@ export const getFormsColumns = (
     id: "delete",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <ArchiveFormButton formId={info.getValue()} />,
+    cell: (info) => (
+      <ArchiveFormButton
+        formId={info.getValue()}
+        isArchived={info.row.original.archived}
+        onDone={onFormsUpdated}
+      />
+    ),
+    header: "Archive",
+  }),
+  columnHelper.accessor("id", {
+    id: "remove",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) => <DeleteFormButton formId={info.getValue()} onDeleted={onFormsUpdated} />,
     header: "Delete",
   }),
 ]

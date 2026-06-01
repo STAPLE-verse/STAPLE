@@ -15,6 +15,7 @@ type FormsListProps = {
   onGlobalFilterChange?: (filter: string) => void
   onFolderFilterChange?: (folderId: number | null | "all") => void
   onColumnFiltersChange?: (filters: ColumnFiltersState) => void
+  onFormsUpdated?: () => Promise<void> | void
 }
 
 export const FormsList = ({
@@ -27,9 +28,13 @@ export const FormsList = ({
   onGlobalFilterChange,
   onFolderFilterChange,
   onColumnFiltersChange,
+  onFormsUpdated,
 }: FormsListProps) => {
   const formsTableData = processForms(forms)
-  const columns = useMemo(() => getFormsColumns(onFolderFilterChange), [onFolderFilterChange])
+  const columns = useMemo(
+    () => getFormsColumns(onFolderFilterChange, onFormsUpdated),
+    [onFolderFilterChange, onFormsUpdated]
+  )
 
   return (
     <main className="flex flex-col mx-auto w-full">

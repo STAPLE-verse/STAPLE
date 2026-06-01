@@ -90,7 +90,7 @@ export const AddFormTemplatesSchema = z.object({
 })
 
 export const ArchiveFormSchema = z.object({
-  formId: z.number(),
+  formId: z.coerce.number(),
   archived: z.boolean().optional(),
 })
 
