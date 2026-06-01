@@ -11,7 +11,7 @@ import createFolder from "src/folders/mutations/createFolder"
 import Card from "src/core/components/Card"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
-import { PaginationState } from "@tanstack/react-table"
+import { ColumnFiltersState, PaginationState } from "@tanstack/react-table"
 
 const AllFormsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -26,7 +26,7 @@ const AllFormsPage = () => {
   })
   const [search, setSearch] = useState("")
   const [selectedFolderId, setSelectedFolderId] = useState<number | null | "all">("all")
-  const [tagSearch, setTagSearch] = useState("")
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [newFolderName, setNewFolderName] = useState("")
   const [showNewFolder, setShowNewFolder] = useState(false)
 
@@ -41,6 +41,10 @@ const AllFormsPage = () => {
   )
 
   const folderFilter = selectedFolderId === "all" ? {} : { folderId: selectedFolderId }
+  const tagSearch = useMemo(() => {
+    const tagFilter = columnFilters.find((filter) => filter.id === "tags")
+    return typeof tagFilter?.value === "string" ? tagFilter.value.trim() : ""
+  }, [columnFilters])
 
   const [{ forms, count }, { refetch }] = usePaginatedQuery(getForms, {
     where: {
@@ -67,18 +71,13 @@ const AllFormsPage = () => {
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }
 
-  const handleFolderSelect = (id: number | null | "all") => {
-    setSelectedFolderId(id)
-    setPagination((p) => ({ ...p, pageIndex: 0 }))
-  }
-
   const handleFolderFilterChange = useCallback((folderId: number | null | "all") => {
     setSelectedFolderId(folderId)
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }, [])
 
-  const handleTagFilterChange = useCallback((tag: string) => {
-    setTagSearch(tag)
+  const handleColumnFiltersChange = useCallback((filters: ColumnFiltersState) => {
+    setColumnFilters(filters)
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }, [])
 
@@ -155,7 +154,7 @@ const AllFormsPage = () => {
               pageSizeOptions={[10, 25, 50, 100]}
               onGlobalFilterChange={handleGlobalFilterChange}
               onFolderFilterChange={handleFolderFilterChange}
-              onTagFilterChange={handleTagFilterChange}
+              onColumnFiltersChange={handleColumnFiltersChange}
             />
           </Card>
         </Suspense>

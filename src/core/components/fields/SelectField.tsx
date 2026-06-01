@@ -60,7 +60,7 @@ export const SelectField = forwardRef<HTMLSelectElement, SelectFieldProps>(
             padding: 0.25rem 0.75rem !important;
             border-radius: 3px;
             appearance: none;
-            margin-top: 0.5rem;
+            margin-top: 0;
           }
           select:focus {
             outline-color: oklch(var(--s)) !important;

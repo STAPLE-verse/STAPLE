@@ -37,7 +37,7 @@ export default function FormFolderSelector({ formId, currentFolderId, onUpdate }
   return (
     <div className="flex flex-col gap-2">
       <select
-        className="select text-base text-primary select-primary select-bordered border-2 bg-base-300 w-1/2"
+        className="select text-base text-primary select-secondary select-bordered border-2 bg-base-300 w-1/2 focus:outline-secondary focus:outline-offset-0 focus:outline-width-3"
         value={currentFolderId ?? ""}
         onChange={handleChange}
       >
