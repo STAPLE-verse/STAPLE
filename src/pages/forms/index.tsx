@@ -144,9 +144,7 @@ const AllFormsPage = () => {
                 New Folder
               </button>
             )}
-          </div>
-          <div className="flex justify-end items-center mt-2 mb-1 px-1">
-            <label className="label cursor-pointer gap-2">
+            <label className="label cursor-pointer gap-2 ml-2">
               <span className="label-text">Show archived</span>
               <input
                 type="checkbox"

@@ -6,16 +6,14 @@ export default resolver.pipe(
   resolver.zod(ArchiveFormSchema),
   resolver.authorize(),
   async ({ formId, archived }) => {
-    const nextArchived = archived ?? true
-
     await db.formVersion.updateMany({
       where: { formId },
-      data: { archived: nextArchived },
+      data: { archived },
     })
 
     return db.form.update({
       where: { id: formId },
-      data: { archived: nextArchived },
+      data: { archived },
     })
   }
 )
