@@ -32,9 +32,11 @@ export default resolver.pipe(
     }
 
     if (anyDeployed) {
-      return db.form.update({ where: { id: formId }, data: { archived: true } })
+      const form = await db.form.update({ where: { id: formId }, data: { archived: true } })
+      return { action: "archived" as const, form }
     }
 
-    return db.form.delete({ where: { id: formId } })
+    const form = await db.form.delete({ where: { id: formId } })
+    return { action: "deleted" as const, form }
   }
 )

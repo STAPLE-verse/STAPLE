@@ -39,6 +39,7 @@ const FormEditPage = () => {
             initialFolderId={currentForm.folderId ?? null}
             versions={currentForm.versions ?? []}
             currentVersionId={currentForm.formVersion?.id ?? currentForm.versions?.[0]?.id}
+            formArchived={currentForm.archived}
             onVersionsUpdated={refetchGetForm}
           />
         </Suspense>

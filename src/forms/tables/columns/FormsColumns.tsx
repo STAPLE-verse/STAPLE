@@ -32,14 +32,7 @@ export const getFormsColumns = (
   onFormsUpdated?: () => Promise<void> | void
 ) => [
   columnHelper.accessor("name", {
-    cell: (info) => (
-      <Link
-        className="font-medium hover:underline"
-        href={Routes.FormEditPage({ formsId: info.row.original.id })}
-      >
-        {info.getValue()}
-      </Link>
-    ),
+    cell: (info) => <span className="font-medium">{info.getValue()}</span>,
     header: "Name",
   }),
   columnHelper.accessor("folder", {
@@ -117,11 +110,12 @@ export const getFormsColumns = (
     id: "edit",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => (
-      <Link className="btn btn-ghost" href={Routes.FormEditPage({ formsId: info.getValue() })}>
-        <PencilSquareIcon width={25} className="stroke-primary" />
-      </Link>
-    ),
+    cell: (info) =>
+      info.row.original.archived ? null : (
+        <Link className="btn btn-ghost" href={Routes.FormEditPage({ formsId: info.getValue() })}>
+          <PencilSquareIcon width={25} className="stroke-primary" />
+        </Link>
+      ),
     header: "Edit",
   }),
   columnHelper.accessor("id", {
@@ -143,7 +137,7 @@ export const getFormsColumns = (
     enableSorting: false,
     cell: (info) =>
       info.row.original.hasDeployedVersions ? (
-        <span className="badge badge-warning badge-sm whitespace-nowrap">in use</span>
+        <span className="badge badge-warning whitespace-nowrap">in use</span>
       ) : (
         <DeleteFormButton formId={info.getValue()} onDeleted={onFormsUpdated} />
       ),

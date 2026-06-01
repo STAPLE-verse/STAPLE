@@ -25,7 +25,7 @@ export default function FolderCell({ formId, currentFolderId }: Props) {
       value={currentFolderId ?? ""}
       onChange={(e) => void handleChange(e)}
     >
-      <option value="">— No folder —</option>
+      <option value="">No Folder</option>
       {folders.map((f) => (
         <option key={f.id} value={f.id}>
           {f.name}

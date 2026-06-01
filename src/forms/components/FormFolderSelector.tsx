@@ -41,7 +41,7 @@ export default function FormFolderSelector({ formId, currentFolderId, onUpdate }
         value={currentFolderId ?? ""}
         onChange={handleChange}
       >
-        <option value="">— No folder —</option>
+        <option value="">No folder</option>
         {folders.map((f) => (
           <option key={f.id} value={f.id}>
             {f.name}

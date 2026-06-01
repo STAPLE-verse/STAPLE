@@ -23,6 +23,7 @@ interface FormPlaygroundProps {
   initialFolderId?: number | null
   versions?: FormVersionWithRelations[]
   currentVersionId?: number
+  formArchived?: boolean
   onVersionsUpdated?: () => Promise<void> | void
 }
 
@@ -42,6 +43,7 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   initialFolderId = null,
   versions = [],
   currentVersionId,
+  formArchived = false,
   onVersionsUpdated,
 }) => {
   const [state, setState] = useState<FormState>({
@@ -156,6 +158,7 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
                     <FormDeployments
                       versions={versions}
                       currentVersionId={currentVersionId}
+                      formArchived={formArchived}
                       onDeleted={onVersionsUpdated}
                     />
                   ) : (

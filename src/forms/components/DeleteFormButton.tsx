@@ -20,7 +20,7 @@ const DeleteFormButton = ({ formId, onDeleted }: DeleteFormButtonProps) => {
 
     try {
       const result = await deleteFormMutation({ formId })
-      if ("archived" in result && result.archived) {
+      if (result.action === "archived") {
         toast.success("Form archived — some versions are still in use by tasks or projects.")
       } else {
         toast.success("Form deleted.")
