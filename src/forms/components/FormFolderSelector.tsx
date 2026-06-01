@@ -49,24 +49,26 @@ export default function FormFolderSelector({ formId, currentFolderId, onUpdate }
         ))}
       </select>
       {showNewFolder ? (
-        <div className="flex gap-2 items-center mt-2">
+        <div className="flex gap-2 items-center">
           <input
-            className="input input-sm input-bordered flex-1 max-w-xs"
+            className="input input-bordered text-lg
+            border-primary rounded w-1/3 border-2
+            bg-base-300 text-primary"
             value={newFolderName}
             placeholder="Folder name"
             onChange={(e) => setNewFolderName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && void handleCreateFolder()}
             autoFocus
           />
-          <button className="btn btn-sm btn-primary" onClick={() => void handleCreateFolder()}>
+          <button className="btn btn-primary mt-2" onClick={() => void handleCreateFolder()}>
             Create
           </button>
-          <button className="btn btn-sm btn-secondary" onClick={() => setShowNewFolder(false)}>
+          <button className="btn btn-secondary mt-2" onClick={() => setShowNewFolder(false)}>
             Cancel
           </button>
         </div>
       ) : (
-        <button className="btn btn-sm btn-primary w-fit" onClick={() => setShowNewFolder(true)}>
+        <button className="btn btn-primary w-fit" onClick={() => setShowNewFolder(true)}>
           + New folder
         </button>
       )}

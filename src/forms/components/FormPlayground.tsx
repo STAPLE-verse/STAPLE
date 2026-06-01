@@ -70,6 +70,15 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   return render ? (
     <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
+        {formId && (
+          <Tab
+            className={({ selected }) =>
+              classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
+            }
+          >
+            Details
+          </Tab>
+        )}
         <Tab
           className={({ selected }) =>
             classNames("tab", "text-lg", selected ? "tab-active text" : "hover:text-gray-500")
@@ -91,15 +100,6 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
         >
           Preview
         </Tab>
-        {formId && (
-          <Tab
-            className={({ selected }) =>
-              classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
-            }
-          >
-            Details
-          </Tab>
-        )}
       </Tab.List>
 
       <div className="w-full flex justify-end mb-4">
@@ -109,33 +109,6 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
       </div>
 
       <Tab.Panels>
-        <Tab.Panel>
-          <VisualBuilderTab
-            schema={state.schema}
-            uiSchema={state.uischema}
-            onSave={handleSave}
-            onChange={handleChange}
-          />
-        </Tab.Panel>
-
-        <Tab.Panel>
-          <JSONBuilderTab
-            schema={state.schema}
-            uiSchema={state.uischema}
-            onSave={handleSave}
-            onChange={handleChange}
-          />
-        </Tab.Panel>
-
-        <Tab.Panel>
-          <JsonForm
-            schema={state.schema}
-            uiSchema={state.extendedUiSchema}
-            formData={state.formData}
-            validator={validator}
-          />
-        </Tab.Panel>
-
         {formId && (
           <Tab.Panel>
             <div className="flex flex-col gap-4">
@@ -177,6 +150,33 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
             </div>
           </Tab.Panel>
         )}
+
+        <Tab.Panel>
+          <VisualBuilderTab
+            schema={state.schema}
+            uiSchema={state.uischema}
+            onSave={handleSave}
+            onChange={handleChange}
+          />
+        </Tab.Panel>
+
+        <Tab.Panel>
+          <JSONBuilderTab
+            schema={state.schema}
+            uiSchema={state.uischema}
+            onSave={handleSave}
+            onChange={handleChange}
+          />
+        </Tab.Panel>
+
+        <Tab.Panel>
+          <JsonForm
+            schema={state.schema}
+            uiSchema={state.extendedUiSchema}
+            formData={state.formData}
+            validator={validator}
+          />
+        </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>
   ) : null
