@@ -34,7 +34,7 @@ const TeamInformation = ({ team, privilege }: TeamInformationProps) => {
           </div>
         )}
       </div>
-      <div className="flex flex-row justify-start gap-2">
+      <div className="flex flex-row flex-wrap justify-start gap-2">
         {users.map((user) => {
           return (
             <Link
@@ -51,6 +51,15 @@ const TeamInformation = ({ team, privilege }: TeamInformationProps) => {
             </Link>
           )
         })}
+        {(team.pendingInvitations ?? []).map((inv) => (
+          <div
+            key={inv.id}
+            className="btn btn-disabled no-animation flex items-center gap-2 opacity-70"
+          >
+            {inv.email}
+            <span className="badge badge-warning badge-sm">invited</span>
+          </div>
+        ))}
       </div>
     </CollapseCard>
   )

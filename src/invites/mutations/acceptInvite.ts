@@ -23,7 +23,7 @@ export default resolver.pipe(
     // Find the invitation and related roles
     const invite = await db.invitation.findUnique({
       where: { id },
-      include: { roles: true },
+      include: { roles: true, pendingTeams: true },
     })
     if (!invite) throw new Error("Invitation not found")
 
@@ -107,6 +107,23 @@ export default resolver.pipe(
     }
 
     await reconnectFormerTeams(formerTeamIds)
+
+    // Join any teams the invited person was pre-assigned to
+    if (invite.pendingTeams && invite.pendingTeams.length > 0) {
+      for (const team of invite.pendingTeams) {
+        try {
+          await db.projectMember.update({
+            where: { id: team.id },
+            data: { users: { connect: { id: userId } } },
+          })
+        } catch (error) {
+          console.error(
+            `[acceptInvite] Failed to add user ${userId} to pre-assigned team ${team.id}:`,
+            error
+          )
+        }
+      }
+    }
 
     // Create the project privilege
     const projectPrivilege = await db.projectPrivilege.create({

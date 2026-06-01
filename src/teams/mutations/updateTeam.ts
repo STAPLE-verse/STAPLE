@@ -7,7 +7,7 @@ import { UpdateTeamSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(UpdateTeamSchema),
   resolver.authorize(),
-  async ({ id, name, userIds, tags }, ctx) => {
+  async ({ id, name, userIds, invitationIds, tags }, ctx) => {
     // Fetch existing users and projectId for this team to compute newly added users
     const existing = await db.projectMember.findFirst({
       where: { id },
@@ -15,6 +15,7 @@ export default resolver.pipe(
         projectId: true,
         name: true,
         users: { select: { id: true } },
+        pendingInvitations: { select: { id: true } },
       },
     })
 
@@ -30,10 +31,13 @@ export default resolver.pipe(
             id: userId,
           })),
         },
+        pendingInvitations: {
+          set: (invitationIds || []).map((invId) => ({ id: invId })),
+        },
         tags: tags ?? undefined,
       },
       include: {
-        users: true, // Include the users relation in the result
+        users: true,
       },
     })
 

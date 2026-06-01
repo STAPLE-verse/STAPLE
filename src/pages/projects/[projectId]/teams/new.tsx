@@ -26,7 +26,8 @@ const NewTeamContent = () => {
       const team = await createTeamMutation({
         name: values.name,
         projectId: projectId!,
-        userIds: values.projectMemberUserIds,
+        userIds: values.projectMemberUserIds ?? [],
+        invitationIds: values.pendingInvitationIds ?? [],
         tags: values.tags || [],
       })
       await toast.promise(Promise.resolve(team), {

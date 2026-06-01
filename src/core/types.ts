@@ -78,11 +78,17 @@ export type TeamUserWithContributor = {
   contributorId: number
 }
 
+export type PendingTeamInvitee = {
+  id: number
+  email: string
+}
+
 export type TeamWithUsers = {
   id: number
   projectId: number
   name: string
   users: TeamUserWithContributor[]
+  pendingInvitations: PendingTeamInvitee[]
   createdAt: Date
   tags?: Prisma.JsonValue
 }

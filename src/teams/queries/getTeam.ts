@@ -1,7 +1,7 @@
 import { NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import { TeamWithUsers } from "src/core/types"
+import { TeamWithUsers, PendingTeamInvitee } from "src/core/types"
 
 interface GetTeamInput {
   id: number
@@ -19,6 +19,9 @@ export default resolver.pipe(
           include: {
             projects: true, // all ProjectMember memberships for the user
           },
+        },
+        pendingInvitations: {
+          select: { id: true, email: true },
         },
       },
     })
@@ -48,11 +51,17 @@ export default resolver.pipe(
       }
     })
 
+    const pendingInvitations: PendingTeamInvitee[] = (team.pendingInvitations || []).map((inv) => ({
+      id: inv.id,
+      email: inv.email,
+    }))
+
     return {
       id: team.id,
       projectId: team.projectId,
       name: team.name,
       users: usersWithContributorIds,
+      pendingInvitations,
       createdAt: team.createdAt,
       tags: team.tags,
     }

@@ -93,6 +93,7 @@ model ProjectMember {
   taskLogAssignedTo       TaskLog[]           @relation("assignedTo")
   taskLogCompletedBy      TaskLog[]           @relation("completedBy")
   reassignmentInvitations Invitation[]
+  pendingInvitations      Invitation[]        @relation("PendingTeamInvitations")
   comments                Comment[]
   tags                    Json?
   commentReadStatus       CommentReadStatus[]
@@ -124,6 +125,7 @@ model Invitation {
   tags            Json?
   reassignmentFor Int? // Foreign key to ProjectMember
   projectMember   ProjectMember?   @relation(fields: [reassignmentFor], references: [id]) // Relation to ProjectMember
+  pendingTeams    ProjectMember[]  @relation("PendingTeamInvitations")
 }
 
 model Role {
