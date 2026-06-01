@@ -93,7 +93,7 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
             <SearchButton onChange={(val) => setSearchQuery(String(val))} className="max-w-none" />
           </div>
           <select
-            className="select rounded-full border-2 border-primary bg-base-300"
+            className="select text-primary border-primary border-2 mt-1 bg-base-300 h-10 min-h-0 rounded-full focus:outline-secondary focus:outline-offset-2"
             value={sortBy}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
               setSortBy(e.target.value as SortOption)
