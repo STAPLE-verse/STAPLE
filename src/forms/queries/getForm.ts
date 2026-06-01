@@ -2,6 +2,16 @@ import { NotFoundError } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
+import { FormVersion } from "db"
+
+export type FormVersionWithRelations = FormVersion & {
+  tasks: {
+    id: number
+    name: string
+    project: { id: number; name: string }
+  }[]
+  projects: { id: number; name: string }[]
+}
 
 const GetFormSchema = z.object({
   id: z.number(),
@@ -19,7 +29,23 @@ export default resolver.pipe(
         versions: {
           where: version ? { version } : {},
           orderBy: { version: "desc" },
-          take: 1,
+          select: {
+            id: true,
+            name: true,
+            formId: true,
+            version: true,
+            schema: true,
+            uiSchema: true,
+            createdAt: true,
+            tasks: {
+              select: {
+                id: true,
+                name: true,
+                project: { select: { id: true, name: true } },
+              },
+            },
+            projects: { select: { id: true, name: true } },
+          },
         },
         folder: { select: { id: true, name: true } },
         _count: { select: { versions: true } },
@@ -35,6 +61,7 @@ export default resolver.pipe(
     return {
       ...form,
       formVersion: formVersion,
+      versions: form.versions as FormVersionWithRelations[],
     }
   }
 )

@@ -12,6 +12,7 @@ import FormDeployments from "./FormDeployments"
 import CollapseCard from "src/core/components/CollapseCard"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import { FormVersionWithRelations } from "../queries/getForm"
 
 interface FormPlaygroundProps {
   initialSchema?: string
@@ -20,6 +21,9 @@ interface FormPlaygroundProps {
   formId?: number
   initialTags?: string[]
   initialFolderId?: number | null
+  versions?: FormVersionWithRelations[]
+  currentVersionId?: number
+  onVersionsUpdated?: () => Promise<void> | void
 }
 
 interface FormState {
@@ -36,6 +40,9 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   formId,
   initialTags = [],
   initialFolderId = null,
+  versions = [],
+  currentVersionId,
+  onVersionsUpdated,
 }) => {
   const [state, setState] = useState<FormState>({
     schema: JSON.parse(initialSchema),
@@ -45,6 +52,7 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   })
   const [render, setRender] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const hasCurrentVersionId = typeof currentVersionId === "number"
 
   useEffect(() => {
     if (!render) {
@@ -76,7 +84,7 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
               classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
             }
           >
-            Details
+            Information
           </Tab>
         )}
         <Tab
@@ -142,9 +150,17 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
                   </div>
                 </div>
               </CollapseCard>
-              <CollapseCard title="Assigned Tasks & Projects" defaultOpen={true}>
+              <CollapseCard title="Versions and Tasks" defaultOpen={true}>
                 <div className="mt-2">
-                  <FormDeployments formId={formId} />
+                  {hasCurrentVersionId ? (
+                    <FormDeployments
+                      versions={versions}
+                      currentVersionId={currentVersionId}
+                      onDeleted={onVersionsUpdated}
+                    />
+                  ) : (
+                    <p className="text-md italic text-base-content/80">No versions available.</p>
+                  )}
                 </div>
               </CollapseCard>
             </div>

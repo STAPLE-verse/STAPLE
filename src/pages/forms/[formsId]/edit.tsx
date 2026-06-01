@@ -37,6 +37,9 @@ const FormEditPage = () => {
             formId={formsId}
             initialTags={Array.isArray(currentForm.tags) ? (currentForm.tags as string[]) : []}
             initialFolderId={currentForm.folderId ?? null}
+            versions={currentForm.versions ?? []}
+            currentVersionId={currentForm.formVersion?.id ?? currentForm.versions?.[0]?.id}
+            onVersionsUpdated={refetchGetForm}
           />
         </Suspense>
       </main>
