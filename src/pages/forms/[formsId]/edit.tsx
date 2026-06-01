@@ -6,12 +6,15 @@ import FormPlayground from "src/forms/components/FormPlayground"
 import { useMutation, useQuery } from "@blitzjs/rpc"
 import router from "next/router"
 import { Routes, useParam } from "@blitzjs/next"
+import { useRouter } from "next/router"
 import updateForm from "src/forms/mutations/updateForm"
 import getForm from "src/forms/queries/getForm"
 
 const FormEditPage = () => {
   const [UpdateFormMutation] = useMutation(updateForm)
   const formsId = useParam("formsId", "number")
+  const { query } = useRouter()
+  const infoOnly = query.view === "info"
   const [currentForm, { refetch: refetchGetForm }] = useQuery(getForm, { id: formsId! })
 
   const saveForm = async (state) => {
@@ -40,6 +43,7 @@ const FormEditPage = () => {
             versions={currentForm.versions ?? []}
             currentVersionId={currentForm.formVersion?.id ?? currentForm.versions?.[0]?.id}
             formArchived={currentForm.archived}
+            infoOnly={infoOnly}
             onVersionsUpdated={refetchGetForm}
           />
         </Suspense>

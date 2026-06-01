@@ -24,6 +24,7 @@ interface FormPlaygroundProps {
   versions?: FormVersionWithRelations[]
   currentVersionId?: number
   formArchived?: boolean
+  infoOnly?: boolean
   onVersionsUpdated?: () => Promise<void> | void
 }
 
@@ -44,6 +45,7 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   versions = [],
   currentVersionId,
   formArchived = false,
+  infoOnly = false,
   onVersionsUpdated,
 }) => {
   const [state, setState] = useState<FormState>({
@@ -89,34 +91,40 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
             Information
           </Tab>
         )}
-        <Tab
-          className={({ selected }) =>
-            classNames("tab", "text-lg", selected ? "tab-active text" : "hover:text-gray-500")
-          }
-        >
-          Visual Builder
-        </Tab>
-        <Tab
-          className={({ selected }) =>
-            classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
-          }
-        >
-          JSON Builder
-        </Tab>
-        <Tab
-          className={({ selected }) =>
-            classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
-          }
-        >
-          Preview
-        </Tab>
+        {!infoOnly && (
+          <>
+            <Tab
+              className={({ selected }) =>
+                classNames("tab", "text-lg", selected ? "tab-active text" : "hover:text-gray-500")
+              }
+            >
+              Visual Builder
+            </Tab>
+            <Tab
+              className={({ selected }) =>
+                classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
+              }
+            >
+              JSON Builder
+            </Tab>
+            <Tab
+              className={({ selected }) =>
+                classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
+              }
+            >
+              Preview
+            </Tab>
+          </>
+        )}
       </Tab.List>
 
-      <div className="w-full flex justify-end mb-4">
-        <button type="button" className="btn btn-primary" onClick={handleSave}>
-          Save Form
-        </button>
-      </div>
+      {!infoOnly && (
+        <div className="w-full flex justify-end mb-4">
+          <button type="button" className="btn btn-primary" onClick={handleSave}>
+            Save Form
+          </button>
+        </div>
+      )}
 
       <Tab.Panels>
         {formId && (
@@ -170,32 +178,36 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
           </Tab.Panel>
         )}
 
-        <Tab.Panel>
-          <VisualBuilderTab
-            schema={state.schema}
-            uiSchema={state.uischema}
-            onSave={handleSave}
-            onChange={handleChange}
-          />
-        </Tab.Panel>
+        {!infoOnly && (
+          <>
+            <Tab.Panel>
+              <VisualBuilderTab
+                schema={state.schema}
+                uiSchema={state.uischema}
+                onSave={handleSave}
+                onChange={handleChange}
+              />
+            </Tab.Panel>
 
-        <Tab.Panel>
-          <JSONBuilderTab
-            schema={state.schema}
-            uiSchema={state.uischema}
-            onSave={handleSave}
-            onChange={handleChange}
-          />
-        </Tab.Panel>
+            <Tab.Panel>
+              <JSONBuilderTab
+                schema={state.schema}
+                uiSchema={state.uischema}
+                onSave={handleSave}
+                onChange={handleChange}
+              />
+            </Tab.Panel>
 
-        <Tab.Panel>
-          <JsonForm
-            schema={state.schema}
-            uiSchema={state.extendedUiSchema}
-            formData={state.formData}
-            validator={validator}
-          />
-        </Tab.Panel>
+            <Tab.Panel>
+              <JsonForm
+                schema={state.schema}
+                uiSchema={state.extendedUiSchema}
+                formData={state.formData}
+                validator={validator}
+              />
+            </Tab.Panel>
+          </>
+        )}
       </Tab.Panels>
     </Tab.Group>
   ) : null

@@ -6,7 +6,11 @@ import { JsonFormModal } from "src/core/components/JsonFormModal"
 import DateFormat from "src/core/components/DateFormat"
 import ArchiveFormButton from "../../components/ArchiveFormButton"
 import DeleteFormButton from "../../components/DeleteFormButton"
-import { MagnifyingGlassIcon, PencilSquareIcon } from "@heroicons/react/24/outline"
+import {
+  MagnifyingGlassIcon,
+  PencilSquareIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline"
 import { FormTableData } from "../processing/processForms"
 import { createDateTextFilter } from "src/core/utils/tableFilters"
 import FolderCell from "./FolderCell"
@@ -111,7 +115,17 @@ export const getFormsColumns = (
     enableColumnFilter: false,
     enableSorting: false,
     cell: (info) =>
-      info.row.original.archived ? null : (
+      info.row.original.archived ? (
+        <Link
+          className="btn btn-ghost"
+          href={{
+            ...Routes.FormEditPage({ formsId: info.getValue() }),
+            query: { formsId: info.getValue(), view: "info" },
+          }}
+        >
+          <InformationCircleIcon width={25} className="stroke-primary" />
+        </Link>
+      ) : (
         <Link className="btn btn-ghost" href={Routes.FormEditPage({ formsId: info.getValue() })}>
           <PencilSquareIcon width={25} className="stroke-primary" />
         </Link>
