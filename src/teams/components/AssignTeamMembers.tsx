@@ -99,7 +99,7 @@ const AssignTeamMembers: React.FC<AssignTeamMembersProps> = ({ projectId }) => {
             <span className="badge badge-success badge-sm">joined</span>
           ),
         meta: {
-          filterVariant: "select",
+          filterVariant: "select" as const,
           selectOptions: [
             { label: "Joined", value: "false" },
             { label: "Pending", value: "true" },
