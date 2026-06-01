@@ -13,14 +13,18 @@ const DeleteFormButton = ({ formId, onDeleted }: DeleteFormButtonProps) => {
 
   const handleDelete = async () => {
     const isConfirmed = window.confirm(
-      "This will permanently delete the form and all of its versions. Are you sure you want to continue?"
+      "Versions with no tasks or projects will be permanently deleted. Versions currently in use will be archived instead. Are you sure?"
     )
 
     if (!isConfirmed) return
 
     try {
-      await deleteFormMutation({ formId })
-      toast.success("Form deleted.")
+      const result = await deleteFormMutation({ formId })
+      if ("archived" in result && result.archived) {
+        toast.success("Form archived — some versions are still in use by tasks or projects.")
+      } else {
+        toast.success("Form deleted.")
+      }
       await onDeleted?.()
     } catch (error) {
       console.error("Failed to delete form:", error)

@@ -9,6 +9,7 @@ export type FormTableData = {
   tags: string[]
   folder: FormFolder | null
   archived: boolean
+  hasDeployedVersions: boolean
 }
 
 export function processForms(forms: FormWithFormVersion[]): FormTableData[] {
@@ -24,6 +25,7 @@ export function processForms(forms: FormWithFormVersion[]): FormTableData[] {
       tags: Array.isArray(form.tags) ? (form.tags as string[]) : [],
       folder: form.folder,
       archived: form.archived,
+      hasDeployedVersions: (form._count?.versions ?? 0) > 0,
     }
   })
 }

@@ -8,6 +8,7 @@ export type FormFolder = { id: number; name: string }
 export interface FormWithFormVersion extends Form {
   formVersion: FormVersion | null
   folder: FormFolder | null
+  _count?: { versions: number }
 }
 
 interface GetFormInput
@@ -23,6 +24,15 @@ const includeLatestVersion = (include?: Prisma.FormInclude | null) =>
           take: 1,
         },
         folder: { select: { id: true, name: true } },
+        _count: {
+          select: {
+            versions: {
+              where: {
+                OR: [{ tasks: { some: {} } }, { projects: { some: {} } }],
+              },
+            },
+          },
+        },
       }
 
 const mapForms = (

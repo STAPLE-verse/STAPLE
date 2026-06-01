@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react"
 import { useMutation } from "@blitzjs/rpc"
 import toast from "react-hot-toast"
+import Link from "next/link"
+import { Routes } from "@blitzjs/next"
 import deleteFormVersion from "src/forms/mutations/deleteFormVersion"
 import updateFormVersionArchive from "src/forms/mutations/updateFormVersionArchive"
 import { FormVersionWithRelations } from "src/forms/queries/getForm"
@@ -15,7 +17,7 @@ type Props = {
 export default function FormDeployments({ versions, currentVersionId, onDeleted }: Props) {
   const [deleteFormVersionMutation] = useMutation(deleteFormVersion)
   const [updateFormVersionArchiveMutation] = useMutation(updateFormVersionArchive)
-  const [showArchived, setShowArchived] = useState(false)
+  const [showArchived, setShowArchived] = useState(true)
 
   const visibleVersions = useMemo(
     () => versions.filter((version) => showArchived || !version.archived),
@@ -84,37 +86,39 @@ export default function FormDeployments({ versions, currentVersionId, onDeleted 
               <th>Status</th>
               <th>Tasks</th>
               <th>Projects</th>
-              <th>Usage</th>
               <th>Archive</th>
               <th />
             </tr>
           </thead>
           <tbody className="text-lg">
             {visibleVersions.map((version) => {
-              const isCurrent =
-                typeof currentVersionId === "number" && version.id === currentVersionId
-              const usageCount = version.tasks.length + version.projects.length
-              const isInUse = usageCount > 0
               const isArchived = !!version.archived
+              const isInUse = version.tasks.length > 0 || version.projects.length > 0
+
+              const allProjects = [...version.projects, ...version.tasks.map((t) => t.project)]
+              const uniqueProjects = Array.from(new Map(allProjects.map((p) => [p.id, p])).values())
 
               return (
                 <tr key={version.id} className={isArchived ? "opacity-70" : ""}>
                   <td>v{version.version}</td>
                   <td>{version.name}</td>
-                  <td>
-                    {isArchived ? (
-                      <span className="badge badge-warning badge-sm">Archived</span>
-                    ) : (
-                      <span className="badge badge-success badge-sm">Active</span>
-                    )}
+                  <td className={isArchived ? "text-warning" : "text-success"}>
+                    {isArchived ? "Archived" : "Active"}
                   </td>
                   <td>
                     <div className="flex flex-wrap gap-1">
                       {version.tasks.length > 0 ? (
                         version.tasks.map((task) => (
-                          <span key={task.id} className="badge badge-secondary badge-sm">
+                          <Link
+                            key={task.id}
+                            className="btn btn-xs btn-ghost border border-base-content/20"
+                            href={Routes.ShowTaskPage({
+                              projectId: task.project.id,
+                              taskId: task.id,
+                            })}
+                          >
                             {task.name}
-                          </span>
+                          </Link>
                         ))
                       ) : (
                         <span className="text-base-content/40">—</span>
@@ -122,24 +126,21 @@ export default function FormDeployments({ versions, currentVersionId, onDeleted 
                     </div>
                   </td>
                   <td>
-                    <div className="flex flex-wrap gap-1">
-                      {version.projects.length > 0 ? (
-                        version.projects.map((project) => (
-                          <span key={project.id} className="badge badge-primary badge-sm">
+                    <div className="flex flex-col gap-1">
+                      {uniqueProjects.length > 0 ? (
+                        uniqueProjects.map((project) => (
+                          <Link
+                            key={project.id}
+                            className="hover:underline"
+                            href={Routes.ShowProjectPage({ projectId: project.id })}
+                          >
                             {project.name}
-                          </span>
+                          </Link>
                         ))
                       ) : (
                         <span className="text-base-content/40">—</span>
                       )}
                     </div>
-                  </td>
-                  <td>
-                    {isCurrent
-                      ? "—"
-                      : isInUse
-                      ? `${usageCount} deployment${usageCount === 1 ? "" : "s"}`
-                      : "Unused"}
                   </td>
                   <td>
                     <button

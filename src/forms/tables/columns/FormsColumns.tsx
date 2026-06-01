@@ -141,7 +141,12 @@ export const getFormsColumns = (
     id: "remove",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <DeleteFormButton formId={info.getValue()} onDeleted={onFormsUpdated} />,
+    cell: (info) =>
+      info.row.original.hasDeployedVersions ? (
+        <span className="badge badge-warning badge-sm whitespace-nowrap">in use</span>
+      ) : (
+        <DeleteFormButton formId={info.getValue()} onDeleted={onFormsUpdated} />
+      ),
     header: "Delete",
   }),
 ]
