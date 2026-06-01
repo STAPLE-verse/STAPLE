@@ -106,7 +106,7 @@ const AllFormsPage = () => {
               className="z-[1099] ourtooltips"
             />
           </h1>
-          <div className="flex justify-center mt-4 mb-2 gap-2 flex-wrap">
+          <div className="flex justify-center items-center mt-4 mb-2 gap-2 flex-wrap">
             <Link className="btn btn-primary" href={Routes.FormBuilderPage()}>
               Create New Form
             </Link>
@@ -122,7 +122,7 @@ const AllFormsPage = () => {
             {showNewFolder ? (
               <>
                 <input
-                  className="input input-bordered"
+                  className="input input-bordered text-lg border-primary rounded border-2 bg-base-300 text-primary ml-1 mr-1"
                   value={newFolderName}
                   placeholder="Folder name"
                   onChange={(e) => setNewFolderName(e.target.value)}
