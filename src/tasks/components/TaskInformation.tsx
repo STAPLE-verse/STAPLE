@@ -48,6 +48,18 @@ export const TaskInformation = () => {
         <span className="font-semibold">Milestone:</span>{" "}
         {task["milestone"] ? task["milestone"]!.name : "No milestone"}
       </p>
+      {task.anonymous && (
+        <p>
+          <span className="font-semibold">Anonymous: </span>
+          <span className="badge badge-warning ml-1">Task identity hidden in project summary</span>
+        </p>
+      )}
+      {task.anonymousResponses && (
+        <p>
+          <span className="font-semibold">Anonymous responses: </span>
+          <span className="badge badge-warning ml-1">Form responses hidden in project summary</span>
+        </p>
+      )}
       <p>
         <span className="font-semibold">Created by: </span>
         {pm.users[0].firstName

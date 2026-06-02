@@ -57,6 +57,7 @@ export default resolver.pipe(resolver.zod(GetProjectData), resolver.authorize(),
           status: true,
           // needed for anonymization downstream
           anonymous: true,
+          anonymousResponses: true,
           milestoneId: true,
           // relations on task
           milestone: {
