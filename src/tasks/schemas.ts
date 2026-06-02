@@ -15,6 +15,7 @@ export const FormTaskSchema = z
     startDate: z.date().optional().nullable(),
     autoAssignNew: z.nativeEnum(AutoAssignNew).optional().nullable(),
     anonymous: z.boolean(),
+    anonymousResponses: z.boolean(),
   })
   .refine(
     (data) => {
@@ -44,6 +45,7 @@ export const CreateTaskSchema = z.object({
   rolesId: z.array(z.number()).optional().nullable(),
   autoAssignNew: z.nativeEnum(AutoAssignNew).optional().nullable(),
   anonymous: z.boolean(),
+  anonymousResponses: z.boolean(),
   tags: z
     .array(
       z.object({
@@ -69,6 +71,7 @@ export const UpdateTaskSchema = z.object({
   startDate: z.date().optional().nullable(),
   autoAssignNew: z.nativeEnum(AutoAssignNew).optional().nullable(),
   anonymous: z.boolean(),
+  anonymousResponses: z.boolean(),
   tags: z
     .array(
       z.object({

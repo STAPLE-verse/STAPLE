@@ -29,6 +29,7 @@ const mapTaskToInitialValues = (task: any) => {
   if ("startDate" in task && task.startDate) initial.startDate = new Date(task.startDate)
   if ("containerId" in task) initial.containerId = task.containerId ?? null
   if ("anonymous" in task) initial.anonymous = task.anonymous ?? false
+  if ("anonymousResponses" in task) initial.anonymousResponses = task.anonymousResponses ?? false
 
   // Map contributors/teams from assignedMembers if present (kept minimal)
   if (Array.isArray((task as any).assignedMembers)) {

@@ -286,21 +286,40 @@ export function TaskForm<S extends z.ZodType<any, any>>(props: TaskFormProps<S>)
             type="string" // 👈 add this line
           />
         </div>
-        {/* Anonymous toggle */}
-        <div className="w-1/2 mt-4 flex flex-row">
+        {/* Anonymous toggles */}
+        <div className="w-1/2 mt-4 flex flex-col gap-3">
           <label>
             <span className="flex items-center">
-              Anonymous task{" "}
+              Hide task identity in project summary
               <InformationCircleIcon
                 className="h-4 w-4 ml-2 text-info stroke-2"
                 data-tooltip-id="anonymous-info"
               />
               <Tooltip
                 id="anonymous-info"
-                content="If enabled, task details (instructions, title) will not be shown in the project summary."
+                content="If enabled, the task name and instructions will be replaced with 'Anonymous task' in the project summary download."
                 className="z-[1099] ourtooltips"
               />
               <Field<boolean> name="anonymous" type="checkbox" initialValue={false}>
+                {({ input }) => (
+                  <input {...input} type="checkbox" className="toggle toggle-warning ml-4" />
+                )}
+              </Field>
+            </span>
+          </label>
+          <label>
+            <span className="flex items-center">
+              Hide form responses in project summary
+              <InformationCircleIcon
+                className="h-4 w-4 ml-2 text-info stroke-2"
+                data-tooltip-id="anonymous-responses-info"
+              />
+              <Tooltip
+                id="anonymous-responses-info"
+                content="If enabled, the filled-in form data will be excluded from the project summary. Who completed the task and when will still be tracked."
+                className="z-[1099] ourtooltips"
+              />
+              <Field<boolean> name="anonymousResponses" type="checkbox" initialValue={false}>
                 {({ input }) => (
                   <input {...input} type="checkbox" className="toggle toggle-warning ml-4" />
                 )}
