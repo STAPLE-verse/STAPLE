@@ -16,6 +16,8 @@ export const TaskSummary = ({ contributorFilter }: { contributorFilter?: number 
           </div>
         )}
 
+        <hr className="border-base-content/20" />
+
         <div>
           <TaskLogTable contributorFilter={contributorFilter} />
         </div>
