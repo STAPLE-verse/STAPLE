@@ -60,7 +60,9 @@ const FormEditPage = () => {
             formArchived={currentForm.archived}
             infoOnly={infoOnly}
             onAutoSave={autoSave}
-            onVersionsUpdated={refetchGetForm}
+            onVersionsUpdated={() => {
+              void refetchGetForm()
+            }}
           />
         </Suspense>
       </main>

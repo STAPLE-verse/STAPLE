@@ -117,7 +117,9 @@ const AllFormsPage = () => {
               open={isModalOpen}
               onClose={closeModal}
               currentUser={currentUser!}
-              onFormsUpdated={refetch}
+              onFormsUpdated={() => {
+                void refetch()
+              }}
             />
             {showNewFolder ? (
               <>
@@ -168,7 +170,9 @@ const AllFormsPage = () => {
               onGlobalFilterChange={handleGlobalFilterChange}
               onFolderFilterChange={handleFolderFilterChange}
               onColumnFiltersChange={handleColumnFiltersChange}
-              onFormsUpdated={refetch}
+              onFormsUpdated={() => {
+                void refetch()
+              }}
             />
           </Card>
         </Suspense>
