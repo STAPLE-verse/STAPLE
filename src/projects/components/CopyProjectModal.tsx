@@ -18,11 +18,10 @@ const CopyProjectList = ({ onClose }: { onClose: () => void }) => {
   const [copyProjectMutation, { isLoading }] = useMutation(copyProject)
 
   const where: Prisma.ProjectWhereInput = {
-    projectMembers: {
+    ProjectPrivilege: {
       some: {
-        users: { some: { id: currentUser?.id } },
-        deleted: false,
-        name: null,
+        userId: currentUser?.id,
+        privilege: "PROJECT_MANAGER",
       },
     },
   }
