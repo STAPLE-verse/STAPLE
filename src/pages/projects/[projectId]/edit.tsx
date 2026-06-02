@@ -5,6 +5,7 @@ import { useQuery, useMutation } from "@blitzjs/rpc"
 import { useParam } from "@blitzjs/next"
 import Layout from "src/core/layouts/Layout"
 import deleteProject from "src/projects/mutations/deleteProject"
+import copyProject from "src/projects/mutations/copyProject"
 import { FormProjectSchema } from "src/projects/schemas"
 import getProject from "src/projects/queries/getProject"
 import updateProject from "src/projects/mutations/updateProject"
@@ -22,6 +23,7 @@ export const EditProject = () => {
   const router = useRouter()
   const [updateProjectMutation] = useMutation(updateProject)
   const [deleteProjectMutation] = useMutation(deleteProject)
+  const [copyProjectMutation] = useMutation(copyProject)
 
   // Get project
   const projectId = useParam("projectId", "number")
@@ -42,6 +44,19 @@ export const EditProject = () => {
   }
 
   // Handle events
+  const handleCopy = async () => {
+    try {
+      const newProject = await toast.promise(copyProjectMutation({ id: project.id }), {
+        loading: "Copying project...",
+        success: "Project copied!",
+        error: "Failed to copy the project...",
+      })
+      await router.push(Routes.ShowProjectPage({ projectId: newProject.id }))
+    } catch (error: any) {
+      console.error("Failed to copy the project:", error)
+    }
+  }
+
   const handleDelete = async () => {
     if (window.confirm("The project will be permanently deleted. Are you sure to continue?")) {
       try {
@@ -120,7 +135,10 @@ export const EditProject = () => {
           </div>
 
           <div className="divider pt-2 pb-2"></div>
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-4">
+            <button type="button" className="btn btn-secondary" onClick={handleCopy}>
+              Copy project
+            </button>
             <button type="button" className="btn btn-warning" onClick={handleDelete}>
               Delete project
             </button>
