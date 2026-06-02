@@ -1,5 +1,5 @@
 import {
-  ArchiveBoxIcon,
+  FolderIcon,
   ClipboardDocumentListIcon,
   Cog6ToothIcon,
   RectangleGroupIcon,
@@ -132,7 +132,7 @@ export const HomeSidebarItems = (t: TFunction): SidebarItemProps[] => {
       userPrivilege: ["USER", "ADMIN"],
     },
     {
-      icon: ArchiveBoxIcon,
+      icon: FolderIcon,
       text: t("sidebar.home.projects"),
       route: Routes.ProjectsPage(),
       tooltipId: "projects-tooltip",

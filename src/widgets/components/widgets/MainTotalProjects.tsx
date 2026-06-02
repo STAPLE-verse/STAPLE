@@ -4,7 +4,7 @@ import { Routes } from "@blitzjs/next"
 import PrimaryLink from "src/core/components/PrimaryLink"
 import { GetIconDisplay } from "src/core/components/GetWidgetDisplay"
 import Widget from "../Widget"
-import { ArchiveBoxIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
+import { FolderIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import getProjects from "src/projects/queries/getProjects"
 import { useTranslation } from "react-i18next"
@@ -26,7 +26,7 @@ const TotalProjects: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ size 
   return (
     <Widget
       title={t("main.dashboard.projects")}
-      display={<GetIconDisplay number={projects.length} icon={ArchiveBoxIcon} />}
+      display={<GetIconDisplay number={projects.length} icon={FolderIcon} />}
       link={
         <PrimaryLink
           route={Routes.ProjectsPage()}

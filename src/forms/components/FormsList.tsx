@@ -3,7 +3,7 @@ import Table from "src/core/components/Table"
 import { getFormsColumns } from "src/forms/tables/columns/FormsColumns"
 import { processForms } from "../tables/processing/processForms"
 import { FormWithFormVersion } from "../queries/getForms"
-import { PaginationState, OnChangeFn } from "@tanstack/react-table"
+import { ColumnFiltersState, PaginationState, OnChangeFn } from "@tanstack/react-table"
 
 type FormsListProps = {
   forms: FormWithFormVersion[]
@@ -14,7 +14,8 @@ type FormsListProps = {
   pageSizeOptions?: number[]
   onGlobalFilterChange?: (filter: string) => void
   onFolderFilterChange?: (folderId: number | null | "all") => void
-  onTagFilterChange?: (tag: string) => void
+  onColumnFiltersChange?: (filters: ColumnFiltersState) => void
+  onFormsUpdated?: () => Promise<void> | void
 }
 
 export const FormsList = ({
@@ -26,12 +27,13 @@ export const FormsList = ({
   pageSizeOptions,
   onGlobalFilterChange,
   onFolderFilterChange,
-  onTagFilterChange,
+  onColumnFiltersChange,
+  onFormsUpdated,
 }: FormsListProps) => {
   const formsTableData = processForms(forms)
   const columns = useMemo(
-    () => getFormsColumns(onFolderFilterChange, onTagFilterChange),
-    [onFolderFilterChange, onTagFilterChange]
+    () => getFormsColumns(onFolderFilterChange, onFormsUpdated),
+    [onFolderFilterChange, onFormsUpdated]
   )
 
   return (
@@ -46,6 +48,7 @@ export const FormsList = ({
         pageCount={pageCount}
         pageSizeOptions={pageSizeOptions}
         onGlobalFilterChange={onGlobalFilterChange}
+        onColumnFiltersChange={onColumnFiltersChange}
       />
     </main>
   )

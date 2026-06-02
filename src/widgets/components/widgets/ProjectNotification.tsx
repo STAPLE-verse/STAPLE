@@ -11,7 +11,7 @@ import {
   BellAlertIcon,
   ChatBubbleLeftRightIcon,
   ClipboardDocumentListIcon,
-  FolderOpenIcon,
+  FolderIcon,
 } from "@heroicons/react/24/outline"
 import { determineNotificationType } from "src/notifications/utils/determineNotificationType"
 import Link from "next/link"
@@ -56,7 +56,7 @@ const ProjectNotification: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({
               >
                 {type === "Task" && <ClipboardDocumentListIcon className="h-15 w-15" />}
                 {type === "Comment" && <ChatBubbleLeftRightIcon className="h-15 w-15" />}
-                {type === "Project" && <FolderOpenIcon className="h-15 w-15" />}
+                {type === "Project" && <FolderIcon className="h-15 w-15" />}
                 {type === "Other" && <BellAlertIcon className="h-15 w-15" />}
                 {countsByType && countsByType[type]! > 0 && (
                   <span className="absolute top-0 -right-2 badge badge-primary text-xs">

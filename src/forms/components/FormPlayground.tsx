@@ -12,6 +12,7 @@ import FormDeployments from "./FormDeployments"
 import CollapseCard from "src/core/components/CollapseCard"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
+import { FormVersionWithRelations } from "../queries/getForm"
 
 interface FormPlaygroundProps {
   initialSchema?: string
@@ -20,6 +21,12 @@ interface FormPlaygroundProps {
   formId?: number
   initialTags?: string[]
   initialFolderId?: number | null
+  versions?: FormVersionWithRelations[]
+  currentVersionId?: number
+  formArchived?: boolean
+  infoOnly?: boolean
+  onAutoSave?: (state: { schema: object; uischema: object; formData: object }) => Promise<void>
+  onVersionsUpdated?: () => Promise<void> | void
 }
 
 interface FormState {
@@ -36,6 +43,12 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   formId,
   initialTags = [],
   initialFolderId = null,
+  versions = [],
+  currentVersionId,
+  formArchived = false,
+  infoOnly = false,
+  onAutoSave,
+  onVersionsUpdated,
 }) => {
   const [state, setState] = useState<FormState>({
     schema: JSON.parse(initialSchema),
@@ -45,6 +58,7 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   })
   const [render, setRender] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const hasCurrentVersionId = typeof currentVersionId === "number"
 
   useEffect(() => {
     if (!render) {
@@ -68,74 +82,62 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   }
 
   return render ? (
-    <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+    <Tab.Group
+      selectedIndex={selectedIndex}
+      onChange={(index) => {
+        const leavingBuilderTab = formId ? selectedIndex !== 0 : true
+        if (onAutoSave && leavingBuilderTab && !infoOnly) {
+          void onAutoSave(state)
+        }
+        setSelectedIndex(index)
+      }}
+    >
       <Tab.List className="tabs tabs-boxed flex flex-row justify-center space-x-2 mb-4">
-        <Tab
-          className={({ selected }) =>
-            classNames("tab", "text-lg", selected ? "tab-active text" : "hover:text-gray-500")
-          }
-        >
-          Visual Builder
-        </Tab>
-        <Tab
-          className={({ selected }) =>
-            classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
-          }
-        >
-          JSON Builder
-        </Tab>
-        <Tab
-          className={({ selected }) =>
-            classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
-          }
-        >
-          Preview
-        </Tab>
         {formId && (
           <Tab
             className={({ selected }) =>
               classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
             }
           >
-            Details
+            Information
           </Tab>
+        )}
+        {!infoOnly && (
+          <>
+            <Tab
+              className={({ selected }) =>
+                classNames("tab", "text-lg", selected ? "tab-active text" : "hover:text-gray-500")
+              }
+            >
+              Visual Builder
+            </Tab>
+            <Tab
+              className={({ selected }) =>
+                classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
+              }
+            >
+              JSON Builder
+            </Tab>
+            <Tab
+              className={({ selected }) =>
+                classNames("tab", "text-lg", selected ? "tab-active" : "hover:text-gray-500")
+              }
+            >
+              Preview
+            </Tab>
+          </>
         )}
       </Tab.List>
 
-      <div className="w-full flex justify-end mb-4">
-        <button type="button" className="btn btn-primary" onClick={handleSave}>
-          Save Form
-        </button>
-      </div>
+      {!infoOnly && (
+        <div className="w-full flex justify-end mb-4">
+          <button type="button" className="btn btn-primary" onClick={handleSave}>
+            Save Form
+          </button>
+        </div>
+      )}
 
       <Tab.Panels>
-        <Tab.Panel>
-          <VisualBuilderTab
-            schema={state.schema}
-            uiSchema={state.uischema}
-            onSave={handleSave}
-            onChange={handleChange}
-          />
-        </Tab.Panel>
-
-        <Tab.Panel>
-          <JSONBuilderTab
-            schema={state.schema}
-            uiSchema={state.uischema}
-            onSave={handleSave}
-            onChange={handleChange}
-          />
-        </Tab.Panel>
-
-        <Tab.Panel>
-          <JsonForm
-            schema={state.schema}
-            uiSchema={state.extendedUiSchema}
-            formData={state.formData}
-            validator={validator}
-          />
-        </Tab.Panel>
-
         {formId && (
           <Tab.Panel>
             <div className="flex flex-col gap-4">
@@ -169,13 +171,53 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
                   </div>
                 </div>
               </CollapseCard>
-              <CollapseCard title="Assigned Tasks & Projects" defaultOpen={true}>
+              <CollapseCard title="Versions and Tasks" defaultOpen={true}>
                 <div className="mt-2">
-                  <FormDeployments formId={formId} />
+                  {hasCurrentVersionId ? (
+                    <FormDeployments
+                      versions={versions}
+                      currentVersionId={currentVersionId}
+                      formArchived={formArchived}
+                      onDeleted={onVersionsUpdated}
+                    />
+                  ) : (
+                    <p className="text-md italic text-base-content/80">No versions available.</p>
+                  )}
                 </div>
               </CollapseCard>
             </div>
           </Tab.Panel>
+        )}
+
+        {!infoOnly && (
+          <>
+            <Tab.Panel>
+              <VisualBuilderTab
+                schema={state.schema}
+                uiSchema={state.uischema}
+                onSave={handleSave}
+                onChange={handleChange}
+              />
+            </Tab.Panel>
+
+            <Tab.Panel>
+              <JSONBuilderTab
+                schema={state.schema}
+                uiSchema={state.uischema}
+                onSave={handleSave}
+                onChange={handleChange}
+              />
+            </Tab.Panel>
+
+            <Tab.Panel>
+              <JsonForm
+                schema={state.schema}
+                uiSchema={state.extendedUiSchema}
+                formData={state.formData}
+                validator={validator}
+              />
+            </Tab.Panel>
+          </>
         )}
       </Tab.Panels>
     </Tab.Group>

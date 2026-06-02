@@ -5,29 +5,38 @@ import { Routes } from "@blitzjs/next"
 import { JsonFormModal } from "src/core/components/JsonFormModal"
 import DateFormat from "src/core/components/DateFormat"
 import ArchiveFormButton from "../../components/ArchiveFormButton"
-import { MagnifyingGlassIcon, PencilSquareIcon } from "@heroicons/react/24/outline"
+import DeleteFormButton from "../../components/DeleteFormButton"
+import {
+  MagnifyingGlassIcon,
+  PencilSquareIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/24/outline"
 import { FormTableData } from "../processing/processForms"
 import { createDateTextFilter } from "src/core/utils/tableFilters"
 import FolderCell from "./FolderCell"
 import FolderHeaderSelect from "./FolderHeaderSelect"
-import TagHeaderSearch from "./TagHeaderSearch"
 
 const columnHelper = createColumnHelper<FormTableData>()
 const lastUpdateFilter = createDateTextFilter({ emptyLabel: "no date" })
 
+const exactTagFilter = (row: any, columnId: string, filterValue: unknown) => {
+  const search = String(filterValue ?? "")
+    .trim()
+    .toLowerCase()
+  if (!search) {
+    return true
+  }
+
+  const tags = row.getValue(columnId)
+  return Array.isArray(tags) && tags.some((tag) => String(tag).trim().toLowerCase() === search)
+}
+
 export const getFormsColumns = (
   onFolderFilterChange?: (folderId: number | null | "all") => void,
-  onTagFilterChange?: (tag: string) => void
+  onFormsUpdated?: () => Promise<void> | void
 ) => [
   columnHelper.accessor("name", {
-    cell: (info) => (
-      <Link
-        className="font-medium hover:underline"
-        href={Routes.FormEditPage({ formsId: info.row.original.id })}
-      >
-        {info.getValue()}
-      </Link>
-    ),
+    cell: (info) => <span className="font-medium">{info.getValue()}</span>,
     header: "Name",
   }),
   columnHelper.accessor("folder", {
@@ -46,8 +55,9 @@ export const getFormsColumns = (
   }),
   columnHelper.accessor("tags", {
     id: "tags",
-    enableColumnFilter: false,
+    enableColumnFilter: true,
     enableSorting: false,
+    filterFn: exactTagFilter,
     cell: (info) => {
       const tags = info.getValue()
       if (!tags || tags.length === 0) return <span className="text-base-content/40 text-sm">—</span>
@@ -56,24 +66,23 @@ export const getFormsColumns = (
       return (
         <div className="flex flex-wrap gap-1 items-center">
           {visible.map((tag) => (
-            <span key={tag} className="badge badge-primary badge-sm">
+            <span key={tag} className="badge badge-secondary badge-sm">
               {tag}
             </span>
           ))}
           {hidden.length > 0 && (
-            <div className="tooltip tooltip-right" data-tip={hidden.join(", ")}>
-              <span className="badge badge-ghost badge-sm cursor-default">+{hidden.length}</span>
+            <div className="tooltip" data-tip={hidden.join(", ")}>
+              <span className="ml-1 text-secondary cursor-default">+{hidden.length}</span>
             </div>
           )}
         </div>
       )
     },
-    header: () => (
-      <div className="flex flex-col gap-1">
-        <span>Tags</span>
-        <TagHeaderSearch onChange={onTagFilterChange} />
-      </div>
-    ),
+    header: "Tags",
+    meta: {
+      filterVariant: "text",
+      filterPlaceholder: "Filter by tag",
+    },
   }),
   columnHelper.accessor("updatedAt", {
     cell: (info) => <DateFormat date={info.getValue()}></DateFormat>,
@@ -105,18 +114,47 @@ export const getFormsColumns = (
     id: "edit",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => (
-      <Link className="btn btn-ghost" href={Routes.FormEditPage({ formsId: info.getValue() })}>
-        <PencilSquareIcon width={25} className="stroke-primary" />
-      </Link>
-    ),
+    cell: (info) =>
+      info.row.original.archived ? (
+        <Link
+          className="btn btn-ghost"
+          href={{
+            ...Routes.FormEditPage({ formsId: info.getValue() }),
+            query: { formsId: info.getValue(), view: "info" },
+          }}
+        >
+          <InformationCircleIcon width={25} className="stroke-primary" />
+        </Link>
+      ) : (
+        <Link className="btn btn-ghost" href={Routes.FormEditPage({ formsId: info.getValue() })}>
+          <PencilSquareIcon width={25} className="stroke-primary" />
+        </Link>
+      ),
     header: "Edit",
   }),
   columnHelper.accessor("id", {
     id: "delete",
     enableColumnFilter: false,
     enableSorting: false,
-    cell: (info) => <ArchiveFormButton formId={info.getValue()} />,
+    cell: (info) => (
+      <ArchiveFormButton
+        formId={info.getValue()}
+        isArchived={info.row.original.archived}
+        onDone={onFormsUpdated}
+      />
+    ),
+    header: "Archive",
+  }),
+  columnHelper.accessor("id", {
+    id: "remove",
+    enableColumnFilter: false,
+    enableSorting: false,
+    cell: (info) =>
+      info.row.original.hasDeployedVersions ? (
+        <span className="badge badge-warning whitespace-nowrap">in use</span>
+      ) : (
+        <DeleteFormButton formId={info.getValue()} onDeleted={onFormsUpdated} />
+      ),
     header: "Delete",
   }),
 ]

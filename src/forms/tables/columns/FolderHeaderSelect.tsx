@@ -10,7 +10,7 @@ export default function FolderHeaderSelect({ onChange }: Props) {
 
   return (
     <select
-      className="select select-bordered select-sm w-full text-primary border-primary border-2 bg-primary-content"
+      className="text-primary input-primary input-bordered border-2 bg-base-300 rounded input-sm leading-normal mt-0 w-full"
       defaultValue="all"
       onChange={(e) => {
         const val = e.target.value

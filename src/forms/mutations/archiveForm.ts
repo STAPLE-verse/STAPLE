@@ -5,12 +5,15 @@ import db from "db"
 export default resolver.pipe(
   resolver.zod(ArchiveFormSchema),
   resolver.authorize(),
-  async ({ formId }) => {
-    const form = await db.form.update({
-      where: { id: formId },
-      data: { archived: true },
+  async ({ formId, archived }) => {
+    await db.formVersion.updateMany({
+      where: { formId },
+      data: { archived },
     })
 
-    return form
+    return db.form.update({
+      where: { id: formId },
+      data: { archived },
+    })
   }
 )

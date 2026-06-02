@@ -37,11 +37,11 @@ export default function FormFolderSelector({ formId, currentFolderId, onUpdate }
   return (
     <div className="flex flex-col gap-2">
       <select
-        className="select text-base text-primary select-primary select-bordered border-2 bg-base-300 w-1/2"
+        className="select text-base text-primary select-primary select-bordered border-2 bg-base-300 w-1/2 focus:outline-secondary focus:outline-offset-0 focus:outline-width-3"
         value={currentFolderId ?? ""}
         onChange={handleChange}
       >
-        <option value="">— No folder —</option>
+        <option value="">No folder</option>
         {folders.map((f) => (
           <option key={f.id} value={f.id}>
             {f.name}
@@ -49,24 +49,24 @@ export default function FormFolderSelector({ formId, currentFolderId, onUpdate }
         ))}
       </select>
       {showNewFolder ? (
-        <div className="flex gap-2 items-center mt-2">
+        <div className="flex gap-2 items-center">
           <input
-            className="input input-sm input-bordered flex-1 max-w-xs"
+            className="input input-bordered text-lg border-primary rounded w-1/3 border-2 bg-base-300 text-primary"
             value={newFolderName}
             placeholder="Folder name"
             onChange={(e) => setNewFolderName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && void handleCreateFolder()}
             autoFocus
           />
-          <button className="btn btn-sm btn-primary" onClick={() => void handleCreateFolder()}>
+          <button className="btn btn-primary" onClick={() => void handleCreateFolder()}>
             Create
           </button>
-          <button className="btn btn-sm btn-secondary" onClick={() => setShowNewFolder(false)}>
+          <button className="btn btn-secondary" onClick={() => setShowNewFolder(false)}>
             Cancel
           </button>
         </div>
       ) : (
-        <button className="btn btn-sm btn-primary w-fit" onClick={() => setShowNewFolder(true)}>
+        <button className="btn btn-primary w-fit" onClick={() => setShowNewFolder(true)}>
           + New folder
         </button>
       )}

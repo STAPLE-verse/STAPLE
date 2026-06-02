@@ -6,6 +6,18 @@ import deleteNote from "../mutations/deleteNote"
 import updateNote from "src/notes/mutations/updateNote"
 import NoteEditor from "./NotesEditor"
 import SearchButton from "src/core/components/SearchButton"
+import {
+  BookmarkIcon,
+  BookmarkSlashIcon,
+  ArchiveBoxArrowDownIcon,
+  ArchiveBoxXMarkIcon,
+  ArrowDownTrayIcon,
+  PencilSquareIcon,
+  EyeIcon,
+  TrashIcon,
+  DocumentPlusIcon,
+  ArchiveBoxIcon,
+} from "@heroicons/react/24/outline"
 
 type SortOption = "updatedAt" | "createdAt" | "title"
 
@@ -93,7 +105,7 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
             <SearchButton onChange={(val) => setSearchQuery(String(val))} className="max-w-none" />
           </div>
           <select
-            className="select rounded-full border-2 border-primary bg-base-300"
+            className="select text-primary border-primary border-2 mt-1 bg-base-300 h-10 min-h-0 rounded-full focus:outline-secondary focus:outline-offset-2"
             value={sortBy}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
               setSortBy(e.target.value as SortOption)
@@ -103,24 +115,28 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
             <option value="createdAt">Date created</option>
             <option value="title">Title A–Z</option>
           </select>
-          <label className="label cursor-pointer gap-2">
-            <span className="text-sm">Show archived</span>
-            <input
-              type="checkbox"
-              className="toggle toggle-sm"
-              checked={includeArchived}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setIncludeArchived(e.target.checked)
-              }
-            />
-          </label>
+          <button
+            className={`btn btn-square ${includeArchived ? "btn-secondary" : "btn-ghost"}`}
+            title={includeArchived ? "Hide archived" : "Show archived"}
+            onClick={() => setIncludeArchived((v) => !v)}
+          >
+            <ArchiveBoxIcon className="w-6 h-6" />
+          </button>
           {filteredAndSortedNotes.length > 0 && (
-            <button className="btn btn-accent" onClick={handleDownloadAll}>
-              Download all
+            <button
+              className="btn btn-square btn-accent"
+              title="Download all"
+              onClick={handleDownloadAll}
+            >
+              <ArrowDownTrayIcon className="w-6 h-6" />
             </button>
           )}
-          <button className="btn btn-primary" onClick={() => setCreating(true)}>
-            New note
+          <button
+            className="btn btn-square btn-primary"
+            title="New note"
+            onClick={() => setCreating(true)}
+          >
+            <DocumentPlusIcon className="w-6 h-6" />
           </button>
         </div>
       )}
@@ -207,31 +223,38 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      className={`btn ${n.pinned ? "btn-warning" : "btn-secondary"}`}
+                      className={`btn btn-square ${n.pinned ? "btn-warning" : "btn-secondary"}`}
                       disabled={!canEditRow(n)}
+                      title={n.pinned ? "Unpin" : "Pin"}
                       onClick={async () => {
                         await updateNoteMutation({ id: n.id, pinned: !n.pinned })
                         await refetch()
                       }}
                     >
-                      {n.pinned ? "Unpin" : "Pin"}
+                      {n.pinned ? (
+                        <BookmarkSlashIcon className="w-6 h-6" />
+                      ) : (
+                        <BookmarkIcon className="w-6 h-6" />
+                      )}
                     </button>
                     {!n.archived && (
                       <button
-                        className="btn btn-warning"
+                        className="btn btn-square btn-warning"
                         disabled={!canEditRow(n)}
+                        title="Archive"
                         onClick={async () => {
                           await updateNoteMutation({ id: n.id, archived: true })
                           await refetch()
                         }}
                       >
-                        Archive
+                        <ArchiveBoxArrowDownIcon className="w-6 h-6" />
                       </button>
                     )}
                     {n.archived && (
                       <button
-                        className="btn btn-warning"
+                        className="btn btn-square btn-warning"
                         disabled={!canEditRow(n)}
+                        title="Unarchive"
                         onClick={async () => {
                           await updateNoteMutation({ id: n.id, archived: false })
                           await setQueryData((prev) =>
@@ -241,18 +264,31 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
                           await refetch()
                         }}
                       >
-                        Unarchive
+                        <ArchiveBoxXMarkIcon className="w-6 h-6" />
                       </button>
                     )}
-                    <button className="btn btn-accent" onClick={() => handleDownloadNote(n)}>
-                      Download
-                    </button>
-                    <button className="btn btn-primary" onClick={() => setEditingId(n.id)}>
-                      {canEditRow(n) ? "Edit" : "View"}
+                    <button
+                      className="btn btn-square btn-accent"
+                      title="Download"
+                      onClick={() => handleDownloadNote(n)}
+                    >
+                      <ArrowDownTrayIcon className="w-6 h-6" />
                     </button>
                     <button
-                      className="btn btn-error"
+                      className="btn btn-square btn-primary"
+                      title={canEditRow(n) ? "Edit" : "View"}
+                      onClick={() => setEditingId(n.id)}
+                    >
+                      {canEditRow(n) ? (
+                        <PencilSquareIcon className="w-6 h-6" />
+                      ) : (
+                        <EyeIcon className="w-6 h-6" />
+                      )}
+                    </button>
+                    <button
+                      className="btn btn-square btn-error"
                       disabled={!canEditRow(n)}
+                      title="Delete"
                       onClick={async () => {
                         if (window.confirm("This note will be permanently deleted. Continue?")) {
                           await deleteNoteMutation({ id: n.id })
@@ -266,7 +302,7 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
                         }
                       }}
                     >
-                      Delete
+                      <TrashIcon className="w-6 h-6" />
                     </button>
                   </div>
                 </div>

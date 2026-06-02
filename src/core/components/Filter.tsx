@@ -7,6 +7,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
   const selectOptions = column.columnDef.meta?.selectOptions as
     | { label: string; value: string }[]
     | undefined
+  const filterPlaceholder = column.columnDef.meta?.filterPlaceholder ?? "Search..."
   const columnFilterValue = column.getFilterValue()
   const facetedUniqueValues = column.getFacetedUniqueValues()
 
@@ -29,6 +30,8 @@ function Filter({ column }: { column: Column<any, unknown> }) {
 
   const sharedInputStyles =
     "input w-36 text-primary input-primary input-bordered border-2 bg-base-300 rounded input-sm focus:outline-secondary focus:outline-offset-0 focus:outline-width-3"
+  const sharedSelectStyles =
+    "select w-36 text-primary select-primary select-bordered border-2 bg-base-300 rounded select-sm mt-2 focus:outline-secondary focus:outline-offset-0 focus:outline-width-3"
 
   return filterVariant === "range" ? (
     <div>
@@ -64,7 +67,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
     <select
       onChange={(e) => column.setFilterValue(e.target.value)}
       value={columnFilterValue?.toString()}
-      className={sharedInputStyles}
+      className={sharedSelectStyles}
     >
       <option value="">All</option>
       {selectOptions
@@ -134,7 +137,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
         value={(columnFilterValue ?? "") as string}
         onChange={onChangeCallback}
         // placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
-        placeholder="Search..."
+        placeholder={filterPlaceholder}
         className={sharedInputStyles}
         list={column.id + "list"}
       />

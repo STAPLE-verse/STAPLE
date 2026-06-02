@@ -23,3 +23,10 @@ i {
 * {
   box-sizing: border-box;
 }
+
+select option:checked,
+select option:focus,
+select option:hover {
+  background-color: oklch(var(--s)) !important;
+  color: oklch(var(--sc)) !important;
+}
