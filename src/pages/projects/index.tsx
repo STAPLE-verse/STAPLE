@@ -3,8 +3,9 @@ import { Routes } from "@blitzjs/next"
 import Link from "next/link"
 import Layout from "src/core/layouts/Layout"
 import ProjectsList from "src/projects/components/ProjectsList"
+import CopyProjectModal from "src/projects/components/CopyProjectModal"
 import SearchButton from "src/core/components/SearchButton"
-import { InformationCircleIcon } from "@heroicons/react/24/outline"
+import { InformationCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline"
 import { ShieldCheckIcon, UserIcon } from "@heroicons/react/24/solid"
 import { Tooltip } from "react-tooltip"
 import { useTranslation } from "react-i18next"
@@ -33,9 +34,23 @@ const ProjectsPage = () => {
           />
         </h1>
         <div className="flex flex-row justify-between items-center">
-          <Link className="btn btn-primary mb-4 mt-4" href={Routes.NewProjectPage()}>
-            {t("projects.createproject")}
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              className="btn btn-primary btn-square mb-4 mt-4"
+              href={Routes.NewProjectPage()}
+              data-tooltip-id="new-project-btn"
+            >
+              <PlusCircleIcon className="h-6 w-6" />
+            </Link>
+            <Tooltip
+              id="new-project-btn"
+              content={t("projects.createproject")}
+              className="z-[1099] ourtooltips"
+            />
+            <Suspense fallback={null}>
+              <CopyProjectModal />
+            </Suspense>
+          </div>
 
           <div className="mt-4 flex items-center gap-4 text-sm opacity-80">
             <div className="flex items-center gap-1">
