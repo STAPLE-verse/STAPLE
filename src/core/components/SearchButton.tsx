@@ -4,9 +4,10 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline"
 type Props = {
   onChange?: (searchTerm: string) => void
   debounceTime?: number
+  className?: string
 }
 
-const SearchButton = ({ onChange, debounceTime = 500 }: Props) => {
+const SearchButton = ({ onChange, debounceTime = 500, className }: Props) => {
   const currentSearchTerm = ""
   const handleSearch = (value) => {
     if (onChange != undefined) {
@@ -15,7 +16,11 @@ const SearchButton = ({ onChange, debounceTime = 500 }: Props) => {
   }
   return (
     <div>
-      <div className="flex flex-row mx-auto w-full max-w-md items-center justify-between relative text-base-400 focus-within:text-base-600 bg-base-50">
+      <div
+        className={`flex flex-row mx-auto w-full max-w-md items-center justify-between relative text-base-400 focus-within:text-base-600 bg-base-50 ${
+          className ?? ""
+        }`}
+      >
         <MagnifyingGlassIcon className="w-5 h-5 absolute ml-3 pointer-events-none"></MagnifyingGlassIcon>
 
         <DebouncedInput
@@ -24,7 +29,7 @@ const SearchButton = ({ onChange, debounceTime = 500 }: Props) => {
           value={currentSearchTerm}
           onChange={handleSearch}
           placeholder="Search"
-          className="pr-3 pl-10 py-2 h-10 w-full pr-3 pl-10 font-semibold
+          className="pr-3 !pl-10 py-2 h-10 w-full font-semibold
           rounded-2xl input text-primary input-primary
           nput-bordered border-2 bg-base-300 rounded
           focus:outline-secondary focus:outline-offset-0

@@ -2,6 +2,7 @@ import React, { ReactElement } from "react"
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"
 import SelectField from "src/core/components/fields/SelectField"
 import { Alert, Input, UncontrolledTooltip, FormGroup, FormFeedback } from "reactstrap"
+import MarkdownDescriptionInput from "./MarkdownDescriptionInput"
 import FBCheckbox from "./checkbox/FBCheckbox"
 import Collapse from "./Collapse/Collapse"
 import CardModal from "./CardModal"
@@ -223,20 +224,9 @@ export default function Section({
                   type="help"
                 />
               </h5>
-              <Input
+              <MarkdownDescriptionInput
                 value={schemaData.description || ""}
-                placeholder="Description"
-                type="text"
-                onChange={(ev) =>
-                  onChange(
-                    {
-                      ...schema,
-                      description: ev.target.value,
-                    },
-                    uischema
-                  )
-                }
-                className="card-text"
+                onChange={(val) => onChange({ ...schema, description: val }, uischema)}
               />
             </div>
             <Alert

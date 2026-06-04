@@ -4,6 +4,7 @@ import { Alert, Input } from "reactstrap"
 import Card from "./Card"
 import Section from "./Section"
 import Add from "./Add"
+import MarkdownDescriptionInput from "./MarkdownDescriptionInput"
 import {
   parse,
   stringify,
@@ -129,20 +130,17 @@ export default function FormBuilder({
                 ? mods.labels.formDescriptionLabel
                 : "Form Description"}
             </h5>
-            <Input
+            <MarkdownDescriptionInput
               value={schemaData.description || ""}
-              placeholder="Description"
-              type="text"
-              onChange={(ev) =>
+              onChange={(val) =>
                 onChange(
                   stringify({
                     ...schemaData,
-                    description: ev.target.value,
+                    description: val,
                   }),
                   uischema
                 )
               }
-              className="form-description"
             />
           </div>
         </div>

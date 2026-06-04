@@ -1,4 +1,4 @@
-import { FormWithFormVersion } from "src/forms/queries/getForms"
+import { FormWithFormVersion, FormFolder } from "src/forms/queries/getForms"
 
 export type FormTableData = {
   name: string
@@ -6,19 +6,26 @@ export type FormTableData = {
   uiSchema: any
   schema: any
   id: number
+  tags: string[]
+  folder: FormFolder | null
+  archived: boolean
+  hasDeployedVersions: boolean
 }
 
 export function processForms(forms: FormWithFormVersion[]): FormTableData[] {
   return forms.map((form) => {
-    // Handle cases where formVersion is null
     const formVersion = form.formVersion || { uiSchema: {}, schema: {}, name: "Unknown" }
 
     return {
-      name: formVersion.name, // Default to "Unknown" if formVersion is null
+      name: formVersion.name,
       updatedAt: form.updatedAt,
       uiSchema: formVersion.uiSchema || {},
-      schema: formVersion.schema, // Default empty schema if formVersion is null
+      schema: formVersion.schema,
       id: form.id,
+      tags: Array.isArray(form.tags) ? (form.tags as string[]) : [],
+      folder: form.folder,
+      archived: form.archived,
+      hasDeployedVersions: (form._count?.versions ?? 0) > 0,
     }
   })
 }

@@ -40,6 +40,7 @@ model User {
   // relational information
   projects                      ProjectMember[]
   forms                         Form[]
+  folders                       Folder[]
   roles                         Role[]
   ProjectPrivilege              ProjectPrivilege[]
 }
@@ -92,6 +93,7 @@ model ProjectMember {
   taskLogAssignedTo       TaskLog[]           @relation("assignedTo")
   taskLogCompletedBy      TaskLog[]           @relation("completedBy")
   reassignmentInvitations Invitation[]
+  pendingInvitations      Invitation[]        @relation("PendingTeamInvitations")
   comments                Comment[]
   tags                    Json?
   commentReadStatus       CommentReadStatus[]
@@ -123,6 +125,7 @@ model Invitation {
   tags            Json?
   reassignmentFor Int? // Foreign key to ProjectMember
   projectMember   ProjectMember?   @relation(fields: [reassignmentFor], references: [id]) // Relation to ProjectMember
+  pendingTeams    ProjectMember[]  @relation("PendingTeamInvitations")
 }
 
 model Role {
@@ -212,6 +215,7 @@ model Task {
   element            Element?        @relation(fields: [elementId], references: [id])
   autoAssignNew      AutoAssignNew   @default(NONE)
   anonymous          Boolean         @default(false)
+  anonymousResponses Boolean         @default(false)
 }
 
 model TaskLog {
@@ -279,6 +283,18 @@ model Milestone {
   endDate     DateTime?
 }
 
+model Folder {
+  id        Int      @id @default(autoincrement())
+  name      String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  forms     Form[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, userId])
+}
+
 model Form {
   id        Int           @id @default(autoincrement())
   createdAt DateTime      @default(now())
@@ -287,6 +303,9 @@ model Form {
   user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   versions  FormVersion[]
   archived  Boolean       @default(false)
+  tags      Json?
+  folderId  Int?
+  folder    Folder?       @relation(fields: [folderId], references: [id])
 }
 
 model FormVersion {
@@ -296,6 +315,7 @@ model FormVersion {
   version   Int
   schema    Json
   uiSchema  Json?
+  archived  Boolean   @default(false)
   createdAt DateTime  @default(now())
   form      Form      @relation(fields: [formId], references: [id], onDelete: Cascade)
   tasks     Task[]

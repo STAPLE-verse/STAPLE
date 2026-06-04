@@ -273,6 +273,38 @@ staple.helpdesk@gmail.com
   }
 }
 
+export function createFeedbackMsg({
+  fromUsername,
+  fromEmail,
+  subject,
+  message,
+}: {
+  fromUsername: string
+  fromEmail: string
+  subject: string
+  message: string
+}) {
+  return {
+    from: "STAPLE <app@staplescience.com>",
+    to: "staple.helpdesk@gmail.com",
+    replyTo: fromEmail ? `${fromUsername} <${fromEmail}>` : "STAPLE App",
+    subject: `[Feedback] ${subject}`,
+    html: `
+      <html>
+      <body>
+      <center><img src="https://raw.githubusercontent.com/STAPLE-verse/STAPLE-verse.github.io/main/pics/staple_email.jpg"
+  alt="STAPLE Logo" height="200"></center>
+      <h3>Feedback from ${fromUsername}</h3>
+      <p><strong>From:</strong> ${fromUsername} &lt;${fromEmail}&gt;</p>
+      <p><strong>Subject:</strong> ${subject}</p>
+      <p><strong>Message:</strong></p>
+      <p>${message.replace(/\n/g, "<br>")}</p>
+      </body>
+      </html>
+    `,
+  }
+}
+
 export function createEditProfileMsg(user) {
   return {
     from: "STAPLE <app@staplescience.com>",

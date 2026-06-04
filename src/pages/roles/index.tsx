@@ -17,6 +17,7 @@ const RoleBuilderPage = () => {
     pageIndex: 0,
     pageSize: 10,
   })
+  const [search, setSearch] = useState("")
 
   const paginationArgs = useMemo(
     () => ({
@@ -27,7 +28,17 @@ const RoleBuilderPage = () => {
   )
 
   const [{ roles, count }, { refetch: refetchPagedRoles }] = usePaginatedQuery(getRoles, {
-    where: { user: { id: currentUser?.id } },
+    where: {
+      user: { id: currentUser?.id },
+      ...(search
+        ? {
+            OR: [
+              { name: { contains: search, mode: "insensitive" } },
+              { taxonomy: { contains: search, mode: "insensitive" } },
+            ],
+          }
+        : {}),
+    },
     orderBy: { id: "asc" },
     ...paginationArgs,
   })
@@ -57,6 +68,11 @@ const RoleBuilderPage = () => {
     updater: PaginationState | ((state: PaginationState) => PaginationState)
   ) => {
     setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
+  }
+
+  const handleGlobalFilterChange = (filter: string) => {
+    setSearch(filter)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }
 
   return (
@@ -91,6 +107,7 @@ const RoleBuilderPage = () => {
               onPaginationChange={handlePaginationChange}
               pageCount={pageCount}
               pageSizeOptions={[10, 25, 50, 100]}
+              onGlobalFilterChange={handleGlobalFilterChange}
             />
           </Suspense>
         </Card>

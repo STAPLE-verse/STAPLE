@@ -13,12 +13,12 @@ const FormBuilderPage = () => {
   const currentUser = useCurrentUser()
 
   const saveForm = async (state) => {
-    await CreateFormMutation({
+    const form = await CreateFormMutation({
       schema: state.schema,
       uiSchema: state.uischema,
       userId: currentUser!.id,
     })
-    await router.push(Routes.AllFormsPage())
+    await router.push(Routes.FormEditPage({ formsId: form.id }))
   }
 
   return (

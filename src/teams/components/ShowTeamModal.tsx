@@ -21,6 +21,8 @@ export const ShowTeamModal = ({ teamId, disabled }) => {
     lastName: user.lastName ?? "",
   }))
 
+  const pendingInvitations = team.pendingInvitations ?? []
+
   // Handle events
   const handleToggle = () => {
     setOpenModal((prev) => !prev)
@@ -51,6 +53,21 @@ export const ShowTeamModal = ({ teamId, disabled }) => {
             <span className="italic">{team.name}</span>
           </h3>
           <Table columns={TeamMembersColumn} data={teamMembers} addPagination={true} />
+          {pendingInvitations.length > 0 && (
+            <div className="mt-4">
+              <h4 className="font-semibold mb-2 flex items-center gap-2">
+                Invited (pending)
+                <span className="badge badge-warning badge-sm">invited</span>
+              </h4>
+              <ul className="list-none space-y-1">
+                {pendingInvitations.map((inv) => (
+                  <li key={inv.id} className="text-base-content/80">
+                    {inv.email}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
         <div className="modal-action flex justify-end mt-4">
           <Link

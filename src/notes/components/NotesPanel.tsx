@@ -1,13 +1,40 @@
 import { useQuery, invalidateQuery } from "@blitzjs/rpc"
 import { useMutation } from "@blitzjs/rpc"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import listNotes from "../queries/listNotes"
 import deleteNote from "../mutations/deleteNote"
 import updateNote from "src/notes/mutations/updateNote"
 import NoteEditor from "./NotesEditor"
+import SearchButton from "src/core/components/SearchButton"
+import {
+  BookmarkIcon,
+  BookmarkSlashIcon,
+  ArchiveBoxArrowDownIcon,
+  ArchiveBoxXMarkIcon,
+  ArrowDownTrayIcon,
+  PencilSquareIcon,
+  EyeIcon,
+  TrashIcon,
+  DocumentPlusIcon,
+  ArchiveBoxIcon,
+} from "@heroicons/react/24/outline"
+
+type SortOption = "updatedAt" | "createdAt" | "title"
+
+function downloadMarkdown(filename: string, content: string) {
+  const blob = new Blob([content], { type: "text/markdown" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
 
 export const NotesPanel = ({ projectId }: { projectId: number }) => {
   const [includeArchived, setIncludeArchived] = useState(false)
+  const [sortBy, setSortBy] = useState<SortOption>("updatedAt")
+  const [searchQuery, setSearchQuery] = useState("")
   const [notes, { refetch, setQueryData }] = useQuery(
     listNotes,
     { projectId, includeArchived },
@@ -18,36 +45,99 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
   const [creating, setCreating] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
 
-  const sortedNotes = notes
-    ? [...notes].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-    : []
+  const filteredAndSortedNotes = useMemo(() => {
+    if (!notes) return []
+    let result = [...notes]
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
+      result = result.filter((n) => (n.title ?? "Untitled").toLowerCase().includes(q))
+    }
+
+    result.sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1
+      if (sortBy === "title") {
+        if (!a.title && b.title) return 1
+        if (a.title && !b.title) return -1
+        return (a.title ?? "").toLowerCase().localeCompare((b.title ?? "").toLowerCase())
+      }
+      if (sortBy === "createdAt") {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      }
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    })
+
+    return result
+  }, [notes, searchQuery, sortBy])
 
   const canEditRow = (n: any) => {
     if (!n) return false
-    const ownerEditable = !!n.editable
-    const pmOverride = !!n.canSetContributors && n.visibility === "CONTRIBUTORS"
-    return ownerEditable || pmOverride
+    return !!n.editable || (!!n.canSetContributors && n.visibility === "CONTRIBUTORS")
+  }
+
+  const formatNoteMd = (n: any) => {
+    const title = n.title || "Untitled"
+    const created = new Date(n.createdAt).toLocaleString()
+    const edited = new Date(n.updatedAt).toLocaleString()
+    const meta = `_Created: ${created} · Last edited: ${edited}_`
+    const body = n.contentMarkdown ?? "(No content)"
+    return `# ${title}\n\n${meta}\n\n${body}`
+  }
+
+  const handleDownloadNote = (n: any) => {
+    const title = n.title || "Untitled"
+    const safeTitle = title.replace(/[^a-zA-Z0-9_\- ]/g, "").trim() || "note"
+    downloadMarkdown(`${safeTitle}.md`, formatNoteMd(n))
+  }
+
+  const handleDownloadAll = () => {
+    if (!filteredAndSortedNotes.length) return
+    const combined = filteredAndSortedNotes.map(formatNoteMd).join("\n\n---\n\n")
+    downloadMarkdown("notes.md", combined)
   }
 
   return (
     <div className="space-y-4">
       {/* Index toolbar — hidden while editing/creating */}
       {!(creating || editingId !== null) && (
-        <div className="flex items-center justify-end">
-          <div className="flex items-center gap-2">
-            <label className="label cursor-pointer">
-              <span className="mr-2">Show archived</span>
-              <input
-                type="checkbox"
-                className="toggle toggle-sm"
-                checked={includeArchived}
-                onChange={(e) => setIncludeArchived(e.target.checked)}
-              />
-            </label>
-            <button className="btn btn-primary" onClick={() => setCreating(true)}>
-              New note
-            </button>
+        <div className="flex items-center gap-2">
+          <div className="flex-1">
+            <SearchButton onChange={(val) => setSearchQuery(String(val))} className="max-w-none" />
           </div>
+          <select
+            className="select text-primary border-primary border-2 mt-1 bg-base-300 h-10 min-h-0 rounded-full focus:outline-secondary focus:outline-offset-2"
+            value={sortBy}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setSortBy(e.target.value as SortOption)
+            }
+          >
+            <option value="updatedAt">Last edited</option>
+            <option value="createdAt">Date created</option>
+            <option value="title">Title A–Z</option>
+          </select>
+          <button
+            className={`btn btn-square ${includeArchived ? "btn-secondary" : "btn-ghost"}`}
+            title={includeArchived ? "Hide archived" : "Show archived"}
+            onClick={() => setIncludeArchived((v) => !v)}
+          >
+            <ArchiveBoxIcon className="w-6 h-6" />
+          </button>
+          {filteredAndSortedNotes.length > 0 && (
+            <button
+              className="btn btn-square btn-accent"
+              title="Download all"
+              onClick={handleDownloadAll}
+            >
+              <ArrowDownTrayIcon className="w-6 h-6" />
+            </button>
+          )}
+          <button
+            className="btn btn-square btn-primary"
+            title="New note"
+            onClick={() => setCreating(true)}
+          >
+            <DocumentPlusIcon className="w-6 h-6" />
+          </button>
         </div>
       )}
 
@@ -57,7 +147,6 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
           projectId={projectId}
           className="shadow"
           onCreated={async (id) => {
-            // First create → switch to edit mode so the editor stays open
             setCreating(false)
             setEditingId(id)
             await refetch()
@@ -97,7 +186,7 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
       {/* Index list — only when not editing/creating */}
       {!(creating || editingId !== null) && (
         <ul className="space-y-3">
-          {sortedNotes.map((n) => (
+          {filteredAndSortedNotes.map((n) => (
             <li key={n.id} className="card bg-base-300 shadow border border-base-300">
               <div className="card-body p-4">
                 <div className="flex items-center justify-between gap-2">
@@ -134,34 +223,40 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <button
-                      className={`btn ${n.pinned ? "btn-warning" : "btn-secondary"}`}
+                      className={`btn btn-square ${n.pinned ? "btn-warning" : "btn-secondary"}`}
                       disabled={!canEditRow(n)}
+                      title={n.pinned ? "Unpin" : "Pin"}
                       onClick={async () => {
                         await updateNoteMutation({ id: n.id, pinned: !n.pinned })
                         await refetch()
                       }}
                     >
-                      {n.pinned ? "Unpin" : "Pin"}
+                      {n.pinned ? (
+                        <BookmarkSlashIcon className="w-6 h-6" />
+                      ) : (
+                        <BookmarkIcon className="w-6 h-6" />
+                      )}
                     </button>
                     {!n.archived && (
                       <button
-                        className="btn btn-outline"
+                        className="btn btn-square btn-warning"
                         disabled={!canEditRow(n)}
+                        title="Archive"
                         onClick={async () => {
                           await updateNoteMutation({ id: n.id, archived: true })
                           await refetch()
                         }}
                       >
-                        Archive
+                        <ArchiveBoxArrowDownIcon className="w-6 h-6" />
                       </button>
                     )}
                     {n.archived && (
                       <button
-                        className="btn btn-outline"
+                        className="btn btn-square btn-warning"
                         disabled={!canEditRow(n)}
+                        title="Unarchive"
                         onClick={async () => {
                           await updateNoteMutation({ id: n.id, archived: false })
-                          // Optimistically update local cache to reflect unarchive
                           await setQueryData((prev) =>
                             (prev ?? []).map((x) => (x.id === n.id ? { ...x, archived: false } : x))
                           )
@@ -169,15 +264,31 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
                           await refetch()
                         }}
                       >
-                        Unarchive
+                        <ArchiveBoxXMarkIcon className="w-6 h-6" />
                       </button>
                     )}
-                    <button className="btn btn-primary" onClick={() => setEditingId(n.id)}>
-                      {canEditRow(n) ? "Edit" : "View"}
+                    <button
+                      className="btn btn-square btn-accent"
+                      title="Download"
+                      onClick={() => handleDownloadNote(n)}
+                    >
+                      <ArrowDownTrayIcon className="w-6 h-6" />
                     </button>
                     <button
-                      className="btn btn-error"
+                      className="btn btn-square btn-primary"
+                      title={canEditRow(n) ? "Edit" : "View"}
+                      onClick={() => setEditingId(n.id)}
+                    >
+                      {canEditRow(n) ? (
+                        <PencilSquareIcon className="w-6 h-6" />
+                      ) : (
+                        <EyeIcon className="w-6 h-6" />
+                      )}
+                    </button>
+                    <button
+                      className="btn btn-square btn-error"
                       disabled={!canEditRow(n)}
+                      title="Delete"
                       onClick={async () => {
                         if (window.confirm("This note will be permanently deleted. Continue?")) {
                           await deleteNoteMutation({ id: n.id })
@@ -191,20 +302,26 @@ export const NotesPanel = ({ projectId }: { projectId: number }) => {
                         }
                       }}
                     >
-                      Delete
+                      <TrashIcon className="w-6 h-6" />
                     </button>
                   </div>
                 </div>
               </div>
             </li>
           ))}
-          {!notes?.length && !creating && (
+          {!filteredAndSortedNotes.length && !creating && (
             <div className="card bg-base-300 shadow border border-dashed border-base-300">
               <div className="card-body items-center text-center p-6">
-                <div className="text-lg opacity-70 mb-3">No notes yet</div>
-                <button className="btn btn-primary" onClick={() => setCreating(true)}>
-                  Create your first note
-                </button>
+                {notes?.length && searchQuery ? (
+                  <div className="text-lg opacity-70">No notes match your search</div>
+                ) : (
+                  <>
+                    <div className="text-lg opacity-70 mb-3">No notes yet</div>
+                    <button className="btn btn-primary" onClick={() => setCreating(true)}>
+                      Create your first note
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           )}

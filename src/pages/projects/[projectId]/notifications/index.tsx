@@ -14,7 +14,7 @@ import { MultiReadToggleButton } from "src/notifications/components/MultiReadTog
 import Card from "src/core/components/Card"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
-import { PaginationState } from "@tanstack/react-table"
+import { ColumnFiltersState, PaginationState } from "@tanstack/react-table"
 import { Prisma } from "db"
 
 const NotificationContent = () => {
@@ -31,18 +31,36 @@ const NotificationContent = () => {
     pageIndex: 0,
     pageSize: 10,
   })
+  const [search, setSearch] = useState("")
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
-  const baseWhere = useMemo<Prisma.NotificationWhereInput>(
+  const coreWhere = useMemo<Prisma.NotificationWhereInput>(
     () => ({
-      recipients: {
-        some: {
-          id: currentUser!.id,
-        },
-      },
+      recipients: { some: { id: currentUser!.id } },
       projectId: projectId ?? undefined,
     }),
     [currentUser, projectId]
   )
+
+  const baseWhere = useMemo<Prisma.NotificationWhereInput>(() => {
+    const conditions: Prisma.NotificationWhereInput[] = [coreWhere]
+    if (search) {
+      conditions.push({
+        OR: [
+          { message: { contains: search, mode: "insensitive" } },
+          { project: { name: { contains: search, mode: "insensitive" } } },
+        ],
+      })
+    }
+    for (const filter of columnFilters) {
+      const value = String(filter.value ?? "").trim()
+      if (!value) continue
+      if (filter.id === "readStatus") {
+        conditions.push({ read: value === "Read" })
+      }
+    }
+    return conditions.length === 1 ? conditions[0]! : { AND: conditions }
+  }, [coreWhere, search, columnFilters])
 
   const paginationArgs = useMemo(
     () => ({
@@ -90,6 +108,18 @@ const NotificationContent = () => {
     updater: PaginationState | ((state: PaginationState) => PaginationState)
   ) => {
     setPagination((prev) => (typeof updater === "function" ? updater(prev) : updater))
+    disableGlobalSelection()
+  }
+
+  const handleGlobalFilterChange = (filter: string) => {
+    setSearch(filter)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+    disableGlobalSelection()
+  }
+
+  const handleColumnFiltersChange = (filters: ColumnFiltersState) => {
+    setColumnFilters(filters)
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }))
     disableGlobalSelection()
   }
 
@@ -158,6 +188,8 @@ const NotificationContent = () => {
           onPaginationChange={handlePaginationChange}
           pageCount={pageCount}
           pageSizeOptions={[10, 25, 50, 100]}
+          onGlobalFilterChange={handleGlobalFilterChange}
+          onColumnFiltersChange={handleColumnFiltersChange}
         />
       </Card>
     </main>

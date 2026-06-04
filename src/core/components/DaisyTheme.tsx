@@ -15,7 +15,18 @@ import {
   getUiOptions,
   getSubmitButtonOptions,
   SubmitButtonProps,
+  schemaRequiresTrueValue,
+  descriptionId,
+  ariaDescribedByIds,
+  enumOptionsIsSelected,
+  enumOptionsSelectValue,
+  enumOptionsDeselectValue,
+  enumOptionsValueForIndex,
+  optionId,
 } from "@rjsf/utils"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 
 import { ThemeProps } from "@rjsf/core"
 
@@ -74,9 +85,12 @@ function MyDescriptionField<
   }
   if (typeof description === "string") {
     return (
-      <p id={id} className="text-md italic">
-        {description}
-      </p>
+      <div
+        id={id}
+        className="markdown-display prose max-w-none dark:prose-invert text-md italic mb-2"
+      >
+        <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>{description}</ReactMarkdown>
+      </div>
     )
   } else {
     return (
@@ -186,6 +200,118 @@ const MyEmailWidget = (props: WidgetProps) => {
   )
 }
 
+const MyCheckboxWidget = (props: WidgetProps) => {
+  const {
+    id,
+    value,
+    disabled,
+    readonly,
+    label,
+    hideLabel,
+    onChange,
+    onBlur,
+    onFocus,
+    options,
+    schema,
+    uiSchema,
+    registry,
+  } = props
+  const DescriptionFieldTemplate = getTemplate("DescriptionFieldTemplate", registry, options)
+  const description = options.description ?? schema.description
+  const required = schemaRequiresTrueValue(schema)
+
+  return (
+    <div className="field-checkbox">
+      {!hideLabel && label && (
+        <label className="text-lg font-bold block mb-1" htmlFor={id}>
+          {label}
+          {required && <span className="italic">{REQUIRED_FIELD_SYMBOL}</span>}
+        </label>
+      )}
+      {!hideLabel && !!description && (
+        <DescriptionFieldTemplate
+          id={descriptionId(id)}
+          description={description}
+          schema={schema}
+          uiSchema={uiSchema}
+          registry={registry}
+        />
+      )}
+      <label className="flex items-center gap-2 mt-1 cursor-pointer">
+        <input
+          type="checkbox"
+          id={id}
+          name={id}
+          checked={typeof value === "undefined" ? false : value}
+          required={required}
+          disabled={disabled || readonly}
+          aria-describedby={ariaDescribedByIds(id)}
+          onChange={(e) => onChange(e.target.checked)}
+          onBlur={(e) => onBlur(id, e.target.checked)}
+          onFocus={(e) => onFocus(id, e.target.checked)}
+        />
+      </label>
+    </div>
+  )
+}
+
+const MyCheckboxesWidget = (props: WidgetProps) => {
+  const {
+    id,
+    disabled,
+    options,
+    value,
+    readonly,
+    onChange,
+    onBlur,
+    onFocus,
+    autofocus = false,
+  } = props
+  const { enumOptions, enumDisabled, emptyValue } = options
+  const checkboxesValues = Array.isArray(value) ? value : [value]
+
+  return (
+    <div className="checkboxes-group" id={id}>
+      {Array.isArray(enumOptions) &&
+        enumOptions.map((option, index) => {
+          const checked = enumOptionsIsSelected(option.value, checkboxesValues)
+          const itemDisabled =
+            Array.isArray(enumDisabled) && enumDisabled.indexOf(option.value) !== -1
+          const disabledCls = disabled || itemDisabled || readonly ? "disabled" : ""
+
+          return (
+            <label key={index} className={`checkboxes-option ${disabledCls}`}>
+              <input
+                type="checkbox"
+                id={optionId(id, index)}
+                name={id}
+                checked={checked}
+                value={String(index)}
+                disabled={disabled || itemDisabled || readonly}
+                autoFocus={autofocus && index === 0}
+                onChange={(event) => {
+                  if (event.target.checked) {
+                    onChange(enumOptionsSelectValue(index, checkboxesValues, enumOptions))
+                  } else {
+                    onChange(enumOptionsDeselectValue(index, checkboxesValues, enumOptions))
+                  }
+                }}
+                onBlur={({ target: { value: v } }) =>
+                  onBlur(id, enumOptionsValueForIndex(v, enumOptions, emptyValue))
+                }
+                onFocus={({ target: { value: v } }) =>
+                  onFocus(id, enumOptionsValueForIndex(v, enumOptions, emptyValue))
+                }
+                aria-describedby={ariaDescribedByIds(id)}
+              />
+              <span>{option.label}</span>
+            </label>
+          )
+        })}
+    </div>
+  )
+}
+
 // create Registry information
 // templates
 const myTemplates: Partial<TemplatesType> = {
@@ -217,6 +343,8 @@ const myTemplates: Partial<TemplatesType> = {
 const myWidgets: RegistryWidgetsType = {
   TextWidget: MyTextWidget,
   EmailWidget: MyEmailWidget,
+  CheckboxWidget: MyCheckboxWidget,
+  CheckboxesWidget: MyCheckboxesWidget,
 }
 
 // create the overall theme to use on the other page

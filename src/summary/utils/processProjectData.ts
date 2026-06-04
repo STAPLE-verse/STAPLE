@@ -24,17 +24,21 @@ export function cleanProjectData(project: any) {
     return member
   })
 
-  // Scrub task fields for anonymous tasks
+  // Scrub task fields based on anonymous flags
   if (Array.isArray(project.tasks)) {
     project.tasks = project.tasks.map((task: any) => {
-      if (task && task.anonymous) {
-        return {
-          ...task,
-          name: "Anonymous task",
-          description: "Anonymous task",
-        }
+      if (!task) return task
+      const scrubbed: any = { ...task }
+      if (task.anonymous) {
+        scrubbed.name = "Anonymous task"
+        scrubbed.description = "Anonymous task"
       }
-      return task
+      if (task.anonymousResponses) {
+        scrubbed.taskLogs = Array.isArray(task.taskLogs)
+          ? task.taskLogs.map((log: any) => ({ ...log, metadata: null }))
+          : task.taskLogs
+      }
+      return scrubbed
     })
   }
 

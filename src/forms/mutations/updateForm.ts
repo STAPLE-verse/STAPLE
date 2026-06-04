@@ -16,30 +16,47 @@ export default resolver.pipe(
         ? schema.title
         : "No Title"
 
-    // Fetch the current form to get the current version number
     const currentForm = await db.form.findUnique({
       where: { id },
-      include: { versions: { orderBy: { version: "desc" }, take: 1 } },
+      include: {
+        versions: {
+          orderBy: { version: "desc" },
+          take: 1,
+          select: {
+            id: true,
+            version: true,
+            tasks: { select: { id: true } },
+            projects: { select: { id: true } },
+          },
+        },
+      },
     })
 
     if (!currentForm) {
       throw new Error("Form not found")
     }
 
-    const currentVersion = currentForm.versions[0]?.version || 0
-    const newVersion = currentVersion + 1
+    const latestVersion = currentForm.versions[0]
+    const isInUse =
+      (latestVersion?.tasks?.length ?? 0) > 0 || (latestVersion?.projects?.length ?? 0) > 0
 
-    // Create a new form version
-    const updatedForm = await db.formVersion.create({
+    if (latestVersion && !isInUse) {
+      // Edit in place — no new version needed
+      return db.formVersion.update({
+        where: { id: latestVersion.id },
+        data: { schema: newSchema, uiSchema: newUi || Prisma.JsonNull, name: schemaName },
+      })
+    }
+
+    // Version is deployed — create a new version to preserve existing data
+    return db.formVersion.create({
       data: {
         formId: id,
-        version: newVersion,
+        version: (latestVersion?.version ?? 0) + 1,
         schema: newSchema,
         uiSchema: newUi || Prisma.JsonNull,
         name: schemaName,
       },
     })
-
-    return updatedForm
   }
 )

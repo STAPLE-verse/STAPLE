@@ -6,6 +6,7 @@ import Sidebar from "../components/sidebar/Sidebar"
 import { Toaster } from "react-hot-toast"
 import useSidebar from "src/core/hooks/useSidebar"
 import useExpanded from "src/core/hooks/useExpanded"
+import { FeedbackButton } from "../components/FeedbackButton"
 
 const Layout: BlitzLayout<{
   title?: string
@@ -17,7 +18,7 @@ const Layout: BlitzLayout<{
 
   return (
     <>
-      <Toaster position="bottom-center" reverseOrder={false} />
+      <Toaster position="bottom-left" reverseOrder={false} />
       {/* @ts-expect-error false positive: JSX children are valid here */}
       <Head>
         <title>{title || "STAPLE"}</title>
@@ -33,6 +34,7 @@ const Layout: BlitzLayout<{
           <div className="flex-1 overflow-auto p-4">{children}</div>
         </div>
       </div>
+      <FeedbackButton />
     </>
   )
 }

@@ -29,6 +29,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { ListPlugin } from "@lexical/react/LexicalListPlugin"
 import { ListNode, ListItemNode } from "@lexical/list"
 import { UNDO_COMMAND, REDO_COMMAND } from "lexical"
+import { ArrowUturnLeftIcon, ArrowUturnRightIcon } from "@heroicons/react/24/outline"
 
 import { HeadingNode, QuoteNode } from "@lexical/rich-text"
 import { CodeNode } from "@lexical/code"
@@ -117,10 +118,10 @@ function Toolbar({
   const [editor] = useLexicalComposerContext()
 
   return (
-    <div className="flex flex-wrap gap-2 p-2 border-b border-base-300 bg-base-300">
+    <div className="flex flex-wrap items-center gap-2 p-4 border-b border-base-300 bg-base-300">
       <input
         type="text"
-        className="input w-64 bg-base-100"
+        className="input input-bordered border-2 border-primary w-64 bg-base-100 !mt-0"
         placeholder="Untitled"
         value={title}
         onChange={(e) => onTitleChange(e.target.value)}
@@ -150,19 +151,21 @@ function Toolbar({
       <div className="divider divider-horizontal m-0" />
       <button
         type="button"
-        className="btn btn-outline"
+        className="btn btn-square btn-secondary"
+        title="Undo"
         onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
         disabled={readOnly}
       >
-        Undo
+        <ArrowUturnLeftIcon className="w-5 h-5" />
       </button>
       <button
         type="button"
-        className="btn btn-outline"
+        className="btn btn-square btn-secondary"
+        title="Redo"
         onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
         disabled={readOnly}
       >
-        Redo
+        <ArrowUturnRightIcon className="w-5 h-5" />
       </button>
       <div className="divider divider-horizontal m-0" />
       <div className="flex items-center gap-2">

@@ -3,8 +3,12 @@ import db, { Prisma } from "db"
 import { Form, FormVersion } from "db"
 import { paginate } from "blitz"
 
+export type FormFolder = { id: number; name: string }
+
 export interface FormWithFormVersion extends Form {
   formVersion: FormVersion | null
+  folder: FormFolder | null
+  _count?: { versions: number }
 }
 
 interface GetFormInput
@@ -19,12 +23,25 @@ const includeLatestVersion = (include?: Prisma.FormInclude | null) =>
           orderBy: [{ version: "desc" as const }],
           take: 1,
         },
+        folder: { select: { id: true, name: true } },
+        _count: {
+          select: {
+            versions: {
+              where: {
+                OR: [{ tasks: { some: {} } }, { projects: { some: {} } }],
+              },
+            },
+          },
+        },
       }
 
-const mapForms = (fetchedForms: (Form & { versions?: FormVersion[] })[]): FormWithFormVersion[] => {
+const mapForms = (
+  fetchedForms: (Form & { versions?: FormVersion[]; folder?: FormFolder | null })[]
+): FormWithFormVersion[] => {
   return fetchedForms.map((form) => ({
     ...form,
     formVersion: form.versions?.[0] || null,
+    folder: form.folder ?? null,
   }))
 }
 
