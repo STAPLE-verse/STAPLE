@@ -40,6 +40,7 @@ model User {
   // relational information
   projects                      ProjectMember[]
   forms                         Form[]
+  publishedSchemas              PublishedSchema[]
   folders                       Folder[]
   roles                         Role[]
   ProjectPrivilege              ProjectPrivilege[]
@@ -431,4 +432,36 @@ model Note {
 
   @@index([projectId, authorId], name: "note_project_author_idx")
   @@index([authorId, pinned], name: "note_author_pinned_idx")
+}
+
+model PublishedSchema {
+  // FINDABILITY
+  pid          String   @id // e.g., "ps_8f9a2b"
+  title        String
+  description  String?
+  keywords     String[] // For fast searching
+  ontologyRefs Json? // e.g., ["SNOMED:424144002", "NCIT:C25150"]
+
+  // ACCESSIBILITY & INTEROPERABILITY
+  schemaJson Json // The core JSON Schema
+  source     String @default("native") // "native", "cedar", "redcap"
+
+  // REUSABILITY & PROVENANCE
+  version  String // Semantic e.g. "1.0.0"
+  familyId String // Links v1.0.0 and v1.1.0 together
+  license  String @default("CC-BY-4.0") // CRITICAL FOR FAIR
+
+  // Lineage (PROV Ontology mapping)
+  derivedFromPid String? // Links to parent if this is a fork
+
+  // Authorship (Dublin Core mapping)
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id])
+
+  // Internal tracking
+  originFormVersionId Int? // Link back to the STAPLE workspace draft
+  createdAt           DateTime @default(now())
+
+  @@unique([familyId, version])
+  @@index([keywords]) // Make searching fast
 }
