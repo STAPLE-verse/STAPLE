@@ -13,34 +13,35 @@ generator client {
 // --------------------------------------
 
 model User {
-  id                            Int                @id @default(autoincrement())
-  createdAt                     DateTime           @default(now())
-  updatedAt                     DateTime           @updatedAt
+  id                            Int                 @id @default(autoincrement())
+  createdAt                     DateTime            @default(now())
+  updatedAt                     DateTime            @updatedAt
   hashedPassword                String?
-  role                          String             @default("USER")
+  role                          String              @default("USER")
   tos                           Boolean?
   tokens                        Token[]
   sessions                      Session[]
   // notifications and dashboards
-  notifications                 Notification[]     @relation("UserNotifications")
+  notifications                 Notification[]      @relation("UserNotifications")
   widgets                       Widget[]
   projectWidget                 ProjectWidget[]
-  emailProjectActivityFrequency EmailFrequency     @default(DAILY)
-  emailOverdueTaskFrequency     EmailFrequency     @default(DAILY)
+  emailProjectActivityFrequency EmailFrequency      @default(DAILY)
+  emailOverdueTaskFrequency     EmailFrequency      @default(DAILY)
   // profile information
   orcid                         String?
   institution                   String?
-  username                      String             @unique
+  username                      String              @unique
   firstName                     String?
   lastName                      String?
-  email                         String             @unique
-  language                      String             @default("en-US")
+  email                         String              @unique
+  language                      String              @default("en-US")
   gravatar                      String?
-  tooltips                      Boolean            @default(true)
+  tooltips                      Boolean             @default(true)
   // relational information
   projects                      ProjectMember[]
   forms                         Form[]
   publishedSchemas              PublishedSchema[]
+  schemaEndorsements            SchemaEndorsement[]
   folders                       Folder[]
   roles                         Role[]
   ProjectPrivilege              ProjectPrivilege[]
@@ -297,32 +298,59 @@ model Folder {
 }
 
 model Form {
-  id        Int           @id @default(autoincrement())
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  userId    Int
-  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  versions  FormVersion[]
-  archived  Boolean       @default(false)
-  tags      Json?
-  folderId  Int?
-  folder    Folder?       @relation(fields: [folderId], references: [id])
+  id                 Int           @id @default(autoincrement())
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  userId             Int
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  versions           FormVersion[]
+  archived           Boolean       @default(false)
+  tags               Json?
+  folderId           Int?
+  folder             Folder?       @relation(fields: [folderId], references: [id])
+  app                String        @default("staple")
+  originalImportHash String?
+}
+
+enum VersionStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }
 
 model FormVersion {
-  id        Int       @id @default(autoincrement())
-  name      String
-  formId    Int
-  version   Int
-  schema    Json
-  uiSchema  Json?
-  archived  Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  form      Form      @relation(fields: [formId], references: [id], onDelete: Cascade)
-  tasks     Task[]
-  projects  Project[]
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  formId              Int
+  version             Int
+  schema              Json
+  uiSchema            Json?
+  archived            Boolean              @default(false)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @default(now()) @updatedAt
+  form                Form                 @relation(fields: [formId], references: [id], onDelete: Cascade)
+  tasks               Task[]
+  projects            Project[]
+  status              VersionStatus        @default(DRAFT)
+  publishedSchemas    PublishedSchema[]
+  publicationMetadata PublicationMetadata?
 
-  @@index([formId, version], name: "formVersionIndex")
+  @@unique([formId, version])
+}
+
+model PublicationMetadata {
+  id            Int         @id @default(autoincrement())
+  formVersionId Int         @unique
+  formVersion   FormVersion @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
+
+  domain       String?
+  language     String?
+  license      String?
+  keywords     String[] @default([])
+  contributors Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Notification {
@@ -444,24 +472,49 @@ model PublishedSchema {
 
   // ACCESSIBILITY & INTEROPERABILITY
   schemaJson Json // The core JSON Schema
+  uiSchema   Json?
   source     String @default("native") // "native", "cedar", "redcap"
 
   // REUSABILITY & PROVENANCE
-  version  String // Semantic e.g. "1.0.0"
-  familyId String // Links v1.0.0 and v1.1.0 together
-  license  String @default("CC-BY-4.0") // CRITICAL FOR FAIR
+  version      String // Semantic e.g. "1.0.0"
+  familyId     String // Links v1.0.0 and v1.1.0 together
+  license      String  @default("CC-BY-4.0") // CRITICAL FOR FAIR
+  releaseNotes String?
+  domain       String?
+  language     String  @default("en")
 
   // Lineage (PROV Ontology mapping)
   derivedFromPid String? // Links to parent if this is a fork
+  isSupersededBy String? // Links to a newer schema if this one is deprecated
 
   // Authorship (Dublin Core mapping)
-  authorId Int
-  author   User @relation(fields: [authorId], references: [id])
+  authorId              Int
+  author                User    @relation(fields: [authorId], references: [id])
+  contributors          Json?
+  relatedPublicationDoi String?
+
+  // Stats & Social
+  viewCount        Int                 @default(0)
+  usageCount       Int                 @default(0)
+  endorsementCount Int                 @default(0)
+  endorsements     SchemaEndorsement[]
 
   // Internal tracking
   originFormVersionId Int? // Link back to the STAPLE workspace draft
-  createdAt           DateTime @default(now())
+  originFormVersion   FormVersion? @relation(fields: [originFormVersionId], references: [id], onDelete: SetNull)
+  createdAt           DateTime     @default(now())
 
   @@unique([familyId, version])
   @@index([keywords]) // Make searching fast
+}
+
+model SchemaEndorsement {
+  id                 Int             @id @default(autoincrement())
+  userId             Int
+  user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  publishedSchemaPid String
+  publishedSchema    PublishedSchema @relation(fields: [publishedSchemaPid], references: [pid], onDelete: Cascade)
+  createdAt          DateTime        @default(now())
+
+  @@unique([userId, publishedSchemaPid])
 }
