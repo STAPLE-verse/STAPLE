@@ -82,6 +82,10 @@ const AllFormsPage = () => {
     setPagination((prev) => ({ ...prev, pageIndex: 0 }))
   }, [])
 
+  const handleFormsUpdated = useCallback(() => {
+    void refetch()
+  }, [refetch])
+
   const handleCreateFolder = async () => {
     if (!newFolderName.trim()) return
     await createFolderMutation({ name: newFolderName.trim() })
@@ -117,9 +121,7 @@ const AllFormsPage = () => {
               open={isModalOpen}
               onClose={closeModal}
               currentUser={currentUser!}
-              onFormsUpdated={() => {
-                void refetch()
-              }}
+              onFormsUpdated={handleFormsUpdated}
             />
             {showNewFolder ? (
               <>
@@ -170,9 +172,7 @@ const AllFormsPage = () => {
               onGlobalFilterChange={handleGlobalFilterChange}
               onFolderFilterChange={handleFolderFilterChange}
               onColumnFiltersChange={handleColumnFiltersChange}
-              onFormsUpdated={() => {
-                void refetch()
-              }}
+              onFormsUpdated={handleFormsUpdated}
             />
           </Card>
         </Suspense>
