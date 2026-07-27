@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { Tab } from "@headlessui/react"
 import classNames from "classnames"
-import VisualBuilderTab from "./VisualBuilderTab"
-import JSONBuilderTab from "./JSONBuilderTab"
-import validator from "@rjsf/validator-ajv8"
-import JsonForm from "src/core/components/JsonForm"
-import { noSubmitButton } from "../utils/extendSchema"
+import {
+  FormBuilder,
+  FormPreview,
+  FormStudioProvider,
+  JsonEditor,
+  useFormStudio,
+  type FormStudioState,
+} from "@staple-verse/form-studio"
 import FormTagEditor from "./FormTagEditor"
 import FormFolderSelector from "./FormFolderSelector"
 import FormDeployments from "./FormDeployments"
@@ -17,7 +20,7 @@ import { FormVersionWithRelations } from "../queries/getForm"
 interface FormPlaygroundProps {
   initialSchema?: string
   initialUiSchema?: string
-  saveForm: (formState: { schema: object; uischema: object; formData: object }) => void
+  saveForm: (formState: FormStudioState) => void
   formId?: number
   initialTags?: string[]
   initialFolderId?: number | null
@@ -25,20 +28,13 @@ interface FormPlaygroundProps {
   currentVersionId?: number
   formArchived?: boolean
   infoOnly?: boolean
-  onAutoSave?: (state: { schema: object; uischema: object; formData: object }) => Promise<void>
+  onAutoSave?: (state: FormStudioState) => Promise<void>
   onVersionsUpdated?: () => Promise<void> | void
 }
 
-interface FormState {
-  schema: object
-  uischema: object
-  formData: object
-  extendedUiSchema: object
-}
+type FormPlaygroundContentProps = Omit<FormPlaygroundProps, "initialSchema" | "initialUiSchema">
 
-const FormPlayground: React.FC<FormPlaygroundProps> = ({
-  initialSchema = "{}",
-  initialUiSchema = "{}",
+const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
   saveForm,
   formId,
   initialTags = [],
@@ -50,41 +46,23 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   onAutoSave,
   onVersionsUpdated,
 }) => {
-  const [state, setState] = useState<FormState>({
-    schema: JSON.parse(initialSchema),
-    uischema: JSON.parse(initialUiSchema),
-    extendedUiSchema: noSubmitButton(JSON.parse(initialUiSchema)),
-    formData: {},
-  })
-  const [render, setRender] = useState(false)
+  const { state, setSchema, setUiSchema } = useFormStudio()
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [hasVisitedJson, setHasVisitedJson] = useState(false)
   const hasCurrentVersionId = typeof currentVersionId === "number"
-
-  useEffect(() => {
-    if (!render) {
-      setRender(true)
-    }
-  }, [render])
+  const jsonTabIndex = formId ? 2 : 1
 
   const handleSave = () => {
     saveForm(state)
   }
-  const handleChange = (newSchema: object, newUiSchema: object) => {
-    //("🧪 incoming schema", newSchema)
-    //console.log("🧪 incoming uischema", newUiSchema)
 
-    setState({
-      schema: newSchema,
-      uischema: newUiSchema,
-      formData: state.formData,
-      extendedUiSchema: noSubmitButton(newUiSchema),
-    })
-  }
-
-  return render ? (
+  return (
     <Tab.Group
       selectedIndex={selectedIndex}
       onChange={(index) => {
+        if (index === jsonTabIndex) {
+          setHasVisitedJson(true)
+        }
         const leavingBuilderTab = formId ? selectedIndex !== 0 : true
         if (onAutoSave && leavingBuilderTab && !infoOnly) {
           void onAutoSave(state)
@@ -192,36 +170,40 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
         {!infoOnly && (
           <>
             <Tab.Panel>
-              <VisualBuilderTab
-                schema={state.schema}
-                uiSchema={state.uischema}
-                onSave={handleSave}
-                onChange={handleChange}
+              <FormBuilder
+                schema={JSON.stringify(state.schema)}
+                uiSchema={JSON.stringify(state.uiSchema)}
+                onChange={(schema, uiSchema) => {
+                  setSchema(JSON.parse(schema))
+                  setUiSchema(JSON.parse(uiSchema))
+                }}
               />
             </Tab.Panel>
 
-            <Tab.Panel>
-              <JSONBuilderTab
-                schema={state.schema}
-                uiSchema={state.uischema}
-                onSave={handleSave}
-                onChange={handleChange}
-              />
+            <Tab.Panel unmount={false} className="h-[70vh] min-h-[500px] w-full">
+              {hasVisitedJson && <JsonEditor />}
             </Tab.Panel>
 
             <Tab.Panel>
-              <JsonForm
-                schema={state.schema}
-                uiSchema={state.extendedUiSchema}
-                formData={state.formData}
-                validator={validator}
-              />
+              <FormPreview />
             </Tab.Panel>
           </>
         )}
       </Tab.Panels>
     </Tab.Group>
-  ) : null
+  )
+}
+
+const FormPlayground: React.FC<FormPlaygroundProps> = ({
+  initialSchema = "{}",
+  initialUiSchema = "{}",
+  ...props
+}) => {
+  return (
+    <FormStudioProvider initialSchema={initialSchema} initialUiSchema={initialUiSchema}>
+      <FormPlaygroundContent {...props} />
+    </FormStudioProvider>
+  )
 }
 
 export default FormPlayground

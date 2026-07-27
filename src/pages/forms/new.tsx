@@ -7,15 +7,16 @@ import { useMutation } from "@blitzjs/rpc"
 import createForm from "src/forms/mutations/createForm"
 import router from "next/router"
 import { Routes } from "@blitzjs/next"
+import type { FormStudioState } from "@staple-verse/form-studio"
 
 const FormBuilderPage = () => {
   const [CreateFormMutation] = useMutation(createForm)
   const currentUser = useCurrentUser()
 
-  const saveForm = async (state) => {
+  const saveForm = async (state: FormStudioState) => {
     const form = await CreateFormMutation({
       schema: state.schema,
-      uiSchema: state.uischema,
+      uiSchema: state.uiSchema,
       userId: currentUser!.id,
     })
     await router.push(Routes.FormEditPage({ formsId: form.id }))

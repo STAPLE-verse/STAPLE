@@ -1,8 +1,13 @@
 import { useState } from "react"
 import { useMutation } from "@blitzjs/rpc"
 import { WithContext as ReactTags, SEPARATORS } from "react-tag-input"
-import type { Tag } from "react-tag-input/types/components/SingleTag"
 import updateFormMeta from "src/forms/mutations/updateFormMeta"
+
+type Tag = {
+  id: string
+  text: string
+  className: string
+}
 
 type Props = {
   formId: number
