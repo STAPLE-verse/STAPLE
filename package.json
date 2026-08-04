@@ -48,7 +48,7 @@
     "@rjsf/mui": "5.13.4",
     "@rjsf/utils": "5.13.4",
     "@rjsf/validator-ajv8": "5.13.4",
-    "@staple-verse/form-studio": "github:STAPLE-verse/form-studio",
+    "@staple-verse/form-studio": "github:STAPLE-verse/form-studio#251056e81dcd8dad7b541ad91e6978003ccea0db",
     "@tanstack/react-table": "8.20.5",
     "@wamra/gantt-task-react": "0.6.17",
     "archiver": "7.0.1",
