@@ -48,10 +48,6 @@ function loadFixtures(): CapabilityFixture[] {
     .map((file) => JSON.parse(readFileSync(path.join(fixtureRoot, file), "utf8")))
 }
 
-function clone<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value))
-}
-
 function hasExpectedValidationBehavior(
   schema: Record<string, any>,
   fixture: CapabilityFixture
@@ -87,8 +83,8 @@ describe("current STAPLE deployment integration", () => {
     vi.spyOn(console, "error").mockImplementation(() => undefined)
     vi.spyOn(console, "warn").mockImplementation(() => undefined)
 
-    const deployedSchema = getJsonSchema(clone(fixture.schema))
-    const deployedUiSchema = getJsonSchema(clone(fixture.uiSchema))
+    const deployedSchema = getJsonSchema(fixture.schema)
+    const deployedUiSchema = getJsonSchema(fixture.uiSchema)
     const validationPreserved = hasExpectedValidationBehavior(deployedSchema, fixture)
 
     const { container } = render(

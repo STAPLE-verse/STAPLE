@@ -59,4 +59,32 @@ describe("getJsonSchema", () => {
         ?.length ?? 0
     ).toBeGreaterThan(0)
   })
+
+  test("preserves prefixed keys and every JSON array value without mutating the source", () => {
+    const sourceSchema = {
+      $schema: "http://json-schema.org/draft-07/schema#",
+      $comment: "Standards vocabulary must survive deployment copying.",
+      "@context": "https://schema.org",
+      type: "object",
+      properties: {
+        "@id": {
+          type: "string",
+        },
+        values: {
+          type: "array",
+          items: {
+            enum: ["$literal", "@literal", false, 0, "", null],
+          },
+        },
+      },
+      examples: [["$example", "@example", false, 0, "", null]],
+    }
+    const sourceSnapshot = clone(sourceSchema)
+
+    const deployedSchema = getJsonSchema(sourceSchema)
+
+    expect(deployedSchema).not.toBe(sourceSchema)
+    expect(sourceSchema).toEqual(sourceSnapshot)
+    expect(deployedSchema).toEqual(sourceSnapshot)
+  })
 })
