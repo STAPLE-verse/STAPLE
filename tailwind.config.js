@@ -1,6 +1,9 @@
 // tailwind.config.js
 module.exports = {
-  content: ["./{src,app,pages}/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./{src,app,pages}/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@staple-verse/form-studio/dist/**/*.{js,jsx}",
+  ],
   theme: {
     extend: {},
   },
