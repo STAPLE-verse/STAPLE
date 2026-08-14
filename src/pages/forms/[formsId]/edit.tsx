@@ -10,6 +10,7 @@ import { Routes, useParam } from "@blitzjs/next"
 import { useRouter } from "next/router"
 import updateForm from "src/forms/mutations/updateForm"
 import getForm from "src/forms/queries/getForm"
+import type { FormStudioState } from "@staple-verse/form-studio"
 
 const FormEditPage = () => {
   const [UpdateFormMutation] = useMutation(updateForm)
@@ -18,12 +19,12 @@ const FormEditPage = () => {
   const infoOnly = query.view === "info"
   const [currentForm, { refetch: refetchGetForm }] = useQuery(getForm, { id: formsId! })
 
-  const autoSave = async (state) => {
+  const autoSave = async (state: FormStudioState) => {
     try {
       await UpdateFormMutation({
         id: formsId!,
         schema: state.schema,
-        uiSchema: state.uischema,
+        uiSchema: state.uiSchema,
       })
       await refetchGetForm()
       toast.success("Auto-saved.", { duration: 1500 })
@@ -32,11 +33,11 @@ const FormEditPage = () => {
     }
   }
 
-  const saveForm = async (state) => {
+  const saveForm = async (state: FormStudioState) => {
     await UpdateFormMutation({
       id: formsId!,
       schema: state.schema,
-      uiSchema: state.uischema,
+      uiSchema: state.uiSchema,
     })
 
     await refetchGetForm()

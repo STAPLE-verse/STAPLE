@@ -30,7 +30,7 @@ export const FormsList = ({
   onColumnFiltersChange,
   onFormsUpdated,
 }: FormsListProps) => {
-  const formsTableData = processForms(forms)
+  const formsTableData = useMemo(() => processForms(forms), [forms])
   const columns = useMemo(
     () => getFormsColumns(onFolderFilterChange, onFormsUpdated),
     [onFolderFilterChange, onFormsUpdated]
