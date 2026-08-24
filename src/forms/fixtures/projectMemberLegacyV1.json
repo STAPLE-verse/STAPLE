@@ -1,0 +1,20 @@
+{
+  "description": "Characterization fixture for the pre-Semantic V1 STAPLE Project Member export.",
+  "response": {
+    "givenName": "Ada",
+    "additionalName": "Lovelace",
+    "familyName": "Byron",
+    "email": "ada@example.edu",
+    "identifier": "https://orcid.org/0000-0002-1825-0097",
+    "_stapleSchema": "projectmember-v1"
+  },
+  "expectedJsonLd": {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "givenName": "Ada",
+    "additionalName": "Lovelace",
+    "familyName": "Byron",
+    "email": "ada@example.edu",
+    "identifier": "https://orcid.org/0000-0002-1825-0097"
+  }
+}

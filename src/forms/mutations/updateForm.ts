@@ -25,6 +25,7 @@ export default resolver.pipe(
           select: {
             id: true,
             version: true,
+            semantics: true,
             tasks: { select: { id: true } },
             projects: { select: { id: true } },
           },
@@ -55,6 +56,7 @@ export default resolver.pipe(
         version: (latestVersion?.version ?? 0) + 1,
         schema: newSchema,
         uiSchema: newUi || Prisma.JsonNull,
+        semantics: latestVersion?.semantics ?? Prisma.JsonNull,
         name: schemaName,
       },
     })

@@ -40,6 +40,26 @@ export const CreateFormSchema = z.object({
       if (data === null) return Prisma.JsonNull
       else return data as Prisma.NullableJsonNullValueInput
     }),
+  semantics: z
+    .unknown()
+    .nullable()
+    .optional()
+    .refine(
+      (data) => {
+        if (data === null || data === undefined) return true
+        try {
+          JSON.parse(JSON.stringify(data))
+          return true
+        } catch {
+          return false
+        }
+      },
+      { message: "Invalid Semantic V1 JSON" }
+    )
+    .transform((data) => {
+      if (data === null || data === undefined) return Prisma.JsonNull
+      return data as Prisma.NullableJsonNullValueInput
+    }),
   userId: z.number(),
 })
 
