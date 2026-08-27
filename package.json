@@ -50,6 +50,7 @@
     "@rjsf/utils": "5.13.4",
     "@rjsf/validator-ajv8": "5.13.4",
     "@staple-verse/form-studio": "github:STAPLE-verse/form-studio#ed38931ccc5ba1b5a6a6c0fcf7b574e3a1dcc405",
+    "@staple-verse/marker-template-runtime": "https://github.com/STAPLE-verse/marker-template-spec/releases/download/v1.0.0-rc.1/staple-verse-marker-template-runtime-1.0.0-rc.1.tgz",
     "@tanstack/react-table": "8.20.5",
     "@wamra/gantt-task-react": "0.6.17",
     "archiver": "7.0.1",
