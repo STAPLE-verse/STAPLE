@@ -159,12 +159,6 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
         </div>
       )}
 
-      {!infoOnly && (
-        <div className="mb-4">
-          <SemanticDiagnosticsSummary />
-        </div>
-      )}
-
       <Tab.Panels>
         {formId && (
           <Tab.Panel>
@@ -242,6 +236,12 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
           </>
         )}
       </Tab.Panels>
+
+      {!infoOnly && (
+        <div className="mt-4">
+          <SemanticDiagnosticsSummary />
+        </div>
+      )}
     </Tab.Group>
   )
 }
