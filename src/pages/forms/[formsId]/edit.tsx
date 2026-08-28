@@ -11,6 +11,7 @@ import { useRouter } from "next/router"
 import updateForm from "src/forms/mutations/updateForm"
 import getForm from "src/forms/queries/getForm"
 import type { FormStudioState } from "@staple-verse/form-studio"
+import { getSemanticV1Value } from "@staple-verse/form-studio/semantic-v1"
 
 const FormEditPage = () => {
   const [UpdateFormMutation] = useMutation(updateForm)
@@ -25,7 +26,7 @@ const FormEditPage = () => {
         id: formsId!,
         schema: state.schema,
         uiSchema: state.uiSchema,
-        semantics: state.semantics ?? null,
+        semantics: getSemanticV1Value(state) ?? null,
       })
       await refetchGetForm()
       toast.success("Auto-saved.", { duration: 1500 })
@@ -39,7 +40,7 @@ const FormEditPage = () => {
       id: formsId!,
       schema: state.schema,
       uiSchema: state.uiSchema,
-      semantics: state.semantics ?? null,
+      semantics: getSemanticV1Value(state) ?? null,
     })
 
     await refetchGetForm()

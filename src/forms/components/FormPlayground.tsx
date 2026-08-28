@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Tab } from "@headlessui/react"
 import classNames from "classnames"
 import {
-  computeSemanticDiagnostics,
   FormBuilder,
   FormPreview,
+  FormStudioDiagnostics,
   FormStudioProvider,
   JsonEditor,
-  SemanticDiagnosticsSummary,
   useFormStudio,
   type FormStudioState,
 } from "@staple-verse/form-studio"
+import {
+  semanticV1Extension,
+  type SemanticV1Component,
+} from "@staple-verse/form-studio/semantic-v1"
 import FormTagEditor from "./FormTagEditor"
 import FormFolderSelector from "./FormFolderSelector"
 import FormDeployments from "./FormDeployments"
@@ -35,6 +38,8 @@ interface FormPlaygroundProps {
   onVersionsUpdated?: () => Promise<void> | void
 }
 
+const FORM_STUDIO_EXTENSIONS = [semanticV1Extension] as const
+
 type FormPlaygroundContentProps = Omit<
   FormPlaygroundProps,
   "initialSchema" | "initialUiSchema" | "initialSemantics"
@@ -52,33 +57,36 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
   onAutoSave,
   onVersionsUpdated,
 }) => {
-  const { state, setSchema, setUiSchema, setSemantics, semanticDiagnostics } = useFormStudio()
+  const { state, setSchema, setUiSchema, extensionDiagnostics, validateForCommit } = useFormStudio()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [hasVisitedJson, setHasVisitedJson] = useState(false)
   const hasCurrentVersionId = typeof currentVersionId === "number"
   const jsonTabIndex = formId ? 2 : 1
 
-  // Invalid semantics must never reach a conformant save. `semanticDiagnostics`
-  // above is debounced, so disabling the button on it is a cheap affordance
-  // that can be briefly stale right after a keystroke — the authoritative
-  // check re-runs `computeSemanticDiagnostics` synchronously at save time.
+  const blockingDiagnostics = useMemo(
+    () => extensionDiagnostics.filter((diagnostic) => diagnostic.blocksCommit),
+    [extensionDiagnostics]
+  )
+
+  // Live diagnostics are debounced. Manual saves and server-side autosaves
+  // both perform the same fresh synchronous registry validation first.
   const [saveBlocked, setSaveBlocked] = useState(false)
   useEffect(() => {
-    if (semanticDiagnostics.length === 0) setSaveBlocked(false)
-  }, [semanticDiagnostics])
+    if (blockingDiagnostics.length === 0) setSaveBlocked(false)
+  }, [blockingDiagnostics])
 
-  const handleSave = () => {
-    const diagnostics = computeSemanticDiagnostics({
-      schema: state.schema,
-      semantics: state.semantics,
-    })
-    if (diagnostics.length > 0) {
+  const commitIfValid = (commit: (snapshot: FormStudioState) => void) => {
+    const result = validateForCommit()
+    if (result.blocked) {
       setSaveBlocked(true)
-      return
+      return false
     }
     setSaveBlocked(false)
-    saveForm(state)
+    commit(state)
+    return true
   }
+
+  const handleSave = () => commitIfValid(saveForm)
 
   return (
     <Tab.Group
@@ -89,7 +97,9 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
         }
         const leavingBuilderTab = formId ? selectedIndex !== 0 : true
         if (onAutoSave && leavingBuilderTab && !infoOnly) {
-          void onAutoSave(state)
+          commitIfValid((snapshot) => {
+            void onAutoSave(snapshot)
+          })
         }
         setSelectedIndex(index)
       }}
@@ -136,15 +146,15 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
           <div
             className="tooltip tooltip-left"
             data-tip={
-              semanticDiagnostics.length > 0
-                ? "Resolve the semantic validation issues below before saving."
+              blockingDiagnostics.length > 0
+                ? "Resolve the extension validation issues below before saving."
                 : undefined
             }
           >
             <button
               type="button"
               className="btn btn-primary"
-              disabled={semanticDiagnostics.length > 0}
+              disabled={blockingDiagnostics.length > 0}
               onClick={handleSave}
             >
               Save Form
@@ -155,7 +165,7 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
 
       {!infoOnly && saveBlocked && (
         <div className="mb-4 alert alert-warning" role="alert">
-          <span>Semantic validation issues must be resolved before saving. See below.</span>
+          <span>Extension validation issues must be resolved before saving. See below.</span>
         </div>
       )}
 
@@ -217,12 +227,10 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
               <FormBuilder
                 schema={JSON.stringify(state.schema)}
                 uiSchema={JSON.stringify(state.uiSchema)}
-                semantics={state.semantics}
                 onChange={(schema, uiSchema) => {
                   setSchema(JSON.parse(schema))
                   setUiSchema(JSON.parse(uiSchema))
                 }}
-                onSemanticsChange={setSemantics}
               />
             </Tab.Panel>
 
@@ -239,7 +247,7 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
 
       {!infoOnly && (
         <div className="mt-4">
-          <SemanticDiagnosticsSummary />
+          <FormStudioDiagnostics />
         </div>
       )}
     </Tab.Group>
@@ -252,15 +260,28 @@ const FormPlayground: React.FC<FormPlaygroundProps> = ({
   initialSemantics,
   ...props
 }) => {
+  const semantics = parseOptionalSemantics(initialSemantics)
   return (
     <FormStudioProvider
+      extensions={FORM_STUDIO_EXTENSIONS}
       initialSchema={initialSchema}
       initialUiSchema={initialUiSchema}
-      initialSemantics={initialSemantics}
+      initialExtensionValues={
+        semantics === undefined ? {} : { [semanticV1Extension.id]: semantics }
+      }
     >
       <FormPlaygroundContent {...props} />
     </FormStudioProvider>
   )
+}
+
+function parseOptionalSemantics(value: string | undefined): SemanticV1Component | undefined {
+  if (value === undefined) return undefined
+  try {
+    return JSON.parse(value) as SemanticV1Component
+  } catch {
+    return undefined
+  }
 }
 
 export default FormPlayground

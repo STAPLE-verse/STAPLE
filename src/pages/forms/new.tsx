@@ -8,6 +8,7 @@ import createForm from "src/forms/mutations/createForm"
 import router from "next/router"
 import { Routes } from "@blitzjs/next"
 import type { FormStudioState } from "@staple-verse/form-studio"
+import { getSemanticV1Value } from "@staple-verse/form-studio/semantic-v1"
 
 const FormBuilderPage = () => {
   const [CreateFormMutation] = useMutation(createForm)
@@ -17,7 +18,7 @@ const FormBuilderPage = () => {
     const form = await CreateFormMutation({
       schema: state.schema,
       uiSchema: state.uiSchema,
-      semantics: state.semantics,
+      semantics: getSemanticV1Value(state),
       userId: currentUser!.id,
     })
     await router.push(Routes.FormEditPage({ formsId: form.id }))
