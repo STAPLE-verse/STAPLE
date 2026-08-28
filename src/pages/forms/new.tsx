@@ -17,6 +17,7 @@ const FormBuilderPage = () => {
     const form = await CreateFormMutation({
       schema: state.schema,
       uiSchema: state.uiSchema,
+      semantics: state.semantics,
       userId: currentUser!.id,
     })
     await router.push(Routes.FormEditPage({ formsId: form.id }))

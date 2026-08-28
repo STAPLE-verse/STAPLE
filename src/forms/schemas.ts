@@ -103,6 +103,25 @@ export const EditFormSchema = z.object({
       if (data === null) return Prisma.JsonNull
       else return data as Prisma.NullableJsonNullValueInput
     }),
+  // Omitted entirely (undefined) preserves the current version's semantics —
+  // callers that don't know about Semantic V1 must not silently wipe it.
+  // Explicit `null` means the user removed the semantic component.
+  semantics: z
+    .unknown()
+    .nullable()
+    .optional()
+    .refine(
+      (data) => {
+        if (data === null || data === undefined) return true
+        try {
+          JSON.parse(JSON.stringify(data))
+          return true
+        } catch {
+          return false
+        }
+      },
+      { message: "Invalid Semantic V1 JSON" }
+    ),
 })
 
 export const AddFormTemplatesSchema = z.object({

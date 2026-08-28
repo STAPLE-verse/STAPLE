@@ -1,11 +1,13 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Tab } from "@headlessui/react"
 import classNames from "classnames"
 import {
+  computeSemanticDiagnostics,
   FormBuilder,
   FormPreview,
   FormStudioProvider,
   JsonEditor,
+  SemanticDiagnosticsSummary,
   useFormStudio,
   type FormStudioState,
 } from "@staple-verse/form-studio"
@@ -20,6 +22,7 @@ import { FormVersionWithRelations } from "../queries/getForm"
 interface FormPlaygroundProps {
   initialSchema?: string
   initialUiSchema?: string
+  initialSemantics?: string
   saveForm: (formState: FormStudioState) => void
   formId?: number
   initialTags?: string[]
@@ -32,7 +35,10 @@ interface FormPlaygroundProps {
   onVersionsUpdated?: () => Promise<void> | void
 }
 
-type FormPlaygroundContentProps = Omit<FormPlaygroundProps, "initialSchema" | "initialUiSchema">
+type FormPlaygroundContentProps = Omit<
+  FormPlaygroundProps,
+  "initialSchema" | "initialUiSchema" | "initialSemantics"
+>
 
 const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
   saveForm,
@@ -46,13 +52,31 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
   onAutoSave,
   onVersionsUpdated,
 }) => {
-  const { state, setSchema, setUiSchema } = useFormStudio()
+  const { state, setSchema, setUiSchema, setSemantics, semanticDiagnostics } = useFormStudio()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [hasVisitedJson, setHasVisitedJson] = useState(false)
   const hasCurrentVersionId = typeof currentVersionId === "number"
   const jsonTabIndex = formId ? 2 : 1
 
+  // Invalid semantics must never reach a conformant save. `semanticDiagnostics`
+  // above is debounced, so disabling the button on it is a cheap affordance
+  // that can be briefly stale right after a keystroke — the authoritative
+  // check re-runs `computeSemanticDiagnostics` synchronously at save time.
+  const [saveBlocked, setSaveBlocked] = useState(false)
+  useEffect(() => {
+    if (semanticDiagnostics.length === 0) setSaveBlocked(false)
+  }, [semanticDiagnostics])
+
   const handleSave = () => {
+    const diagnostics = computeSemanticDiagnostics({
+      schema: state.schema,
+      semantics: state.semantics,
+    })
+    if (diagnostics.length > 0) {
+      setSaveBlocked(true)
+      return
+    }
+    setSaveBlocked(false)
     saveForm(state)
   }
 
@@ -109,9 +133,35 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
 
       {!infoOnly && (
         <div className="w-full flex justify-end mb-4">
-          <button type="button" className="btn btn-primary" onClick={handleSave}>
-            Save Form
-          </button>
+          <div
+            className="tooltip tooltip-left"
+            data-tip={
+              semanticDiagnostics.length > 0
+                ? "Resolve the semantic validation issues below before saving."
+                : undefined
+            }
+          >
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={semanticDiagnostics.length > 0}
+              onClick={handleSave}
+            >
+              Save Form
+            </button>
+          </div>
+        </div>
+      )}
+
+      {!infoOnly && saveBlocked && (
+        <div className="mb-4 alert alert-warning" role="alert">
+          <span>Semantic validation issues must be resolved before saving. See below.</span>
+        </div>
+      )}
+
+      {!infoOnly && (
+        <div className="mb-4">
+          <SemanticDiagnosticsSummary />
         </div>
       )}
 
@@ -173,10 +223,12 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
               <FormBuilder
                 schema={JSON.stringify(state.schema)}
                 uiSchema={JSON.stringify(state.uiSchema)}
+                semantics={state.semantics}
                 onChange={(schema, uiSchema) => {
                   setSchema(JSON.parse(schema))
                   setUiSchema(JSON.parse(uiSchema))
                 }}
+                onSemanticsChange={setSemantics}
               />
             </Tab.Panel>
 
@@ -197,10 +249,15 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
 const FormPlayground: React.FC<FormPlaygroundProps> = ({
   initialSchema = "{}",
   initialUiSchema = "{}",
+  initialSemantics,
   ...props
 }) => {
   return (
-    <FormStudioProvider initialSchema={initialSchema} initialUiSchema={initialUiSchema}>
+    <FormStudioProvider
+      initialSchema={initialSchema}
+      initialUiSchema={initialUiSchema}
+      initialSemantics={initialSemantics}
+    >
       <FormPlaygroundContent {...props} />
     </FormStudioProvider>
   )

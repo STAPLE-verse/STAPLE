@@ -25,6 +25,7 @@ const FormEditPage = () => {
         id: formsId!,
         schema: state.schema,
         uiSchema: state.uiSchema,
+        semantics: state.semantics ?? null,
       })
       await refetchGetForm()
       toast.success("Auto-saved.", { duration: 1500 })
@@ -38,6 +39,7 @@ const FormEditPage = () => {
       id: formsId!,
       schema: state.schema,
       uiSchema: state.uiSchema,
+      semantics: state.semantics ?? null,
     })
 
     await refetchGetForm()
@@ -53,6 +55,11 @@ const FormEditPage = () => {
             saveForm={saveForm}
             initialSchema={JSON.stringify(currentForm.formVersion?.schema || {})}
             initialUiSchema={JSON.stringify(currentForm.formVersion?.uiSchema || {})}
+            initialSemantics={
+              currentForm.formVersion?.semantics
+                ? JSON.stringify(currentForm.formVersion.semantics)
+                : undefined
+            }
             formId={formsId}
             initialTags={Array.isArray(currentForm.tags) ? (currentForm.tags as string[]) : []}
             initialFolderId={currentForm.folderId ?? null}

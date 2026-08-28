@@ -5,9 +5,13 @@ import { EditFormSchema } from "../schemas"
 export default resolver.pipe(
   resolver.zod(EditFormSchema),
   resolver.authorize(),
-  async ({ id, schema, uiSchema }) => {
+  async ({ id, schema, uiSchema, semantics }) => {
     const newSchema = schema != null ? schema : Prisma.JsonNull
     const newUi = uiSchema != null ? uiSchema : Prisma.JsonNull
+    // `undefined` (field omitted) means "caller doesn't know about semantics,
+    // leave it alone"; explicit `null` means "user removed the component."
+    const semanticsProvided = semantics !== undefined
+    const newSemantics = (semantics ?? Prisma.JsonNull) as Prisma.NullableJsonNullValueInput
     const schemaName =
       typeof schema === "object" &&
       schema !== null &&
@@ -45,7 +49,12 @@ export default resolver.pipe(
       // Edit in place — no new version needed
       return db.formVersion.update({
         where: { id: latestVersion.id },
-        data: { schema: newSchema, uiSchema: newUi || Prisma.JsonNull, name: schemaName },
+        data: {
+          schema: newSchema,
+          uiSchema: newUi || Prisma.JsonNull,
+          name: schemaName,
+          ...(semanticsProvided ? { semantics: newSemantics } : {}),
+        },
       })
     }
 
@@ -56,7 +65,7 @@ export default resolver.pipe(
         version: (latestVersion?.version ?? 0) + 1,
         schema: newSchema,
         uiSchema: newUi || Prisma.JsonNull,
-        semantics: latestVersion?.semantics ?? Prisma.JsonNull,
+        semantics: semanticsProvided ? newSemantics : latestVersion?.semantics ?? Prisma.JsonNull,
         name: schemaName,
       },
     })
