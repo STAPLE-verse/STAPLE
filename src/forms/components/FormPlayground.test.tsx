@@ -262,7 +262,7 @@ test("synchronously blocks invalid semantics while live diagnostics are still st
 
   expect(saveForm).not.toHaveBeenCalled()
   expect(screen.getByRole("alert")).toHaveTextContent(
-    "Extension validation issues must be resolved before saving"
+    "Validation issues must be resolved before saving"
   )
 
   fireEvent.click(screen.getByRole("tab", { name: "JSON Builder" }))

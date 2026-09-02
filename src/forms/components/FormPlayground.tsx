@@ -147,7 +147,7 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
             className="tooltip tooltip-left"
             data-tip={
               blockingDiagnostics.length > 0
-                ? "Resolve the extension validation issues below before saving."
+                ? "Resolve the validation issues below before saving."
                 : undefined
             }
           >
@@ -165,7 +165,7 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
 
       {!infoOnly && saveBlocked && (
         <div className="mb-4 alert alert-warning" role="alert">
-          <span>Extension validation issues must be resolved before saving. See below.</span>
+          <span>Validation issues must be resolved before saving. See below.</span>
         </div>
       )}
 
