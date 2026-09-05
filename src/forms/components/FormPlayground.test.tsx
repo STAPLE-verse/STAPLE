@@ -76,6 +76,26 @@ vi.mock("@staple-verse/form-studio", async () => {
       )
     },
     useFormStudio: () => ReactModule.useContext(StudioContext),
+    // Mirrors the real useFormStudioCommit (form-studio v0.2.0-rc.4): reads
+    // the same mock context, so FormPlayground's actual attemptCommit call
+    // sites are exercised against equivalent validate-then-commit behavior.
+    useFormStudioCommit: () => {
+      const context = ReactModule.useContext(StudioContext)
+      const [commitDiagnostics, setCommitDiagnostics] = ReactModule.useState<any[]>([])
+      const blockingDiagnostics = context.extensionDiagnostics.filter(
+        (diagnostic) => diagnostic.blocksCommit
+      )
+      const attemptCommit = (commit: (state: any) => void) => {
+        const result = context.validateForCommit()
+        if (result.blocked) {
+          setCommitDiagnostics(result.diagnostics.filter((diagnostic) => diagnostic.blocksCommit))
+          return
+        }
+        setCommitDiagnostics([])
+        commit(context.state)
+      }
+      return { blockingDiagnostics, commitDiagnostics, attemptCommit }
+    },
     FormBuilder: ({ schema, uiSchema, onChange }) => {
       const context = ReactModule.useContext(StudioContext)
       const semanticExtension = context.extensions[0]

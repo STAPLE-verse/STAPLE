@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useState } from "react"
 import { Tab } from "@headlessui/react"
 import classNames from "classnames"
 import {
@@ -8,6 +8,7 @@ import {
   FormStudioProvider,
   JsonEditor,
   useFormStudio,
+  useFormStudioCommit,
   type FormStudioState,
 } from "@staple-verse/form-studio"
 import {
@@ -57,36 +58,17 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
   onAutoSave,
   onVersionsUpdated,
 }) => {
-  const { state, setSchema, setUiSchema, extensionDiagnostics, validateForCommit } = useFormStudio()
+  const { state, setSchema, setUiSchema } = useFormStudio()
+  // Shared validate-then-commit gate (form-studio v0.2.0-rc.4) — replaces this
+  // component's own hand-rolled copy of the same logic FormStudioUI uses
+  // internally, so both stay in sync as the validation contract evolves.
+  const { blockingDiagnostics, commitDiagnostics, attemptCommit } = useFormStudioCommit()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [hasVisitedJson, setHasVisitedJson] = useState(false)
   const hasCurrentVersionId = typeof currentVersionId === "number"
   const jsonTabIndex = formId ? 2 : 1
 
-  const blockingDiagnostics = useMemo(
-    () => extensionDiagnostics.filter((diagnostic) => diagnostic.blocksCommit),
-    [extensionDiagnostics]
-  )
-
-  // Live diagnostics are debounced. Manual saves and server-side autosaves
-  // both perform the same fresh synchronous registry validation first.
-  const [saveBlocked, setSaveBlocked] = useState(false)
-  useEffect(() => {
-    if (blockingDiagnostics.length === 0) setSaveBlocked(false)
-  }, [blockingDiagnostics])
-
-  const commitIfValid = (commit: (snapshot: FormStudioState) => void) => {
-    const result = validateForCommit()
-    if (result.blocked) {
-      setSaveBlocked(true)
-      return false
-    }
-    setSaveBlocked(false)
-    commit(state)
-    return true
-  }
-
-  const handleSave = () => commitIfValid(saveForm)
+  const handleSave = () => attemptCommit(saveForm)
 
   return (
     <Tab.Group
@@ -97,7 +79,7 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
         }
         const leavingBuilderTab = formId ? selectedIndex !== 0 : true
         if (onAutoSave && leavingBuilderTab && !infoOnly) {
-          commitIfValid((snapshot) => {
+          attemptCommit((snapshot) => {
             void onAutoSave(snapshot)
           })
         }
@@ -163,7 +145,7 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
         </div>
       )}
 
-      {!infoOnly && saveBlocked && (
+      {!infoOnly && commitDiagnostics.length > 0 && (
         <div className="mb-4 alert alert-warning" role="alert">
           <span>Validation issues must be resolved before saving. See below.</span>
         </div>
