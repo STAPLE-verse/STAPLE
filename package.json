@@ -49,7 +49,7 @@
     "@rjsf/mui": "5.13.4",
     "@rjsf/utils": "5.13.4",
     "@rjsf/validator-ajv8": "5.13.4",
-    "@staple-verse/form-studio": "github:STAPLE-verse/form-studio#v0.2.0-rc.3",
+    "@staple-verse/form-studio": "github:STAPLE-verse/form-studio#v0.2.0-rc.4",
     "@staple-verse/marker-template-runtime": "https://github.com/STAPLE-verse/marker-template-spec/releases/download/v1.0.0-rc.3/staple-verse-marker-template-runtime-1.0.0-rc.3.tgz",
     "@tanstack/react-table": "8.20.5",
     "@wamra/gantt-task-react": "0.6.17",
