@@ -11,7 +11,6 @@ export const JsonData = `
     },
     "description": {
       "type": "string",
-      "format": "textarea",
       "title": "Description:"
     },
     "identifier": {
@@ -199,6 +198,9 @@ export const JsonData = `
 
 export const JsonDataUI = `
 {
+  "description": {
+    "ui:widget": "textarea"
+  },
   "_stapleSchema": {
     "ui:widget": "hidden"
   },

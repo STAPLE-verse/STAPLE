@@ -37,6 +37,7 @@ export default resolver.pipe(
             version: true,
             schema: true,
             uiSchema: true,
+            semantics: true,
             archived: true,
             createdAt: true,
             tasks: {

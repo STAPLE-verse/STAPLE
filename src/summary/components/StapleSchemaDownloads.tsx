@@ -1,8 +1,8 @@
 import { useQuery } from "@blitzjs/rpc"
 import { useMemo } from "react"
 import getTasks from "src/tasks/queries/getTasks"
-import { mapStapleToJsonLd } from "src/forms/utils/mapStapleToJsonLd"
 import DownloadJSON from "src/forms/components/DownloadJSON"
+import { projectMetadataResponse } from "src/forms/semantic/v1/projectMetadataResponse"
 
 type TaskLogWithMetadata = {
   id: number
@@ -16,6 +16,19 @@ type TaskWithTaskLogsAndMetadata = {
   id: number
   name: string
   taskLogs: TaskLogWithMetadata[]
+  formVersion: {
+    schema: unknown
+    semantics: unknown | null
+  } | null
+}
+
+function semanticTypeLabel(semantics: unknown): string {
+  if (!semantics || typeof semantics !== "object" || !("root" in semantics)) return "Thing"
+  const root = semantics.root
+  if (!root || typeof root !== "object" || !("classIri" in root)) return "Thing"
+  const classIri = root.classIri
+  if (typeof classIri !== "string") return "Thing"
+  return classIri.split(/[\/#]/).filter(Boolean).at(-1) ?? "Thing"
 }
 
 type Props = {
@@ -31,6 +44,12 @@ const StapleSchemaDownloads = ({ projectId }: Props) => {
       },
     },
     include: {
+      formVersion: {
+        select: {
+          schema: true,
+          semantics: true,
+        },
+      },
       taskLogs: {
         select: {
           id: true,
@@ -63,20 +82,42 @@ const StapleSchemaDownloads = ({ projectId }: Props) => {
         }
       }
 
-      const taskJsonLdObjects = Object.values(latestLogsPerPerson)
+      const projections = Object.values(latestLogsPerPerson)
         .map((log) => log.metadata)
-        .filter((metadata) => metadata && metadata._stapleSchema)
-        .map((metadata) => mapStapleToJsonLd(metadata))
+        .filter(
+          (metadata) =>
+            metadata &&
+            (task.formVersion?.semantics ||
+              (typeof metadata === "object" && "_stapleSchema" in metadata))
+        )
+        .map((metadata) => projectMetadataResponse(metadata, task.formVersion))
+
+      const failedProjection = projections.find(
+        (projection) => projection.jsonLd === null || projection.diagnostics.length > 0
+      )
+      if (failedProjection) {
+        console.error("Could not project task metadata as JSON-LD", failedProjection.diagnostics)
+        continue
+      }
+
+      const usesSemanticV1 = Boolean(task.formVersion?.semantics)
+      const taskJsonLdObjects = projections.flatMap((projection) =>
+        usesSemanticV1 && Array.isArray(projection.jsonLd) ? projection.jsonLd : [projection.jsonLd]
+      )
 
       if (taskJsonLdObjects.length > 0) {
-        const schemaType = taskJsonLdObjects[0]?.["@type"]
+        const schemaType = usesSemanticV1
+          ? semanticTypeLabel(task.formVersion?.semantics)
+          : taskJsonLdObjects[0]?.["@type"]
         output.push({
           schema: schemaType,
           fileName: `${schemaType}-${task.name}`,
-          jsonLd: {
-            "@context": "https://schema.org",
-            "@graph": taskJsonLdObjects,
-          },
+          jsonLd: usesSemanticV1
+            ? taskJsonLdObjects
+            : {
+                "@context": "https://schema.org",
+                "@graph": taskJsonLdObjects,
+              },
         })
       }
     }

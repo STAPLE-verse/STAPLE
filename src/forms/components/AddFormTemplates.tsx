@@ -39,6 +39,7 @@ const AddFormTemplates: React.FC<AddFormTemplatesProps> = ({
           userId: currentUser.id,
           schema: form.schema,
           uiSchema: form.uiSchema,
+          semantics: "semantics" in form ? form.semantics : undefined,
         })
       }
 

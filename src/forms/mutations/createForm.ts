@@ -5,7 +5,7 @@ import db, { Prisma } from "db"
 export default resolver.pipe(
   resolver.zod(CreateFormSchema),
   resolver.authorize(),
-  async ({ userId, schema, uiSchema }) => {
+  async ({ userId, schema, uiSchema, semantics }) => {
     const newSchema = schema != null ? schema : Prisma.JsonNull
     // Safely extracting the title/name of the schema from the schema
     const schemaName =
@@ -26,6 +26,7 @@ export default resolver.pipe(
             version: 1,
             schema: newSchema,
             uiSchema: uiSchema || Prisma.JsonNull,
+            semantics: semantics || Prisma.JsonNull,
             name: schemaName,
           },
         },
