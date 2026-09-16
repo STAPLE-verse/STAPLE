@@ -5,14 +5,12 @@
 import { readdirSync, readFileSync } from "node:fs"
 import path from "node:path"
 import { cleanup, render } from "@testing-library/react"
-import { withTheme } from "@rjsf/core"
+import { JsonSchemaForm } from "@staple-verse/form-studio"
 import validator from "@rjsf/validator-ajv8"
 import { afterEach, describe, expect, test, vi } from "vitest"
-import DaisyTheme from "src/core/components/DaisyTheme"
 import getJsonSchema from "./getJsonSchema"
 
 const activeValidator = "rawValidation" in validator ? validator : (validator as any).default
-const DeployedForm = withTheme(DaisyTheme)
 
 type Status = "pass" | "lossy" | "unsupported" | "blocked" | "unverified"
 
@@ -66,18 +64,6 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-test("STAPLE deployment test coordinates match the recorded current stack", () => {
-  const readVersion = (packageName: string) =>
-    JSON.parse(
-      readFileSync(path.join(process.cwd(), "node_modules", packageName, "package.json"), "utf8")
-    ).version
-
-  expect(readVersion("@rjsf/core")).toBe("5.13.4")
-  expect(readVersion("@rjsf/validator-ajv8")).toBe("5.13.4")
-  expect(readVersion("ajv")).toBe("8.17.1")
-  expect(readVersion("ajv-formats")).toBe("2.1.1")
-})
-
 describe("current STAPLE deployment integration", () => {
   test.each(loadFixtures())("classifies $id", (fixture) => {
     vi.spyOn(console, "error").mockImplementation(() => undefined)
@@ -88,11 +74,10 @@ describe("current STAPLE deployment integration", () => {
     const validationPreserved = hasExpectedValidationBehavior(deployedSchema, fixture)
 
     const { container } = render(
-      <DeployedForm
+      <JsonSchemaForm
         schema={deployedSchema}
         uiSchema={deployedUiSchema}
         formData={fixture.instances.valid[0]?.data}
-        validator={activeValidator}
       />
     )
     expect(container.querySelector("form")).not.toBeNull()
