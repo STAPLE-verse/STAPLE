@@ -3,15 +3,13 @@
  */
 
 import { cleanup, render } from "@testing-library/react"
-import { withTheme } from "@rjsf/core"
+import { JsonSchemaForm } from "@staple-verse/form-studio"
 import validator from "@rjsf/validator-ajv8"
 import { afterEach, describe, expect, test, vi } from "vitest"
-import DaisyTheme from "src/core/components/DaisyTheme"
 import { getDefaultSchemaLists } from "./getDefaultSchemaList"
 import getJsonSchema from "./getJsonSchema"
 
 const activeValidator = "rawValidation" in validator ? validator : (validator as any).default
-const DeployedForm = withTheme(DaisyTheme)
 
 const builtInExamples = [
   {
@@ -89,12 +87,7 @@ describe("STAPLE built-in form deployment", () => {
     expect(activeValidator.rawValidation(schema, {}).errors?.length ?? 0).toBeGreaterThan(0)
 
     const { container } = render(
-      <DeployedForm
-        schema={schema}
-        uiSchema={uiSchema}
-        formData={valid}
-        validator={activeValidator}
-      />
+      <JsonSchemaForm schema={schema} uiSchema={uiSchema} formData={valid} />
     )
     expect(container.querySelector("form")).not.toBeNull()
   })
@@ -109,11 +102,7 @@ describe("STAPLE built-in form deployment", () => {
       expect(template!.uiSchema.description).toEqual({ "ui:widget": "textarea" })
 
       const { container } = render(
-        <DeployedForm
-          schema={template!.schema}
-          uiSchema={template!.uiSchema}
-          validator={activeValidator}
-        />
+        <JsonSchemaForm schema={template!.schema} uiSchema={template!.uiSchema} />
       )
       expect(container.querySelector("textarea")).not.toBeNull()
     }
