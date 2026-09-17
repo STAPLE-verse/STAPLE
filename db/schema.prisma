@@ -13,33 +13,43 @@ generator client {
 // --------------------------------------
 
 model User {
-  id                            Int                @id @default(autoincrement())
-  createdAt                     DateTime           @default(now())
-  updatedAt                     DateTime           @updatedAt
+  id                            Int                         @id @default(autoincrement())
+  createdAt                     DateTime                    @default(now())
+  updatedAt                     DateTime                    @updatedAt
   hashedPassword                String?
-  role                          String             @default("USER")
+  role                          String                      @default("USER")
   tos                           Boolean?
   tokens                        Token[]
   sessions                      Session[]
   // notifications and dashboards
-  notifications                 Notification[]     @relation("UserNotifications")
+  notifications                 Notification[]              @relation("UserNotifications")
   widgets                       Widget[]
   projectWidget                 ProjectWidget[]
-  emailProjectActivityFrequency EmailFrequency     @default(DAILY)
-  emailOverdueTaskFrequency     EmailFrequency     @default(DAILY)
+  emailProjectActivityFrequency EmailFrequency              @default(DAILY)
+  emailOverdueTaskFrequency     EmailFrequency              @default(DAILY)
   // profile information
   orcid                         String?
   institution                   String?
-  username                      String             @unique
+  username                      String                      @unique
   firstName                     String?
   lastName                      String?
-  email                         String             @unique
-  language                      String             @default("en-US")
+  email                         String                      @unique
+  language                      String                      @default("en-US")
+  // Backs MARKER's per-user theme preference. MARKER is a dependent app
+  // sharing this database (see MarkerForm and friends below) — this column
+  // has no STAPLE-side reader today.
+  theme                         String                      @default("dark")
   gravatar                      String?
-  tooltips                      Boolean            @default(true)
+  tooltips                      Boolean                     @default(true)
   // relational information
   projects                      ProjectMember[]
   forms                         Form[]
+  ownedMarkerForms              MarkerForm[]                @relation("MarkerFormOwner")
+  markerFormCollaborations      MarkerFormCollaborator[]    @relation("MarkerFormCollaboratorUser")
+  ownedMarkerFolders            MarkerFolder[]              @relation("MarkerFolderOwner")
+  markerFormFolderPlacements    MarkerFormFolderPlacement[] @relation("MarkerFormFolderPlacementUser")
+  publishedSchemas              PublishedSchema[]
+  schemaEndorsements            SchemaEndorsement[]
   folders                       Folder[]
   roles                         Role[]
   ProjectPrivilege              ProjectPrivilege[]
@@ -306,6 +316,10 @@ model Form {
   tags      Json?
   folderId  Int?
   folder    Folder?       @relation(fields: [folderId], references: [id])
+  // Distinguishes STAPLE-native forms from ones MARKER manages under its own
+  // MarkerForm/MarkerFormVersion tables below. Read by MARKER's import path
+  // (resolveStapleSource.ts gates on `form.app === "staple"`).
+  app       String        @default("staple")
 }
 
 model FormVersion {
@@ -325,15 +339,315 @@ model FormVersion {
   @@index([formId, version], name: "formVersionIndex")
 }
 
+// --------------------------------------
+// The following enums and models exist solely to support MARKER, a separate
+// Next.js app that connects directly to this database (it never runs its own
+// migrations — see MARKER's docs/deployment.md). STAPLE's own code has no
+// reader for any of these; they're defined here only because this is the
+// one schema/migration history authoritative for the shared database.
+// --------------------------------------
+
+enum VersionStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MarkerFormOrigin {
+  NATIVE
+  IMPORTED_STAPLE
+  IMPORTED_EXTERNAL
+  FORKED
+}
+
+enum MarkerFormCollaboratorRole {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+model MarkerForm {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // marker-template-spec Core V1 metadata.familyId (opaque generatePID("mf") value;
+  // wrapped into a URI at package-assembly time). Minted once at creation, never
+  // reassigned.
+  familyId String @unique
+
+  ownerId Int
+  owner   User @relation("MarkerFormOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  versions         MarkerFormVersion[]
+  collaborators    MarkerFormCollaborator[]
+  folderPlacements MarkerFormFolderPlacement[]
+
+  archived Boolean @default(false)
+  tags     Json?
+
+  origin                          MarkerFormOrigin @default(NATIVE)
+  externalSourceSystem            String?
+  externalId                      String?
+  externalSourceUrl               String?
+  importedFromStapleFormId        Int?
+  importedFromStapleVersionNumber Int?
+  importedAt                      DateTime?
+  originalImportHash              String?
+
+  // Fork provenance — set once at creation, never touched again. Distinct
+  // from PublishedSchema.derivedFromPid (a republished schema's lineage back
+  // to another PublishedSchema) — this instead answers "did this MARKER
+  // draft originate as a fork," independent of whether it's ever published
+  // again. Bare string, no relation — same shape as derivedFromPid itself.
+  forkedFromPid String?
+  forkedAt      DateTime?
+
+  @@index([ownerId])
+}
+
+model MarkerFormVersion {
+  id        Int        @id @default(autoincrement())
+  name      String
+  formId    Int
+  form      MarkerForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+  version   Int
+  schema    Json
+  uiSchema  Json?
+  // Semantic V1 component (marker-template-spec); absent = Core-only template.
+  // Copied verbatim between MarkerFormVersion rows (already validated at authoring
+  // time via Form Studio's semantic-v1 extension) — a future STAPLE-import path
+  // must validate it, not just copy it, since that content crosses a trust boundary.
+  semantics Json?
+  // marker-template-spec Core V1 metadata.versionId while this version is DRAFT
+  // (opaque generatePID("mv") value). Stable across in-place draft edits; replaced
+  // by a permanent PublishedSchema.pid-derived URI at publish time.
+  versionId String     @unique
+  archived  Boolean    @default(false)
+
+  // Per-version STAPLE import provenance — distinct from the same-named
+  // fields on MarkerForm, which only ever hold the *most recent* import
+  // (mutable, overwritten on every update-import). These are set once, at
+  // the moment this specific version row is created, and never touched
+  // again:
+  //  - a version created BY an import (create or update mode) gets a fresh
+  //    value matching that import;
+  //  - a version created by a native edit (createFormVersionFromLatest,
+  //    createFormCheckpoint) copies the value forward from the version it
+  //    was copied from, unchanged;
+  //  - a version restored from history (restoreFormVersionAsDraft) copies
+  //    it from the version being restored, not from the current head.
+  // This lets any historical version answer "what STAPLE version was I
+  // last tied to" without consulting MarkerForm's mutable field (which may
+  // have since moved on) or walking version history.
+  //
+  // originalImportHash carries the same copy-forward/fresh-on-import rules
+  // as the two fields above, and answers a *different* question: "was THIS
+  // version's own content already changed from that STAPLE baseline, at the
+  // moment this row was created?" (hashImportedSnapshot's `{schema,
+  // uiSchema}` baseline — see utils/importHash.ts). Unlike
+  // MarkerForm.originalImportHash (mutable, always the latest import's
+  // baseline), this is frozen per row, so the modification badge can be
+  // shown correctly on historical versions too, not just the current head.
+  importedFromStapleVersionNumber Int?
+  importedAt                      DateTime?
+  originalImportHash              String?
+  // Unlike the three fields above, this one is NEVER copied forward — it
+  // answers a third, different question: "was this exact row created BY an
+  // importFromStaple transaction," as opposed to a native edit or restore
+  // that merely carries an earlier import's lineage. A fresh native-edit
+  // copy starts byte-identical to its parent, so `originalImportHash`
+  // alone can't tell "this IS the import" apart from "this is an untouched
+  // copy of one" — only this flag can. Set true only in importFromStaple's
+  // two version-create paths; explicitly false everywhere else, including
+  // restoreFormVersionAsDraft (restoring is a different transaction, even
+  // when it reproduces a direct-import row's exact content).
+  isDirectStapleImport            Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  status              VersionStatus        @default(DRAFT)
+  publishedSchemas    PublishedSchema[]
+  publicationMetadata PublicationMetadata?
+
+  @@unique([formId, version])
+}
+
+model MarkerFormCollaborator {
+  id     Int        @id @default(autoincrement())
+  formId Int
+  form   MarkerForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+  userId Int
+  user   User       @relation("MarkerFormCollaboratorUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  role        MarkerFormCollaboratorRole @default(VIEWER)
+  invitedById Int?
+  invitedAt   DateTime                   @default(now())
+  acceptedAt  DateTime?
+
+  @@unique([formId, userId])
+  @@index([userId])
+}
+
+model MarkerFolder {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownerId Int
+  owner   User @relation("MarkerFolderOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  placements MarkerFormFolderPlacement[]
+
+  @@unique([name, ownerId])
+  @@index([ownerId])
+}
+
+model MarkerFormFolderPlacement {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  formId Int
+  form   MarkerForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  folderId Int
+  folder   MarkerFolder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+  userId Int
+  user   User @relation("MarkerFormFolderPlacementUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([formId, userId])
+  @@index([folderId])
+  @@index([userId])
+}
+
+model PublicationMetadata {
+  id            Int               @id @default(autoincrement())
+  formVersionId Int               @unique
+  formVersion   MarkerFormVersion @relation(fields: [formVersionId], references: [id], onDelete: Cascade)
+
+  domain       String?
+  language     String?
+  license      String?
+  keywords     String[] @default([])
+  contributors Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PublishedSchema {
+  // FINDABILITY
+  pid          String   @id // e.g., "ps_8f9a2b"
+  title        String
+  description  String?
+  keywords     String[] // For fast searching
+  ontologyRefs Json? // e.g., ["SNOMED:424144002", "NCIT:C25150"]
+
+  // ACCESSIBILITY & INTEROPERABILITY
+  schemaJson Json // The core JSON Schema
+  uiSchema   Json?
+  source     String @default("native") // "native", "cedar", "redcap"
+
+  // REUSABILITY & PROVENANCE
+  version      String // Semantic e.g. "1.0.0"
+  familyId     String // Links v1.0.0 and v1.1.0 together
+  license      String  @default("CC-BY-4.0") // CRITICAL FOR FAIR
+  releaseNotes String?
+  domain       String?
+  language     String  @default("en")
+
+  // Lineage (PROV Ontology mapping)
+  derivedFromPid String? // Links to parent if this is a fork
+  isSupersededBy String? // Links to a newer schema if this one is deprecated
+
+  // Authorship — the MARKER user who published this
+  authorId              Int
+  author                User    @relation(fields: [authorId], references: [id])
+  // Always written by publishSchema.ts, which requires (and validates) at
+  // least one contributor before allowing publish — never optional past
+  // that gate.
+  contributors          Json
+  relatedPublicationDoi String?
+
+  // Stats & Social
+  viewCount        Int                 @default(0)
+  usageCount       Int                 @default(0)
+  endorsementCount Int                 @default(0)
+  endorsements     SchemaEndorsement[]
+
+  // Internal tracking
+  originFormVersionId Int? // Link back to the STAPLE workspace draft
+  originFormVersion   MarkerFormVersion? @relation(fields: [originFormVersionId], references: [id], onDelete: SetNull)
+  externalId          String?
+  externalSourceUrl   String?
+  createdAt           DateTime           @default(now())
+
+  packageSnapshot PublishedSchemaPackage?
+
+  @@unique([familyId, version])
+  @@index([keywords]) // Make searching fast
+}
+
+// The full marker-template-spec MarkerTemplatePackage assembled and validated
+// at publish time, frozen forever after. Kept separate from PublishedSchema
+// so the (query-heavy) normalized columns above never have to carry this
+// payload along, and so this table's "never updated after insert" invariant
+// stays structurally obvious rather than mixed in with columns that do
+// legitimately change post-publish (viewCount, usageCount, endorsementCount).
+model PublishedSchemaPackage {
+  // Shared-PK 1:1 with PublishedSchema — exactly one frozen snapshot per
+  // published schema, ever. Reuses the same pid rather than a redundant
+  // autoincrement id, since the relationship is genuinely 1:1 (unlike
+  // SchemaEndorsement's many-per-schema shape, which uses a separate id).
+  pid             String          @id
+  publishedSchema PublishedSchema @relation(fields: [pid], references: [pid], onDelete: Cascade)
+
+  // The full assembled package (conformsTo/metadata/form/semantics), exactly
+  // as validated by validateTemplatePackage at publish time.
+  packageJson Json
+
+  createdAt DateTime @default(now())
+}
+
+model SchemaEndorsement {
+  id                 Int             @id @default(autoincrement())
+  userId             Int
+  user               User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  publishedSchemaPid String
+  publishedSchema    PublishedSchema @relation(fields: [publishedSchemaPid], references: [pid], onDelete: Cascade)
+  createdAt          DateTime        @default(now())
+
+  @@unique([userId, publishedSchemaPid])
+}
+
+// --------------------------------------
+
+enum NotificationSource {
+  MARKER
+  STAPLE
+}
+
 model Notification {
-  id           Int      @id @default(autoincrement())
-  createdAt    DateTime @default(now())
-  recipients   User[]   @relation("UserNotifications")
+  id           Int                @id @default(autoincrement())
+  createdAt    DateTime           @default(now())
+  recipients   User[]             @relation("UserNotifications")
+  // Which app created this row. Defaults to STAPLE so STAPLE's existing,
+  // already-deployed code (which has no idea this column exists) keeps
+  // inserting successfully — Postgres fills the default in for it. MARKER
+  // sets this explicitly on every notification it creates. Both apps'
+  // notification queries must filter on this field, or each app's UI will
+  // surface the other's notifications (see MARKER's
+  // features/notifications/queries/ and STAPLE's src/notifications/queries/).
+  source       NotificationSource @default(STAPLE)
   message      String
-  read         Boolean  @default(false)
-  announcement Boolean  @default(false)
-  projectId    Int?     @map("project_id")
-  project      Project? @relation(fields: [projectId], references: [id])
+  read         Boolean            @default(false)
+  announcement Boolean            @default(false)
+  projectId    Int?               @map("project_id")
+  project      Project?           @relation(fields: [projectId], references: [id])
   routeData    Json? // Flexible JSON field to store dynamic routing data
 }
 
