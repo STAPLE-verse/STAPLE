@@ -1,4 +1,4 @@
-import { paginate } from "blitz"
+import { paginate, Ctx } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
@@ -10,11 +10,25 @@ interface GetNotificationsInput
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, include, skip = 0, take }: GetNotificationsInput) => {
+  async ({ where, orderBy, include, skip = 0, take }: GetNotificationsInput, ctx: Ctx) => {
+    // The caller's own `where` is treated as an additional filter (search
+    // terms, project name, read status, etc.), never as the source of
+    // ownership scoping — a client calling this RPC directly (bypassing the
+    // React component that happens to build a scoped `where` today) could
+    // otherwise pass `where: {}` and read every user's notifications. The
+    // enforced clause is always AND-ed in, so a caller-supplied top-level OR
+    // can't be used to escape it either.
+    const scopedWhere: Prisma.NotificationWhereInput = {
+      AND: [
+        { recipients: { some: { id: ctx.session.userId as number } }, source: "STAPLE" },
+        ...(where ? [where] : []),
+      ],
+    }
+
     if (typeof take !== "number") {
       const [notifications, count] = await Promise.all([
-        db.notification.findMany({ where, orderBy, include, skip }),
-        db.notification.count({ where }),
+        db.notification.findMany({ where: scopedWhere, orderBy, include, skip }),
+        db.notification.count({ where: scopedWhere }),
       ])
 
       return {
@@ -33,9 +47,9 @@ export default resolver.pipe(
     } = await paginate({
       skip,
       take,
-      count: () => db.notification.count({ where }),
+      count: () => db.notification.count({ where: scopedWhere }),
       query: (paginateArgs) =>
-        db.notification.findMany({ ...paginateArgs, include, where, orderBy }),
+        db.notification.findMany({ ...paginateArgs, include, where: scopedWhere, orderBy }),
     })
 
     return {

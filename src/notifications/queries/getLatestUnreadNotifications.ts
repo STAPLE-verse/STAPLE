@@ -17,6 +17,7 @@ export default resolver.pipe(
         },
       },
       read: false,
+      source: "STAPLE" as const,
       ...(projectId && { projectId }), // Filter only for project if projectId is provided
     }
 

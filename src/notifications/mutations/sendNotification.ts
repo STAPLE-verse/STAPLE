@@ -46,6 +46,7 @@ export default resolver.pipe(
           },
           ...(projectId ? { projectId } : {}),
           routeData,
+          source: "STAPLE",
         },
       })
 

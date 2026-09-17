@@ -40,6 +40,7 @@ export default resolver.pipe(
         },
         announcement: true,
         projectId,
+        source: "STAPLE",
       },
     })
 
