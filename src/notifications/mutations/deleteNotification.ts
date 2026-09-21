@@ -1,3 +1,4 @@
+import { Ctx } from "blitz"
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 import { z } from "zod"
@@ -25,10 +26,20 @@ type DeleteNotificationInput = z.infer<typeof DeleteNotificationSchema>
 export default resolver.pipe(
   resolver.zod(DeleteNotificationSchema),
   resolver.authorize(),
-  async (input: DeleteNotificationInput) => {
+  async (input: DeleteNotificationInput, ctx: Ctx) => {
+    // Both branches previously deleted by a caller-supplied `where`/`ids`
+    // with no ownership check at all — any authenticated user could delete
+    // any notification, or (via selectAll with where: {}) every notification
+    // in the system. Recipient + source scoping is enforced here, never
+    // trusted from the caller.
+    const ownershipScope = {
+      recipients: { some: { id: ctx.session.userId as number } },
+      source: "STAPLE" as const,
+    }
+
     if (input.selectAll) {
       await db.notification.deleteMany({
-        where: input.where!,
+        where: { AND: [ownershipScope, input.where!] },
       })
       return { success: true }
     }
@@ -36,6 +47,7 @@ export default resolver.pipe(
     await db.notification.deleteMany({
       where: {
         id: { in: input.ids! },
+        ...ownershipScope,
       },
     })
     return { success: true }

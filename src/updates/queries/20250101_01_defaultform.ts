@@ -15,11 +15,10 @@ export default async function createDefaultFormsForUsers(_: unknown, ctx: Ctx) {
     )
     console.log("Form Template Options:", formTemplateOptions)
 
-    if (!formTemplateOptions.length) {
+    const defaultTemplate = formTemplateOptions[0]
+    if (!defaultTemplate) {
       throw new Error("No form template found with label 'Project Information'")
     }
-
-    const defaultTemplate = formTemplateOptions[0]
 
     for (const user of users) {
       console.log(`Creating form for user: ${user.email}`)
@@ -28,10 +27,11 @@ export default async function createDefaultFormsForUsers(_: unknown, ctx: Ctx) {
           userId: user.id,
           versions: {
             create: {
-              name: defaultTemplate?.label,
+              name: defaultTemplate.label,
               version: 1,
-              schema: defaultTemplate?.schema,
-              uiSchema: defaultTemplate?.uiSchema,
+              schema: defaultTemplate.schema,
+              uiSchema: defaultTemplate.uiSchema,
+              semantics: defaultTemplate.semantics,
             },
           },
         },

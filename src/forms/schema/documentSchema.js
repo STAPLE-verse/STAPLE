@@ -16,7 +16,7 @@ export const JsonDocument = `
     "creator": { "type": "string", "title": "Creator:" },
     "dateCreated": { "type": "string", "format": "date", "title": "Date Created:" },
     "identifier": { "type": "string", "title": "Document Identifier (e.g., URL, DOI):" },
-    "description": { "type": "string", "format": "textarea", "title": "Description:" },
+    "description": { "type": "string", "title": "Description:" },
     "license": { "type": "string", "title": "License:" },
     "language": { "type": "string", "title": "Language:" },
     "fileFormat": { "type": "string", "title": "File Format (e.g., PDF, DOCX):" },
@@ -83,6 +83,9 @@ export const JsonDocument = `
 
 export const JsonDocumentUI = `
 {
+  "description": {
+    "ui:widget": "textarea"
+  },
   "_stapleSchema": {
     "ui:widget": "hidden"
   },

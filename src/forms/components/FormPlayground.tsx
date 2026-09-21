@@ -4,11 +4,17 @@ import classNames from "classnames"
 import {
   FormBuilder,
   FormPreview,
+  FormStudioDiagnostics,
   FormStudioProvider,
   JsonEditor,
   useFormStudio,
+  useFormStudioCommit,
   type FormStudioState,
 } from "@staple-verse/form-studio"
+import {
+  semanticV1Extension,
+  type SemanticV1Component,
+} from "@staple-verse/form-studio/semantic-v1"
 import FormTagEditor from "./FormTagEditor"
 import FormFolderSelector from "./FormFolderSelector"
 import FormDeployments from "./FormDeployments"
@@ -20,6 +26,7 @@ import { FormVersionWithRelations } from "../queries/getForm"
 interface FormPlaygroundProps {
   initialSchema?: string
   initialUiSchema?: string
+  initialSemantics?: string
   saveForm: (formState: FormStudioState) => void
   formId?: number
   initialTags?: string[]
@@ -32,7 +39,12 @@ interface FormPlaygroundProps {
   onVersionsUpdated?: () => Promise<void> | void
 }
 
-type FormPlaygroundContentProps = Omit<FormPlaygroundProps, "initialSchema" | "initialUiSchema">
+const FORM_STUDIO_EXTENSIONS = [semanticV1Extension] as const
+
+type FormPlaygroundContentProps = Omit<
+  FormPlaygroundProps,
+  "initialSchema" | "initialUiSchema" | "initialSemantics"
+>
 
 const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
   saveForm,
@@ -47,14 +59,16 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
   onVersionsUpdated,
 }) => {
   const { state, setSchema, setUiSchema } = useFormStudio()
+  // Shared validate-then-commit gate (form-studio v0.2.0-rc.4) — replaces this
+  // component's own hand-rolled copy of the same logic FormStudioUI uses
+  // internally, so both stay in sync as the validation contract evolves.
+  const { blockingDiagnostics, commitDiagnostics, attemptCommit } = useFormStudioCommit()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [hasVisitedJson, setHasVisitedJson] = useState(false)
   const hasCurrentVersionId = typeof currentVersionId === "number"
   const jsonTabIndex = formId ? 2 : 1
 
-  const handleSave = () => {
-    saveForm(state)
-  }
+  const handleSave = () => attemptCommit(saveForm)
 
   return (
     <Tab.Group
@@ -65,7 +79,9 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
         }
         const leavingBuilderTab = formId ? selectedIndex !== 0 : true
         if (onAutoSave && leavingBuilderTab && !infoOnly) {
-          void onAutoSave(state)
+          attemptCommit((snapshot) => {
+            void onAutoSave(snapshot)
+          })
         }
         setSelectedIndex(index)
       }}
@@ -109,9 +125,29 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
 
       {!infoOnly && (
         <div className="w-full flex justify-end mb-4">
-          <button type="button" className="btn btn-primary" onClick={handleSave}>
-            Save Form
-          </button>
+          <div
+            className="tooltip tooltip-left"
+            data-tip={
+              blockingDiagnostics.length > 0
+                ? "Resolve the validation issues below before saving."
+                : undefined
+            }
+          >
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={blockingDiagnostics.length > 0}
+              onClick={handleSave}
+            >
+              Save Form
+            </button>
+          </div>
+        </div>
+      )}
+
+      {!infoOnly && commitDiagnostics.length > 0 && (
+        <div className="mb-4 alert alert-warning" role="alert">
+          <span>Validation issues must be resolved before saving. See below.</span>
         </div>
       )}
 
@@ -190,6 +226,12 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
           </>
         )}
       </Tab.Panels>
+
+      {!infoOnly && (
+        <div className="mt-4">
+          <FormStudioDiagnostics />
+        </div>
+      )}
     </Tab.Group>
   )
 }
@@ -197,13 +239,31 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
 const FormPlayground: React.FC<FormPlaygroundProps> = ({
   initialSchema = "{}",
   initialUiSchema = "{}",
+  initialSemantics,
   ...props
 }) => {
+  const semantics = parseOptionalSemantics(initialSemantics)
   return (
-    <FormStudioProvider initialSchema={initialSchema} initialUiSchema={initialUiSchema}>
+    <FormStudioProvider
+      extensions={FORM_STUDIO_EXTENSIONS}
+      initialSchema={initialSchema}
+      initialUiSchema={initialUiSchema}
+      initialExtensionValues={
+        semantics === undefined ? {} : { [semanticV1Extension.id]: semantics }
+      }
+    >
       <FormPlaygroundContent {...props} />
     </FormStudioProvider>
   )
+}
+
+function parseOptionalSemantics(value: string | undefined): SemanticV1Component | undefined {
+  if (value === undefined) return undefined
+  try {
+    return JSON.parse(value) as SemanticV1Component
+  } catch {
+    return undefined
+  }
 }
 
 export default FormPlayground

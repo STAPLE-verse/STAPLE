@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Modal from "./Modal"
-import JsonForm from "src/core/components/JsonForm"
+import { JsonSchemaForm } from "@staple-verse/form-studio"
 import { Prisma } from "@prisma/client"
 import { noSubmitButton } from "src/forms/utils/extendSchema"
 
@@ -54,10 +54,10 @@ export const JsonFormModal = ({
 
       <Modal open={isOpen} size={modalSize}>
         <div className="font-sans">
-          <JsonForm
-            schema={schema}
-            uiSchema={extendedUiSchema}
-            formData={metadata}
+          <JsonSchemaForm
+            schema={schema as Record<string, unknown>}
+            uiSchema={extendedUiSchema as Record<string, unknown>}
+            formData={metadata as Record<string, unknown>}
             onSubmit={submittable ? onSubmit : undefined}
             onError={onError}
           />

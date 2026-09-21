@@ -1,40 +1,26 @@
-import { JsonProjectMember, JsonProjectMemberUI } from "src/forms/schema/projectMemberSchema"
-import { JsonFunder, JsonFunderUI } from "src/forms/schema/funderSchema"
-import { JsonProject, JsonProjectUI } from "src/forms/schema/projectSchema"
-import { JsonData, JsonDataUI } from "src/forms/schema/dataSchema"
-import { JsonDocument, JsonDocumentUI } from "src/forms/schema/documentSchema"
-import { JsonOrganization, JsonOrganizationUI } from "src/forms/schema/organizationSchema"
+import { remainingDefaultTemplatePackagesV1 } from "src/forms/templates/defaultTemplatePackagesV1"
+import { projectMemberTemplatePackageV1 } from "src/forms/templates/projectMemberTemplateV1"
 
-export function getDefaultSchemaLists() {
-  const schemas = [
-    JsonProjectMember,
-    JsonFunder,
-    JsonProject,
-    JsonData,
-    JsonDocument,
-    JsonOrganization,
-  ]
-  const uis = [
-    JsonProjectMemberUI,
-    JsonFunderUI,
-    JsonProjectUI,
-    JsonDataUI,
-    JsonDocumentUI,
-    JsonOrganizationUI,
-  ]
+export interface DefaultSchemaTemplate {
+  label: string
+  id: number
+  schema: any
+  uiSchema: any
+  semantics: any
+}
 
-  const restructured = schemas.map((schema, index) => {
-    const parsed = JSON.parse(schema)
-    const newUi =
-      uis[index] != null && uis[index] != undefined ? (uis[index] as string) : String("{}")
-    const uiparse = JSON.parse(newUi)
-    return {
-      label: parsed.title,
-      id: index + 1,
-      schema: parsed,
-      uiSchema: uiparse,
-    }
-  })
+function cloneJson(value: unknown): any {
+  return JSON.parse(JSON.stringify(value))
+}
 
-  return restructured
+export function getDefaultSchemaLists(): DefaultSchemaTemplate[] {
+  const packages = [projectMemberTemplatePackageV1, ...remainingDefaultTemplatePackagesV1]
+
+  return packages.map((templatePackage, index) => ({
+    label: templatePackage.metadata.title,
+    id: index + 1,
+    schema: cloneJson(templatePackage.form.schema),
+    uiSchema: cloneJson(templatePackage.form.uiSchema),
+    semantics: cloneJson(templatePackage.semantics),
+  }))
 }
