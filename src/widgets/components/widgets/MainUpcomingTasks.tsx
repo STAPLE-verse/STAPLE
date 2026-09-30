@@ -20,7 +20,7 @@ const MainUpcomingTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ s
         <GetTableDisplay
           data={upcomingTasks}
           columns={tasksColumns}
-          type={t("widgets.upcomingtask")}
+          emptyMessage={t("widgets.upcomingtask")}
         />
       }
       link={

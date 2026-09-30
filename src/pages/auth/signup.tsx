@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 import { useMutation } from "@blitzjs/rpc"
 import signup from "src/auth/mutations/signup"
 import toast from "react-hot-toast"
+import { getMarkerReturnUrl } from "src/auth/utils/markerReturnUrl"
 
 type TosResponses = {
   tos: boolean
@@ -42,6 +43,14 @@ const SignupPage: BlitzPage = () => {
         .then((success) => {
           // eslint-disable-next-line react-hooks/exhaustive-deps
           if (success) {
+            // Arrived from MARKER's "Sign Up" (which has no sign-up of its
+            // own): hand them back to MARKER's login rather than STAPLE's
+            // thanks page. A full navigation — MARKER is a different app.
+            const markerReturnUrl = getMarkerReturnUrl(router.query)
+            if (markerReturnUrl) {
+              window.location.assign(markerReturnUrl)
+              return
+            }
             // eslint-disable-next-line react-hooks/exhaustive-deps
             router.push(Routes.Thanks()).catch((e) => toast.error(e.message))
           }

@@ -45,6 +45,12 @@ GRANT ALL ON SCHEMA public TO username;
 DATABASE_URL=postgresql://<YOUR_DB_USERNAME>@localhost:5432/staple
 ```
 
+- Optional: if you also run MARKER, add its address so people who start signing up from MARKER are sent back there afterwards (no trailing slash). Without it they simply finish on STAPLE's thanks page.
+
+```
+NEXT_PUBLIC_MARKER_URL=http://localhost:3001
+```
+
 - Copy the `.env.test` file and rename `.env.test.local`.
 
 - Ensure the `.env.test.local` file has required environment variables in the same way you did above.
