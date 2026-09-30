@@ -20,7 +20,7 @@ const MainOverdueTasks: React.FC<{ size: "SMALL" | "MEDIUM" | "LARGE" }> = ({ si
         <GetTableDisplay
           data={pastDueTasks}
           columns={tasksColumns}
-          type={t("widgets.overduetask")}
+          emptyMessage={t("widgets.overduetask")}
         />
       }
       link={

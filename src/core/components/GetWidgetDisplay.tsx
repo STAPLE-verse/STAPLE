@@ -7,9 +7,20 @@ import remarkGfm from "remark-gfm"
 import remarkBreaks from "remark-breaks"
 
 // use for all tables in widgets
-export function GetTableDisplay({ data, columns, type }) {
+// emptyMessage is the full (translated) empty-state sentence; otherwise falls back to "No {type}"
+export function GetTableDisplay({
+  data,
+  columns,
+  type,
+  emptyMessage,
+}: {
+  data: any[]
+  columns: any
+  type?: string
+  emptyMessage?: string
+}) {
   if (data.length === 0) {
-    return <p className="italic mb-2">No {type}</p>
+    return <p className="italic mb-2">{emptyMessage ?? `No ${type}`}</p>
   }
   return (
     <Table
