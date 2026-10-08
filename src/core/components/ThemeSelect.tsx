@@ -1,46 +1,25 @@
 import { useState } from "react"
-
-const THEMES = [
-  { value: "light", label: "☼ Light" },
-  { value: "dark", label: "☾ Dark" },
-  { value: "retro", label: "🪩 Retro" },
-  { value: "dracula", label: "🧛🏽 Dracula" },
-  { value: "cyberpunk", label: "🤖 Cyberpunk" },
-  { value: "cupcake", label: "🧁 Cupcake" },
-  { value: "bumblebee", label: "🐝 Bumblebee" },
-  { value: "emerald", label: "💚 Emerald" },
-  { value: "corporate", label: "👔 Corporate" },
-  { value: "halloween", label: "🎃 Halloween" },
-  { value: "garden", label: "🌿 Garden" },
-  { value: "forest", label: "🌲 Forest" },
-  { value: "aqua", label: "🐠 Aqua" },
-  { value: "lofi", label: "😎 Lofi" },
-  { value: "pastel", label: "🌸 Pastel" },
-  { value: "fantasy", label: "🐉 Fantasy" },
-  { value: "wireframe", label: "🖼️ Wireframe" },
-  { value: "black", label: "◼️ Black" },
-  { value: "luxury", label: "💰 Luxury" },
-  { value: "cmyk", label: "🎨 CMYK" },
-  { value: "autumn", label: "🍁 Autumn" },
-  { value: "business", label: "💼 Business" },
-  { value: "acid", label: "🏜️ Acid" },
-  { value: "lemonade", label: "🍋 Lemonade" },
-  { value: "night", label: "🌃 Night" },
-  { value: "coffee", label: "☕ Coffee" },
-  { value: "winter", label: "❄️ Winter" },
-  { value: "dim", label: "🔅 Dim" },
-  { value: "nord", label: "🐺 Nord" },
-  { value: "sunset", label: "🌇 Sunset" },
-]
+import { useMutation } from "@blitzjs/rpc"
+import toast from "react-hot-toast"
+import updateTheme from "src/users/mutations/updateTheme"
+import { THEMES } from "src/core/utils/themes"
 
 const ThemeSelect = () => {
   const [theme, setTheme] = useState<string>(() => localStorage.getItem("theme") || "light")
 
-  const handleThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const [updateThemeMutation] = useMutation(updateTheme)
+
+  const handleThemeChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedTheme = e.target.value
+    // apply right away, then save it to the account so it follows the user to other devices
     localStorage.setItem("theme", selectedTheme)
     setTheme(selectedTheme)
     document.documentElement.setAttribute("data-theme", selectedTheme)
+    try {
+      await updateThemeMutation({ theme: selectedTheme })
+    } catch (error) {
+      toast.error("Your theme was applied but could not be saved to your account.")
+    }
   }
 
   return (
