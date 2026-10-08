@@ -2,7 +2,7 @@ import { Ctx } from "@blitzjs/next"
 import db from "db"
 
 export default async function linkDefaultFormToProjects(_: unknown, ctx: Ctx) {
-  ctx.session.$authorize() // Authorize the user
+  ctx.session.$authorize("ADMIN") // one-off maintenance: administrators only
 
   const projects = await db.project.findMany({
     include: {

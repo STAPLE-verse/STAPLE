@@ -3,7 +3,7 @@ import db from "db"
 import { getDefaultSchemaLists } from "src/forms/utils/getDefaultSchemaList"
 
 export default async function createDefaultFormsForUsers(_: unknown, ctx: Ctx) {
-  ctx.session.$authorize() // Authorize the user
+  ctx.session.$authorize("ADMIN") // one-off maintenance: administrators only
 
   try {
     console.log("Fetching users...")

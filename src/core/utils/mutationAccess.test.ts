@@ -47,7 +47,7 @@ vi.mock("db", () => {
           if (method === "findFirst" || method === "findUnique") {
             // "is this row mine?" lookups (filtered by the caller's own id) find nothing
             const where = JSON.stringify(args?.where ?? {})
-            if (where.includes('"users":{"some"') || where.includes('"userId":7')) return null
+            if (where.includes('"some":{"id":7}') || where.includes('"userId":7')) return null
             return someoneElsesRow(args?.where?.id)
           }
           return null
@@ -88,7 +88,7 @@ const ctx = (): any => ({
   },
 })
 
-type Case = { name: string; load: () => Promise<any>; input: any }
+type Case = { name: string; load: () => Promise<any>; input: any; managerInput?: any }
 
 // Everything here changes data in a project (or a person's own forms, folders and roles). Each
 // entry is called with the smallest valid input, aimed at project 99, user 7 being no part of it.
@@ -190,6 +190,8 @@ const CASES: Case[] = [
     name: "updateProjectMember (self-promotion)",
     load: () => import("src/projectmembers/mutations/updateProjectMember"),
     input: { id: 1, projectId: 99, privilege: "PROJECT_MANAGER", userId: 7 },
+    // a manager changing someone else's role in their own project
+    managerInput: { id: 1, projectId: 99, privilege: "CONTRIBUTOR", userId: 20 },
   },
   {
     name: "updateProjectMemberRole",
@@ -258,4 +260,22 @@ describe("write endpoints refuse people who have no business changing the data",
       }
     })
   }
+
+  describe("and the same calls from a project manager of that project are not refused", () => {
+    beforeEach(() => {
+      privileges = [{ projectId: 99, privilege: "PROJECT_MANAGER" }]
+    })
+
+    for (const { name, load, input, managerInput } of CASES) {
+      test(`${name}`, async () => {
+        const handler = (await load()).default
+        const error: any = await handler(managerInput ?? input, ctx()).then(
+          () => null,
+          (e: unknown) => e
+        )
+        // it may still stop on something else (this database is only a stand-in), but not on access
+        expect(error?.name, `${name}: ${error?.message}`).not.toBe("NotFoundError")
+      })
+    }
+  })
 })
