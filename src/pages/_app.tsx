@@ -36,7 +36,7 @@ function RootErrorFallback({ error }: ErrorFallbackProps) {
 function MyApp({ Component, pageProps }: AppProps) {
   const getLayout = Component.getLayout || ((page) => page)
   const session = useSession({ suspense: false })
-  useInitializeTheme()
+  useInitializeTheme(session.theme)
 
   return (
     <ErrorBoundary FallbackComponent={RootErrorFallback}>
