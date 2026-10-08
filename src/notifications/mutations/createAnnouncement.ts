@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 import db from "db"
 
+import { requireProjectManager, requireInProject } from "src/projectprivileges/utils/requireAccess"
 const createAnnouncementSchema = z.object({
   announcementText: z.string(),
   projectId: z.number(),
@@ -12,7 +13,11 @@ const createAnnouncementSchema = z.object({
 export default resolver.pipe(
   resolver.zod(createAnnouncementSchema),
   resolver.authorize(),
-  async ({ announcementText, projectId, projectMembersId = [], teamsId = [] }) => {
+  async ({ announcementText, projectId, projectMembersId = [], teamsId = [] }, ctx) => {
+    await requireProjectManager(ctx, projectId)
+    if (projectMembersId.length + teamsId.length > 0) {
+      await requireInProject("projectMember", [...projectMembersId, ...teamsId], projectId)
+    }
     const selectedIds = [...projectMembersId, ...teamsId]
     let finalRecipients: number[] = []
 

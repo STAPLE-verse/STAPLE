@@ -4,6 +4,7 @@ import db from "db"
 import sendNotification from "src/notifications/mutations/sendNotification"
 import { z } from "zod"
 
+import { requireManagerOf } from "src/projectprivileges/utils/requireAccess"
 export const UpdateTaskLogApprovalSchema = z.object({
   id: z.number(),
   approved: z.boolean().nullable(),
@@ -14,6 +15,7 @@ export default resolver.pipe(
   resolver.zod(UpdateTaskLogApprovalSchema),
   resolver.authorize(),
   async ({ id, approved, completedById }, ctx) => {
+    await requireManagerOf(ctx, "taskLog", [id])
     //get the tasklog and update it
     const currentTaskLog = await db.taskLog.findUnique({ where: { id: id } })
     if (!currentTaskLog) {

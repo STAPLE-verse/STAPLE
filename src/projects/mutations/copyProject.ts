@@ -2,10 +2,12 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CopyProjectSchema } from "../schemas"
 
+import { requireProjectManager } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(CopyProjectSchema),
   resolver.authorize(),
   async ({ id }, ctx) => {
+    await requireProjectManager(ctx, id)
     const userId = ctx.session.userId
 
     const original = await db.project.findFirstOrThrow({

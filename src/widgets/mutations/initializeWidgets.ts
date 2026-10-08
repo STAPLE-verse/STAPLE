@@ -1,7 +1,9 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { WidgetSize } from "db"
 
-export default resolver.pipe(resolver.authorize(), async (userId: number) => {
+import { requireSelf } from "src/projectprivileges/utils/requireAccess"
+export default resolver.pipe(resolver.authorize(), async (userId: number, ctx) => {
+  requireSelf(ctx, userId)
   // Adding main dashboard default widgets
   const widgetTypes = ["LastProject", "OverdueTask", "UpcomingTask", "Notifications"]
   // New small widgets

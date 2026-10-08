@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { UpdateProjectMemberSchema } from "../schemas"
 
+import { requireManagerOfMemberUser } from "src/projectprivileges/utils/requireAccess"
 async function connectRoles(projectMemberId, rolesId) {
   await db.$transaction(async (prisma) => {
     await db.projectMember.update({
@@ -27,8 +28,8 @@ async function connectRoles(projectMemberId, rolesId) {
 export default resolver.pipe(
   resolver.zod(UpdateProjectMemberSchema),
   resolver.authorize(),
-  async ({ id, rolesId = [], privilege, projectId, userId, ...data }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+  async ({ id, rolesId = [], privilege, projectId, userId, ...data }, ctx) => {
+    await requireManagerOfMemberUser(ctx, id, projectId, userId)
     const projectMember = await db.projectMember.update({
       where: { id },
       data: {
