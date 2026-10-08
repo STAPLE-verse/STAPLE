@@ -1,7 +1,9 @@
 import db from "db"
 import { resolver } from "@blitzjs/rpc"
 
-export default resolver.pipe(resolver.authorize(), async ({ userId }: { userId: number }) => {
+import { requireSelf } from "src/projectprivileges/utils/requireAccess"
+export default resolver.pipe(resolver.authorize(), async ({ userId }: { userId: number }, ctx) => {
+  requireSelf(ctx, userId)
   if (!userId) {
     throw new Error("User ID is required")
   }

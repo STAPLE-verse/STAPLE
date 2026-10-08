@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
 
+import { getProjectAccess } from "src/projectprivileges/utils/getProjectAccess"
 const GetTeamNamesSchema = z.object({
   userId: z.number(),
   projectId: z.number().optional().nullable(),
@@ -10,7 +11,8 @@ const GetTeamNamesSchema = z.object({
 export default resolver.pipe(
   resolver.zod(GetTeamNamesSchema),
   resolver.authorize(),
-  async ({ userId, projectId }) => {
+  async ({ userId, projectId }, ctx) => {
+    const access = await getProjectAccess(ctx.session.userId as number)
     // Fetch all project members where name is not null and the userId belongs to a user in the users array
     const projectMembers = await db.projectMember.findMany({
       where: {
@@ -27,6 +29,8 @@ export default resolver.pipe(
         ...(projectId !== null && {
           projectId: projectId, // Filter by projectId if it's provided
         }),
+        // only teams in projects the caller belongs to
+        AND: [{ projectId: { in: access.memberProjectIds } }],
       },
       select: {
         id: true,

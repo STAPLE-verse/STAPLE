@@ -3,13 +3,15 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { TeamWithUsers, PendingTeamInvitee } from "src/core/types"
 
+import { requireMemberOf } from "src/projectprivileges/utils/requireAccess"
 interface GetTeamInput {
   id: number
 }
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ id }: GetTeamInput): Promise<TeamWithUsers> => {
+  async ({ id }: GetTeamInput, ctx): Promise<TeamWithUsers> => {
+    await requireMemberOf(ctx, "projectMember", [id])
     const team = await db.projectMember.findUnique({
       where: {
         id: id,

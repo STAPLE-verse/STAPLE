@@ -3,6 +3,7 @@ import db from "db"
 import { Status } from "db"
 import { z } from "zod"
 
+import { requireProjectMember } from "src/projectprivileges/utils/requireAccess"
 const GetProjectStatsSchema = z.object({
   // This accepts type of undefined, but is required at runtime
   id: z.number(),
@@ -11,7 +12,8 @@ const GetProjectStatsSchema = z.object({
 export default resolver.pipe(
   resolver.zod(GetProjectStatsSchema),
   resolver.authorize(),
-  async ({ id }) => {
+  async ({ id }, ctx) => {
+    await requireProjectMember(ctx, id)
     const allTask = await db.task.count({
       where: { projectId: id },
     })

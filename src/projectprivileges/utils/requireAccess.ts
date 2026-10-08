@@ -105,6 +105,18 @@ export async function requireManagerOf(
   return projectIds
 }
 
+// The user belongs to the project of every one of these things (any role)
+export async function requireMemberOf(
+  ctx: SessionCtx,
+  entity: ProjectEntity,
+  ids: number[]
+): Promise<number[]> {
+  const access = await getProjectAccess(currentUserId(ctx))
+  const projectIds = await resolveProjects(entity, ids)
+  if (projectIds.some((projectId) => !access.memberProjectIds.includes(projectId))) throw deny()
+  return projectIds
+}
+
 // These things must all live in the given project (stops attaching another project's data)
 export async function requireInProject(
   entity: ProjectEntity,

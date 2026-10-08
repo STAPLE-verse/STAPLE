@@ -1,11 +1,38 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { BreadcrumbLabelInput, BreadcrumbLabelInputType } from "../schemas"
+import {
+  requireFormOwner,
+  requireMemberOf,
+  requireProjectMember,
+} from "src/projectprivileges/utils/requireAccess"
 
 export default resolver.pipe(
   resolver.zod(BreadcrumbLabelInput), // validate first
   async (input: BreadcrumbLabelInputType, ctx) => {
     await ctx.session.$authorize() // call authorize here
+
+    // Labels name things (projects, tasks, people), so only give them for what the caller may see
+    try {
+      switch (input.type) {
+        case "project":
+          await requireProjectMember(ctx, input.id)
+          break
+        case "task":
+        case "milestone":
+          await requireMemberOf(ctx, input.type, [input.id])
+          break
+        case "team":
+        case "contributor":
+          await requireMemberOf(ctx, "projectMember", [input.id])
+          break
+        case "form":
+          await requireFormOwner(ctx, [input.id])
+          break
+      }
+    } catch {
+      return undefined
+    }
 
     switch (input.type) {
       case "project":

@@ -22,10 +22,10 @@ const GetFormSchema = z.object({
 export default resolver.pipe(
   resolver.zod(GetFormSchema),
   resolver.authorize(),
-  async ({ id, version }) => {
+  async ({ id, version }, ctx) => {
     // Get the Form with the latest or a specific version
     const form = await db.form.findFirst({
-      where: { id },
+      where: { id, userId: ctx.session.userId as number },
       include: {
         versions: {
           where: version ? { version } : {},

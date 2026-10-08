@@ -1,42 +1,12 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 import { paginate } from "blitz"
-import { getProjectAccess, ProjectAccess } from "src/projectprivileges/utils/getProjectAccess"
+import { getProjectAccess } from "src/projectprivileges/utils/getProjectAccess"
+import { hideOthersResponses } from "src/projectprivileges/utils/hideOthersResponses"
 
 // Define input types for the query
 interface GetTaskLogsInput
   extends Pick<Prisma.TaskLogFindManyArgs, "where" | "orderBy" | "include" | "skip" | "take"> {}
-
-// Form responses are only for the people they concern: project managers see them for their
-// projects, and everyone else only for logs assigned to them or to a team they are on. Other
-// logs are still returned (status, approval and dates feed summaries) with the response blanked.
-async function hideOthersResponses<T extends { id: number }>(
-  taskLogs: T[],
-  userId: number,
-  access: ProjectAccess
-): Promise<T[]> {
-  if (taskLogs.length === 0) return taskLogs
-  const owners = await db.taskLog.findMany({
-    where: { id: { in: taskLogs.map((log) => log.id) } },
-    select: {
-      id: true,
-      task: { select: { projectId: true } },
-      assignedTo: { select: { users: { select: { id: true } } } },
-    },
-  })
-  const mayRead = new Set(
-    owners
-      .filter(
-        (log) =>
-          access.managerProjectIds.includes(log.task.projectId) ||
-          log.assignedTo.users.some((user) => user.id === userId)
-      )
-      .map((log) => log.id)
-  )
-  return taskLogs.map((log) =>
-    mayRead.has(log.id) || !("metadata" in log) ? log : { ...log, metadata: null }
-  )
-}
 
 export default resolver.pipe(
   resolver.authorize(), // Automatically handles authorization
@@ -63,7 +33,7 @@ export default resolver.pipe(
         db.taskLog.count({ where }),
       ])
 
-      const taskLogs = await hideOthersResponses(foundLogs, userId, access)
+      const taskLogs = await hideOthersResponses(foundLogs, userId, access, { rootAreLogs: true })
       return {
         taskLogs,
         nextPage: null,
@@ -90,7 +60,7 @@ export default resolver.pipe(
         }),
     })
 
-    const taskLogs = await hideOthersResponses(foundLogs, userId, access)
+    const taskLogs = await hideOthersResponses(foundLogs, userId, access, { rootAreLogs: true })
     return {
       taskLogs,
       nextPage,

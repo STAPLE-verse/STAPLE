@@ -2,6 +2,7 @@ import db, { ProjectWidget } from "db"
 import { resolver } from "@blitzjs/rpc"
 import { z } from "zod"
 
+import { requireSelf } from "src/projectprivileges/utils/requireAccess"
 const GetProjectWidgets = z.object({
   userId: z.number(),
   projectId: z.number(),
@@ -10,7 +11,8 @@ const GetProjectWidgets = z.object({
 export default resolver.pipe(
   resolver.zod(GetProjectWidgets),
   resolver.authorize(),
-  async ({ userId, projectId }) => {
+  async ({ userId, projectId }, ctx) => {
+    requireSelf(ctx, userId)
     if (!userId) {
       throw new Error("User ID is required")
     }
