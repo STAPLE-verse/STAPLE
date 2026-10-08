@@ -1,4 +1,5 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
+import { invoke } from "@blitzjs/rpc"
 import { Tab } from "@headlessui/react"
 import classNames from "classnames"
 import {
@@ -22,6 +23,8 @@ import CollapseCard from "src/core/components/CollapseCard"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import { FormVersionWithRelations } from "../queries/getForm"
+import getCopyableForms from "../queries/getCopyableForms"
+import getCopyableFormContents from "../queries/getCopyableFormContents"
 
 interface FormPlaygroundProps {
   initialSchema?: string
@@ -59,6 +62,20 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
   onVersionsUpdated,
 }) => {
   const { state, setSchema, setUiSchema } = useFormStudio()
+  // Lets the builder copy items from the user's other STAPLE forms
+  const itemSource = useMemo(
+    () => ({
+      listForms: () => invoke(getCopyableForms, { excludeFormId: formId }),
+      getForm: async (id: string | number) => {
+        const contents = await invoke(getCopyableFormContents, { id: Number(id) })
+        return {
+          schema: contents.schema as { [key: string]: any },
+          uiSchema: contents.uiSchema as { [key: string]: any } | null,
+        }
+      },
+    }),
+    [formId]
+  )
   // Shared validate-then-commit gate (form-studio v0.2.0-rc.4) — replaces this
   // component's own hand-rolled copy of the same logic FormStudioUI uses
   // internally, so both stay in sync as the validation contract evolves.
@@ -213,6 +230,7 @@ const FormPlaygroundContent: React.FC<FormPlaygroundContentProps> = ({
                   setSchema(JSON.parse(schema))
                   setUiSchema(JSON.parse(uiSchema))
                 }}
+                mods={{ itemSource }}
               />
             </Tab.Panel>
 
