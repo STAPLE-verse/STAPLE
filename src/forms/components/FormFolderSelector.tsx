@@ -1,5 +1,6 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useQuery, useMutation } from "@blitzjs/rpc"
+import toast from "react-hot-toast"
 import getFolders from "src/folders/queries/getFolders"
 import createFolder from "src/folders/mutations/createFolder"
 import updateFormMeta from "src/forms/mutations/updateFormMeta"
@@ -16,18 +17,35 @@ export default function FormFolderSelector({ formId, currentFolderId, onUpdate }
   const [createFolderMutation] = useMutation(createFolder)
   const [newFolderName, setNewFolderName] = useState("")
   const [showNewFolder, setShowNewFolder] = useState(false)
+  // The dropdown shows its own selection. The page only tells us the folder the form had when it
+  // loaded and doesn't pass it back after a change, so reading the value from the prop alone
+  // snapped the dropdown back to the old folder even though the change had been saved.
+  const [selectedFolderId, setSelectedFolderId] = useState<number | null>(currentFolderId)
+
+  useEffect(() => {
+    setSelectedFolderId(currentFolderId)
+  }, [currentFolderId])
 
   const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value
     const folderId = val === "" ? null : parseInt(val, 10)
-    await updateMeta({ id: formId, folderId })
-    onUpdate?.(folderId)
+    const previous = selectedFolderId
+    setSelectedFolderId(folderId)
+    try {
+      await updateMeta({ id: formId, folderId })
+      onUpdate?.(folderId)
+    } catch (error) {
+      // not saved, so don't pretend it was
+      setSelectedFolderId(previous)
+      toast.error("The folder could not be saved. Please try again.")
+    }
   }
 
   const handleCreateFolder = async () => {
     if (!newFolderName.trim()) return
     const folder = await createFolderMutation({ name: newFolderName.trim() })
     await updateMeta({ id: formId, folderId: folder.id })
+    setSelectedFolderId(folder.id)
     setNewFolderName("")
     setShowNewFolder(false)
     await refetch()
@@ -38,7 +56,7 @@ export default function FormFolderSelector({ formId, currentFolderId, onUpdate }
     <div className="flex flex-col gap-2">
       <select
         className="select text-base text-primary select-primary select-bordered border-2 bg-base-300 w-1/2 focus:outline-secondary focus:outline-offset-0 focus:outline-width-3"
-        value={currentFolderId ?? ""}
+        value={selectedFolderId ?? ""}
         onChange={handleChange}
       >
         <option value="">No folder</option>
