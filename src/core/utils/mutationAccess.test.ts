@@ -4,6 +4,8 @@ import { beforeEach, describe, expect, test, vi } from "vitest"
 // and to someone else (user 500), so anything the checks let through would show up as a write.
 const writes: string[] = []
 let privileges: Array<{ projectId: number; privilege: string }> = []
+// a project manager does have a member row of their own in the project they manage
+let ownMemberRow = false
 
 const WRITE_METHODS = [
   "create",
@@ -47,7 +49,11 @@ vi.mock("db", () => {
           if (method === "findFirst" || method === "findUnique") {
             // "is this row mine?" lookups (filtered by the caller's own id) find nothing
             const where = JSON.stringify(args?.where ?? {})
-            if (where.includes('"some":{"id":7}') || where.includes('"userId":7')) return null
+            if (
+              (where.includes('"some":{"id":7}') && !ownMemberRow) ||
+              where.includes('"userId":7')
+            )
+              return null
             return someoneElsesRow(args?.where?.id)
           }
           return null
@@ -88,7 +94,13 @@ const ctx = (): any => ({
   },
 })
 
-type Case = { name: string; load: () => Promise<any>; input: any; managerInput?: any }
+type Case = {
+  name: string
+  load: () => Promise<any>
+  input: any
+  managerInput?: any
+  managerOwnsMemberRow?: boolean
+}
 
 // Everything here changes data in a project (or a person's own forms, folders and roles). Each
 // entry is called with the smallest valid input, aimed at project 99, user 7 being no part of it.
@@ -123,6 +135,12 @@ const CASES: Case[] = [
     name: "copyMilestone (with its tasks)",
     load: () => import("src/milestones/mutations/copyMilestone"),
     input: { id: 1, includeTasks: true },
+  },
+  {
+    name: "copyTaskSet",
+    load: () => import("src/tasks/mutations/copyTaskSet"),
+    input: { projectId: 99, taskIds: [1], labels: ["Interview 2"] },
+    managerOwnsMemberRow: true,
   },
   {
     name: "deleteMilestone",
@@ -276,13 +294,18 @@ describe("write endpoints refuse people who have no business changing the data",
       privileges = [{ projectId: 99, privilege: "PROJECT_MANAGER" }]
     })
 
-    for (const { name, load, input, managerInput } of CASES) {
+    for (const { name, load, input, managerInput, managerOwnsMemberRow } of CASES) {
       test(`${name}`, async () => {
         const handler = (await load()).default
-        const error: any = await handler(managerInput ?? input, ctx()).then(
-          () => null,
-          (e: unknown) => e
-        )
+        ownMemberRow = !!managerOwnsMemberRow
+        const error: any = await handler(managerInput ?? input, ctx())
+          .then(
+            () => null,
+            (e: unknown) => e
+          )
+          .finally(() => {
+            ownMemberRow = false
+          })
         // it may still stop on something else (this database is only a stand-in), but not on access
         expect(error?.name, `${name}: ${error?.message}`).not.toBe("NotFoundError")
       })
