@@ -2,7 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db, { CompletedAs, AutoAssignNew } from "db"
 import { CreateTeamSchema } from "../schemas"
 import { Routes } from "@blitzjs/next"
-import sendNotification from "src/notifications/mutations/sendNotification"
+import sendNotification from "src/notifications/utils/sendNotification"
 
 import { requireProjectManager } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(

@@ -1,7 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { Routes } from "@blitzjs/next"
-import sendNotification from "src/notifications/mutations/sendNotification"
+import sendNotification from "src/notifications/utils/sendNotification"
 import { UpdateTeamSchema } from "../schemas"
 
 import { requireManagerOf } from "src/projectprivileges/utils/requireAccess"

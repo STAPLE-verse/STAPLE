@@ -1,7 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateTaskSchema } from "../schemas"
-import sendNotification from "src/notifications/mutations/sendNotification"
+import sendNotification from "src/notifications/utils/sendNotification"
 import { Routes } from "@blitzjs/next"
 
 import { requireProjectManager, requireInProject } from "src/projectprivileges/utils/requireAccess"

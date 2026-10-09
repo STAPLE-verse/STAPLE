@@ -1,7 +1,7 @@
 import { Routes } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import sendNotification from "src/notifications/mutations/sendNotification"
+import sendNotification from "src/notifications/utils/sendNotification"
 import { z } from "zod"
 
 import {
