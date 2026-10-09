@@ -1,7 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateTaskLogSchema } from "../schemas"
-import sendNotification from "src/notifications/mutations/sendNotification"
+import sendNotification from "src/notifications/utils/sendNotification"
 import { getStatusText } from "src/core/utils/getStatusText"
 import { Routes } from "@blitzjs/next"
 

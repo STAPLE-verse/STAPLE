@@ -1,7 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { AutoAssignNew, CompletedAs } from "db"
 import { AcceptInviteSchema } from "../schemas"
-import sendNotification from "src/notifications/mutations/sendNotification"
+import sendNotification from "src/notifications/utils/sendNotification"
 import { getPrivilegeText } from "src/core/utils/getPrivilegeText"
 import { Routes } from "@blitzjs/next"
 
