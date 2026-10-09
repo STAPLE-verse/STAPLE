@@ -1,6 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
+import { requireOwnMember } from "src/projectprivileges/utils/requireAccess"
 
 const markAsRead = z.object({
   commentIds: z.array(z.number()),
@@ -9,7 +10,9 @@ const markAsRead = z.object({
 
 export default resolver.pipe(
   resolver.zod(markAsRead),
+  resolver.authorize(),
   async ({ commentIds, projectMemberId }, ctx) => {
+    await requireOwnMember(ctx, projectMemberId)
     await Promise.all(
       commentIds.map((commentId) =>
         db.commentReadStatus.upsert({

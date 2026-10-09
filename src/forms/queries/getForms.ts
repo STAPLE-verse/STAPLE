@@ -3,6 +3,7 @@ import db, { Prisma } from "db"
 import { Form, FormVersion } from "db"
 import { paginate } from "blitz"
 
+import { scopeReadQuery } from "src/projectprivileges/utils/scopeReadQuery"
 export type FormFolder = { id: number; name: string }
 
 export interface FormWithFormVersion extends Form {
@@ -47,49 +48,52 @@ const mapForms = (
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, include, skip = 0, take }: GetFormInput) => {
-    if (typeof take !== "number") {
-      const [fetchedForms, count] = await Promise.all([
-        db.form.findMany({
-          where,
-          orderBy,
-          include: includeLatestVersion(include),
-          skip,
-        }),
-        db.form.count({ where }),
-      ])
+  scopeReadQuery(
+    async ({ where, orderBy, include, skip = 0, take }: GetFormInput) => {
+      if (typeof take !== "number") {
+        const [fetchedForms, count] = await Promise.all([
+          db.form.findMany({
+            where,
+            orderBy,
+            include: includeLatestVersion(include),
+            skip,
+          }),
+          db.form.count({ where }),
+        ])
+
+        return {
+          forms: mapForms(fetchedForms),
+          nextPage: null,
+          hasMore: false,
+          count,
+        }
+      }
+
+      const {
+        items: fetchedForms,
+        hasMore,
+        nextPage,
+        count,
+      } = await paginate({
+        skip,
+        take,
+        count: () => db.form.count({ where }),
+        query: (paginateArgs) =>
+          db.form.findMany({
+            ...paginateArgs,
+            where,
+            orderBy,
+            include: includeLatestVersion(include),
+          }),
+      })
 
       return {
         forms: mapForms(fetchedForms),
-        nextPage: null,
-        hasMore: false,
+        nextPage,
+        hasMore,
         count,
       }
-    }
-
-    const {
-      items: fetchedForms,
-      hasMore,
-      nextPage,
-      count,
-    } = await paginate({
-      skip,
-      take,
-      count: () => db.form.count({ where }),
-      query: (paginateArgs) =>
-        db.form.findMany({
-          ...paginateArgs,
-          where,
-          orderBy,
-          include: includeLatestVersion(include),
-        }),
-    })
-
-    return {
-      forms: mapForms(fetchedForms),
-      nextPage,
-      hasMore,
-      count,
-    }
-  }
+    },
+    (_access, userId) => ({ userId })
+  )
 )

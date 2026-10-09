@@ -1,14 +1,20 @@
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateTaskLogSchema } from "../schemas"
-import sendNotification from "src/notifications/mutations/sendNotification"
+import sendNotification from "src/notifications/utils/sendNotification"
 import { getStatusText } from "src/core/utils/getStatusText"
 import { Routes } from "@blitzjs/next"
 
+import {
+  requireTaskLogParticipant,
+  requireOwnMember,
+} from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(CreateTaskLogSchema),
   resolver.authorize(),
   async ({ id, metadata, status, completedById, completedAs }, ctx) => {
+    await requireTaskLogParticipant(ctx, id)
+    await requireOwnMember(ctx, completedById)
     // Get current taskLog to be updated
     const currentTaskLog = await db.taskLog.findUnique({ where: { id: id } })
 

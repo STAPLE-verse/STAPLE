@@ -1,6 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
+import { requireProjectMember } from "src/projectprivileges/utils/requireAccess"
 interface GetProjectManagerUserIdsInput
   extends Pick<Prisma.ProjectPrivilegeFindManyArgs, "orderBy"> {
   projectId: number
@@ -8,7 +9,8 @@ interface GetProjectManagerUserIdsInput
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ projectId, orderBy }: GetProjectManagerUserIdsInput): Promise<number[]> => {
+  async ({ projectId, orderBy }: GetProjectManagerUserIdsInput, ctx): Promise<number[]> => {
+    await requireProjectMember(ctx, projectId)
     const projectManagers = await db.projectPrivilege.findMany({
       where: {
         projectId: projectId,

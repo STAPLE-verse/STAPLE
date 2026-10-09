@@ -45,9 +45,10 @@ export const ContributorPage = () => {
         {privilege === MemberPrivileges.PROJECT_MANAGER && (
           <div className="flex justify-center mt-4 gap-2">
             <Link
+              // the page's contributorId is a project member id; the user's own id is a different number
               href={Routes.EditContributorPage({
                 projectId: projectId!,
-                contributorId: contributorUser!.id,
+                contributorId: contributorId!,
               })}
               className="btn btn-primary"
             >

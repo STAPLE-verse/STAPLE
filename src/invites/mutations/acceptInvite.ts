@@ -1,10 +1,11 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { AutoAssignNew, CompletedAs } from "db"
 import { AcceptInviteSchema } from "../schemas"
-import sendNotification from "src/notifications/mutations/sendNotification"
+import sendNotification from "src/notifications/utils/sendNotification"
 import { getPrivilegeText } from "src/core/utils/getPrivilegeText"
 import { Routes } from "@blitzjs/next"
 
+import { requireSelf, requireInviteAccess } from "src/projectprivileges/utils/requireAccess"
 const parseFormerTeamIds = (value: unknown): number[] => {
   if (!Array.isArray(value)) return []
   return value
@@ -20,6 +21,8 @@ export default resolver.pipe(
   resolver.zod(AcceptInviteSchema),
   resolver.authorize(),
   async ({ id, userId }, ctx) => {
+    requireSelf(ctx, userId)
+    await requireInviteAccess(ctx, id, { allowInvitee: true, allowManager: false })
     // Find the invitation and related roles
     const invite = await db.invitation.findUnique({
       where: { id },

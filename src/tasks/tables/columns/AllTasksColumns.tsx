@@ -10,6 +10,9 @@ import { createDateTextFilter } from "src/core/utils/tableFilters"
 // Column helper
 const columnHelperAll = createColumnHelper<AllTasksData>()
 
+// Long names are shortened so the button keeps its height (same rule as the project tasks table)
+const truncateName = (name: string) => (name.length > 20 ? `${name.slice(0, 20)}...` : name)
+
 const dueDateTextFilter = createDateTextFilter({ emptyLabel: "no due date" })
 
 // ColumnDefs
@@ -17,7 +20,19 @@ export const AllTasksColumns = [
   columnHelperAll.accessor("name", {
     enableColumnFilter: true,
     enableSorting: true,
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => {
+      const { taskId, projectId } = info.row.original.view
+      const name = info.getValue()
+      return (
+        <Link
+          className="btn btn-primary w-full"
+          href={Routes.ShowTaskPage({ projectId, taskId })}
+          title={name}
+        >
+          {truncateName(name)}
+        </Link>
+      )
+    },
     header: "Name",
     meta: {
       filterVariant: "text",
@@ -26,7 +41,15 @@ export const AllTasksColumns = [
   columnHelperAll.accessor("projectName", {
     enableColumnFilter: true,
     enableSorting: true,
-    cell: (info) => <span>{info.getValue()}</span>,
+    cell: (info) => (
+      <Link
+        className="btn btn-secondary w-full"
+        href={Routes.ShowProjectPage({ projectId: info.row.original.view.projectId })}
+        title={info.getValue()}
+      >
+        {truncateName(info.getValue())}
+      </Link>
+    ),
     header: "Project",
     meta: {
       filterVariant: "select",

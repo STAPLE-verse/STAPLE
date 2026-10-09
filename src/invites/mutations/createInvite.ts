@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateInviteSchema } from "../schemas"
 
+import { requireProjectManager } from "src/projectprivileges/utils/requireAccess"
 function generateToken(n) {
   var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
   var token = ""
@@ -14,7 +15,8 @@ function generateToken(n) {
 export default resolver.pipe(
   resolver.zod(CreateInviteSchema),
   resolver.authorize(),
-  async (input) => {
+  async (input, ctx) => {
+    await requireProjectManager(ctx, input.projectId)
     input.email = input.email.toLowerCase()
 
     let textResult

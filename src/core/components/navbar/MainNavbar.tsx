@@ -3,6 +3,7 @@ import { Routes } from "@blitzjs/next"
 import React from "react"
 import logout from "src/auth/mutations/logout"
 import { useMutation } from "@blitzjs/rpc"
+import { useSession } from "@blitzjs/auth"
 import { useRouter } from "next/router"
 import { useCurrentUser } from "src/users/hooks/useCurrentUser"
 import { HomeIcon } from "@heroicons/react/24/outline"
@@ -53,7 +54,8 @@ const Navbar = () => {
   const router = useRouter()
 
   // Themes
-  const currentTheme = localStorage.getItem("theme") || "light"
+  const session = useSession({ suspense: false })
+  const currentTheme = session.theme ?? (localStorage.getItem("theme") || "light")
 
   // return pages
   return (

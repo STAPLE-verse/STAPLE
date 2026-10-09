@@ -10,6 +10,8 @@ declare module "@blitzjs/auth" {
       userId: User["id"]
       role: Role
       tooltips: boolean
+      /** Saved theme; absent on sessions created before themes were saved. */
+      theme?: string
     }
   }
 }

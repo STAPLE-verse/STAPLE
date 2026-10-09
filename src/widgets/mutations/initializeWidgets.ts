@@ -1,44 +1,8 @@
 import { resolver } from "@blitzjs/rpc"
-import db, { WidgetSize } from "db"
+import { requireSelf } from "src/projectprivileges/utils/requireAccess"
+import { createDefaultWidgets } from "../utils/createDefaultWidgets"
 
-export default resolver.pipe(resolver.authorize(), async (userId: number) => {
-  // Adding main dashboard default widgets
-  const widgetTypes = ["LastProject", "OverdueTask", "UpcomingTask", "Notifications"]
-  // New small widgets
-  const smallWidgetTypes = [
-    "AllTaskTotal",
-    "TotalContributors",
-    "TotalForms",
-    "TotalInvites",
-    "TotalProjects",
-    "TotalRoles",
-  ]
-  const widgets = widgetTypes.map((type, index) => ({
-    userId: userId,
-    type: type,
-    show: true,
-    position: smallWidgetTypes.length + index + 1,
-    size: WidgetSize.LARGE,
-  }))
-
-  const smallWidgets = smallWidgetTypes.map((type, index) => ({
-    userId: userId,
-    type: type,
-    show: true,
-    position: index + 1,
-    size: WidgetSize.SMALL,
-  }))
-
-  // Create the widgets
-  await db.widget.createMany({
-    data: [...smallWidgets, ...widgets],
-  })
-
-  // Retrieve the created widgets
-  const createdWidgets = await db.widget.findMany({
-    where: { userId },
-    orderBy: { position: "asc" },
-  })
-
-  return createdWidgets
+export default resolver.pipe(resolver.authorize(), async (userId: number, ctx) => {
+  requireSelf(ctx, userId)
+  return createDefaultWidgets(userId)
 })

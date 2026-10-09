@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db, { MemberPrivileges, WidgetSize } from "db"
 import { z } from "zod"
 
+import { requireManagerOrSelf } from "src/projectprivileges/utils/requireAccess"
 const SetProjectWidgets = z.object({
   userId: z.number(),
   projectId: z.number(),
@@ -11,7 +12,8 @@ const SetProjectWidgets = z.object({
 export default resolver.pipe(
   resolver.zod(SetProjectWidgets),
   resolver.authorize(),
-  async ({ userId, projectId, privilege }) => {
+  async ({ userId, projectId, privilege }, ctx) => {
+    await requireManagerOrSelf(ctx, projectId, userId)
     const widgetData = [
       {
         userId,

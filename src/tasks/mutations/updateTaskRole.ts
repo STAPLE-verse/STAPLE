@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { UpdateTaskRoleSchema } from "../schemas"
 
+import { requireManagerOf } from "src/projectprivileges/utils/requireAccess"
 async function updateTask(taskId, rolesId, disconnect) {
   let task1
   await db.$transaction(async (prisma) => {
@@ -31,7 +32,8 @@ async function updateTask(taskId, rolesId, disconnect) {
 export default resolver.pipe(
   resolver.zod(UpdateTaskRoleSchema),
   resolver.authorize(),
-  async ({ tasksId, rolesId = [], disconnect, ...data }) => {
+  async ({ tasksId, rolesId = [], disconnect, ...data }, ctx) => {
+    await requireManagerOf(ctx, "task", tasksId)
     let task1
     tasksId.forEach(async (taskId) => {
       task1 = await updateTask(taskId, rolesId, disconnect)

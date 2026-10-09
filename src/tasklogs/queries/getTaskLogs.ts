@@ -1,6 +1,8 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 import { paginate } from "blitz"
+import { getProjectAccess } from "src/projectprivileges/utils/getProjectAccess"
+import { hideOthersResponses } from "src/projectprivileges/utils/hideOthersResponses"
 
 // Define input types for the query
 interface GetTaskLogsInput
@@ -8,9 +10,20 @@ interface GetTaskLogsInput
 
 export default resolver.pipe(
   resolver.authorize(), // Automatically handles authorization
-  async ({ where, orderBy, include, skip = 0, take }: GetTaskLogsInput) => {
+  async ({ where: requestedWhere, orderBy, include, skip = 0, take }: GetTaskLogsInput, ctx) => {
+    const userId = ctx.session.userId as number
+    const access = await getProjectAccess(userId)
+
+    // The filter comes from the browser, so it is always narrowed to the user's own projects
+    const inMyProjects: Prisma.TaskLogWhereInput = {
+      task: { projectId: { in: access.memberProjectIds } },
+    }
+    const where: Prisma.TaskLogWhereInput = requestedWhere
+      ? { AND: [requestedWhere, inMyProjects] }
+      : inMyProjects
+
     if (typeof take !== "number") {
-      const [taskLogs, count] = await Promise.all([
+      const [foundLogs, count] = await Promise.all([
         db.taskLog.findMany({
           where,
           orderBy,
@@ -20,6 +33,7 @@ export default resolver.pipe(
         db.taskLog.count({ where }),
       ])
 
+      const taskLogs = await hideOthersResponses(foundLogs, userId, access, { rootAreLogs: true })
       return {
         taskLogs,
         nextPage: null,
@@ -29,7 +43,7 @@ export default resolver.pipe(
     }
 
     const {
-      items: taskLogs,
+      items: foundLogs,
       hasMore,
       nextPage,
       count,
@@ -46,6 +60,7 @@ export default resolver.pipe(
         }),
     })
 
+    const taskLogs = await hideOthersResponses(foundLogs, userId, access, { rootAreLogs: true })
     return {
       taskLogs,
       nextPage,
