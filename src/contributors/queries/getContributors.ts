@@ -4,6 +4,7 @@ import { ProjectMemberWithUsers } from "src/core/types"
 import { anonymizeNestedUsers } from "src/core/utils/anonymizeNestedUsers"
 import { paginate } from "blitz"
 
+import { requireProjectMember } from "src/projectprivileges/utils/requireAccess"
 interface GetContributorsInput
   extends Pick<Prisma.ProjectMemberFindManyArgs, "skip" | "take" | "orderBy"> {
   projectId: number
@@ -22,7 +23,11 @@ const validateContributors = (contributors: ProjectMemberWithUsers[]) => {
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ projectId, deleted, skip = 0, take, orderBy = { id: "asc" } }: GetContributorsInput) => {
+  async (
+    { projectId, deleted, skip = 0, take, orderBy = { id: "asc" } }: GetContributorsInput,
+    ctx
+  ) => {
+    await requireProjectMember(ctx, projectId)
     const baseWhere: Prisma.ProjectMemberWhereInput = {
       projectId,
       deleted,

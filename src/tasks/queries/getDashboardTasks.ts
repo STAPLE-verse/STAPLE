@@ -3,6 +3,8 @@ import db from "db"
 import { Status } from "@prisma/client"
 import moment from "moment"
 
+import { getProjectAccess } from "src/projectprivileges/utils/getProjectAccess"
+import { hideOthersResponses } from "src/projectprivileges/utils/hideOthersResponses"
 export default resolver.pipe(resolver.authorize(), async (_, ctx) => {
   const today = moment().startOf("day")
   const currentUser = ctx.session.userId // Get the current userId
@@ -59,8 +61,7 @@ export default resolver.pipe(resolver.authorize(), async (_, ctx) => {
     })
     .slice(0, 3) // Limit to top 3
 
-  return {
-    upcomingTasks,
-    pastDueTasks,
-  }
+  // A task's logs include the other assignees' logs, so blank anyone else's responses
+  const access = await getProjectAccess(currentUser as number)
+  return hideOthersResponses({ upcomingTasks, pastDueTasks }, currentUser as number, access)
 })

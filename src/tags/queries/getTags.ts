@@ -1,6 +1,7 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
+import { getProjectAccess } from "src/projectprivileges/utils/getProjectAccess"
 type SourceType = "task" | "milestone" | "projectMember" | "all"
 
 interface GetTagsInput {
@@ -8,7 +9,9 @@ interface GetTagsInput {
   where?: Prisma.TaskWhereInput | Prisma.MilestoneWhereInput | Prisma.ProjectMemberWhereInput
 }
 
-export default resolver.pipe(resolver.authorize(), async ({ source, where }: GetTagsInput) => {
+export default resolver.pipe(resolver.authorize(), async ({ source, where }: GetTagsInput, ctx) => {
+  const access = await getProjectAccess(ctx.session.userId as number)
+  const inMyProjects = { projectId: { in: access.memberProjectIds } }
   const results: any[] = []
 
   if (!source || source === "all" || source === "task") {
@@ -16,6 +19,7 @@ export default resolver.pipe(resolver.authorize(), async ({ source, where }: Get
       where: {
         AND: [
           { tags: { not: Prisma.JsonNull } },
+          inMyProjects,
           ...(where ? [where as Prisma.TaskWhereInput] : []),
         ],
       },
@@ -28,6 +32,7 @@ export default resolver.pipe(resolver.authorize(), async ({ source, where }: Get
       where: {
         AND: [
           { tags: { not: Prisma.JsonNull } },
+          inMyProjects,
           ...(where ? [where as Prisma.MilestoneWhereInput] : []),
         ],
       },
@@ -40,6 +45,7 @@ export default resolver.pipe(resolver.authorize(), async ({ source, where }: Get
       where: {
         AND: [
           { tags: { not: Prisma.JsonNull } },
+          inMyProjects,
           ...(where ? [where as Prisma.ProjectMemberWhereInput] : []),
         ],
       },

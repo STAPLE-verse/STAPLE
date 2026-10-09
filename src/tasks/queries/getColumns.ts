@@ -1,22 +1,26 @@
 import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 
+import { scopeReadQuery, inMyProjects } from "src/projectprivileges/utils/scopeReadQuery"
 interface GetKanbanBoardInput
   extends Pick<Prisma.KanbanBoardFindManyArgs, "where" | "orderBy" | "skip" | "take" | "include"> {}
 
 export default resolver.pipe(
   resolver.authorize(),
-  async ({ where, orderBy, skip, take, include }: GetKanbanBoardInput) => {
-    const query: Prisma.KanbanBoardFindManyArgs = {
-      where,
-      orderBy,
-      skip,
-      take,
-      include,
-    }
+  scopeReadQuery(
+    async ({ where, orderBy, skip, take, include }: GetKanbanBoardInput) => {
+      const query: Prisma.KanbanBoardFindManyArgs = {
+        where,
+        orderBy,
+        skip,
+        take,
+        include,
+      }
 
-    const columns = await db.kanbanBoard.findMany(query)
+      const columns = await db.kanbanBoard.findMany(query)
 
-    return columns
-  }
+      return columns
+    },
+    (access) => inMyProjects(access)
+  )
 )
