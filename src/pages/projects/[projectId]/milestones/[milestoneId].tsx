@@ -109,7 +109,11 @@ const ShowMilestonePage = () => {
             tasks={updateTasks}
           />
 
-          <CopyMilestoneButton milestoneId={milestone.id} projectId={projectId!} />
+          <CopyMilestoneButton
+            milestoneId={milestone.id}
+            projectId={projectId!}
+            taskCount={milestoneTasks.length}
+          />
 
           <button type="button" className="btn btn-warning" onClick={handleDelete}>
             Delete Milestone

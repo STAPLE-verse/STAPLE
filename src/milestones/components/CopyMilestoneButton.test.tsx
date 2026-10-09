@@ -23,27 +23,66 @@ vi.mock("../mutations/copyMilestone", () => ({ default: {} }))
 
 import { CopyMilestoneButton } from "./CopyMilestoneButton"
 
+const openDialog = (taskCount = 3) => {
+  render(<CopyMilestoneButton milestoneId={5} projectId={3} taskCount={taskCount} />)
+  fireEvent.click(screen.getByRole("button", { name: "Copy Milestone" }))
+}
+
 describe("CopyMilestoneButton", () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.spyOn(console, "error").mockImplementation(() => undefined)
+    copyFn.mockResolvedValue({ id: 42 })
   })
   afterEach(cleanup)
 
-  test("copies this milestone and opens the copy", async () => {
-    copyFn.mockResolvedValue({ id: 42 })
-    render(<CopyMilestoneButton milestoneId={5} projectId={3} />)
-    fireEvent.click(screen.getByRole("button", { name: "Copy Milestone" }))
+  test("nothing is copied until a choice is made", () => {
+    openDialog()
+    expect(screen.getByText("Copy milestone and 3 tasks")).toBeTruthy()
+    expect(copyFn).not.toHaveBeenCalled()
+  })
 
+  test("copy milestone only, then open the copy", async () => {
+    openDialog()
+    fireEvent.click(screen.getByRole("button", { name: "Copy milestone only" }))
     await waitFor(() => expect(push).toHaveBeenCalledWith("/projects/3/milestones/42"))
-    expect(copyFn).toHaveBeenCalledWith({ id: 5 })
+    expect(copyFn).toHaveBeenCalledWith({ id: 5, includeTasks: false })
+  })
+
+  test("copy the milestone and its tasks, then open the copy", async () => {
+    openDialog()
+    fireEvent.click(screen.getByRole("button", { name: "Copy milestone and 3 tasks" }))
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/projects/3/milestones/42"))
+    expect(copyFn).toHaveBeenCalledWith({ id: 5, includeTasks: true })
+  })
+
+  test("says '1 task' for a single task", () => {
+    openDialog(1)
+    expect(screen.getByRole("button", { name: "Copy milestone and 1 task" })).toBeTruthy()
+  })
+
+  test("a milestone with no tasks can only be copied on its own", () => {
+    openDialog(0)
+    const withTasks = screen.getByRole("button", {
+      name: "Copy milestone and tasks",
+    }) as HTMLButtonElement
+    expect(withTasks.disabled).toBe(true)
+    expect(
+      (screen.getByRole("button", { name: "Copy milestone only" }) as HTMLButtonElement).disabled
+    ).toBe(false)
+  })
+
+  test("cancel closes the dialog without copying", async () => {
+    openDialog()
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }))
+    await waitFor(() => expect(screen.queryByText("Copy milestone only")).toBeNull())
+    expect(copyFn).not.toHaveBeenCalled()
   })
 
   test("stays on the page if the copy fails", async () => {
     copyFn.mockRejectedValue(new Error("nope"))
-    render(<CopyMilestoneButton milestoneId={5} projectId={3} />)
-    fireEvent.click(screen.getByRole("button", { name: "Copy Milestone" }))
-
+    openDialog()
+    fireEvent.click(screen.getByRole("button", { name: "Copy milestone only" }))
     await waitFor(() => expect(copyFn).toHaveBeenCalled())
     expect(push).not.toHaveBeenCalled()
   })
