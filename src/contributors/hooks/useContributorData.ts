@@ -4,7 +4,7 @@ import getProjectPrivilege from "src/projectprivileges/queries/getProjectPrivile
 import getTeamNames from "src/teams/queries/getTeamNames"
 
 export const useContributorData = (contributorId: number, projectId: number) => {
-  const [contributor] = useQuery(getContributor, { contributorId: contributorId })
+  const [contributor] = useQuery(getContributor, { contributorId, projectId })
   const contributorUser = contributor?.users[0]
 
   const [contributorPrivilege] = useQuery(getProjectPrivilege, {
