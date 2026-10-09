@@ -140,3 +140,17 @@ export const UpdateTaskDatesSchema = z.object({
   startDate: z.date().optional(),
   deadline: z.date().optional(),
 })
+
+export const CopyTaskSetSchema = z
+  .object({
+    projectId: z.number(),
+    // the tasks that make up the set (for example steps 1 to 4 of a pipeline)
+    taskIds: z.array(z.number()).min(1).max(100),
+    // one full copy of the set is made for each label (for example "Interview 2")
+    labels: z.array(z.string().trim().min(1).max(100)).min(1).max(50),
+    // put each copy of the set in its own new milestone, named after the label
+    ownMilestones: z.boolean().optional(),
+  })
+  .refine((input) => input.taskIds.length * input.labels.length <= 500, {
+    message: "That would create more than 500 tasks at once.",
+  })

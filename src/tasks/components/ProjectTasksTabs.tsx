@@ -7,6 +7,7 @@ import { ProjectTasksList } from "src/tasks/components/ProjectTasksList"
 import createColumnMutation from "src/tasks/mutations/createColumn"
 import { useState } from "react"
 import AddContainer from "src/tasks/components/AddContainer"
+import { CopyTaskSetButton } from "src/tasks/components/CopyTaskSetButton"
 import { useMutation } from "@blitzjs/rpc"
 import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
@@ -92,6 +93,9 @@ export const ProjectTasksTabs = ({ projectPrivilege, projectId }) => {
                   >
                     Create New Task
                   </Link>
+                </p>
+                <p className="p-2">
+                  <CopyTaskSetButton projectId={projectId!} />
                 </p>
                 {selectedIndex === 0 && (
                   <>
