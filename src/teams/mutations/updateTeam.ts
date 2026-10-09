@@ -4,10 +4,12 @@ import { Routes } from "@blitzjs/next"
 import sendNotification from "src/notifications/mutations/sendNotification"
 import { UpdateTeamSchema } from "../schemas"
 
+import { requireManagerOf } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(UpdateTeamSchema),
   resolver.authorize(),
   async ({ id, name, userIds, invitationIds, tags }, ctx) => {
+    await requireManagerOf(ctx, "projectMember", [id])
     // Fetch existing users and projectId for this team to compute newly added users
     const existing = await db.projectMember.findFirst({
       where: { id },

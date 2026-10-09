@@ -2,10 +2,12 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { DeleteColumnSchema } from "../schemas"
 
+import { requireManagerOf } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(DeleteColumnSchema),
   resolver.authorize(),
-  async ({ id }) => {
+  async ({ id }, ctx) => {
+    await requireManagerOf(ctx, "column", [id])
     const column = await db.kanbanBoard.findUnique({
       where: { id: id },
       include: { tasks: true },

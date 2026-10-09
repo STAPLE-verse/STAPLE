@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
 
+import { requireFormOwner } from "src/projectprivileges/utils/requireAccess"
 const DeleteFormSchema = z.object({
   formId: z.coerce.number(),
 })
@@ -9,7 +10,8 @@ const DeleteFormSchema = z.object({
 export default resolver.pipe(
   resolver.zod(DeleteFormSchema),
   resolver.authorize(),
-  async ({ formId }) => {
+  async ({ formId }, ctx) => {
+    await requireFormOwner(ctx, [formId])
     const versions = await db.formVersion.findMany({
       where: { formId },
       select: {

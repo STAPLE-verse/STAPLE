@@ -1,9 +1,9 @@
 import { Ctx } from "blitz"
-import initializeWidgets from "src/widgets/mutations/initializeWidgets"
+import { createDefaultWidgets } from "src/widgets/utils/createDefaultWidgets"
 import db from "db"
 
 export default async function migrateNewDashboardWidgets(_: unknown, ctx: Ctx) {
-  ctx.session.$authorize() // Authorize the user
+  ctx.session.$authorize("ADMIN") // one-off maintenance: administrators only
 
   // Get all users
   const users = await db.user.findMany({
@@ -19,7 +19,7 @@ export default async function migrateNewDashboardWidgets(_: unknown, ctx: Ctx) {
     })
 
     console.log(`Initializing new widgets for user: ${user.id}`)
-    await initializeWidgets(user.id, ctx)
+    await createDefaultWidgets(user.id)
   }
 
   console.log("Widgets migration completed for all users.")

@@ -2,10 +2,13 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { UpdateTasksForMilestoneSchema } from "../schemas"
 
+import { requireManagerOf, requireInProject } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(UpdateTasksForMilestoneSchema),
   resolver.authorize(),
-  async ({ milestoneId, taskIds }) => {
+  async ({ milestoneId, taskIds }, ctx) => {
+    const [projectId] = await requireManagerOf(ctx, "milestone", [milestoneId])
+    await requireInProject("task", taskIds, projectId!)
     const updatedTasks = await db.$transaction(async (prisma) => {
       // Disassociate tasks that are not in the taskIds array
       await prisma.task.updateMany({

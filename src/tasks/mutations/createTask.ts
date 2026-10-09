@@ -4,6 +4,7 @@ import { CreateTaskSchema } from "../schemas"
 import sendNotification from "src/notifications/mutations/sendNotification"
 import { Routes } from "@blitzjs/next"
 
+import { requireProjectManager, requireInProject } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(CreateTaskSchema),
   resolver.authorize(),
@@ -27,6 +28,12 @@ export default resolver.pipe(
     },
     ctx
   ) => {
+    await requireProjectManager(ctx, projectId)
+    await requireInProject("column", [containerId], projectId)
+    const referencedMembers = [...(projectMembersId ?? []), ...(teamsId ?? [])]
+    if (referencedMembers.length)
+      await requireInProject("projectMember", referencedMembers, projectId)
+    if (milestoneId) await requireInProject("milestone", [milestoneId], projectId)
     // Get number of tasks for the column inside the project
     const containerTaskOrder = await db.task.count({
       where: {

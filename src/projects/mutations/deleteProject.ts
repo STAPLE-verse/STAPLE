@@ -2,10 +2,12 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { DeleteProjectSchema } from "../schemas"
 
+import { requireProjectManager } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(DeleteProjectSchema),
   resolver.authorize(),
-  async ({ id }) => {
+  async ({ id }, ctx) => {
+    await requireProjectManager(ctx, id)
     // Delete related ProjectWidgets if the parent project is deleted
     await db.projectWidget.deleteMany({ where: { projectId: id } })
     // Delete tasks if the parent project is deleted

@@ -2,11 +2,13 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateMilestoneSchema } from "../schemas"
 
+import { requireProjectManager, requireInProject } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(CreateMilestoneSchema),
   resolver.authorize(),
-  async ({ projectId, name, description, taskIds, startDate, endDate, tags }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+  async ({ projectId, name, description, taskIds, startDate, endDate, tags }, ctx) => {
+    await requireProjectManager(ctx, projectId)
+    if (taskIds?.length) await requireInProject("task", taskIds, projectId)
     const milestone = await db.milestone.create({
       data: {
         name,

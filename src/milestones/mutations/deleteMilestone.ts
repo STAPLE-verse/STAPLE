@@ -2,11 +2,12 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { DeleteMilestoneSchema } from "../schemas"
 
+import { requireManagerOf } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(DeleteMilestoneSchema),
   resolver.authorize(),
-  async ({ id }) => {
-    // TODO: in multi-tenant app, you must add validation to ensure correct tenant
+  async ({ id }, ctx) => {
+    await requireManagerOf(ctx, "milestone", [id])
     const milestone = await db.milestone.deleteMany({ where: { id } })
 
     return milestone

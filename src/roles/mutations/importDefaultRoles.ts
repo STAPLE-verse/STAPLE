@@ -3,6 +3,7 @@ import db from "db"
 import { z } from "zod"
 import { defaultRoleTemplates } from "../templates/defaultRoles"
 
+import { requireSelf } from "src/projectprivileges/utils/requireAccess"
 const roleSystemIds = defaultRoleTemplates.map((r) => r.id) as [string, ...string[]]
 
 const ImportRolesSchema = z.object({
@@ -13,7 +14,8 @@ const ImportRolesSchema = z.object({
 export default resolver.pipe(
   resolver.zod(ImportRolesSchema),
   resolver.authorize(),
-  async ({ system, userId }) => {
+  async ({ system, userId }, ctx) => {
+    requireSelf(ctx, userId)
     // system is now an array of ids
     const allTemplates = system.flatMap((sysId) => {
       const matched = defaultRoleTemplates.find((r) => r.id === sysId)

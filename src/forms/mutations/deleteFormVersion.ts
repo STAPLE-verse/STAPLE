@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
 
+import { requireFormVersionOwner } from "src/projectprivileges/utils/requireAccess"
 type DeleteFormVersionResult =
   | { action: "deleted" }
   | {
@@ -16,7 +17,8 @@ const DeleteFormVersionSchema = z.object({
 export default resolver.pipe(
   resolver.zod(DeleteFormVersionSchema),
   resolver.authorize(),
-  async ({ id }) => {
+  async ({ id }, ctx) => {
+    await requireFormVersionOwner(ctx, [id])
     const version = await db.formVersion.findUnique({
       where: { id },
       select: {

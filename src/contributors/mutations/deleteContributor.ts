@@ -3,10 +3,12 @@ import db from "db"
 import { DeleteContributorSchema } from "../schemas"
 import countProjectManagers from "src/projectmembers/queries/countProjectManagers"
 
+import { requireManagerOf } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(DeleteContributorSchema),
   resolver.authorize(),
   async ({ id }, ctx) => {
+    await requireManagerOf(ctx, "projectMember", [id])
     // Find the contributor to be deleted
     const contributorToDelete = await db.projectMember.findUnique({
       where: { id },
