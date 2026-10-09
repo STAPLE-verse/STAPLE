@@ -1,9 +1,13 @@
 import { Routes } from "@blitzjs/next"
 import { resolver } from "@blitzjs/rpc"
 import db from "db"
-import sendNotification from "src/notifications/mutations/sendNotification"
+import sendNotification from "src/notifications/utils/sendNotification"
 import { z } from "zod"
 
+import {
+  requireTaskLogParticipant,
+  requireOwnMember,
+} from "src/projectprivileges/utils/requireAccess"
 const AddCommentSchema = z.object({
   taskLogId: z.number(),
   projectMemberId: z.number(),
@@ -14,6 +18,8 @@ export default resolver.pipe(
   resolver.zod(AddCommentSchema),
   resolver.authorize(),
   async ({ taskLogId, projectMemberId, content }, ctx) => {
+    await requireTaskLogParticipant(ctx, taskLogId)
+    await requireOwnMember(ctx, projectMemberId)
     const userId = ctx.session.userId
     if (!userId) throw new Error("User not authenticated")
 

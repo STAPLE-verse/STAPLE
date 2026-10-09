@@ -2,10 +2,12 @@ import { resolver } from "@blitzjs/rpc"
 import db, { Prisma } from "db"
 import { EditFormSchema } from "../schemas"
 
+import { requireFormOwner } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(EditFormSchema),
   resolver.authorize(),
-  async ({ id, schema, uiSchema, semantics }) => {
+  async ({ id, schema, uiSchema, semantics }, ctx) => {
+    await requireFormOwner(ctx, [id])
     const newSchema = schema != null ? schema : Prisma.JsonNull
     const newUi = uiSchema != null ? uiSchema : Prisma.JsonNull
     // `undefined` (field omitted) means "caller doesn't know about semantics,

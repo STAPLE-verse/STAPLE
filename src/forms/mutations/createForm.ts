@@ -2,10 +2,12 @@ import { resolver } from "@blitzjs/rpc"
 import { CreateFormSchema } from "../schemas"
 import db, { Prisma } from "db"
 
+import { requireSelf } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(CreateFormSchema),
   resolver.authorize(),
-  async ({ userId, schema, uiSchema, semantics }) => {
+  async ({ userId, schema, uiSchema, semantics }, ctx) => {
+    requireSelf(ctx, userId)
     const newSchema = schema != null ? schema : Prisma.JsonNull
     // Safely extracting the title/name of the schema from the schema
     const schemaName =

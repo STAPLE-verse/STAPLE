@@ -2,7 +2,7 @@ import db from "db"
 import { Ctx } from "@blitzjs/next"
 
 export default async function migrateColumnsToMetadata(_: unknown, ctx: Ctx) {
-  ctx.session.$authorize() // Authorize the user
+  ctx.session.$authorize("ADMIN") // one-off maintenance: administrators only
   const projects = await db.project.findMany()
 
   for (const project of projects) {

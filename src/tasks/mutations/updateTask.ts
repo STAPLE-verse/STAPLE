@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db, { CompletedAs } from "db"
 import { UpdateTaskSchema } from "../schemas"
 
+import { requireManagerOf, requireInProject } from "src/projectprivileges/utils/requireAccess"
 async function manageRoles(taskId, rolesId) {
   await db.$transaction(async (prisma) => {
     await db.task.update({
@@ -80,7 +81,14 @@ async function manageAssignedMembers(taskId: number, currentIds: number[], newId
 export default resolver.pipe(
   resolver.zod(UpdateTaskSchema),
   resolver.authorize(),
-  async ({ id, projectMembersId = [], teamsId = [], rolesId = [], ...data }) => {
+  async ({ id, projectMembersId = [], teamsId = [], rolesId = [], ...data }, ctx) => {
+    const [projectId] = await requireManagerOf(ctx, "task", [id])
+    const referencedMembers = [...(projectMembersId ?? []), ...((teamsId ?? []) as number[])]
+    if (referencedMembers.length) {
+      await requireInProject("projectMember", referencedMembers, projectId!)
+    }
+    await requireInProject("column", [data.containerId], projectId!)
+    if (data.milestoneId) await requireInProject("milestone", [data.milestoneId], projectId!)
     // TODO: later we have to clean up the logic for undefined an nullable values
     const safeProjectMembersId: number[] = projectMembersId || []
     const safeTeamsId: number[] = teamsId || []

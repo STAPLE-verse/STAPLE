@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { z } from "zod"
 
+import { requireFormOwner } from "src/projectprivileges/utils/requireAccess"
 const GetFormDeploymentsSchema = z.object({
   formId: z.number(),
 })
@@ -17,7 +18,8 @@ export type FormDeployment = {
 export default resolver.pipe(
   resolver.zod(GetFormDeploymentsSchema),
   resolver.authorize(),
-  async ({ formId }) => {
+  async ({ formId }, ctx) => {
+    await requireFormOwner(ctx, [formId])
     const versions = await db.formVersion.findMany({
       where: { formId },
       select: {

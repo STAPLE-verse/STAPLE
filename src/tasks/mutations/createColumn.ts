@@ -2,10 +2,12 @@ import { resolver } from "@blitzjs/rpc"
 import db from "db"
 import { CreateColumnSchema } from "../schemas"
 
+import { requireProjectManager } from "src/projectprivileges/utils/requireAccess"
 export default resolver.pipe(
   resolver.zod(CreateColumnSchema),
   resolver.authorize(),
-  async ({ projectId, name }) => {
+  async ({ projectId, name }, ctx) => {
+    await requireProjectManager(ctx, projectId)
     // Make sure it is not possible to create a new column called Done
     if (name.trim().toLowerCase() === "done") {
       throw new Error("You cannot manually create a column named 'Done'.")

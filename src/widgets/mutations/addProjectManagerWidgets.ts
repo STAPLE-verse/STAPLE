@@ -2,6 +2,7 @@ import { resolver } from "@blitzjs/rpc"
 import db, { MemberPrivileges, WidgetSize } from "db"
 import { z } from "zod"
 
+import { requireProjectManager } from "src/projectprivileges/utils/requireAccess"
 const addProjectManagerWidgetsProps = z.object({
   userId: z.number(),
   projectId: z.number(),
@@ -10,7 +11,8 @@ const addProjectManagerWidgetsProps = z.object({
 export default resolver.pipe(
   resolver.zod(addProjectManagerWidgetsProps),
   resolver.authorize(),
-  async ({ userId, projectId }) => {
+  async ({ userId, projectId }, ctx) => {
+    await requireProjectManager(ctx, projectId)
     // Check if the user already has the PROJECT_MANAGER privilege
     const existingPrivilege = await db.projectPrivilege.findFirst({
       where: {

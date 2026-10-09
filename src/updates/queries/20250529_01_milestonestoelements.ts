@@ -2,7 +2,7 @@ import { Ctx } from "blitz"
 import db from "db"
 
 export default async function migrateElementsToMilestones(_: unknown, ctx: Ctx) {
-  ctx.session.$authorize() // Authorize the user
+  ctx.session.$authorize("ADMIN") // one-off maintenance: administrators only
 
   const elements = await db.element.findMany()
 
