@@ -369,9 +369,9 @@ describe("form responses and chat pulled in through `include`", () => {
   })
 
   test("getTasks keeps my own response and blanks someone else's response and chat", async () => {
-    const { tasks } = await (
+    const { tasks } = (await (
       await import("src/tasks/queries/getTasks")
-    ).default({ include: { taskLogs: { include: { comments: true } } } }, ctx())
+    ).default({ include: { taskLogs: { include: { comments: true } } } }, ctx())) as any
     const [mine, theirs] = tasks[0].taskLogs
     expect(mine.metadata).toEqual({ answer: "secret 10" })
     expect(mine.comments).toHaveLength(1)
@@ -382,9 +382,9 @@ describe("form responses and chat pulled in through `include`", () => {
 
   test("a project manager sees everything in their project", async () => {
     privileges = [{ projectId: 2, privilege: "PROJECT_MANAGER" }]
-    const { tasks } = await (
+    const { tasks } = (await (
       await import("src/tasks/queries/getTasks")
-    ).default({ include: { taskLogs: true } }, ctx())
+    ).default({ include: { taskLogs: true } }, ctx())) as any
     expect(tasks[0].taskLogs.map((l: any) => l.metadata)).toEqual([
       { answer: "secret 10" },
       { answer: "secret 11" },
@@ -393,9 +393,9 @@ describe("form responses and chat pulled in through `include`", () => {
 
   test("the tag queries hide other people's responses and chat too", async () => {
     responders["task.findMany"] = () => [taskWith([log(10, 1), log(11, 2)])]
-    const tasks = await (
+    const tasks = (await (
       await import("src/tags/queries/getTaskTags")
-    ).default({ projectId: 2 }, ctx())
+    ).default({ projectId: 2 }, ctx())) as any
     expect(tasks[0].taskLogs[0].metadata).toEqual({ answer: "secret 10" })
     expect(tasks[0].taskLogs[1].metadata).toBeNull()
     expect(tasks[0].taskLogs[1].comments).toEqual([])
