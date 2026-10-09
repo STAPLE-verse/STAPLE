@@ -69,3 +69,9 @@ export const UpdateMilestoneDatesSchema = z.object({
 export const DeleteMilestoneSchema = z.object({
   id: z.number(),
 })
+
+export const CopyMilestoneSchema = z.object({
+  id: z.number(),
+  // also copy the milestone's tasks (as new, unassigned tasks under the copy)
+  includeTasks: z.boolean().optional(),
+})

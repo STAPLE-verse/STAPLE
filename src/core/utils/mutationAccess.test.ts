@@ -115,6 +115,16 @@ const CASES: Case[] = [
     input: { name: "x", projectId: 99 },
   },
   {
+    name: "copyMilestone",
+    load: () => import("src/milestones/mutations/copyMilestone"),
+    input: { id: 1 },
+  },
+  {
+    name: "copyMilestone (with its tasks)",
+    load: () => import("src/milestones/mutations/copyMilestone"),
+    input: { id: 1, includeTasks: true },
+  },
+  {
     name: "deleteMilestone",
     load: () => import("src/milestones/mutations/deleteMilestone"),
     input: { id: 1 },
