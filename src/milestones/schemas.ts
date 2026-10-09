@@ -69,3 +69,7 @@ export const UpdateMilestoneDatesSchema = z.object({
 export const DeleteMilestoneSchema = z.object({
   id: z.number(),
 })
+
+export const CopyMilestoneSchema = z.object({
+  id: z.number(),
+})

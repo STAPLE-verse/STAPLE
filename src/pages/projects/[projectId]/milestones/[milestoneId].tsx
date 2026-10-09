@@ -10,6 +10,7 @@ import { InformationCircleIcon } from "@heroicons/react/24/outline"
 import { Tooltip } from "react-tooltip"
 import Link from "next/link"
 import UpdateTasksMilestone from "src/milestones/components/UpdateTasksMilestone"
+import { CopyMilestoneButton } from "src/milestones/components/CopyMilestoneButton"
 import { useState } from "react"
 import getTasks from "src/tasks/queries/getTasks"
 import router from "next/router"
@@ -107,6 +108,8 @@ const ShowMilestonePage = () => {
             onTasksUpdated={refetchTasks}
             tasks={updateTasks}
           />
+
+          <CopyMilestoneButton milestoneId={milestone.id} projectId={projectId!} />
 
           <button type="button" className="btn btn-warning" onClick={handleDelete}>
             Delete Milestone
