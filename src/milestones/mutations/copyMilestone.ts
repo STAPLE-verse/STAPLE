@@ -3,6 +3,7 @@ import db from "db"
 import { NotFoundError } from "blitz"
 import { CopyMilestoneSchema } from "../schemas"
 import { requireManagerOf } from "src/projectprivileges/utils/requireAccess"
+import { TASK_COPY_INCLUDE, taskCopyData } from "src/tasks/utils/taskCopyData"
 
 // Makes a copy of a milestone in the same project: name (with " (Copy)"), description, tags and
 // dates.
@@ -61,28 +62,12 @@ export default resolver.pipe(
           nextOrder.set(task.containerId, order + 1)
 
           await tx.task.create({
-            data: {
-              name: task.name,
-              description: task.description,
-              deadline: task.deadline ?? undefined,
-              startDate: task.startDate ?? undefined,
-              tags: task.tags ?? undefined,
-              containerTaskOrder: order,
-              containerId: task.containerId,
+            data: taskCopyData(task, {
               projectId: original.projectId,
               milestoneId: copy.id,
-              formVersionId: task.formVersionId ?? undefined,
-              elementId: task.elementId ?? undefined,
-              status: "NOT_COMPLETED",
-              autoAssignNew: task.autoAssignNew,
-              anonymous: task.anonymous,
-              anonymousResponses: task.anonymousResponses,
+              containerTaskOrder: order,
               createdById: me.id,
-              roles:
-                task.roles.length > 0
-                  ? { connect: task.roles.map((role: { id: number }) => ({ id: role.id })) }
-                  : undefined,
-            },
+            }),
           })
           copiedTaskCount += 1
         }
